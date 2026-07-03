@@ -17,6 +17,11 @@ module.exports = {
     if (definePlugin) {
       delete definePlugin.definitions['process.env.NODE_ENV'];
     }
+
+    // GitHub Pages subpath support — set STORYBOOK_PUBLIC_PATH in CI
+    const publicPath = process.env.STORYBOOK_PUBLIC_PATH || '/';
+    config.output = { ...config.output, publicPath };
+
     return config;
   },
 };
