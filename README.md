@@ -12,14 +12,16 @@ C'est le volet **Starter Angular** de la stratégie *Double-Moteur* :
 ---
 ## Stack
 
-| Couche | Techno |
-|---|---|
-| Framework | Angular 21 standalone, signals |
+| Couche       | Techno |
+|--------------|---|
+| Framework    | Angular 21 standalone, signals |
 | Comportement | Composants maison + `@angular/cdk` |
-| Style | Co-localisé par composant (`.scss` scopé) + CSS custom properties |
-| Tokens | JSON (Token Flow Manager) → `scripts/tokens.build.mjs` → SCSS (`src/styles/src/generated/`) |
-| Storybook | 10.x + addon-designs (Figma) |
-| Icons | FontAwesome Free · Grid : Gridaflex |
+| Style        | Co-localisé par composant (`.scss` scopé) + CSS custom properties |
+| Tokens       | JSON (Token Flow Manager) → `scripts/tokens.build.mjs` → SCSS (`src/styles/src/generated/`) |
+| Storybook    | 10.x + addon-designs (Figma) |
+| Grid         | Gridaflex |
+| Icons        | FontAwesome Free |
+
 
 ---
 
@@ -101,8 +103,7 @@ On reproduit le patron `ui-button` (+ `ui-icon`). Exemple `ui-input` :
    - `ui-input.html` : HTML natif headless (+ CDK si overlay/a11y), accessible.
    - `ui-input.scss` : **style co-localisé**, classes `.ui-input` / `&-…` / `&._…`,
      valeurs uniquement via `var(--…)`.
-2. **Story** — `storybook/stories/ui/forms/ui-input.stories.ts`
-3. **Démo (option)** — page sous `pages/preview/preview-page/` + route + entrée catalogue `previews.ts`.
+2. **Story & Documentation** : `storybook/stories/ui/forms/ui-input.stories.mdx` + `storybook/stories/ui/forms/ui-input.stories.ts`
 
 Règles d'or : **aucune** valeur en dur (tout via token) · **accessibilité** (élément natif,
 `aria-label`, `:focus-visible`, `disabled`).
