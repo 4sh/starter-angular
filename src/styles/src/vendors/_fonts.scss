@@ -15,7 +15,7 @@
 ////
 
 /// Chemin racine des polices (après copie des assets par Angular).
-$fonts-path: '/assets/fonts/police';
+$fonts-path: './assets/fonts/police';
 
 /// Génère un `@font-face` pour une variable font.
 /// @param {String} $family - nom de la famille CSS (ex: 'Inter')

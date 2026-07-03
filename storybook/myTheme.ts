@@ -12,7 +12,7 @@ const brandContent = {
 export const lightTheme = create({
   base: 'light',
   ...brandContent,
-  brandImage: '/storybook-projet-logo.png',
+  brandImage: './storybook-projet-logo.png',
   // UI
   appBg: '#f6f7f9',
   appContentBg: '#ffffff',
@@ -36,7 +36,7 @@ export const lightTheme = create({
 export const darkTheme = create({
   base: 'dark',
   ...brandContent,
-  brandImage: '/storybook-projet-logo-white.png',
+  brandImage: './storybook-projet-logo-white.png',
   // UI
   appBg: '#0f172a',
   appContentBg: '#111827',

@@ -11,7 +11,7 @@ const meta: Meta<UiCheckbox> = {
     layout: 'centered',
     design: {
       type: 'figma',
-      url: 'https://www.figma.com/design/GZww5hdUA49LB8XWeWP6tl/-Projet----UI-Kit',
+      url: 'https://www.figma.com/design/GZww5hdUA49LB8XWeWP6tl/-Projet----UI-Kit?node-id=49-431&t=8kHQCXijPPS2sXoC-1',
     },
   },
   argTypes: {

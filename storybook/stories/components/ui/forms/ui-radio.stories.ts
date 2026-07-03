@@ -11,7 +11,7 @@ const meta: Meta<UiRadio> = {
     layout: 'centered',
     design: {
       type: 'figma',
-      url: 'https://www.figma.com/design/GZww5hdUA49LB8XWeWP6tl/-Projet----UI-Kit',
+      url: 'https://www.figma.com/design/GZww5hdUA49LB8XWeWP6tl/-Projet----UI-Kit?node-id=120-1412&t=8kHQCXijPPS2sXoC-1',
     },
   },
   argTypes: {
