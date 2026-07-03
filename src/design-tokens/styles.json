@@ -1,0 +1,302 @@
+{
+  "$description": "Figma Styles",
+  "Effects": {
+    "shadow": {
+      "default": {
+        "sm": {
+          "$value": {
+            "offsetX": "0px",
+            "offsetY": "0px",
+            "blur": "2px",
+            "spread": "1px",
+            "inset": false,
+            "color": "{effects.default}"
+          },
+          "$type": "shadow",
+          "$extensions": {
+            "com.figma": {
+              "styleId": "S:91242b57e89f6531e6b7db9ec30ca09708c0c104,",
+              "boundVariables": {
+                "color": "VariableID:5:358"
+              }
+            }
+          }
+        },
+        "md": {
+          "$value": {
+            "offsetX": "0px",
+            "offsetY": "0px",
+            "blur": "6px",
+            "spread": "2px",
+            "inset": false,
+            "color": "{effects.default}"
+          },
+          "$type": "shadow",
+          "$extensions": {
+            "com.figma": {
+              "styleId": "S:7eb84c073dac31143a8b55198ffd9ef1c13727e2,",
+              "boundVariables": {
+                "color": "VariableID:5:358"
+              }
+            }
+          }
+        },
+        "lg": {
+          "$value": {
+            "offsetX": "0px",
+            "offsetY": "0px",
+            "blur": "6px",
+            "spread": "4px",
+            "inset": false,
+            "color": "{effects.default}"
+          },
+          "$type": "shadow",
+          "$extensions": {
+            "com.figma": {
+              "styleId": "S:c8e506493c630d93c4240779239ad79af1c422da,",
+              "boundVariables": {
+                "color": "VariableID:5:358"
+              }
+            }
+          }
+        }
+      },
+      "highlight": {
+        "sm": {
+          "$value": {
+            "offsetX": "0px",
+            "offsetY": "0px",
+            "blur": "2px",
+            "spread": "1px",
+            "inset": false,
+            "color": "{effects.highlight}"
+          },
+          "$type": "shadow",
+          "$extensions": {
+            "com.figma": {
+              "styleId": "S:dd77779dd009d2d75ed7b81388c960dc90e1b0ac,",
+              "boundVariables": {
+                "color": "VariableID:5:359"
+              }
+            }
+          }
+        },
+        "md": {
+          "$value": {
+            "offsetX": "0px",
+            "offsetY": "0px",
+            "blur": "6px",
+            "spread": "2px",
+            "inset": false,
+            "color": "{effects.highlight}"
+          },
+          "$type": "shadow",
+          "$extensions": {
+            "com.figma": {
+              "styleId": "S:49d3bd638c95b263276897eb11a676ba8438c30c,",
+              "boundVariables": {
+                "color": "VariableID:5:359"
+              }
+            }
+          }
+        },
+        "lg": {
+          "$value": {
+            "offsetX": "0px",
+            "offsetY": "0px",
+            "blur": "6px",
+            "spread": "4px",
+            "inset": false,
+            "color": "{effects.highlight}"
+          },
+          "$type": "shadow",
+          "$extensions": {
+            "com.figma": {
+              "styleId": "S:7338644d089064169bdb30d1f87269daf75118ee,",
+              "boundVariables": {
+                "color": "VariableID:5:359"
+              }
+            }
+          }
+        }
+      },
+      "success": {
+        "sm": {
+          "$value": {
+            "offsetX": "0px",
+            "offsetY": "0px",
+            "blur": "2px",
+            "spread": "1px",
+            "inset": false,
+            "color": "{effects.success}"
+          },
+          "$type": "shadow",
+          "$extensions": {
+            "com.figma": {
+              "styleId": "S:c30be299b8d248a277c1d71be3278ebff49fdef3,",
+              "boundVariables": {
+                "color": "VariableID:5:360"
+              }
+            }
+          }
+        },
+        "md": {
+          "$value": {
+            "offsetX": "0px",
+            "offsetY": "0px",
+            "blur": "6px",
+            "spread": "2px",
+            "inset": false,
+            "color": "{effects.success}"
+          },
+          "$type": "shadow",
+          "$extensions": {
+            "com.figma": {
+              "styleId": "S:1aa1a4a65b0f657848bce848263bdd5c581b8f5d,",
+              "boundVariables": {
+                "color": "VariableID:5:360"
+              }
+            }
+          }
+        },
+        "lg": {
+          "$value": {
+            "offsetX": "0px",
+            "offsetY": "0px",
+            "blur": "6px",
+            "spread": "4px",
+            "inset": false,
+            "color": "{effects.success}"
+          },
+          "$type": "shadow",
+          "$extensions": {
+            "com.figma": {
+              "styleId": "S:485665ced8d91c46792e2cbb13c9cbc68ea76aac,",
+              "boundVariables": {
+                "color": "VariableID:5:360"
+              }
+            }
+          }
+        }
+      },
+      "warning": {
+        "sm": {
+          "$value": {
+            "offsetX": "0px",
+            "offsetY": "0px",
+            "blur": "2px",
+            "spread": "1px",
+            "inset": false,
+            "color": "{effects.warning}"
+          },
+          "$type": "shadow",
+          "$extensions": {
+            "com.figma": {
+              "styleId": "S:67ea3a25a944adeca52d5ad4a476b9ec7ade8403,",
+              "boundVariables": {
+                "color": "VariableID:5:361"
+              }
+            }
+          }
+        },
+        "md": {
+          "$value": {
+            "offsetX": "0px",
+            "offsetY": "0px",
+            "blur": "6px",
+            "spread": "2px",
+            "inset": false,
+            "color": "{effects.warning}"
+          },
+          "$type": "shadow",
+          "$extensions": {
+            "com.figma": {
+              "styleId": "S:4d0812dd16d2527edc196513da52eeb3079c910b,",
+              "boundVariables": {
+                "color": "VariableID:5:361"
+              }
+            }
+          }
+        },
+        "lg": {
+          "$value": {
+            "offsetX": "0px",
+            "offsetY": "0px",
+            "blur": "6px",
+            "spread": "4px",
+            "inset": false,
+            "color": "{effects.warning}"
+          },
+          "$type": "shadow",
+          "$extensions": {
+            "com.figma": {
+              "styleId": "S:44a3d8d82249679956dd14eb2988828c22134acf,",
+              "boundVariables": {
+                "color": "VariableID:5:361"
+              }
+            }
+          }
+        }
+      },
+      "error": {
+        "sm": {
+          "$value": {
+            "offsetX": "0px",
+            "offsetY": "0px",
+            "blur": "2px",
+            "spread": "1px",
+            "inset": false,
+            "color": "{effects.error}"
+          },
+          "$type": "shadow",
+          "$extensions": {
+            "com.figma": {
+              "styleId": "S:ca7ad4a97922818bf347b28045adae7a23d5ba00,",
+              "boundVariables": {
+                "color": "VariableID:5:362"
+              }
+            }
+          }
+        },
+        "md": {
+          "$value": {
+            "offsetX": "0px",
+            "offsetY": "0px",
+            "blur": "6px",
+            "spread": "2px",
+            "inset": false,
+            "color": "{effects.error}"
+          },
+          "$type": "shadow",
+          "$extensions": {
+            "com.figma": {
+              "styleId": "S:9dd2b70b677e59b0db3c0503b9999a72cf9bfcdd,",
+              "boundVariables": {
+                "color": "VariableID:5:362"
+              }
+            }
+          }
+        },
+        "lg": {
+          "$value": {
+            "offsetX": "0px",
+            "offsetY": "0px",
+            "blur": "6px",
+            "spread": "4px",
+            "inset": false,
+            "color": "{effects.error}"
+          },
+          "$type": "shadow",
+          "$extensions": {
+            "com.figma": {
+              "styleId": "S:f1c44bc2c92ab256191903666bfa004c7442a27d,",
+              "boundVariables": {
+                "color": "VariableID:5:362"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

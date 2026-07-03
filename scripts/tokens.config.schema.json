@@ -1,0 +1,112 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Design tokens build configuration",
+  "description": "Drives scripts/tokens.build.mjs (Style Dictionary v5). Declares which DTCG token files to read, how modes (brand/theme/viewport) map to CSS selectors or media queries, and which outputs to generate.",
+  "type": "object",
+  "required": ["sourceRoot", "collections", "outputs"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "sourceRoot": {
+      "type": "string",
+      "description": "Directory containing the DTCG token JSON files, relative to the repo root (e.g. \"src/design-tokens\")."
+    },
+    "header": {
+      "type": "string",
+      "description": "Comment placed at the top of every generated file."
+    },
+    "manifest": {
+      "type": "boolean",
+      "default": true,
+      "description": "Also emit tokens.manifest.json (one entry per CSS variable: name, collection, category, type, modes) in each output destination."
+    },
+    "collections": {
+      "type": "array",
+      "description": "One entry per token collection. Order matters: it drives the manifest order. Each collection can be referenced from other files as {<id>.path.to.token} (or {<prefix>.…} when a prefix is set).",
+      "items": {
+        "type": "object",
+        "required": ["id", "files"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique collection identifier. Used in output filenames (_tokens-<id>.scss) and as the reference key in {…} aliases when no prefix is set."
+          },
+          "prefix": {
+            "type": "string",
+            "description": "Prefix prepended to every generated variable name (e.g. \"primitives\" → --primitives-primary-500). Empty string = no prefix."
+          },
+          "preserveCase": {
+            "type": "boolean",
+            "default": false,
+            "description": "Keep the original casing of the last path segment instead of kebab-casing the full path (used for SCSS breakpoint variables like $breakpoint-tabletPortrait). Also renders \"0px\" as \"0\"."
+          },
+          "files": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Token JSON files (DTCG format: nested groups with $value/$type leaves), relative to sourceRoot."
+          },
+          "modeAxes": {
+            "type": "array",
+            "description": "How this collection's modes become CSS. Each axis detects a mode from a path segment (e.g. \"modeDark\" nested in the tree) and wraps the tokens of non-default modes in a selector or media query. Default mode goes to :root.",
+            "items": {
+              "type": "object",
+              "required": ["name", "source", "strategy", "default", "map"],
+              "additionalProperties": false,
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Axis label (documentation only), e.g. \"brand\", \"theme\", \"viewport\"."
+                },
+                "source": {
+                  "const": "nested",
+                  "description": "Where modes live. \"nested\": mode names are path segments inside the token tree (e.g. primary.modeBrand2.500). They are stripped from variable names."
+                },
+                "strategy": {
+                  "enum": ["selectors", "media"],
+                  "description": "\"selectors\": non-default modes are wrapped in the CSS selector given by map (e.g. [data-theme='dark']). \"media\": wrapped in @media <condition>."
+                },
+                "default": {
+                  "type": "string",
+                  "description": "Mode emitted in :root (e.g. \"modeLight\")."
+                },
+                "map": {
+                  "type": "object",
+                  "additionalProperties": { "type": "string" },
+                  "description": "mode name → CSS selector (strategy \"selectors\") or media condition without \"@media\" (strategy \"media\")."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "outputs": {
+      "type": "array",
+      "description": "Files to generate. Each output renders a set of collections with one format into a destination directory. A _tokens.scss index (@use of every partial) is written per destination.",
+      "items": {
+        "type": "object",
+        "required": ["id", "format", "destination", "collections"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "description": "Output identifier (reporting only)." },
+          "format": {
+            "enum": ["css-vars", "scss-vars", "composite-styles"],
+            "description": "\"css-vars\": CSS custom properties in :root + mode selector/media blocks, references kept as var(--…). \"scss-vars\": flat SCSS variables ($name: value). \"composite-styles\": composite DTCG tokens (e.g. $type shadow) → one CSS custom property with the composed value + a matching utility class (.<name>)."
+          },
+          "destination": {
+            "type": "string",
+            "description": "Output directory, relative to the repo root."
+          },
+          "collections": {
+            "description": "Collection ids to render, or \"all\".",
+            "oneOf": [
+              { "const": "all" },
+              { "type": "array", "items": { "type": "string" } }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

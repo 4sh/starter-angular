@@ -1,0 +1,25 @@
+@use "../generated/_tokens-breakpoint" as brk;
+@use 'gridaflex/src/settings' with (
+  $breakpoints: (
+    'phone': brk.$breakpoint-phone,
+    'tablet-portrait': brk.$breakpoint-tabletPortrait,
+    'tablet-landscape': brk.$breakpoint-tabletLandscape,
+    'desktop': brk.$breakpoint-desktop,
+    'medium-desktop': brk.$breakpoint-mediumDesktop,
+    'big-desktop': brk.$breakpoint-bigDesktop,
+  ),
+  $breakpoint-classes: (phone tablet-portrait tablet-landscape desktop medium-desktop big-desktop),
+  $flex-columns: 24,
+  $flex-margin-gutters: ('phone': 16px, 'tablet-portrait': 24px),
+
+  // Tailles de gouttières nommées pour flex-gap-{size}-{axis}
+  $gutters: (
+    'default': 16px,
+  ),
+
+  // Tailles de padding nommées pour flex-padding-{size}-{axis}
+  $padding-gutters: (
+    'default': 16px,
+  ),
+);
+@use 'gridaflex/src/classes';

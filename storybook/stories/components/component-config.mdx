@@ -1,0 +1,279 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Components/Configuration" />
+
+# Configuration des styles composants
+
+Référentiel des **paramètres structurels** partagés par les composants `ui-*`. À ne pas
+confondre avec les deux autres leviers de configuration du design system :
+
+<table style={{ width: '100%', borderCollapse: 'collapse' }}>
+  <thead>
+    <tr style={{ textAlign: 'left', borderBottom: '2px solid rgba(128,128,128,.25)' }}>
+      <th style={{ padding: 8 }}>Axe</th>
+      <th style={{ padding: 8 }}>Quoi</th>
+      <th style={{ padding: 8 }}>Quand</th>
+      <th style={{ padding: 8 }}>Où</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><strong>Theming runtime</strong></td>
+      <td style={{ padding: 8 }}>Couleurs (marque, clair/sombre), typo, espacements : via variables CSS</td>
+      <td style={{ padding: 8 }}>À l'exécution (attributs sur <code>&lt;html&gt;</code>)</td>
+      <td style={{ padding: 8 }}>Design tokens · <code>ThemeService</code> / <code>BrandService</code></td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><strong>Structure (ui-config)</strong></td>
+      <td style={{ padding: 8 }}>Choix mutualisé d'un token pour un rôle : focus ring, bordure, taille des contrôles, transition</td>
+      <td style={{ padding: 8 }}>À la compilation (SASS)</td>
+      <td style={{ padding: 8 }}><code>src/styles/src/settings/_ui-config.scss</code></td>
+    </tr>
+  </tbody>
+</table>
+
+> Pour le theming runtime, voir **Spécifications → Thème & Système de Tokens** et
+> **Foundations → Colors**. Cette page documente l'axe **structure**.
+
+<br/>
+<br/>
+
+## Principe : 3 niveaux, une variable locale par composant
+
+`_ui-config.scss` (exposé par <code>@use 'utils'</code>) déclare des constantes à 3 portées,
+de la plus large à la plus étroite :
+
+```
+GLOBAL UI  ──►  CATÉGORIE  ──►  COMPOSANT (variable locale)
+(tous)          (forms /        (un seul .scss)
+                 actions)
+```
+
+- Chaque variable de **catégorie** hérite par défaut de la valeur **globale**.
+- Chaque **composant** lit la valeur de catégorie dans une **variable locale**, en tête de
+  son `.scss`. C'est ce qui préserve l'indépendance : ajuster un composant = changer sa
+  variable locale, sans impacter les autres.
+
+```scss
+// Dans ui-radio.scss : la valeur commune arrive via une variable LOCALE :
+$focus-ring-width: utils.$form-focus-ring-width; // ← remplacer ici = ajuster CE composant
+```
+
+<br/>
+
+## Référentiel : niveau GLOBAL UI
+
+S'applique à **tous** les composants interactifs (actions / forms / navigation).
+
+<table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
+  <thead>
+    <tr style={{ textAlign: 'left', borderBottom: '2px solid rgba(128,128,128,.25)' }}>
+      <th style={{ padding: 8 }}>Variable</th>
+      <th style={{ padding: 8 }}>Rôle</th>
+      <th style={{ padding: 8 }}>Token par défaut</th>
+      <th style={{ padding: 8 }}>Valeur</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$focus-ring-width</code></td>
+      <td style={{ padding: 8 }}>Épaisseur de l'anneau de focus (<code>box-shadow</code> sur <code>:focus-visible</code>)</td>
+      <td style={{ padding: 8 }}><code>var(--units-2xs)</code></td>
+      <td style={{ padding: 8 }}>2px</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$control-stroke-width</code></td>
+      <td style={{ padding: 8 }}>Épaisseur de bordure des contrôles (bouton, boîte checkbox, cercle radio)</td>
+      <td style={{ padding: 8 }}><code>var(--stroke-default)</code></td>
+      <td style={{ padding: 8 }}>2px</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$control-transition-duration</code></td>
+      <td style={{ padding: 8 }}>Durée des transitions d'état (via <code>control-transition()</code>)</td>
+      <td style={{ padding: 8 }}><code>var(--transition-fast)</code></td>
+      <td style={{ padding: 8 }}>80ms</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$control-transition-easing</code></td>
+      <td style={{ padding: 8 }}>Courbe des transitions d'état</td>
+      <td style={{ padding: 8 }}><code>var(--transition-easeinout)</code></td>
+      <td style={{ padding: 8 }}>ease-in-out</td>
+    </tr>
+  </tbody>
+</table>
+
+<br/>
+<br/>
+
+## Référentiel : niveau CATÉGORIE
+
+Hérite du global, surchargeable indépendamment pour toute une famille.
+
+<table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
+  <thead>
+    <tr style={{ textAlign: 'left', borderBottom: '2px solid rgba(128,128,128,.25)' }}>
+      <th style={{ padding: 8 }}>Variable</th>
+      <th style={{ padding: 8 }}>Catégorie</th>
+      <th style={{ padding: 8 }}>Rôle</th>
+      <th style={{ padding: 8 }}>Défaut</th>
+      <th style={{ padding: 8 }}>Valeur</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$form-control-size</code></td>
+      <td style={{ padding: 8 }}>forms</td>
+      <td style={{ padding: 8 }}>Taille de la boîte checkbox / du cercle radio</td>
+      <td style={{ padding: 8 }}><code>var(--size-components-2xs)</code></td>
+      <td style={{ padding: 8 }}>24px (22px mobile)</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$form-control-gap</code></td>
+      <td style={{ padding: 8 }}>forms</td>
+      <td style={{ padding: 8 }}>Espace entre le contrôle et son label</td>
+      <td style={{ padding: 8 }}><code>var(--units-sm)</code></td>
+      <td style={{ padding: 8 }}>8px</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$form-focus-ring-width</code></td>
+      <td style={{ padding: 8 }}>forms</td>
+      <td style={{ padding: 8 }}>Anneau de focus des contrôles de formulaire</td>
+      <td style={{ padding: 8 }}><code>$focus-ring-width</code> (global)</td>
+      <td style={{ padding: 8 }}>2px</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$action-focus-ring-width</code></td>
+      <td style={{ padding: 8 }}>actions</td>
+      <td style={{ padding: 8 }}>Anneau de focus des boutons / actions</td>
+      <td style={{ padding: 8 }}><code>$focus-ring-width</code> (global)</td>
+      <td style={{ padding: 8 }}>2px</td>
+    </tr>
+  </tbody>
+</table>
+
+
+<br/>
+<br/>
+## Référentiel : variables LOCALES par composant
+
+Le reste vit dans le `.scss` du composant. Celles qui pointent vers `ui-config` sont le
+point d'ajustement per-composant ; les autres sont propres au composant.
+
+<table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
+  <thead>
+    <tr style={{ textAlign: 'left', borderBottom: '2px solid rgba(128,128,128,.25)' }}>
+      <th style={{ padding: 8 }}>Composant</th>
+      <th style={{ padding: 8 }}>Variable locale</th>
+      <th style={{ padding: 8 }}>Source</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }} rowSpan={2}><code>ui-button</code></td>
+      <td style={{ padding: 8 }}><code>$focus-ring-width</code></td>
+      <td style={{ padding: 8 }}><code>utils.$action-focus-ring-width</code> (ajustable)</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$sizes</code> (hauteurs 44 / 40px), <code>$levels</code></td>
+      <td style={{ padding: 8 }}>local (spécifique bouton)</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }} rowSpan={3}><code>ui-checkbox</code></td>
+      <td style={{ padding: 8 }}><code>$box-size</code></td>
+      <td style={{ padding: 8 }}><code>utils.$form-control-size</code></td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$focus-ring-width</code></td>
+      <td style={{ padding: 8 }}><code>utils.$form-focus-ring-width</code></td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$gap</code></td>
+      <td style={{ padding: 8 }}><code>utils.$form-control-gap</code></td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }} rowSpan={4}><code>ui-radio</code></td>
+      <td style={{ padding: 8 }}><code>$box-size</code></td>
+      <td style={{ padding: 8 }}><code>utils.$form-control-size</code></td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$focus-ring-width</code></td>
+      <td style={{ padding: 8 }}><code>utils.$form-focus-ring-width</code></td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$gap</code></td>
+      <td style={{ padding: 8 }}><code>utils.$form-control-gap</code></td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$dot-size</code></td>
+      <td style={{ padding: 8 }}>local : <code>var(--units-md)</code> = 12px (spécifique radio)</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>ui-label</code></td>
+      <td style={{ padding: 8 }}>hook CSS <code>--ui-label-color</code></td>
+      <td style={{ padding: 8 }}>posé par le parent (checkbox/radio) pour piloter la couleur du label selon l'état</td>
+    </tr>
+  </tbody>
+</table>
+
+<br/>
+<br/>
+
+## Comment surcharger
+
+<table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
+  <thead>
+    <tr style={{ textAlign: 'left', borderBottom: '2px solid rgba(128,128,128,.25)' }}>
+      <th style={{ padding: 8 }}>Objectif</th>
+      <th style={{ padding: 8 }}>Où intervenir</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><strong>Tout le kit</strong> (ex : focus ring de 2px → 3px partout)</td>
+      <td style={{ padding: 8 }}>Éditer la valeur globale dans <code>_ui-config.scss</code>. Tous les composants re-<code>@use</code> ce fichier, ils suivent.</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><strong>Une catégorie</strong> (ex : contrôles de formulaire plus grands)</td>
+      <td style={{ padding: 8 }}>Éditer la variable `$form-*` (ou `$action-*`) dans <code>_ui-config.scss</code>.</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><strong>Un seul composant</strong> (ex : anneau plus épais sur le radio uniquement)</td>
+      <td style={{ padding: 8 }}>Remplacer la valeur de la variable locale en tête du <code>.scss</code> du composant.</td>
+    </tr>
+  </tbody>
+</table>
+
+> Deux leviers, c'est tout. Les composants font <code>@use 'utils'</code> (qui expose
+> `ui-config`) et lisent chaque valeur dans une variable **locale** ; éditer `_ui-config.scss`
+> se répercute donc partout, et remplacer la variable locale n'affecte que le composant.
+
+<br/>
+<br/>
+
+## Mixin `control-transition()`
+
+Applique la recette de transition mutualisée à une liste de propriétés (durée + easing pris
+dans `ui-config`), en une déclaration :
+
+```scss
+@use 'utils';
+
+.ui-checkbox-box {
+  @include utils.control-transition(background-color, border-color, box-shadow);
+}
+// → transition: background-color 80ms ease-in-out, border-color 80ms ease-in-out, box-shadow 80ms ease-in-out;
+```
+
+Changer la durée/courbe pour tous les composants = éditer `$control-transition-duration` /
+`$control-transition-easing` dans `ui-config`.
+
+<br/>
+<br/>
+
+## Gouvernance : quand créer une constante partagée
+
+- Valeur utilisée par **≥ 2 composants** → la remonter dans `ui-config` (niveau **catégorie**
+  si propre à `forms`/`actions`, **global** sinon).
+- Valeur d'un **seul** composant → elle reste **locale** à son `.scss`.
+- `ui-config` porte des **choix de tokens** (structure). Les couleurs thémables restent des
+  **design tokens** runtime : **jamais** de couleur ici.

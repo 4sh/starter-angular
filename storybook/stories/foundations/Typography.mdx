@@ -1,0 +1,54 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Foundations/Typography" />
+
+# Typographie
+
+Système de classes utilitaires basé sur les tokens (tailles **responsives** automatiques).
+Définition : `src/styles/src/base/_typography.scss`.
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Famille</th>
+      <th>Classes</th>
+      <th>Tailles</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Titres</td><td><code>.title-&#123;size&#125;</code></td><td>sm · md · default · lg · xl · 2xl</td></tr>
+    <tr><td>Textes</td><td><code>.text-&#123;weight&#125;-&#123;size&#125;</code></td><td>weight: light · regular · bold · italic — size: sm · md · default · lg · xl</td></tr>
+    <tr><td>Accent</td><td><code>.accent-&#123;size&#125;</code></td><td>sm · default · lg</td></tr>
+  </tbody>
+</table>
+
+export const Row = ({ cls, sample }) => (
+  <div style={{ display: 'flex', alignItems: 'baseline', gap: 20, padding: '6px 0', borderBottom: '1px solid var(--sb-border,#eee)' }}>
+    <code style={{ fontSize: 12, minWidth: 180, flexShrink: 0 }}>{cls}</code>
+    <span className={`sb-unstyled ${cls.slice(1)}`}>{sample || 'The quick brown fox — 0123'}</span>
+  </div>
+);
+
+## Titres
+
+export const TITLES = ['sm','md','default','lg','xl','2xl'];
+
+{TITLES.map((s) => <Row key={s} cls={`.title-${s}`} sample="Titre de section" />)}
+
+## Textes
+
+export const TWEIGHTS = ['light','regular','bold','italic'];
+export const TSIZES = ['sm','md','default','lg','xl'];
+
+{TWEIGHTS.map((w) => (
+  <div key={w}>
+    <h4 style={{ marginTop: 24, textTransform: 'capitalize' }}>{w}</h4>
+    {TSIZES.map((s) => <Row key={s} cls={`.text-${w}-${s}`} />)}
+  </div>
+))}
+
+## Accent
+
+export const ASIZES = ['sm','default','lg'];
+
+{ASIZES.map((s) => <Row key={s} cls={`.accent-${s}`} sample="Texte d'accentuation" />)}

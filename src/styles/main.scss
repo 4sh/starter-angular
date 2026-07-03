@@ -1,0 +1,67 @@
+@charset "utf-8";
+
+/**
+ * IMPORT ALL SASS
+ * **************************************************************************************** >
+ * For more informations on sass organization, to know where to put which files, etc.
+ * see : http://sass-guidelin.es/fr/#le-pattern-7-1
+ *
+ * If you have doubts, put your declarations at the end of this file. I will move these later.
+ *
+ * FOR FONT AWESOME 5 CLASSES SEARCH : go to https://fontawesome.com/icons?d=gallery&m=free
+ * I advice to click on icon and take DOM given by the site. In new fontawesome version the class isn't always `.fa`
+ */
+
+/**
+ * VENDORS * Gridaflex (1.0.0) SETTINGS
+ * **************************************************************************************** >
+ */
+@use "src/vendors/gridaflex-settings";
+
+/**
+ * VENDORS * Fonts (variable fonts self-hosted : DM Sans + Inter)
+ * **************************************************************************************** >
+ */
+@use "src/vendors/fonts";
+
+/**
+/**
+ * GENERATED (Tokens)
+ * **************************************************************************************** >
+ */
+@use "src/generated/tokens";
+
+/**
+/**
+ * BASE
+ * **************************************************************************************** >
+ */
+@use "src/base/base";
+@use "src/base/typography";
+
+/**
+ * PLACEHOLDERS
+ * **************************************************************************************** >
+ */
+
+/**
+ * LAYOUT
+ * **************************************************************************************** >
+ */
+@use "src/layout/content";
+
+/**
+ * PAGES
+ * **************************************************************************************** >
+ */
+
+/**
+ * VENDORS
+ * **************************************************************************************** >
+ */
+
+/**
+ * COMPONENTS
+ * **************************************************************************************** >
+ */
+

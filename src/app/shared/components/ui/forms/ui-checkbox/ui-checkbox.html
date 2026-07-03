@@ -1,0 +1,37 @@
+<label [class]="classes()">
+  <span class="ui-checkbox-control">
+    <input
+      #inputEl
+      type="checkbox"
+      class="ui-checkbox-input"
+      [id]="resolvedId()"
+      [checked]="checked()"
+      [disabled]="isDisabled()"
+      [required]="required()"
+      [attr.name]="name() || null"
+      [attr.tabindex]="tabindex()"
+      [attr.aria-label]="label() ? null : ariaLabel() || null"
+      [attr.aria-labelledby]="ariaLabelledBy() || null"
+      [attr.aria-invalid]="isInvalid() ? 'true' : null"
+      (change)="onNativeChange()"
+      (focus)="checkboxFocus.emit($event)"
+      (blur)="onBlur($event)"
+    />
+    <span class="ui-checkbox-box" aria-hidden="true">
+      <ui-icon
+        class="ui-checkbox-icon"
+        [name]="indeterminate() ? indeterminateIcon() : checkIcon()"
+        size="md"
+      />
+    </span>
+  </span>
+
+  @if (label()) {
+    <span class="ui-checkbox-label">
+      <span class="ui-checkbox-text">{{ label() }}</span>
+      @if (required()) {
+        <span class="ui-checkbox-required" aria-hidden="true">*</span>
+      }
+    </span>
+  }
+</label>

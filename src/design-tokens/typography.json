@@ -1,0 +1,157 @@
+{
+  "$description": "typography",
+  "fontFamily": {
+    "title": {
+      "$value": "DM Sans",
+      "$type": "string",
+      "$extensions": {
+        "com.figma": {
+          "variableId": "VariableID:5:408",
+          "collectionId": "VariableCollectionId:5:407",
+          "modeId": "5:2",
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ]
+        }
+      }
+    },
+    "base": {
+      "$value": "Inter",
+      "$type": "string",
+      "$extensions": {
+        "com.figma": {
+          "variableId": "VariableID:5:409",
+          "collectionId": "VariableCollectionId:5:407",
+          "modeId": "5:2",
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ]
+        }
+      }
+    },
+    "monospace": {
+      "$value": "Roboto Mono",
+      "$type": "string",
+      "$extensions": {
+        "com.figma": {
+          "variableId": "VariableID:342:16190",
+          "collectionId": "VariableCollectionId:5:407",
+          "modeId": "5:2",
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ]
+        }
+      }
+    },
+    "icon": {
+      "$value": "Font Awesome 6 Free",
+      "$type": "string",
+      "$extensions": {
+        "com.figma": {
+          "variableId": "VariableID:5:411",
+          "collectionId": "VariableCollectionId:5:407",
+          "modeId": "5:2",
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ]
+        }
+      }
+    }
+  },
+  "weight": {
+    "light": {
+      "$value": "Light",
+      "$type": "string",
+      "$extensions": {
+        "com.figma": {
+          "variableId": "VariableID:5:412",
+          "collectionId": "VariableCollectionId:5:407",
+          "modeId": "5:2",
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_STYLE"
+          ]
+        }
+      }
+    },
+    "regular": {
+      "$value": "Regular",
+      "$type": "string",
+      "$extensions": {
+        "com.figma": {
+          "variableId": "VariableID:5:413",
+          "collectionId": "VariableCollectionId:5:407",
+          "modeId": "5:2",
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_STYLE"
+          ]
+        }
+      }
+    },
+    "bold": {
+      "$value": "Bold",
+      "$type": "string",
+      "$extensions": {
+        "com.figma": {
+          "variableId": "VariableID:5:416",
+          "collectionId": "VariableCollectionId:5:407",
+          "modeId": "5:2",
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_STYLE"
+          ]
+        }
+      }
+    },
+    "italic": {
+      "$value": "Italic",
+      "$type": "string",
+      "$extensions": {
+        "com.figma": {
+          "variableId": "VariableID:5:417",
+          "collectionId": "VariableCollectionId:5:407",
+          "modeId": "5:2",
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_STYLE"
+          ]
+        }
+      }
+    },
+    "solidIcon": {
+      "$value": "Solid",
+      "$type": "string",
+      "$extensions": {
+        "com.figma": {
+          "variableId": "VariableID:5:418",
+          "collectionId": "VariableCollectionId:5:407",
+          "modeId": "5:2",
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_STYLE"
+          ]
+        }
+      }
+    },
+    "outlineIcon": {
+      "$value": "Regular",
+      "$type": "string",
+      "$extensions": {
+        "com.figma": {
+          "variableId": "VariableID:5:419",
+          "collectionId": "VariableCollectionId:5:407",
+          "modeId": "5:2",
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_STYLE"
+          ]
+        }
+      }
+    }
+  }
+}

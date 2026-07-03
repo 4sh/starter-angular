@@ -1,0 +1,108 @@
+@use 'utils';
+
+// =====================================================================
+// ui-checkbox : co-located styles. All values come from design tokens.
+//
+// Headless: an invisible native <input> covers the styled box (native
+// states). Colors routed via --_surface/--_stroke/--_content (form-control-palette).
+// =====================================================================
+
+// Shared defaults (ui-config) — replace a value here to detune ONLY this component.
+$box-size: utils.$form-control-size;
+$focus-ring-width: utils.$form-focus-ring-width;
+$gap: utils.$form-control-gap;
+
+.ui-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: $gap;
+  cursor: pointer;
+
+  @include utils.form-control-palette(high, '.ui-checkbox-input');
+
+  &._invalid {
+    @include utils.form-control-palette(error, '.ui-checkbox-input');
+  }
+
+  // --- Control (input + box overlay) ---------------------------------
+  &-control {
+    position: relative;
+    display: inline-flex;
+    width: $box-size;
+    height: $box-size;
+    flex-shrink: 0;
+  }
+
+  // Native input: invisible but interactive, covers the whole box.
+  &-input {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: inherit;
+  }
+
+  &-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    background-color: var(--_surface);
+    border: utils.$control-stroke-width solid var(--_stroke);
+    border-radius: var(--radius-xs);
+    @include utils.control-transition(background-color, border-color, box-shadow);
+  }
+
+  // Focus ring, driven by the palette mixin (only set on :focus-visible).
+  &:has(.ui-checkbox-input:focus-visible) &-box {
+    box-shadow: 0 0 0 $focus-ring-width var(--_focus-ring);
+  }
+
+  // --- Check / indeterminate mark -------------------------------------
+  &-icon {
+    color: var(--_content);
+    opacity: 0;
+    transform: scale(0.6);
+    @include utils.control-transition(opacity, transform);
+  }
+
+  &._checked &-icon,
+  &._indeterminate &-icon {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  // --- Inline label ---------------------------------------------------
+  &-label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--units-2xs);
+    font-family: var(--fontfamily-base);
+    font-size: var(--size-typography-text-default);
+    color: var(--ui-label-color, var(--form-high-content-default));
+    cursor: inherit;
+    user-select: none;
+  }
+
+  &-required {
+    color: var(--informative-errorlow-content-default);
+  }
+
+  // --- States ---------------------------------------------------------
+  &._disabled {
+    cursor: not-allowed;
+
+    .ui-checkbox-label {
+      color: var(--form-high-content-disabled);
+    }
+  }
+
+  &._readonly {
+    cursor: default;
+  }
+}

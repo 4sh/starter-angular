@@ -1,0 +1,41 @@
+<button
+  #btn
+  [class]="classes()"
+  [type]="type()"
+  [disabled]="disabled() || loading()"
+  [attr.tabindex]="tabindex()"
+  [attr.aria-busy]="loading() ? 'true' : null"
+  [attr.aria-label]="accessibleLabel()"
+  (click)="onClick($event)"
+  (focus)="buttonFocus.emit($event)"
+  (blur)="buttonBlur.emit($event)"
+>
+  @if (iconBefore()) {
+    <ng-container [ngTemplateOutlet]="iconSlot" />
+  }
+
+  <span class="ui-button-content" #contentWrap>
+    @if (label() && !isIconOnly()) {
+      <span class="ui-button-label">{{ label() }}</span>
+    }
+    <ng-content />
+  </span>
+
+  @if (!iconBefore()) {
+    <ng-container [ngTemplateOutlet]="iconSlot" />
+  }
+</button>
+
+<ng-template #iconSlot>
+  @if (loading()) {
+    @if (loadingIconTemplate(); as tpl) {
+      <ng-container [ngTemplateOutlet]="tpl" />
+    } @else {
+      <i class="ui-button-icon ui-button-icon-loading fa-solid fa-{{ loadingIcon() }} fa-spin" aria-hidden="true"></i>
+    }
+  } @else if (iconTemplate(); as tpl) {
+    <ng-container [ngTemplateOutlet]="tpl" />
+  } @else if (icon()) {
+    <ui-icon class="ui-button-icon" [name]="icon()!" [size]="iconSize()" />
+  }
+</ng-template>

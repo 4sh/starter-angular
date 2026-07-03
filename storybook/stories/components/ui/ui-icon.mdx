@@ -1,0 +1,80 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as IconStories from './ui-icon.stories';
+
+<Meta of={IconStories} />
+
+# ui-icon
+
+Affiche une icône par son nom (`name`, ex. `circle-user`), en `solid` ou `outline`, à cinq
+tailles (`sm` → `xl`). **FontAwesome** est la famille par défaut, mais le composant supporte
+**n'importe quelle famille de police d'icônes** (voir _Familles d'icônes_). **Décorative par
+défaut** (ignorée par les lecteurs d'écran) : si l'icône porte une information isolément, passe
+`decorative=false` + `ariaLabel`.
+
+<Canvas of={IconStories.Solid} />
+
+## API
+
+<ArgTypes of={IconStories} />
+
+## Familles d'icônes
+
+Le rendu de chaque famille est décrit par une `UiIconFamily` (comment construire les classes
+CSS et, pour les polices à ligatures comme Material Symbols, le contenu texte). FontAwesome est
+intégré ; on enregistre d'autres familles via `provideUiIconFamilies()` :
+
+```ts
+// app.config.ts
+import { provideUiIconFamilies } from '@app/shared/components/ui/ui-icon/ui-icon-families';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideUiIconFamilies(
+      {
+        material: {
+          classes: () => 'material-symbols-outlined',
+          content: (name) => name, // police à ligature : le nom est le contenu
+        },
+        bootstrap: { classes: (name) => `bi bi-${name}` },
+      },
+      { default: 'material' }, // optionnel : change la famille par défaut
+    ),
+  ],
+};
+```
+
+```html
+<!-- Utilisation par famille -->
+<ui-icon name="home" family="material" />
+<ui-icon name="alarm" family="bootstrap" />
+<ui-icon name="circle-user" family="fontawesome" />
+```
+
+> La police correspondante doit être chargée par le projet (CSS/webfont). Une clé de famille
+> inconnue retombe sur `fontawesome` (avec un warning en dev).
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>État</th>
+      <th>Implémentation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Décorative (défaut)</strong></td>
+      <td><code>decorative</code> → <code>aria-hidden</code>. À l'intérieur d'un bouton/lien labellisé, laisser décoratif.</td>
+    </tr>
+    <tr>
+      <td><strong>Porteuse de sens</strong></td>
+      <td><code>decorative="false"</code> + <code>ariaLabel</code> (rend <code>role="img"</code>).</td>
+    </tr>
+  </tbody>
+</table>
+
+## Styles & tailles
+
+<Canvas of={IconStories.Outline} />
+<Canvas of={IconStories.Meaningful} />

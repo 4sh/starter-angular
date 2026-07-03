@@ -1,0 +1,16 @@
+@use "utils";
+
+html,
+body {
+  position: relative;
+  height: 100%;
+  margin: 0;
+  background-color: var(--global-default-surface-default);
+  color: var(--global-high-content-default);
+  font-family: var(--fontfamily-base), serif;
+  font-optical-sizing: auto;
+
+  *:focus-visible {
+    outline: var(--global-default-surface-default) dashed utils.rem-calc(1px) !important;
+  }
+}

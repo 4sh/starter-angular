@@ -1,0 +1,220 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Spécifications/Design Tokens" />
+
+# Design Tokens & Theming System
+
+Cette page récapitule le fonctionnement et l'usage des Design Tokens du projet.<br/>
+Notre architecture repose sur une source de vérité centralisée (Figma) et une génération automatisée.
+
+## 1. Cycle de vie des Tokens (Workflow)
+
+Il est essentiel de comprendre le flux de nos variables pour maintenir la cohérence du Design System :
+
+* **Source de vérité (Figma & JSON)** : Les variables sont extraites de fichiers JSON situés dans `src/design-tokens/`.
+* **Génération automatisée** : Un script `scripts/tokens.build.mjs` compile ces données en plusieurs formats cibles.
+* **Fichiers SCSS/CSS (`.scss`)** : Générés dans `src/styles/src/generated/`, ce sont les variables (ex: `var(--...)`) que vous devez utiliser lorsque vous écrivez du style pour vos éléments de layout / composants.
+
+<div className="ai-instruction-block">
+    <div className="ai-instruction-block-title">
+        INSTRUCTIONS POUR L'IA ET LES DÉVELOPPEURS
+    </div>
+    <ul>
+        <li><strong>Aucune création manuelle</strong> : Si un token exact manque dans le CSS, ne l'inventez pas en dur. Il doit d'abord être créé côté Figma/JSON. En attendant, déduisez et utilisez le fallback sémantique le plus proche.</li>
+        <li><strong>Ne jamais utiliser de valeurs en dur</strong> (ex: <code>#ffffff</code> ou <code>16px</code>).</li>
+        <li><strong>Préférez les variables CSS natives</strong> (<code>var(--...)</code>) aux variables SASS (<code>$my-var</code>) pour les couleurs afin de supporter le thème dynamique (Dark Mode).</li>
+        <li>Pour les espacements et dimensions, utilisez exclusivement les variables <code>--units-*</code>.</li>
+    </ul>
+</div>
+
+
+## 2. Familles de Tokens
+
+Les tokens sont divisés en plusieurs fichiers dans `src/styles/src/generated/` :
+
+- **`_tokens-semantics.scss`** : Couleurs liées à une fonction d'interface (ex: action, feedback, navigation).
+- **`_tokens-metrics.scss`** : Unités de mesure structurelles (espacement, arrondi, bordure).
+- **`_tokens-typography.scss`** : Styles de texte (familles, graisses, tailles).
+- **`_tokens-breakpoints.scss`** : Définition des points de rupture responsive.
+
+## 3. Tokens Sémantiques (Couleurs)
+
+Utilisez ces tokens pour garantir la cohérence visuelle et le support automatique du **Dark Mode**.
+
+### Structure des Noms (Anatomie)
+
+La nomenclature suit une logique de construction stricte : `[domaine]-[famille]-[niveau]-[propriété]-[état]`.
+*(Note : le domaine `global` n'utilise pas de famille, sa structure est `global-[niveau]-[propriété]-[état]`)*.
+
+<table className="doc-table">
+    <thead>
+    <tr>
+        <th>Segment</th>
+        <th>Valeurs possibles</th>
+        <th>Rôle</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><strong>1. Domaine</strong></td>
+        <td><code>token</code>, <code>global</code></td>
+        <td>Définit si la couleur est liée à un composant (token) ou structurelle (global).</td>
+    </tr>
+    <tr>
+        <td><strong>2. Famille</strong></td>
+        <td><code>actions</code>, <code>form</code>, <code>informative</code>, <code>navigation</code>, <code>table</code></td>
+        <td>L'intention fonctionnelle du composant. <em>(Ignoré si le domaine est global)</em>.</td>
+    </tr>
+    <tr>
+        <td><strong>3. Niveau</strong></td>
+        <td><code>high</code>, <code>low</code>, <code>success</code>, <code>error</code>, <code>warning</code>...</td>
+        <td>La hiérarchie visuelle ou la variante sémantique.</td>
+    </tr>
+    <tr>
+        <td><strong>4. Propriété</strong></td>
+        <td><code>surface</code>, <code>content</code>, <code>stroke</code></td>
+        <td>La cible CSS : <em>surface</em> (fond), <em>content</em> (texte/icône), <em>stroke</em> (bordure).</td>
+    </tr>
+    <tr>
+        <td><strong>5. État</strong></td>
+        <td><code>default</code>, <code>hover</code>, <code>focused</code>, <code>pressed</code>, <code>disabled</code>, <code>active</code>, <code>checked</code></td>
+        <td>L'état d'interaction de l'élément (pseudo-classes CSS).</td>
+    </tr>
+    </tbody>
+</table>
+
+### Référentiel des Familles Fonctionnelles
+
+Utilisez ce tableau pour déterminer quel `[domaine]` et quelle `[famille]` utiliser en se basant strictement sur **l'intention fonctionnelle** du composant (les listes de composants ne sont données qu'à titre d'exemple non exhaustif).
+
+<table className="doc-table">
+    <thead>
+    <tr>
+        <th>Domaine / Famille</th>
+        <th>Usage Intentionnel (Heuristique)</th>
+        <th>Exemple de construction</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><strong><code>global</code></strong></td>
+        <td>
+            <strong>Règle :</strong> Couleurs de fondation de l'application.<br/>
+            <em>Exemples : Fonds d'écran, surfaces générales, textes par défaut, séparateurs structurels.</em>
+        </td>
+        <td><code>--global-high-surface-default</code></td>
+    </tr>
+    <tr>
+        <td><strong><code>token-actions</code></strong></td>
+        <td>
+            <strong>Règle :</strong> TOUT élément interactif qui déclenche un événement, une soumission ou une action.<br/>
+            <em>Exemples non exhaustifs : Boutons, liens, déclencheurs d'accordéon, pagination, etc.</em>
+        </td>
+        <td><code>--token-actions-high-surface-hover</code></td>
+    </tr>
+    <tr>
+        <td><strong><code>token-form</code></strong></td>
+        <td>
+            <strong>Règle :</strong> TOUT élément permettant à l'utilisateur de saisir, modifier ou sélectionner une donnée.<br/>
+            <em>Exemples non exhaustifs : Inputs texte, checkbox, radio, select, sliders, toggles, color pickers, etc.</em>
+        </td>
+        <td><code>--token-form-high-stroke-focused</code></td>
+    </tr>
+    <tr>
+        <td><strong><code>token-informative</code></strong></td>
+        <td>
+            <strong>Règle :</strong> Retours visuels non interactifs affichant un statut, un feedback ou mettant en valeur une donnée.<br/>
+            <em>Exemples non exhaustifs : Alertes, badges, tags, toasts, tooltips, barres de progression, etc.</em>
+        </td>
+        <td><code>--token-informative-error-surface-default</code></td>
+    </tr>
+    <tr>
+        <td><strong><code>token-navigation</code></strong></td>
+        <td>
+            <strong>Règle :</strong> Éléments d'architecture servant exclusivement à guider l'utilisateur dans les vues de l'application.<br/>
+            <em>Exemples non exhaustifs : Menus, onglets, sidebars, fil d'Ariane, steppers, etc.</em>
+        </td>
+        <td><code>--token-navigation-high-content-active</code></td>
+    </tr>
+    <tr>
+        <td><strong><code>token-table</code></strong></td>
+        <td>
+            <strong>Règle :</strong> Strictement réservé à l'affichage de données tabulaires complexes.<br/>
+            <em>Exemples : DataTables, grilles, en-têtes, lignes paires/impaires, cellules.</em>
+        </td>
+        <td><code>--token-table-body-surface-odd</code></td>
+    </tr>
+    </tbody>
+</table>
+
+## 4. Tokens Métriques (Metrics)
+
+<table className="doc-table">
+    <thead>
+    <tr>
+        <th>Préfixe</th>
+        <th>Usage</th>
+        <th>Exemple</th>
+        <th style={{ textAlign: 'center' }}>Valeur Défaut</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><strong><code>--units-</code></strong></td>
+        <td>Espacements (margin, padding, gap)</td>
+        <td><code>--units-md</code></td>
+        <td style={{ textAlign: 'center' }}><code>12px</code></td>
+    </tr>
+    <tr>
+        <td><strong><code>--radius-</code></strong></td>
+        <td>Arrondis (border-radius)</td>
+        <td><code>--radius-default</code></td>
+        <td style={{ textAlign: 'center' }}><code>12px</code></td>
+    </tr>
+    <tr>
+        <td><strong><code>--stroke-</code></strong></td>
+        <td>Épaisseur de bordure (border-width)</td>
+        <td><code>--stroke-default</code></td>
+        <td style={{ textAlign: 'center' }}><code>1px</code></td>
+    </tr>
+    </tbody>
+</table>
+
+## 5. Styles composites (`styles.json`)
+
+Certains tokens Figma sont **composites** (plusieurs propriétés en un style : ombres…). Ils
+vivent dans `src/design-tokens/styles.json` et sont générés différemment : le pipeline
+**compose** une valeur CSS prête à l'emploi et l'expose en **double** — variable + classe
+utilitaire — pour un usage aussi bien en SCSS qu'en HTML.
+
+- Sortie : `--shadow-{catégorie}-{taille}` (valeur `box-shadow`) + `.shadow-{catégorie}-{taille}`.
+- Config : output `format: "composite-styles"` dans `tokens.config.json`. Ajouter un type
+  composite = étendre la table `COMPOSERS` dans `scripts/tokens.build.mjs`.
+- Détail et aperçu : **Foundations → Shadows**.
+
+## 6. Exemples d'Implémentation
+
+```scss
+// ✅ BON USAGE
+.mon-composant {
+  background-color: var(--global-high-surface-default);
+  padding: var(--units-md);
+  border-radius: var(--radius-default);
+}
+
+// ❌ À ÉVITER
+.mon-composant {
+  background-color: white; // Ne gère pas le Dark Mode
+  padding: 12px;           // Valeur en dur interdite
+}
+```
+
+## 7. Constantes structurelles partagées (`ui-config`)
+
+En complément des tokens (thémables, runtime), les composants `ui-*` partagent des
+**constantes structurelles** SASS (focus ring, bordure, taille des contrôles, transition) :
+le *choix* du token pour un rôle donné, mutualisé et surchargeable à 3 niveaux
+(global UI → catégorie → composant).
+
+> Référentiel complet des variables, valeurs par défaut et mécanismes de surcharge :
+> **Spécifications → Configuration (ui-config)**.

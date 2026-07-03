@@ -1,0 +1,112 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Foundations/Shadows" />
+
+# Ombres & effets
+
+Les ombres sont exposées comme **styles composites** prêts à l'emploi, générés depuis
+`src/design-tokens/styles.json` : une variable CSS `--shadow-{catégorie}-{taille}` (valeur
+`box-shadow` complète) **et** une classe utilitaire `.shadow-{catégorie}-{taille}`.
+
+- **Catégories** : `default`, `highlight`, `success`, `warning`, `error` (couleur = token `--effects-*`, donc theme-aware).
+- **Tailles** : `sm`, `md`, `lg`.
+
+```scss
+/* SCSS (composant) */
+.ma-carte { box-shadow: var(--shadow-default-md); }
+```
+
+```html
+<!-- HTML / template : classe utilitaire -->
+<div class="shadow-success-lg">…</div>
+```
+
+export const CATS = ['default', 'highlight', 'success', 'warning', 'error'];
+export const SIZES = ['sm', 'md', 'lg'];
+
+export const Box = ({ cat, size }) => (
+  <div
+    className={`shadow-${cat}-${size}`}
+    style={{
+      width: 150, height: 78, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center',
+      background: 'var(--global-default-surface-default)', color: 'var(--global-high-content-default)', fontSize: 13,
+    }}>
+    shadow-{cat}-{size}
+  </div>
+);
+
+{CATS.map((cat) => (
+  <div key={cat} style={{ display: 'flex', gap: 32, padding: '20px 4px', flexWrap: 'wrap', alignItems: 'center' }}>
+    {SIZES.map((size) => <Box key={size} cat={cat} size={size} />)}
+  </div>
+))}
+
+## Styles disponibles
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Catégorie</th>
+      <th>Variable CSS</th>
+      <th>Classe utilitaire</th>
+    </tr>
+  </thead>
+  <tbody>
+    {CATS.map((cat) => (
+      <tr key={cat}>
+        <td><strong>{cat}</strong></td>
+        <td><code>--shadow-{cat}-{'{sm|md|lg}'}</code></td>
+        <td><code>.shadow-{cat}-{'{sm|md|lg}'}</code></td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+
+## Couleurs d'effet
+
+Chaque ombre tire sa couleur d'un token sémantique `--effects-*` (clair/sombre géré au runtime).
+
+export const Eff = ({ name }) => (
+  <tr>
+    <td><span style={{ display: 'inline-block', width: 28, height: 28, borderRadius: 6, background: `var(--effects-${name})`, verticalAlign: 'middle' }} /></td>
+    <td><code>--effects-{name}</code></td>
+  </tr>
+);
+
+<table className="doc-table">
+  <tbody>
+    <Eff name="default" />
+    <Eff name="highlight" />
+    <Eff name="success" />
+    <Eff name="warning" />
+    <Eff name="error" />
+  </tbody>
+</table>
+
+## Tokens bruts (bas niveau)
+
+Les géométries proviennent de `metrics` : `--shadow-{sm|md|lg}-{positionx|positiony|blur|spread}`.
+En général, préférez les styles composites ci-dessus ; ces tokens bruts servent à composer une
+ombre sur mesure.
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Taille</th>
+      <th>position X</th>
+      <th>position Y</th>
+      <th>blur</th>
+      <th>spread</th>
+    </tr>
+  </thead>
+  <tbody>
+    {['sm','md','lg'].map((s) => (
+      <tr key={s}>
+        <td><strong>{s}</strong></td>
+        {['positionx','positiony','blur','spread'].map((p) => (
+          <td key={p}><code>--shadow-{s}-{p}</code></td>
+        ))}
+      </tr>
+    ))}
+  </tbody>
+</table>

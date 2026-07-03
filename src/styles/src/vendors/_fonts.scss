@@ -1,0 +1,44 @@
+////
+/// VENDORS · Fonts (self-hosted variable fonts)
+/// ****************************************************************************** >
+/// Polices embarquées dans le starter kit (fichiers variable font `.ttf`).
+/// - DM Sans  → `--fontfamily-title`
+/// - Inter    → `--fontfamily-base`
+///
+/// Les fichiers vivent dans `src/assets/fonts/police/` et sont copiés vers
+/// `/assets/` au build (cf. angular.json). On les référence donc en chemin
+/// racine (`/assets/...`).
+///
+/// Ce sont des VARIABLE FONTS : une seule ressource par famille/style couvre
+/// toute la plage de graisses via `font-weight: 100 900` + l'axe `opsz`
+/// (piloté à l'exécution par `font-optical-sizing: auto`, cf. base/typography).
+////
+
+/// Chemin racine des polices (après copie des assets par Angular).
+$fonts-path: '/assets/fonts/police';
+
+/// Génère un `@font-face` pour une variable font.
+/// @param {String} $family - nom de la famille CSS (ex: 'Inter')
+/// @param {String} $file   - chemin du fichier .ttf (quoté)
+/// @param {String} $style  - normal | italic
+@mixin variable-font($family, $file, $style: normal) {
+  @font-face {
+    font-family: $family;
+    src: url($file) format('truetype');
+    font-weight: 100 900; // plage complète de l'axe wght
+    font-style: $style;
+    font-display: swap;
+  }
+}
+
+// ==============================
+// DM Sans — titres (opsz 9..40, wght 100..1000)
+// ==============================
+@include variable-font('DM Sans', '#{$fonts-path}/dm-sans/DMSans[opsz,wght].ttf');
+@include variable-font('DM Sans', '#{$fonts-path}/dm-sans/DMSans-Italic[opsz,wght].ttf', italic);
+
+// ==============================
+// Inter — texte courant (opsz 14..32, wght 100..900)
+// ==============================
+@include variable-font('Inter', '#{$fonts-path}/inter/Inter-VariableFont_opsz,wght.ttf');
+@include variable-font('Inter', '#{$fonts-path}/inter/Inter-Italic-VariableFont_opsz,wght.ttf', italic);

@@ -1,0 +1,103 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Spécifications/Thème & Système de Tokens" />
+
+# Thème & Système de Tokens
+
+Ce starter n'utilise **aucune librairie UI propriétaire**. Le thème repose entièrement sur des
+**design tokens** générés en variables CSS, consommés par des composants maison headless.
+
+## Pipeline
+
+```
+src/design-tokens/*.json        (source DTCG, export Token Flow Manager)
+        │  npm run tokens:build  (scripts/tokens.build.mjs)
+        ▼
+src/styles/src/generated/_tokens-*.scss   (variables CSS)
+        ▼
+composants (.scss co-localisés) + classes utilitaires (typo…)
+```
+
+## Collections & nommage
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Collection</th>
+      <th>Préfixe variable</th>
+      <th>Exemple</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>primitives</td><td><code>{'--primitives-*'}</code></td><td><code>--primitives-primary-500</code></td></tr>
+    <tr><td>metrics</td><td><code>{'--metrics-*'}</code></td><td><code>--metrics-units-sm</code>, <code>--metrics-radius-sm</code></td></tr>
+    <tr><td>semantics</td><td><em>(aucun)</em></td><td><code>--actions-high-surface-default</code>, <code>--global-high-content-default</code></td></tr>
+    <tr><td>typography</td><td><em>(aucun)</em></td><td><code>--fontfamily-base</code>, <code>--weight-bold</code></td></tr>
+    <tr><td>responsive</td><td><em>(aucun)</em></td><td><code>--size-typography-title-lg</code></td></tr>
+    <tr><td>transitions</td><td><em>(aucun)</em></td><td><code>--transition-fast</code></td></tr>
+  </tbody>
+</table>
+
+Les **semantics référencent les primitives** (`var(--primitives-*)`), ce qui permet le switch
+de marque/mode sans duplication.
+
+## Marque & mode (runtime)
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Dimension</th>
+      <th>Porté par</th>
+      <th>Application</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Marque</td><td>primitives (modeBrand1/2/3)</td><td><code>[data-brand='brand2'|'brand3']</code> — <code>BrandService</code></td></tr>
+    <tr><td>Clair / Sombre</td><td>semantics (modeLight/modeDark)</td><td><code>[data-theme='dark']</code> — <code>ThemeService</code></td></tr>
+    <tr><td>Viewport</td><td>responsive</td><td><code>@media (min-width: …)</code></td></tr>
+  </tbody>
+</table>
+
+> Voir **Foundations → Colors** pour explorer les valeurs résolues et basculer marque/mode en direct.
+
+## Services runtime
+
+Deux services Angular (`providedIn: 'root'`, signals + `effect`) pilotent ces attributs sur
+`<html>`. Ils sont **headless et sans dépendance UI** : ils ne font que positionner un attribut,
+tout le rendu découle des tokens CSS. Ils sont instanciés dans `AppComponent` (leur `effect`
+applique l'attribut au démarrage puis à chaque changement de signal).
+
+### ThemeService : light / dark
+
+`src/app/core/service/theme.service.ts`
+
+- **État** : `currentMode` (signal `'light' | 'dark'`), initialisé depuis `localStorage` (clé `theme-mode`), défaut `'light'`.
+- **Effet** : `dark` → `document.documentElement` reçoit `[data-theme='dark']` ; `light` → l'attribut est retiré (les sémantiques `:root` s'appliquent). Le choix est persisté dans `localStorage`.
+- **API** : `toggle()` (bascule light/dark), `isDark` (getter booléen), `currentMode.set(...)`.
+
+```ts
+private theme = inject(ThemeService);
+
+this.theme.toggle();          // light ⇄ dark, persisté
+this.theme.currentMode.set('dark');
+const dark = this.theme.isDark;
+```
+
+### BrandService : marque (thème de couleurs)
+
+`src/app/core/service/brand.service.ts`
+
+- **État** : `currentBrand` (signal `'brand1' | 'brand2' | 'brand3'`), initialisé depuis le **sous-domaine** (`themeone → brand1`, `themetwo → brand2`, `themethree → brand3`), défaut `'brand1'`.
+- **Effet** : `brand1` (défaut) → aucun attribut (primitives `:root` = brand 1) ; `brand2`/`brand3` → `[data-brand='brand2'|'brand3']`, ce qui redéfinit les `--primitives-*` et se propage aux sémantiques qui les référencent.
+- **API** : `set(brand)`, `currentBrand()` (lecture).
+
+```ts
+private brand = inject(BrandService);
+
+this.brand.set('brand2');           // active la palette de la marque 2
+const current = this.brand.currentBrand();
+```
+
+> Contrairement au thème, la marque n'est **pas persistée** : elle dérive du sous-domaine
+> (multi-tenant). L'explorateur **Foundations → Colors** permet de forcer marque + mode pour
+> prévisualiser les tokens, sans altérer le reste de l'UI Storybook.

@@ -1,0 +1,163 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "cli": {
+    "analytics": "1e1de97b-a744-405a-8b5a-0397bb3d01ce",
+    "schematicCollections": [
+      "angular-eslint"
+    ]
+  },
+  "newProjectRoot": "projects",
+  "projects": {
+    "demo": {
+      "architect": {
+        "build": {
+          "builder": "@angular/build:application",
+          "configurations": {
+            "development": {
+              "extractLicenses": false,
+              "namedChunks": true,
+              "optimization": false,
+              "sourceMap": true
+            },
+            "production": {
+              "aot": true,
+              "extractLicenses": true,
+              "namedChunks": false,
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false
+            }
+          },
+          "options": {
+            "assets": [
+              "src/assets"
+            ],
+            "index": "src/index.html",
+            "browser": "src/main.ts",
+            "outputPath": "dist/demo",
+            "inlineStyleLanguage": "scss",
+            "polyfills": [
+              "zone.js"
+            ],
+            "scripts": [],
+            "styles": [
+              "src/styles/main.scss",
+              "node_modules/@fortawesome/fontawesome-free/css/all.css"
+            ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src/styles",
+                "src/assets",
+                "node_modules"
+              ],
+              "sass": {
+                "silenceDeprecations": [
+                  "global-builtin",
+                  "import"
+                ]
+              }
+            },
+            "tsConfig": "tsconfig.app.json"
+          }
+        },
+        "serve": {
+          "builder": "@angular/build:dev-server",
+          "configurations": {
+            "development": {
+              "buildTarget": "demo:build:development"
+            },
+            "production": {
+              "buildTarget": "demo:build:production"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "storybook": {
+          "builder": "@storybook/angular:start-storybook",
+          "options": {
+            "configDir": "storybook",
+            "browserTarget": "demo:build",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "src/assets",
+                "output": "./assets/"
+              }
+            ],
+            "styles": [
+              "src/styles/main.scss",
+              "node_modules/@fortawesome/fontawesome-free/css/all.css"
+            ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src/styles",
+                "src/assets",
+                "node_modules"
+              ]
+            },
+            "compodoc": true,
+            "compodocArgs": [
+              "-e",
+              "json",
+              "-d",
+              "."
+            ],
+            "port": 6006
+          }
+        },
+        "build-storybook": {
+          "builder": "@storybook/angular:build-storybook",
+          "options": {
+            "configDir": "storybook",
+            "browserTarget": "demo:build",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "src/assets",
+                "output": "./assets/"
+              }
+            ],
+            "styles": [
+              "src/styles/main.scss",
+              "node_modules/@fortawesome/fontawesome-free/css/all.css"
+            ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src/styles",
+                "src/assets",
+                "node_modules"
+              ]
+            },
+            "compodoc": true,
+            "compodocArgs": [
+              "-e",
+              "json",
+              "-d",
+              "."
+            ],
+            "outputDir": "storybook-static"
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
+            ]
+          }
+        }
+      },
+      "prefix": "demo",
+      "projectType": "application",
+      "root": "",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "sourceRoot": "src"
+    }
+  },
+  "version": 1
+}

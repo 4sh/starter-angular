@@ -1,0 +1,4 @@
+{
+  "configPath": "token-config.json",
+  "buildCommand": "npm run tokens:build"
+}

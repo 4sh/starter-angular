@@ -1,0 +1,68 @@
+import { Meta, Story } from "@storybook/addon-docs/blocks";
+import * as ButtonStories from "./components/ui/actions/ui-button.stories";
+import * as IconStories from "./components/ui/ui-icon.stories";
+import * as ImageStories from "./components/ui/Image.stories";
+import * as CheckboxStories from "./components/ui/forms/ui-checkbox.stories";
+import * as RadioStories from "./components/ui/forms/ui-radio.stories";
+import * as LabelStories from "./components/ui/forms/ui-label.stories";
+
+<Meta title="Overview" />
+
+# Composants
+
+Bibliothèque de composants **maison** (headless · Angular CDK), accessibles, stylés via design tokens.
+Vue d'ensemble par catégorie.
+
+export const ComponentCard = ({ name, description, link, story }) => (
+  <a href={link} style={{ textDecoration: 'none', color: 'inherit', display: 'block'}}>
+    <div
+      style={{
+        display: 'flex', flexDirection: 'column', padding: 20, borderRadius: 12,
+        background: 'var(--sb-bg)', border: '1px solid var(--sb-border)',
+        transition: 'all .2s ease', cursor: 'pointer'
+      }}
+      onMouseOver={(e) => { e.currentTarget.style.borderColor = 'var(--sb-code-color)'; e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,.1)'; }}
+      onMouseOut={(e) => { e.currentTarget.style.borderColor = 'var(--sb-border)'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 154, background: 'var(--sb-bg-subtle)', borderRadius: 8, marginBottom: 16, overflow: 'hidden', border: '1px solid var(--sb-border-subtle)' }}>
+        <div style={{ transform: 'scale(.9)' }}><Story of={story} /></div>
+      </div>
+      <div style={{ fontWeight: 'bold', fontSize: 15, marginBottom: 6 }}>{name}</div>
+      <div style={{ fontSize: 12, color: 'var(--sb-text-subtle)', lineHeight: 1.4, marginBottom: 12 }}>{description}</div>
+      <div style={{ marginTop: 'auto', paddingTop: 8, fontSize: 11, color: 'var(--sb-code-color)', fontWeight: 'bold' }}>Voir la documentation →</div>
+    </div>
+  </a>
+);
+
+export const CategorySection = ({ title, components }) => (
+  <div style={{ display: "block", marginTop: 48, marginBottom: 48 }}>
+    <h2 style={{ fontSize: 20, marginBottom: 24, paddingBottom: 12, borderBottom: '2px solid var(--sb-border)', textTransform: 'capitalize' }}>{title}</h2>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: 24 }}>
+      {components.map((c) => <ComponentCard key={c.name} {...c} />)}
+    </div>
+  </div>
+);
+
+<CategorySection
+  title="Actions"
+  components={[
+    { name: 'ui-button', description: 'Bouton (niveaux, tailles, icônes, icon-only) — accessible.', link: '?path=/docs/components-ui-actions-ui-button--docs', story: ButtonStories.IconLeft },
+  ]}
+/>
+
+<CategorySection
+  title="Forms"
+  components={[
+    { name: 'ui-checkbox', description: 'Case à cocher headless (CVA, indeterminate, erreur auto).', link: '?path=/docs/components-ui-forms-ui-checkbox--docs', story: CheckboxStories.Checked },
+    { name: 'ui-radio', description: 'Bouton radio headless (groupe natif par name, CVA).', link: '?path=/docs/components-ui-forms-ui-radio--docs', story: RadioStories.Checked },
+    { name: 'ui-label', description: 'Libellé de champ (marqueur requis, tailles).', link: '?path=/docs/components-ui-forms-ui-label--docs', story: LabelStories.Required },
+  ]}
+/>
+
+<CategorySection
+  title="Base"
+  components={[
+    { name: 'ui-icon', description: 'Icône FontAwesome (sm→xl, solid/outline), décorative par défaut.', link: '?path=/docs/components-ui-ui-icon--docs', story: IconStories.Solid },
+    { name: 'ui-image', description: 'Image responsive multi-format (jpg/png/svg), light/dark par marque.', link: '?path=/docs/components-ui-ui-image--docs', story: ImageStories.Common_PNG_Base },
+  ]}
+/>

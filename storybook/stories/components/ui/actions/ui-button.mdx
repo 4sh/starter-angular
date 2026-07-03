@@ -1,0 +1,129 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as ButtonStories from './ui-button.stories';
+
+<Meta of={ButtonStories} />
+
+# ui-button
+
+
+<Canvas of={ButtonStories.High} />
+## API
+
+<ArgTypes of={ButtonStories} />
+
+## Anatomie
+
+<table>
+  <thead>
+    <tr>
+      <th>Élément</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Structure</strong></td>
+      <td><code>root &lt;button&gt;</code> + <code>ui-icon</code> (positionnable) + label / contenu projeté.</td>
+    </tr>
+    <tr>
+      <td><strong>Level</strong></td>
+      <td><code>high</code> · <code>low</code> · <code>success</code> · <code>warning</code> · <code>error</code></td>
+    </tr>
+    <tr>
+      <td><strong>Size</strong></td>
+      <td><code>default</code> · <code>small</code></td>
+    </tr>
+    <tr>
+      <td><strong>Icône</strong></td>
+      <td><code>icon</code> (nom FontAwesome) + <code>iconPos</code> (<code>left</code> · <code>right</code> · <code>top</code> · <code>bottom</code>). <code>iconOnly</code> force le carré.</td>
+    </tr>
+    <tr>
+      <td><strong>State</strong></td>
+      <td><code>loading</code> (spinner personnalisable via <code>loadingIcon</code>, désactive le bouton).</td>
+    </tr>
+    <tr>
+      <td><strong>Layout</strong></td>
+      <td><code>expanded</code> = pleine largeur.</td>
+    </tr>
+    <tr>
+      <td><strong>Type</strong></td>
+      <td>texte+icône, contenu projeté (<code>&lt;ng-content&gt;</code>), ou <em>icon-only</em> (sans <code>label</code>)</td>
+    </tr>
+  </tbody>
+</table>
+
+## Accessibilité
+
+<table>
+  <thead>
+    <tr>
+      <th>Règle</th>
+      <th>Détail</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Sémantique</strong></td>
+      <td><code>&lt;button&gt;</code> natif, <code>type</code> explicite.</td>
+    </tr>
+    <tr>
+      <td><strong>Labeling</strong></td>
+      <td><code>aria-label</code> posé <strong>uniquement</strong> quand utile (icon-only) : jamais en doublon du texte visible. En mode icon-only, un <code>label</code> fourni sert de nom accessible (masqué visuellement). Un warning dev signale un bouton icon-only sans nom accessible.</td>
+    </tr>
+    <tr>
+      <td><strong>Icônes</strong></td>
+      <td>Icône interne décorative (<code>aria-hidden</code>). Spinner de chargement prioritaire.</td>
+    </tr>
+    <tr>
+      <td><strong>Événements</strong></td>
+      <td><code>buttonClick</code> / <code>buttonFocus</code> / <code>buttonBlur</code> exposent le <code>&lt;button&gt;</code> encapsulé. Méthode publique <code>focus()</code> pour le pilotage programmatique.</td>
+    </tr>
+    <tr>
+      <td><strong>États</strong></td>
+      <td><code>:focus-visible</code> visible et distinct du <code>hover</code>. <code>disabled</code> natif (pas d'<code>aria-disabled</code> redondant). <code>loading</code> gère implicitement <code>aria-busy</code> et désactive le bouton.</td>
+    </tr>
+  </tbody>
+</table>
+
+## Niveaux
+
+<Canvas of={ButtonStories.Low} />
+<Canvas of={ButtonStories.Success} />
+<Canvas of={ButtonStories.Warning} />
+<Canvas of={ButtonStories.Error} />
+
+## Tailles
+
+<Canvas of={ButtonStories.Small} />
+
+## Icônes
+
+L'icône est unique et positionnable via `icon` + `iconPos`. Un bouton
+sans `label` (avec une icône) bascule automatiquement en mode icon-only ; `iconOnly`
+permet de le forcer.
+
+<Canvas of={ButtonStories.IconLeft} />
+<Canvas of={ButtonStories.IconRight} />
+<Canvas of={ButtonStories.IconTop} />
+<Canvas of={ButtonStories.IconBottom} />
+<Canvas of={ButtonStories.IconOnly} />
+<Canvas of={ButtonStories.IconOnlyForced} />
+
+## Chargement
+
+<Canvas of={ButtonStories.Loading} />
+<Canvas of={ButtonStories.LoadingCustomIcon} />
+
+## Layout
+
+<Canvas of={ButtonStories.Expanded} />
+
+## Contenu projeté
+
+Au-delà de `label`, on peut projeter du contenu riche via `<ng-content>`.
+
+<Canvas of={ButtonStories.ProjectedContent} />
+
+## États
+
+<Canvas of={ButtonStories.Disabled} />

@@ -1,0 +1,135 @@
+@use 'utils';
+@use 'sass:map';
+
+// =====================================================================
+// ui-button : co-located styles. All values come from design tokens.
+//
+// Extend:
+//   • Level (color)  → add a name to $levels (tokens --actions-<name>-*
+//                      must exist + add it to the `UiLevel` type).
+//   • Size           → add an entry to $sizes (+ the `ButtonSize` type).
+// =====================================================================
+
+// --- Config (extension points) ---------------------------------------
+$levels: high, low, success, warning, error;
+
+// `default` = base styles; other keys become `._<name>` modifiers.
+$sizes: (
+  'default': (
+    height: 44px,
+    padding-x: var(--units-default),
+    font-size: var(--size-typography-text-default),
+  ),
+  'small': (
+    height: 40px,
+    padding-x: var(--units-md),
+    font-size: var(--size-typography-text-md),
+  ),
+);
+$size-default: map.get($sizes, 'default');
+
+// Shared default (ui-config) — replace the value here to detune ONLY this component.
+$focus-ring-width: utils.$action-focus-ring-width;
+
+// Height/padding/font-size for a $sizes entry.
+@mixin button-size($size) {
+  height: utils.rem-calc(map.get($size, height));
+  padding: 0 map.get($size, padding-x);
+  font-size: map.get($size, font-size);
+}
+
+.ui-button {
+  // --- Base ----------------------------------------------------------
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--units-sm);
+  border: utils.$control-stroke-width solid transparent;
+  border-radius: var(--radius-sm);
+  font-family: var(--fontfamily-base);
+  font-weight: var(--weight-bold);
+  line-height: 1.2;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  @include utils.control-transition(background-color, color, border-color, box-shadow);
+
+  @include button-size($size-default);
+
+  // --- Sub-elements --------------------------------------------------
+  &-icon { line-height: 0; }
+  &-label { display: inline-block; }
+
+  // Content wrapper (label + <ng-content>): inline flow keeps whitespace.
+  &-content {
+    display: inline;
+    &:empty { display: none; } // empty → removed, avoids phantom gap
+  }
+
+  // --- Sizes (all but `default`) -------------------------------------
+  @each $name, $size in $sizes {
+    @if $name != 'default' {
+      &._#{$name} { @include button-size($size); }
+    }
+  }
+
+  // --- Layout --------------------------------------------------------
+  &._expanded { width: 100%; }
+
+  // iconPos top | bottom
+  &._icon-top,
+  &._icon-bottom {
+    flex-direction: column;
+    gap: var(--units-xs);
+    height: auto;
+    padding: var(--units-md) var(--units-default);
+  }
+
+  // Icon-only: square (width = size height), no horizontal padding.
+  &._icon-only {
+    width: utils.rem-calc(map.get($size-default, height));
+    padding: 0;
+
+    @each $name, $size in $sizes {
+      @if $name != 'default' {
+        &._#{$name} { width: utils.rem-calc(map.get($size, height)); }
+      }
+    }
+  }
+
+  &:disabled { cursor: not-allowed; }
+
+  // --- Colors (one set per level) ------------------------------------
+  // Interactive states are CSS pseudo-classes, never Angular props.
+  @each $lvl in $levels {
+    &._#{$lvl} {
+      background-color: var(--actions-#{$lvl}-surface-default);
+      color: var(--actions-#{$lvl}-content-default);
+      border-color: var(--actions-#{$lvl}-stroke-default);
+
+      &:hover:not(:disabled) {
+        background-color: var(--actions-#{$lvl}-surface-hover);
+        color: var(--actions-#{$lvl}-content-hover);
+        border-color: var(--actions-#{$lvl}-stroke-hover);
+      }
+
+      &:focus-visible {
+        outline: none;
+        border-color: var(--actions-#{$lvl}-stroke-focused);
+        box-shadow: 0 0 0 $focus-ring-width var(--actions-#{$lvl}-stroke-focused);
+      }
+
+      &:active:not(:disabled) {
+        background-color: var(--actions-#{$lvl}-surface-pressed);
+        color: var(--actions-#{$lvl}-content-pressed);
+        border-color: var(--actions-#{$lvl}-stroke-pressed);
+      }
+
+      &:disabled {
+        background-color: var(--actions-#{$lvl}-surface-disabled);
+        color: var(--actions-#{$lvl}-content-disabled);
+        border-color: var(--actions-#{$lvl}-stroke-disabled);
+      }
+    }
+  }
+}

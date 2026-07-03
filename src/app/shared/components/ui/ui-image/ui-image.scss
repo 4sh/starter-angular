@@ -1,0 +1,12 @@
+:host {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.inline-svg-wrapper {
+    display: flex;
+    width: 100%;
+    /* Permet au SVG de prendre la taille du wrapper */
+    ::ng-deep svg { width: 100%; height: 100%; }
+}

@@ -1,0 +1,77 @@
+{
+  "$description": "breakpoint",
+  "breakpoints": {
+    "phone": {
+      "$value": "0px",
+      "$type": "dimension",
+      "$extensions": {
+        "com.figma": {
+          "variableId": "VariableID:966:113",
+          "collectionId": "VariableCollectionId:966:112",
+          "modeId": "966:0",
+          "resolvedType": "FLOAT"
+        }
+      }
+    },
+    "tabletPortrait": {
+      "$value": "600px",
+      "$type": "dimension",
+      "$extensions": {
+        "com.figma": {
+          "variableId": "VariableID:966:114",
+          "collectionId": "VariableCollectionId:966:112",
+          "modeId": "966:0",
+          "resolvedType": "FLOAT"
+        }
+      }
+    },
+    "tabletLandscape": {
+      "$value": "900px",
+      "$type": "dimension",
+      "$extensions": {
+        "com.figma": {
+          "variableId": "VariableID:966:115",
+          "collectionId": "VariableCollectionId:966:112",
+          "modeId": "966:0",
+          "resolvedType": "FLOAT"
+        }
+      }
+    },
+    "desktop": {
+      "$value": "1200px",
+      "$type": "dimension",
+      "$extensions": {
+        "com.figma": {
+          "variableId": "VariableID:966:116",
+          "collectionId": "VariableCollectionId:966:112",
+          "modeId": "966:0",
+          "resolvedType": "FLOAT"
+        }
+      }
+    },
+    "mediumDesktop": {
+      "$value": "1440px",
+      "$type": "dimension",
+      "$extensions": {
+        "com.figma": {
+          "variableId": "VariableID:966:117",
+          "collectionId": "VariableCollectionId:966:112",
+          "modeId": "966:0",
+          "resolvedType": "FLOAT"
+        }
+      }
+    },
+    "bigDesktop": {
+      "$value": "1800px",
+      "$type": "dimension",
+      "$extensions": {
+        "com.figma": {
+          "variableId": "VariableID:966:118",
+          "collectionId": "VariableCollectionId:966:112",
+          "modeId": "966:0",
+          "resolvedType": "FLOAT"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,132 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+import { useState, useEffect, useRef } from "react";
+import manifest from "../../../src/styles/src/generated/tokens.manifest.json";
+
+<Meta title="Foundations/Colors" />
+
+# Couleurs
+
+Cette page est **générée à partir des tokens** (`src/styles/src/generated/tokens.manifest.json`,
+produit par `npm run tokens:build`). Ajoute / retire un token dans `design-tokens/*.json` →
+la doc se met à jour automatiquement. Les noms listés sont les **variables CSS générées**
+(copiables). Le switch mode/marque n'affecte **que les aperçus et valeurs** (scope local).
+
+export const COLORS = manifest.tokens.filter((t) => t.type === 'color');
+export const GROUPED = (() => {
+  const g = {};
+  for (const t of COLORS) {
+    (g[t.collection] = g[t.collection] || {});
+    (g[t.collection][t.category] = g[t.collection][t.category] || []).push(t.name);
+  }
+  for (const col in g) for (const cat in g[col]) g[col][cat].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+  return g;
+})();
+export const TOPS = Object.keys(GROUPED);
+export const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+
+export const ColorsExplorer = () => {
+  const [top, setTop] = useState(TOPS[0]);
+  const cats = Object.keys(GROUPED[top] || {});
+  const [sub, setSub] = useState(cats[0]);
+  const [theme, setTheme] = useState('light');
+  const [brand, setBrand] = useState('brand1');
+  const [resolved, setResolved] = useState({});
+  const [copied, setCopied] = useState(null);
+  const scopeRef = useRef(null);
+
+  useEffect(() => { setSub(Object.keys(GROUPED[top] || {})[0]); }, [top]);
+
+  const names = (GROUPED[top] && GROUPED[top][sub]) || [];
+
+  useEffect(() => {
+    const el = scopeRef.current;
+    if (!el || !names.length) return;
+    const id = requestAnimationFrame(() => {
+      const probe = document.createElement('span');
+      probe.style.position = 'absolute'; probe.style.visibility = 'hidden';
+      el.appendChild(probe);
+      const out = {};
+      for (const n of names) { probe.style.color = ''; probe.style.color = `var(--${n})`; out[n] = getComputedStyle(probe).color; }
+      probe.remove();
+      setResolved(out);
+    });
+    return () => cancelAnimationFrame(id);
+  }, [top, sub, theme, brand]);
+
+  const copy = (n) => { navigator.clipboard?.writeText(`var(--${n})`); setCopied(n); setTimeout(() => setCopied(null), 1200); };
+
+  return (
+    <div className="tfm-colors">
+      <style>{`
+        .tfm-colors { --accent: #9747ff; }
+        .tfm-seg { display: inline-flex; padding: 4px; gap: 4px; border-radius: 10px; background: rgba(128,128,128,.12); margin-bottom: 16px; }
+        .tfm-seg button { border: 0; background: transparent; padding: 7px 18px; border-radius: 7px; font-size: 14px; font-weight: 600; cursor: pointer; color: inherit; transition: all .15s; }
+        .tfm-seg button.is-active { background: var(--accent); color: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
+        .tfm-subtabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+        .tfm-subtabs button { border: 1px solid rgba(128,128,128,.28); background: transparent; color: inherit; padding: 6px 14px; border-radius: 999px; font-size: 13px; cursor: pointer; transition: all .15s; }
+        .tfm-subtabs button:hover { border-color: var(--accent); color: var(--accent); }
+        .tfm-subtabs button.is-active { background: var(--accent); border-color: var(--accent); color: #fff; }
+        .tfm-switches { display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 16px; align-items: center; }
+        .tfm-switches .grp { display: flex; gap: 6px; align-items: center; }
+        .tfm-switches .grp > span { font-size: 12px; font-weight: 700; opacity: .7; }
+        .tfm-switches button { border: 1px solid rgba(128,128,128,.28); background: transparent; color: inherit; padding: 5px 12px; border-radius: 7px; font-size: 13px; cursor: pointer; }
+        .tfm-switches button.is-active { background: var(--accent); border-color: var(--accent); color: #fff; }
+        .tfm-table-wrap { }
+        .tfm-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; }
+        .tfm-table thead th { position: sticky; top: 0; z-index: 1; text-align: left; padding: 10px 14px; border-bottom: 1px solid rgba(128,128,128,.22); font-size: 11.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; opacity: .7; background: var(--sb-bg-subtle, #f8fafc); }
+        .tfm-table td { padding: 10px 14px; border-bottom: 1px solid rgba(128,128,128,.12); vertical-align: middle; }
+        .tfm-table tbody tr:last-child td { border-bottom: none; }
+        .tfm-table tbody tr { transition: background-color .15s ease; }
+        .tfm-table tbody tr:nth-child(even) { background-color: rgba(128,128,128,.04); }
+        .tfm-table tbody tr:hover { background-color: rgba(151,71,255,.08); }
+        .tfm-sw { display: block; width: 40px; height: 26px; border-radius: 6px; border: 1px solid rgba(128,128,128,.3); }
+        .tfm-copy { font-size: 12px; padding: 3px 10px; border-radius: 6px; cursor: pointer; border: 1px solid rgba(128,128,128,.3); background: transparent; color: inherit; transition: all .15s; }
+        .tfm-copy:hover { border-color: var(--accent); color: var(--accent); }
+      `}</style>
+
+      <div className="tfm-seg">
+        {TOPS.map((t) => (
+          <button key={t} className={top === t ? 'is-active' : ''} onClick={() => setTop(t)}>{cap(t)}</button>
+        ))}
+      </div>
+
+      <div className="tfm-subtabs">
+        {cats.map((c) => (
+          <button key={c} className={sub === c ? 'is-active' : ''} onClick={() => setSub(c)}>{cap(c)}</button>
+        ))}
+      </div>
+
+      <div className="tfm-switches">
+        <div className="grp"><span>Mode</span>
+          {[['light','Light'],['dark','Dark']].map(([v,l]) => <button key={v} className={theme===v?'is-active':''} onClick={() => setTheme(v)}>{l}</button>)}
+        </div>
+        <div className="grp"><span>Marque</span>
+          {[['brand1','Brand 1'],['brand2','Brand 2'],['brand3','Brand 3']].map(([v,l]) => <button key={v} className={brand===v?'is-active':''} onClick={() => setBrand(v)}>{l}</button>)}
+        </div>
+      </div>
+
+      <div ref={scopeRef} data-theme={theme} data-brand={brand !== 'brand1' ? brand : undefined}>
+        <div className="tfm-table-wrap">
+        <table className="tfm-table">
+          <thead>
+            <tr><th style={{ width: 56 }}></th><th>Token (variable CSS)</th><th>Valeur résolue</th><th style={{ width: 90 }}></th></tr>
+          </thead>
+          <tbody>
+            {names.map((n) => (
+              <tr key={n}>
+                <td><span className="tfm-sw" style={{ background: `var(--${n})` }} /></td>
+                <td><code>--{n}</code></td>
+                <td style={{ opacity: .8, fontVariantNumeric: 'tabular-nums' }}>{resolved[n] || '…'}</td>
+                <td><button className="tfm-copy" onClick={() => copy(n)}>{copied === n ? '✓ copié' : 'copier'}</button></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        </div>
+        <p style={{ fontSize: 12, opacity: .6, marginTop: 12 }}>{names.length} token(s) · catégorie <code>{sub}</code></p>
+      </div>
+    </div>
+  );
+};
+
+<ColorsExplorer />

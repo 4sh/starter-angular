@@ -1,0 +1,29 @@
+// =====================================================================
+// ui-label : co-located styles. All values come from design tokens.
+//
+// Theming hook: text color reads --ui-label-color first, so a parent form
+// component can drive the label state without piercing encapsulation.
+// =====================================================================
+
+.ui-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--units-xs);
+  font-family: var(--fontfamily-base);
+  font-weight: var(--weight-regular);
+  font-size: var(--size-typography-text-default);
+  color: var(--ui-label-color, var(--form-high-content-default));
+  cursor: inherit;
+
+  &-marker {
+    color: var(--informative-errorlow-content-default);
+  }
+
+  &._small {
+    font-size: var(--size-typography-text-md);
+  }
+
+  &._disabled {
+    color: var(--ui-label-color, var(--form-high-content-disabled));
+  }
+}

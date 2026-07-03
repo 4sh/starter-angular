@@ -1,0 +1,51 @@
+# Angular
+.angular
+dist
+
+# Dependencies
+node_modules
+
+# Environment / Secrets
+.env
+*.local
+
+# Design Tokens (temp / generated)
+.temp-tokens
+.tokenflow
+
+# Generated Tokens (npm run tokens:build)
+src/styles/src/generated
+src/styles/generated
+
+# Compodoc (generated for Storybook)
+documentation.json
+
+# Storybook build output
+storybook-static
+
+# Test coverage
+coverage
+
+# Cache
+.cache
+.storybook-cache
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local editor / tool configs
+.vscode
+.idea
+.claude
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db

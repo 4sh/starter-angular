@@ -1,0 +1,16 @@
+:host {
+  display: inline-flex;
+  line-height: 0;
+}
+
+.ui-icon {
+  display: inline-block;
+  font-size: 20px;
+  color: inherit;
+
+  &._sm { font-size: 14px; }
+  &._md { font-size: 16px; }
+  &._default { font-size: 20px; }
+  &._lg { font-size: 24px; }
+  &._xl { font-size: 32px; }
+}

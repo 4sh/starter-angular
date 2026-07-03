@@ -1,0 +1,22 @@
+// =====================================================================
+// ui-config : shared structural constants for ui-* components.
+//
+// Two levers: edit a value here (kit-wide) or override the LOCAL var in a
+// component's .scss (that component only). No colors — themable colors are
+// runtime design tokens.
+// =====================================================================
+
+// --- Global UI --------------------------------------------------------
+$focus-ring-width: var(--units-2xs);
+
+$control-stroke-width: var(--stroke-default);
+$control-transition-duration: var(--transition-fast);
+$control-transition-easing: var(--transition-easeinout);
+
+// --- Category · forms -------------------------------------------------
+$form-control-size: var(--size-components-2xs);
+$form-control-gap: var(--units-sm);
+$form-focus-ring-width: $focus-ring-width;
+
+// --- Category · actions -----------------------------------------------
+$action-focus-ring-width: $focus-ring-width;

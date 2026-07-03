@@ -1,0 +1,53 @@
+{
+  "name": "angular-starter",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "ng": "ng",
+    "start": "ng run demo:storybook",
+    "serve": "ng serve",
+    "build": "ng build",
+    "lint": "ng lint --fix",
+    "storybook": "ng run demo:storybook",
+    "build-storybook": "ng run demo:build-storybook",
+    "generate:assets": "node src/scripts/build-assets.js",
+    "postinstall": "npm run tokens:build",
+    "tokens:build": "node scripts/tokens.build.mjs"
+  },
+  "dependencies": {
+    "@angular/animations": "21.0.0",
+    "@angular/cdk": "21.0.0",
+    "@angular/common": "21.0.0",
+    "@angular/compiler": "21.0.0",
+    "@angular/core": "21.0.0",
+    "@angular/forms": "21.0.0",
+    "@angular/platform-browser": "21.0.0",
+    "@angular/platform-browser-dynamic": "21.0.0",
+    "@angular/router": "21.0.0",
+    "@fortawesome/fontawesome-free": "7.0.0",
+    "gridaflex": "1.0.0",
+    "rxjs": "7.8.2",
+    "tslib": "2.8.1",
+    "zone.js": "0.15.1"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "21.0.0",
+    "@angular/build": "^21.0.0",
+    "@angular/cli": "21.0.0",
+    "@angular/compiler-cli": "21.0.0",
+    "@compodoc/compodoc": "1.1.26",
+    "@eslint/js": "9.37.0",
+    "@figma/code-connect": "^1.4.8",
+    "@storybook-community/storybook-dark-mode": "7.1.0",
+    "@storybook/addon-designs": "11.1.1",
+    "@storybook/addon-docs": "10.1.11",
+    "@storybook/angular": "10.1.11",
+    "@types/jasmine": "5.1.8",
+    "angular-eslint": "20.3.0",
+    "eslint": "9.35.0",
+    "storybook": "10.1.11",
+    "style-dictionary": "5.5.0",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.40.0"
+  }
+}

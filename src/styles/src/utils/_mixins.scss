@@ -1,0 +1,51 @@
+// =====================================================================
+// Shared SASS mixins (emit nothing by themselves).
+// =====================================================================
+
+@use 'sass:list';
+@use 'src/settings/ui-config';
+
+/// Transition recipe (duration/easing from ui-config) for the given properties.
+/// e.g. @include utils.control-transition(background-color, border-color);
+@mixin control-transition($properties...) {
+  $transitions: ();
+  @each $property in $properties {
+    $transitions: list.append(
+      $transitions,
+      $property ui-config.$control-transition-duration ui-config.$control-transition-easing,
+      comma
+    );
+  }
+  transition: $transitions;
+}
+
+/// Route a form palette (high | low | success | error) onto the private props
+/// consumed by selection controls: --_surface, --_stroke, --_content, --_focus-ring
+/// (+ --ui-label-color). State selectors live here; re-include to swap palette.
+@mixin form-control-palette($palette, $control: '.ui-form-control-input') {
+  --_surface: var(--form-#{$palette}-surface-default);
+  --_stroke: var(--form-#{$palette}-stroke-default);
+  --_content: var(--form-#{$palette}-content-checked);
+
+  &:hover:not(._disabled):not(._readonly) {
+    --_surface: var(--form-#{$palette}-surface-hover);
+    --_stroke: var(--form-#{$palette}-stroke-hover);
+    --ui-label-color: var(--form-#{$palette}-content-hover);
+  }
+
+  &._checked:not(._disabled),
+  &._indeterminate:not(._disabled) {
+    --_stroke: var(--form-#{$palette}-stroke-checked);
+  }
+
+  &:has(#{$control}:focus-visible) {
+    --_stroke: var(--form-#{$palette}-stroke-focused);
+    --_focus-ring: rgb(from var(--form-#{$palette}-stroke-focused) r g b / 50%);
+  }
+
+  &._disabled {
+    --_surface: var(--form-#{$palette}-surface-disabled);
+    --_stroke: var(--form-#{$palette}-stroke-disabled);
+    --_content: var(--form-#{$palette}-content-disabled);
+  }
+}

@@ -1,0 +1,17 @@
+@if (isSvg()) {
+    <div class="inline-svg-wrapper"
+         [style.width]="width + (widthUnit || 'px')"
+         [style.height]="height + (heightUnit || 'px')"
+         [innerHTML]="svgContent()">
+    </div>
+}
+@else if (finalSrc()) {
+    <img [ngSrc]="finalSrc()"
+         [alt]="alt || ''"
+         [width]="!fill ? width : null"
+         [height]="!fill ? (height ? height : width) : null"
+         [fill]="fill"
+         [priority]="priority"
+         style="object-fit: contain;"
+    />
+}

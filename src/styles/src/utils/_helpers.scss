@@ -1,0 +1,129 @@
+/**
+ * Helpers class (v.0.1)
+ *
+ * Table of Contents:
+ * 1. Alignment
+ * 2. Margin
+ * 3. Padding
+ * 4. Typography
+ * 5. Visibility
+ */
+
+/**
+ * 1. Alignment
+ */
+.text-right {
+  text-align: right !important;
+}
+.text-center {
+  text-align: center !important;
+}
+.text-left {
+  text-align: left !important;
+}
+.text-justify {
+  text-align: justify !important;
+}
+
+/**
+ * 2. Margin
+ */
+.no-margin {
+  margin: 0 !important;
+}
+.no-margin-top {
+  margin-top: 0 !important;
+}
+.no-margin-right {
+  margin-right: 0 !important;
+}
+.no-margin-left {
+  margin-left: 0 !important;
+}
+.no-margin-bottom {
+  margin-bottom: 0 !important;
+}
+
+/**
+ * 3. Padding
+ */
+.no-padding {
+  padding: 0 !important;
+}
+.no-padding-top {
+  padding-top: 0 !important;
+}
+.no-padding-right {
+  padding-right: 0 !important;
+}
+.no-padding-left {
+  padding-left: 0 !important;
+}
+.no-padding-bottom {
+  padding-bottom: 0 !important;
+}
+
+/**
+ * 4. Typography
+ */
+.font-italic {
+  font-style: italic !important;
+}
+.font-bold {
+  font-weight: bold !important;
+}
+.font-normal {
+  font-weight: normal !important;
+}
+.font-light {
+  font-weight: lighter !important;
+}
+
+.text-uppercase {
+  text-transform: uppercase;
+}
+.text-lowercase {
+  text-transform: lowercase;
+}
+
+/**
+ * 5. Visibility
+ */
+.overflow {
+  overflow: auto;
+}
+.overflow-visible {
+  overflow: visible !important;
+}
+.overflow-hidden {
+  overflow: hidden;
+}
+.overflow-y {
+  overflow-y: auto;
+}
+.overflow-x {
+  overflow-x: auto;
+}
+
+.visibility-hidden {
+  visibility: hidden;
+}
+.visibility-collapse {
+  visibility: collapse;
+}
+
+.hide-for-print {
+  @media print {
+    display: none;
+  }
+}
+.hide-for-screen {
+  @media screen {
+    display: none;
+  }
+}
+
+._expanded {
+  display: block;
+  width: 100%;
+}

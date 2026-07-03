@@ -1,0 +1,89 @@
+{
+  "$description": "transitions",
+  "transition": {
+    "fast": {
+      "$value": "80ms",
+      "$type": "string",
+      "$extensions": {
+        "com.figma": {
+          "variableId": "VariableID:966:120",
+          "collectionId": "VariableCollectionId:966:119",
+          "modeId": "966:1",
+          "resolvedType": "STRING"
+        }
+      }
+    },
+    "default": {
+      "$value": "180ms",
+      "$type": "string",
+      "$extensions": {
+        "com.figma": {
+          "variableId": "VariableID:966:121",
+          "collectionId": "VariableCollectionId:966:119",
+          "modeId": "966:1",
+          "resolvedType": "STRING"
+        }
+      }
+    },
+    "slow": {
+      "$value": "280ms",
+      "$type": "string",
+      "$extensions": {
+        "com.figma": {
+          "variableId": "VariableID:966:122",
+          "collectionId": "VariableCollectionId:966:119",
+          "modeId": "966:1",
+          "resolvedType": "STRING"
+        }
+      }
+    },
+    "easein": {
+      "$value": "ease-in",
+      "$type": "string",
+      "$extensions": {
+        "com.figma": {
+          "variableId": "VariableID:966:123",
+          "collectionId": "VariableCollectionId:966:119",
+          "modeId": "966:1",
+          "resolvedType": "STRING"
+        }
+      }
+    },
+    "easeout": {
+      "$value": "ease-out",
+      "$type": "string",
+      "$extensions": {
+        "com.figma": {
+          "variableId": "VariableID:966:124",
+          "collectionId": "VariableCollectionId:966:119",
+          "modeId": "966:1",
+          "resolvedType": "STRING"
+        }
+      }
+    },
+    "easeinout": {
+      "$value": "ease-in-out",
+      "$type": "string",
+      "$extensions": {
+        "com.figma": {
+          "variableId": "VariableID:966:125",
+          "collectionId": "VariableCollectionId:966:119",
+          "modeId": "966:1",
+          "resolvedType": "STRING"
+        }
+      }
+    },
+    "linear": {
+      "$value": "linear",
+      "$type": "string",
+      "$extensions": {
+        "com.figma": {
+          "variableId": "VariableID:966:126",
+          "collectionId": "VariableCollectionId:966:119",
+          "modeId": "966:1",
+          "resolvedType": "STRING"
+        }
+      }
+    }
+  }
+}

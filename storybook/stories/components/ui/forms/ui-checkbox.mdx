@@ -1,0 +1,116 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as CheckboxStories from './ui-checkbox.stories';
+
+<Meta of={CheckboxStories} />
+
+# ui-checkbox
+
+
+
+<Canvas of={CheckboxStories.Default} />
+
+## API
+
+<ArgTypes of={CheckboxStories} />
+
+## Anatomie
+
+<table>
+  <thead>
+    <tr>
+      <th>Élément</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Structure</strong></td>
+      <td>racine <code>&lt;label&gt;</code> (toute la surface est cliquable, gap inclus) englobant <code>control</code> (input natif invisible + <code>box</code> stylée) + le texte — calqué sur le composant Figma <code>ui-checkbox</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Coche</strong></td>
+      <td><code>ui-icon</code> (<code>checkIcon</code>, défaut <code>check</code>) — <code>indeterminateIcon</code> (défaut <code>minus</code>) en état indéterminé.</td>
+    </tr>
+    <tr>
+      <td><strong>Tokens</strong></td>
+      <td>Boîte 24px, <code>--radius-xs</code>, <code>--stroke-default</code>, gap <code>--units-sm</code>. Couleurs `--form-high-*` (palette `--form-error-*` si invalide).</td>
+    </tr>
+    <tr>
+      <td><strong>States</strong></td>
+      <td><code>hover</code> / <code>focused</code> / <code>disabled</code> via pseudo-classes CSS ; <code>checked</code> / <code>indeterminate</code> / <code>invalid</code> / <code>readonly</code> en classes <code>_modifier</code>.</td>
+    </tr>
+  </tbody>
+</table>
+
+## Formulaires
+
+Le composant implémente <code>ControlValueAccessor</code> (via <code>BaseControlValueAccessor</code>) :
+il fonctionne en standalone, avec <code>[(ngModel)]</code> ou en reactive forms.
+
+```html
+<!-- Standalone -->
+<ui-checkbox label="Accepter les CGU" (checkboxChange)="onToggle($event)" />
+
+<!-- Template-driven -->
+<ui-checkbox [(ngModel)]="accepted" label="Accepter les CGU" />
+
+<!-- Reactive -->
+<ui-checkbox formControlName="accepted" label="Accepter les CGU" required />
+```
+
+- Le style **erreur s'applique automatiquement** quand le contrôle attaché est invalide **et**
+  touché/modifié (règle `showError` du CVA) ; `invalid` permet de le forcer.
+- `disabled` peut venir de l'input **ou** de `control.disable()` (forms API).
+- `trueValue` / `falseValue` personnalisent les valeurs du modèle (ex : `'yes'` / `'no'`).
+
+## Accessibilité
+
+<table>
+  <thead>
+    <tr>
+      <th>Règle</th>
+      <th>Détail</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Sémantique</strong></td>
+      <td>Input natif <code>type="checkbox"</code> : toggle Espace, annonce lecteur d'écran, <code>disabled</code> et <code>required</code> natifs.</td>
+    </tr>
+    <tr>
+      <td><strong>Labeling</strong></td>
+      <td>Le composant est un <code>&lt;label&gt;</code> natif enveloppant l'input : cliquer n'importe où (case, espacement, texte) coche. Sans label visible : <code>ariaLabel</code> obligatoire (ou <code>ariaLabelledBy</code>).</td>
+    </tr>
+    <tr>
+      <td><strong>Indeterminate</strong></td>
+      <td>Propriété DOM native → annoncée <em>mixed</em> par les lecteurs d'écran, sans ARIA manuel.</td>
+    </tr>
+    <tr>
+      <td><strong>États</strong></td>
+      <td><code>:focus-visible</code> = anneau distinct du hover. <code>aria-invalid</code> posé quand le style erreur est actif.</td>
+    </tr>
+    <tr>
+      <td><strong>Icônes</strong></td>
+      <td>La boîte et sa coche sont <code>aria-hidden</code> (l'état est porté par l'input natif).</td>
+    </tr>
+  </tbody>
+</table>
+
+## États
+
+<Canvas of={CheckboxStories.Checked} />
+<Canvas of={CheckboxStories.Indeterminate} />
+<Canvas of={CheckboxStories.Required} />
+<Canvas of={CheckboxStories.Disabled} />
+<Canvas of={CheckboxStories.DisabledChecked} />
+<Canvas of={CheckboxStories.Readonly} />
+<Canvas of={CheckboxStories.Invalid} />
+<Canvas of={CheckboxStories.NoLabel} />
+
+## Valeurs personnalisées
+
+<Canvas of={CheckboxStories.CustomValues} />
+
+## Groupe avec indéterminé
+
+<Canvas of={CheckboxStories.Group} />

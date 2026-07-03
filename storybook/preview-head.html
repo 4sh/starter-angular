@@ -1,0 +1,294 @@
+<style>
+    /* ═══════════════════════════════════════════════════════
+       CSS VARIABLES — Light (défaut) & Dark
+       Le plugin storybook-dark-mode applique 'dark-mode' sur <html>.
+       Storybook lui-même peut aussi appliquer 'dark'.
+       On couvre les deux.
+    ════════════════════════════════════════════════════════ */
+    :root {
+        --sb-bg: #ffffff;
+        --sb-bg-subtle: #f8fafc;
+        --sb-text: #334155;
+        --sb-text-subtle: #64748b;
+        --sb-border: #e2e8f0;
+        --sb-border-subtle: #f1f5f9;
+        --sb-code-bg: #f3eeff;
+        --sb-code-color: #9747ff;
+    }
+
+    html.dark,
+    html.dark-mode {
+        --sb-bg: #1e293b;
+        --sb-bg-subtle: #111827;
+        --sb-text: #f3f4f6;
+        --sb-text-subtle: #94a3b8;
+        --sb-border: #334155;
+        --sb-border-subtle: #1e293b;
+        --sb-code-bg: #1e293b;
+        --sb-code-color: #ac78ff;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       FOND DES PAGES DOCS
+    ════════════════════════════════════════════════════════ */
+    html.dark,
+    html.dark-mode,
+    html.dark body,
+    html.dark-mode body,
+    html.dark .sbdocs.sbdocs-wrapper,
+    html.dark-mode .sbdocs.sbdocs-wrapper {
+        background-color: #0f172a !important;
+        color: var(--sb-text) !important;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       TEXTES AUTO-DOCS ET MDX
+    ════════════════════════════════════════════════════════ */
+    .dark .sbdocs-content,
+    .dark-mode .sbdocs-content {
+        background-color: transparent !important;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       ALIGNEMENT DES ANCRES (Fix décalage Light vs Dark)
+    ════════════════════════════════════════════════════════ */
+    .sbdocs-content a[aria-hidden="true"],
+    [class*="css-"] a[aria-hidden="true"] {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 24px !important;
+        margin-left: -24px !important;
+        margin-right: 0 !important;
+        padding: 0 !important;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        vertical-align: middle;
+    }
+
+    h1:hover a[aria-hidden="true"],
+    h2:hover a[aria-hidden="true"],
+    h3:hover a[aria-hidden="true"],
+    h4:hover a[aria-hidden="true"],
+    .sbdocs-h1:hover a[aria-hidden="true"],
+    .sbdocs-h2:hover a[aria-hidden="true"],
+    .sbdocs-h3:hover a[aria-hidden="true"],
+    .sbdocs-h4:hover a[aria-hidden="true"] {
+        opacity: 1;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       TEXTES GLOBAUX DARK (MDX + docs auto-générés)
+    ════════════════════════════════════════════════════════ */
+    .dark .sbdocs-title,  .dark-mode .sbdocs-title,
+    .dark .sbdocs-subtitle, .dark-mode .sbdocs-subtitle,
+    .dark .sbdocs-p,      .dark-mode .sbdocs-p,
+    .dark .sbdocs-li,     .dark-mode .sbdocs-li,
+    .dark .sbdocs-h1,     .dark-mode .sbdocs-h1,
+    .dark .sbdocs-h2,     .dark-mode .sbdocs-h2,
+    .dark .sbdocs-h3,     .dark-mode .sbdocs-h3,
+    .dark .sbdocs-h4,     .dark-mode .sbdocs-h4,
+    .dark h1:not(.docs-story *),        .dark-mode h1:not(.docs-story *),
+    .dark h2:not(.docs-story *),        .dark-mode h2:not(.docs-story *),
+    .dark h3:not(.docs-story *),        .dark-mode h3:not(.docs-story *),
+    .dark h4:not(.docs-story *),        .dark-mode h4:not(.docs-story *),
+    .dark p:not(.docs-story *),         .dark-mode p:not(.docs-story *),
+    .dark li:not(.docs-story *),        .dark-mode li:not(.docs-story *),
+    .dark span:not(.docs-story *),      .dark-mode span:not(.docs-story *),
+    .dark div:not(.docs-story *),       .dark-mode div:not(.docs-story *) {
+        color: var(--sb-text) !important;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       TABLE
+    ════════════════════════════════════════════════════════ */
+    table {
+        margin: 0;
+    }
+
+    .doc-table,
+    .sb-argstableBlock,
+    .sbdocs-content table:not(.sb-anchor, .sb-unstyled, .sb-unstyled table) {
+        width: 100% !important;
+        border-collapse: separate !important;
+        border-spacing: 0 !important;
+        font-size: 14px !important;
+        background-color: var(--sb-bg) !important;
+        border: 1px solid var(--sb-border) !important;
+        border-radius: 10px !important;
+        overflow: hidden !important;
+        box-shadow: 0 1px 3px rgba(15, 23, 42, .07) !important;
+    }
+
+    .doc-table th,
+    .sb-argstableBlock th,
+    .sbdocs-content table:not(.sb-anchor, .sb-unstyled, .sb-unstyled table) th {
+        text-align: left !important;
+        padding: 4px 16px !important;
+        font-size: 12px !important;
+        font-weight: 700 !important;
+        letter-spacing: .05em !important;
+        text-transform: uppercase !important;
+        color: var(--sb-text-subtle) !important;
+        background-color: var(--sb-bg-subtle) !important;
+        border-bottom: 1px solid var(--sb-border) !important;
+        border-top: none !important;
+    }
+
+    .doc-table td,
+    .sb-argstableBlock td,
+    .sbdocs-content table:not(.sb-anchor, .sb-unstyled, .sb-unstyled table) td {
+        padding: 12px 16px !important;
+        font-size: 14px !important;
+        border-bottom: 1px solid var(--sb-border-subtle) !important;
+        border-top: none !important;
+        vertical-align: top;
+        line-height: 1.55;
+        color: var(--sb-text) !important;
+        background-color: transparent !important;
+    }
+
+    .doc-table tbody tr:last-child td,
+    .sb-argstableBlock tbody tr:last-child td,
+    .sbdocs-content table:not(.sb-anchor, .sb-unstyled, .sb-unstyled table) tbody tr:last-child td {
+        border-bottom: none !important;
+    }
+
+    .doc-table tbody tr,
+    .sb-argstableBlock tbody tr,
+    .sbdocs-content table:not(.sb-anchor, .sb-unstyled, .sb-unstyled table) tbody tr {
+        transition: background-color .15s ease;
+    }
+
+    .doc-table tbody tr:nth-child(even) td,
+    .sb-argstableBlock tbody tr:nth-child(even) td,
+    .sbdocs-content table:not(.sb-anchor, .sb-unstyled, .sb-unstyled table) tbody tr:nth-child(even) td {
+        background-color: rgba(128, 128, 128, .05) !important;
+    }
+
+    .doc-table tbody tr:hover td,
+    .sb-argstableBlock tbody tr:hover td,
+    .sbdocs-content table:not(.sb-anchor, .sb-unstyled, .sb-unstyled table) tbody tr:hover td {
+        background-color: rgba(151, 71, 255, .08) !important;
+    }
+
+    .doc-table code,
+    .sb-argstableBlock code,
+    .sbdocs-content table:not(.sb-anchor, .sb-unstyled, .sb-unstyled table) code {
+        background-color: var(--sb-code-bg) !important;
+        color: var(--sb-code-color) !important;
+        padding: 2px 6px !important;
+        border-radius: 5px !important;
+        font-size: 12.5px !important;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       BLOCS DE CODE (docblock-source)
+    ════════════════════════════════════════════════════════ */
+    .dark .docblock-source,     .dark-mode .docblock-source,
+    .dark .docblock-source *,   .dark-mode .docblock-source * {
+        background-color: #0f172a !important;
+    }
+
+    .dark code,
+    .dark-mode code {
+        background-color: var(--sb-code-bg) !important;
+        color: var(--sb-code-color) !important;
+        border: 1px solid var(--sb-border) !important;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       MDX CUSTOM (sb-unstyled)
+    ════════════════════════════════════════════════════════ */
+    .dark .sb-unstyled,
+    .dark-mode .sb-unstyled {
+        color: var(--sb-text) !important;
+    }
+
+    .dark .sb-unstyled table th,
+    .dark-mode .sb-unstyled table th {
+        background: var(--sb-bg-subtle) !important;
+        color: var(--sb-text) !important;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       PREVIEWS / CANVAS
+    ════════════════════════════════════════════════════════ */
+    .dark .docs-story,
+    .dark-mode .docs-story {
+        background: #111827 !important;
+        border-color: var(--sb-border) !important;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       ColorPalette blocks
+    ════════════════════════════════════════════════════════ */
+    .dark .docblock-colorpalette,
+    .dark-mode .docblock-colorpalette {
+        background-color: var(--sb-bg-subtle) !important;
+        border-radius: 8px;
+        padding: 16px;
+    }
+
+    .dark .docblock-colorpalette > div,
+    .dark-mode .docblock-colorpalette > div {
+        background-color: transparent !important;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       BLOC INSTRUCTIONS IA (.ai-instruction-block)
+    ════════════════════════════════════════════════════════ */
+    .ai-instruction-block {
+        background-color: var(--sb-code-bg) !important;
+        border-left: 4px solid var(--sb-code-color) !important;
+        padding: 16px 20px !important;
+        margin: 24px 0 !important;
+        border-radius: 0 8px 8px 0 !important;
+        color: var(--sb-text) !important;
+        font-size: 14px !important;
+    }
+
+    /* Fond légèrement teinté en violet en dark mode */
+    html.dark .ai-instruction-block,
+    html.dark-mode .ai-instruction-block {
+        background-color: rgba(172, 120, 255, 0.1) !important;
+    }
+
+    /*
+      Ultra-ciblé : bat la règle globale ".dark div:not(.docs-story *)"
+      Le titre doit toujours être de la couleur du code (violet).
+    */
+    html .ai-instruction-block .ai-instruction-block-title,
+    html.dark .ai-instruction-block .ai-instruction-block-title,
+    html.dark-mode .ai-instruction-block .ai-instruction-block-title {
+        font-family: monospace !important;
+        font-weight: bold !important;
+        color: var(--sb-code-color) !important;
+        margin-top: 0 !important;
+        margin-bottom: 12px !important;
+        font-size: 15px !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+    }
+
+    html .ai-instruction-block ul,
+    html.dark .ai-instruction-block ul,
+    html.dark-mode .ai-instruction-block ul {
+        margin: 0 !important;
+        padding-left: 20px !important;
+    }
+
+    html .ai-instruction-block li,
+    html.dark .ai-instruction-block li,
+    html.dark-mode .ai-instruction-block li {
+        margin-bottom: 8px !important;
+        color: var(--sb-text) !important;
+    }
+
+    html .ai-instruction-block li:last-child,
+    html.dark .ai-instruction-block li:last-child,
+    html.dark-mode .ai-instruction-block li:last-child {
+        margin-bottom: 0 !important;
+    }
+</style>

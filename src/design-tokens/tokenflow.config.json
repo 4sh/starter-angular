@@ -1,0 +1,9 @@
+{
+  "resolution": {
+    "crossCollection": true,
+    "maxAliasDepth": 10
+  },
+  "writeDebounceMs": 200,
+  "strictTypes": false,
+  "inferTypes": true
+}

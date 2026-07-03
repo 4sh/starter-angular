@@ -1,0 +1,84 @@
+import { Meta, ArgTypes, Canvas } from '@storybook/addon-docs/blocks';
+import * as UiImageStories from './Image.stories';
+
+<Meta of={UiImageStories} />
+
+# ui-image
+
+Composant d'image intelligent qui résout automatiquement le chemin d'un asset en fonction de la marque active (`BrandService`) et du mode clair/sombre (`ThemeService`). Il supporte les formats JPG, PNG et SVG (les SVG sont injectés inline pour permettre leur stylisation via CSS). Basé sur `NgOptimizedImage` pour les performances de chargement.
+
+<br/>
+
+## API
+
+<ArgTypes of={UiImageStories} />
+
+<br/>
+
+## Règles d'utilisation (DOs & DON'Ts)
+
+<table>
+  <thead>
+    <tr>
+      <th>DO</th>
+      <th>DON'T</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        Toujours fournir l'attribut <code>name</code> avec le nom de fichier complet (extension incluse) :
+        <pre><code>{`<ui-image
+  name="logo.svg"
+  [width]="200"
+  widthUnit="px"
+  alt="Logo de l'application">
+</ui-image>`}</code></pre>
+      </td>
+      <td>
+        Ne pas fournir un chemin complet dans <code>name</code> — le composant construit lui-même le chemin via l'assets-map :
+        <pre><code>{`<!-- INCORRECT -->
+<ui-image name="assets/img/common/base/logo.svg">
+</ui-image>`}</code></pre>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Utiliser <code>[fill]="true"</code> avec un conteneur parent en <code>position: relative</code> pour les images en mode remplissage :
+        <pre><code>{`<!-- Conteneur parent -->
+<div style="width: 400px; height: 300px; position: relative;">
+  <ui-image name="hero.jpg" [fill]="true" alt="Hero"></ui-image>
+</div>`}</code></pre>
+      </td>
+      <td>
+        Ne pas utiliser <code>[fill]="true"</code> en même temps que <code>[width]</code> ou <code>[height]</code> — ces propriétés sont mutuellement exclusives avec <code>fill</code> :
+        <pre><code>{`<!-- INCORRECT -->
+<ui-image
+  name="hero.jpg"
+  [fill]="true"
+  [width]="400">
+</ui-image>`}</code></pre>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<br/>
+
+## Exemples d'implémentation
+
+<Canvas of={UiImageStories.Common_JPG_Base} />
+
+<Canvas of={UiImageStories.Common_PNG_Base} />
+
+<Canvas of={UiImageStories.Common_SVG_Base} />
+
+<Canvas of={UiImageStories.Common_JPG_Mode} />
+
+<Canvas of={UiImageStories.Common_SVG_Mode} />
+
+<Canvas of={UiImageStories.Theme_JPG_Base} />
+
+<Canvas of={UiImageStories.Theme_SVG_Base} />
+
+<Canvas of={UiImageStories.Test_Fill_Container} />

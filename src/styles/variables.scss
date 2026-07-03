@@ -1,0 +1,19 @@
+@use "utils";
+@use "sass:map";
+
+/**
+ * PATH
+ * **************************************************************************************** >
+ */
+
+/** Images path */
+$path-img: "/assets/images/" !default;
+$path-jpg: "#{$path-img}jpg/" !default;
+$path-png: "#{$path-img}png/" !default;
+$path-svg: "#{$path-img}svg/" !default;
+$path-gif: "#{$path-img}gif/" !default;
+
+/** Fonts path */
+$path-font: "/assets/fonts/" !default;
+$path-icon: "#{$path-font}icon/" !default;
+$path-police: "#{$path-font}police/" !default;

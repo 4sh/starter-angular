@@ -1,0 +1,6 @@
+<label [class]="classes()" [attr.for]="for() || null">
+  <span class="ui-label-text">{{ label() }}<ng-content /></span>
+  @if (required()) {
+    <span class="ui-label-marker" aria-hidden="true">*</span>
+  }
+</label>

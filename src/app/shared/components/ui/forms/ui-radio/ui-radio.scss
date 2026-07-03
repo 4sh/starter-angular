@@ -1,0 +1,107 @@
+@use 'utils';
+
+// =====================================================================
+// ui-radio : co-located styles. All values come from design tokens.
+//
+// Same headless recipe as ui-checkbox (native input over the styled box,
+// palette via form-control-palette).
+// =====================================================================
+
+// Shared defaults (ui-config) — replace a value here to detune ONLY this component.
+$box-size: utils.$form-control-size;
+$focus-ring-width: utils.$form-focus-ring-width;
+$gap: utils.$form-control-gap;
+
+// Component-specific (radio only).
+$dot-size: var(--units-md);
+
+.ui-radio {
+  display: inline-flex;
+  align-items: center;
+  gap: $gap;
+  cursor: pointer;
+
+  @include utils.form-control-palette(high, '.ui-radio-input');
+
+  &._invalid {
+    @include utils.form-control-palette(error, '.ui-radio-input');
+  }
+
+  // --- Control (input + box overlay) ---------------------------------
+  &-control {
+    position: relative;
+    display: inline-flex;
+    width: $box-size;
+    height: $box-size;
+    flex-shrink: 0;
+  }
+
+  // Native input: invisible but interactive, covers the whole box.
+  &-input {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: inherit;
+  }
+
+  &-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    background-color: var(--_surface);
+    border: utils.$control-stroke-width solid var(--_stroke);
+    border-radius: var(--radius-full);
+    @include utils.control-transition(background-color, border-color, box-shadow);
+  }
+
+  // Focus ring, driven by the palette mixin (only set on :focus-visible).
+  &:has(.ui-radio-input:focus-visible) &-box {
+    box-shadow: 0 0 0 $focus-ring-width var(--_focus-ring);
+  }
+
+  // --- Dot -------------------------------------------------------------
+  &-dot {
+    width: $dot-size;
+    height: $dot-size;
+    background-color: var(--_content);
+    border-radius: var(--radius-full);
+    transform: scale(0);
+    @include utils.control-transition(transform);
+  }
+
+  &._checked &-dot {
+    transform: scale(1);
+  }
+
+  // --- Inline label ---------------------------------------------------
+  &-label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--units-2xs);
+    font-family: var(--fontfamily-base);
+    font-size: var(--size-typography-text-default);
+    color: var(--ui-label-color, var(--form-high-content-default));
+    cursor: inherit;
+    user-select: none;
+  }
+
+  &-required {
+    color: var(--informative-errorlow-content-default);
+  }
+
+  // --- States ---------------------------------------------------------
+  &._disabled {
+    cursor: not-allowed;
+
+    .ui-radio-label {
+      color: var(--form-high-content-disabled);
+    }
+  }
+}

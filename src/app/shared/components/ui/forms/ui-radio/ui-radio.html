@@ -1,0 +1,33 @@
+<label [class]="classes()">
+  <span class="ui-radio-control">
+    <input
+      #inputEl
+      type="radio"
+      class="ui-radio-input"
+      [id]="resolvedId()"
+      [checked]="checked()"
+      [disabled]="isDisabled()"
+      [required]="required()"
+      [attr.name]="name() || null"
+      [attr.tabindex]="tabindex()"
+      [attr.aria-label]="label() ? null : ariaLabel() || null"
+      [attr.aria-labelledby]="ariaLabelledBy() || null"
+      [attr.aria-invalid]="isInvalid() ? 'true' : null"
+      (change)="onNativeChange()"
+      (focus)="radioFocus.emit($event)"
+      (blur)="onBlur($event)"
+    />
+    <span class="ui-radio-box" aria-hidden="true">
+      <span class="ui-radio-dot"></span>
+    </span>
+  </span>
+
+  @if (label()) {
+    <span class="ui-radio-label">
+      <span class="ui-radio-text">{{ label() }}</span>
+      @if (required()) {
+        <span class="ui-radio-required" aria-hidden="true">*</span>
+      }
+    </span>
+  }
+</label>

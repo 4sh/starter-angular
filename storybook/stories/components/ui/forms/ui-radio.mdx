@@ -1,0 +1,103 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as RadioStories from './ui-radio.stories';
+
+<Meta of={RadioStories} />
+
+# ui-radio
+
+<Canvas of={RadioStories.Groupe} />
+
+## API
+
+<ArgTypes of={RadioStories} />
+
+## Anatomie
+
+<table>
+  <thead>
+    <tr>
+      <th>Élément</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Structure</strong></td>
+      <td>racine <code>&lt;label&gt;</code> (toute la surface est cliquable, gap inclus) englobant <code>control</code> (input natif invisible + <code>box</code> circulaire + <code>dot</code>) + le texte — calqué sur le composant Figma <code>ui-radio</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Tokens</strong></td>
+      <td>Cercle 24px, <code>--radius-full</code>, <code>--stroke-default</code>, point 12px (<code>--form-high-content-checked</code>), gap <code>--units-sm</code>. Palette `--form-error-*` si invalide.</td>
+    </tr>
+    <tr>
+      <td><strong>States</strong></td>
+      <td><code>hover</code> / <code>focused</code> / <code>disabled</code> via pseudo-classes CSS ; <code>checked</code> / <code>invalid</code> en classes <code>_modifier</code>.</td>
+    </tr>
+  </tbody>
+</table>
+
+## Groupes & formulaires
+
+Chaque <code>ui-radio</code> porte une <code>value</code> ; le groupe se forme en liant tous les
+membres **au même contrôle** (même <code>formControlName</code> ou même <code>[(ngModel)]</code>)
+**et** en leur donnant le même <code>name</code> (groupement natif → navigation aux flèches).
+Le radio dont la <code>value</code> égale la valeur du modèle est sélectionné.
+
+```html
+<!-- Template-driven -->
+<div role="radiogroup" aria-label="Parfum">
+  <ui-radio [(ngModel)]="flavor" name="flavor" value="vanilla" label="Vanille" />
+  <ui-radio [(ngModel)]="flavor" name="flavor" value="chocolate" label="Chocolat" />
+</div>
+
+<!-- Reactive : chaque membre lié au même formControlName -->
+<div role="radiogroup" aria-label="Formule" formGroupName="subscription">
+  <ui-radio formControlName="plan" name="plan" value="free" label="Gratuit" />
+  <ui-radio formControlName="plan" name="plan" value="pro" label="Pro" />
+</div>
+```
+
+- Le style **erreur s'applique automatiquement** quand le contrôle attaché est invalide **et**
+  touché/modifié ; `invalid` permet de le forcer.
+- `disabled` par membre (option grisée) ou via `control.disable()` (tout le groupe).
+- La `value` accepte n'importe quel type (`T`), pas seulement des strings.
+
+## Accessibilité
+
+<table>
+  <thead>
+    <tr>
+      <th>Règle</th>
+      <th>Détail</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Sémantique</strong></td>
+      <td>Input natif <code>type="radio"</code> : sélection Espace, navigation flèches dans le groupe (même <code>name</code>), <code>disabled</code> / <code>required</code> natifs.</td>
+    </tr>
+    <tr>
+      <td><strong>Groupe</strong></td>
+      <td>Entourer le groupe d'un conteneur <code>role="radiogroup"</code> + <code>aria-label</code> (ou <code>&lt;fieldset&gt;</code>/<code>&lt;legend&gt;</code>).</td>
+    </tr>
+    <tr>
+      <td><strong>Labeling</strong></td>
+      <td>Le composant est un <code>&lt;label&gt;</code> natif enveloppant l'input : cliquer n'importe où (cercle, espacement, texte) sélectionne. Sans label visible : <code>ariaLabel</code> obligatoire.</td>
+    </tr>
+    <tr>
+      <td><strong>États</strong></td>
+      <td><code>:focus-visible</code> = anneau distinct du hover. <code>aria-invalid</code> posé quand le style erreur est actif. Le cercle et le point sont <code>aria-hidden</code>.</td>
+    </tr>
+  </tbody>
+</table>
+
+## États
+
+<Canvas of={RadioStories.Default} />
+<Canvas of={RadioStories.Checked} />
+<Canvas of={RadioStories.Disabled} />
+<Canvas of={RadioStories.Invalid} />
+
+## Groupe avec option désactivée
+
+<Canvas of={RadioStories.GroupeAvecDisabled} />

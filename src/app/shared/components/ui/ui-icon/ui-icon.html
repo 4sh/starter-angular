@@ -1,0 +1,6 @@
+<i
+  [class]="classes()"
+  [attr.aria-hidden]="decorative() ? 'true' : null"
+  [attr.role]="decorative() ? null : 'img'"
+  [attr.aria-label]="decorative() ? null : ariaLabel()"
+>{{ content() }}</i>
