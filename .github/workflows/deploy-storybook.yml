@@ -43,6 +43,11 @@ jobs:
       - name: Build Storybook
         run: npm run build-storybook
 
+      - name: Fix base href for GitHub Pages
+        run: |
+          sed -i -e 's|<head>|<head><base href="/starter-angular/">|' storybook-static/index.html
+          sed -i -e 's|<head>|<head><base href="/starter-angular/">|' storybook-static/iframe.html
+
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
