@@ -15,7 +15,7 @@
 ////
 
 /// Chemin racine des polices (après copie des assets par Angular).
-$fonts-path: './assets/fonts/police';
+$fonts-path: '../../../assets/fonts/police';
 
 /// Génère un `@font-face` pour une variable font.
 /// @param {String} $family - nom de la famille CSS (ex: 'Inter')
@@ -34,11 +34,11 @@ $fonts-path: './assets/fonts/police';
 // ==============================
 // DM Sans — titres (opsz 9..40, wght 100..1000)
 // ==============================
-@include variable-font('DM Sans', '#{$fonts-path}/dm-sans/DMSans[opsz,wght].ttf');
-@include variable-font('DM Sans', '#{$fonts-path}/dm-sans/DMSans-Italic[opsz,wght].ttf', italic);
+@include variable-font('DM Sans', '#{$fonts-path}/dm-sans/DMSans-Variable.ttf');
+@include variable-font('DM Sans', '#{$fonts-path}/dm-sans/DMSans-Italic-Variable.ttf', italic);
 
 // ==============================
 // Inter — texte courant (opsz 14..32, wght 100..900)
 // ==============================
-@include variable-font('Inter', '#{$fonts-path}/inter/Inter-VariableFont_opsz,wght.ttf');
-@include variable-font('Inter', '#{$fonts-path}/inter/Inter-Italic-VariableFont_opsz,wght.ttf', italic);
+@include variable-font('Inter', '#{$fonts-path}/inter/Inter-Variable.ttf');
+@include variable-font('Inter', '#{$fonts-path}/inter/Inter-Italic-Variable.ttf', italic);
