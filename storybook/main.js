@@ -18,10 +18,14 @@ module.exports = {
       delete definePlugin.definitions['process.env.NODE_ENV'];
     }
 
-    // GitHub Pages subpath support — set STORYBOOK_PUBLIC_PATH in CI
-    const publicPath = process.env.STORYBOOK_PUBLIC_PATH || '/';
-    config.output = { ...config.output, publicPath };
+    // GitHub Pages subpath support — 'auto' resolves chunk URLs at runtime
+    // based on the script's actual location, works on any deployment path.
+    config.output = { ...config.output, publicPath: 'auto' };
 
+    return config;
+  },
+  managerWebpack: async (config) => {
+    config.output = { ...config.output, publicPath: 'auto' };
     return config;
   },
 };

@@ -39,8 +39,6 @@ jobs:
 
       - name: Build Storybook
         run: npm run build-storybook
-        env:
-          STORYBOOK_PUBLIC_PATH: /starter-angular/
 
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v3
