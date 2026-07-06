@@ -87,6 +87,7 @@ $gap: utils.$form-control-gap;
     color: var(--ui-label-color, var(--form-high-content-default));
     cursor: inherit;
     user-select: none;
+    @include utils.control-transition(color);
   }
 
   &-required {
