@@ -1,11 +1,16 @@
 /**
- * Niveau sémantique partagé par les composants `ui-*`.
- * Mappé sur les tokens `--actions-{level}-*` / `--token-*` du design system.
+ * Semantic level shared by the `ui-*` components.
+ * Mapped to the design system's `--actions-{level}-*` / `--token-*` tokens.
  */
 export type UiLevel = 'high' | 'low' | 'success' | 'warning' | 'error';
 
-/** Sous-niveau hiérarchique (intensité). */
+/** Hierarchical sub-level (intensity). */
 export type UiSubLevel = 'high' | 'low';
 
-/** Taille standard des composants. */
+/**
+ * Level of informative feedback
+ */
+export type UiFeedbackLevel = 'default' | 'highlight' | Extract<UiLevel, 'success' | 'warning' | 'error'>;
+
+/** Standard component size. */
 export type UiSize = 'small' | 'large' | undefined;

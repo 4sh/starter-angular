@@ -1,0 +1,6 @@
+<div [class]="classes()" [attr.aria-live]="liveRegion()">
+  @if (hasIcon()) {
+    <ui-icon class="ui-helper-icon" [name]="resolvedIcon()!" [size]="iconSize()" />
+  }
+  <span class="ui-helper-message">{{ message() }}</span>
+</div>

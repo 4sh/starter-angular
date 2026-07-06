@@ -1,0 +1,61 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as HelperStories from './ui-helper.stories';
+
+<Meta of={HelperStories} />
+
+# ui-helper
+
+<Canvas of={HelperStories.Default} />
+
+## API
+
+<ArgTypes of={HelperStories} />
+
+## Niveaux
+
+Chaque niveau associe une couleur sémantique et une icône FontAwesome par défaut (surchargeable
+via `icon`).
+
+<Canvas of={HelperStories.Highlight} />
+<Canvas of={HelperStories.Success} />
+<Canvas of={HelperStories.Warning} />
+<Canvas of={HelperStories.Error} />
+
+## Taille & icône
+
+<Canvas of={HelperStories.Small} />
+<Canvas of={HelperStories.NoIcon} />
+<Canvas of={HelperStories.CustomIcon} />
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Point</th>
+      <th>Implémentation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Message</strong></td>
+      <td>Le texte porte l'information ; l'icône est <strong>décorative</strong> (<code>aria-hidden</code> via <code>ui-icon</code>). La couleur n'est jamais le seul vecteur de sens (texte + icône).</td>
+    </tr>
+    <tr>
+      <td><strong>Association au champ</strong></td>
+      <td>Relier au champ de formulaire via <code>aria-describedby</code> pointant sur l'<code>id</code> du helper.</td>
+    </tr>
+    <tr>
+      <td><strong>Feedback dynamique</strong></td>
+      <td><code>ariaLive="polite"</code> (ou <code>"assertive"</code> pour une erreur bloquante) pour que les changements soient annoncés.</td>
+    </tr>
+  </tbody>
+</table>
+
+<Canvas of={HelperStories.LiveError} />
+
+```html
+<!-- Helper d'erreur relié à un champ -->
+<input id="email" aria-describedby="email-help" aria-invalid="true" />
+<ui-helper id="email-help" level="error" ariaLive="assertive" message="Adresse e-mail invalide." />
+```

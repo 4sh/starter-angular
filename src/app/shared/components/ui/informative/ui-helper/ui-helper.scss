@@ -1,0 +1,52 @@
+@use 'sass:map';
+
+// =====================================================================
+// ui-helper : co-located styles. All values come from design tokens.
+//
+// Extend:
+//   • Level (color/icon) → add a key to $levels (a matching semantic token
+//                          must exist + add it to the `UiFeedbackLevel` type
+//                          and the LEVEL_ICONS map).
+//   • Size               → add an entry to $sizes (+ the `HelperSize` type).
+// =====================================================================
+
+// --- Config ---------------------------------------
+$levels: (
+  'default': var(--form-low-content-default),
+  'highlight': var(--informative-highlightlow-content-default),
+  'success': var(--informative-successlow-content-default),
+  'warning': var(--informative-warninglow-content-default),
+  'error': var(--informative-errorlow-content-default),
+);
+
+$sizes: (
+  'default': var(--size-typography-text-default),
+  'small': var(--size-typography-text-md),
+);
+
+.ui-helper {
+  // --- Base ----------------------------------------------------------
+  display: inline-flex;
+  align-items: center;
+  gap: var(--units-xs);
+  font-family: var(--fontfamily-base);
+  font-weight: var(--weight-regular);
+  line-height: 1.3;
+  font-size: map.get($sizes, 'default');
+
+  // --- Sub-elements --------------------------------------------------
+  &-icon { line-height: 0; }
+  &-message { display: inline-block; }
+
+  // --- Sizes -------------------------------------
+  @each $name, $font-size in $sizes {
+    @if $name != 'default' {
+      &._#{$name} { font-size: $font-size; }
+    }
+  }
+
+  // --- Colors (one set per level, icon + text inherit currentColor) --
+  @each $name, $color in $levels {
+    &._#{$name} { color: $color; }
+  }
+}

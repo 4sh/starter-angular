@@ -13,6 +13,8 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
   - Input natif invisible superposé au contrôle stylé (clavier, lecteur d'écran, `<label>` cliquable natifs)
   - `ControlValueAccessor` via `BaseControlValueAccessor` (standalone, `[(ngModel)]`, reactive forms)
   - États d'erreur automatiques (invalide + touché/modifié), `indeterminate`, `trueValue`/`falseValue`
+- `ui-helper` : texte d'aide / de feedback contextuel (niveaux `default`/`highlight`/`success`/`warning`/`error`, icône FontAwesome déduite du niveau, `ariaLive` pour les feedbacks dynamiques)
+  - Type partagé `UiFeedbackLevel` (`src/app/shared/types/ui-level.ts`)
 - Styles composites (`src/design-tokens/styles.json`) : ombres générées en variables `--shadow-{catégorie}-{taille}` **et** classes utilitaires `.shadow-{catégorie}-{taille}` (format de sortie `composite-styles`)
 - `ui-config` (`src/styles/src/settings/_ui-config.scss`) : constantes structurelles partagées (focus ring, bordure, taille des contrôles, transition) sur 3 niveaux — global / catégorie / composant — + mixin `control-transition()`
 - Polices auto-hébergées (variable fonts DM Sans + Inter) via `src/styles/src/vendors/_fonts.scss`
