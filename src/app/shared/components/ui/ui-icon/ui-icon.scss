@@ -4,7 +4,17 @@
 }
 
 .ui-icon {
-  display: inline-block;
+  // Square footprint that ADAPTS to the glyph: `aspect-ratio: 1` squares the
+  // box while its side follows the icon's natural size (FontAwesome renders in
+  // a 1.25em-wide slot; other families size to their own advance), floored at
+  // 1em. Centering the glyph keeps spacing symmetric regardless of the font's
+  // per-icon advance-width — no hardcoded dimensions.
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1em;
+  min-height: 1em;
+  aspect-ratio: 1;
   font-size: 20px;
   color: inherit;
 
