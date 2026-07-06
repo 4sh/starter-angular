@@ -1,0 +1,35 @@
+<label [class]="classes()">
+  <span class="ui-toggle-control">
+    <input
+      #inputEl
+      type="checkbox"
+      role="switch"
+      class="ui-toggle-input"
+      [id]="resolvedId()"
+      [checked]="checked()"
+      [disabled]="isDisabled()"
+      [required]="required()"
+      [attr.name]="name() || null"
+      [attr.tabindex]="tabindex()"
+      [attr.aria-checked]="checked()"
+      [attr.aria-label]="label() ? null : ariaLabel() || null"
+      [attr.aria-labelledby]="ariaLabelledBy() || null"
+      [attr.aria-invalid]="isInvalid() ? 'true' : null"
+      (change)="onNativeChange()"
+      (focus)="toggleFocus.emit($event)"
+      (blur)="onBlur($event)"
+    />
+    <span class="ui-toggle-track" aria-hidden="true">
+      <span class="ui-toggle-thumb"></span>
+    </span>
+  </span>
+
+  @if (label()) {
+    <span class="ui-toggle-label">
+      <span class="ui-toggle-text">{{ label() }}</span>
+      @if (required()) {
+        <span class="ui-toggle-required" aria-hidden="true">*</span>
+      }
+    </span>
+  }
+</label>

@@ -5,6 +5,7 @@ import * as ImageStories from "./components/ui/Image.stories";
 import * as CheckboxStories from "./components/ui/forms/ui-checkbox.stories";
 import * as RadioStories from "./components/ui/forms/ui-radio.stories";
 import * as LabelStories from "./components/ui/forms/ui-label.stories";
+import * as ToggleStories from "./components/ui/forms/ui-toggle.stories";
 import * as HelperStories from "./components/ui/informative/ui-helper.stories";
 import * as BadgeStories from "./components/ui/informative/ui-badge.stories";
 
@@ -58,6 +59,7 @@ export const CategorySection = ({ title, components }) => (
     { name: 'ui-checkbox', description: 'Case à cocher headless (CVA, indeterminate, erreur auto).', link: '?path=/docs/components-ui-forms-ui-checkbox--docs', story: CheckboxStories.Checked },
     { name: 'ui-radio', description: 'Bouton radio headless (groupe natif par name, CVA).', link: '?path=/docs/components-ui-forms-ui-radio--docs', story: RadioStories.Checked },
     { name: 'ui-label', description: 'Libellé de champ (marqueur requis, tailles).', link: '?path=/docs/components-ui-forms-ui-label--docs', story: LabelStories.Required },
+    { name: 'ui-toggle', description: 'Interrupteur on/off (headless, role=switch, CVA, tailles).', link: '?path=/docs/components-ui-forms-ui-toggle--docs', story: ToggleStories.Default },
   ]}
 />
 

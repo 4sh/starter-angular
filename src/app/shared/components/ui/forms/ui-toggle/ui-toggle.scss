@@ -1,0 +1,135 @@
+@use 'utils';
+@use 'sass:map';
+
+// =====================================================================
+// ui-toggle : co-located styles. All values come from design tokens.
+// Extend:
+//   • Size → add an entry to $sizes (+ the `ToggleSize` type). `travel` (thumb
+//     slide) is derived: track-w − 2·pad − thumb.
+// =====================================================================
+
+$focus-ring-width: utils.$form-focus-ring-width;
+$gap: utils.$form-control-gap;
+
+$sizes: (
+  'default': (track-w: 44px, track-h: 24px, thumb: 20px, pad: 2px),
+  'small': (track-w: 36px, track-h: 20px, thumb: 16px, pad: 2px),
+);
+
+@mixin toggle-size($size) {
+  $track-w: map.get($size, track-w);
+  $pad: map.get($size, pad);
+  $thumb: map.get($size, thumb);
+
+  .ui-toggle-track {
+    width: utils.rem-calc($track-w);
+    height: utils.rem-calc(map.get($size, track-h));
+    padding: utils.rem-calc($pad);
+  }
+  .ui-toggle-thumb {
+    width: utils.rem-calc($thumb);
+    height: utils.rem-calc($thumb);
+  }
+  &._checked .ui-toggle-thumb {
+    transform: translateX(utils.rem-calc($track-w - 2.8 * $pad - $thumb));
+  }
+}
+
+.ui-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: $gap;
+  cursor: pointer;
+
+  // --- Control ---------------------------------------
+  &-control {
+    position: relative;
+    display: inline-flex;
+    flex-shrink: 0;
+  }
+
+  // Native input: invisible but interactive, covers the whole track.
+  &-input {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: inherit;
+  }
+
+  &-track {
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    border: var(--stroke-sm) solid transparent;
+    border-radius: var(--radius-full);
+    background-color: var(--form-low-content-default);
+    @include utils.control-transition(background-color, border-color, box-shadow);
+  }
+
+  &-thumb {
+    box-sizing: border-box;
+    border-radius: var(--radius-full);
+    background-color: var(--form-high-surface-default);
+    @include utils.control-transition(transform, background-color);
+  }
+
+  // --- Sizes ----------------------------------------------------------
+  @include toggle-size(map.get($sizes, 'default'));
+  &._small { @include toggle-size(map.get($sizes, 'small')); }
+
+  // --- Checked  -------
+  &._checked &-track {
+    background-color: var(--form-high-content-checked);
+  }
+
+  // --- Focus ring (only on :focus-visible) ----------------------------
+  &:has(.ui-toggle-input:focus-visible) &-track {
+    box-shadow: 0 0 0 $focus-ring-width rgb(from var(--form-high-stroke-focused) r g b / 50%);
+  }
+
+  // --- Invalid --------------------------------------------------------
+  &._invalid &-track {
+    border-color: var(--form-error-stroke-default);
+  }
+  &._invalid:has(.ui-toggle-input:focus-visible) &-track {
+    box-shadow: 0 0 0 $focus-ring-width rgb(from var(--form-error-stroke-focused) r g b / 50%);
+  }
+
+  // --- Inline label ---------------------------------------------------
+  &-label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--units-2xs);
+    font-family: var(--fontfamily-base);
+    font-size: var(--size-typography-text-default);
+    color: var(--ui-label-color, var(--form-high-content-default));
+    cursor: inherit;
+    user-select: none;
+    @include utils.control-transition(color);
+  }
+  &._small &-label { font-size: var(--size-typography-text-md); }
+
+  &-required {
+    color: var(--informative-errorlow-content-default);
+  }
+
+  // --- States ---------------------------------------------------------
+  &._disabled {
+    cursor: not-allowed;
+
+    .ui-toggle-track { background-color: var(--form-low-content-disabled); }
+    .ui-toggle-thumb { background-color: var(--form-high-surface-disabled); }
+    .ui-toggle-label { color: var(--form-high-content-disabled); }
+  }
+  &._disabled._checked &-track {
+    background-color: var(--form-high-content-disabled);
+  }
+
+  &._readonly {
+    cursor: default;
+  }
+}

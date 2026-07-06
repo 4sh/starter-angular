@@ -1,0 +1,67 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as ToggleStories from './ui-toggle.stories';
+
+<Meta of={ToggleStories} />
+
+# ui-toggle
+
+<Canvas of={ToggleStories.Default} />
+
+## API
+
+<ArgTypes of={ToggleStories} />
+
+## États
+
+<Canvas of={ToggleStories.Checked} />
+<Canvas of={ToggleStories.Small} />
+<Canvas of={ToggleStories.Required} />
+<Canvas of={ToggleStories.Disabled} />
+<Canvas of={ToggleStories.Readonly} />
+<Canvas of={ToggleStories.Invalid} />
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Point</th>
+      <th>Implémentation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Rôle</strong></td>
+      <td>Input natif <code>type="checkbox"</code> + <code>role="switch"</code> et <code>aria-checked</code> : annoncé « activé / désactivé ».</td>
+    </tr>
+    <tr>
+      <td><strong>Clavier</strong></td>
+      <td>Natif : <kbd>Tab</kbd> pour cibler, <kbd>Espace</kbd> pour basculer. Focus visible via <code>:focus-visible</code> (anneau distinct du hover).</td>
+    </tr>
+    <tr>
+      <td><strong>Nom accessible</strong></td>
+      <td>Le clic sur le label (natif, via <code>&lt;label&gt;</code>) bascule le switch. Sans label visible, renseigner <code>ariaLabel</code> (ou <code>ariaLabelledBy</code>).</td>
+    </tr>
+    <tr>
+      <td><strong>Désactivé</strong></td>
+      <td><code>disabled</code> natif (pas seulement visuel) ; couleurs via tokens <code>--form-*-disabled</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Erreur</strong></td>
+      <td><code>aria-invalid</code> + bordure erreur ; automatique quand le contrôle est invalide et touché/modifié.</td>
+    </tr>
+  </tbody>
+</table>
+
+<Canvas of={ToggleStories.NoLabel} />
+
+```html
+<!-- Reactive forms -->
+<ui-toggle formControlName="darkMode" label="Mode sombre" />
+
+<!-- ngModel -->
+<ui-toggle [(ngModel)]="notifications" label="Notifications" />
+
+<!-- Valeurs personnalisées -->
+<ui-toggle [(ngModel)]="status" trueValue="on" falseValue="off" label="Statut" />
+```
