@@ -1,0 +1,68 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as BadgeStories from './ui-badge.stories';
+
+<Meta of={BadgeStories} />
+
+# ui-badge
+
+<Canvas of={BadgeStories.Default} />
+
+## API
+
+<ArgTypes of={BadgeStories} />
+
+## Niveaux & intensité
+
+<Canvas of={BadgeStories.Highlight} />
+<Canvas of={BadgeStories.Success} />
+<Canvas of={BadgeStories.Warning} />
+<Canvas of={BadgeStories.Error} />
+<Canvas of={BadgeStories.SubLevelLow} />
+
+## Tailles
+
+<Canvas of={BadgeStories.Small} />
+<Canvas of={BadgeStories.Large} />
+
+## Contenu
+
+<Canvas of={BadgeStories.LongValue} />
+<Canvas of={BadgeStories.WithIcon} />
+<Canvas of={BadgeStories.IconOnly} />
+<Canvas of={BadgeStories.Dot} />
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Point</th>
+      <th>Implémentation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Contenu textuel</strong></td>
+      <td>La <code>value</code> est du texte lu dans le flux. L'icône est décorative (<code>aria-hidden</code> via <code>ui-icon</code>) ; la couleur n'est jamais le seul vecteur de sens.</td>
+    </tr>
+    <tr>
+      <td><strong>Compteur ambigu</strong></td>
+      <td>Renseigner <code>ariaLabel</code> pour lever l'ambiguïté (ex. « 3 » → « 3 messages non lus »).</td>
+    </tr>
+    <tr>
+      <td><strong>Icon-only</strong></td>
+      <td><code>ariaLabel</code> obligatoire (un warning est émis en dev sinon).</td>
+    </tr>
+    <tr>
+      <td><strong>Point</strong></td>
+      <td>Décoratif : le sens vient du contexte parent (ex. bouton « Notifications » qui porte déjà son libellé).</td>
+    </tr>
+  </tbody>
+</table>
+
+```html
+<!-- Compteur relié à un contexte -->
+<button aria-label="Messages, 3 non lus">
+  Messages <ui-badge level="error" [value]="3" ariaLabel="3 non lus" />
+</button>
+```

@@ -1,0 +1,8 @@
+<span [class]="classes()" [attr.aria-label]="ariaLabel() ?? null">
+  @if (icon(); as name) {
+    <ui-icon class="ui-badge-icon" [name]="name" [size]="iconSize()" />
+  }
+  @if (hasText()) {
+    <span class="ui-badge-label">{{ value() }}</span>
+  }
+</span>
