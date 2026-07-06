@@ -26,7 +26,7 @@ Polices embarquées en local (DM Sans + Inter, variable fonts) : `src/styles/src
 | Question | Où chercher |
 |---|---|
 | Composants existants / feuille de route | `src/app/shared/components/components-index.md` |
-| API d'un composant (`inputs`, `outputs`, types) | `storybook/stories/components/ui/**/<nom>.stories.ts` → `argTypes` |
+| API d'un composant (`inputs`, `outputs`, types) | `src/app/shared/components/ui/**/ui-<nom>/ui-<nom>.stories.ts` → `argTypes` (co-localisée) |
 | Couleurs, tokens sémantiques | Storybook → `Foundations / Colors` (explorateur marque + mode) |
 | Typographie | Storybook → `Foundations / Typography` |
 | Ombres & effets | Storybook → `Foundations / Shadows` |
@@ -84,7 +84,7 @@ tokens générés, les vendors et des utilitaires.
 | Sélecteur Angular | `ui-<nom>` | `ui-button` |
 | Classe TypeScript | `Ui<Nom>` | `UiButton` |
 | Fichier | `ui-<nom>.ts` (sans `.component`) | `ui-button.ts` |
-| Story | `storybook/stories/components/ui/<cat>/<nom>.stories.ts` | `ui-button.stories.ts` |
+| Story & doc | co-localisées : `src/app/shared/components/ui/<cat>/ui-<nom>/ui-<nom>.stories.ts` + `ui-<nom>.mdx` | `ui-button.stories.ts` |
 | Import alias | Toujours `@app/` | `@app/shared/components/ui/...` |
 
 ### Composants Métier (domain)
@@ -222,7 +222,7 @@ $focus-ring-width: utils.$form-focus-ring-width; // ← remplacer la valeur ici 
 
 ### Modifier un composant ui-* existant
 
-1. Lire `storybook/stories/components/ui/<cat>/<nom>.stories.ts` → identifier `argTypes`
+1. Lire `src/app/shared/components/ui/<cat>/ui-<nom>/ui-<nom>.stories.ts` → identifier `argTypes`
 2. Lire `src/app/shared/components/ui/<cat>/ui-<nom>/` → vérifier types et structure
 3. Modifier `.ts`, `.html`, `.scss` (tokens uniquement)
 4. Mettre à jour la story + le `.mdx` si l'API change
@@ -232,7 +232,7 @@ $focus-ring-width: utils.$form-focus-ring-width; // ← remplacer la valeur ici 
 
 1. Vérifier `components-index.md` (roadmap, nom prévu)
 2. Recopier le **patron `ui-button`** : structure fichiers, signals + `computed()` pour les classes, SCSS co-localisé
-3. Créer la story + le `.mdx` dans `storybook/stories/components/ui/<cat>/`
+3. Créer la story + le `.mdx` **co-localisés** dans le dossier du composant `src/app/shared/components/ui/<cat>/ui-<nom>/` (doc globale uniquement → `storybook/docs/`)
 4. Cocher le composant dans `components-index.md`
 
 ### Créer un composant métier (domain)

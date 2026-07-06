@@ -5,7 +5,7 @@ description: Sommaire des composants ui-* (réalisés ✅ et feuille de route �
 
 # Index des composants
 
-> Chemin des stories : `storybook/stories/components/ui/<catégorie>/<nom>.stories.ts`
+> Story & doc **co-localisées** dans le dossier du composant : `src/app/shared/components/ui/<catégorie>/ui-<nom>/ui-<nom>.stories.ts` + `ui-<nom>.mdx`
 > ✅ = implémenté headless · ⬜ = à construire (recopier le patron `ui-button`)
 
 ## actions

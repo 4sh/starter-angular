@@ -103,7 +103,34 @@ On reproduit le patron `ui-button` (+ `ui-icon`). Exemple `ui-input` :
    - `ui-input.html` : HTML natif headless (+ CDK si overlay/a11y), accessible.
    - `ui-input.scss` : **style co-localisé**, classes `.ui-input` / `&-…` / `&._…`,
      valeurs uniquement via `var(--…)`.
-2. **Story & Documentation** : `storybook/stories/ui/forms/ui-input.stories.mdx` + `storybook/stories/ui/forms/ui-input.stories.ts`
+2. **Story & doc (co-localisées)** — dans le dossier du composant, à côté des `.ts/.html/.scss` :
+   `src/app/shared/components/ui/forms/ui-input/ui-input.stories.ts` + `ui-input.mdx`.
 
 Règles d'or : **aucune** valeur en dur (tout via token) · **accessibilité** (élément natif,
 `aria-label`, `:focus-visible`, `disabled`).
+
+---
+
+## Storybook — organisation des fichiers
+
+Deux emplacements, une règle simple :
+
+- **Composant → co-localisation.** Chaque composant embarque ses fichiers `*.stories.ts` et
+  `*.mdx` **dans son propre dossier**, à côté des `.ts/.html/.scss` :
+  `src/app/shared/components/ui/<catégorie>/ui-x/ui-x.stories.ts` + `ui-x.mdx`.
+- **Documentation globale** (fondations, guidelines, design system, overview) → **`storybook/docs/`**
+  (sous-dossiers `foundations/`, `specifications/`). N'y jamais mettre de doc liée à un composant précis.
+
+La config `storybook/main.js` cible les deux sources :
+
+```js
+stories: [
+  './docs/**/*.mdx',                                 // doc globale
+  '../src/app/shared/components/**/*.mdx',           // doc composant co-localisée
+  '../src/app/shared/components/**/*.stories.@(js|jsx|mjs|ts|tsx)',
+]
+```
+
+> Le **placement** des fichiers n'affecte pas l'arborescence du sidebar : elle est pilotée par le
+> `title` (`<Meta title="…">` ou `title:` de la story). Les `.stories.ts` co-localisés ne sont pas
+> compilés par `ng build` (`tsconfig.app.json` part de `main.ts`).

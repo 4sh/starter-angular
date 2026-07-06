@@ -95,10 +95,16 @@ effects.{modeLight|modeDark}.{default|highlight|success|warning|error}
 
 ```
 ui-{name}/
-├── ui-{name}.ts        ← logique + inputs (signals), classes calculées via computed()
-├── ui-{name}.html      ← template HTML natif headless (+ Angular CDK si besoin)
-└── ui-{name}.scss      ← STYLE CO-LOCALISÉ du composant (scopé au composant)
+├── ui-{name}.ts          ← logique + inputs (signals), classes calculées via computed()
+├── ui-{name}.html        ← template HTML natif headless (+ Angular CDK si besoin)
+├── ui-{name}.scss        ← STYLE CO-LOCALISÉ du composant (scopé au composant)
+├── ui-{name}.stories.ts  ← story Storybook CO-LOCALISÉE
+└── ui-{name}.mdx         ← doc Storybook CO-LOCALISÉE
 ```
+
+> La **story et la doc MDX d'un composant sont co-localisées** dans son dossier. La doc
+> **globale** (fondations, guidelines, design system) vit dans `storybook/docs/`. Config :
+> `storybook/main.js`.
 
 > Le **style de chaque composant est co-localisé** dans son propre `.scss` (styles scopés
 > Angular). Le global (`src/styles/`) ne contient QUE les tokens générés + des utilitaires.
@@ -423,7 +429,7 @@ Analyse le composant Angular suivant pour préparer sa création dans Figma :
 - Lis `src/app/shared/components/{category}/{name}/{name}.ts`
 - Lis `src/app/shared/components/{category}/{name}/{name}.html`
 - Lis `src/app/shared/components/{category}/{name}/{name}.scss`
-- Lis `storybook/stories/{category}/{Name}.stories.ts`
+- Lis `src/app/shared/components/{category}/{name}/{name}.stories.ts` (co-localisée)
 Produis :
 1. Liste des inputs avec types et valeurs par défaut
 2. États visuels distincts (variants Figma nécessaires)
@@ -460,7 +466,7 @@ Produis un rapport avec : problèmes critiques / améliorations / conformité gl
 ### 4. Migration Storybook → Figma
 
 ```
-Pour le composant dont la story est `storybook/stories/{path}/{Name}.stories.ts` :
+Pour le composant dont la story est `src/app/shared/components/{path}/{name}/{name}.stories.ts` (co-localisée) :
 1. Extrait tous les argTypes et leurs valeurs possibles
 2. Identifie le node-id Figma actuel dans `parameters.design.url`
 3. Vérifie que le composant Figma couvre toutes les stories exportées

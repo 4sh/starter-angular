@@ -1,5 +1,11 @@
 module.exports = {
-  stories: ['./**/*.mdx', './stories/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
+  stories: [
+    // Documentation globale (fondations, guidelines, design system)
+    './docs/**/*.mdx',
+    // Stories + doc MDX co-localisées avec chaque composant
+    '../src/app/shared/components/**/*.mdx',
+    '../src/app/shared/components/**/*.stories.@(js|jsx|mjs|ts|tsx)',
+  ],
   staticDirs: ['./public'],
   addons: [
     '@storybook/addon-docs',
