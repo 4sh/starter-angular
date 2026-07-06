@@ -11,6 +11,3 @@ export type UiSubLevel = 'high' | 'low';
  * Level of informative feedback
  */
 export type UiFeedbackLevel = 'default' | 'highlight' | Extract<UiLevel, 'success' | 'warning' | 'error'>;
-
-/** Standard component size. */
-export type UiSize = 'small' | 'large' | undefined;
