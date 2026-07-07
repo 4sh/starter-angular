@@ -6,7 +6,7 @@ import { Meta } from '@storybook/addon-docs/blocks';
 
 Le projet utilise **[Gridaflex](https://www.npmjs.com/package/gridaflex)** (v1.0.0) comme système de mise en page responsive. Gridaflex est un système **flexbox** à axes X / Y sur un moteur `gap` moderne (jamais de marges négatives), reprenant l'API XY de Foundation, modernisée.
 
-> Préfixe des classes : `flex-` — ce n'est **pas** CSS Grid.
+> Préfixe des classes : `flex-` : ce n'est **pas** CSS Grid.
 
 ## 1. Points de Rupture (Breakpoints)
 
@@ -176,10 +176,10 @@ Pour ajuster une gouttière sur une seule instance, sans toucher à la config :
 
 La configuration Gridaflex est centralisée dans `src/styles/src/vendors/gridaflex-settings.scss` et alimentée par les design tokens responsive :
 
-- **`$flex-columns: 24`** — la grille est sur 24 colonnes (et non 12 par défaut).
-- **`$breakpoints`** — synchronisés avec les tokens (`phone`, `tablet-portrait`, `tablet-landscape`, `desktop`, `medium-desktop`, `big-desktop`).
-- **`$flex-margin-gutters`** — gouttières par breakpoint (16px sur phone, 24px à partir de tablet-portrait).
-- **`$gutters` / `$padding-gutters`** — clé `default: 16px` (utilisée par `flex-gap-x/y/xy`).
+- **`$flex-columns: 24`** : la grille est sur 24 colonnes (et non 12 par défaut).
+- **`$breakpoints`** : synchronisés avec les tokens (`phone`, `tablet-portrait`, `tablet-landscape`, `desktop`, `medium-desktop`, `big-desktop`).
+- **`$flex-margin-gutters`** : gouttières par breakpoint (16px sur phone, 24px à partir de tablet-portrait).
+- **`$gutters` / `$padding-gutters`** : clé `default: 16px` (utilisée par `flex-gap-x/y/xy`).
 
 > Toute modification de ces réglages doit passer par les design tokens, jamais en dur dans un composant.
 
@@ -189,5 +189,5 @@ La configuration Gridaflex est centralisée dans `src/styles/src/vendors/gridafl
 - ❌ Utiliser des marges négatives ou `overflow-x: hidden` pour « corriger » des débordements : inutile, le moteur `gap` n'en crée pas.
 - ❌ Confondre avec **CSS Grid** (`grid-template-*`) : c'est du **flexbox**.
 - ❌ Inventer un breakpoint ou une taille hors de la config (n va de 1 à 24 dans ce projet).
-- ❌ Utiliser les alias dépréciés `grid-*` / `flex-margin-*` / `xy-grid-*` (compat Foundation) en code neuf — préférer `flex-*` / `flex-gap-*` / `xy-flex-*`.
+- ❌ Utiliser les alias dépréciés `grid-*` / `flex-margin-*` / `xy-grid-*` (compat Foundation) en code neuf : préférer `flex-*` / `flex-gap-*` / `xy-flex-*`.
 - ❌ Placer `@use 'gridaflex/src/settings' with (…)` après `@use 'gridaflex/src/classes'` : la config serait ignorée.

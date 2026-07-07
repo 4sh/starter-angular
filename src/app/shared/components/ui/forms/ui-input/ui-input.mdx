@@ -88,3 +88,58 @@ renseigne `iconRightAriaLabel` ; le clic émet `iconRightClick`.
 > Architecture : `ui-input`, `ui-input-number` et `ui-input-mask` partagent le shell `ui-field`
 > (label + boîte + helper + états) et la base `BaseFormField` (CVA + validation). Le
 > sous-composant Figma `_ui-input-content` est porté nativement par l'`<input>`.
+
+## Configuration (SCSS)
+
+`ui-input`, `ui-input-mask` et `ui-input-number` n'ont **aucune variable locale surchargeable** :
+leur boîte est fournie par le shell `ui-field`, stylé via les mixins `utils.field-*`. Toute la
+configuration passe donc par les variables locales de `ui-field.scss` (qui pointent vers le groupe
+partagé [Forms](?path=/docs/components-configuration-forms--docs)). Voir aussi le
+[fonctionnement de la configuration](?path=/docs/components-configuration--docs).
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Variable locale (ui-field)</th>
+      <th>Source</th>
+      <th>Rôle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>$height</code></td>
+      <td><code>utils.$form-field-height</code></td>
+      <td>Hauteur de la boîte de champ</td>
+    </tr>
+    <tr>
+      <td><code>$height-small</code></td>
+      <td><code>utils.$form-field-height-small</code></td>
+      <td>Hauteur variante small</td>
+    </tr>
+    <tr>
+      <td><code>$radius</code></td>
+      <td><code>utils.$form-field-radius</code></td>
+      <td>Rayon de bordure</td>
+    </tr>
+    <tr>
+      <td><code>$padding-x</code></td>
+      <td><code>utils.$form-field-padding-x</code></td>
+      <td>Padding horizontal</td>
+    </tr>
+    <tr>
+      <td><code>$gap</code></td>
+      <td><code>utils.$form-field-gap</code></td>
+      <td>Espace input + affixes</td>
+    </tr>
+    <tr>
+      <td><code>$stroke-width</code></td>
+      <td><code>utils.$form-field-stroke-width</code></td>
+      <td>Épaisseur de bordure</td>
+    </tr>
+    <tr>
+      <td><code>$focus-ring-width</code></td>
+      <td><code>utils.$form-field-focus-ring-width</code></td>
+      <td>Anneau de focus</td>
+    </tr>
+  </tbody>
+</table>

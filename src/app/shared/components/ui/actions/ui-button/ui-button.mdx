@@ -127,3 +127,36 @@ Au-delà de `label`, on peut projeter du contenu riche via `<ng-content>`.
 ## États
 
 <Canvas of={ButtonStories.Disabled} />
+
+## Configuration (SCSS)
+
+Variables locales en tête de `ui-button.scss`. Voir le groupe partagé
+[Actions](?path=/docs/components-configuration-actions--docs) et le
+[fonctionnement de la configuration](?path=/docs/components-configuration--docs).
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Variable locale</th>
+      <th>Source</th>
+      <th>Rôle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>$focus-ring-width</code></td>
+      <td><code>utils.$action-focus-ring-width</code></td>
+      <td>Épaisseur de l'anneau de focus</td>
+    </tr>
+    <tr>
+      <td><code>$sizes</code></td>
+      <td>local (map : hauteurs 44 / 40px)</td>
+      <td>Dimensions par taille (spécifique bouton)</td>
+    </tr>
+    <tr>
+      <td><code>$levels</code></td>
+      <td>local (liste : high, low, success, warning, error)</td>
+      <td>Familles de couleur générées (spécifique bouton)</td>
+    </tr>
+  </tbody>
+</table>

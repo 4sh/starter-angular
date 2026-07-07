@@ -11,6 +11,9 @@ import * as InputMaskStories from "../../src/app/shared/components/ui/forms/ui-i
 import * as ToggleStories from "../../src/app/shared/components/ui/forms/ui-toggle/ui-toggle.stories";
 import * as HelperStories from "../../src/app/shared/components/ui/informative/ui-helper/ui-helper.stories";
 import * as BadgeStories from "../../src/app/shared/components/ui/informative/ui-badge/ui-badge.stories";
+import * as AvatarStories from "../../src/app/shared/components/ui/informative/ui-avatar/ui-avatar.stories";
+import * as AvatarGroupStories from "../../src/app/shared/components/ui/informative/ui-avatar-group/ui-avatar-group.stories";
+import * as SeparatorStories from "../../src/app/shared/components/ui/informative/ui-separator/ui-separator.stories";
 
 <Meta title="Overview" />
 
@@ -52,7 +55,7 @@ export const CategorySection = ({ title, components }) => (
 <CategorySection
   title="Actions"
   components={[
-    { name: 'ui-button', description: 'Bouton (niveaux, tailles, icônes, icon-only) — accessible.', link: '?path=/docs/components-ui-actions-ui-button--docs', story: ButtonStories.IconLeft },
+    { name: 'ui-button', description: 'Bouton (niveaux, tailles, icônes, icon-only) : accessible.', link: '?path=/docs/components-ui-actions-ui-button--docs', story: ButtonStories.IconLeft },
   ]}
 />
 
@@ -74,6 +77,9 @@ export const CategorySection = ({ title, components }) => (
   components={[
     { name: 'ui-badge', description: 'Pastille compteur / statut (level × sub-level, tailles, icône, point).', link: '?path=/docs/components-ui-informative-ui-badge--docs', story: BadgeStories.WithIcon },
     { name: 'ui-helper', description: 'Texte d’aide / feedback contextuel (icône déduite du niveau, ariaLive).', link: '?path=/docs/components-ui-informative-ui-helper--docs', story: HelperStories.Error },
+    { name: 'ui-avatar', description: 'Avatar utilisateur (image / initiales / icône, tailles, forme, badge projeté).', link: '?path=/docs/components-ui-informative-ui-avatar--docs', story: AvatarStories.Label },
+    { name: 'ui-avatar-group', description: 'Empilement d’avatars avec chevauchement (débordement « +N »).', link: '?path=/docs/components-ui-informative-ui-avatar-group--docs', story: AvatarGroupStories.Mixed },
+    { name: 'ui-separator', description: 'Séparateur (horizontal/vertical, solid/dashed, libellé start/center/end).', link: '?path=/docs/components-ui-informative-ui-separator--docs', story: SeparatorStories.LabelCenter },
   ]}
 />
 

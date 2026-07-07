@@ -9,6 +9,16 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+### Added
+- `ui-avatar` : avatar utilisateur headless (modes image / initiales / icône déduits des inputs, tailles `small`/`default`/`large`, forme `circle`/`square`, badge de statut projeté via `[avatarBadge]`, repli automatique sur image cassée + output `imageError`)
+- `ui-avatar-group` : empilement d'avatars avec chevauchement (débordement « +N » via un avatar Label), inspiré de l'API PrimeNG avatargroup
+- `ui-separator` : séparateur visuel et sémantique (`role="separator"`, horizontal/vertical, trait solid/dashed, épaisseur `default`/`small`, libellé optionnel aligné start/center/end)
+- Groupe de tokens partagés `$avatar-*` dans `_ui-config.scss` (diamètres + chevauchement, catégorie **informative**)
+- Storybook : addon d'accessibilité `@storybook/addon-a11y`
+
+### Changed
+- Doc de configuration (`Components/Configuration`) refondue : la page principale devient « fonctionnement + sommaire », les groupes de variables sont éclatés en sous-pages (`Global UI` / `Forms` / `Actions` / `Informative`) et chaque composant reçoit une section « Configuration (SCSS) » listant ses variables locales
+
 ## [0.1.0]
 
 ### Added

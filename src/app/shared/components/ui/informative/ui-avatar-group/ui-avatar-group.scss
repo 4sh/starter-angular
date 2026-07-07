@@ -1,0 +1,24 @@
+@use 'utils';
+
+// =====================================================================
+// ui-avatar-group : co-located styles (global, ViewEncapsulation.None).
+// Every rule stays scoped under `.ui-avatar-group`. Overlap comes from
+// the shared ui-config constant so it can be tuned kit-wide.
+// =====================================================================
+
+.ui-avatar-group {
+  --_overlap: #{utils.$avatar-group-overlap};
+
+  display: inline-flex;
+  align-items: center;
+
+  // Projected avatars: each subsequent one overlaps the previous (later on top).
+  ui-avatar {
+    display: inline-flex;
+    position: relative;
+  }
+
+  ui-avatar:not(:first-child) {
+    margin-left: calc(-1 * var(--_overlap));
+  }
+}

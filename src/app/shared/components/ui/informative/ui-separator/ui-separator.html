@@ -1,0 +1,18 @@
+<div
+  [class]="classes()"
+  role="separator"
+  [attr.aria-orientation]="orientation()"
+  [attr.aria-label]="accessibleName()"
+>
+  @if (hasLabel()) {
+    @if (lineBeforeLabel()) {
+      <span class="ui-separator-line" aria-hidden="true"></span>
+    }
+    <span class="ui-separator-label">{{ label() }}</span>
+    @if (lineAfterLabel()) {
+      <span class="ui-separator-line" aria-hidden="true"></span>
+    }
+  } @else {
+    <span class="ui-separator-line" aria-hidden="true"></span>
+  }
+</div>
