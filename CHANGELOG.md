@@ -18,6 +18,7 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ### Changed
 - Doc de configuration (`Components/Configuration`) refondue : la page principale devient « fonctionnement + sommaire », les groupes de variables sont éclatés en sous-pages (`Global UI` / `Forms` / `Actions` / `Informative`) et chaque composant reçoit une section « Configuration (SCSS) » listant ses variables locales
+- `ui-toggle` : ajout d'un template de curseur personnalisé `handle` (contexte `{ checked }`, façon PrimeNG) et de `labelPosition` (`before`/`after`, label cliquable des deux côtés)
 
 ## [0.1.0]
 

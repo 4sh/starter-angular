@@ -1,4 +1,8 @@
 <label [class]="classes()">
+  @if (hasLabel() && labelPosition() === 'before') {
+    <ng-container [ngTemplateOutlet]="labelTpl" />
+  }
+
   <span class="ui-toggle-control">
     <input
       #inputEl
@@ -20,16 +24,24 @@
       (blur)="onBlur($event)"
     />
     <span class="ui-toggle-track" aria-hidden="true">
-      <span class="ui-toggle-thumb"></span>
+      <span class="ui-toggle-thumb">
+        @if (handle(); as tpl) {
+          <ng-container [ngTemplateOutlet]="tpl" [ngTemplateOutletContext]="handleContext()" />
+        }
+      </span>
     </span>
   </span>
 
-  @if (label()) {
-    <span class="ui-toggle-label">
-      <span class="ui-toggle-text">{{ label() }}</span>
-      @if (required()) {
-        <span class="ui-toggle-required" aria-hidden="true">*</span>
-      }
-    </span>
+  @if (hasLabel() && labelPosition() === 'after') {
+    <ng-container [ngTemplateOutlet]="labelTpl" />
   }
 </label>
+
+<ng-template #labelTpl>
+  <span class="ui-toggle-label">
+    <span class="ui-toggle-text">{{ label() }}</span>
+    @if (required()) {
+      <span class="ui-toggle-required" aria-hidden="true">*</span>
+    }
+  </span>
+</ng-template>

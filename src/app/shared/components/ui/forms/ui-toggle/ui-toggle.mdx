@@ -20,6 +20,35 @@ import * as ToggleStories from './ui-toggle.stories';
 <Canvas of={ToggleStories.Readonly} />
 <Canvas of={ToggleStories.Invalid} />
 
+## Position du label
+
+Le label se place à droite (`after`, défaut) ou à gauche (`before`) du switch. Comme l'ensemble
+est enveloppé dans un `<label>` natif, **cliquer le label des deux côtés bascule le switch**.
+
+<Canvas of={ToggleStories.LabelBefore} />
+
+## Curseur personnalisé
+
+Un template `handle` (contexte `{ checked }`) remplace le contenu du curseur — par exemple une
+icône `check` / `xmark` selon l'état.
+
+<Canvas of={ToggleStories.CustomHandle} />
+
+```html
+<ng-template #handle let-checked="checked">
+  <ui-icon [name]="checked ? 'check' : 'xmark'" size="sm" />
+</ng-template>
+
+<ui-toggle [(ngModel)]="darkMode" [handle]="handle" label="Mode sombre" />
+```
+
+## Formulaires
+
+Branché au système de formulaires du starter via `ControlValueAccessor`
+(`BaseControlValueAccessor`) : fonctionne avec `[(ngModel)]`, les reactive forms
+(`formControlName`) ou en autonome. L'état d'erreur se peint automatiquement quand le contrôle
+attaché est invalide **et** touché/modifié.
+
 ## Accessibilité
 
 <table className="doc-table">
