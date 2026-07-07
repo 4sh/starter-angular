@@ -1,0 +1,15 @@
+@use 'utils';
+
+// =====================================================================
+// ui-input-mask : projected parts (native input + optional left icon).
+// Box/label/helper/states come from `ui-field`.
+// =====================================================================
+
+.ui-input-mask {
+  &-native {
+    @include utils.field-native-input;
+    &._small { font-size: var(--size-typography-text-md); }
+  }
+
+  &-icon { @include utils.field-affix; }
+}

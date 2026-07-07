@@ -1,0 +1,67 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as NumberStories from './ui-input-number.stories';
+
+<Meta of={NumberStories} />
+
+# ui-input-number
+
+Champ **numérique** bâti sur le shell [`ui-field`](?path=/docs/components-ui-forms-ui-field--docs).
+Valeur modèle = `number | null`. Saisie tolérante (pas de reformatage pendant la frappe →
+pas de saut de curseur), `min`/`max`/`step`, spinner ± et flèches clavier ↑/↓, **clamp au blur**.
+
+Autonome, `[(ngModel)]` ou reactive forms.
+
+<Canvas of={NumberStories.Default} />
+
+## API
+
+<ArgTypes of={NumberStories} />
+
+## Exemples
+
+<Canvas of={NumberStories.MinMax} />
+<Canvas of={NumberStories.Step} />
+<Canvas of={NumberStories.Integer} />
+<Canvas of={NumberStories.WithUnit} />
+<Canvas of={NumberStories.NoButtons} />
+<Canvas of={NumberStories.Small} />
+<Canvas of={NumberStories.Error} />
+
+## Formatage (Intl.NumberFormat)
+
+Le format riche (groupement des milliers, devise, décimales) est appliqué **au blur** ; au
+focus, le champ bascule sur une forme éditable (sans groupement/devise) pour une saisie fluide.
+Piloté par `locale` / `currency` / `useGrouping` / `minFractionDigits` / `maxFractionDigits`.
+
+<Canvas of={NumberStories.Grouped} />
+<Canvas of={NumberStories.Currency} />
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr><th>Point</th><th>Implémentation</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Rôle</strong></td>
+      <td><code>role="spinbutton"</code> + <code>aria-valuenow/valuemin/valuemax</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Clavier</strong></td>
+      <td>Flèches <kbd>↑</kbd>/<kbd>↓</kbd> incrémentent de <code>step</code>. Les boutons du spinner sont <code>tabindex="-1"</code> (non intrusifs) avec <code>aria-label</code>, désactivés aux bornes.</td>
+    </tr>
+    <tr>
+      <td><strong>Saisie mobile</strong></td>
+      <td><code>inputmode="decimal"</code> (clavier numérique).</td>
+    </tr>
+  </tbody>
+</table>
+
+```html
+<ui-input-number formControlName="age" label="Âge" [min]="0" [max]="120" [allowDecimals]="false" />
+<ui-input-number [(ngModel)]="price" label="Prix" locale="fr-FR" currency="EUR" [step]="0.5" />
+```
+
+> Cas très spécifique : surcharger la méthode protégée `format(value: number): string` dans une
+> sous-classe (le parsing locale-aware reste géré par le composant).

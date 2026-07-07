@@ -1,0 +1,90 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as InputStories from './ui-input.stories';
+
+<Meta of={InputStories} />
+
+# ui-input
+
+Champ **texte** (text/email/tel/url/search/**password**) bâti sur le shell partagé
+[`ui-field`](?path=/docs/components-ui-forms-ui-field--docs) (label + boîte + helper) et un
+`<input>` natif. Couleurs via tokens `form.*`, bordure pilotée par le `level`. Slots
+optionnels : icône gauche, unité suffixe, et **zone d'action droite**.
+
+Autonome, `[(ngModel)]` ou reactive forms (`ControlValueAccessor` via `BaseFormField`).
+Pour les nombres → [`ui-input-number`](?path=/docs/components-ui-forms-ui-input-number--docs) ;
+pour les masques → [`ui-input-mask`](?path=/docs/components-ui-forms-ui-input-mask--docs).
+
+<Canvas of={InputStories.WithHelper} />
+
+## API
+
+<ArgTypes of={InputStories} />
+
+## Niveaux & états
+
+`level` (`default`/`success`/`error`) pilote la bordure. `errorText` remplace l'aide quand le
+champ est en erreur (`invalid` explicite, ou automatique : contrôle invalide + touché).
+
+<Canvas of={InputStories.Success} />
+<Canvas of={InputStories.Error} />
+<Canvas of={InputStories.ErrorText} />
+<Canvas of={InputStories.Disabled} />
+<Canvas of={InputStories.Readonly} />
+<Canvas of={InputStories.Small} />
+
+## Slots & zone d'action
+
+L'icône droite devient une **zone d'action** (bouton carré pleine hauteur, focusable) dès qu'on
+renseigne `iconRightAriaLabel` ; le clic émet `iconRightClick`.
+
+<Canvas of={InputStories.Search} />
+<Canvas of={InputStories.Password} />
+<Canvas of={InputStories.WithUnit} />
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Point</th>
+      <th>Implémentation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Label</strong></td>
+      <td><code>ui-label</code> natif lié à l'input par <code>for</code>/<code>id</code> (clic sur le label = focus). Sans label visible : <code>ariaLabel</code> / <code>ariaLabelledBy</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Aide & erreur</strong></td>
+      <td><code>ui-helper</code> relié par <code>aria-describedby</code>. <code>aria-invalid</code> + bordure erreur, automatique quand le contrôle est invalide et touché/modifié.</td>
+    </tr>
+    <tr>
+      <td><strong>Zone d'action</strong></td>
+      <td>Bouton natif (dans l'ordre de tabulation) avec <code>aria-label</code> obligatoire. Icônes décoratives en <code>aria-hidden</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Désactivé</strong></td>
+      <td><code>disabled</code> natif (pas seulement visuel) ; couleurs via tokens <code>--form-*-disabled</code>.</td>
+    </tr>
+  </tbody>
+</table>
+
+```html
+<!-- Reactive forms + message d'erreur -->
+<ui-input formControlName="email" type="email" label="Email" errorText="Adresse invalide" required />
+
+<!-- Recherche : icône « effacer » actionnable, visible seulement avec du texte -->
+<ui-input
+  [(ngModel)]="q"
+  label="Recherche"
+  iconLeft="magnifying-glass"
+  [iconRight]="q ? 'xmark' : undefined"
+  iconRightAriaLabel="Effacer"
+  (iconRightClick)="q = ''"
+/>
+```
+
+> Architecture : `ui-input`, `ui-input-number` et `ui-input-mask` partagent le shell `ui-field`
+> (label + boîte + helper + états) et la base `BaseFormField` (CVA + validation). Le
+> sous-composant Figma `_ui-input-content` est porté nativement par l'`<input>`.

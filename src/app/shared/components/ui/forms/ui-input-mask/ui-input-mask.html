@@ -1,0 +1,36 @@
+<ui-field
+  [label]="label()"
+  [for]="resolvedId()"
+  [required]="required()"
+  [size]="size()"
+  [level]="effectiveLevel()"
+  [disabled]="isDisabled()"
+  [readonly]="readonly()"
+  [message]="displayMessage()"
+  [messageId]="messageId()"
+>
+  @if (iconLeft(); as name) {
+    <ui-icon uiFieldPrefix class="ui-input-mask-icon" [class._disabled]="isDisabled()" [name]="name" [size]="iconSize()" />
+  }
+
+  <input
+    #inputEl
+    class="ui-input-mask-native"
+    [class._small]="size() === 'small'"
+    type="text"
+    [id]="resolvedId()"
+    [value]="text()"
+    [placeholder]="placeholder() ?? ''"
+    [disabled]="isDisabled()"
+    [readOnly]="readonly()"
+    [required]="required()"
+    [attr.name]="name() || null"
+    [attr.tabindex]="tabindex()"
+    [attr.aria-label]="label() ? null : ariaLabel() || null"
+    [attr.aria-labelledby]="ariaLabelledBy() || null"
+    [attr.aria-describedby]="displayMessage() ? messageId() : null"
+    [attr.aria-invalid]="effectiveLevel() === 'error' ? 'true' : null"
+    (input)="onInput()"
+    (blur)="onBlur($event)"
+  />
+</ui-field>

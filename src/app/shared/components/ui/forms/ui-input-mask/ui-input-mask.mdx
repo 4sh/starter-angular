@@ -1,0 +1,80 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as MaskStories from './ui-input-mask.stories';
+
+<Meta of={MaskStories} />
+
+# ui-input-mask
+
+Champ **masqué** bâti sur le shell [`ui-field`](?path=/docs/components-ui-forms-ui-field--docs).
+Le gabarit `mask` insère automatiquement les littéraux pendant la frappe :
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Token</th>
+      <th>Accepte</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>9</code></td>
+      <td>un chiffre <code>0-9</code></td>
+    </tr>
+    <tr>
+      <td><code>a</code></td>
+      <td>une lettre <code>a-z A-Z</code></td>
+    </tr>
+    <tr>
+      <td><code>*</code></td>
+      <td>un caractère alphanumérique</td>
+    </tr>
+    <tr>
+      <td><em>autre</em></td>
+      <td>littéral inséré automatiquement (<code>/</code>, <code>-</code>, espace, <code>(</code>, <code>)</code>…)</td>
+    </tr>
+  </tbody>
+</table>
+
+Valeur modèle = string masquée (`12/09/2024`) par défaut, ou brute (`12092024`) si `unmask`.
+
+<Canvas of={MaskStories.Phone} />
+
+## API
+
+<ArgTypes of={MaskStories} />
+
+## Exemples
+
+<Canvas of={MaskStories.Date} />
+<Canvas of={MaskStories.Time} />
+<Canvas of={MaskStories.License} />
+<Canvas of={MaskStories.Unmask} />
+<Canvas of={MaskStories.Error} />
+
+## Accessibilité & notes
+
+<table className="doc-table">
+  <thead>
+    <tr><th>Point</th><th>Implémentation</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Label / aide / erreur</strong></td>
+      <td>Via le shell `ui-field` : label lié par <code>for</code>/<code>id</code>, message relié par <code>aria-describedby</code>, <code>aria-invalid</code> en erreur.</td>
+    </tr>
+    <tr>
+      <td><strong>Saisie</strong></td>
+      <td>Les littéraux (`/`, `-`…) sont insérés automatiquement ; les caractères non conformes au token sont ignorés.</td>
+    </tr>
+  </tbody>
+</table>
+
+```html
+<ui-input-mask formControlName="birthDate" label="Date" mask="99/99/9999" placeholder="jj/mm/aaaa" iconLeft="calendar" />
+<ui-input-mask [(ngModel)]="phone" label="Téléphone" mask="(999) 999-9999" />
+<ui-input-mask [(ngModel)]="iban" label="IBAN" mask="FR99 9999 9999 9999" [unmask]="true" />
+```
+
+> Caret : après masquage, le curseur est repositionné d'après le nombre de caractères de donnée
+> situés avant lui (littéraux auto-insérés sautés) — l'édition **au milieu** de la chaîne conserve
+> une position cohérente, pas seulement en fin de saisie.

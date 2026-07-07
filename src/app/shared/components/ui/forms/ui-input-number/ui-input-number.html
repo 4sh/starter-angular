@@ -1,0 +1,66 @@
+<ui-field
+  [label]="label()"
+  [for]="resolvedId()"
+  [required]="required()"
+  [size]="size()"
+  [level]="effectiveLevel()"
+  [disabled]="isDisabled()"
+  [readonly]="readonly()"
+  [message]="displayMessage()"
+  [messageId]="messageId()"
+>
+  <input
+    #inputEl
+    class="ui-input-number-native"
+    [class._small]="size() === 'small'"
+    type="text"
+    inputmode="decimal"
+    [id]="resolvedId()"
+    [value]="text()"
+    [placeholder]="placeholder() ?? ''"
+    [disabled]="isDisabled()"
+    [readOnly]="readonly()"
+    [required]="required()"
+    [attr.name]="name() || null"
+    [attr.tabindex]="tabindex()"
+    [attr.aria-label]="label() ? null : ariaLabel() || null"
+    [attr.aria-labelledby]="ariaLabelledBy() || null"
+    [attr.aria-describedby]="displayMessage() ? messageId() : null"
+    [attr.aria-invalid]="effectiveLevel() === 'error' ? 'true' : null"
+    role="spinbutton"
+    [attr.aria-valuenow]="modelValue() ?? null"
+    [attr.aria-valuemin]="min() ?? null"
+    [attr.aria-valuemax]="max() ?? null"
+    (input)="onInput()"
+    (keydown)="onKeydown($event)"
+    (focus)="onFocus($event)"
+    (blur)="onBlur($event)"
+  />
+
+  @if (unit(); as u) {
+    <span uiFieldSuffix class="ui-input-number-unit" [class._small]="unitSmall()" [class._disabled]="isDisabled()">{{ u }}</span>
+  }
+
+  @if (showButtons()) {
+    <span uiFieldSuffix class="ui-input-number-spinner">
+      <button
+        type="button"
+        tabindex="-1"
+        aria-label="Augmenter"
+        [disabled]="isDisabled() || readonly() || atMax()"
+        (click)="stepBy(1)"
+      >
+        <ui-icon name="angle-up" size="sm" />
+      </button>
+      <button
+        type="button"
+        tabindex="-1"
+        aria-label="Diminuer"
+        [disabled]="isDisabled() || readonly() || atMin()"
+        (click)="stepBy(-1)"
+      >
+        <ui-icon name="angle-down" size="sm" />
+      </button>
+    </span>
+  }
+</ui-field>

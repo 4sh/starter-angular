@@ -1,0 +1,25 @@
+@use 'utils';
+
+// =====================================================================
+// ui-input-number : projected parts (native input + unit + spinner).
+// Box/label/helper/states come from `ui-field`.
+// =====================================================================
+
+.ui-input-number {
+  &-native {
+    @include utils.field-native-input;
+    &._small { font-size: var(--size-typography-text-md); }
+  }
+
+  &-unit {
+    @include utils.field-affix;
+    font-family: var(--fontfamily-base);
+    font-size: var(--size-typography-text-default);
+    white-space: nowrap;
+    user-select: none;
+
+    &._small { font-size: var(--size-typography-text-md); }
+  }
+
+  &-spinner { @include utils.field-spinner('button'); }
+}

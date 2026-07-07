@@ -1,0 +1,27 @@
+@use 'utils';
+
+// =====================================================================
+// ui-input : projected parts only. The box/label/helper/states live in
+// `ui-field`; here we style the native <input> + affixes via shared mixins.
+// =====================================================================
+
+.ui-input {
+  &-native {
+    @include utils.field-native-input;
+    &._small { font-size: var(--size-typography-text-md); }
+  }
+
+  &-icon { @include utils.field-affix; }
+
+  &-unit {
+    @include utils.field-affix;
+    font-family: var(--fontfamily-base);
+    font-size: var(--size-typography-text-default);
+    white-space: nowrap;
+    user-select: none;
+
+    &._small { font-size: var(--size-typography-text-md); }
+  }
+
+  &-action { @include utils.field-action; }
+}

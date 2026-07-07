@@ -1,0 +1,60 @@
+<ui-field
+  [label]="label()"
+  [for]="resolvedId()"
+  [required]="required()"
+  [size]="size()"
+  [level]="effectiveLevel()"
+  [disabled]="isDisabled()"
+  [readonly]="readonly()"
+  [message]="displayMessage()"
+  [messageId]="messageId()"
+>
+  @if (iconLeft(); as name) {
+    <ui-icon uiFieldPrefix class="ui-input-icon" [class._disabled]="isDisabled()" [name]="name" [size]="iconSize()" />
+  }
+
+  <input
+    #inputEl
+    class="ui-input-native"
+    [class._small]="size() === 'small'"
+    [type]="type()"
+    [id]="resolvedId()"
+    [value]="displayValue()"
+    [placeholder]="placeholder() ?? ''"
+    [disabled]="isDisabled()"
+    [readOnly]="readonly()"
+    [required]="required()"
+    [attr.name]="name() || null"
+    [attr.tabindex]="tabindex()"
+    [attr.autocomplete]="autocomplete() || null"
+    [attr.maxlength]="maxlength()"
+    [attr.aria-label]="label() ? null : ariaLabel() || null"
+    [attr.aria-labelledby]="ariaLabelledBy() || null"
+    [attr.aria-describedby]="displayMessage() ? messageId() : null"
+    [attr.aria-invalid]="effectiveLevel() === 'error' ? 'true' : null"
+    (input)="onInput()"
+    (focus)="inputFocus.emit($event)"
+    (blur)="onBlur($event)"
+  />
+
+  @if (unit(); as u) {
+    <span uiFieldSuffix class="ui-input-unit" [class._small]="size() === 'small'" [class._disabled]="isDisabled()">{{ u }}</span>
+  }
+
+  @if (iconRight(); as name) {
+    @if (hasRightAction()) {
+      <button
+        uiFieldSuffix
+        type="button"
+        class="ui-input-action"
+        [attr.aria-label]="iconRightAriaLabel()"
+        [disabled]="isDisabled()"
+        (click)="iconRightClick.emit($event)"
+      >
+        <ui-icon [name]="name" [size]="iconSize()" />
+      </button>
+    } @else {
+      <ui-icon uiFieldSuffix class="ui-input-icon" [class._disabled]="isDisabled()" [name]="name" [size]="iconSize()" />
+    }
+  }
+</ui-field>

@@ -5,6 +5,9 @@ import * as ImageStories from "../../src/app/shared/components/ui/ui-image/ui-im
 import * as CheckboxStories from "../../src/app/shared/components/ui/forms/ui-checkbox/ui-checkbox.stories";
 import * as RadioStories from "../../src/app/shared/components/ui/forms/ui-radio/ui-radio.stories";
 import * as LabelStories from "../../src/app/shared/components/ui/forms/ui-label/ui-label.stories";
+import * as InputStories from "../../src/app/shared/components/ui/forms/ui-input/ui-input.stories";
+import * as InputNumberStories from "../../src/app/shared/components/ui/forms/ui-input-number/ui-input-number.stories";
+import * as InputMaskStories from "../../src/app/shared/components/ui/forms/ui-input-mask/ui-input-mask.stories";
 import * as ToggleStories from "../../src/app/shared/components/ui/forms/ui-toggle/ui-toggle.stories";
 import * as HelperStories from "../../src/app/shared/components/ui/informative/ui-helper/ui-helper.stories";
 import * as BadgeStories from "../../src/app/shared/components/ui/informative/ui-badge/ui-badge.stories";
@@ -59,6 +62,9 @@ export const CategorySection = ({ title, components }) => (
     { name: 'ui-checkbox', description: 'Case à cocher headless (CVA, indeterminate, erreur auto).', link: '?path=/docs/components-ui-forms-ui-checkbox--docs', story: CheckboxStories.Checked },
     { name: 'ui-radio', description: 'Bouton radio headless (groupe natif par name, CVA).', link: '?path=/docs/components-ui-forms-ui-radio--docs', story: RadioStories.Checked },
     { name: 'ui-label', description: 'Libellé de champ (marqueur requis, tailles).', link: '?path=/docs/components-ui-forms-ui-label--docs', story: LabelStories.Required },
+    { name: 'ui-input', description: 'Champ texte composé (label + helper, icônes, zone d’action, niveaux).', link: '?path=/docs/components-ui-forms-ui-input--docs', story: InputStories.WithHelper },
+    { name: 'ui-input-number', description: 'Champ numérique (min/max/step, spinner ±, clamp).', link: '?path=/docs/components-ui-forms-ui-input-number--docs', story: InputNumberStories.WithUnit },
+    { name: 'ui-input-mask', description: 'Champ masqué (téléphone, date… littéraux auto).', link: '?path=/docs/components-ui-forms-ui-input-mask--docs', story: InputMaskStories.Phone },
     { name: 'ui-toggle', description: 'Interrupteur on/off (headless, role=switch, CVA, tailles).', link: '?path=/docs/components-ui-forms-ui-toggle--docs', story: ToggleStories.Default },
   ]}
 />
