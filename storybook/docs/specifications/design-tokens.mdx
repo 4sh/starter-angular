@@ -184,8 +184,8 @@ Utilisez ce tableau pour déterminer quel `[domaine]` et quelle `[famille]` util
 
 Certains tokens Figma sont **composites** (plusieurs propriétés en un style : ombres…). Ils
 vivent dans `src/design-tokens/styles.json` et sont générés différemment : le pipeline
-**compose** une valeur CSS prête à l'emploi et l'expose en **double** — variable + classe
-utilitaire — pour un usage aussi bien en SCSS qu'en HTML.
+**compose** une valeur CSS prête à l'emploi et l'expose en **double** : variable + classe
+utilitaire : pour un usage aussi bien en SCSS qu'en HTML.
 
 - Sortie : `--shadow-{catégorie}-{taille}` (valeur `box-shadow`) + `.shadow-{catégorie}-{taille}`.
 - Config : output `format: "composite-styles"` dans `tokens.config.json`. Ajouter un type

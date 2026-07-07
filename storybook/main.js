@@ -1,8 +1,6 @@
 module.exports = {
   stories: [
-    // Documentation globale (fondations, guidelines, design system)
     './docs/**/*.mdx',
-    // Stories + doc MDX co-localisées avec chaque composant
     '../src/app/shared/components/**/*.mdx',
     '../src/app/shared/components/**/*.stories.@(js|jsx|mjs|ts|tsx)',
   ],
@@ -10,6 +8,7 @@ module.exports = {
   addons: [
     '@storybook/addon-docs',
     '@storybook/addon-designs',
+    '@storybook/addon-a11y',
     '@storybook-community/storybook-dark-mode',
   ],
   framework: {
