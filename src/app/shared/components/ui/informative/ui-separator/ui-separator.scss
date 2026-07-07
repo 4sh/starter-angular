@@ -1,0 +1,55 @@
+@use 'utils';
+
+// =====================================================================
+// ui-separator : co-located styles. All values come from design tokens.
+// =====================================================================
+
+.ui-separator {
+  // --- Base ----------------------------------------------------------
+  --_thickness: var(--stroke-default);
+  --_style: solid;
+
+  display: flex;
+  align-items: center;
+  gap: var(--units-sm);
+  box-sizing: border-box;
+
+  // --- Variants (line style / thickness) -------------
+  &._dashed { --_style: dashed; }
+  &._small { --_thickness: var(--stroke-sm); }
+
+  // --- Sub-elements --------------------------------------------------
+  &-line {
+    flex: 1 1 auto;
+    border: 0 var(--_style) var(--global-high-stroke-default);
+  }
+
+  &-label {
+    flex: 0 0 auto;
+    color: var(--global-high-content-default);
+    font-family: var(--fontfamily-base);
+    font-size: var(--size-typography-text-default);
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  &._small &-label { font-size: var(--size-typography-text-md); }
+
+  // --- Horizontal (default) --------------------------
+  // Fills the available width; the rule is a top border.
+  &._horizontal {
+    width: 100%;
+
+    .ui-separator-line { border-top-width: var(--_thickness); }
+  }
+
+  // --- Vertical --------------------------------------
+  // Fills the parent's height; the rule is a left border.
+  &._vertical {
+    flex-direction: column;
+    align-self: stretch;
+    height: 100%;
+
+    .ui-separator-line { border-left-width: var(--_thickness); }
+  }
+}

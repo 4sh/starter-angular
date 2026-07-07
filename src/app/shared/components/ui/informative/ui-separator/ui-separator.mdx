@@ -1,0 +1,78 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as SeparatorStories from './ui-separator.stories';
+
+<Meta of={SeparatorStories} />
+
+# ui-separator
+
+Trait de séparation **visuel et sémantique** entre deux contenus. Composant headless :
+il rend un élément `role="separator"` dont la règle provient des design tokens
+(`--global-high-stroke-default` pour le trait, `--stroke-*` pour l'épaisseur).
+
+Un `label` optionnel transforme la règle en séparateur **avec libellé** ; `labelAlign`
+place le texte au début, au centre ou à la fin.
+
+<Canvas of={SeparatorStories.Default} />
+
+## API
+
+<ArgTypes of={SeparatorStories} />
+
+## Style & épaisseur
+
+<Canvas of={SeparatorStories.Dashed} />
+<Canvas of={SeparatorStories.Small} />
+
+## Avec libellé
+
+<Canvas of={SeparatorStories.LabelStart} />
+<Canvas of={SeparatorStories.LabelCenter} />
+<Canvas of={SeparatorStories.LabelEnd} />
+
+## Vertical
+
+Le séparateur vertical prend la hauteur de son parent (`align-self: stretch`) : le placer
+dans un conteneur flex qui lui donne une hauteur.
+
+<Canvas of={SeparatorStories.Vertical} />
+<Canvas of={SeparatorStories.VerticalDashed} />
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Point</th>
+      <th>Implémentation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Rôle</strong></td>
+      <td><code>role="separator"</code> + <code>aria-orientation</code> (horizontal / vertical) : annoncé comme une rupture thématique, non focusable.</td>
+    </tr>
+    <tr>
+      <td><strong>Libellé</strong></td>
+      <td>La règle <code>separator</code> n'expose pas son texte comme nom : le libellé est reporté sur <code>aria-label</code> (surchargé par <code>ariaLabel</code>). Les traits sont décoratifs (<code>aria-hidden</code>).</td>
+    </tr>
+    <tr>
+      <td><strong>Décoratif</strong></td>
+      <td>Sans libellé, le séparateur reste une rupture sémantique. S'il n'est que décoratif dans un contexte déjà structuré, préférer un <code>aria-hidden</code> côté parent.</td>
+    </tr>
+  </tbody>
+</table>
+
+```html
+<!-- Règle simple pleine largeur -->
+<ui-separator />
+
+<!-- Séparateur « OU » centré -->
+<ui-separator label="OU" labelAlign="center" />
+
+<!-- Vertical entre deux actions d'une barre -->
+<div style="display:flex; align-items:stretch; height:24px">
+  <button>Éditer</button>
+  <ui-separator orientation="vertical" />
+  <button>Supprimer</button>
+</div>
+```
