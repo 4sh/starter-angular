@@ -11,7 +11,7 @@ const meta: Meta<UiToggle> = {
     layout: 'centered',
     design: {
       type: 'figma',
-      url: 'https://www.figma.com/design/XgSemnGLFrAq75CxcjPVf1/-Projet----UI-Kit',
+      url: 'https://www.figma.com/design/GZww5hdUA49LB8XWeWP6tl/-Projet----UI-Kit?node-id=120-1988&t=0SWBsuymjEi87t6k-1',
     },
   },
   argTypes: {
