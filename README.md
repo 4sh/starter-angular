@@ -29,8 +29,8 @@ C'est le volet **Starter Angular** de la stratégie *Double-Moteur* :
 
 ```bash
 npm install          # installe + génère les tokens (postinstall → tokens:build)
-npm start            # app de démo   → http://localhost:4200
-npm run storybook    # Storybook     → http://localhost:6006
+npm start            # Storybook   → http://localhost:6006
+npm run storybook    # Storybook   → http://localhost:6006
 npm run tokens:build # régénère les variables CSS de tokens
 npm run build && npm run build-storybook
 npm run lint
