@@ -69,10 +69,30 @@ for (const c of CONFIG.collections) {
   leavesByCol[c.id] = (c.files ?? []).flatMap((f) => leaves(JSON.parse(readFileSync(join(SRC, f), 'utf8'))));
 }
 
+/** Detect all mode names from the JSON structure for a given axis. */
+function detectModeNames(col, axis) {
+  const modes = new Set();
+  const seen = new Set();
+  for (const l of leavesByCol[col.id]) {
+    const modeIndex = l.path.findIndex((p) => p.startsWith('mode'));
+    if (modeIndex !== -1) {
+      const mode = l.path[modeIndex];
+      if (mode !== axis.default && !seen.has(mode)) {
+        modes.add(mode);
+        seen.add(mode);
+      }
+    }
+  }
+  if (col.id === 'responsive') {
+    console.log(`[detectModeNames] Detected modes for ${col.id}:`, [...modes]);
+  }
+  return modes;
+}
+
 /** Non-default mode of a leaf (first matching axis), or undefined. */
 function leafMode(col, leaf) {
   for (const a of col.modeAxes ?? []) {
-    const known = new Set([...Object.keys(a.map ?? {}), a.default]);
+    const known = new Set([...Object.keys(a.map ?? {}), a.default, ...detectModeNames(col, a)]);
     const m = leaf.path.find((p) => known.has(p));
     if (m !== undefined && m !== a.default) return m;
   }
@@ -96,16 +116,36 @@ function baseSelector(col) {
   return parts.length ? parts.join(', ') : ':root';
 }
 
+/** Auto-detect media query from screen.{mode}.width token when map is missing. */
+function autoDetectMediaQuery(col, mode) {
+  for (const l of leavesByCol[col.id]) {
+    // Look for screen.{mode}.width pattern
+    if (l.path.length >= 3 && l.path[0] === 'screen' && l.path[1] === mode && l.path[2] === 'width') {
+      const value = l.token.$value;
+      if (value && typeof value === 'string') {
+        const pxValue = value.replace('px', '');
+        return `(min-width: ${pxValue}px)`;
+      }
+    }
+  }
+  console.warn(`Could not auto-detect media query for mode ${mode} in collection ${col.id}`);
+  return null;
+}
+
 /** Selector/media group of a leaf. Base group is { media: '', selector: ':root' }. */
 function leafGroup(col, leaf) {
   const selectors = [];
   const medias = [];
   for (const a of col.modeAxes ?? []) {
-    const known = new Set([...Object.keys(a.map ?? {}), a.default]);
+    const detectedModes = detectModeNames(col, a);
+    const known = new Set([...Object.keys(a.map ?? {}), a.default, ...detectedModes]);
     const m = leaf.path.find((p) => known.has(p));
     if (m === undefined || m === a.default) continue;
     if (a.strategy === 'selectors') selectors.push(a.map?.[m] ?? ':root');
-    else if (a.strategy === 'media' && a.map?.[m]) medias.push(a.map[m]);
+    else if (a.strategy === 'media') {
+      const mediaQuery = a.map?.[m] || autoDetectMediaQuery(col, m);
+      if (mediaQuery) medias.push(mediaQuery);
+    }
   }
   return {
     selector: selectors.length ? selectors.join('') : ':root',
