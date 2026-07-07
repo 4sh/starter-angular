@@ -1,0 +1,117 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as AvatarStories from './ui-avatar.stories';
+
+<Meta of={AvatarStories} />
+
+# ui-avatar
+
+Représente un utilisateur ou une entité via une **image**, des **initiales** ou une **icône**.
+Composant headless, stylé exclusivement par les design tokens (`--informative-defaultlow-*`,
+`--global-high-stroke-default`, `--radius-full`…).
+
+Le **mode d’affichage est déduit des inputs** (`image` > `label` > `icon`) — pas de prop `type`
+redondante. Un emplacement projeté `[avatarBadge]` superpose un indicateur de statut
+(typiquement un `ui-badge`) dans le coin supérieur droit.
+
+<Canvas of={AvatarStories.Label} />
+
+## API
+
+<ArgTypes of={AvatarStories} />
+
+## Modes
+
+<Canvas of={AvatarStories.Image} />
+<Canvas of={AvatarStories.Label} />
+<Canvas of={AvatarStories.Icon} />
+
+## Tailles & forme
+
+<Canvas of={AvatarStories.Small} />
+<Canvas of={AvatarStories.Large} />
+<Canvas of={AvatarStories.Square} />
+
+## Badge de statut
+
+Projetez n’importe quel contenu dans l’emplacement `[avatarBadge]` (ici un `ui-badge`) :
+il est superposé au coin supérieur droit.
+
+<Canvas of={AvatarStories.WithBadge} />
+<Canvas of={AvatarStories.PresenceDot} />
+
+## Repli image cassée
+
+Si l’image échoue au chargement, l’avatar bascule automatiquement sur le `label` (ou l’icône) et
+émet `imageError`.
+
+<Canvas of={AvatarStories.BrokenImageFallback} />
+
+## Configuration (SCSS)
+
+Les diamètres et le rayon `square` viennent du groupe partagé
+[Informative](?path=/docs/components-configuration-informative--docs) (partagés avec
+`ui-avatar-group`). Voir le
+[fonctionnement de la configuration](?path=/docs/components-configuration--docs).
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Variable</th>
+      <th>Source</th>
+      <th>Rôle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>$sizes</code> (map local)</td>
+      <td><code>utils.$avatar-size-small/default/large</code></td>
+      <td>Diamètres 42 / 56 / 64px + tailles de typo des initiales</td>
+    </tr>
+    <tr>
+      <td><code>--_radius</code> (hook local)</td>
+      <td><code>utils.$avatar-square-radius</code> en forme <code>square</code></td>
+      <td>Rayon de bordure (cercle par défaut, <code>--radius-md</code> en square)</td>
+    </tr>
+  </tbody>
+</table>
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Point</th>
+      <th>Implémentation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Mode Image</strong></td>
+      <td>Le nom accessible vient de <code>alt</code> (ou <code>ariaLabel</code> en repli). Une <code>alt</code> vide rend l’image décorative.</td>
+    </tr>
+    <tr>
+      <td><strong>Mode Label</strong></td>
+      <td>La racine porte <code>role="img"</code> + <code>aria-label</code> (<code>ariaLabel</code> sinon les initiales) ; les initiales visibles sont <code>aria-hidden</code> pour éviter la double lecture.</td>
+    </tr>
+    <tr>
+      <td><strong>Mode Icon</strong></td>
+      <td>Avec <code>ariaLabel</code> : <code>role="img"</code> + nom. Sans nom : avatar purement décoratif (<code>aria-hidden</code>, un warning est émis en dev).</td>
+    </tr>
+    <tr>
+      <td><strong>Badge</strong></td>
+      <td>Le statut porté par la couleur doit être doublé d’un texte (ex. <code>ariaLabel="En ligne"</code> sur le <code>ui-badge</code>).</td>
+    </tr>
+  </tbody>
+</table>
+
+```html
+<!-- Avatar image avec pastille de notifications -->
+<ui-avatar image="/me.jpg" alt="Jane Doe">
+  <ui-badge avatarBadge level="highlight" [value]="3" ariaLabel="3 notifications" />
+</ui-avatar>
+
+<!-- Initiales + point de présence -->
+<ui-avatar label="JD" ariaLabel="Jane Doe — en ligne">
+  <ui-badge avatarBadge level="success" size="small" ariaLabel="En ligne" />
+</ui-avatar>
+```

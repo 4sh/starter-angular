@@ -114,3 +114,36 @@ il fonctionne en standalone, avec <code>[(ngModel)]</code> ou en reactive forms.
 ## Groupe avec indéterminé
 
 <Canvas of={CheckboxStories.Group} />
+
+## Configuration (SCSS)
+
+Variables locales en tête de `ui-checkbox.scss`. Voir le groupe partagé
+[Forms](?path=/docs/components-configuration-forms--docs) et le
+[fonctionnement de la configuration](?path=/docs/components-configuration--docs).
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Variable locale</th>
+      <th>Source</th>
+      <th>Rôle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>$box-size</code></td>
+      <td><code>utils.$form-control-size</code></td>
+      <td>Taille de la boîte à cocher</td>
+    </tr>
+    <tr>
+      <td><code>$focus-ring-width</code></td>
+      <td><code>utils.$form-focus-ring-width</code></td>
+      <td>Épaisseur de l'anneau de focus</td>
+    </tr>
+    <tr>
+      <td><code>$gap</code></td>
+      <td><code>utils.$form-control-gap</code></td>
+      <td>Espace entre la boîte et le label</td>
+    </tr>
+  </tbody>
+</table>

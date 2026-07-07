@@ -1,0 +1,27 @@
+<span
+  [class]="classes()"
+  [attr.role]="mode() === 'image' ? null : accessibleName() ? 'img' : null"
+  [attr.aria-label]="mode() === 'image' ? null : accessibleName()"
+  [attr.aria-hidden]="isDecorative() ? 'true' : null"
+>
+  @switch (mode()) {
+    @case ('image') {
+      <img
+        class="ui-avatar-image"
+        [src]="image()"
+        [attr.alt]="alt() ?? ariaLabel() ?? ''"
+        (error)="onImageError($event)"
+      />
+    }
+    @case ('label') {
+      <span class="ui-avatar-label" aria-hidden="true">{{ label() }}</span>
+    }
+    @default {
+      <ui-icon class="ui-avatar-icon" [name]="icon()" [size]="iconSize()" />
+    }
+  }
+
+  <span class="ui-avatar-badge">
+    <ng-content select="[avatarBadge]" />
+  </span>
+</span>

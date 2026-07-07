@@ -1,0 +1,86 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Components/Configuration/Forms" />
+
+# Configuration : catégorie Forms
+
+Constantes de la famille **forms** (`$form-*`). Chaque variable hérite par défaut d'une valeur
+globale et peut être surchargée pour **tous** les contrôles de formulaire à la fois.
+
+> Fichier source : `src/styles/src/settings/_ui-config.scss` · exposé via `@use 'utils'`.
+> Consommée par : `ui-checkbox`, `ui-radio`, `ui-toggle`, `ui-field` (donc `ui-input`,
+> `ui-input-mask`, `ui-input-number`). Retour au
+> [fonctionnement & sommaire](?path=/docs/components-configuration--docs).
+
+<table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
+  <thead>
+    <tr style={{ textAlign: 'left', borderBottom: '2px solid rgba(128,128,128,.25)' }}>
+      <th style={{ padding: 8, width: 280 }}>Variable</th>
+      <th style={{ padding: 8 }}>Rôle</th>
+      <th style={{ padding: 8 }}>Défaut</th>
+      <th style={{ padding: 8 }}>Valeur</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$form-control-size</code></td>
+      <td style={{ padding: 8 }}>Taille de la boîte checkbox / du cercle radio</td>
+      <td style={{ padding: 8 }}><code>var(--size-components-2xs)</code></td>
+      <td style={{ padding: 8 }}>24px (22px mobile)</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$form-control-gap</code></td>
+      <td style={{ padding: 8 }}>Espace entre le contrôle et son label</td>
+      <td style={{ padding: 8 }}><code>var(--units-sm)</code></td>
+      <td style={{ padding: 8 }}>8px</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$form-focus-ring-width</code></td>
+      <td style={{ padding: 8 }}>Anneau de focus des contrôles de formulaire</td>
+      <td style={{ padding: 8 }}><code>$focus-ring-width</code> (global)</td>
+      <td style={{ padding: 8 }}>2px</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$form-field-height</code></td>
+      <td style={{ padding: 8 }}>Hauteur de la boîte de champ (input, select, etc.)</td>
+      <td style={{ padding: 8 }}><code>var(--size-components-default)</code></td>
+      <td style={{ padding: 8 }}>48px (44px mobile)</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$form-field-height-small</code></td>
+      <td style={{ padding: 8 }}>Hauteur de la boîte de champ variante small</td>
+      <td style={{ padding: 8 }}><code>var(--size-components-sm)</code></td>
+      <td style={{ padding: 8 }}>40px (36px mobile)</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$form-field-radius</code></td>
+      <td style={{ padding: 8 }}>Rayon de bordure de la boîte de champ</td>
+      <td style={{ padding: 8 }}><code>var(--radius-sm)</code></td>
+      <td style={{ padding: 8 }}>4px</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$form-field-padding-x</code></td>
+      <td style={{ padding: 8 }}>Padding horizontal de la boîte de champ</td>
+      <td style={{ padding: 8 }}><code>var(--units-md)</code></td>
+      <td style={{ padding: 8 }}>12px</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$form-field-gap</code></td>
+      <td style={{ padding: 8 }}>Espace entre les éléments dans la boîte de champ (input + affixes)</td>
+      <td style={{ padding: 8 }}><code>var(--units-sm)</code></td>
+      <td style={{ padding: 8 }}>8px</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$form-field-stroke-width</code></td>
+      <td style={{ padding: 8 }}>Épaisseur de bordure de la boîte de champ</td>
+      <td style={{ padding: 8 }}><code>$control-stroke-width</code> (global)</td>
+      <td style={{ padding: 8 }}>2px</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$form-field-focus-ring-width</code></td>
+      <td style={{ padding: 8 }}>Anneau de focus de la boîte de champ</td>
+      <td style={{ padding: 8 }}><code>$form-focus-ring-width</code> (catégorie forms)</td>
+      <td style={{ padding: 8 }}>2px</td>
+    </tr>
+  </tbody>
+</table>

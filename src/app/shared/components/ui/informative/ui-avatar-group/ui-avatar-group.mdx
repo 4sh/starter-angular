@@ -1,0 +1,75 @@
+import { Meta, Canvas } from '@storybook/addon-docs/blocks';
+import * as GroupStories from './ui-avatar-group.stories';
+
+<Meta of={GroupStories} />
+
+# ui-avatar-group
+
+Empile un ensemble de `ui-avatar` avec un léger chevauchement. C’est un simple **conteneur de
+mise en page headless** : il n’arrange que ses enfants projetés. Le chevauchement provient de la
+constante partagée `$avatar-group-overlap` (`src/styles/src/settings/_ui-config.scss`).
+
+<Canvas of={GroupStories.Default} />
+
+## Débordement « +N »
+
+Le composant ne calcule pas de troncature : exprimez le surplus en projetant un dernier avatar
+en mode Label (ex. `+5`).
+
+<Canvas of={GroupStories.WithOverflow} />
+
+## Contenu mixte
+
+<Canvas of={GroupStories.Mixed} />
+
+## Configuration (SCSS)
+
+Le chevauchement vient du groupe partagé
+[Informative](?path=/docs/components-configuration-informative--docs) (partagé avec `ui-avatar`).
+Voir le [fonctionnement de la configuration](?path=/docs/components-configuration--docs).
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Variable</th>
+      <th>Source</th>
+      <th>Rôle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>--_overlap</code> (hook local)</td>
+      <td><code>utils.$avatar-group-overlap</code></td>
+      <td>Chevauchement horizontal entre avatars empilés (12px)</td>
+    </tr>
+  </tbody>
+</table>
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Point</th>
+      <th>Implémentation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Regroupement</strong></td>
+      <td>La racine porte <code>role="group"</code>. Chaque <code>ui-avatar</code> conserve son propre nom accessible.</td>
+    </tr>
+    <tr>
+      <td><strong>Avatar « +N »</strong></td>
+      <td>Renseigner <code>ariaLabel</code> (ex. « 5 autres membres ») pour décrire le surplus.</td>
+    </tr>
+  </tbody>
+</table>
+
+```html
+<ui-avatar-group>
+  <ui-avatar image="/a.jpg" alt="Alice" />
+  <ui-avatar image="/b.jpg" alt="Bob" />
+  <ui-avatar label="+5" ariaLabel="5 autres membres" />
+</ui-avatar-group>
+```

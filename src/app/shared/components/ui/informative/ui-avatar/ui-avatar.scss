@@ -1,0 +1,89 @@
+@use 'utils';
+@use 'sass:map';
+
+// =====================================================================
+// ui-avatar : co-located styles. All values come from design tokens.
+//
+// Extend:
+//   • Size  → add an entry to $sizes (+ the `AvatarSize` type). Diameters
+//             live in ui-config ($avatar-size-*) as they are shared with
+//             ui-avatar-group.
+//   • Shape → add a modifier driving --_radius (+ the `AvatarShape` type).
+// =====================================================================
+
+// --- Config ---------------------------------------
+$sizes: (
+  'small': (
+    diameter: utils.$avatar-size-small,
+    font: var(--size-typography-title-md),
+  ),
+  'default': (
+    diameter: utils.$avatar-size-default,
+    font: var(--size-typography-title-default),
+  ),
+  'large': (
+    diameter: utils.$avatar-size-large,
+    font: var(--size-typography-title-2xl),
+  ),
+);
+$size-default: map.get($sizes, 'default');
+
+@mixin avatar-size($size) {
+  width: utils.rem-calc(map.get($size, diameter));
+  height: utils.rem-calc(map.get($size, diameter));
+  font-size: map.get($size, font);
+}
+
+.ui-avatar {
+  // --- Base ----------------------------------------------------------
+  --_radius: var(--radius-full);
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  border: var(--stroke-default) solid var(--global-high-stroke-default);
+  border-radius: var(--_radius);
+  background-color: var(--informative-defaultlow-surface-default);
+  color: var(--informative-defaultlow-content-default);
+  font-family: var(--fontfamily-title);
+  font-weight: var(--weight-bold);
+  line-height: 1;
+  user-select: none;
+
+  @include avatar-size($size-default);
+
+  // --- Shape -----------------------------------------
+  &._square { --_radius: #{utils.$avatar-square-radius}; }
+
+  // --- Sub-elements --------------------------------------------------
+  &-image {
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    object-fit: cover;
+  }
+
+  &-label { display: inline-block; }
+
+  &-icon { line-height: 0; }
+
+  // Status indicator overlaid on the top-right corner (projected content).
+  &-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: inline-flex;
+    transform: translate(25%, -25%);
+    z-index: 1;
+  }
+
+  // --- Sizes -----------------------------------------
+  @each $name, $size in $sizes {
+    @if $name != 'default' {
+      &._#{$name} { @include avatar-size($size); }
+    }
+  }
+}
