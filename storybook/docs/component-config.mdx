@@ -68,7 +68,7 @@ S'applique à **tous** les composants interactifs (actions / forms / navigation)
 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
   <thead>
     <tr style={{ textAlign: 'left', borderBottom: '2px solid rgba(128,128,128,.25)' }}>
-      <th style={{ padding: 8 }}>Variable</th>
+      <th style={{ padding: 8, width: 260 }}>Variable</th>
       <th style={{ padding: 8 }}>Rôle</th>
       <th style={{ padding: 8 }}>Token par défaut</th>
       <th style={{ padding: 8 }}>Valeur</th>
@@ -112,7 +112,7 @@ Hérite du global, surchargeable indépendamment pour toute une famille.
 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
   <thead>
     <tr style={{ textAlign: 'left', borderBottom: '2px solid rgba(128,128,128,.25)' }}>
-      <th style={{ padding: 8 }}>Variable</th>
+      <th style={{ padding: 8, width: 260 }}>Variable</th>
       <th style={{ padding: 8 }}>Catégorie</th>
       <th style={{ padding: 8 }}>Rôle</th>
       <th style={{ padding: 8 }}>Défaut</th>
@@ -148,6 +148,55 @@ Hérite du global, surchargeable indépendamment pour toute une famille.
       <td style={{ padding: 8 }}><code>$focus-ring-width</code> (global)</td>
       <td style={{ padding: 8 }}>2px</td>
     </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$form-field-height</code></td>
+      <td style={{ padding: 8 }}>forms</td>
+      <td style={{ padding: 8 }}>Hauteur de la boîte de champ (input, select, etc.)</td>
+      <td style={{ padding: 8 }}><code>var(--size-components-default)</code></td>
+      <td style={{ padding: 8 }}>48px (44px mobile)</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$form-field-height-small</code></td>
+      <td style={{ padding: 8 }}>forms</td>
+      <td style={{ padding: 8 }}>Hauteur de la boîte de champ variante small</td>
+      <td style={{ padding: 8 }}><code>var(--size-components-sm)</code></td>
+      <td style={{ padding: 8 }}>40px (36px mobile)</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$form-field-radius</code></td>
+      <td style={{ padding: 8 }}>forms</td>
+      <td style={{ padding: 8 }}>Rayon de bordure de la boîte de champ</td>
+      <td style={{ padding: 8 }}><code>var(--radius-sm)</code></td>
+      <td style={{ padding: 8 }}>4px</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$form-field-padding-x</code></td>
+      <td style={{ padding: 8 }}>forms</td>
+      <td style={{ padding: 8 }}>Padding horizontal de la boîte de champ</td>
+      <td style={{ padding: 8 }}><code>var(--units-md)</code></td>
+      <td style={{ padding: 8 }}>12px</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$form-field-gap</code></td>
+      <td style={{ padding: 8 }}>forms</td>
+      <td style={{ padding: 8 }}>Espace entre les éléments dans la boîte de champ (input + affixes)</td>
+      <td style={{ padding: 8 }}><code>var(--units-sm)</code></td>
+      <td style={{ padding: 8 }}>8px</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$form-field-stroke-width</code></td>
+      <td style={{ padding: 8 }}>forms</td>
+      <td style={{ padding: 8 }}>Épaisseur de bordure de la boîte de champ</td>
+      <td style={{ padding: 8 }}><code>$control-stroke-width</code> (global)</td>
+      <td style={{ padding: 8 }}>2px</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$form-field-focus-ring-width</code></td>
+      <td style={{ padding: 8 }}>forms</td>
+      <td style={{ padding: 8 }}>Anneau de focus de la boîte de champ</td>
+      <td style={{ padding: 8 }}><code>$form-focus-ring-width</code> (catégorie forms)</td>
+      <td style={{ padding: 8 }}>2px</td>
+    </tr>
   </tbody>
 </table>
 
@@ -162,7 +211,7 @@ point d'ajustement per-composant ; les autres sont propres au composant.
 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
   <thead>
     <tr style={{ textAlign: 'left', borderBottom: '2px solid rgba(128,128,128,.25)' }}>
-      <th style={{ padding: 8 }}>Composant</th>
+      <th style={{ padding: 8, width: 260,}}>Composant</th>
       <th style={{ padding: 8 }}>Variable locale</th>
       <th style={{ padding: 8 }}>Source</th>
     </tr>
@@ -211,6 +260,63 @@ point d'ajustement per-composant ; les autres sont propres au composant.
       <td style={{ padding: 8 }}><code>ui-label</code></td>
       <td style={{ padding: 8 }}>hook CSS <code>--ui-label-color</code></td>
       <td style={{ padding: 8 }}>posé par le parent (checkbox/radio) pour piloter la couleur du label selon l'état</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }} rowSpan={7}><code>ui-field</code></td>
+      <td style={{ padding: 8 }}><code>$height</code></td>
+      <td style={{ padding: 8 }}><code>utils.$form-field-height</code></td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$height-small</code></td>
+      <td style={{ padding: 8 }}><code>utils.$form-field-height-small</code></td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$radius</code></td>
+      <td style={{ padding: 8 }}><code>utils.$form-field-radius</code></td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$padding-x</code></td>
+      <td style={{ padding: 8 }}><code>utils.$form-field-padding-x</code></td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$gap</code></td>
+      <td style={{ padding: 8 }}><code>utils.$form-field-gap</code></td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$stroke-width</code></td>
+      <td style={{ padding: 8 }}><code>utils.$form-field-stroke-width</code></td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$focus-ring-width</code></td>
+      <td style={{ padding: 8 }}><code>utils.$form-field-focus-ring-width</code></td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }} rowSpan={3}><code>ui-toggle</code></td>
+      <td style={{ padding: 8 }}><code>$focus-ring-width</code></td>
+      <td style={{ padding: 8 }}><code>utils.$form-focus-ring-width</code></td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$gap</code></td>
+      <td style={{ padding: 8 }}><code>utils.$form-control-gap</code></td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$sizes</code> (map track-w, track-h, thumb, pad)</td>
+      <td style={{ padding: 8 }}>local (spécifique toggle)</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>ui-input</code></td>
+      <td style={{ padding: 8 }}><em>aucune variable locale configurable</em></td>
+      <td style={{ padding: 8 }}>style via mixins <code>utils.field-*</code> (pas de surcharge locale)</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>ui-input-mask</code></td>
+      <td style={{ padding: 8 }}><em>aucune variable locale configurable</em></td>
+      <td style={{ padding: 8 }}>style via mixins <code>utils.field-*</code> (pas de surcharge locale)</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>ui-input-number</code></td>
+      <td style={{ padding: 8 }}><em>aucune variable locale configurable</em></td>
+      <td style={{ padding: 8 }}>style via mixins <code>utils.field-*</code> (pas de surcharge locale)</td>
     </tr>
   </tbody>
 </table>
