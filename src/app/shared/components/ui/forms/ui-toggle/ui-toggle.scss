@@ -12,8 +12,8 @@ $focus-ring-width: utils.$form-focus-ring-width;
 $gap: utils.$form-control-gap;
 
 $sizes: (
-  'default': (track-w: 44px, track-h: 24px, thumb: 20px, pad: 2px),
-  'small': (track-w: 36px, track-h: 20px, thumb: 16px, pad: 2px),
+  'default': (track-w: 44px, track-h: 24px, thumb: 20px, pad: 1px),
+  'small': (track-w: 36px, track-h: 20px, thumb: 16px, pad: 1px),
 );
 
 @mixin toggle-size($size) {
@@ -31,7 +31,7 @@ $sizes: (
     height: utils.rem-calc($thumb);
   }
   &._checked .ui-toggle-thumb {
-    transform: translateX(utils.rem-calc($track-w - 2.8 * $pad - $thumb));
+    transform: translateX(utils.rem-calc($track-w - 4 * $pad - $thumb));
   }
 }
 
@@ -71,9 +71,16 @@ $sizes: (
   }
 
   &-thumb {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
     box-sizing: border-box;
     border-radius: var(--radius-full);
     background-color: var(--form-high-surface-default);
+    color: var(--form-low-content-default);
+    line-height: 0;
+    overflow: hidden;
     @include utils.control-transition(transform, background-color);
   }
 

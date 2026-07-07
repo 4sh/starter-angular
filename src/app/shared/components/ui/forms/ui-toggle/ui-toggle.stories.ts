@@ -2,11 +2,12 @@ import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
 import { FormsModule } from '@angular/forms';
 import { UiToggle } from '@app/shared/components/ui/forms/ui-toggle/ui-toggle';
+import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
 
 const meta: Meta<UiToggle> = {
   title: 'Components/ui/forms/ui-toggle',
   component: UiToggle,
-  decorators: [moduleMetadata({ imports: [UiToggle, FormsModule] })],
+  decorators: [moduleMetadata({ imports: [UiToggle, UiIcon, FormsModule] })],
   parameters: {
     layout: 'centered',
     design: {
@@ -30,6 +31,17 @@ const meta: Meta<UiToggle> = {
       options: ['default', 'small'],
       description: 'Taille.',
       table: { type: { summary: 'ToggleSize' }, defaultValue: { summary: '"default"' } },
+    },
+    labelPosition: {
+      control: { type: 'inline-radio' },
+      options: ['before', 'after'],
+      description: 'Côté du label (gauche = before / droite = after). Les deux côtés sont cliquables.',
+      table: { type: { summary: 'ToggleLabelPosition' }, defaultValue: { summary: '"after"' } },
+    },
+    handle: {
+      control: false,
+      description: 'Template personnalisé du curseur (contexte `{ checked }`).',
+      table: { type: { summary: 'TemplateRef<ToggleHandleContext>' } },
     },
     required: {
       control: { type: 'boolean' },
@@ -63,6 +75,7 @@ const meta: Meta<UiToggle> = {
   args: {
     label: 'Label',
     size: 'default',
+    labelPosition: 'after',
   },
 };
 
@@ -72,7 +85,7 @@ type Story = StoryObj<UiToggle>;
 // Piloté par ngModel pour une bascule réellement interactive dans Storybook.
 const TEMPLATE = `<ui-toggle
     [(ngModel)]="model"
-    [label]="label" [ariaLabel]="ariaLabel" [size]="size"
+    [label]="label" [ariaLabel]="ariaLabel" [size]="size" [labelPosition]="labelPosition"
     [required]="required" [disabled]="disabled" [readonly]="readonly"
     [invalid]="invalid" [tabindex]="tabindex"
     (toggleChange)="toggleChange($event)" />`;
@@ -91,3 +104,22 @@ export const Invalid: Story = { render: story(), args: { label: 'Champ obligatoi
 
 // Sans label visible : nom accessible obligatoire
 export const NoLabel: Story = { render: story(), args: { label: undefined, ariaLabel: 'Mode sombre' } };
+
+// Label à gauche (before) — cliquable des deux côtés
+export const LabelBefore: Story = { render: story(), args: { label: 'Mode sombre', labelPosition: 'before' } };
+
+// Curseur personnalisé : icône check / xmark selon l'état
+export const CustomHandle: Story = {
+  render: (args) => ({
+    props: { ...args, model: true },
+    template: `
+      <ng-template #handle let-checked="checked">
+        <ui-icon [name]="checked ? 'check' : 'xmark'" size="sm" />
+      </ng-template>
+      <ui-toggle
+        [(ngModel)]="model"
+        [label]="label" [handle]="handle" [size]="size" [labelPosition]="labelPosition"
+        (toggleChange)="toggleChange($event)" />`,
+  }),
+  args: { label: 'Notifications' },
+};

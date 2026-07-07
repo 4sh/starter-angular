@@ -7,12 +7,18 @@ import {
   input,
   output,
   signal,
+  TemplateRef,
   viewChild,
 } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { BaseControlValueAccessor } from '@app/core/controlValueAccessor/BaseControlValueAccessor';
 
 export type ToggleSize = 'default' | 'small';
+export type ToggleLabelPosition = 'before' | 'after';
+export interface ToggleHandleContext {
+  checked: boolean;
+}
 
 let nextUid = 0;
 
@@ -30,6 +36,7 @@ let nextUid = 0;
  */
 @Component({
   selector: 'ui-toggle',
+  imports: [NgTemplateOutlet],
   templateUrl: './ui-toggle.html',
   styleUrl: './ui-toggle.scss',
   providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => UiToggle), multi: true }],
@@ -37,6 +44,8 @@ let nextUid = 0;
 export class UiToggle<T = boolean> extends BaseControlValueAccessor<T> {
   /** Label displayed next to the switch (clicking it toggles the switch). */
   label = input<string>();
+  /** Side of the switch the label sits on (both sides are clickable). */
+  labelPosition = input<ToggleLabelPosition>('after');
   /** Accessible name when no visible label is provided. */
   ariaLabel = input<string>();
   /** id of an external element that labels this switch. */
@@ -61,6 +70,11 @@ export class UiToggle<T = boolean> extends BaseControlValueAccessor<T> {
   invalid = input(false, { transform: booleanAttribute });
   /** tabindex forwarded to the native input. */
   tabindex = input<number>();
+  /**
+   * Custom handle (thumb) template. Receives a `{ checked }` context, so the
+   * rendered content can react to the on/off state (e.g. a check / times icon).
+   */
+  handle = input<TemplateRef<ToggleHandleContext>>();
 
   /** Emitted on user toggle with the new model value (never when disabled/readonly). */
   toggleChange = output<T>();
@@ -82,6 +96,10 @@ export class UiToggle<T = boolean> extends BaseControlValueAccessor<T> {
 
   /** @ignore */
   protected readonly checked = computed(() => this.modelValue() === this.trueValue());
+  /** @ignore A visible label is provided. */
+  protected readonly hasLabel = computed(() => !!this.label());
+  /** @ignore Context handed to the custom handle template. */
+  protected readonly handleContext = computed<ToggleHandleContext>(() => ({ checked: this.checked() }));
   /** @ignore Input disabled OR control disabled (form API). */
   protected readonly isDisabled = computed(() => this.disabled() || this.controlDisabled());
   /** @ignore Explicit `invalid` input OR invalid control worth surfacing. */
