@@ -1,0 +1,29 @@
+<div [class]="classes()">
+  @if (label()) {
+    <ui-label
+      class="ui-field-label"
+      [for]="for()"
+      [label]="label()!"
+      [required]="required()"
+      [size]="size()"
+      [disabled]="disabled()"
+    />
+  }
+
+  <div class="ui-field-box">
+    <ng-content select="[uiFieldPrefix]" />
+    <ng-content />
+    <ng-content select="[uiFieldSuffix]" />
+  </div>
+
+  @if (message()) {
+    <ui-helper
+      class="ui-field-message"
+      [attr.id]="messageId()"
+      [message]="message()!"
+      [level]="level()"
+      [showIcon]="false"
+      size="small"
+    />
+  }
+</div>

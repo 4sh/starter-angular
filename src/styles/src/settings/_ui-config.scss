@@ -13,10 +13,19 @@ $control-stroke-width: var(--stroke-default);
 $control-transition-duration: var(--transition-default);
 $control-transition-easing: var(--transition-easeinout);
 
-// --- Category · forms -------------------------------------------------
+// --- Category : forms -------------------------------------------------
 $form-control-size: var(--size-components-2xs);
 $form-control-gap: var(--units-sm);
 $form-focus-ring-width: $focus-ring-width;
 
-// --- Category · actions -----------------------------------------------
+// Field
+$form-field-height: var(--size-components-default);
+$form-field-height-small: var(--size-components-sm);
+$form-field-radius: var(--radius-sm);
+$form-field-padding-x: var(--units-md);
+$form-field-gap: var(--units-sm);
+$form-field-stroke-width: $control-stroke-width;
+$form-field-focus-ring-width: $form-focus-ring-width;
+
+// --- Category : actions -----------------------------------------------
 $action-focus-ring-width: $focus-ring-width;

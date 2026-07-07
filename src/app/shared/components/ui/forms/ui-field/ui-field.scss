@@ -1,0 +1,72 @@
+@use 'utils';
+
+// =====================================================================
+// ui-field : shared shell for "box" fields. Tokens only.
+//
+// The box carries the border/background/states; the content (input + affixes)
+// is projected and styled by the concrete component (`utils.field-*` mixins).
+// Structural constants: `_ui-config.scss` (`$form-field-*`).
+// =====================================================================
+
+$height: utils.$form-field-height;
+$height-small: utils.$form-field-height-small;
+$radius: utils.$form-field-radius;
+$padding-x: utils.$form-field-padding-x;
+$gap: utils.$form-field-gap;
+$stroke-width: utils.$form-field-stroke-width;
+$focus-ring-width: utils.$form-field-focus-ring-width;
+
+.ui-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--units-sm);
+
+  &._small { gap: var(--units-xs); }
+
+  // --- Box -----------------------------------------------------------
+  // Border colour routed through local vars, overridden per level below.
+  &-box {
+    --_stroke: var(--form-high-stroke-default);
+    --_stroke-hover: var(--form-high-stroke-hover);
+    --_stroke-focus: var(--form-high-stroke-hover);
+
+    display: flex;
+    align-items: center;
+    gap: $gap;
+    box-sizing: border-box;
+    height: $height;
+    padding: 0 $padding-x;
+    border: $stroke-width solid var(--_stroke);
+    border-radius: $radius;
+    background-color: var(--form-high-surface-default);
+    cursor: text;
+    @include utils.control-transition(border-color, background-color, box-shadow);
+  }
+  &._small &-box { height: $height-small; }
+
+  &-box:hover:not(:focus-within) { border-color: var(--_stroke-hover); }
+  &-box:focus-within {
+    border-color: var(--_stroke-focus);
+    box-shadow: 0 0 0 $focus-ring-width rgb(from var(--_stroke-focus) r g b / 50%);
+  }
+
+  // --- Levels (border palette) ---------------------------------------
+  &._success &-box {
+    --_stroke: var(--form-success-stroke-default);
+    --_stroke-hover: var(--form-success-stroke-hover);
+    --_stroke-focus: var(--form-success-stroke-focused);
+  }
+  &._error &-box {
+    --_stroke: var(--form-error-stroke-default);
+    --_stroke-hover: var(--form-error-stroke-hover);
+    --_stroke-focus: var(--form-error-stroke-focused);
+  }
+
+  // --- States --------------------------------------------------------
+  &._disabled &-box {
+    --_stroke: var(--form-high-stroke-disabled);
+    background-color: var(--form-high-surface-disabled);
+    cursor: not-allowed;
+  }
+  &._readonly &-box { cursor: default; }
+}

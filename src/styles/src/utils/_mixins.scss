@@ -49,3 +49,91 @@
     --_content: var(--form-#{$palette}-content-disabled);
   }
 }
+
+// ---------------------------------------------------------------------
+// Field parts — shared by ui-input / ui-input-number / ui-input-mask.
+// The field shell (`ui-field`) owns the box; these style the projected
+// input + affixes (which live in the concrete component's view).
+// ---------------------------------------------------------------------
+
+/// Bare native <input>/<textarea> filling the field box (no border/bg).
+@mixin field-native-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-family: var(--fontfamily-base);
+  font-size: var(--size-typography-text-default);
+  color: var(--form-high-content-default);
+
+  &::placeholder {
+    color: var(--form-low-content-default);
+    opacity: 1;
+  }
+  &:disabled { cursor: not-allowed; color: var(--form-high-content-disabled); }
+}
+
+/// Low-emphasis affix (decorative icon, unit text) sitting inside the box.
+/// Toggle `._disabled` on the element to dim it with the field.
+@mixin field-affix {
+  flex-shrink: 0;
+  color: var(--form-low-content-default);
+
+  &._disabled { color: var(--form-high-content-disabled); }
+}
+
+/// Square, full-height, flush-right action button (password reveal, clear…).
+@mixin field-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  aspect-ratio: 1;
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  border-radius: 0 ui-config.$form-field-radius ui-config.$form-field-radius 0;
+  color: var(--form-low-content-default);
+  cursor: pointer;
+  @include control-transition(color, background-color, box-shadow);
+
+  &:last-child { margin-right: calc(-1 * #{ui-config.$form-field-padding-x}); }
+
+  &:hover:not(:disabled) {
+    color: var(--form-high-content-hover);
+    background-color: var(--form-high-surface-hover);
+  }
+  &:focus-visible {
+    outline: none;
+    color: var(--form-high-content-focused);
+    box-shadow: inset 0 0 0 ui-config.$form-field-stroke-width var(--form-high-stroke-focused);
+  }
+  &:disabled { cursor: not-allowed; color: var(--form-high-content-disabled); }
+}
+
+/// Vertical up/down spinner (number stepper). `$btn` = the button selector.
+@mixin field-spinner($btn: 'button') {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+
+  #{$btn} {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: none;
+    background: none;
+    line-height: 0;
+    color: var(--form-low-content-default);
+    cursor: pointer;
+    @include control-transition(color);
+
+    &:hover:not(:disabled) { color: var(--form-high-content-hover); }
+    &:disabled { cursor: not-allowed; color: var(--form-high-content-disabled); }
+  }
+}
