@@ -31,11 +31,9 @@ $form-field-focus-ring-width: $form-focus-ring-width;
 $action-focus-ring-width: $focus-ring-width;
 
 // --- Category : informative -------------------------------------------
-// Avatar circle diameters — custom px steps not covered by
-// --size-components-*. Shared by ui-avatar and ui-avatar-group.
+// Avatar
 $avatar-size-small: 42px;
 $avatar-size-default: 56px;
 $avatar-size-large: 64px;
 $avatar-square-radius: var(--radius-md);
-// Overlap applied between stacked avatars inside ui-avatar-group.
 $avatar-group-overlap: var(--units-md);

@@ -52,13 +52,11 @@ GLOBAL UI  ──►  CATÉGORIE  ──►  COMPOSANT (variable locale)
                  informative)
 ```
 
-- Chaque variable de **catégorie** hérite par défaut de la valeur **globale**.
-- Chaque **composant** lit la valeur de catégorie dans une **variable locale**, en tête de
-  son `.scss`. C'est ce qui préserve l'indépendance : ajuster un composant = changer sa
-  variable locale, sans impacter les autres.
+- Les constantes sont regroupées par **portée** : certaines sont **globales** (partagées par plusieurs familles de composants / des concepts communs à l’ensemble de l’interface), d’autres sont propres à une **catégorie** (forms, actions, informative).
+- Chaque composant consomme ensuite les constantes dont il a besoin dans sa propre configuration SCSS (variables locales, maps, mixins, etc.), ce qui permet d’ajuster un composant sans impacter les autres.
 
 ```scss
-// Dans ui-radio.scss : la valeur commune arrive via une variable LOCALE :
+// Exemple dans ui-radio.scss : la valeur commune arrive via une variable LOCALE :
 $focus-ring-width: utils.$form-focus-ring-width; // ← remplacer ici = ajuster CE composant
 ```
 
@@ -81,22 +79,22 @@ page liste les variables, leur rôle et leur valeur par défaut.
     <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
       <td style={{ padding: 8 }}><a href="?path=/docs/components-configuration-global-ui--docs"><strong>Global UI</strong></a></td>
       <td style={{ padding: 8 }}><code>$focus-ring-width</code>, <code>$control-*</code></td>
-      <td style={{ padding: 8 }}>Tous les composants interactifs</td>
+      <td style={{ padding: 8 }}>Tous les composants interactifs / Concepts Globaux à l'interface</td>
     </tr>
     <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
       <td style={{ padding: 8 }}><a href="?path=/docs/components-configuration-forms--docs"><strong>Forms</strong></a></td>
       <td style={{ padding: 8 }}><code>$form-*</code></td>
-      <td style={{ padding: 8 }}>checkbox, radio, toggle, field (input / mask / number)</td>
+      <td style={{ padding: 8 }}>Éléments de formulaire</td>
     </tr>
     <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
       <td style={{ padding: 8 }}><a href="?path=/docs/components-configuration-actions--docs"><strong>Actions</strong></a></td>
       <td style={{ padding: 8 }}><code>$action-*</code></td>
-      <td style={{ padding: 8 }}>button</td>
+      <td style={{ padding: 8 }}>Composants interactifs (ex : button) </td>
     </tr>
     <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
       <td style={{ padding: 8 }}><a href="?path=/docs/components-configuration-informative--docs"><strong>Informative</strong></a></td>
       <td style={{ padding: 8 }}><code>$avatar-*</code></td>
-      <td style={{ padding: 8 }}>avatar, avatar-group</td>
+      <td style={{ padding: 8 }}>Élements portant un message / non interactif</td>
     </tr>
   </tbody>
 </table>
