@@ -1,0 +1,163 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as TooltipStories from './ui-tooltip.stories';
+
+<Meta of={TooltipStories} />
+
+# ui-tooltip
+
+Directive `[uiTooltip]` fournissant une **infobulle** (advisory) sur n'importe quel élément
+déclencheur. Le comportement est **headless** et s'appuie sur **Angular CDK Overlay** : le
+placement, le **retournement automatique** quand l'espace manque dans le viewport, et le
+repositionnement au scroll sont délégués au `FlexibleConnectedPositionStrategy` (aucune
+géométrie manuelle). L'API s'inspire de PrimeNG `pTooltip`, adaptée aux signals.
+
+Le panneau visuel (bulle + flèche) est **100 % piloté par les design tokens** de la catégorie
+`informative` (`--informative-defaulthigh-*`). Personnalisation ponctuelle via `tooltipStyleClass`
+et contenu riche via `TemplateRef`.
+
+<Canvas of={TooltipStories.Default} />
+
+## API
+
+<ArgTypes of={TooltipStories} />
+
+> Le contenu se lie via l'alias de la directive : `[uiTooltip]="…"`. Il accepte une chaîne,
+> du HTML (avec `escape=false`, assaini par Angular) ou un `TemplateRef` (contexte via
+> `[tooltipContext]`).
+
+## Placement
+
+Quatre côtés d'ancrage (`top` par défaut). Par défaut (`fitContent=true`), le CDK bascule vers
+un côté de repli si l'infobulle sortirait du viewport, et la flèche suit le côté effectif.
+Passez `fitContent=false` pour **verrouiller** le côté choisi (aucun repli).
+
+> **`appendTo`** : le CDK attache l'overlay à un conteneur au niveau `<body>` (équivalent de
+> `appendTo="body"` chez PrimeNG). C'est volontaire : cela évite le rognage par un ancêtre
+> `overflow`/`transform` et les conflits de `z-index`. Il n'y a donc pas de prop `appendTo`.
+
+<Canvas of={TooltipStories.Positions} />
+
+## Contenu riche
+
+<Canvas of={TooltipStories.RichContent} />
+
+## Interactivité & personnalisation
+
+`autoHide=false` garde l'infobulle ouverte tant qu'on la survole (contenu sélectionnable /
+cliquable). Pour un rendu ponctuel différent, posez `tooltipStyleClass` sur le panneau et
+ciblez cette classe depuis une feuille de style globale.
+
+<Canvas of={TooltipStories.Interactive} />
+<Canvas of={TooltipStories.CustomStyle} />
+
+## Bonnes pratiques
+
+- **Déclencheur natif / focusable** : posez la directive sur un `<button>`, un `ui-button`,
+  un lien ou un champ. `tooltipEvent="both"` (défaut) affiche aussi au **focus clavier**.
+- **Concision** : une infobulle porte une aide brève, jamais une information essentielle ni
+  un contenu interactif indispensable (utilisez un popover/dialog pour cela).
+- **Délais** : `showDelay` (150 ms) évite le clignotement au survol de passage ; `hideDelay`
+  laisse le temps d'atteindre une infobulle interactive.
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Point</th>
+      <th>Implémentation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Association</td>
+      <td>`aria-describedby` posé sur le déclencheur pendant l'affichage, pointant l'`id` du panneau (`role="tooltip"`).</td>
+    </tr>
+    <tr>
+      <td>Clavier</td>
+      <td>Affichage au focus (`tooltipEvent="both"`/`focus`) ; masquage à `Échap` (`hideOnEscape`, WCAG 1.4.13 « dismissible »).</td>
+    </tr>
+    <tr>
+      <td>Survolable</td>
+      <td>`autoHide=false` permet de survoler l'infobulle sans qu'elle disparaisse (WCAG « hoverable »).</td>
+    </tr>
+    <tr>
+      <td>Flèche décorative</td>
+      <td>`aria-hidden` sur la flèche ; jamais porteuse de sens.</td>
+    </tr>
+    <tr>
+      <td>Mouvement réduit</td>
+      <td>La transition d'apparition est neutralisée sous `prefers-reduced-motion: reduce`.</td>
+    </tr>
+    <tr>
+      <td>Contraste</td>
+      <td>Surface/contenu issus des tokens `informative` (conformes WCAG AA en clair et sombre).</td>
+    </tr>
+  </tbody>
+</table>
+
+## Exemples
+
+```html
+<!-- Texte simple -->
+<button uiTooltip="Enregistrer le document">Enregistrer</button>
+
+<!-- Côté + délais -->
+<ui-button label="Aide" uiTooltip="Détails…" tooltipPosition="right" [showDelay]="300" />
+
+<!-- Contenu riche (TemplateRef) -->
+<button [uiTooltip]="tip" [tooltipContext]="{ $implicit: user }" [autoHide]="false">Profil</button>
+<ng-template #tip let-u><strong>{{ u.name }}</strong><br />{{ u.role }}</ng-template>
+
+<!-- HTML brut (assaini) -->
+<span [uiTooltip]="'<b>Gras</b> autorisé'" [escape]="false">Info</span>
+```
+
+## Configuration (SCSS)
+
+Le panneau consomme **directement** les design tokens de la catégorie `informative`
+(comme `ui-badge`) — surface / contenu / bordure via `--informative-defaulthigh-*`, rayon
+`--radius-default`, rembourrage `--units-*`, ombre `--shadow-default-md`. Aucun hook CSS
+spécifique au composant : basculer un thème/mode suffit à re-teinter l'infobulle.
+
+Deux constantes structurelles restent **locales** (`ui-tooltip.scss`), propres à ce composant :
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Variable locale</th>
+      <th>Valeur</th>
+      <th>Rôle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>`$tooltip-max-width`</td>
+      <td>`256px`</td>
+      <td>Largeur max avant retour à la ligne.</td>
+    </tr>
+    <tr>
+      <td>`$tooltip-arrow-size`</td>
+      <td>`8px`</td>
+      <td>Taille de la flèche, tenue en phase avec la constante `ARROW_GAP` du `.ts`.</td>
+    </tr>
+  </tbody>
+</table>
+
+**Rendu ponctuel** : `tooltipStyleClass` ajoute une classe sur le panneau ; ciblez-la depuis une
+feuille de style **globale**. Le panneau utilisant des styles scopés, le plus fiable est de
+**re-mapper les tokens sémantiques** sur cette classe plutôt que d'écraser les propriétés
+(la substitution de variable évite tout conflit de spécificité, et la flèche suit) :
+
+```css
+.tip-highlight {
+  --informative-defaulthigh-surface-default: var(--informative-highlighthigh-surface-default);
+  --informative-defaulthigh-content-default: var(--informative-highlighthigh-content-default);
+  --informative-defaulthigh-stroke-default:  var(--informative-highlighthigh-stroke-default);
+}
+```
+
+Pour des variantes sémantiques récurrentes (`highlight`, `success`, …), la voie idiomatique
+serait d'ajouter un input `level` générant des modifiers `._{level}` façon `ui-badge` (non
+implémenté ici, hors périmètre Figma).
+Voir aussi [Components/Configuration](?path=/docs/components-configuration--docs).

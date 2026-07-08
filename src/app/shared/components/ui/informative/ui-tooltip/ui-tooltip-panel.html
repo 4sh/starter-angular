@@ -1,0 +1,12 @@
+<div [class]="classes()" role="tooltip" [id]="tooltipId()">
+  <span class="ui-tooltip-arrow" aria-hidden="true"></span>
+  <div class="ui-tooltip-text">
+    @if (template()) {
+      <ng-container *ngTemplateOutlet="template()!; context: templateContext()" />
+    } @else if (escape()) {
+      {{ text() }}
+    } @else {
+      <span [innerHTML]="text()"></span>
+    }
+  </div>
+</div>
