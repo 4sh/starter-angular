@@ -14,7 +14,7 @@ const meta: Meta<UiAvatar> = {
     layout: 'centered',
     design: {
       type: 'figma',
-      url: 'https://www.figma.com/design/XgSemnGLFrAq75CxcjPVf1/-Projet----UI-Kit',
+      url: 'https://www.figma.com/design/GZww5hdUA49LB8XWeWP6tl/-Projet----UI-Kit?node-id=0-1&t=PXOwFotKvf72dn1c-1',
     },
   },
   argTypes: {

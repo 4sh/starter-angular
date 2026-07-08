@@ -67,11 +67,21 @@ export const LinkIcon = () => (
 
             <div className="feature-card">
                 <div className="feature-card-media">
+                    <img src="./doc-tfm.png" alt="Interface de gestion Token Flow Manager" />
+                </div>
+                <div className="feature-card-body">
+                    <h3><a href="https://www.npmjs.com/package/token-flow-manager" target="_blank">Token Flow Manager</a></h3>
+                    <p>Visualisez et éditez vos tokens de style directement côté code via un <strong>dashboard local visuel</strong>, sans altérer votre formatage JSON.</p>
+                </div>
+            </div>
+
+            <div className="feature-card">
+                <div className="feature-card-media">
                     <img src="./doc-gridaflex.png" alt="Système de grille Gridaflex" />
                 </div>
                 <div className="feature-card-body">
-                    <h3>Gridaflex 1.0.0</h3>
-                    <p>Système de grille flexbox (24 colonnes) et gestion des <strong>breakpoints / media queries</strong>, alimenté par les tokens responsive.</p>
+                    <h3><a href="https://www.npmjs.com/package/gridaflex" target="_blank">Gridaflex</a></h3>
+                    <p>Système de grille flexbox et gestion des <strong>breakpoints / media queries</strong>, alimenté par les tokens responsive.</p>
                 </div>
             </div>
 
@@ -81,7 +91,7 @@ export const LinkIcon = () => (
                 </div>
                 <div className="feature-card-body">
                     <h3>Librairie d'icônes</h3>
-                    <p>Icônes <strong>FontAwesome Free</strong> intégrées via le composant <code>ui-icon</code>, décoratives par défaut (a11y).</p>
+                    <p>Icônes <strong><a href="https://fontawesome.com/" target="_blank">FontAwesome Free</a></strong> intégrées par defaut via le composant <code>ui-icon</code>, décoratives par défaut (a11y).</p>
                 </div>
             </div>
         </div>
@@ -258,6 +268,7 @@ export const LinkIcon = () => (
           max-width: 100%;
           max-height: 100%;
           object-fit: contain;
+          border-radius: 12px;
         }
 
         .feature-card-body {

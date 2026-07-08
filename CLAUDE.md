@@ -30,7 +30,7 @@ Avant de générer quoi que ce soit dans Figma, tu **dois** auditer le composant
 > **Patron de référence** : `src/app/shared/components/ui/actions/ui-button/`. Tout nouveau
 > composant `ui-*` se construit sur ce modèle (signals + classes de l'ADN visuel SCSS).
 
-**Figma file** : `https://www.figma.com/design/XgSemnGLFrAq75CxcjPVf1/-Projet----UI-Kit`
+**Figma file** : `https://www.figma.com/design/GZww5hdUA49LB8XWeWP6tl/-Projet----UI-Kit?node-id=0-1&t=PXOwFotKvf72dn1c-1`
 
 ---
 
@@ -246,7 +246,7 @@ Format URL attendu dans les stories :
 parameters: {
   design: {
     type: 'figma',
-    url: 'https://www.figma.com/design/XgSemnGLFrAq75CxcjPVf1/-Projet----UI-Kit?node-id=XX-XX',
+    url: 'https://www.figma.com/design/GZww5hdUA49LB8XWeWP6tl/-Projet----UI-Kit?node-id=0-1&t=PXOwFotKvf72dn1c-1?node-id=XX-XX',
   },
 }
 ```
