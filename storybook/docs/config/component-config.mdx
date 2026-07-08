@@ -13,7 +13,7 @@ composant.
 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
   <thead>
     <tr style={{ textAlign: 'left', borderBottom: '2px solid rgba(128,128,128,.25)' }}>
-      <th style={{ padding: 8 }}>Axe</th>
+      <th style={{ padding: 8, width: 194}}>Axe</th>
       <th style={{ padding: 8 }}>Quoi</th>
       <th style={{ padding: 8 }}>Quand</th>
       <th style={{ padding: 8 }}>Où</th>
@@ -39,7 +39,6 @@ composant.
 > **Foundations → Colors**. Cette page documente l'axe **structure**.
 
 <br/>
-<br/>
 
 ## Principe : 3 niveaux, une variable locale par composant
 
@@ -63,7 +62,6 @@ GLOBAL UI  ──►  CATÉGORIE  ──►  COMPOSANT (variable locale)
 $focus-ring-width: utils.$form-focus-ring-width; // ← remplacer ici = ajuster CE composant
 ```
 
-<br/>
 <br/>
 
 ## Sommaire : groupes de variables partagées
@@ -179,7 +177,6 @@ sur la doc du composant :
 > se répercute donc partout, et remplacer la variable locale n'affecte que le composant.
 
 <br/>
-<br/>
 
 ## Mixin `control-transition()`
 
@@ -198,7 +195,6 @@ dans `ui-config`), en une déclaration :
 Changer la durée/courbe pour tous les composants = éditer `$control-transition-duration` /
 `$control-transition-easing` dans `ui-config`.
 
-<br/>
 <br/>
 
 ## Gouvernance : quand créer une constante partagée

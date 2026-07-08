@@ -101,7 +101,8 @@ export const ColorsExplorer = () => {
         .tfm-subtabs button { border: 1px solid rgba(128,128,128,.28); background: transparent; color: inherit; padding: 6px 14px; border-radius: 999px; font-size: 13px; cursor: pointer; transition: all .15s; }
         .tfm-subtabs button:hover { border-color: var(--accent); color: var(--accent); }
         .tfm-subtabs button.is-active { background: var(--accent); border-color: var(--accent); color: #fff; }
-        .tfm-switches { display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 16px; align-items: center; }
+        .tfm-top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 16px; }
+        .tfm-switches { display: flex; gap: 24px; flex-wrap: wrap; align-items: center; }
         .tfm-switches .grp { display: flex; gap: 6px; align-items: center; }
         .tfm-switches .grp > span { font-size: 12px; font-weight: 700; opacity: .7; }
         .tfm-switches button { border: 1px solid rgba(128,128,128,.28); background: transparent; color: inherit; padding: 5px 12px; border-radius: 7px; font-size: 13px; cursor: pointer; }
@@ -111,6 +112,9 @@ export const ColorsExplorer = () => {
         .tfm-val { opacity: .8; font-variant-numeric: tabular-nums; font-family: var(--sb-code-font, ui-monospace, monospace); font-size: 12px; white-space: nowrap; }
         .tfm-table thead th { position: sticky; top: 0; z-index: 1; text-align: left; padding: 10px 14px; border-bottom: 1px solid rgba(128,128,128,.22); font-size: 11.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; opacity: .7; background: var(--sb-bg-subtle, #f8fafc); }
         .tfm-table td { padding: 10px 14px; border-bottom: 1px solid rgba(128,128,128,.12); vertical-align: middle; }
+        .tfm-colors-stack { display: flex; flex-direction: column; gap: 2px; }
+        .tfm-colors-stack .hex { font-weight: 600; }
+        .tfm-colors-stack .small { font-size: 11px; opacity: .7; }
         .tfm-table tbody tr:last-child td { border-bottom: none; }
         .tfm-table tbody tr { transition: background-color .15s ease; }
         .tfm-table tbody tr:nth-child(even) { background-color: rgba(128,128,128,.04); }
@@ -120,10 +124,21 @@ export const ColorsExplorer = () => {
         .tfm-copy:hover { border-color: var(--accent); color: var(--accent); }
       `}</style>
 
-      <div className="tfm-seg">
-        {TOPS.map((t) => (
-          <button key={t} className={top === t ? 'is-active' : ''} onClick={() => setTop(t)}>{cap(t)}</button>
-        ))}
+      <div className="tfm-top-row">
+        <div className="tfm-seg">
+          {TOPS.map((t) => (
+            <button key={t} className={top === t ? 'is-active' : ''} onClick={() => setTop(t)}>{cap(t)}</button>
+          ))}
+        </div>
+
+        <div className="tfm-switches">
+          <div className="grp"><span>Mode</span>
+            {[['light','Light'],['dark','Dark']].map(([v,l]) => <button key={v} className={theme===v?'is-active':''} onClick={() => setTheme(v)}>{l}</button>)}
+          </div>
+          <div className="grp"><span>Marque</span>
+            {[['brand1','Brand 1'],['brand2','Brand 2'],['brand3','Brand 3']].map(([v,l]) => <button key={v} className={brand===v?'is-active':''} onClick={() => setBrand(v)}>{l}</button>)}
+          </div>
+        </div>
       </div>
 
       <div className="tfm-subtabs">
@@ -132,29 +147,26 @@ export const ColorsExplorer = () => {
         ))}
       </div>
 
-      <div className="tfm-switches">
-        <div className="grp"><span>Mode</span>
-          {[['light','Light'],['dark','Dark']].map(([v,l]) => <button key={v} className={theme===v?'is-active':''} onClick={() => setTheme(v)}>{l}</button>)}
-        </div>
-        <div className="grp"><span>Marque</span>
-          {[['brand1','Brand 1'],['brand2','Brand 2'],['brand3','Brand 3']].map(([v,l]) => <button key={v} className={brand===v?'is-active':''} onClick={() => setBrand(v)}>{l}</button>)}
-        </div>
-      </div>
-
       <div ref={scopeRef} data-theme={theme} data-brand={brand !== 'brand1' ? brand : undefined}>
         <div className="tfm-table-wrap">
         <table className="tfm-table">
           <thead>
-            <tr><th style={{ width: 56 }}></th><th>Token (variable CSS)</th><th>RGB</th><th>HEX</th><th>OKLCH</th><th style={{ width: 90 }}></th></tr>
+            <tr><th style={{ width: 56 }}></th><th>Token (variable CSS)</th><th>Valeurs</th><th style={{ width: 90 }}></th></tr>
           </thead>
           <tbody>
             {names.map((n) => (
               <tr key={n}>
                 <td><span className="tfm-sw" style={{ background: `var(--${n})` }} /></td>
                 <td><code>--{n}</code></td>
-                <td className="tfm-val">{resolved[n] ? resolved[n].rgb : '…'}</td>
-                <td className="tfm-val">{resolved[n] ? resolved[n].hex : '…'}</td>
-                <td className="tfm-val">{resolved[n] ? resolved[n].oklch : '…'}</td>
+                <td>
+                  {resolved[n] ? (
+                    <div className="tfm-colors-stack">
+                      <span className="tfm-val hex">{resolved[n].hex}</span>
+                      <span className="tfm-val small">{resolved[n].rgb}</span>
+                      <span className="tfm-val small">{resolved[n].oklch}</span>
+                    </div>
+                  ) : '…'}
+                </td>
                 <td><button className="tfm-copy" onClick={() => copy(n)}>{copied === n ? '✓ copié' : 'copier'}</button></td>
               </tr>
             ))}
