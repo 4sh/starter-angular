@@ -10,6 +10,8 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 ## [Unreleased]
 
 ### Added
+- `ui-tooltip` : infobulle headless via la **directive** `[uiTooltip]` (Angular CDK Overlay) — placement 4 côtés (`top`/`bottom`/`left`/`right`) avec retournement automatique dans le viewport (`fitContent`, désactivable pour verrouiller le côté) et repositionnement au scroll, déclenchement `hover`/`focus`/`both` (focus clavier par défaut), `showDelay`/`hideDelay`/`life`, contenu texte / HTML assaini (`escape`) / `TemplateRef` (`tooltipContext`), `autoHide` (infobulle survolable), `hideOnEscape`, `showOnEllipsis`, offsets `positionTop`/`positionLeft`. API inspirée de PrimeNG `pTooltip`. Panneau visuel co-localisé consommant directement les tokens `informative`, personnalisation ponctuelle via `tooltipStyleClass`. `aria-describedby`/`role="tooltip"` + prise en charge `prefers-reduced-motion`
+- Feuille CSS `@angular/cdk/overlay-prebuilt.css` ajoutée aux cibles de build (`angular.json`) pour le positionnement des overlays CDK
 - `ui-avatar` : avatar utilisateur headless (modes image / initiales / icône déduits des inputs, tailles `small`/`default`/`large`, forme `circle`/`square`, badge de statut projeté via `[avatarBadge]`, repli automatique sur image cassée + output `imageError`)
 - `ui-avatar-group` : empilement d'avatars avec chevauchement (débordement « +N » via un avatar Label), inspiré de l'API PrimeNG avatargroup
 - `ui-separator` : séparateur visuel et sémantique (`role="separator"`, horizontal/vertical, trait solid/dashed, épaisseur `default`/`small`, libellé optionnel aligné start/center/end)

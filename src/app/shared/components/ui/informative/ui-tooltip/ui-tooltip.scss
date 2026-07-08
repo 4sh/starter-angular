@@ -1,0 +1,107 @@
+@use 'utils';
+
+// =====================================================================
+// ui-tooltip : co-located styles for the tooltip panel (bubble + arrow).
+// Fully token-driven (informative category). For a one-off restyle, pass
+// `tooltipStyleClass` and target that class from a global stylesheet.
+// =====================================================================
+
+// --- Config (local, component-scoped) ---------------------------------
+// Max content width before wrapping — mirrors the Figma tooltip slot (256px).
+$tooltip-max-width: utils.rem-calc(256);
+// Arrow diameter — kept in sync with `ARROW_GAP` in ui-tooltip.ts.
+$tooltip-arrow-size: utils.rem-calc(8);
+$tooltip-arrow-half: utils.rem-calc(4);
+
+.ui-tooltip {
+  position: relative;
+  display: inline-block;
+  box-sizing: border-box;
+  max-width: $tooltip-max-width;
+  padding: var(--units-sm) var(--units-default);
+  border: var(--stroke-sm) solid var(--informative-defaulthigh-stroke-default);
+  border-radius: var(--radius-default);
+  background-color: var(--informative-defaulthigh-surface-default);
+  color: var(--informative-defaulthigh-content-default);
+  box-shadow: var(--shadow-default-md);
+  font-family: var(--fontfamily-base);
+  font-weight: var(--weight-regular);
+  font-size: var(--size-typography-text-md);
+  line-height: 1.4;
+  overflow-wrap: break-word;
+
+  // --- Fade / slide transition ---------------------------------------
+  opacity: 0;
+  transition:
+    opacity var(--transition-fast) var(--transition-easeout),
+    translate var(--transition-fast) var(--transition-easeout);
+
+  &._top { translate: 0 4px; }
+  &._bottom { translate: 0 -4px; }
+  &._left { translate: 4px 0; }
+  &._right { translate: -4px 0; }
+
+  &._visible {
+    opacity: 1;
+    translate: 0 0;
+  }
+
+  // Interactive tooltips (autoHide=false) must catch pointer events.
+  &._interactive { pointer-events: auto; }
+
+  // Respect reduced-motion preferences.
+  @media (prefers-reduced-motion: reduce) {
+    transition-duration: 0.01ms;
+    translate: none;
+  }
+
+  // --- Content -------------------------------------------------------
+  &-text {
+    display: block;
+  }
+
+  // --- Arrow ---------------------------------------------------------
+  // A rotated square sharing the panel's surface + stroke, clipped to two
+  // sides so only the outward corner shows a border.
+  &-arrow {
+    position: absolute;
+    width: $tooltip-arrow-size;
+    height: $tooltip-arrow-size;
+    background-color: var(--informative-defaulthigh-surface-default);
+    border: var(--stroke-sm) solid var(--informative-defaulthigh-stroke-default);
+    rotate: 45deg;
+  }
+
+  // Panel above trigger : arrow on the bottom edge, pointing down.
+  &._top &-arrow {
+    bottom: -$tooltip-arrow-half;
+    left: 50%;
+    margin-left: -$tooltip-arrow-half;
+    border-top: 0;
+    border-left: 0;
+  }
+  // Panel below : arrow on top, pointing up.
+  &._bottom &-arrow {
+    top: -$tooltip-arrow-half;
+    left: 50%;
+    margin-left: -$tooltip-arrow-half;
+    border-right: 0;
+    border-bottom: 0;
+  }
+  // Panel on the left : arrow on the right edge, pointing right.
+  &._left &-arrow {
+    right: -$tooltip-arrow-half;
+    top: 50%;
+    margin-top: -$tooltip-arrow-half;
+    border-bottom: 0;
+    border-left: 0;
+  }
+  // Panel on the right : arrow on the left edge, pointing left.
+  &._right &-arrow {
+    left: -$tooltip-arrow-half;
+    top: 50%;
+    margin-top: -$tooltip-arrow-half;
+    border-top: 0;
+    border-right: 0;
+  }
+}
