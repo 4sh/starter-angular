@@ -1,0 +1,11 @@
+<span [class]="classes()" [attr.aria-label]="ariaLabel() ?? null">
+  @if (iconLeft(); as name) {
+    <ui-icon class="ui-tag-icon" [name]="name" [size]="iconSize()" />
+  }
+  @if (hasLabel()) {
+    <span class="ui-tag-label">{{ label() }}</span>
+  }
+  @if (iconRight(); as name) {
+    <ui-icon class="ui-tag-icon" [name]="name" [size]="iconSize()" />
+  }
+</span>

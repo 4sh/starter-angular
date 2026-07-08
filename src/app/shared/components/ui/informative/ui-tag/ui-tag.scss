@@ -1,0 +1,79 @@
+@use 'utils';
+@use 'sass:map';
+
+// =====================================================================
+// ui-tag : co-located styles. All values come from design tokens.
+//
+// Extend:
+//   • Level     → add to $levels (tokens --informative-{level}{sub}-* must
+//                 exist + extend the `UiFeedbackLevel` type).
+//   • Sub-level → add to $sublevels (+ the `UiSubLevel` type).
+//   • Size      → add an entry to $sizes (+ the `TagSize` type).
+// =====================================================================
+
+// --- Config ---------------------------------------
+$levels: default, highlight, success, warning, error;
+$sublevels: high, low;
+
+$sizes: (
+  'default': (
+    height: 28px,
+    gap: var(--units-sm),
+    font-size: var(--size-typography-text-default),
+  ),
+  'small': (
+    height: 22px,
+    gap: var(--units-xs),
+    font-size: var(--size-typography-text-md),
+  ),
+);
+$size-default: map.get($sizes, 'default');
+
+@mixin tag-size($size) {
+  height: utils.rem-calc(map.get($size, height));
+  min-width: utils.rem-calc(map.get($size, height));
+  gap: map.get($size, gap);
+  font-size: map.get($size, font-size);
+}
+
+.ui-tag {
+  // --- Base ----------------------------------------------------------
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 0 var(--units-sm);
+  border: var(--stroke-sm) solid transparent;
+  border-radius: var(--radius-full);
+  font-family: var(--fontfamily-base);
+  font-weight: var(--weight-regular);
+  line-height: 1;
+  white-space: nowrap;
+
+  @include tag-size($size-default);
+
+  // --- Sub-elements --------------------------------------------------
+  &-icon { line-height: 0; flex: none; }
+  &-label { display: inline-block; }
+
+  // --- Shape -----------------------------------------
+  &._square { border-radius: var(--radius-sm); }
+
+  // --- Sizes -------------------------------------
+  @each $name, $size in $sizes {
+    @if $name != 'default' {
+      &._#{$name} { @include tag-size($size); }
+    }
+  }
+
+  // --- Colors ------------------------------------
+  @each $lvl in $levels {
+    @each $sub in $sublevels {
+      &._#{$lvl}._#{$sub} {
+        background-color: var(--informative-#{$lvl}#{$sub}-surface-default);
+        color: var(--informative-#{$lvl}#{$sub}-content-default);
+        border-color: var(--informative-#{$lvl}#{$sub}-stroke-default);
+      }
+    }
+  }
+}

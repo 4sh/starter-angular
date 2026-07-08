@@ -1,0 +1,100 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as TagStories from './ui-tag.stories';
+
+<Meta of={TagStories} />
+
+# ui-tag
+
+Étiquette informative (pilule) : un libellé court catégorisé par **famille de couleur**
+(`level`) et **intensité** (`subLevel`), avec une icône optionnelle de chaque côté.
+Composant **statique** (non interactif), inspiré de l'API PrimeNG `Tag` — `severity` y est
+remplacé par le couple `level` × `subLevel` propre à ce design system.
+
+100 % piloté par les **design tokens** de la catégorie `informative`
+(`--informative-{level}{sub}-surface|content|stroke-*`), comme `ui-badge`. La
+personnalisation passe par les variantes intégrées (`level`/`subLevel`/`size`), pas par des
+surcharges CSS.
+
+<Canvas of={TagStories.Default} />
+
+## API
+
+<ArgTypes of={TagStories} />
+
+## Niveaux & intensité
+
+Cinq familles (`default`, `highlight`, `success`, `warning`, `error`) × deux intensités
+(`high` soutenu, `low` discret).
+
+<Canvas of={TagStories.Highlight} />
+<Canvas of={TagStories.Success} />
+<Canvas of={TagStories.Warning} />
+<Canvas of={TagStories.Error} />
+<Canvas of={TagStories.SubLevelLow} />
+
+## Tailles
+
+<Canvas of={TagStories.Small} />
+
+## Icônes
+
+Icône optionnelle à gauche et/ou à droite (nom FontAwesome). La taille de l'icône suit la
+taille du tag (`md` en `default`, `sm` en `small`).
+
+<Canvas of={TagStories.WithIconLeft} />
+<Canvas of={TagStories.WithIconRight} />
+<Canvas of={TagStories.WithBothIcons} />
+
+## Forme
+
+Pilule par défaut (`rounded`), ou rectangle arrondi (`rounded=false`).
+
+<Canvas of={TagStories.Square} />
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Point</th>
+      <th>Implémentation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Icônes décoratives</td>
+      <td>Rendues via `ui-icon` (décoratif par défaut, `aria-hidden`) ; jamais porteuses de sens seules.</td>
+    </tr>
+    <tr>
+      <td>Tag sans texte</td>
+      <td>`ariaLabel` obligatoire ; un avertissement `isDevMode()` prévient si un tag icon-only n'a pas de nom accessible.</td>
+    </tr>
+    <tr>
+      <td>Couleur ≠ seul vecteur</td>
+      <td>Le sens passe par le texte/l'icône, pas uniquement par la famille de couleur.</td>
+    </tr>
+    <tr>
+      <td>Contraste</td>
+      <td>Surface/contenu issus des tokens `informative` (conformes WCAG AA en clair et sombre).</td>
+    </tr>
+  </tbody>
+</table>
+
+## Exemples
+
+```html
+<!-- Simple -->
+<ui-tag label="Actif" level="success" />
+
+<!-- Intensité discrète + icône gauche -->
+<ui-tag label="Brouillon" level="highlight" subLevel="low" iconLeft="pen" />
+
+<!-- Petit, avec icône droite -->
+<ui-tag label="Erreur" level="error" size="small" iconRight="times-circle" />
+
+<!-- Rectangle arrondi -->
+<ui-tag label="Beta" level="highlight" [rounded]="false" />
+
+<!-- Icon-only (nom accessible requis) -->
+<ui-tag iconLeft="star" ariaLabel="Favori" level="warning" />
+```
