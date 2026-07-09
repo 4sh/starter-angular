@@ -10,6 +10,7 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 ## [Unreleased]
 
 ### Added
+- `ui-datepicker` : sélecteur de **date / mois / année** (et d'**heure** optionnelle) headless — champ déclencheur `ui-input` en lecture seule ouvrant un calendrier dans un overlay Angular CDK (ou rendu **inline**). Sélection `single` / `multiple` / `range` (`selectionMode`, valeur `Date | Date[] | null`), **vues à tiroir** jour → mois → année (clic sur l'entête) + modes `MonthPicker`/`YearPicker` (`view`), **plusieurs mois** côte à côte (`numberOfMonths`, séparateur + titres alignés sur les flèches), ouverture en overlay avec **retournement automatique** au-dessus quand la place manque (désactivable via `autoFlip`), navigation mensuelle, **focus roving** clavier complet (flèches / Début-Fin / Page↑↓ ±année / Entrée-Espace / Échap, motif WAI-ARIA), bornes `minDate`/`maxDate`, `disabledDays`/`disabledDates`, `showTime` (steppers verticaux HH:MM façon PrimeNG, pattern ARIA `spinbutton` pilotable au clavier, `hourFormat` 12/24h + AM/PM), `timeOnly` (icône horloge), effacement `showClear` (croix dans le champ), barre de boutons `showButtonBar` (Aujourd'hui/Effacer), `firstDayOfWeek`, `locale` + `dateFormat` custom, `closeOnSelect`. **Templates** projetés `#date` (cellule de jour, contexte `$implicit`+`selected`) et `#buttonbar` (contexte `todayCallback`/`clearCallback`). Valeur via `ControlValueAccessor` sur `BaseFormField` (label/helper/erreur/niveaux/états partagés). 100 % tokens `form`/`actions`, overlay ancré sur la boîte de champ (placement correct même avec helper), personnalisation via `panelStyleClass` + variables SCSS locales. API inspirée de PrimeNG `p-datepicker`
 - `ui-tag` : étiquette informative (pilule) headless — libellé + icône optionnelle de chaque côté (`iconLeft`/`iconRight`), familles de couleur `level` (`default`/`highlight`/`success`/`warning`/`error`) × intensité `subLevel` (`high`/`low`), tailles `default`/`small`, forme `rounded` (pilule) ou rectangle arrondi. Composant statique inspiré de l'API PrimeNG `Tag` (`severity` → `level`×`subLevel`), 100 % tokens `informative`, garde-fou a11y icon-only (`ariaLabel`)
 - `ui-tooltip` : infobulle headless via la **directive** `[uiTooltip]` (Angular CDK Overlay) — placement 4 côtés (`top`/`bottom`/`left`/`right`) avec retournement automatique dans le viewport (`fitContent`, désactivable pour verrouiller le côté) et repositionnement au scroll, déclenchement `hover`/`focus`/`both` (focus clavier par défaut), `showDelay`/`hideDelay`/`life`, contenu texte / HTML assaini (`escape`) / `TemplateRef` (`tooltipContext`), `autoHide` (infobulle survolable), `hideOnEscape`, `showOnEllipsis`, offsets `positionTop`/`positionLeft`. API inspirée de PrimeNG `pTooltip`. Panneau visuel co-localisé consommant directement les tokens `informative`, personnalisation ponctuelle via `tooltipStyleClass`. `aria-describedby`/`role="tooltip"` + prise en charge `prefers-reduced-motion`
 - Feuille CSS `@angular/cdk/overlay-prebuilt.css` ajoutée aux cibles de build (`angular.json`) pour le positionnement des overlays CDK
@@ -18,14 +19,6 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 - `ui-separator` : séparateur visuel et sémantique (`role="separator"`, horizontal/vertical, trait solid/dashed, épaisseur `default`/`small`, libellé optionnel aligné start/center/end)
 - Groupe de tokens partagés `$avatar-*` dans `_ui-config.scss` (diamètres + chevauchement, catégorie **informative**)
 - Storybook : addon d'accessibilité `@storybook/addon-a11y`
-
-### Changed
-- Doc de configuration (`Components/Configuration`) refondue : la page principale devient « fonctionnement + sommaire », les groupes de variables sont éclatés en sous-pages (`Global UI` / `Forms` / `Actions` / `Informative`) et chaque composant reçoit une section « Configuration (SCSS) » listant ses variables locales
-- `ui-toggle` : ajout d'un template de curseur personnalisé `handle` (contexte `{ checked }`, façon PrimeNG) et de `labelPosition` (`before`/`after`, label cliquable des deux côtés)
-
-## [0.1.0]
-
-### Added
 - Socle du Design System Angular 21 **headless** (standalone + signals), sans librairie UI propriétaire ; Angular CDK au besoin
 - Pipeline de design tokens : sources DTCG (`src/design-tokens/*.json`) → Style Dictionary (`scripts/tokens.build.mjs`, `tokens.config.json`) → variables SCSS/CSS générées
 - Architecture de tokens : primitives, semantics, metrics, typography, responsive, transitions
@@ -50,6 +43,8 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 - Documentation projet (`CLAUDE.md`, `AGENTS.md`) et workflow de versioning (`VERSIONING.md`)
 
 ### Changed
+- Doc de configuration (`Components/Configuration`) refondue : la page principale devient « fonctionnement + sommaire », les groupes de variables sont éclatés en sous-pages (`Global UI` / `Forms` / `Actions` / `Informative`) et chaque composant reçoit une section « Configuration (SCSS) » listant ses variables locales
+- `ui-toggle` : ajout d'un template de curseur personnalisé `handle` (contexte `{ checked }`, façon PrimeNG) et de `labelPosition` (`before`/`after`, label cliquable des deux côtés)
 - `BaseControlValueAccessor` complété (setDisabledState, état `showError`, désabonnement automatique)
 - `ui-icon` : boîte **carrée adaptative** (`aspect-ratio: 1`) pour un encombrement prévisible quelle que soit l'avance du glyphe FontAwesome
 - Explorateur `Foundations/Colors` : bascule marque + mode en direct, y compris en mode clair

@@ -9,6 +9,7 @@ import * as InputStories from "../../src/app/shared/components/ui/forms/ui-input
 import * as InputNumberStories from "../../src/app/shared/components/ui/forms/ui-input-number/ui-input-number.stories";
 import * as InputMaskStories from "../../src/app/shared/components/ui/forms/ui-input-mask/ui-input-mask.stories";
 import * as ToggleStories from "../../src/app/shared/components/ui/forms/ui-toggle/ui-toggle.stories";
+import * as DatepickerStories from "../../src/app/shared/components/ui/forms/ui-datepicker/ui-datepicker.stories";
 import * as HelperStories from "../../src/app/shared/components/ui/informative/ui-helper/ui-helper.stories";
 import * as BadgeStories from "../../src/app/shared/components/ui/informative/ui-badge/ui-badge.stories";
 import * as AvatarStories from "../../src/app/shared/components/ui/informative/ui-avatar/ui-avatar.stories";
@@ -71,6 +72,7 @@ export const CategorySection = ({ title, components }) => (
     { name: 'ui-input-number', description: 'Champ numérique (min/max/step, spinner ±, clamp).', link: '?path=/docs/components-ui-forms-ui-input-number--docs', story: InputNumberStories.WithUnit },
     { name: 'ui-input-mask', description: 'Champ masqué (téléphone, date… littéraux auto).', link: '?path=/docs/components-ui-forms-ui-input-mask--docs', story: InputMaskStories.Phone },
     { name: 'ui-toggle', description: 'Interrupteur on/off (headless, role=switch, CVA, tailles).', link: '?path=/docs/components-ui-forms-ui-toggle--docs', story: ToggleStories.Default },
+    { name: 'ui-datepicker', description: 'Sélecteur de date/heure (calendrier overlay/inline, CVA, min/max, showTime 12/24h, clavier).', link: '?path=/docs/components-ui-forms-ui-datepicker--docs', story: DatepickerStories.Default },
   ]}
 />
 

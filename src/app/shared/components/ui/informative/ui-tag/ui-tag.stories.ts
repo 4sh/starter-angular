@@ -10,7 +10,7 @@ const meta: Meta<UiTag> = {
     layout: 'centered',
     design: {
       type: 'figma',
-      url: 'https://www.figma.com/design/GZww5hdUA49LB8XWeWP6tl/-Projet----UI-Kit',
+      url: 'https://www.figma.com/design/GZww5hdUA49LB8XWeWP6tl/-Projet----UI-Kit?node-id=125-1740&t=eYboBh39bz05TnEg-1',
     },
   },
   argTypes: {

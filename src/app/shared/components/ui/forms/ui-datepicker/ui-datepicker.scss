@@ -1,0 +1,340 @@
+@use 'utils';
+
+// =====================================================================
+// ui-datepicker : the trigger box + helper live in `ui-input` (shell
+// `ui-field`). Here we style the calendar panel (overlay or inline).
+// 100% design tokens; structural constants are local vars below — retarget
+// them (or pass `panelStyleClass`) to customise without forking the SCSS.
+// =====================================================================
+
+// --- Local structural config  ------------
+$panel-width: utils.rem-calc(360);
+$panel-radius: var(--radius-default);
+$panel-padding: var(--units-sm);
+$panel-gap: var(--units-sm);
+$panel-shadow: var(--shadow-default-md);
+
+$day-size: var(--size-components-default);
+$day-radius: var(--radius-full);
+$nav-size: var(--size-components-default);
+$focus-ring-width: utils.$focus-ring-width;
+$stroke-width: utils.$control-stroke-width;
+
+.ui-datepicker {
+  &-trigger { display: block; cursor: pointer; }
+
+  // --- Panel ---------------------------------------------------------
+  &-panel {
+    display: flex;
+    flex-direction: column;
+    gap: $panel-gap;
+    box-sizing: border-box;
+    width: max-content;
+    max-width: calc(100vw - var(--units-lg));
+    padding: $panel-padding;
+    border: $stroke-width solid var(--form-high-stroke-default);
+    border-radius: $panel-radius;
+    background-color: var(--form-high-surface-default);
+    box-shadow: $panel-shadow;
+    font-family: var(--fontfamily-base);
+
+    &._inline { box-shadow: none; }
+  }
+
+  // --- Header (month navigation) -------------------------------------
+  &-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--units-sm);
+  }
+
+  &-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: $nav-size;
+    height: $nav-size;
+    padding: 0;
+    border: none;
+    border-radius: $day-radius;
+    background: none;
+    color: var(--informative-defaultlow-content-default);
+    cursor: pointer;
+    @include utils.control-transition(background-color, color);
+
+    &:hover {
+      background-color: var(--informative-highlightlow-surface-hover);
+      color: var(--informative-defaultlow-content-hover);
+    }
+    &:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 $focus-ring-width rgb(from var(--form-high-stroke-focused) r g b / 50%);
+    }
+  }
+
+  &-title {
+    flex: 1 1 auto;
+    text-align: center;
+    font-size: var(--size-typography-title-md);
+    font-weight: var(--weight-bold);
+    color: var(--form-high-content-default);
+
+    // Clickable variant (drill-up: date → month → year).
+    &._button {
+      padding: var(--units-2xs) var(--units-sm);
+      border: none;
+      border-radius: var(--radius-sm);
+      background: none;
+      font-family: var(--fontfamily-base);
+      cursor: pointer;
+      @include utils.control-transition(background-color, color);
+
+      &:hover:not(:disabled) { background-color: var(--informative-highlightlow-surface-hover); }
+      &:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 $focus-ring-width rgb(from var(--form-high-stroke-focused) r g b / 50%);
+      }
+      &:disabled { cursor: default; }
+    }
+  }
+
+  // --- Multi-month layout --------------------------------------------
+  &-months { display: flex; gap: var(--units-lg); }
+  &-month {
+    display: flex;
+    flex-direction: column;
+    gap: var(--units-sm);
+    flex: 0 0 auto;
+    width: $panel-width;
+
+    &:not(:first-child) {
+      border-left: $stroke-width solid var(--form-high-stroke-default);
+      padding-left: var(--units-lg);
+    }
+  }
+
+  // Per-panel header: [prev|spacer] title [next|spacer] — arrows at the outer
+  // edges, title centred over its column and aligned with the chevrons.
+  &-subheader {
+    display: flex;
+    align-items: center;
+    gap: var(--units-sm);
+  }
+  &-nav-spacer { flex-shrink: 0; width: $nav-size; height: $nav-size; }
+
+  // --- Month / Year picker grids -------------------------------------
+  &-picker {
+    display: grid;
+    gap: var(--units-xs);
+    width: $panel-width;
+
+    &._month { grid-template-columns: repeat(3, 1fr); }
+    &._year { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  &-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    min-height: var(--size-components-sm);
+    padding: var(--units-sm) var(--units-md);
+    border: $stroke-width solid transparent;
+    border-radius: var(--radius-sm);
+    background-color: var(--actions-low-surface-default);
+    font-family: var(--fontfamily-base);
+    font-size: var(--size-typography-text-default);
+    color: var(--form-high-content-default);
+    cursor: pointer;
+    @include utils.control-transition(background-color, border-color, color);
+
+    &:hover:not(:disabled) { background-color: var(--actions-low-surface-hover); }
+    &:active:not(:disabled) { background-color: var(--actions-low-surface-pressed); }
+    &:focus-visible {
+      outline: none;
+      background-color: var(--actions-low-surface-focused);
+      box-shadow: 0 0 0 $focus-ring-width rgb(from var(--actions-high-stroke-focused) r g b / 50%);
+    }
+    &._selected {
+      background-color: var(--actions-high-surface-default);
+      color: var(--actions-high-content-default);
+      &:hover:not(:disabled) { background-color: var(--actions-high-surface-hover); }
+    }
+    &:disabled { color: var(--form-high-content-disabled); cursor: not-allowed; }
+  }
+
+  // --- Weekday headers + grid --------------
+  &-weekdays,
+  &-week {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    justify-items: center;
+    align-items: center;
+  }
+
+  &-weekday {
+    padding: var(--units-xs) 0;
+    font-size: var(--size-typography-text-md);
+    font-weight: var(--weight-bold);
+    color: var(--form-low-content-default);
+    user-select: none;
+  }
+
+  &-grid { display: flex; flex-direction: column; gap: var(--units-xs); }
+
+  // --- Day cell ------------------------------------------------------
+  $range-bg: var(--informative-highlightlow-surface-hover);
+
+  &-day {
+    position: relative;
+    z-index: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: 100%;
+    height: $day-size;
+    padding: 0;
+    border: none;
+    background: transparent;
+    font-family: var(--fontfamily-base);
+    font-size: var(--size-typography-text-default);
+    color: var(--form-high-content-default);
+    cursor: pointer;
+    @include utils.control-transition(color);
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: $day-size;
+      height: $day-size;
+      border: $stroke-width solid transparent;
+      border-radius: $day-radius;
+      z-index: -1;
+      @include utils.control-transition(background-color, border-color, box-shadow);
+    }
+
+    &:hover:not(:disabled)::before { background-color: var(--actions-low-surface-hover); }
+    &:active:not(:disabled)::before { background-color: var(--actions-low-surface-pressed); }
+    &:focus-visible { outline: none; }
+    &:focus-visible::before {
+      background-color: var(--actions-low-surface-focused);
+      box-shadow: 0 0 0 $focus-ring-width rgb(from var(--actions-high-stroke-focused) r g b / 50%);
+    }
+
+    // Previous/next month + disabled
+    &._other-month { color: var(--form-low-content-default); opacity: 0.6; }
+
+    // Today (outlined chip) — only when not selected.
+    &._today::before { border-color: var(--actions-high-stroke-default); }
+    &._today:hover:not(:disabled)::before { border-color: var(--actions-high-stroke-hover); }
+    &._today:focus-visible::before { border-color: var(--actions-high-stroke-focused); }
+
+    // Selected / range endpoints.
+    &._selected {
+      color: var(--actions-high-content-default);
+      &::before { background-color: var(--actions-high-surface-default); }
+      &:hover:not(:disabled) {
+        color: var(--actions-high-content-hover);
+        &::before { background-color: var(--actions-high-surface-hover); }
+      }
+      &:focus-visible {
+        color: var(--actions-high-content-focused);
+        &::before { background-color: var(--actions-high-surface-focused); }
+      }
+    }
+
+    // Range: continuous bar on the full-width cell.
+    &._in-range { background-color: $range-bg; }
+    &._range-start { background: linear-gradient(to right, transparent 50%, #{$range-bg} 50%); }
+    &._range-end { background: linear-gradient(to left, transparent 50%, #{$range-bg} 50%); }
+    &._range-start._range-end { background: transparent; }
+
+    &:disabled {
+      color: var(--form-high-content-disabled);
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+  }
+
+  // --- Time selection — vertical steppers -------
+  &-time {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--units-sm);
+    padding-top: var(--units-sm);
+    border-top: $stroke-width solid var(--form-high-stroke-default);
+
+    &:first-child { padding-top: 0; border-top: none; }
+  }
+
+  &-time-unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--units-2xs);
+  }
+
+  &-time-value {
+    box-sizing: border-box;
+    min-width: utils.rem-calc(48);
+    padding: var(--units-2xs) var(--units-sm);
+    border-radius: var(--radius-sm);
+    font-family: var(--fontfamily-base);
+    font-size: var(--size-typography-title-md);
+    font-weight: var(--weight-bold);
+    font-variant-numeric: tabular-nums;
+    color: var(--form-high-content-default);
+    text-align: center;
+    cursor: pointer;
+    @include utils.control-transition(background-color, box-shadow);
+
+    &:hover { background-color: var(--informative-highlightlow-surface-hover); }
+    &:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 $focus-ring-width rgb(from var(--form-high-stroke-focused) r g b / 50%);
+    }
+  }
+
+  &-time-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--size-components-xs);
+    height: var(--size-components-2xs);
+    padding: 0;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: none;
+    color: var(--form-low-content-default);
+    cursor: pointer;
+    @include utils.control-transition(background-color, color);
+
+    &:hover {
+      background-color: var(--informative-highlightlow-surface-hover);
+      color: var(--form-high-content-hover);
+    }
+  }
+
+  &-time-colon {
+    font-size: var(--size-typography-title-md);
+    font-weight: var(--weight-bold);
+    color: var(--form-high-content-default);
+  }
+
+  // --- Button bar ----------------------------------------------------
+  &-buttonbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--units-sm);
+    padding-top: var(--units-sm);
+    border-top: $stroke-width solid var(--form-high-stroke-default);
+  }
+}

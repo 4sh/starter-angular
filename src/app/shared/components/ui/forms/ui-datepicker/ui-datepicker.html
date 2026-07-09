@@ -1,0 +1,284 @@
+<!-- Calendar panel: shared between inline render and the CDK overlay. -->
+<ng-template #calendarTpl>
+  <div
+    #panel
+    class="ui-datepicker-panel"
+    [class]="panelStyleClass()"
+    [class._inline]="inline()"
+    [attr.id]="panelId"
+    role="dialog"
+    [attr.aria-modal]="inline() ? null : 'true'"
+    [attr.aria-label]="label() || ariaLabel() || 'Calendrier'"
+  >
+    @if (showCalendar()) {
+      <!-- Shared header (single-month): prev / title (drill-up) / next.
+           Multi-month puts the arrows + titles in each panel's own header. -->
+      @if (singleMonth()) {
+        <div class="ui-datepicker-header">
+          <button type="button" class="ui-datepicker-nav" aria-label="Précédent" (click)="onPrev()">
+            <ui-icon name="chevron-left" size="sm" />
+          </button>
+          <button
+            type="button"
+            class="ui-datepicker-title _button"
+            aria-live="polite"
+            [disabled]="currentView() === 'year'"
+            (click)="onHeaderClick()"
+          >
+            {{ headerLabel() }}
+          </button>
+          <button type="button" class="ui-datepicker-nav" aria-label="Suivant" (click)="onNext()">
+            <ui-icon name="chevron-right" size="sm" />
+          </button>
+        </div>
+      }
+
+      <!-- YEAR view -->
+      @if (currentView() === 'year') {
+        <div class="ui-datepicker-picker _year" role="grid">
+          @for (y of years(); track y.year) {
+            <button
+              type="button"
+              role="gridcell"
+              class="ui-datepicker-cell"
+              [class._selected]="y.selected"
+              [disabled]="y.disabled"
+              [attr.aria-selected]="y.selected"
+              (click)="selectYear(y)"
+            >
+              {{ y.year }}
+            </button>
+          }
+        </div>
+      }
+
+      <!-- MONTH view -->
+      @else if (currentView() === 'month') {
+        <div class="ui-datepicker-picker _month" role="grid">
+          @for (m of months(); track m.index) {
+            <button
+              type="button"
+              role="gridcell"
+              class="ui-datepicker-cell"
+              [class._selected]="m.selected"
+              [disabled]="m.disabled"
+              [attr.aria-selected]="m.selected"
+              (click)="selectMonth(m)"
+            >
+              {{ m.label }}
+            </button>
+          }
+        </div>
+      }
+
+      <!-- DATE view (one or several month panels) -->
+      @else {
+        <div class="ui-datepicker-months" (keydown)="onGridKeydown($event)">
+          @for (mp of monthPanels(); track mp.monthDate.getTime()) {
+            <div class="ui-datepicker-month">
+              @if (!singleMonth()) {
+                <!-- Per-panel header: prev on the first panel, next on the last, title centered. -->
+                <div class="ui-datepicker-subheader">
+                  @if (mp.showPrev) {
+                    <button type="button" class="ui-datepicker-nav" aria-label="Précédent" (click)="onPrev()">
+                      <ui-icon name="chevron-left" size="sm" />
+                    </button>
+                  } @else {
+                    <span class="ui-datepicker-nav-spacer" aria-hidden="true"></span>
+                  }
+                  <span class="ui-datepicker-title">{{ mp.label }}</span>
+                  @if (mp.showNext) {
+                    <button type="button" class="ui-datepicker-nav" aria-label="Suivant" (click)="onNext()">
+                      <ui-icon name="chevron-right" size="sm" />
+                    </button>
+                  } @else {
+                    <span class="ui-datepicker-nav-spacer" aria-hidden="true"></span>
+                  }
+                </div>
+              }
+
+              <div class="ui-datepicker-weekdays" aria-hidden="true">
+                @for (name of weekDayNames(); track $index) {
+                  <span class="ui-datepicker-weekday">{{ name }}</span>
+                }
+              </div>
+
+              <div class="ui-datepicker-grid" role="grid">
+                @for (week of mp.weeks; track $index) {
+                  <div class="ui-datepicker-week" role="row">
+                    @for (cell of week; track cell.ts) {
+                      <button
+                        type="button"
+                        role="gridcell"
+                        class="ui-datepicker-day"
+                        [class._selected]="cell.selected"
+                        [class._today]="cell.today && !cell.selected"
+                        [class._other-month]="cell.otherMonth"
+                        [class._range-start]="cell.rangeStart"
+                        [class._range-end]="cell.rangeEnd"
+                        [class._in-range]="cell.inRange"
+                        [class._focusable]="singleMonth() && isFocusableDay(cell)"
+                        [disabled]="cell.disabled"
+                        [attr.tabindex]="singleMonth() && isFocusableDay(cell) ? 0 : -1"
+                        [attr.aria-selected]="cell.selected"
+                        [attr.aria-current]="cell.today ? 'date' : null"
+                        (click)="selectDay(cell)"
+                      >
+                        @if (dateTemplate(); as tpl) {
+                          <ng-container [ngTemplateOutlet]="tpl" [ngTemplateOutletContext]="{ $implicit: cell, selected: cell.selected }" />
+                        } @else {
+                          {{ cell.day }}
+                        }
+                      </button>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      }
+    }
+
+    <!-- Time selection — vertical steppers (ARIA spinbutton pattern) -->
+    @if (showTime()) {
+      <div class="ui-datepicker-time">
+        <!-- Hours -->
+        <div class="ui-datepicker-time-unit">
+          <button type="button" class="ui-datepicker-time-btn" tabindex="-1" aria-label="Augmenter les heures" (click)="stepHours(1)">
+            <ui-icon name="chevron-up" size="sm" />
+          </button>
+          <span
+            class="ui-datepicker-time-value"
+            role="spinbutton"
+            tabindex="0"
+            aria-label="Heures"
+            [attr.aria-valuenow]="hourFormat() === '12' ? displayHours() : hours()"
+            [attr.aria-valuemin]="hourFormat() === '12' ? 1 : 0"
+            [attr.aria-valuemax]="hourFormat() === '12' ? 12 : 23"
+            [attr.aria-valuetext]="hoursLabel()"
+            (keydown)="onHourKeydown($event)"
+          >
+            {{ hoursLabel() }}
+          </span>
+          <button type="button" class="ui-datepicker-time-btn" tabindex="-1" aria-label="Diminuer les heures" (click)="stepHours(-1)">
+            <ui-icon name="chevron-down" size="sm" />
+          </button>
+        </div>
+
+        <span class="ui-datepicker-time-colon" aria-hidden="true">:</span>
+
+        <!-- Minutes -->
+        <div class="ui-datepicker-time-unit">
+          <button type="button" class="ui-datepicker-time-btn" tabindex="-1" aria-label="Augmenter les minutes" (click)="stepMinutes(1)">
+            <ui-icon name="chevron-up" size="sm" />
+          </button>
+          <span
+            class="ui-datepicker-time-value"
+            role="spinbutton"
+            tabindex="0"
+            aria-label="Minutes"
+            [attr.aria-valuenow]="minutes()"
+            aria-valuemin="0"
+            aria-valuemax="59"
+            [attr.aria-valuetext]="minutesLabel()"
+            (keydown)="onMinuteKeydown($event)"
+          >
+            {{ minutesLabel() }}
+          </span>
+          <button type="button" class="ui-datepicker-time-btn" tabindex="-1" aria-label="Diminuer les minutes" (click)="stepMinutes(-1)">
+            <ui-icon name="chevron-down" size="sm" />
+          </button>
+        </div>
+
+        <!-- Meridiem (12h) -->
+        @if (hourFormat() === '12') {
+          <span class="ui-datepicker-time-colon" aria-hidden="true">:</span>
+          <div class="ui-datepicker-time-unit">
+            <button type="button" class="ui-datepicker-time-btn" tabindex="-1" aria-label="Changer AM/PM" (click)="toggleMeridiem()">
+              <ui-icon name="chevron-up" size="sm" />
+            </button>
+            <span
+              class="ui-datepicker-time-value"
+              role="spinbutton"
+              tabindex="0"
+              aria-label="AM/PM"
+              [attr.aria-valuetext]="meridiem()"
+              (keydown)="onMeridiemKeydown($event)"
+              (click)="toggleMeridiem()"
+            >
+              {{ meridiem() }}
+            </span>
+            <button type="button" class="ui-datepicker-time-btn" tabindex="-1" aria-label="Changer AM/PM" (click)="toggleMeridiem()">
+              <ui-icon name="chevron-down" size="sm" />
+            </button>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Button bar (custom template or default) -->
+    @if (showButtonBar() || buttonBarTemplate()) {
+      <div class="ui-datepicker-buttonbar">
+        @if (buttonBarTemplate(); as tpl) {
+          <ng-container
+            [ngTemplateOutlet]="tpl"
+            [ngTemplateOutletContext]="{ $implicit: todayCallback, todayCallback: todayCallback, clearCallback: clearCallback }"
+          />
+        } @else {
+          <ui-button size="small" level="low" [label]="todayLabel()" (buttonClick)="selectToday()" />
+          <ui-button size="small" level="low" [label]="clearLabel()" (buttonClick)="clear()" />
+        }
+      </div>
+    }
+  </div>
+</ng-template>
+
+@if (inline()) {
+  <ng-container [ngTemplateOutlet]="calendarTpl" />
+} @else {
+  <!-- Trigger: readonly composed field. Clicking the field or the icon opens the panel. -->
+  <div class="ui-datepicker-trigger" (click)="open()" (keydown)="onTriggerKeydown($event)">
+    <ui-input
+      #trigger
+      [label]="label()"
+      [helperText]="helperText()"
+      [errorText]="errorText()"
+      [placeholder]="placeholder()"
+      [size]="size()"
+      [level]="effectiveLevel()"
+      [required]="required()"
+      [disabled]="isDisabled()"
+      [readonly]="true"
+      [invalid]="isInvalid()"
+      [name]="name()"
+      [inputId]="resolvedId()"
+      [ariaLabel]="ariaLabel()"
+      [ariaLabelledBy]="ariaLabelledBy()"
+      [tabindex]="tabindex()"
+      [ngModel]="displayValue()"
+      [iconRight]="triggerIcon()"
+      [iconRightAriaLabel]="triggerIconAriaLabel()"
+      [attr.aria-haspopup]="'dialog'"
+      [attr.aria-expanded]="panelOpen()"
+      [attr.aria-controls]="panelOpen() ? panelId : null"
+      (iconRightClick)="onIconClick($event)"
+      (inputFocus)="inputFocus.emit($event)"
+      (inputBlur)="inputBlur.emit($event)"
+    />
+  </div>
+
+  <ng-template
+    cdkConnectedOverlay
+    [cdkConnectedOverlayOrigin]="overlayOrigin()!"
+    [cdkConnectedOverlayOpen]="panelOpen()"
+    [cdkConnectedOverlayPositions]="overlayPositions()"
+    [cdkConnectedOverlayHasBackdrop]="true"
+    cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
+    (backdropClick)="close(false)"
+    (overlayOutsideClick)="close(false)"
+    (detach)="close(false)"
+  >
+    <ng-container [ngTemplateOutlet]="calendarTpl" />
+  </ng-template>
+}

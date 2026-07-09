@@ -1,0 +1,241 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as DatepickerStories from './ui-datepicker.stories';
+
+<Meta of={DatepickerStories} />
+
+# ui-datepicker
+
+Sélecteur de **date / mois / année** (et d'**heure** optionnelle) headless. Un champ
+déclencheur [`ui-input`](?path=/docs/components-ui-forms-ui-input--docs) en lecture seule ouvre
+un calendrier stylé (tokens `form.*` / `actions.*`) dans un overlay Angular CDK — ou rendu
+**inline**. Sélection `single` / `multiple` / `range`, vues à tiroir (jour → mois → année),
+modes `MonthPicker` / `YearPicker`, plusieurs mois côte à côte, navigation mensuelle, focus
+roving et support clavier complet (motif WAI-ARIA date picker).
+`p-datepicker`.
+
+Valeur `Date | null` câblée via `ControlValueAccessor` (`[(ngModel)]` ou reactive forms) sur
+[`BaseFormField`](?path=/docs/components-ui-forms-ui-input--docs) : `label`, `helperText`/`errorText`,
+`level`, la validation et les états `disabled`/`readonly` sont partagés avec les autres champs.
+
+<Canvas of={DatepickerStories.Inline} />
+
+## API
+
+<ArgTypes of={DatepickerStories} />
+
+## Sélection : single / multiple / range
+
+`selectionMode` définit la quantité sélectionnée. La valeur du modèle est un `Date` en `single`,
+un `Date[]` en `multiple` (bascule au clic, le panneau reste ouvert) et un `Date[]` `[début, fin]`
+en `range` (1er clic = début, 2ᵉ = fin, surbrillance de l'intervalle).
+
+<Canvas of={DatepickerStories.Multiple} />
+<Canvas of={DatepickerStories.Range} />
+
+## Vues & modes (jour → mois → année)
+
+Un clic sur le **titre** de l'entête remonte d'un niveau : jour → sélection de mois → sélection
+d'année. L'input `view` fixe la granularité de base : `date` (défaut), `month`
+(**MonthPicker**) ou `year` (**YearPicker**). En mode mois/année, le clic sélectionne directement
+un mois / une année.
+
+<Canvas of={DatepickerStories.MonthPicker} />
+<Canvas of={DatepickerStories.YearPicker} />
+
+## Plusieurs mois
+
+`numberOfMonths` affiche N panneaux mois côte à côte, séparés par un filet, avec les titres de
+mois alignés en face des flèches ← → (aux extrémités). Le changement de vue à tiroir reste
+réservé au mode mono-mois.
+
+<Canvas of={DatepickerStories.TwoMonths} />
+
+## Ouverture (placement)
+
+Le panneau s'ouvre sous le champ et **se retourne automatiquement au-dessus** quand la place
+manque en bas (CDK Overlay). `autoFlip="false"` verrouille l'ouverture vers le bas.
+
+<Canvas of={DatepickerStories.SmartPosition} />
+
+## Date & heure
+
+`showTime` ajoute une ligne horaire sous forme de **steppers verticaux** (chevrons ↑/↓ autour de
+chaque unité HH : MM — pattern ARIA `spinbutton`, pilotables aux flèches clavier) ;
+`hourFormat="12"` ajoute un sélecteur AM/PM. `timeOnly` masque le calendrier. Quand `showTime` est
+actif, le panneau **reste ouvert** après le choix d'un jour (pour régler l'heure) même si `closeOnSelect`.
+
+<Canvas of={DatepickerStories.WithTime} />
+<Canvas of={DatepickerStories.Time12h} />
+
+## Contraintes de sélection
+
+`minDate` / `maxDate` bornent la plage ; `disabledDays` (0 = dimanche … 6 = samedi) et
+`disabledDates` (dates ponctuelles) neutralisent des cellules. `showButtonBar` ajoute les actions
+« Aujourd'hui » / « Effacer ».
+
+<Canvas of={DatepickerStories.MinMax} />
+<Canvas of={DatepickerStories.DisabledWeekends} />
+<Canvas of={DatepickerStories.ButtonBar} />
+
+## Niveaux & états
+
+<Canvas of={DatepickerStories.Required} />
+<Canvas of={DatepickerStories.Error} />
+<Canvas of={DatepickerStories.Small} />
+<Canvas of={DatepickerStories.Disabled} />
+
+`showClear` ajoute une croix dans le champ (dès qu'une valeur est présente) pour réinitialiser
+la sélection. En mode `timeOnly`, l'icône du déclencheur devient une horloge.
+
+<Canvas of={DatepickerStories.Clearable} />
+<Canvas of={DatepickerStories.TimeOnly} />
+
+## Templates
+
+Deux points d'extension via `<ng-template>` projetés, résolus par `contentChild` :
+
+- **`#date`** — cellule de jour personnalisée. Contexte : `$implicit` = descripteur du jour
+  (`{ day, month, year, otherMonth, today, selected, disabled, rangeStart, rangeEnd, inRange }`)
+  et `selected` (booléen). Idéal pour des pastilles d'évènements, week-ends colorés, etc.
+- **`#buttonbar`** — barre de boutons personnalisée. Contexte : `todayCallback` et `clearCallback`
+  (fonctions à câbler sur `(click)`).
+
+<Canvas of={DatepickerStories.DateTemplate} />
+<Canvas of={DatepickerStories.CustomButtonBar} />
+
+```html
+<!-- Cellule de jour personnalisée -->
+<ui-datepicker [(ngModel)]="date">
+  <ng-template #date let-d let-selected="selected">
+    <span>{{ d.day }}</span>
+    @if (hasEvent(d)) { <span class="dot"></span> }
+  </ng-template>
+</ui-datepicker>
+
+<!-- Barre de boutons personnalisée -->
+<ui-datepicker [(ngModel)]="range" selectionMode="range" showButtonBar>
+  <ng-template #buttonbar let-todayCallback="todayCallback" let-clearCallback="clearCallback">
+    <ui-button size="small" label="Aujourd'hui" (buttonClick)="todayCallback($event)" />
+    <ui-button size="small" level="error" icon="xmark" iconOnly ariaLabel="Effacer" (buttonClick)="clearCallback($event)" />
+  </ng-template>
+</ui-datepicker>
+```
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Point</th>
+      <th>Implémentation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Déclencheur</strong></td>
+      <td>Champ <code>ui-input</code> lié à un <code>label</code> natif. Ouverture au clic, ou clavier <kbd>Entrée</kbd>/<kbd>Espace</kbd>/<kbd>↓</kbd> ; <code>aria-haspopup="dialog"</code> + <code>aria-expanded</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Navigation grille</strong></td>
+      <td>Focus roving (tabindex géré). <kbd>← ↑ → ↓</kbd> jour, <kbd>Début</kbd>/<kbd>Fin</kbd> semaine, <kbd>Page↑</kbd>/<kbd>Page↓</kbd> mois (+ <kbd>Maj</kbd> = année), <kbd>Entrée</kbd>/<kbd>Espace</kbd> sélectionne.</td>
+    </tr>
+    <tr>
+      <td><strong>Fermeture</strong></td>
+      <td><kbd>Échap</kbd>, clic extérieur ou sélection (hors <code>showTime</code>) ferme et rend le focus au déclencheur.</td>
+    </tr>
+    <tr>
+      <td><strong>Sémantique</strong></td>
+      <td>Panneau <code>role="dialog"</code> ; grille <code>role="grid"</code> / <code>gridcell</code> avec <code>aria-selected</code> et <code>aria-current="date"</code> pour aujourd'hui.</td>
+    </tr>
+    <tr>
+      <td><strong>Désactivé</strong></td>
+      <td><code>disabled</code> natif (jour et champ) ; couleurs via tokens <code>-disabled</code>, jamais la seule opacité.</td>
+    </tr>
+  </tbody>
+</table>
+
+```html
+<!-- Reactive forms -->
+<ui-datepicker formControlName="birth" label="Date de naissance" [maxDate]="today" required />
+
+<!-- Date + heure, ngModel -->
+<ui-datepicker [(ngModel)]="appointment" label="Rendez-vous" showTime hourFormat="12" showButtonBar />
+
+<!-- Inline (pas d'overlay) -->
+<ui-datepicker [(ngModel)]="date" inline />
+```
+
+> **Périmètre / choix** : le champ déclencheur est en **lecture seule** (choix par le calendrier ;
+> pas de saisie/parsing texte libre). Le tiroir de vues (jour → mois → année) et le focus roving
+> clavier sont actifs en **mono-mois** ; en multi-mois les entêtes sont fixes avec flèches aux
+> extrémités. Les états interactifs (hover/focus/pressed) sont des **pseudo-classes CSS** pilotées
+> par les tokens, pas des props. Personnalisation via `panelStyleClass`, `#date`, `#buttonbar`.
+
+## Configuration (SCSS)
+
+Le champ déclencheur réutilise le shell `ui-field` (voir groupe
+[Forms](?path=/docs/components-configuration-forms--docs)). Le **panneau** expose ses propres
+variables locales (structurelles, propres au composant) — à retarger dans `ui-datepicker.scss` ou à
+surcharger via `panelStyleClass`. Voir le [fonctionnement de la configuration](?path=/docs/components-configuration--docs).
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Variable locale</th>
+      <th>Source</th>
+      <th>Rôle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>$panel-width</code></td>
+      <td><code>utils.rem-calc(360)</code></td>
+      <td>Largeur du panneau calendrier</td>
+    </tr>
+    <tr>
+      <td><code>$panel-radius</code></td>
+      <td><code>var(--radius-default)</code></td>
+      <td>Rayon de bordure du panneau</td>
+    </tr>
+    <tr>
+      <td><code>$panel-padding</code></td>
+      <td><code>var(--units-sm)</code></td>
+      <td>Padding interne du panneau</td>
+    </tr>
+    <tr>
+      <td><code>$panel-gap</code></td>
+      <td><code>var(--units-sm)</code></td>
+      <td>Espace entre sections (header / grille / heure)</td>
+    </tr>
+    <tr>
+      <td><code>$panel-shadow</code></td>
+      <td><code>var(--shadow-default-md)</code></td>
+      <td>Ombre du panneau en overlay (retirée en inline)</td>
+    </tr>
+    <tr>
+      <td><code>$day-size</code></td>
+      <td><code>var(--size-components-default)</code></td>
+      <td>Diamètre d'une cellule jour</td>
+    </tr>
+    <tr>
+      <td><code>$day-radius</code></td>
+      <td><code>var(--radius-full)</code></td>
+      <td>Rayon des cellules jour (cercle)</td>
+    </tr>
+    <tr>
+      <td><code>$nav-size</code></td>
+      <td><code>var(--size-components-default)</code></td>
+      <td>Taille des boutons de navigation mensuelle</td>
+    </tr>
+    <tr>
+      <td><code>$focus-ring-width</code></td>
+      <td><code>utils.$focus-ring-width</code></td>
+      <td>Anneau de focus (jours, navigation)</td>
+    </tr>
+    <tr>
+      <td><code>$stroke-width</code></td>
+      <td><code>utils.$control-stroke-width</code></td>
+      <td>Épaisseur des bordures (panneau, cellule « today »)</td>
+    </tr>
+  </tbody>
+</table>
