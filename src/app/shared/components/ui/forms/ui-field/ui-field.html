@@ -10,7 +10,7 @@
     />
   }
 
-  <div class="ui-field-box">
+  <div class="ui-field-box" (mousedown)="onBoxMouseDown($event)">
     <ng-content select="[uiFieldPrefix]" />
     <ng-content />
     <ng-content select="[uiFieldSuffix]" />

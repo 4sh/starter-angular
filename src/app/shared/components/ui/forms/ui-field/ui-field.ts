@@ -47,6 +47,18 @@ export class UiField {
   hasFooter = input(false, { transform: booleanAttribute });
 
   /** @ignore */
+  protected onBoxMouseDown(event: MouseEvent): void {
+    if (this.disabled() || this.readonly()) return;
+    const target = event.target as HTMLElement;
+    if (target.closest('button, a[href], input, textarea, select, [contenteditable="true"]')) return;
+    const box = event.currentTarget as HTMLElement;
+    const control = box.querySelector<HTMLElement>('input, textarea, select');
+    if (!control || control.matches(':disabled')) return;
+    event.preventDefault();
+    control.focus();
+  }
+
+  /** @ignore */
   protected readonly classes = computed(() => {
     const c = ['ui-field', `_${this.level()}`];
     if (this.size() !== 'default') c.push(`_${this.size()}`);
