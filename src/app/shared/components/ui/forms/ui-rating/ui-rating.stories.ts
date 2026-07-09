@@ -15,7 +15,7 @@ const meta: Meta<UiRating> = {
   parameters: {
     design: {
       type: 'figma',
-      url: 'https://www.figma.com/file/XgSemnGLFrAq75CxcjPVf1?node-id=2026:36186',
+      url: 'https://www.figma.com/design/GZww5hdUA49LB8XWeWP6tl/-Projet----UI-Kit?node-id=2026-11880&t=CJr5MNxWDimstGn6-1',
     },
   },
   args: {
