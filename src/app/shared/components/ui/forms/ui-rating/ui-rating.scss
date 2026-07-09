@@ -25,14 +25,14 @@ $focus-ring-width: utils.$form-focus-ring-width;
 
   &-stars {
     display: flex;
-    gap: var(--units-xs); // base gap
+    gap: var(--units-2xs); // base gap
   }
 
-  &._size-sm &-stars { gap: var(--spacing-md); }
-  &._size-md &-stars { gap: var(--spacing-md); }
-  &._size-default &-stars { gap: var(--spacing-md); }
-  &._size-lg &-stars { gap: var(--spacing-md); }
-  &._size-xl &-stars { gap: var(--spacing-md); }
+  &._size-sm &-stars { gap: var(--units-2xs); }
+  &._size-md &-stars { gap: var(--units-2xs); }
+  &._size-default &-stars { gap: var(--units-2xs); }
+  &._size-lg &-stars { gap: var(--units-2xs); }
+  &._size-xl &-stars { gap: var(--units-2xs); }
 
   &._vertical &-stars {
     flex-direction: column;
