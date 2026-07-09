@@ -45,7 +45,7 @@
 - ⬜ `ui-toast` — Notification éphémère
 
 ## layout
-- ⬜ `ui-card` — Conteneur carte
+- ✅ `ui-card` — Conteneur flexible (slots média/titre/sous-titre/contenu/pied via directives marqueurs + raccourcis `header`/`subheader`, variantes outlined/elevated/flat)
 - ⬜ `ui-modal` — Fenêtre modale
 
 ## navigation

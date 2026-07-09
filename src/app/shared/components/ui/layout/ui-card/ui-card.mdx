@@ -1,0 +1,220 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as CardStories from './ui-card.stories';
+
+<Meta of={CardStories} />
+
+# ui-card
+
+Conteneur **flexible** qui compose des régions optionnelles : média, en-tête
+(titre + sous-titre), contenu et pied. Chaque région n'est rendue que si elle
+porte du contenu — aucun wrapper vide, donc aucun espacement fantôme.
+
+Surface neutre (tokens `global`) : fond `--global-default-surface-default`, texte
+`--global-high-content-default`, bordure `--global-default-stroke-default`, ombre
+`--shadow-default-md` (variante `elevated`), rayon `--radius-lg`. Light **et** dark
+via les modes de variables.
+
+<Canvas of={CardStories.Complete} />
+
+## API
+
+<ArgTypes of={CardStories} />
+
+## Système de slots
+
+Le cas courant ne demande **aucun import** : le contenu par défaut passe par
+`<ng-content>`, et le titre / sous-titre acceptent les inputs `header` / `subheader`.
+Les slots riches utilisent des **directives marqueurs** (attribut ou élément) à
+importer dans le composant hôte.
+
+```html
+<ui-card header="Titre" subheader="Sous-titre">
+  Contenu de la carte (slot par défaut)
+</ui-card>
+
+<ui-card>
+  <img uiCardMedia src="…" alt="…" />
+  <span uiCardTitle>Titre <ui-tag label="New" /></span>
+  <span uiCardSubtitle>Sous-titre</span>
+  Contenu riche…
+  <div uiCardFooter>
+    <ui-button label="Annuler" level="low" />
+    <ui-button label="Valider" />
+  </div>
+</ui-card>
+```
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Slot</th>
+      <th>Marqueur</th>
+      <th>Raccourci</th>
+      <th>Rôle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Média</strong></td>
+      <td><code>[uiCardMedia]</code> · <code>ui-card-media</code></td>
+      <td>—</td>
+      <td>Visuel pleine largeur en tête (clippé aux coins arrondis).</td>
+    </tr>
+    <tr>
+      <td><strong>Titre</strong></td>
+      <td><code>[uiCardTitle]</code> · <code>ui-card-title</code></td>
+      <td><code>header</code></td>
+      <td>Titre (typo <code>title</code>).</td>
+    </tr>
+    <tr>
+      <td><strong>Sous-titre</strong></td>
+      <td><code>[uiCardSubtitle]</code> · <code>ui-card-subtitle</code></td>
+      <td><code>subheader</code></td>
+      <td>Sous-titre atténué (<code>--global-low-content-default</code>).</td>
+    </tr>
+    <tr>
+      <td><strong>Contenu</strong></td>
+      <td><em>slot par défaut</em> (<code>&lt;ng-content&gt;</code>)</td>
+      <td>—</td>
+      <td>Corps de la carte.</td>
+    </tr>
+    <tr>
+      <td><strong>Pied</strong></td>
+      <td><code>[uiCardFooter]</code> · <code>ui-card-footer</code></td>
+      <td>—</td>
+      <td>Footer de la card</td>
+    </tr>
+  </tbody>
+</table>
+
+<Canvas of={CardStories.Default} />
+<Canvas of={CardStories.ContentOnly} />
+<Canvas of={CardStories.WithMedia} />
+<Canvas of={CardStories.RichTitle} />
+
+## Contenu full-bleed (`contentFlush`)
+
+Par défaut le contenu porte la gouttière de la carte. `contentFlush` la **retire**
+pour laisser le consommateur maîtriser sa mise en page : bande média / couleur
+edge-to-edge, tableau pleine largeur… La gouttière reste disponible via la variable
+CSS `--ui-card-padding` (à ré-appliquer sur les blocs qui doivent rester en retrait).
+
+```html
+<ui-card header="Titre" [contentFlush]="true">
+  <div class="flex-y" style="--flex-gap-y: var(--units-md)">
+    <div class="banniere"></div> <!-- pleine largeur -->
+    <p style="padding-inline: var(--ui-card-padding)">Paragraphe regouttiéré…</p>
+  </div>
+</ui-card>
+```
+
+<Canvas of={CardStories.ContentFlush} />
+
+## Footer
+
+```html
+<!-- actions groupées à droite -->
+<div uiCardFooter class="flex-x flex-gap-x align-right" style="--flex-gap-x: var(--units-sm)">
+  <ui-button label="Annuler" level="low" />
+  <ui-button label="Valider" />
+</div>
+
+<!-- tags à gauche, action à droite -->
+<div uiCardFooter class="flex-x align-justify" style="flex:1;align-items:center">
+  <div class="flex-x flex-gap-x"><ui-tag … /><ui-tag … /></div>
+  <ui-button label="Action" />
+</div>
+```
+
+<Canvas of={CardStories.WithFooter} />
+<Canvas of={CardStories.Complete} />
+
+## Variantes
+
+`variant` pilote uniquement le traitement de la **surface** (les états interactifs
+ne sont pas gérés : la carte est un conteneur).
+
+<Canvas of={CardStories.Outlined} />
+<Canvas of={CardStories.Elevated} />
+<Canvas of={CardStories.Flat} />
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Règle</th>
+      <th>Détail</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Sémantique</strong></td>
+      <td>Conteneur neutre par défaut. Renseigner <code>ariaLabel</code> ou <code>ariaLabelledBy</code> promeut la carte en <code>role="region"</code> (repère de navigation).</td>
+    </tr>
+    <tr>
+      <td><strong>Titre</strong></td>
+      <td>Le slot titre est un simple bloc stylé : pour une hiérarchie de titres réelle, projeter un <code>&lt;h2&gt;</code>/<code>&lt;h3&gt;</code> via <code>uiCardTitle</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Média</strong></td>
+      <td>Fournir un <code>alt</code> pertinent (ou <code>alt=""</code> si décoratif) sur l’image projetée.</td>
+    </tr>
+    <tr>
+      <td><strong>Contraste</strong></td>
+      <td>Couleurs issues des tokens sémantiques <code>global</code> (WCAG AA), déclinées light / dark.</td>
+    </tr>
+  </tbody>
+</table>
+
+## Configuration (SCSS)
+
+Variables locales en tête de `ui-card.scss` (spécifiques à ce composant). Voir le
+[fonctionnement de la configuration](?path=/docs/components-configuration--docs).
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Variable locale</th>
+      <th>Source</th>
+      <th>Rôle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>$card-padding</code></td>
+      <td><code>var(--units-lg)</code></td>
+      <td>Inset du corps (24px).</td>
+    </tr>
+    <tr>
+      <td><code>$card-gap</code></td>
+      <td><code>var(--units-md)</code></td>
+      <td>Espacement entre en-tête / contenu / pied (12px).</td>
+    </tr>
+    <tr>
+      <td><code>$card-header-gap</code></td>
+      <td><code>var(--units-2xs)</code></td>
+      <td>Espacement titre ↔ sous-titre (2px).</td>
+    </tr>
+    <tr>
+      <td><code>$card-footer-gap</code></td>
+      <td><code>var(--units-sm)</code></td>
+      <td>Espacement entre éléments du pied (8px).</td>
+    </tr>
+    <tr>
+      <td><code>$card-radius</code></td>
+      <td><code>var(--radius-md)</code></td>
+      <td>Rayon des coins (12px).</td>
+    </tr>
+    <tr>
+      <td><code>$card-stroke-width</code></td>
+      <td><code>var(--stroke-sm)</code></td>
+      <td>Épaisseur de bordure (1px).</td>
+    </tr>
+    <tr>
+      <td><code>--ui-card-padding</code></td>
+      <td>custom property (= <code>$card-padding</code>)</td>
+      <td>Gouttière exposée pour regouttiérer un contenu <code>contentFlush</code>.</td>
+    </tr>
+  </tbody>
+</table>

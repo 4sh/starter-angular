@@ -1,0 +1,135 @@
+@use 'utils';
+
+// =====================================================================
+// ui-card : co-located styles. All values come from design tokens.
+//
+// Regions (media / header / content / footer) are rendered by the template
+// only when they hold content, so there is no empty-wrapper gap to guard here.
+//
+// Extend:
+//   • Variant (surface treatment) → add a `._<name>` block below.
+// =====================================================================
+
+// --- Config (extension points) ---------------------------------------
+// Local structural constants — retune here to detune ONLY this component.
+$card-padding: var(--units-lg); // body inset (24px)
+$card-gap: var(--units-md); // between header / content / footer (12px)
+$card-header-gap: var(--units-2xs); // between title and subtitle (2px)
+$card-footer-gap: var(--units-sm); // between footer items (8px)
+$card-radius: var(--radius-md);
+$card-stroke-width: var(--stroke-sm); // 1px, as in the Figma slots
+
+// Block host so consumer width/height (and layout) apply to the card box.
+:host {
+  display: block;
+}
+
+.ui-card {
+  // --- Base ----------------------------------------------------------
+  // Gutter exposed as a custom property so consumers can re-apply it inside a
+  // flush content region (e.g. `padding-inline: var(--ui-card-padding)`).
+  --ui-card-padding: #{$card-padding};
+
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; // clips full-bleed media to the rounded corners
+  background-color: var(--global-default-surface-default);
+  border: $card-stroke-width solid transparent;
+  border-radius: $card-radius;
+  color: var(--global-high-content-default);
+  font-family: var(--fontfamily-base);
+
+  // --- Sub-elements --------------------------------------------------
+  // Full-bleed media: no padding, spans the full width, clipped by the root.
+  &-media {
+    display: flex;
+    overflow: hidden;
+
+    // Media content fills the region without overflowing.
+    ::ng-deep img,
+    ::ng-deep svg,
+    ::ng-deep ui-image,
+    ::ng-deep picture {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  // Region holding header + content + footer.
+  // Vertical inset lives here; horizontal gutter is per-region so the content
+  // slot can opt out (`._flush`) while header/footer stay padded.
+  &-body {
+    display: flex;
+    flex-direction: column;
+    gap: $card-gap;
+    padding-block: $card-padding;
+  }
+
+  &-header {
+    display: flex;
+    flex-direction: column;
+    gap: $card-header-gap;
+    padding-inline: $card-padding;
+  }
+
+  // Flex row so inline adornments (tag, icon, badge) center on the title text.
+  &-title {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--units-sm);
+    font-family: var(--fontfamily-title);
+    font-size: var(--size-typography-title-default);
+    font-weight: var(--weight-bold);
+    line-height: 1.2;
+    color: var(--global-high-content-default);
+  }
+
+  &-subtitle {
+    font-size: var(--size-typography-text-md);
+    line-height: 1.4;
+    color: var(--global-low-content-default);
+  }
+
+  &-content {
+    padding-inline: $card-padding;
+    font-size: var(--size-typography-text-md);
+    line-height: 1.5;
+    color: var(--global-high-content-default);
+
+    // Full-bleed content: consumer owns the inner gutters.
+    &._flush {
+      padding-inline: 0;
+    }
+
+    // Guard: an empty default slot must not add to the body gap.
+    &._empty {
+      display: none;
+    }
+  }
+
+  // Footer aligned to the end by default (Figma: primaryAxisAlignItems = MAX).
+  // A full-width child (e.g. a Gridaflex `flex-x` group) overrides this to lay
+  // out its own distribution (tags left / action right, etc.).
+  &-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: $card-footer-gap;
+    padding-inline: $card-padding;
+  }
+
+  // --- Variants (surface treatment) ----------------------------------
+  &._outlined {
+    border-color: var(--global-default-stroke-default);
+  }
+
+  &._elevated {
+    box-shadow: var(--shadow-default-md);
+  }
+
+  // `._flat` keeps the base (transparent border, no shadow) — no rule needed.
+}

@@ -1,0 +1,50 @@
+<div
+  [class]="classes()"
+  [attr.aria-label]="ariaLabel() ?? null"
+  [attr.aria-labelledby]="ariaLabelledBy() ?? null"
+  [attr.role]="ariaLabel() || ariaLabelledBy() ? 'region' : null"
+>
+  @if (hasMedia()) {
+    <div class="ui-card-media">
+      <ng-content select="[uiCardMedia], ui-card-media" />
+    </div>
+  }
+
+  <div class="ui-card-body">
+    @if (hasHeader()) {
+      <div class="ui-card-header">
+        @if (hasTitle()) {
+          <div class="ui-card-title">
+            @if (showHeaderString()) {
+              {{ header() }}
+            }
+            <ng-content select="[uiCardTitle], ui-card-title" />
+          </div>
+        }
+        @if (hasSubtitle()) {
+          <div class="ui-card-subtitle">
+            @if (showSubheaderString()) {
+              {{ subheader() }}
+            }
+            <ng-content select="[uiCardSubtitle], ui-card-subtitle" />
+          </div>
+        }
+      </div>
+    }
+
+    <div
+      class="ui-card-content"
+      #contentWrap
+      [class._empty]="!hasContent()"
+      [class._flush]="contentFlush()"
+    >
+      <ng-content />
+    </div>
+
+    @if (hasFooter()) {
+      <div class="ui-card-footer">
+        <ng-content select="[uiCardFooter], ui-card-footer" />
+      </div>
+    }
+  </div>
+</div>
