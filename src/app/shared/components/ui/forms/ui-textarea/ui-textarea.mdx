@@ -1,0 +1,135 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as TextareaStories from './ui-textarea.stories';
+
+<Meta of={TextareaStories} />
+
+# ui-textarea
+
+Zone de texte **multiligne** bâtie sur le shell partagé
+[`ui-field`](?path=/docs/components-ui-forms-ui-field--docs) (label + boîte + helper) en mode
+**multiline**, avec un `<textarea>` natif. Couleurs via tokens `form.*`, bordure pilotée par le
+`level`. Redimensionnement via la poignée **native** du navigateur (`resize`, verticale par défaut,
+dans le coin bas-droit) ou `autoResize` (la hauteur suit le contenu). Compteur de caractères
+optionnel (`showCount` + `maxlength`).
+
+Autonome, `[(ngModel)]` ou reactive forms (`ControlValueAccessor` via `BaseFormField`). Pour une
+saisie sur une seule ligne → [`ui-input`](?path=/docs/components-ui-forms-ui-input--docs).
+
+<Canvas of={TextareaStories.WithHelper} />
+
+## API
+
+<ArgTypes of={TextareaStories} />
+
+## Niveaux & états
+
+`level` (`default`/`success`/`error`) pilote la bordure. Le niveau `success` est un état **visuel
+manuel** (ex. après une vérification). L'état d'**erreur** est en revanche piloté par la validation :
+la bordure rouge et `errorText` apparaissent quand le contrôle est **invalide ET touché/modifié**
+(règle `showError`), et disparaissent dès que la saisie redevient valide.
+
+<Canvas of={TextareaStories.Success} />
+<Canvas of={TextareaStories.Disabled} />
+<Canvas of={TextareaStories.Readonly} />
+<Canvas of={TextareaStories.Small} />
+
+## Validation
+
+Avec les formulaires réactifs (ou template-driven), l'erreur est **dynamique** : elle n'apparaît
+qu'après interaction et se lève automatiquement quand le champ redevient valide. `required` affiche
+aussi le marqueur `*` sur le label. Pas besoin de forcer `level="error"`.
+
+<Canvas of={TextareaStories.Required} />
+<Canvas of={TextareaStories.Validation} />
+
+## Redimensionnement
+
+Par défaut, la poignée native permet d'agrandir **verticalement** le champ. `resize`
+(`none`/`vertical`/`horizontal`/`both`) change l'axe. Avec `autoResize`, la hauteur suit le contenu
+saisi et la poignée est désactivée.
+
+<Canvas of={TextareaStories.ResizeBoth} />
+<Canvas of={TextareaStories.AutoResize} />
+
+## Compteur de caractères
+
+`showCount` affiche un compteur sous le champ ; combiné à `maxlength`, il indique `saisi / max`.
+
+<Canvas of={TextareaStories.CharacterCount} />
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Point</th>
+      <th>Implémentation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Label</strong></td>
+      <td><code>ui-label</code> natif lié au <code>textarea</code> par <code>for</code>/<code>id</code> (clic sur le label = focus). Sans label visible : <code>ariaLabel</code> / <code>ariaLabelledBy</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Aide & erreur</strong></td>
+      <td><code>ui-helper</code> relié par <code>aria-describedby</code>. <code>aria-invalid</code> + bordure erreur, automatique quand le contrôle est invalide et touché/modifié.</td>
+    </tr>
+    <tr>
+      <td><strong>Désactivé</strong></td>
+      <td><code>disabled</code> natif (pas seulement visuel) ; couleurs via tokens <code>--form-*-disabled</code>.</td>
+    </tr>
+  </tbody>
+</table>
+
+```html
+<!-- Reactive forms + message d'erreur -->
+<ui-textarea formControlName="bio" label="Bio" errorText="Minimum 20 caractères" required />
+
+<!-- Auto-resize : la hauteur suit le contenu -->
+<ui-textarea [(ngModel)]="message" label="Message" autoResize />
+```
+
+> Architecture : `ui-textarea` partage le shell `ui-field` (label + boîte + helper + états) avec
+> `ui-input` et la base `BaseFormField` (CVA + validation). Le mode `multiline` de `ui-field`
+> ouvre la boîte (haut-alignée, hauteur automatique avec `min-height`). Le sous-composant Figma
+> `_ui-textarea-content` est porté nativement par le `<textarea>`, et le « resizer » par la poignée
+> native.
+
+## Configuration (SCSS)
+
+La boîte est fournie par le shell `ui-field` en mode multiline. Les constantes propres au textarea
+sont partagées dans le groupe [Forms](?path=/docs/components-configuration-forms--docs) ; voir aussi
+le [fonctionnement de la configuration](?path=/docs/components-configuration--docs).
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Variable locale (ui-field)</th>
+      <th>Source</th>
+      <th>Rôle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>$textarea-min-height</code></td>
+      <td><code>utils.$form-textarea-min-height</code></td>
+      <td>Hauteur minimale de la boîte</td>
+    </tr>
+    <tr>
+      <td><code>$textarea-min-height-small</code></td>
+      <td><code>utils.$form-textarea-min-height-small</code></td>
+      <td>Hauteur minimale variante small</td>
+    </tr>
+    <tr>
+      <td><code>$textarea-padding-y</code></td>
+      <td><code>utils.$form-textarea-padding-y</code></td>
+      <td>Padding vertical de la boîte</td>
+    </tr>
+    <tr>
+      <td><code>$textarea-padding-y-small</code></td>
+      <td><code>utils.$form-textarea-padding-y-small</code></td>
+      <td>Padding vertical variante small</td>
+    </tr>
+  </tbody>
+</table>

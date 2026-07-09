@@ -16,14 +16,19 @@
     <ng-content select="[uiFieldSuffix]" />
   </div>
 
-  @if (message()) {
-    <ui-helper
-      class="ui-field-message"
-      [attr.id]="messageId()"
-      [message]="message()!"
-      [level]="level()"
-      [showIcon]="false"
-      size="small"
-    />
+  @if (message() || hasFooter()) {
+    <div class="ui-field-footer">
+      @if (message()) {
+        <ui-helper
+          class="ui-field-message"
+          [attr.id]="messageId()"
+          [message]="message()!"
+          [level]="level()"
+          [showIcon]="false"
+          size="small"
+        />
+      }
+      <ng-content select="[uiFieldFooter]" />
+    </div>
   }
 </div>

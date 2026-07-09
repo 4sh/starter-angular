@@ -25,7 +25,7 @@
 - ⬜ `ui-nudger` — Champ numérique +/-
 - ✅ `ui-rating` — Notation étoiles (headless, CVA, clavier natif range, focus)
 - ⬜ `ui-file-upload` — Téléversement de fichiers
-- ⬜ `ui-textarea` — Zone de texte multiligne
+- ✅ `ui-textarea` — Zone de texte multiligne (headless, CVA ; label + helper, niveaux/états, `rows`, `maxlength`, `autoResize`, poignée native)
 - ⬜ `ui-slider` — Curseur de sélection de valeur
 
 ## informative

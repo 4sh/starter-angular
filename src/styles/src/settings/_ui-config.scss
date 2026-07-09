@@ -27,6 +27,12 @@ $form-field-gap: var(--units-sm);
 $form-field-stroke-width: $control-stroke-width;
 $form-field-focus-ring-width: $form-focus-ring-width;
 
+// Textarea (multiline field box)
+$form-textarea-min-height: 80px;
+$form-textarea-min-height-small: 64px;
+$form-textarea-padding-y: var(--units-default);
+$form-textarea-padding-y-small: var(--units-md);
+
 // --- Category : actions -----------------------------------------------
 $action-focus-ring-width: $focus-ring-width;
 

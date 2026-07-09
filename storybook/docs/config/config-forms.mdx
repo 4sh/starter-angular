@@ -9,7 +9,7 @@ globale et peut être surchargée pour **tous** les contrôles de formulaire à 
 
 > Fichier source : `src/styles/src/settings/_ui-config.scss` · exposé via `@use 'utils'`.
 > Consommée par : `ui-checkbox`, `ui-radio`, `ui-toggle`, `ui-field` (donc `ui-input`,
-> `ui-input-mask`, `ui-input-number`). Retour au
+> `ui-input-mask`, `ui-input-number`, `ui-textarea`). Retour au
 > [fonctionnement & sommaire](?path=/docs/components-configuration--docs).
 
 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
@@ -81,6 +81,30 @@ globale et peut être surchargée pour **tous** les contrôles de formulaire à 
       <td style={{ padding: 8 }}>Anneau de focus de la boîte de champ</td>
       <td style={{ padding: 8 }}><code>$form-focus-ring-width</code> (catégorie forms)</td>
       <td style={{ padding: 8 }}>2px</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$form-textarea-min-height</code></td>
+      <td style={{ padding: 8 }}>Hauteur minimale de la boîte multiligne (<code>ui-textarea</code>)</td>
+      <td style={{ padding: 8 }}><code>80px</code></td>
+      <td style={{ padding: 8 }}>80px</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$form-textarea-min-height-small</code></td>
+      <td style={{ padding: 8 }}>Hauteur minimale multiligne variante small</td>
+      <td style={{ padding: 8 }}><code>64px</code></td>
+      <td style={{ padding: 8 }}>64px</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$form-textarea-padding-y</code></td>
+      <td style={{ padding: 8 }}>Padding vertical de la boîte multiligne</td>
+      <td style={{ padding: 8 }}><code>var(--units-default)</code></td>
+      <td style={{ padding: 8 }}>16px</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$form-textarea-padding-y-small</code></td>
+      <td style={{ padding: 8 }}>Padding vertical multiligne variante small</td>
+      <td style={{ padding: 8 }}><code>var(--units-md)</code></td>
+      <td style={{ padding: 8 }}>12px</td>
     </tr>
   </tbody>
 </table>

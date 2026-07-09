@@ -1,0 +1,51 @@
+<ui-field
+  multiline
+  [label]="label()"
+  [for]="resolvedId()"
+  [required]="required()"
+  [size]="size()"
+  [level]="effectiveLevel()"
+  [disabled]="isDisabled()"
+  [readonly]="readonly()"
+  [message]="displayMessage()"
+  [messageId]="messageId()"
+  [hasFooter]="showCount()"
+>
+  <textarea
+    #textareaEl
+    class="ui-textarea-native"
+    [class._small]="size() === 'small'"
+    [class._auto-resize]="autoResize()"
+    [style.resize]="effectiveResize()"
+    [id]="resolvedId()"
+    [value]="displayValue()"
+    [rows]="rows()"
+    [placeholder]="placeholder() ?? ''"
+    [disabled]="isDisabled()"
+    [readOnly]="readonly()"
+    [required]="required()"
+    [attr.name]="name() || null"
+    [attr.tabindex]="tabindex()"
+    [attr.maxlength]="maxlength()"
+    [attr.aria-label]="label() ? null : ariaLabel() || null"
+    [attr.aria-labelledby]="ariaLabelledBy() || null"
+    [attr.aria-describedby]="displayMessage() ? messageId() : null"
+    [attr.aria-invalid]="effectiveLevel() === 'error' ? 'true' : null"
+    (input)="onInput()"
+    (focus)="textareaFocus.emit($event)"
+    (blur)="onBlur($event)"
+  ></textarea>
+
+  @if (showCount()) {
+    <span
+      uiFieldFooter
+      class="ui-textarea-count"
+      [class._small]="size() === 'small'"
+      [class._disabled]="isDisabled()"
+      [class._over]="overLimit()"
+      aria-hidden="true"
+    >
+      {{ charCount() }}@if (maxlength(); as max) {&nbsp;/&nbsp;{{ max }}}
+    </span>
+  }
+</ui-field>

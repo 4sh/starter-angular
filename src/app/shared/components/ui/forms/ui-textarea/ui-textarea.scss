@@ -1,0 +1,44 @@
+@use 'utils';
+
+// =====================================================================
+// ui-textarea : projected parts only. The box/label/helper/states live in
+// `ui-field` (multiline mode). In multiline mode the box has no padding, so
+// the <textarea> fills it edge-to-edge (resize grip in the corner) and owns
+// its own text inset here.
+// =====================================================================
+
+$pad-x: utils.$form-field-padding-x;
+$pad-y: utils.$form-textarea-padding-y;
+$pad-y-small: utils.$form-textarea-padding-y-small;
+
+.ui-textarea {
+  &-native {
+    @include utils.field-native-input;
+    box-sizing: border-box;
+    align-self: stretch;
+    width: 100%;
+    padding: $pad-y $pad-x;
+    max-width: 100%;
+
+    &._small {
+      padding: $pad-y-small $pad-x;
+      font-size: var(--size-typography-text-md);
+    }
+
+    &._auto-resize { overflow: hidden; }
+  }
+
+  // --- Character counter (projected into the field footer) -------------
+  &-count {
+    margin-left: auto;
+    flex-shrink: 0;
+    font-family: var(--fontfamily-base);
+    font-size: var(--size-typography-text-md);
+    color: var(--form-low-content-default);
+    user-select: none;
+
+    &._small { font-size: var(--size-typography-text-sm); }
+    &._over { color: var(--form-error-content-default); }
+    &._disabled { color: var(--form-high-content-disabled); }
+  }
+}

@@ -37,10 +37,14 @@ export class UiField {
   disabled = input(false, { transform: booleanAttribute });
   /** Read-only state (visual). */
   readonly = input(false, { transform: booleanAttribute });
+  /** Multiline box (top-aligned, auto-height with min-height) — used by `ui-textarea`. */
+  multiline = input(false, { transform: booleanAttribute });
   /** Message under the field (helper or error, already resolved by the component). */
   message = input<string>();
   /** id of the message (for `aria-describedby`, set by the component on the input). */
   messageId = input<string>();
+  /** Renders the footer row even without a message (e.g. to host a `[uiFieldFooter]` counter). */
+  hasFooter = input(false, { transform: booleanAttribute });
 
   /** @ignore */
   protected readonly classes = computed(() => {
@@ -48,6 +52,7 @@ export class UiField {
     if (this.size() !== 'default') c.push(`_${this.size()}`);
     if (this.disabled()) c.push('_disabled');
     if (this.readonly()) c.push('_readonly');
+    if (this.multiline()) c.push('_multiline');
     return c.join(' ');
   });
 }
