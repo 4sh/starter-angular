@@ -1,0 +1,43 @@
+<div [class]="classes()" (mouseleave)="clearHover()">
+  <input #inputEl
+         type="range"
+         class="ui-rating-input"
+         min="0" [max]="stars()" step="1"
+         [id]="resolvedId()"
+         [name]="name()"
+         [disabled]="isDisabled()"
+         [required]="required()"
+         [attr.autofocus]="autofocus() ? true : null"
+         [attr.readonly]="readonly() ? true : null"
+         [attr.aria-label]="ariaLabel()"
+         [attr.aria-labelledby]="ariaLabelledBy()"
+         [tabindex]="tabindex() ?? 0"
+         [value]="modelValue()"
+         (input)="onNativeChange($event)"
+         (focus)="onFocus($event)"
+         (blur)="onBlur($event)">
+
+  <div class="ui-rating-stars">
+    @for (star of starsArray(); track $index) {
+      <div class="ui-rating-icon"
+           [class._active]="star <= modelValue()"
+           [class._hover]="star <= hoverValue()"
+           (click)="rate(star)"
+           (mouseenter)="setHover(star)">
+        @if (star <= (hoverValue() || modelValue())) {
+          <ng-container *ngTemplateOutlet="onIconTemplate() || defaultOnIcon; context: { $implicit: star, active: star <= modelValue() }" />
+        } @else {
+          <ng-container *ngTemplateOutlet="offIconTemplate() || defaultOffIcon; context: { $implicit: star, active: star <= modelValue() }" />
+        }
+      </div>
+    }
+  </div>
+</div>
+
+<ng-template #defaultOnIcon>
+  <ui-icon name="star" type="solid" [size]="size()" />
+</ng-template>
+
+<ng-template #defaultOffIcon>
+  <ui-icon name="star" type="outline" [size]="size()" />
+</ng-template>

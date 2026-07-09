@@ -1,0 +1,75 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as UiRatingStories from './ui-rating.stories';
+
+<Meta of={UiRatingStories} />
+
+# ui-rating
+
+Le composant `ui-rating` permet à l'utilisateur de donner une note sur une échelle (par défaut 5 étoiles). Il est construit sur un `<input type="range">` invisible, garantissant l'accessibilité native (clavier, lecteur d'écran, formulaire).
+
+<Canvas of={UiRatingStories.Default} />
+
+## API
+
+<ArgTypes />
+
+### Tailles
+La taille des étoiles et leur espacement sont gérés nativement via l'input `size` (`sm` à `xl`).
+<Canvas of={UiRatingStories.SizeXL} />
+
+### Désactivé
+<Canvas of={UiRatingStories.Disabled} />
+
+### Erreur
+<Canvas of={UiRatingStories.Invalid} />
+
+## Templates Personnalisés
+Vous pouvez remplacer l'icône étoile par n'importe quelle autre icône ou SVG en projetant les templates `#onIcon` et `#offIcon`.
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>onIcon</code></td>
+      <td><code>TemplateRef&lt;UiRatingIconContext&gt;</code></td>
+      <td>Template pour l'icône active. Contexte : <code>$implicit: number</code> (index), <code>active: boolean</code>.</td>
+    </tr>
+    <tr>
+      <td><code>offIcon</code></td>
+      <td><code>TemplateRef&lt;UiRatingIconContext&gt;</code></td>
+      <td>Template pour l'icône inactive. Contexte : <code>$implicit: number</code> (index), <code>active: boolean</code>.</td>
+    </tr>
+  </tbody>
+</table>
+
+<Canvas of={UiRatingStories.CustomTemplates} />
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Élément</th>
+      <th>Attribut</th>
+      <th>Rôle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>&lt;input type="range"&gt;</code></td>
+      <td><code>min</code> / <code>max</code> / <code>value</code></td>
+      <td>Support natif des flèches directionnelles et de l'annonce de la valeur au clavier.</td>
+    </tr>
+    <tr>
+      <td>Composant</td>
+      <td><code>ariaLabel</code></td>
+      <td>Identifie le contrôle s'il n'est pas associé à un label explicite via <code>inputId</code>.</td>
+    </tr>
+  </tbody>
+</table>

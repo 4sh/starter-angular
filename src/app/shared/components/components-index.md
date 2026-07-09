@@ -23,7 +23,7 @@
 - ⬜ `ui-segment-control` — Sélection segmentée
 - ✅ `ui-datepicker` — Sélecteur de date/heure (headless, CVA, overlay CDK ou inline, min/max, jours désactivés, showTime 12/24h, inline, focus roving clavier)
 - ⬜ `ui-nudger` — Champ numérique +/-
-- ⬜ `ui-rating` — Notation étoiles
+- ✅ `ui-rating` — Notation étoiles (headless, CVA, clavier natif range, focus)
 - ⬜ `ui-file-upload` — Téléversement de fichiers
 - ⬜ `ui-textarea` — Zone de texte multiligne
 - ⬜ `ui-slider` — Curseur de sélection de valeur

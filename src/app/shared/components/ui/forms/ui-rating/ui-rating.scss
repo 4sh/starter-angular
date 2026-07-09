@@ -1,0 +1,87 @@
+@use 'utils';
+
+// =====================================================================
+// ui-rating : co-located styles. All values come from design tokens.
+// =====================================================================
+
+$focus-ring-width: utils.$form-focus-ring-width;
+
+.ui-rating {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+
+  &-input {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: inherit;
+    pointer-events: none;
+  }
+
+  &-stars {
+    display: flex;
+    gap: var(--units-xs); // base gap
+  }
+
+  &._size-sm &-stars { gap: var(--spacing-md); }
+  &._size-md &-stars { gap: var(--spacing-md); }
+  &._size-default &-stars { gap: var(--spacing-md); }
+  &._size-lg &-stars { gap: var(--spacing-md); }
+  &._size-xl &-stars { gap: var(--spacing-md); }
+
+  &._vertical &-stars {
+    flex-direction: column;
+  }
+
+  &-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--units-2xs); // hit area
+    color: var(--form-low-content-default);
+    cursor: pointer;
+    border-radius: var(--radius-full);
+    @include utils.control-transition(color);
+    pointer-events: auto;
+
+    &._active,
+    &._hover {
+      color: var(--form-high-content-checked);
+    }
+  }
+
+  &._disabled {
+    cursor: not-allowed;
+
+    .ui-rating-icon {
+      cursor: not-allowed;
+      color: var(--form-low-content-disabled);
+
+      &._active {
+        color: var(--form-high-content-disabled);
+      }
+    }
+  }
+
+  &._readonly {
+    .ui-rating-icon {
+      cursor: default;
+    }
+  }
+
+  &._invalid {
+    .ui-rating-icon {
+      color: var(--form-error-content-default);
+
+      &._active,
+      &._hover {
+        color: var(--form-error-content-checked);
+      }
+    }
+  }
+}
