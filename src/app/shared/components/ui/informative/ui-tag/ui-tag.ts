@@ -16,7 +16,6 @@ export type TagSize = 'default' | 'small';
 /**
  * ui-tag — informative label / status pill.
  *
- * Inspired by the PrimeNG `Tag` API (static, non-interactive), adapted to this
  * design system: `level` × `subLevel` (informative color families) instead of a
  * flat `severity`, an optional icon on each side, and a pill/square shape.
  *

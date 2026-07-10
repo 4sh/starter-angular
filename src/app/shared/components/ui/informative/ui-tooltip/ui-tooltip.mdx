@@ -9,7 +9,7 @@ Directive `[uiTooltip]` fournissant une **infobulle** (advisory) sur n'importe q
 déclencheur. Le comportement est **headless** et s'appuie sur **Angular CDK Overlay** : le
 placement, le **retournement automatique** quand l'espace manque dans le viewport, et le
 repositionnement au scroll sont délégués au `FlexibleConnectedPositionStrategy` (aucune
-géométrie manuelle). L'API s'inspire de PrimeNG `pTooltip`, adaptée aux signals.
+géométrie manuelle). Adaptée aux signals.
 
 Le panneau visuel (bulle + flèche) est **100 % piloté par les design tokens** de la catégorie
 `informative` (`--informative-defaulthigh-*`). Personnalisation ponctuelle via `tooltipStyleClass`
@@ -31,8 +31,7 @@ Quatre côtés d'ancrage (`top` par défaut). Par défaut (`fitContent=true`), l
 un côté de repli si l'infobulle sortirait du viewport, et la flèche suit le côté effectif.
 Passez `fitContent=false` pour **verrouiller** le côté choisi (aucun repli).
 
-> **`appendTo`** : le CDK attache l'overlay à un conteneur au niveau `<body>` (équivalent de
-> `appendTo="body"` chez PrimeNG). C'est volontaire : cela évite le rognage par un ancêtre
+> **`appendTo`** : le CDK attache l'overlay à un conteneur au niveau `<body>`. C'est volontaire : cela évite le rognage par un ancêtre
 > `overflow`/`transform` et les conflits de `z-index`. Il n'y a donc pas de prop `appendTo`.
 
 <Canvas of={TooltipStories.Positions} />

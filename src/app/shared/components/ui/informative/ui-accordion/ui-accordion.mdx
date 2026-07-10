@@ -6,7 +6,7 @@ import * as AccordionStories from './ui-accordion.stories';
 # ui-accordion
 
 Accordéon **headless** : un groupe de panneaux repliables. API de **composition**
-inspirée de PrimeNG `p-accordion` — un conteneur `ui-accordion` qui pilote l'état
+Un conteneur `ui-accordion` qui pilote l'état
 d'ouverture, et des `ui-accordion-panel` qui projettent leur en-tête et leur contenu.
 
 100 % piloté par les **design tokens** (`informative` pour les textes, `actions.low`
@@ -29,11 +29,11 @@ automatiquement `prefers-reduced-motion` et le commutateur global `data-motion="
     <tr><th>Entrée</th><th>Type</th><th>Défaut</th><th>Rôle</th></tr>
   </thead>
   <tbody>
-    <tr><td>`value` *(requis)*</td><td>`string | number`</td><td>—</td><td>Identifiant du panneau (comparé au `value` du conteneur).</td></tr>
+    <tr><td>`value` *(requis)*</td><td>`string \| number`</td><td>—</td><td>Identifiant du panneau (comparé au `value` du conteneur).</td></tr>
     <tr><td>`header`</td><td>`string`</td><td>`undefined`</td><td>Titre texte (raccourci du slot `uiAccordionHeader`).</td></tr>
     <tr><td>`disabled`</td><td>`boolean`</td><td>`false`</td><td>Panneau non repliable, ignoré par la navigation clavier.</td></tr>
-    <tr><td>`separator`</td><td>`boolean | undefined`</td><td>`undefined`</td><td>Surcharge locale du trait (sinon défaut de groupe).</td></tr>
-    <tr><td>`control`</td><td>`boolean | undefined`</td><td>`undefined`</td><td>Surcharge locale du chevron (sinon défaut de groupe).</td></tr>
+    <tr><td>`separator`</td><td>`boolean \| undefined`</td><td>`undefined`</td><td>Surcharge locale du trait (sinon défaut de groupe).</td></tr>
+    <tr><td>`control`</td><td>`boolean \| undefined`</td><td>`undefined`</td><td>Surcharge locale du chevron (sinon défaut de groupe).</td></tr>
   </tbody>
 </table>
 

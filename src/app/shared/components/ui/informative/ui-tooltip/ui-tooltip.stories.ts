@@ -52,7 +52,7 @@ const meta: Meta<TooltipArgs> = {
         component:
           'Directive `[uiTooltip]` : infobulle headless (CDK Overlay) attachée à un élément déclencheur. ' +
           'Placement, retournement dans le viewport et repositionnement au scroll délégués au CDK. ' +
-          'Inspirée de l’API PrimeNG `pTooltip`, adaptée aux signals de ce design system.',
+          'Adaptée aux signals de ce design system.',
       },
     },
   },
