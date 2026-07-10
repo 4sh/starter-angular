@@ -46,3 +46,70 @@ Constantes structurelles qui s'appliquent à **tous** les composants interactifs
     </tr>
   </tbody>
 </table>
+
+## Motion (`$motion-*`)
+
+Timing partagé du **système de motion** (presets d'entrée/sortie + transitions d'état).
+Consommé par `utils.motion-transition()`, `base/_motion.scss` et la directive `[uiMotion]`.
+Surchargeable par élément via les custom properties `--ui-motion-*`. Voir **Foundations → Motion**.
+
+<table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
+  <thead>
+    <tr style={{ textAlign: 'left', borderBottom: '2px solid rgba(128,128,128,.25)' }}>
+      <th style={{ padding: 8, width: 260 }}>Variable</th>
+      <th style={{ padding: 8 }}>Rôle</th>
+      <th style={{ padding: 8 }}>Token par défaut</th>
+      <th style={{ padding: 8 }}>Valeur</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$motion-duration-fast</code></td>
+      <td style={{ padding: 8 }}>Durée « micro-feedback »</td>
+      <td style={{ padding: 8 }}><code>var(--transition-fast)</code></td>
+      <td style={{ padding: 8 }}>80ms</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$motion-duration-base</code></td>
+      <td style={{ padding: 8 }}>Durée par défaut (enter/leave, collapse)</td>
+      <td style={{ padding: 8 }}><code>var(--transition-default)</code></td>
+      <td style={{ padding: 8 }}>180ms</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$motion-duration-slow</code></td>
+      <td style={{ padding: 8 }}>Durée « grande surface »</td>
+      <td style={{ padding: 8 }}><code>var(--transition-slow)</code></td>
+      <td style={{ padding: 8 }}>280ms</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$motion-easing-standard</code></td>
+      <td style={{ padding: 8 }}>Courbe symétrique (transitions d'état)</td>
+      <td style={{ padding: 8 }}><code>var(--transition-easeinout)</code></td>
+      <td style={{ padding: 8 }}>ease-in-out</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$motion-easing-enter</code></td>
+      <td style={{ padding: 8 }}>Courbe d'entrée (décélération)</td>
+      <td style={{ padding: 8 }}><code>var(--transition-easeout)</code></td>
+      <td style={{ padding: 8 }}>ease-out</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$motion-easing-leave</code></td>
+      <td style={{ padding: 8 }}>Courbe de sortie (accélération)</td>
+      <td style={{ padding: 8 }}><code>var(--transition-easein)</code></td>
+      <td style={{ padding: 8 }}>ease-in</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$motion-distance</code></td>
+      <td style={{ padding: 8 }}>Décalage des presets <code>slide-*</code> (structurel)</td>
+      <td style={{ padding: 8 }}>—</td>
+      <td style={{ padding: 8 }}>0.5rem</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$motion-scale</code></td>
+      <td style={{ padding: 8 }}>Échelle de départ du preset <code>zoom</code> (structurel)</td>
+      <td style={{ padding: 8 }}>—</td>
+      <td style={{ padding: 8 }}>0.96</td>
+    </tr>
+  </tbody>
+</table>

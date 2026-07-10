@@ -1,0 +1,144 @@
+// =====================================================================
+// Motion presets — global enter/leave animation classes.
+//
+// Consumed by Angular's native `animate.enter` / `animate.leave` (v17.3+/21)
+// or manually. A class applies a keyframe animation from/to a hidden state;
+// Angular keeps the leaving node in the DOM until the animation ends.
+//
+// Timing/easing/offset resolve from the `--ui-motion-*` custom properties
+// (per-instance override) with the motion tokens as defaults, so a single
+// element can be re-timed without new CSS. Globally opt out with
+// `data-motion="off"` on <html> (or the user's reduced-motion preference).
+//
+// Class contract :
+//   .ui-motion-<preset>-enter   → appear
+//   .ui-motion-<preset>-leave   → dismiss
+// Presets: fade · slide-up · slide-down · slide-left · slide-right · zoom · collapse
+// =====================================================================
+
+@use 'sass:list';
+@use 'utils';
+
+// Resolved runtime values (override via the custom property, else token/config).
+$_duration: var(--ui-motion-duration, #{utils.$motion-duration-base});
+$_delay: var(--ui-motion-delay, 0ms);
+$_ease-enter: var(--ui-motion-easing-enter, #{utils.$motion-easing-enter});
+$_ease-leave: var(--ui-motion-easing-leave, #{utils.$motion-easing-leave});
+$_distance: var(--ui-motion-distance, #{utils.$motion-distance});
+$_scale: var(--ui-motion-scale, #{utils.$motion-scale});
+
+$_presets: fade, slide-up, slide-down, slide-left, slide-right, zoom, collapse;
+
+@mixin _enter($name) {
+  animation: $name $_duration $_ease-enter $_delay both;
+}
+@mixin _leave($name) {
+  animation: $name $_duration $_ease-leave $_delay both;
+}
+
+// --- Enter/leave class pairs -----------------------------------------
+@each $preset in $_presets {
+  .ui-motion-#{$preset}-enter {
+    @include _enter(ui-motion-#{$preset}-in);
+  }
+  .ui-motion-#{$preset}-leave {
+    @include _leave(ui-motion-#{$preset}-out);
+  }
+}
+
+// Collapsible content needs a grid wrapper for the row animation to run.
+.ui-motion-collapse-enter,
+.ui-motion-collapse-leave {
+  display: grid;
+  overflow: hidden;
+  > * {
+    min-height: 0;
+  }
+}
+
+// --- Keyframes -------------------------------------------------------
+@keyframes ui-motion-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes ui-motion-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes ui-motion-slide-up-in {
+  from { opacity: 0; transform: translateY($_distance); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes ui-motion-slide-up-out {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY($_distance); }
+}
+
+@keyframes ui-motion-slide-down-in {
+  from { opacity: 0; transform: translateY(calc(-1 * #{$_distance})); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes ui-motion-slide-down-out {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(calc(-1 * #{$_distance})); }
+}
+
+@keyframes ui-motion-slide-left-in {
+  from { opacity: 0; transform: translateX($_distance); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes ui-motion-slide-left-out {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX($_distance); }
+}
+
+@keyframes ui-motion-slide-right-in {
+  from { opacity: 0; transform: translateX(calc(-1 * #{$_distance})); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes ui-motion-slide-right-out {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(calc(-1 * #{$_distance})); }
+}
+
+@keyframes ui-motion-zoom-in {
+  from { opacity: 0; transform: scale($_scale); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes ui-motion-zoom-out {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale($_scale); }
+}
+
+@keyframes ui-motion-collapse-in {
+  from { opacity: 0; grid-template-rows: 0fr; }
+  to { opacity: 1; grid-template-rows: 1fr; }
+}
+@keyframes ui-motion-collapse-out {
+  from { opacity: 1; grid-template-rows: 1fr; }
+  to { opacity: 0; grid-template-rows: 0fr; }
+}
+
+// --- Global opt-out --------------------------------------------------
+// Honour the OS reduced-motion setting: collapse every preset to a flash so
+// state still changes without movement.
+@media (prefers-reduced-motion: reduce) {
+  [class*='ui-motion-'] {
+    animation-duration: 0.01ms !important;
+  }
+}
+
+// Explicit kit-wide kill-switch (`<html data-motion="off">`): neutralise all
+// animations AND transitions — the same reset used for reduced motion.
+:root[data-motion='off'] {
+  &,
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+  }
+}

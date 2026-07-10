@@ -3,6 +3,8 @@ module.exports = {
     './docs/**/*.mdx',
     '../src/app/shared/components/**/*.mdx',
     '../src/app/shared/components/**/*.stories.@(js|jsx|mjs|ts|tsx)',
+    '../src/app/shared/motion/**/*.mdx',
+    '../src/app/shared/motion/**/*.stories.@(js|jsx|mjs|ts|tsx)',
   ],
   staticDirs: ['./public'],
   addons: [

@@ -1,0 +1,47 @@
+// =====================================================================
+// Motion mixins — shared timing recipes for the motion system.
+//
+// Emit nothing by themselves. Durations/easings come from `ui-config`
+// ($motion-*, mapped to `--transition-*` tokens) and are overridable per
+// instance through the `--ui-motion-*` custom properties, so a single
+// element can be re-timed (or disabled) without touching the tokens.
+//
+// Two complementary primitives:
+//   • `motion-transition()` — state-toggle transitions (open/close, show/hide).
+//   • `motion-reduce`        — the reduced-motion guard (`@content` sink).
+// Enter/leave keyframe presets live in `base/_motion.scss` (global classes).
+// =====================================================================
+
+@use 'sass:list';
+@use 'src/settings/ui-config';
+
+/// Transition recipe timed by the motion system.
+/// Duration/easing/delay resolve from `--ui-motion-*` (per-instance override)
+/// falling back to the motion tokens. Easing defaults to the symmetric curve.
+/// e.g. @include utils.motion-transition(opacity, translate);
+@mixin motion-transition($properties...) {
+  $transitions: ();
+  @each $property in $properties {
+    $transitions: list.append(
+      $transitions,
+      $property var(--ui-motion-duration, #{ui-config.$motion-duration-base})
+        var(--ui-motion-easing, #{ui-config.$motion-easing-standard})
+        var(--ui-motion-delay, 0ms),
+      comma
+    );
+  }
+  transition: $transitions;
+}
+
+/// Reduced-motion guard. Wrap the neutralising declarations you want applied
+/// when the user asked for less motion (or the global kill-switch is on).
+/// e.g. @include utils.motion-reduce { transition-duration: 0.01ms; }
+@mixin motion-reduce {
+  @media (prefers-reduced-motion: reduce) {
+    @content;
+  }
+
+  :root[data-motion='off'] & {
+    @content;
+  }
+}

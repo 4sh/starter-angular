@@ -30,11 +30,14 @@ $tooltip-arrow-half: utils.rem-calc(4);
   line-height: 1.4;
   overflow-wrap: break-word;
 
-  // --- Fade / slide transition ---------------------------------------
+  // --- Fade / slide transition (shared motion system) ----------------
+  // Snappy, decelerating feel: fast duration + ease-out. Timing flows through
+  // the motion system, so `data-motion="off"` / reduced-motion apply here too.
+  --ui-motion-duration: #{utils.$motion-duration-fast};
+  --ui-motion-easing: #{utils.$motion-easing-enter};
+
   opacity: 0;
-  transition:
-    opacity var(--transition-fast) var(--transition-easeout),
-    translate var(--transition-fast) var(--transition-easeout);
+  @include utils.motion-transition(opacity, translate);
 
   &._top { translate: 0 4px; }
   &._bottom { translate: 0 -4px; }
@@ -49,8 +52,8 @@ $tooltip-arrow-half: utils.rem-calc(4);
   // Interactive tooltips (autoHide=false) must catch pointer events.
   &._interactive { pointer-events: auto; }
 
-  // Respect reduced-motion preferences.
-  @media (prefers-reduced-motion: reduce) {
+  // Respect reduced-motion preferences / the global motion kill-switch.
+  @include utils.motion-reduce {
     transition-duration: 0.01ms;
     translate: none;
   }

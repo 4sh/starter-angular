@@ -1,0 +1,120 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as MotionStories from './ui-motion.stories';
+
+<Meta of={MotionStories} />
+
+# Motion
+
+Système d'animation **léger, piloté par les design tokens** et pensé pour être
+**activable, personnalisable et réutilisable** sur tous les composants (ouverture
+d'accordéon, dropdown, modale, apparition d'un helper ou d'un toast…).
+
+Il s'appuie sur les **animations CSS natives** et sur l'API Angular native
+`animate.enter` / `animate.leave` (aucune dépendance runtime `@angular/animations`).
+Deux primitives complémentaires :
+
+- **Presets d'entrée/sortie** — des classes globales `ui-motion-<preset>-enter|leave`
+  pour l'insertion/retrait d'un élément (`@if`, `@for`, overlays, toasts…).
+- **Transitions d'état** — le mixin SCSS `utils.motion-transition(...)` pour un élément
+  monté qui bascule (accordéon replié/déplié, tooltip visible/masqué…).
+
+## Préréglages
+
+<table className="doc-table">
+  <thead>
+    <tr><th>Preset</th><th>Effet</th><th>Usage type</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>`fade`</td><td>Opacité</td><td>Neutre, transitions douces.</td></tr>
+    <tr><td>`slide-up`</td><td>Montée + fondu</td><td>Toasts, tooltips au-dessus.</td></tr>
+    <tr><td>`slide-down`</td><td>Descente + fondu</td><td>Menus / dropdowns sous un déclencheur.</td></tr>
+    <tr><td>`slide-left`</td><td>Entrée par la droite</td><td>Drawers, panneaux latéraux.</td></tr>
+    <tr><td>`slide-right`</td><td>Entrée par la gauche</td><td>Drawers (côté opposé).</td></tr>
+    <tr><td>`zoom`</td><td>Échelle + fondu</td><td>Modales, dialogs, popovers.</td></tr>
+    <tr><td>`collapse`</td><td>Hauteur (grid-rows) + fondu</td><td>Accordéons, panneaux (requiert un wrapper grid).</td></tr>
+  </tbody>
+</table>
+
+<Canvas of={MotionStories.Playground} />
+
+## Utilisation
+
+### 1. Directive `[uiMotion]` (recommandé)
+
+Sur un élément rendu conditionnellement, la directive choisit le preset, expose les
+classes `enter()`/`leave()` et applique les surcharges de timing :
+
+```html
+@if (open()) {
+  <div class="panel"
+       [uiMotion]="'zoom'" #m="uiMotion"
+       [animate.enter]="m.enter()" [animate.leave]="m.leave()">…</div>
+}
+```
+
+### 2. Classes globales (CSS-only)
+
+Les mêmes classes sont utilisables directement avec `animate.enter`/`animate.leave` :
+
+```html
+@if (open()) {
+  <div animate.enter="ui-motion-slide-down-enter"
+       animate.leave="ui-motion-slide-down-leave">…</div>
+}
+```
+
+### 3. Transition d'état (élément monté)
+
+```scss
+@use 'utils';
+.panel {
+  opacity: 0;
+  @include utils.motion-transition(opacity, transform);
+  &._open { opacity: 1; }
+  @include utils.motion-reduce { transition-duration: 0.01ms; }
+}
+```
+
+<Canvas of={MotionStories.Zoom} />
+<Canvas of={MotionStories.SlideDown} />
+<Canvas of={MotionStories.Collapse} />
+
+## Personnalisation
+
+Chaque élément se re-cadence via les **custom properties** `--ui-motion-*` (par la
+directive : `motionDuration`, `motionEasing`, `motionDelay`, `motionDistance`,
+`motionScale`, ou en CSS directement), avec les **tokens** `$motion-*` comme défauts :
+
+<table className="doc-table">
+  <thead>
+    <tr><th>Custom property</th><th>Défaut (token)</th><th>Rôle</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>`--ui-motion-duration`</td><td>`--transition-default` (180ms)</td><td>Durée.</td></tr>
+    <tr><td>`--ui-motion-easing`</td><td>`--transition-easeinout`</td><td>Courbe (transitions symétriques).</td></tr>
+    <tr><td>`--ui-motion-easing-enter`</td><td>`--transition-easeout`</td><td>Courbe d'entrée (décélération).</td></tr>
+    <tr><td>`--ui-motion-easing-leave`</td><td>`--transition-easein`</td><td>Courbe de sortie (accélération).</td></tr>
+    <tr><td>`--ui-motion-delay`</td><td>`0ms`</td><td>Délai avant démarrage.</td></tr>
+    <tr><td>`--ui-motion-distance`</td><td>`0.5rem`</td><td>Décalage des presets `slide-*`.</td></tr>
+    <tr><td>`--ui-motion-scale`</td><td>`0.96`</td><td>Échelle de départ du preset `zoom`.</td></tr>
+  </tbody>
+</table>
+
+## Désactivation & accessibilité
+
+- **Par élément** : `[motionDisabled]="true"` (directive) ou `[motion]="false"` (accordéon).
+- **Global** : `data-motion="off"` sur `<html>` neutralise toutes les animations **et**
+  transitions du kit (même réinitialisation que reduced-motion).
+- **Préférence système** : `prefers-reduced-motion: reduce` réduit tous les presets à un
+  flash instantané — l'état change toujours, sans mouvement.
+
+## Intégration aux composants
+
+| Composant | Mécanisme |
+|---|---|
+| `ui-accordion` | Transition `grid-template-rows` via `utils.motion-transition` (préréglage `collapse` en esprit). |
+| `ui-tooltip` | Transition opacité/translate via `utils.motion-transition` (durée `fast`, ease-out). |
+| Dropdown / Select (à venir) | `[uiMotion]="'slide-down'"` sur le panneau CDK. |
+| Modale / Dialog (à venir) | `[uiMotion]="'zoom'"` sur la boîte, `fade` sur le fond. |
+| Toast (à venir) | `[uiMotion]="'slide-up'"` par toast. |
+| Helper (à venir) | `[uiMotion]="'fade'"` ou `slide-down` sous le champ. |

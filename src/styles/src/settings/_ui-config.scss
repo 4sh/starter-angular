@@ -13,6 +13,20 @@ $control-stroke-width: var(--stroke-default);
 $control-transition-duration: var(--transition-default);
 $control-transition-easing: var(--transition-easeinout);
 
+// --- Global : motion --------------------------------------------------
+// Shared timing for the motion system (enter/leave presets + transitions).
+// Durations/easings map to the `--transition-*` tokens; distance/scale are
+// structural (never colors). Override per instance via the `--ui-motion-*`
+// custom properties (see utils.motion-transition / base/_motion.scss).
+$motion-duration-fast: var(--transition-fast); // 80ms — micro-feedback
+$motion-duration-base: var(--transition-default); // 180ms — default
+$motion-duration-slow: var(--transition-slow); // 280ms — large surfaces
+$motion-easing-standard: var(--transition-easeinout); // symmetric (toggles)
+$motion-easing-enter: var(--transition-easeout); // decelerate (appear)
+$motion-easing-leave: var(--transition-easein); // accelerate (dismiss)
+$motion-distance: 0.5rem; // slide offset (8px)
+$motion-scale: 0.96; // zoom start/end scale
+
 // --- Category : forms -------------------------------------------------
 $form-control-size: var(--size-components-2xs);
 $form-control-gap: var(--units-sm);

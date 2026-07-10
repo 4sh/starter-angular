@@ -78,8 +78,8 @@ page liste les variables, leur rôle et leur valeur par défaut.
   <tbody>
     <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
       <td style={{ padding: 8 }}><a href="?path=/docs/components-configuration-global-ui--docs"><strong>Global UI</strong></a></td>
-      <td style={{ padding: 8 }}><code>$focus-ring-width</code>, <code>$control-*</code></td>
-      <td style={{ padding: 8 }}>Tous les composants interactifs / Concepts Globaux à l'interface</td>
+      <td style={{ padding: 8 }}><code>$focus-ring-width</code>, <code>$control-{'*'}</code>, <code>$motion-{'*'}</code></td>
+      <td style={{ padding: 8 }}>Tous les composants interactifs / Concepts Globaux à l'interface (dont le système de motion)</td>
     </tr>
     <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
       <td style={{ padding: 8 }}><a href="?path=/docs/components-configuration-forms--docs"><strong>Forms</strong></a></td>
@@ -192,6 +192,11 @@ dans `ui-config`), en une déclaration :
 
 Changer la durée/courbe pour tous les composants = éditer `$control-transition-duration` /
 `$control-transition-easing` dans `ui-config`.
+
+Pour les **animations d'apparition/disparition et les transitions d'état** (accordéon,
+tooltip, overlays…), voir le **système de motion** dédié : mixin `utils.motion-transition()`,
+garde `utils.motion-reduce`, presets `ui-motion-*` et directive `[uiMotion]`, documentés dans
+**Foundations → Motion** (timing dans le groupe `$motion-*` ci-dessus).
 
 <br/>
 
