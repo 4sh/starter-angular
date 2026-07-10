@@ -1,0 +1,10 @@
+// =====================================================================
+// ui-accordion (container) : co-located styles. All values from tokens.
+// The container only stacks its panels; the panel owns the visual shell.
+// =====================================================================
+
+:host {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}

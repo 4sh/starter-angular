@@ -1,0 +1,142 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as AccordionStories from './ui-accordion.stories';
+
+<Meta of={AccordionStories} />
+
+# ui-accordion
+
+Accordéon **headless** : un groupe de panneaux repliables. API de **composition**
+inspirée de PrimeNG `p-accordion` — un conteneur `ui-accordion` qui pilote l'état
+d'ouverture, et des `ui-accordion-panel` qui projettent leur en-tête et leur contenu.
+
+100 % piloté par les **design tokens** (`informative` pour les textes, `actions.low`
+pour le chevron), et l'ouverture/fermeture est animée par le **système de motion**
+partagé (`utils.motion-transition`, technique `grid-template-rows`), qui respecte
+automatiquement `prefers-reduced-motion` et le commutateur global `data-motion="off"`.
+
+<Canvas of={AccordionStories.Default} />
+
+## API
+
+### ui-accordion (conteneur)
+
+<ArgTypes of={AccordionStories} />
+
+### ui-accordion-panel
+
+<table className="doc-table">
+  <thead>
+    <tr><th>Entrée</th><th>Type</th><th>Défaut</th><th>Rôle</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>`value` *(requis)*</td><td>`string | number`</td><td>—</td><td>Identifiant du panneau (comparé au `value` du conteneur).</td></tr>
+    <tr><td>`header`</td><td>`string`</td><td>`undefined`</td><td>Titre texte (raccourci du slot `uiAccordionHeader`).</td></tr>
+    <tr><td>`disabled`</td><td>`boolean`</td><td>`false`</td><td>Panneau non repliable, ignoré par la navigation clavier.</td></tr>
+    <tr><td>`separator`</td><td>`boolean | undefined`</td><td>`undefined`</td><td>Surcharge locale du trait (sinon défaut de groupe).</td></tr>
+    <tr><td>`control`</td><td>`boolean | undefined`</td><td>`undefined`</td><td>Surcharge locale du chevron (sinon défaut de groupe).</td></tr>
+  </tbody>
+</table>
+
+## Modes
+
+Mode **simple** (défaut) : un seul panneau ouvert à la fois ; recliquer sur l'en-tête
+actif le referme. Mode **multiple** (`[multiple]="true"`) : plusieurs panneaux ouverts,
+la `value` devient un tableau.
+
+<Canvas of={AccordionStories.Multiple} />
+
+## En-tête riche
+
+Le slot `uiAccordionHeader` accepte n'importe quel contenu (icône, `ui-tag`, badge…).
+Sans slot, l'entrée `header` suffit pour un titre texte.
+
+<Canvas of={AccordionStories.RichHeader} />
+
+## États
+
+Un panneau `disabled` n'est pas repliable et est sauté par les flèches. Le chevron et
+le trait sont désactivables (par groupe ou par panneau).
+
+<Canvas of={AccordionStories.DisabledPanel} />
+<Canvas of={AccordionStories.Minimal} />
+
+## Animation
+
+L'ouverture/fermeture utilise le **système de motion** partagé. Coupez-la localement
+avec `[motion]="false"`, globalement via `data-motion="off"`, ou laissez la préférence
+système `reduced-motion` la neutraliser. Voir **Foundations → Motion**.
+
+<Canvas of={AccordionStories.MotionOff} />
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr><th>Point</th><th>Implémentation</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>En-tête natif</td>
+      <td>L'en-tête entier est un `&lt;button&gt;` (motif WAI-ARIA Accordion) : cible de clic large, focusable, `disabled` natif.</td>
+    </tr>
+    <tr>
+      <td>Liaison ARIA</td>
+      <td>`aria-expanded` sur l'en-tête, `aria-controls` → région de contenu (`role="region"` + `aria-labelledby` vers l'en-tête).</td>
+    </tr>
+    <tr>
+      <td>Clavier</td>
+      <td>`Entrée`/`Espace` bascule ; `↑`/`↓` déplacent le focus entre en-têtes (roving, boucle), `Début`/`Fin` au premier/dernier.</td>
+    </tr>
+    <tr>
+      <td>Contenu masqué</td>
+      <td>Le contenu reste dans le DOM mais est `inert` et de hauteur nulle quand fermé (état de formulaire conservé, invisible pour les lecteurs d'écran).</td>
+    </tr>
+    <tr>
+      <td>Chevron décoratif</td>
+      <td>`ui-icon` en `aria-hidden` ; le sens passe par `aria-expanded`, pas seulement par l'icône.</td>
+    </tr>
+    <tr>
+      <td>Motion</td>
+      <td>Transition neutralisée sous `prefers-reduced-motion` et `data-motion="off"`.</td>
+    </tr>
+  </tbody>
+</table>
+
+## Configuration (SCSS)
+
+Variables **locales** au composant (co-localisées dans `ui-accordion-panel.scss`) :
+
+<table className="doc-table">
+  <thead>
+    <tr><th>Variable locale</th><th>Source</th><th>Rôle</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>`$control-size`</td><td>`utils.rem-calc(40)`</td><td>Diamètre du chevron circulaire (Figma 40×40).</td></tr>
+    <tr><td>`$focus-ring-width`</td><td>`utils.$action-focus-ring-width`</td><td>Épaisseur de l'anneau de focus de l'en-tête (constante partagée `ui-config`).</td></tr>
+  </tbody>
+</table>
+
+Le timing d'animation provient du groupe partagé `$motion-*` (`ui-config`, catégorie
+**global**) — voir [Components / Configuration](?path=/docs/components-configuration--docs).
+
+## Exemples
+
+```html
+<!-- Simple (un ouvert à la fois) -->
+<ui-accordion [(value)]="open">
+  <ui-accordion-panel value="a" header="Section A">Contenu A…</ui-accordion-panel>
+  <ui-accordion-panel value="b" header="Section B">Contenu B…</ui-accordion-panel>
+</ui-accordion>
+
+<!-- Multiple + en-tête riche + panneau désactivé -->
+<ui-accordion [(value)]="openList" [multiple]="true">
+  <ui-accordion-panel value="a">
+    <span uiAccordionHeader>Facturation <ui-tag label="À jour" level="success" size="small" /></span>
+    Contenu…
+  </ui-accordion-panel>
+  <ui-accordion-panel value="b" header="Archivé" [disabled]="true">Contenu…</ui-accordion-panel>
+</ui-accordion>
+
+<!-- Sans animation -->
+<ui-accordion [motion]="false"> … </ui-accordion>
+```

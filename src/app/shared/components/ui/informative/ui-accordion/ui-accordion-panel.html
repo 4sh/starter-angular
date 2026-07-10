@@ -1,0 +1,45 @@
+<button
+  #headerBtn
+  type="button"
+  class="ui-accordion-header"
+  [id]="headerId"
+  [disabled]="disabled()"
+  [attr.aria-expanded]="active()"
+  [attr.aria-controls]="contentId"
+  (click)="toggle($event)"
+  (focus)="onFocus($event)"
+>
+  <span class="ui-accordion-header-slot">
+    @if (header(); as h) {
+      {{ h }}
+    } @else {
+      <ng-content select="[uiAccordionHeader], ui-accordion-header" />
+    }
+  </span>
+
+  @if (showControl()) {
+    <span class="ui-accordion-header-control" aria-hidden="true">
+      <ui-icon [name]="icon()" size="default" />
+    </span>
+  }
+</button>
+
+@if (showSeparator()) {
+  <ui-separator class="ui-accordion-separator" size="small" />
+}
+
+<div
+  class="ui-accordion-content"
+  [class._open]="active()"
+  [class._no-motion]="!accordion.motion()"
+  role="region"
+  [id]="contentId"
+  [attr.aria-labelledby]="headerId"
+  [attr.inert]="active() ? null : ''"
+>
+  <div class="ui-accordion-content-inner">
+    <div class="ui-accordion-content-body">
+      <ng-content />
+    </div>
+  </div>
+</div>

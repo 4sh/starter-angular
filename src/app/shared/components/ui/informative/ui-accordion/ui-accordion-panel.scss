@@ -1,0 +1,128 @@
+@use 'utils';
+
+// =====================================================================
+// ui-accordion-panel : co-located styles. All values come from tokens.
+//
+// The whole header is the toggle button; the chevron sits in a circular
+// "control" affordance (Figma) whose surface reacts to the header state.
+// The body collapses with the grid-rows technique, timed by the motion
+// system (utils.motion-transition), and stays in the DOM (form state kept).
+// =====================================================================
+
+// --- Config (local) ---------------------------------------------------
+$control-size: utils.rem-calc(40); // circular chevron affordance (Figma 40×40)
+$focus-ring-width: utils.$action-focus-ring-width;
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.ui-accordion {
+  // --- Header (the button) -------------------------------------------
+  &-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--units-md);
+    width: 100%;
+    margin: 0;
+    padding: var(--units-sm) 0;
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: none;
+    color: var(--informative-defaultlow-content-default);
+    font-family: var(--fontfamily-base);
+    text-align: left;
+    cursor: pointer;
+    @include utils.control-transition(color, box-shadow);
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 $focus-ring-width var(--actions-low-stroke-focused);
+    }
+    &:disabled { cursor: not-allowed; }
+  }
+
+  &-header-slot {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-weight: var(--weight-bold);
+    font-size: var(--size-typography-text-xl);
+    line-height: 1.2;
+  }
+
+  // --- Chevron control affordance ------------------------------------
+  &-header-control {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: $control-size;
+    height: $control-size;
+    border-radius: var(--radius-default);
+    background-color: var(--actions-low-surface-default);
+    color: var(--actions-low-content-default);
+    @include utils.control-transition(background-color, color);
+  }
+
+  // Header states drive the control surface (single hit target = the header).
+  &-header:hover:not(:disabled) &-header-control {
+    background-color: var(--actions-low-surface-hover);
+    color: var(--actions-low-content-hover);
+  }
+  &-header:active:not(:disabled) &-header-control {
+    background-color: var(--actions-low-surface-pressed);
+    color: var(--actions-low-content-pressed);
+  }
+  &-header:focus-visible &-header-control {
+    background-color: var(--actions-low-surface-focused);
+    color: var(--actions-low-content-focused);
+  }
+
+  // --- Divider -------------------------------------------------------
+  &-separator { width: 100%; }
+
+  // --- Collapsible body (grid-rows technique) ------------------------
+  &-content {
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    @include utils.motion-transition(grid-template-rows, opacity);
+
+    &._open {
+      grid-template-rows: 1fr;
+      opacity: 1;
+    }
+
+    // Group opt-out (accordion [motion]="false").
+    &._no-motion { transition: none; }
+
+    // Respect reduced-motion / global kill-switch.
+    @include utils.motion-reduce {
+      transition-duration: 0.01ms;
+    }
+  }
+
+  &-content-inner {
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  &-content-body {
+    padding-block: var(--units-default);
+    color: var(--informative-defaultlow-content-default);
+    font-family: var(--fontfamily-base);
+    font-size: var(--size-typography-text-default);
+    line-height: 1.5;
+  }
+}
+
+// --- Disabled panel ---------------------------------------------------
+:host._disabled {
+  .ui-accordion-header { color: var(--actions-low-content-disabled); }
+  .ui-accordion-header-control {
+    background-color: var(--actions-high-surface-disabled);
+    color: var(--actions-low-content-disabled);
+  }
+}

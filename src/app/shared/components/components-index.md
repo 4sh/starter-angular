@@ -38,7 +38,7 @@
 - ✅ `ui-avatar-group` — Empilement d'avatars avec chevauchement (débordement « +N » par avatar Label)
 - ✅ `ui-tooltip` — Infobulle headless (directive `[uiTooltip]` + CDK Overlay ; placement 4 côtés avec retournement auto `fitContent`, hover/focus/both, délais, `escape` HTML/`TemplateRef`, `autoHide`/`hideOnEscape`/`life`, `tooltipStyleClass`)
 - ✅ `ui-separator` — Séparateur visuel (horizontal/vertical, solid/dashed, épaisseur, libellé start/center/end)
-- ⬜ `ui-accordion` — Accordéon (sections repliables)
+- ✅ `ui-accordion` — Accordéon (composition `ui-accordion` + `ui-accordion-panel` ; single/multiple, en-tête bouton WAI-ARIA, clavier roving ↑↓/Début/Fin, `selectOnFocus`, collapse animé grid-rows via motion system, `disabled`, chevron/séparateur optionnels)
 - ⬜ `ui-empty-state` — État vide (illustration, titre, description, actions)
 - ⬜ `ui-skeleton` — Placeholder de chargement
 - ⬜ `ui-spinner` — Indicateur de chargement
