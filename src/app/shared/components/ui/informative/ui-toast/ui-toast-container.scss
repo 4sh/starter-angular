@@ -1,0 +1,99 @@
+@use 'utils';
+
+// =====================================================================
+// ui-toast-container : the viewport-pinned stack. Card chrome lives in
+// ui-toast.scss; this file owns positioning, stacking and spacing only.
+// All spacing comes from metric tokens; the two structural widths + the
+// z-index are component-local constants (documented in the MDX).
+// =====================================================================
+
+// --- Config (local) ---------------------------------------------------
+$toast-z-index: 1100; // sits above CDK overlays (prebuilt stack = 1000)
+$toast-width: utils.rem-calc(360); // default stack width
+$toast-width-expanded: utils.rem-calc(480); // banner-mode width
+$toast-edge-gap: var(--units-lg); // margin from the viewport edges
+$toast-stack-gap: var(--units-sm); // gap between stacked cards
+
+.ui-toast-region {
+  position: fixed;
+  z-index: $toast-z-index;
+  display: flex;
+  flex-direction: column;
+  gap: $toast-stack-gap;
+  width: min(#{$toast-width}, calc(100vw - #{$toast-edge-gap} * 2));
+  // The empty region must not swallow clicks meant for the page beneath it.
+  pointer-events: none;
+
+  &._contained {
+    position: absolute;
+  }
+
+  &._expanded {
+    width: min(#{$toast-width-expanded}, calc(100vw - #{$toast-edge-gap} * 2));
+
+    // Banner mode: each card fills the whole region width.
+    .ui-toast-region-item > ui-toast {
+      flex: 1 1 auto;
+    }
+  }
+
+  // Bottom-anchored stacks grow upward → newest card nearest the edge.
+  &._reverse {
+    flex-direction: column-reverse;
+  }
+
+  // --- Per-item wrapper ----------------------------------------------
+  &-item {
+    display: flex;
+    // Re-enable interaction on the cards themselves.
+    pointer-events: auto;
+  }
+
+  // --- Horizontal alignment of hugging cards -------------------------
+  &._top-left &-item,
+  &._bottom-left &-item {
+    justify-content: flex-start;
+  }
+  &._top-right &-item,
+  &._bottom-right &-item {
+    justify-content: flex-end;
+  }
+  &._top-center &-item,
+  &._bottom-center &-item,
+  &._center &-item {
+    justify-content: center;
+  }
+
+  // --- Anchoring -----------------------------------------------------
+  &._top-left {
+    top: $toast-edge-gap;
+    left: $toast-edge-gap;
+  }
+  &._top-right {
+    top: $toast-edge-gap;
+    right: $toast-edge-gap;
+  }
+  &._top-center {
+    top: $toast-edge-gap;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  &._bottom-left {
+    bottom: $toast-edge-gap;
+    left: $toast-edge-gap;
+  }
+  &._bottom-right {
+    bottom: $toast-edge-gap;
+    right: $toast-edge-gap;
+  }
+  &._bottom-center {
+    bottom: $toast-edge-gap;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  &._center {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}

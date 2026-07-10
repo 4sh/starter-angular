@@ -42,7 +42,7 @@
 - ⬜ `ui-empty-state` — État vide (illustration, titre, description, actions)
 - ⬜ `ui-skeleton` — Placeholder de chargement
 - ⬜ `ui-spinner` — Indicateur de chargement
-- ⬜ `ui-toast` — Notification éphémère
+- ✅ `ui-toast` — Notification éphémère (carte `ui-toast` + `UiToastService` `add`/`clear`/`remove` + `ui-toast-container` ; 7 positions, niveaux `informative`, auto-fermeture pausable au survol/focus, `sticky`, mode bannière `expanded`, contenu `template` custom + actions, entrée/sortie via motion system, région live a11y)
 
 ## layout
 - ✅ `ui-card` — Conteneur flexible (slots média/titre/sous-titre/contenu/pied via directives marqueurs + raccourcis `header`/`subheader`, variantes outlined/elevated/flat)

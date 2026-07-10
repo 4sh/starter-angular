@@ -19,6 +19,7 @@ import * as AvatarGroupStories from "../../src/app/shared/components/ui/informat
 import * as SeparatorStories from "../../src/app/shared/components/ui/informative/ui-separator/ui-separator.stories";
 import * as TooltipStories from "../../src/app/shared/components/ui/informative/ui-tooltip/ui-tooltip.stories";
 import * as TagStories from "../../src/app/shared/components/ui/informative/ui-tag/ui-tag.stories";
+import * as ToastStories from "../../src/app/shared/components/ui/informative/ui-toast/ui-toast.stories";
 import * as AccordionStories from "../../src/app/shared/components/ui/informative/ui-accordion/ui-accordion.stories";
 import * as CardStories from "../../src/app/shared/components/ui/layout/ui-card/ui-card.stories";
 
@@ -93,6 +94,7 @@ export const CategorySection = ({ title, components }) => (
     { name: 'ui-tooltip', description: 'Infobulle headless (directive [uiTooltip] + CDK Overlay, 4 côtés avec retournement auto, hover/focus, tooltipStyleClass).', link: '?path=/docs/components-ui-informative-ui-tooltip--docs', story: TooltipStories.Default },
     { name: 'ui-tag', description: 'Étiquette / pilule (level × sub-level × size, icônes gauche/droite, forme pill/rounded).', link: '?path=/docs/components-ui-informative-ui-tag--docs', story: TagStories.WithIconLeft },
     { name: 'ui-accordion', description: 'Accordéon repliable (composition, single/multiple, clavier roving, motion, tokens).', link: '?path=/docs/components-ui-informative-ui-accordion--docs', story: AccordionStories.Default },
+    { name: 'ui-toast', description: 'Notification éphémère (service add/clear + conteneur, 7 positions, niveaux, auto-fermeture pausable, sticky, bannière, actions, motion).', link: '?path=/docs/components-ui-informative-ui-toast--docs', story: ToastStories.Default },
   ]}
 />
 

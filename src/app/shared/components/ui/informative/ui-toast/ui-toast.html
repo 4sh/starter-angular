@@ -1,0 +1,28 @@
+<div [class]="classes()">
+  @if (iconName(); as name) {
+    <span class="ui-toast-icon">
+      <ui-icon [name]="name" size="md" />
+    </span>
+  }
+
+  <div class="ui-toast-content">
+    @if (title(); as t) {
+      <span class="ui-toast-title">{{ t }}</span>
+    }
+    @if (text(); as txt) {
+      <span class="ui-toast-text">{{ txt }}</span>
+    }
+    <ng-content />
+  </div>
+
+  @if (closable()) {
+    <button
+      type="button"
+      class="ui-toast-close"
+      [attr.aria-label]="closeAriaLabel()"
+      (click)="onClose($event)"
+    >
+      <ui-icon [name]="closeIcon()" size="sm" />
+    </button>
+  }
+</div>

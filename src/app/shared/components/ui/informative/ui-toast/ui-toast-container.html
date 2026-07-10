@@ -1,0 +1,39 @@
+<div
+  [class]="regionClass()"
+  [style.z-index]="zIndex()"
+  [style.gap]="stackGap() != null ? stackGap() + 'px' : null"
+>
+  @for (item of items(); track item.id) {
+    <div
+      class="ui-toast-region-item"
+      [attr.role]="item.level === 'error' || item.level === 'warning' ? 'alert' : 'status'"
+      [attr.aria-live]="item.level === 'error' || item.level === 'warning' ? 'assertive' : 'polite'"
+      aria-atomic="true"
+      [uiMotion]="motionPreset()"
+      [motionDisabled]="motionDisabled()"
+      #m="uiMotion"
+      [animate.enter]="m.enter()"
+      [animate.leave]="m.leave()"
+      (mouseenter)="pause(item.id)"
+      (mouseleave)="resume(item.id)"
+      (focusin)="pause(item.id)"
+      (focusout)="resume(item.id)"
+    >
+      <ui-toast
+        [level]="item.level ?? 'default'"
+        [subLevel]="item.subLevel ?? 'high'"
+        [title]="template() ? undefined : item.title"
+        [text]="template() ? undefined : item.text"
+        [icon]="item.icon ?? true"
+        [closable]="item.closable ?? true"
+        [expanded]="expanded()"
+        [styleClass]="item.styleClass"
+        (close)="dismiss(item)"
+      >
+        @if (template(); as tpl) {
+          <ng-container *ngTemplateOutlet="tpl; context: { $implicit: item, closeFn: closeFn(item) }" />
+        }
+      </ui-toast>
+    </div>
+  }
+</div>

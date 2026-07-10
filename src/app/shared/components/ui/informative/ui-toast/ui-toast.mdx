@@ -1,0 +1,180 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as ToastStories from './ui-toast.stories';
+
+<Meta of={ToastStories} />
+
+# ui-toast
+
+Notification transitoire, empilée dans un coin de l'écran. Le composant se décline en
+trois pièces complémentaires :
+
+- **`UiToast`** — la carte présentational (icône · titre/texte · fermeture). Entièrement
+  pilotée par les tokens `informative` (surface / content / stroke), en `light` **et** `dark`.
+- **`UiToastService`** — le point d'entrée programmatique (`add` / `addAll` / `clear` / `remove`).
+- **`ui-toast-container`** — la pile ancrée dans le viewport : elle lit le service, positionne
+  les toasts, anime l'entrée/sortie via le **système de motion** partagé et gère l'auto-fermeture
+  (mise en pause au survol / focus).
+
+<Canvas of={ToastStories.Default} />
+
+## API — `UiToast` (carte)
+
+<ArgTypes of={ToastStories} />
+
+## API — `UiToastService`
+
+<table className="doc-table">
+  <thead>
+    <tr><th>Méthode</th><th>Signature</th><th>Rôle</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>add</code></td><td><code>(message: UiToastMessage) =&gt; UiToastId</code></td><td>Pousse un toast, retourne son id (utile pour le fermer plus tard).</td></tr>
+    <tr><td><code>addAll</code></td><td><code>(messages: UiToastMessage[]) =&gt; UiToastId[]</code></td><td>Pousse plusieurs toasts d'un coup.</td></tr>
+    <tr><td><code>clear</code></td><td><code>(key?: string) =&gt; void</code></td><td>Vide tout, ou seulement les messages d'une <code>key</code>.</td></tr>
+    <tr><td><code>remove</code></td><td><code>(id: UiToastId) =&gt; void</code></td><td>Retire un toast par id.</td></tr>
+    <tr><td><code>messages</code></td><td><code>Signal&lt;UiToastMessage[]&gt;</code></td><td>Store réactif (lecture seule).</td></tr>
+  </tbody>
+</table>
+
+Champs d'un `UiToastMessage` : `title`, `text`, `level`, `subLevel`, `icon`, `closable`,
+`sticky`, `life`, `key`, `data`, `styleClass`, `id`.
+
+## API — `ui-toast-container`
+
+<table className="doc-table">
+  <thead>
+    <tr><th>Input</th><th>Type</th><th>Défaut</th><th>Rôle</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>position</code></td><td><code>UiToastPosition</code></td><td><code>"top-right"</code></td><td>Ancrage de la pile (7 positions).</td></tr>
+    <tr><td><code>life</code></td><td><code>number</code></td><td><code>4000</code></td><td>Délai d'auto-fermeture (ms)</td></tr>
+    <tr><td><code>key</code></td><td><code>string</code></td><td><code>undefined</code></td><td>N'affiche que les messages de la même <code>key</code>.</td></tr>
+    <tr><td><code>expanded</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Mode bannière : les cartes occupent toute la largeur.</td></tr>
+    <tr><td><code>motion</code></td><td><code>UiMotionPreset</code></td><td>selon position</td><td>Override du preset d'animation.</td></tr>
+    <tr><td><code>motionDisabled</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Désactive l'animation d'entrée/sortie.</td></tr>
+    <tr><td><code>contained</code></td><td><code>boolean</code></td><td><code>false</code></td><td><code>position: absolute</code> (scopé à un ancêtre positionné) au lieu de <code>fixed</code>.</td></tr>
+    <tr><td><code>template</code></td><td><code>TemplateRef</code></td><td><code>undefined</code></td><td>Contenu personnalisé — contexte <code>&#123; $implicit: message, closeFn &#125;</code>.</td></tr>
+    <tr><td><code>stackVisibleLimit</code></td><td><code>number</code></td><td><code>0</code></td><td>N'affiche que les N toasts les plus récents (<code>0</code> = illimité) ; les autres attendent (leur compte à rebours court quand même).</td></tr>
+    <tr><td><code>stackGap</code></td><td><code>number</code></td><td>token <code>--units-sm</code></td><td>Écart (px) entre cartes empilées.</td></tr>
+    <tr><td><code>preventDuplicates</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Ignore un toast dont le contenu (<code>level</code>+<code>title</code>+<code>text</code>) est déjà affiché.</td></tr>
+    <tr><td><code>autoZIndex</code></td><td><code>boolean</code></td><td><code>true</code></td><td>Empile automatiquement au-dessus des piles créées avant.</td></tr>
+    <tr><td><code>baseZIndex</code></td><td><code>number</code></td><td><code>0</code></td><td>Plancher de <code>z-index</code> (ajouté à la valeur auto, ou utilisé tel quel si <code>autoZIndex=false</code>).</td></tr>
+  </tbody>
+</table>
+
+> **`breakpoints` (PrimeNG)** n'est **pas** repris : la largeur de la pile est déjà responsive
+> (bornée au viewport via `min(largeur, calc(100vw - marges))`). Pour des styles par palier,
+> passer une classe via `styleClass` et cibler des `@media` en CSS — plutôt que des styles inline
+> par breakpoint, non alignés avec l'approche token-first du design system.
+
+## Niveaux & intensité
+
+<Canvas of={ToastStories.Levels} />
+<Canvas of={ToastStories.SubLevelLow} />
+
+## Usage nominal
+
+<Canvas of={ToastStories.Basic} />
+
+## Promise (opération asynchrone)
+
+Un toast « en attente » (`sticky`, non fermable) est remplacé par un toast de résultat une
+fois la promesse résolue.
+
+<Canvas of={ToastStories.Promise} />
+
+## Sticky (persistant)
+
+<Canvas of={ToastStories.Sticky} />
+
+## Contenu personnalisé (template)
+
+<Canvas of={ToastStories.Custom} />
+
+## Position
+
+<Canvas of={ToastStories.Position} />
+
+## Mode bannière (expanded)
+
+<Canvas of={ToastStories.ExpandedMode} />
+
+## Actions
+
+<Canvas of={ToastStories.Action} />
+
+## Empilement (limite, gap, doublons)
+
+`stackVisibleLimit` plafonne le nombre de toasts visibles, `stackGap` resserre l'espacement,
+et `preventDuplicates` fusionne les messages identiques.
+
+<Canvas of={ToastStories.Stacking} />
+
+## Motion
+
+L'entrée/sortie est câblée sur le **système de motion** partagé (`animate.enter` /
+`animate.leave` + directive `uiMotion`). Le preset est choisi selon la position
+(`slide-down` en haut, `slide-up` en bas, `zoom` au centre) et surchargeable via l'input
+`motion`. Le kill-switch global `data-motion="off"` et la préférence *reduced-motion* sont
+respectés automatiquement.
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr><th>Point</th><th>Implémentation</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Région live</strong></td>
+      <td>Chaque toast est annoncé : <code>role="alert"</code> + <code>aria-live="assertive"</code> pour <code>error</code>/<code>warning</code>, <code>role="status"</code> + <code>aria-live="polite"</code> sinon. <code>aria-atomic="true"</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Fermeture</strong></td>
+      <td><code>&lt;button&gt;</code> natif avec <code>aria-label</code> (« Fermer »), focusable au clavier, anneau de focus <code>:focus-visible</code> distinct.</td>
+    </tr>
+    <tr>
+      <td><strong>Pause au survol / focus</strong></td>
+      <td>Le compte à rebours d'auto-fermeture se met en pause au survol et au focus clavier — l'utilisateur a le temps de lire et d'agir (WCAG « enough time »).</td>
+    </tr>
+    <tr>
+      <td><strong>Icône</strong></td>
+      <td>Décorative (<code>aria-hidden</code> via <code>ui-icon</code>) ; la couleur n'est jamais le seul vecteur de sens (icône + titre explicites).</td>
+    </tr>
+    <tr>
+      <td><strong>Sticky pour les actions</strong></td>
+      <td>Un toast porteur d'actions doit être <code>sticky</code> : il ne disparaît pas pendant que l'utilisateur s'apprête à cliquer.</td>
+    </tr>
+  </tbody>
+</table>
+
+## Configuration (SCSS)
+
+Constantes locales à `ui-toast-container.scss` (structurelles, jamais de couleur — les couleurs
+restent des design tokens runtime). Voir aussi **[Components / Configuration](?path=/docs/components-configuration--docs)**.
+
+<table className="doc-table">
+  <thead>
+    <tr><th>Variable locale</th><th>Valeur</th><th>Rôle</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>$toast-z-index</code></td><td><code>1100</code></td><td>Niveau d'empilement (au-dessus des overlays CDK, base 1000).</td></tr>
+    <tr><td><code>$toast-width</code></td><td><code>360px</code></td><td>Largeur de la pile (mode standard).</td></tr>
+    <tr><td><code>$toast-width-expanded</code></td><td><code>480px</code></td><td>Largeur en mode bannière (<code>expanded</code>).</td></tr>
+    <tr><td><code>$toast-edge-gap</code></td><td><code>var(--units-lg)</code></td><td>Marge avec les bords du viewport.</td></tr>
+    <tr><td><code>$toast-stack-gap</code></td><td><code>var(--units-sm)</code></td><td>Espace entre deux cartes empilées.</td></tr>
+  </tbody>
+</table>
+
+```html
+<!-- 1. Une fois, près de la racine de l'app -->
+<ui-toast-container position="top-right" [life]="4000" />
+```
+
+```ts
+// 2. N'importe où : pousser un toast
+private readonly toast = inject(UiToastService);
+
+this.toast.add({ level: 'success', title: 'Enregistré', text: 'Profil mis à jour.' });
+this.toast.add({ level: 'error', title: 'Échec', text: 'Réessayez.', sticky: true });
+```

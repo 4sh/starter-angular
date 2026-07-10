@@ -1,0 +1,119 @@
+@use 'utils';
+
+// =====================================================================
+// ui-toast : co-located styles for the notification card. Every value is a
+// design token (informative category). The floating stack layout + motion
+// live in ui-toast-container.scss; this file is the card chrome only.
+//
+// Extend:
+//   • Level     → add to $levels (tokens --informative-{level}{sub}-* must
+//                 exist + extend the `UiFeedbackLevel` type).
+//   • Sub-level → add to $sublevels (+ the `UiSubLevel` type).
+// =====================================================================
+
+// --- Config -----------------------------------------------------------
+$levels: default, highlight, success, warning, error;
+$sublevels: high, low;
+
+// Reused structural constant (kit-wide focus ring). Local alias, never copied.
+$focus-ring-width: utils.$focus-ring-width;
+
+.ui-toast {
+  // --- Base ----------------------------------------------------------
+  display: inline-flex;
+  align-items: flex-start;
+  gap: var(--units-sm);
+  box-sizing: border-box;
+  width: auto;
+  max-width: 100%;
+  padding: var(--units-sm) var(--units-md);
+  border: var(--stroke-default) solid transparent;
+  border-radius: var(--radius-default);
+  background-color: var(--informative-defaulthigh-surface-default);
+  color: var(--informative-defaulthigh-content-default);
+  box-shadow: var(--shadow-default-md); // toasts float above the page → elevation
+  font-family: var(--fontfamily-base);
+
+  // Banner mode: fill the available region width instead of hugging content.
+  &._expanded {
+    display: flex;
+    width: 100%;
+  }
+
+  // --- Sub-elements --------------------------------------------------
+  &-icon {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    // Nudge the icon down so it lines up with the title cap-height (Figma).
+    padding-top: var(--units-2xs);
+    line-height: 0;
+  }
+
+  &-content {
+    flex: 1 1 auto;
+    min-width: 0; // allow long text to wrap instead of overflowing
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--units-2xs);
+    padding-right: var(--units-sm);
+  }
+
+  &-title {
+    font-family: var(--fontfamily-title);
+    font-weight: var(--weight-bold);
+    font-size: var(--size-typography-title-sm);
+    line-height: 1.3;
+    overflow-wrap: break-word;
+  }
+
+  &-text {
+    font-weight: var(--weight-light);
+    font-size: var(--size-typography-text-md);
+    line-height: 1.3;
+    overflow-wrap: break-word;
+  }
+
+  // --- Dismiss button ------------------------------------------------
+  &-close {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-xs);
+    background: transparent;
+    color: inherit;
+    line-height: 0;
+    cursor: pointer;
+    opacity: 0.7;
+    @include utils.motion-transition(opacity);
+
+    &:hover {
+      opacity: 1;
+    }
+
+    &:focus-visible {
+      outline: $focus-ring-width solid currentColor;
+      outline-offset: utils.rem-calc(2);
+      opacity: 1;
+    }
+
+    @include utils.motion-reduce {
+      transition-duration: 0.01ms;
+    }
+  }
+
+  // --- Colours (level × sub-level) -----------------------------------
+  @each $lvl in $levels {
+    @each $sub in $sublevels {
+      &._#{$lvl}._#{$sub} {
+        background-color: var(--informative-#{$lvl}#{$sub}-surface-default);
+        color: var(--informative-#{$lvl}#{$sub}-content-default);
+        border-color: var(--informative-#{$lvl}#{$sub}-stroke-default);
+      }
+    }
+  }
+}
