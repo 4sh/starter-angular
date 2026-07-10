@@ -244,12 +244,12 @@
       [label]="label()"
       [helperText]="helperText()"
       [errorText]="errorText()"
-      [placeholder]="placeholder()"
+      [placeholder]="resolvedPlaceholder()"
       [size]="size()"
       [level]="effectiveLevel()"
       [required]="required()"
       [disabled]="isDisabled()"
-      [readonly]="true"
+      [readonly]="triggerReadonly()"
       [invalid]="isInvalid()"
       [name]="name()"
       [inputId]="resolvedId()"
@@ -263,8 +263,9 @@
       [attr.aria-expanded]="panelOpen()"
       [attr.aria-controls]="panelOpen() ? panelId : null"
       (iconRightClick)="onIconClick($event)"
+      (valueChange)="onTriggerInput($event)"
       (inputFocus)="inputFocus.emit($event)"
-      (inputBlur)="inputBlur.emit($event)"
+      (inputBlur)="onTriggerBlur($event)"
     />
   </div>
 

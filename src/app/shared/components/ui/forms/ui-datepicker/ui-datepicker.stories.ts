@@ -36,6 +36,7 @@ const meta: Meta<UiDatepicker> = {
     showClear: { control: 'boolean', description: 'Affiche une croix pour effacer la valeur quand elle est renseignée.', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
     autoFlip: { control: 'boolean', description: "Retourne le panneau vers le haut si l'espace manque en bas.", table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } } },
     closeOnSelect: { control: 'boolean', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } } },
+    allowInput: { control: 'boolean', description: 'Autorise la saisie clavier de la date dans le champ (mode single). Parsée au blur / Entrée.', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
     required: { control: 'boolean', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
     disabled: { control: 'boolean', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
     readonly: { control: 'boolean', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
@@ -67,6 +68,7 @@ const meta: Meta<UiDatepicker> = {
     showClear: false,
     autoFlip: true,
     closeOnSelect: true,
+    allowInput: false,
     required: false,
     disabled: false,
     readonly: false,
@@ -84,7 +86,7 @@ const TEMPLATE = `<div style="width:260px"><ui-datepicker
     [size]="size" [level]="level" [icon]="icon" [firstDayOfWeek]="firstDayOfWeek" [locale]="locale"
     [selectionMode]="selectionMode" [view]="view" [numberOfMonths]="numberOfMonths"
     [showTime]="showTime" [timeOnly]="timeOnly" [hourFormat]="hourFormat"
-    [showButtonBar]="showButtonBar" [inline]="inline" [showClear]="showClear" [autoFlip]="autoFlip" [closeOnSelect]="closeOnSelect"
+    [showButtonBar]="showButtonBar" [inline]="inline" [showClear]="showClear" [autoFlip]="autoFlip" [closeOnSelect]="closeOnSelect" [allowInput]="allowInput"
     [minDate]="minDate" [maxDate]="maxDate" [disabledDays]="disabledDays"
     [required]="required" [disabled]="disabled" [readonly]="readonly" [invalid]="invalid"
     (valueChange)="valueChange($event)" (dateSelect)="dateSelect($event)" (monthChange)="monthChange($event)"
@@ -145,6 +147,21 @@ export const Disabled: Story = { render: story(sample), args: { disabled: true }
 
 // Effaçable : une croix apparaît dans le champ dès qu'une valeur est présente.
 export const Clearable: Story = { render: story(sample), args: { label: 'Date', showClear: true } };
+
+// Saisie manuelle : tapez la date au clavier (parsée au blur / Entrée). L'ordre des champs
+// suit la locale (`fr-FR` → jj/mm/aaaa) ; le placeholder est dérivé automatiquement de cet
+// ordre quand il n'est pas fourni. Une saisie invalide revient à la dernière valeur.
+export const EditableInput: Story = {
+  render: story(sample),
+  args: {
+    label: 'Date',
+    allowInput: true,
+    showClear: true,
+    locale: 'fr-FR',
+    placeholder: '', // vide → placeholder auto dérivé de la locale (jj/mm/aaaa)
+    helperText: 'Tapez la date (jj/mm/aaaa) ou choisissez-la.',
+  },
+};
 
 // Calendrier affiché en permanence (pas de champ déclencheur ni d'overlay).
 export const Inline: Story = { render: story(sample), args: { inline: true } };

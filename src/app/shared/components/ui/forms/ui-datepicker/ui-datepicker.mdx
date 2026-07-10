@@ -90,6 +90,27 @@ la sélection. En mode `timeOnly`, l'icône du déclencheur devient une horloge.
 <Canvas of={DatepickerStories.Clearable} />
 <Canvas of={DatepickerStories.TimeOnly} />
 
+## Saisie manuelle (`allowInput`)
+
+Par défaut le champ est en lecture seule : la date se choisit uniquement dans le panneau.
+Activez `allowInput` pour autoriser la **frappe au clavier** dans le champ (mode `single`
+uniquement). Le texte est parsé au **blur** et sur **Entrée** ; une saisie invalide revient
+à la dernière valeur affichée. `↓` ouvre le panneau et entre dans la grille.
+
+Quand `allowInput` est actif (et sans `dateFormat` custom), la valeur s'affiche au **format
+numérique** de la locale (ex. `08/07/2026`) pour un aller-retour fiable avec le parser.
+
+> **L'ordre des champs suit la locale résolue** (`locale` ou, à défaut, `LOCALE_ID`). En
+> `fr-FR` c'est **jj/mm/aaaa** ; en `en-US` c'est **mm/dd/yyyy**. Si `LOCALE_ID` n'est pas
+> configuré, Angular tombe sur `en-US` : passez `locale="fr-FR"` (ou configurez `LOCALE_ID`)
+> pour saisir en JJ/MM/AAAA. Le **placeholder est dérivé automatiquement** de cet ordre quand
+> il n'est pas fourni, pour ne jamais afficher un format trompeur.
+
+Fournissez `parseDate` `(value: string) => Date | null` pour un parsing sur mesure (symétrique
+de `dateFormat`).
+
+<Canvas of={DatepickerStories.EditableInput} />
+
 ## Templates
 
 Deux points d'extension via `<ng-template>` projetés, résolus par `contentChild` :

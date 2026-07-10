@@ -155,6 +155,19 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   /** Custom display formatter for a single date (overrides the default `Intl` format). */
   dateFormat = input<(date: Date) => string>();
 
+  /**
+   * Allow typing the date directly in the trigger (single selection only).
+   * The typed text is parsed on blur / `Enter`; an unparsable value reverts to
+   * the previously displayed one. When enabled (and no custom `dateFormat`), the
+   * value is displayed in a numeric locale format so it round-trips with typing.
+   */
+  allowInput = input(false, { transform: booleanAttribute });
+  /**
+   * Custom parser for the typed text (symmetric with `dateFormat`). Return `null`
+   * to reject the input. When omitted, a locale-aware numeric parser is used.
+   */
+  parseDate = input<(value: string) => Date | null>();
+
   /** Enable the time selection row. */
   showTime = input(false, { transform: booleanAttribute });
   /** Time-only mode: hide the calendar, keep the time row. */
@@ -229,6 +242,8 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   /** @ignore Time components. */
   protected readonly hours = signal(0);
   protected readonly minutes = signal(0);
+  /** @ignore Raw text while the user edits the trigger (`allowInput`); `null` when not editing. */
+  protected readonly typedValue = signal<string | null>(null);
 
   /** @ignore Below the trigger, flipping above when `autoFlip` and space is lacking. */
   protected readonly overlayPositions = computed<ConnectedPosition[]>(() => {
@@ -249,6 +264,45 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
 
   /** @ignore */
   private readonly resolvedLocale = computed(() => this.locale() ?? this.localeId);
+  /** @ignore The trigger is not typeable (manual input off, not single, or read-only). */
+  protected readonly triggerReadonly = computed(
+    () => this.readonly() || !this.allowInput() || this.selectionMode() !== 'single',
+  );
+  /**
+   * @ignore Placeholder shown in the typeable trigger. Falls back to a hint derived
+   * from the resolved locale's field order (e.g. `jj/mm/aaaa` in French, `mm/dd/yyyy`
+   * in en-US) so the field never advertises the wrong format.
+   */
+  protected readonly resolvedPlaceholder = computed(() => {
+    const explicit = this.placeholder();
+    // Keep the consumer's placeholder, and don't auto-hint on a read-only trigger.
+    if (explicit || this.triggerReadonly()) return explicit;
+    const fr = this.resolvedLocale().toLowerCase().startsWith('fr');
+    const token = { day: fr ? 'jj' : 'dd', month: 'mm', year: fr ? 'aaaa' : 'yyyy' };
+    const view = this.view();
+    if (view === 'year') return token.year;
+    const opts: Intl.DateTimeFormatOptions =
+      view === 'month'
+        ? { month: '2-digit', year: 'numeric' }
+        : { day: '2-digit', month: '2-digit', year: 'numeric' };
+    return new Intl.DateTimeFormat(this.resolvedLocale(), opts)
+      .formatToParts(new Date(2023, 10, 22))
+      .map((p) => (p.type === 'day' ? token.day : p.type === 'month' ? token.month : p.type === 'year' ? token.year : p.value))
+      .join('');
+  });
+
+  /** @ignore Order of day/month/year for the resolved locale (drives numeric parsing). */
+  private readonly dateFieldOrder = computed<Array<'day' | 'month' | 'year'>>(() => {
+    const parts = new Intl.DateTimeFormat(this.resolvedLocale(), {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    }).formatToParts(new Date(2023, 10, 22));
+    const order = parts
+      .map((p) => p.type)
+      .filter((t): t is 'day' | 'month' | 'year' => t === 'day' || t === 'month' || t === 'year');
+    return order.length === 3 ? order : ['day', 'month', 'year'];
+  });
   /** @ignore The panel is visible. */
   protected readonly showPanel = computed(() => this.inline() || this.panelOpen());
   /** @ignore Day grid shown (hidden in `timeOnly`). */
@@ -295,22 +349,41 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   private formatDate(date: Date): string {
     const custom = this.dateFormat();
     if (custom) return custom(date);
+    // Typeable trigger → numeric format that round-trips with the default parser.
+    if (this.allowInput()) {
+      const opts: Intl.DateTimeFormatOptions = { day: '2-digit', month: '2-digit', year: 'numeric' };
+      if (this.showTime()) (opts.hour = '2-digit'), (opts.minute = '2-digit');
+      return new Intl.DateTimeFormat(this.resolvedLocale(), opts).format(date);
+    }
     const options: Intl.DateTimeFormatOptions = this.showTime()
       ? { dateStyle: 'medium', timeStyle: 'short' }
       : { dateStyle: 'medium' };
     return new Intl.DateTimeFormat(this.resolvedLocale(), options).format(date);
   }
 
+  /** @ignore Month-view display (numeric + round-trippable when the trigger is typeable). */
+  private formatMonth(date: Date): string {
+    if (this.allowInput() && !this.dateFormat()) {
+      const yearFirst = this.dateFieldOrder().filter((f) => f !== 'day')[0] === 'year';
+      const mm = this.pad(date.getMonth() + 1);
+      const yyyy = String(date.getFullYear());
+      return yearFirst ? `${yyyy}/${mm}` : `${mm}/${yyyy}`;
+    }
+    return this.capitalize(
+      new Intl.DateTimeFormat(this.resolvedLocale(), { month: 'long', year: 'numeric' }).format(date),
+    );
+  }
+
   /** @ignore Value rendered in the trigger. */
   protected override readonly displayValue = computed(() => {
+    // While editing, mirror the raw text so the input keeps what the user types.
+    const typed = this.typedValue();
+    if (typed !== null) return typed;
+
     const dates = this.selectedDates();
     if (!dates.length) return '';
     const base = this.view();
-    if (base === 'month') {
-      return this.capitalize(
-        new Intl.DateTimeFormat(this.resolvedLocale(), { month: 'long', year: 'numeric' }).format(dates[0]),
-      );
-    }
+    if (base === 'month') return this.formatMonth(dates[0]);
     if (base === 'year') return String(dates[0].getFullYear());
 
     if (this.timeOnly()) {
@@ -413,6 +486,7 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   }
 
   override writeValue(value: DatepickerValue): void {
+    this.typedValue.set(null);
     this.modelValue.set(value ?? undefined);
     const first = this.firstSelectedFrom(value);
     if (first) {
@@ -432,7 +506,8 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     this.overlayOrigin.set(this.resolveOverlayOrigin());
     this.panelOpen.set(true);
     this.opened.emit();
-    if (this.showCalendar() && this.currentView() === 'date') this.queueDayFocus();
+    // Keep focus in the input when it's typeable; otherwise rove into the grid.
+    if (this.showCalendar() && this.currentView() === 'date' && this.triggerReadonly()) this.queueDayFocus();
   }
 
   close(focusTrigger = true): void {
@@ -458,12 +533,159 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
 
   /** @ignore */
   protected onTriggerKeydown(event: KeyboardEvent): void {
+    // Typeable trigger: let printable keys through, only intercept nav/commit.
+    if (!this.triggerReadonly()) {
+      if (event.key === 'ArrowDown') {
+        event.preventDefault();
+        this.open();
+        this.queueDayFocus();
+      } else if (event.key === 'Enter') {
+        event.preventDefault();
+        this.commitTyped();
+        if (this.panelOpen() && this.closeOnSelect() && !this.showTime()) this.close(false);
+      } else if (event.key === 'Escape') {
+        this.close();
+      }
+      return;
+    }
     if (event.key === 'ArrowDown' || event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
       this.open();
     } else if (event.key === 'Escape') {
       this.close();
     }
+  }
+
+  /** @ignore Track the raw text as the user types; live-preview the open panel. */
+  protected onTriggerInput(value: string): void {
+    if (this.triggerReadonly()) return;
+    this.typedValue.set(value);
+    if (this.panelOpen()) this.previewTyped();
+  }
+
+  /**
+   * @ignore Reflect a fully-typed date in the open panel (navigate + highlight)
+   * without reformatting the field, so the caret stays put while typing.
+   */
+  private previewTyped(): void {
+    const raw = this.typedValue();
+    if (raw === null || !raw.trim()) return;
+    const parsed = this.parseTyped(raw.trim(), true);
+    if (!parsed || this.isParsedDisabled(parsed)) return;
+    const picked = this.showTime() ? parsed : startOfDay(parsed);
+    // Update the model (drives the selected-day highlight + live value) but keep
+    // `typedValue` so `displayValue` still returns the raw text (no caret jump).
+    this.modelValue.set(picked);
+    this.emitChange(picked);
+    this.valueChange.emit(picked);
+    this.viewDate.set(firstOfMonth(picked));
+    this.focusedDate.set(startOfDay(picked));
+  }
+
+  /** @ignore Parse the typed text on blur, then forward the blur. */
+  protected onTriggerBlur(event: FocusEvent): void {
+    this.commitTyped();
+    this.inputBlur.emit(event);
+  }
+
+  /** @ignore Parse and apply the typed text; revert to the previous value if invalid. */
+  protected commitTyped(): void {
+    if (this.triggerReadonly()) return;
+    const raw = this.typedValue();
+    if (raw === null) return; // untouched
+    const text = raw.trim();
+    if (!text) {
+      this.typedValue.set(null);
+      if (this.hasValue()) this.clear();
+      return;
+    }
+    const parsed = this.parseTyped(text, true);
+    if (parsed && !this.isParsedDisabled(parsed)) {
+      const picked = this.showTime() ? parsed : startOfDay(parsed);
+      this.commit(picked); // single-only → clears typedValue and reformats
+      this.dateSelect.emit(picked);
+      this.viewDate.set(firstOfMonth(picked));
+      this.focusedDate.set(startOfDay(picked));
+    } else {
+      this.typedValue.set(null); // revert: displayValue reformats the current value
+    }
+  }
+
+  /**
+   * @ignore Custom parser when provided, otherwise the locale-aware numeric parser.
+   * `requireComplete` gates the default parser to fully-typed dates (custom
+   * parsers decide completeness themselves).
+   */
+  private parseTyped(text: string, requireComplete = false): Date | null {
+    const custom = this.parseDate();
+    return custom ? custom(text) : this.defaultParse(text, requireComplete);
+  }
+
+  /**
+   * @ignore Locale-aware numeric parser (day/month/year order from `dateFieldOrder`).
+   * With `requireComplete`, returns `null` unless every component is present
+   * (and the year has 2 or ≥4 digits) — used for live preview to avoid jumps.
+   */
+  private defaultParse(text: string, requireComplete = false): Date | null {
+    const groups = text.match(/\d+/g) ?? [];
+    const nums = groups.map(Number);
+    if (!nums.length) return null;
+    const view = this.view();
+    if (view === 'year') {
+      if (requireComplete && (groups[0]?.length ?? 0) < 4) return null;
+      return this.finalizeParsed(this.normalizeYear(nums[0]), 0, 1, 0, 0);
+    }
+
+    const fields = this.dateFieldOrder().filter((f) => (view === 'month' ? f !== 'day' : true));
+    if (requireComplete) {
+      if (groups.length < fields.length) return null;
+      const yearLen = groups[fields.indexOf('year')]?.length ?? 0;
+      if (yearLen !== 2 && yearLen < 4) return null;
+    }
+    let day = 1;
+    let month = 0;
+    let year = this.viewDate().getFullYear();
+    fields.forEach((field, i) => {
+      const n = nums[i];
+      if (n === undefined) return;
+      if (field === 'day') day = n;
+      else if (field === 'month') month = n - 1;
+      else year = this.normalizeYear(n);
+    });
+
+    let h = this.hours();
+    let min = this.minutes();
+    if (this.showTime() && view === 'date') {
+      const t = nums.slice(fields.length);
+      if (t.length >= 1) h = t[0];
+      if (t.length >= 2) min = t[1];
+      if (this.hourFormat() === '12') {
+        if (/p/i.test(text) && h < 12) h += 12;
+        if (/a/i.test(text) && h === 12) h = 0;
+      }
+    }
+    return this.finalizeParsed(year, month, view === 'month' ? 1 : day, h, min);
+  }
+
+  /** @ignore 2-digit years → 2000s. */
+  private normalizeYear(y: number): number {
+    return y < 100 ? 2000 + y : y;
+  }
+
+  /** @ignore Build a Date and reject overflowed components (e.g. 31 Feb). */
+  private finalizeParsed(year: number, month: number, day: number, h: number, min: number): Date | null {
+    if (month < 0 || month > 11 || day < 1 || day > 31 || h > 23 || min > 59) return null;
+    const d = new Date(year, month, day, h, min, 0, 0);
+    if (d.getFullYear() !== year || d.getMonth() !== month || d.getDate() !== day) return null;
+    return d;
+  }
+
+  /** @ignore Range/disabled check for a parsed value, granular to the base view. */
+  private isParsedDisabled(date: Date): boolean {
+    const v = this.view();
+    if (v === 'year') return this.isYearDisabled(date.getFullYear());
+    if (v === 'month') return this.isMonthDisabled(date.getFullYear(), date.getMonth());
+    return this.isDateDisabled(startOfDay(date));
   }
 
   // --- Header interactions --------------------------------------------
@@ -695,6 +917,7 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
 
   /** @ignore */
   private commit(value: DatepickerValue): void {
+    this.typedValue.set(null); // any committed value re-formats the trigger
     this.modelValue.set(value ?? undefined);
     this.emitChange(value);
     this.valueChange.emit(value);
