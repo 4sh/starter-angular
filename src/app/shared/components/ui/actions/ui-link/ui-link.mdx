@@ -1,0 +1,150 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as LinkStories from './ui-link.stories';
+
+<Meta of={LinkStories} />
+
+# ui-link
+
+Lien **textuel inline** : un vrai `<a>`, destiné au fil du texte (paragraphes) et à la
+navigation. Stylé avec la famille sobre `actions.low.content.*` (tokens light **et** dark).
+
+> **Choisir par la sémantique, pas par l'apparence.**
+> - Ce qui **navigue** (URL / route) → `ui-link`, ou `ui-button` avec `href`/`routerLink`
+>   quand il faut l'apparence d'un bouton.
+> - Ce qui **déclenche une action** (submit, ouvrir un modal…) → `ui-button`.
+
+Accepte une destination externe (`href`) **ou** interne (`routerLink`, directive Angular).
+
+<Canvas of={LinkStories.Default} />
+
+## API
+
+<ArgTypes of={LinkStories} />
+
+## Anatomie
+
+<table>
+  <thead>
+    <tr>
+      <th>Élément</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Structure</strong></td>
+      <td>racine <code>&lt;a&gt;</code> + <code>ui-icon</code> optionnelle à gauche/droite + label / contenu projeté.</td>
+    </tr>
+    <tr>
+      <td><strong>Destination</strong></td>
+      <td><code>href</code> (externe) · <code>routerLink</code> (interne) · <code>target</code> · <code>rel</code> · <code>external</code> (raccourci <code>_blank</code> + rel sûr).</td>
+    </tr>
+    <tr>
+      <td><strong>Size</strong></td>
+      <td><code>default</code> · <code>small</code></td>
+    </tr>
+    <tr>
+      <td><strong>Icône</strong></td>
+      <td><code>iconLeft</code> / <code>iconRight</code> (noms FontAwesome). Sans <code>label</code> ⇒ mode <em>icon-only</em>.</td>
+    </tr>
+  </tbody>
+</table>
+
+## Tailles
+
+<Canvas of={LinkStories.Small} />
+
+## Icônes
+
+L'icône est positionnée via `iconLeft` / `iconRight` (présence du nom = icône affichée,
+idiome Angular équivalent aux booléens `Icon Left`/`Icon Right` de Figma).
+
+<Canvas of={LinkStories.IconLeft} />
+<Canvas of={LinkStories.IconRight} />
+<Canvas of={LinkStories.IconOnly} />
+
+## Lien externe
+
+`external` force `target="_blank"` et pose un `rel="noopener noreferrer"` sûr.
+
+<Canvas of={LinkStories.External} />
+
+## Navigation interne (RouterLink)
+
+`routerLink` bascule sur la directive Angular pour la navigation SPA (le comportement
+natif de l'ancre — Cmd/Ctrl+clic, etc. — est préservé).
+
+<Canvas of={LinkStories.RouterInternal} />
+
+```html
+<ui-link label="Mon profil" [routerLink]="['/profil']" iconRight="chevron-right" />
+```
+
+## Dans un paragraphe
+
+<Canvas of={LinkStories.InlineInProse} />
+
+## États
+
+<Canvas of={LinkStories.Disabled} />
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Règle</th>
+      <th>Détail</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Sémantique</strong></td>
+      <td><code>&lt;a&gt;</code> natif. Un lien navigue ; pour une action, utiliser <code>ui-button</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Soulignement</strong></td>
+      <td>Souligné par défaut : la couleur n'est jamais le seul repère d'un lien inline. Retiré en mode <em>icon-only</em>.</td>
+    </tr>
+    <tr>
+      <td><strong>Labeling</strong></td>
+      <td><code>aria-label</code> posé quand utile (icon-only). Un warning dev signale un lien icon-only sans nom accessible.</td>
+    </tr>
+    <tr>
+      <td><strong>Externe</strong></td>
+      <td><code>external</code> / <code>target="_blank"</code> ⇒ <code>rel="noopener noreferrer"</code> automatique.</td>
+    </tr>
+    <tr>
+      <td><strong>États</strong></td>
+      <td><code>:focus-visible</code> visible et distinct du <code>hover</code>. <code>disabled</code> : href/routerLink retirés, <code>aria-disabled</code>, hors tabulation (<code>tabindex=-1</code>).</td>
+    </tr>
+  </tbody>
+</table>
+
+## Configuration (SCSS)
+
+Variables locales en tête de `ui-link.scss`. Voir le groupe partagé
+[Actions](?path=/docs/components-configuration-actions--docs) et le
+[fonctionnement de la configuration](?path=/docs/components-configuration--docs).
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Variable locale</th>
+      <th>Source</th>
+      <th>Rôle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>$focus-ring-width</code></td>
+      <td><code>utils.$action-focus-ring-width</code></td>
+      <td>Épaisseur de l'anneau de focus</td>
+    </tr>
+    <tr>
+      <td><code>$sizes</code></td>
+      <td>local (map : font-size par taille)</td>
+      <td>Dimensions par taille (spécifique lien)</td>
+    </tr>
+  </tbody>
+</table>

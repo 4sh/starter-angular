@@ -1,0 +1,78 @@
+@use 'utils';
+@use 'sass:map';
+
+// =====================================================================
+// ui-link : co-located styles. All values come from design tokens.
+// Extend:
+//   • Size → add an entry to $sizes (+ the `LinkSize` type).
+// =====================================================================
+
+// --- Config (extension points) ---------------------------------------
+// `default` = base styles; other keys become `._<name>` modifiers.
+$sizes: (
+  'default': (
+    font-size: var(--size-typography-text-default),
+  ),
+  'small': (
+    font-size: var(--size-typography-text-md),
+  ),
+);
+$size-default: map.get($sizes, 'default');
+$focus-ring-width: utils.$action-focus-ring-width;
+
+.ui-link {
+  // --- Base ----------------------------------------------------------
+  display: inline-flex;
+  align-items: center;
+  gap: var(--units-sm);
+  font-family: var(--fontfamily-base);
+  font-weight: var(--weight-bold);
+  font-size: map.get($size-default, font-size);
+  line-height: 1.4;
+  color: var(--actions-low-content-default);
+  text-decoration: underline;
+  text-decoration-thickness: from-font;
+  text-underline-offset: 0.15em;
+  border-radius: var(--radius-2xs);
+  cursor: pointer;
+  @include utils.control-transition(color, text-decoration-color, box-shadow);
+
+  // --- Sub-elements --------------------------------------------------
+  &-icon { line-height: 0; }
+
+  &-content {
+    display: inline;
+    &:empty { display: none; }
+  }
+
+  // --- Sizes (all but `default`) -------------------------------------
+  @each $name, $size in $sizes {
+    @if $name != 'default' {
+      &._#{$name} { font-size: map.get($size, font-size); }
+    }
+  }
+
+  // Icon-only: no underline, tight box around the glyph.
+  &._icon-only {
+    gap: 0;
+    text-decoration: none;
+  }
+
+  // --- Interactive states ----------------------
+  &:hover:not(._disabled) { color: var(--actions-low-content-hover); }
+
+  &:focus-visible {
+    outline: none;
+    color: var(--actions-low-content-focused);
+    box-shadow: 0 0 0 $focus-ring-width var(--actions-low-content-focused);
+  }
+
+  &:active:not(._disabled) { color: var(--actions-low-content-pressed); }
+
+  &._disabled {
+    color: var(--actions-low-content-disabled);
+    text-decoration-color: var(--actions-low-content-disabled);
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}

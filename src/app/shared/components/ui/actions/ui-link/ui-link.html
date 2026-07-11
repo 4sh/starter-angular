@@ -1,0 +1,50 @@
+@if (useRouterLink()) {
+  <a
+    #host
+    [class]="classes()"
+    [routerLink]="disabled() ? null : routerLink()"
+    [attr.target]="computedTarget()"
+    [attr.rel]="computedRel()"
+    [attr.tabindex]="linkTabindex()"
+    [attr.aria-label]="accessibleLabel()"
+    [attr.aria-disabled]="disabled() ? 'true' : null"
+    (click)="onClick($event)"
+    (focus)="linkFocus.emit($event)"
+    (blur)="linkBlur.emit($event)"
+  >
+    <ng-container [ngTemplateOutlet]="inner" />
+  </a>
+} @else {
+  <a
+    #host
+    [class]="classes()"
+    [attr.href]="disabled() ? null : href()"
+    [attr.target]="computedTarget()"
+    [attr.rel]="computedRel()"
+    [attr.tabindex]="linkTabindex()"
+    [attr.aria-label]="accessibleLabel()"
+    [attr.aria-disabled]="disabled() ? 'true' : null"
+    (click)="onClick($event)"
+    (focus)="linkFocus.emit($event)"
+    (blur)="linkBlur.emit($event)"
+  >
+    <ng-container [ngTemplateOutlet]="inner" />
+  </a>
+}
+
+<ng-template #inner>
+  @if (iconLeft()) {
+    <ui-icon class="ui-link-icon" [name]="iconLeft()!" [size]="iconSize()" />
+  }
+
+  <span class="ui-link-content">
+    @if (label() && !isIconOnly()) {
+      <span class="ui-link-label">{{ label() }}</span>
+    }
+    <ng-content />
+  </span>
+
+  @if (iconRight()) {
+    <ui-icon class="ui-link-icon" [name]="iconRight()!" [size]="iconSize()" />
+  }
+</ng-template>

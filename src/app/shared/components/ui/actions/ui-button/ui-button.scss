@@ -52,6 +52,7 @@ $focus-ring-width: utils.$action-focus-ring-width;
   white-space: nowrap;
   cursor: pointer;
   user-select: none;
+  text-decoration: none; // link mode (<a>): never underline a button-styled anchor
   @include utils.control-transition(background-color, color, border-color, box-shadow);
 
   @include button-size($size-default);
@@ -97,17 +98,20 @@ $focus-ring-width: utils.$action-focus-ring-width;
     }
   }
 
-  &:disabled { cursor: not-allowed; }
+  // Disabled: native (<button>) or via class (<a>, no native disabled).
+  &:disabled,
+  &._disabled { cursor: not-allowed; }
 
   // --- Colors (one set per level) ------------------------------------
   // Interactive states are CSS pseudo-classes, never Angular props.
+  // `._disabled` mirrors `:disabled` for the link-mode anchor.
   @each $lvl in $levels {
     &._#{$lvl} {
       background-color: var(--actions-#{$lvl}-surface-default);
       color: var(--actions-#{$lvl}-content-default);
       border-color: var(--actions-#{$lvl}-stroke-default);
 
-      &:hover:not(:disabled) {
+      &:hover:not(:disabled):not(._disabled) {
         background-color: var(--actions-#{$lvl}-surface-hover);
         color: var(--actions-#{$lvl}-content-hover);
         border-color: var(--actions-#{$lvl}-stroke-hover);
@@ -119,13 +123,14 @@ $focus-ring-width: utils.$action-focus-ring-width;
         box-shadow: 0 0 0 $focus-ring-width var(--actions-#{$lvl}-stroke-focused);
       }
 
-      &:active:not(:disabled) {
+      &:active:not(:disabled):not(._disabled) {
         background-color: var(--actions-#{$lvl}-surface-pressed);
         color: var(--actions-#{$lvl}-content-pressed);
         border-color: var(--actions-#{$lvl}-stroke-pressed);
       }
 
-      &:disabled {
+      &:disabled,
+      &._disabled {
         background-color: var(--actions-#{$lvl}-surface-disabled);
         color: var(--actions-#{$lvl}-content-disabled);
         border-color: var(--actions-#{$lvl}-stroke-disabled);

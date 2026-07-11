@@ -49,6 +49,10 @@ import * as ButtonStories from './ui-button.stories';
       <td><strong>Type</strong></td>
       <td>texte+icône, contenu projeté (<code>&lt;ng-content&gt;</code>), ou <em>icon-only</em> (sans <code>label</code>)</td>
     </tr>
+    <tr>
+      <td><strong>Mode lien</strong></td>
+      <td><code>href</code> ou <code>routerLink</code> ⇒ l'hôte rend un <code>&lt;a&gt;</code> (+ <code>target</code> / <code>rel</code>).</td>
+    </tr>
   </tbody>
 </table>
 
@@ -123,6 +127,28 @@ permet de le forcer.
 Au-delà de `label`, on peut projeter du contenu riche via `<ng-content>`.
 
 <Canvas of={ButtonStories.ProjectedContent} />
+
+## Mode lien
+
+Quand un bouton doit **naviguer** (route interne ou URL), renseigner `href` ou
+`routerLink` : l'hôte rend alors un **vrai `<a>`** stylé comme un bouton. Le
+comportement natif de l'ancre est préservé (Cmd/Ctrl+clic, clic-molette, « ouvrir /
+copier le lien »), contrairement à une navigation déclenchée en JS dans un `(click)`.
+
+> Règle : on choisit l'élément par la **sémantique** (naviguer ⇒ `<a>`, agir ⇒
+> `<button>`), pas par l'apparence. Pour un lien **inline** dans du texte, préférer
+> [`ui-link`](?path=/docs/components-ui-actions-ui-link--docs).
+
+```html
+<ui-button label="Voir la page" href="/tarifs" icon="arrow-right" iconPos="right" />
+<ui-button label="Mon profil" [routerLink]="['/profil']" />
+<ui-button label="Site externe" href="https://angular.dev" target="_blank" />
+```
+
+<Canvas of={ButtonStories.AsLink} />
+<Canvas of={ButtonStories.AsExternalLink} />
+<Canvas of={ButtonStories.AsRouterLink} />
+<Canvas of={ButtonStories.AsLinkDisabled} />
 
 ## États
 

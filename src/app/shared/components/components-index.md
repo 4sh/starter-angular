@@ -4,10 +4,10 @@
 > ✅ = implémenté headless · ⬜ = à construire (recopier le patron `ui-button`)
 
 ## actions
-- ✅ `ui-button` — Bouton (niveaux high/low/success/warning/error, outlined, tailles, icône)
+- ✅ `ui-button` — Bouton (niveaux high/low/success/warning/error, outlined, tailles, icône, **mode lien** `href`/`routerLink` → rend un `<a>`)
 - ⬜ `ui-button-group` — Groupe de boutons
 - ⬜ `ui-button-split` — Bouton avec menu déroulant
-- ⬜ `ui-link` — Lien textuel
+- ✅ `ui-link` — Lien textuel inline (vrai `<a>`, `href`/`routerLink`/`external`, icônes gauche/droite, tailles, icon-only, souligné a11y)
 
 ## forms
 - ✅ `ui-field` — Shell partagé des champs (label + boîte + helper + états) via projection

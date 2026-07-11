@@ -1,15 +1,57 @@
-<button
-  #btn
-  [class]="classes()"
-  [type]="type()"
-  [disabled]="disabled() || loading()"
-  [attr.tabindex]="tabindex()"
-  [attr.aria-busy]="loading() ? 'true' : null"
-  [attr.aria-label]="accessibleLabel()"
-  (click)="onClick($event)"
-  (focus)="buttonFocus.emit($event)"
-  (blur)="buttonBlur.emit($event)"
->
+@if (isLink()) {
+  @if (useRouterLink()) {
+    <a
+      #host
+      [class]="classes()"
+      [routerLink]="disabled() ? null : routerLink()"
+      [attr.target]="target()"
+      [attr.rel]="computedRel()"
+      [attr.tabindex]="linkTabindex()"
+      [attr.role]="'button'"
+      [attr.aria-label]="accessibleLabel()"
+      [attr.aria-disabled]="disabled() ? 'true' : null"
+      (click)="onClick($event)"
+      (focus)="buttonFocus.emit($event)"
+      (blur)="buttonBlur.emit($event)"
+    >
+      <ng-container [ngTemplateOutlet]="inner" />
+    </a>
+  } @else {
+    <a
+      #host
+      [class]="classes()"
+      [attr.href]="disabled() ? null : href()"
+      [attr.target]="target()"
+      [attr.rel]="computedRel()"
+      [attr.tabindex]="linkTabindex()"
+      [attr.role]="'button'"
+      [attr.aria-label]="accessibleLabel()"
+      [attr.aria-disabled]="disabled() ? 'true' : null"
+      (click)="onClick($event)"
+      (focus)="buttonFocus.emit($event)"
+      (blur)="buttonBlur.emit($event)"
+    >
+      <ng-container [ngTemplateOutlet]="inner" />
+    </a>
+  }
+} @else {
+  <button
+    #host
+    [class]="classes()"
+    [type]="type()"
+    [disabled]="disabled() || loading()"
+    [attr.tabindex]="tabindex()"
+    [attr.aria-busy]="loading() ? 'true' : null"
+    [attr.aria-label]="accessibleLabel()"
+    (click)="onClick($event)"
+    (focus)="buttonFocus.emit($event)"
+    (blur)="buttonBlur.emit($event)"
+  >
+    <ng-container [ngTemplateOutlet]="inner" />
+  </button>
+}
+
+<ng-template #inner>
   @if (iconBefore()) {
     <ng-container [ngTemplateOutlet]="iconSlot" />
   }
@@ -24,7 +66,7 @@
   @if (!iconBefore()) {
     <ng-container [ngTemplateOutlet]="iconSlot" />
   }
-</button>
+</ng-template>
 
 <ng-template #iconSlot>
   @if (loading()) {

@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/angular';
-import { moduleMetadata } from '@storybook/angular';
+import { applicationConfig, moduleMetadata } from '@storybook/angular';
+import { provideRouter } from '@angular/router';
 import { UiButton } from '@app/shared/components/ui/actions/ui-button/ui-button';
 
 const meta: Meta<UiButton> = {
@@ -83,6 +84,26 @@ const meta: Meta<UiButton> = {
       description: 'tabindex natif du bouton.',
       table: { type: { summary: 'number' }, defaultValue: { summary: 'undefined' } },
     },
+    href: {
+      control: { type: 'text' },
+      description: "URL externe : bascule l'hôte sur un <a> stylé bouton (comportement natif préservé).",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    routerLink: {
+      control: { type: 'text' },
+      description: "Cible de navigation interne : bascule l'hôte sur un <a> (RouterLink Angular).",
+      table: { type: { summary: 'string | unknown[]' }, defaultValue: { summary: 'undefined' } },
+    },
+    target: {
+      control: { type: 'text' },
+      description: 'Cible du lien en mode lien (ex : _blank).',
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    rel: {
+      control: { type: 'text' },
+      description: 'Attribut rel en mode lien (défaut "noopener noreferrer" si target="_blank").',
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
     buttonProps: {
       control: false,
       description: 'Attributs natifs additionnels forwardés sur le <button>Button</button> (ex : { form: "login", value: "1" }).',
@@ -153,6 +174,17 @@ export const Expanded: Story = {
 
 // États
 export const Disabled: Story = { args: { label: 'Disabled', level: 'high', disabled: true } };
+
+// Mode lien (rend un <a> stylé bouton)
+export const AsLink: Story = { args: { label: 'Voir la page', level: 'high', href: '#', icon: 'arrow-right', iconPos: 'right' } };
+export const AsExternalLink: Story = {
+  args: { label: 'Site externe', level: 'low', href: 'https://angular.dev', target: '_blank', icon: 'arrow-up-right-from-square', iconPos: 'right' },
+};
+export const AsRouterLink: Story = {
+  decorators: [applicationConfig({ providers: [provideRouter([{ path: '**', children: [] }])] })],
+  args: { label: 'Mon profil', level: 'high', routerLink: '/profil' },
+};
+export const AsLinkDisabled: Story = { args: { label: 'Lien désactivé', level: 'high', href: '#', disabled: true } };
 
 // Contenu projeté (<ng-content>)
 export const ProjectedContent: Story = {

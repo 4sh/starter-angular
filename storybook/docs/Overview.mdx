@@ -1,5 +1,6 @@
 import { Meta, Story } from "@storybook/addon-docs/blocks";
 import * as ButtonStories from "../../src/app/shared/components/ui/actions/ui-button/ui-button.stories";
+import * as LinkStories from "../../src/app/shared/components/ui/actions/ui-link/ui-link.stories";
 import * as IconStories from "../../src/app/shared/components/ui/ui-icon/ui-icon.stories";
 import * as ImageStories from "../../src/app/shared/components/ui/ui-image/ui-image.stories";
 import * as CheckboxStories from "../../src/app/shared/components/ui/forms/ui-checkbox/ui-checkbox.stories";
@@ -65,7 +66,8 @@ export const CategorySection = ({ title, components }) => (
 <CategorySection
   title="Actions"
   components={[
-    { name: 'ui-button', description: 'Bouton (niveaux, tailles, icônes, icon-only) : accessible.', link: '?path=/docs/components-ui-actions-ui-button--docs', story: ButtonStories.High },
+    { name: 'ui-button', description: 'Bouton (niveaux, tailles, icônes, icon-only, mode lien href/routerLink) : accessible.', link: '?path=/docs/components-ui-actions-ui-button--docs', story: ButtonStories.High },
+    { name: 'ui-link', description: 'Lien textuel inline (vrai <a>, href/routerLink, icônes, externe) : accessible.', link: '?path=/docs/components-ui-actions-ui-link--docs', story: LinkStories.Default },
   ]}
 />
 
