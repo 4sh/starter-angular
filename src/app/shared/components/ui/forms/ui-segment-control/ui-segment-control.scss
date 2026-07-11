@@ -1,0 +1,217 @@
+@use 'utils';
+@use 'sass:map';
+
+// =====================================================================
+// ui-segment-control : co-located styles. All values come from design tokens.
+//
+// Extend:
+//   • Size → add an entry to $sizes (+ the `SegmentControlSize` type).
+// =====================================================================
+
+// --- Config (extension points) ---------------------------------------
+$sizes: (
+  'default': (
+    height: 44px,
+    padding-x: var(--units-default),
+    font-size: var(--size-typography-text-default),
+    min: 44px,
+  ),
+  'small': (
+    height: 40px,
+    padding-x: var(--units-md),
+    font-size: var(--size-typography-text-md),
+    min: 40px,
+  ),
+);
+$size-default: map.get($sizes, 'default');
+$stroke-width: utils.$control-stroke-width;
+$focus-ring-width: utils.$action-focus-ring-width;
+$gutter: var(--units-xs);
+$gutter-size: 4px; // numeric mirror of $gutter, for the size math below
+
+@mixin segment-size($size) {
+  min-height: utils.rem-calc(map.get($size, height));
+
+  .ui-segment-control-option {
+    min-height: utils.rem-calc(map.get($size, height) - 2 * $gutter-size);
+    min-width: utils.rem-calc(map.get($size, min) - 2 * $gutter-size);
+    padding: 0 map.get($size, padding-x);
+    font-size: map.get($size, font-size);
+  }
+}
+
+:host {
+  // --- Track ---------------------------------------------------------
+  position: relative;
+  display: inline-flex;
+  align-items: stretch;
+  box-sizing: border-box;
+  padding: $gutter;
+  gap: 0;
+  border-radius: var(--radius-md);
+  // Border as an inset shadow → no layout box, so the thumb offset math
+  // (offsetLeft/offsetTop) stays exact regardless of border width.
+  box-shadow: inset 0 0 0 $stroke-width var(--global-high-stroke-default);
+  font-family: var(--fontfamily-base);
+  user-select: none;
+  vertical-align: middle;
+
+  @include segment-size($size-default);
+}
+
+// --- Sizes (all but `default`) ---------------------------------------
+@each $name, $size in $sizes {
+  @if $name != 'default' {
+    :host._#{$name} {
+      @include segment-size($size);
+    }
+  }
+}
+
+// --- Sliding indicator (thumb) ---------------------------------------
+.ui-segment-control-thumb {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  border-radius: var(--radius-sm);
+  background-color: var(--actions-high-surface-default);
+  pointer-events: none;
+  @include utils.motion-transition(transform, width, height);
+
+  @include utils.motion-reduce {
+    transition: none;
+  }
+}
+
+// Explicit opt-out (`[motion]="false"`).
+:host._no-motion .ui-segment-control-thumb {
+  transition: none;
+}
+
+// --- Icon / label ----------------------------------------------------
+.ui-segment-control-icon {
+  line-height: 0;
+}
+
+// Label reserves its BOLD width in every state (a hidden bold ghost sets the
+// width) so switching to `_selected` (bold) never reflows the segment/track.
+.ui-segment-control-label {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+
+  &::after {
+    content: attr(data-label);
+    height: 0;
+    overflow: hidden;
+    font-weight: var(--weight-bold);
+    visibility: hidden;
+    pointer-events: none;
+    user-select: none;
+  }
+}
+
+// --- Segment button --------------------------------------------------
+.ui-segment-control-option {
+  position: relative;
+  z-index: 1; // above the thumb
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--units-sm);
+  box-sizing: border-box;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background-color: transparent;
+  color: var(--actions-low-content-default);
+  font-family: inherit;
+  font-weight: var(--weight-regular);
+  line-height: 1.2;
+  white-space: nowrap;
+  cursor: pointer;
+  @include utils.control-transition(background-color, color, box-shadow);
+
+  // Unselected interactive states (low palette).
+  &:hover:not(:disabled):not(._selected) {
+    background-color: var(--actions-low-surface-hover);
+    color: var(--actions-low-content-hover);
+  }
+  &:active:not(:disabled):not(._selected) {
+    background-color: var(--actions-low-surface-pressed);
+    color: var(--actions-low-content-pressed);
+  }
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 $focus-ring-width var(--actions-low-stroke-focused);
+  }
+  
+  &._selected {
+    color: var(--actions-high-content-default);
+    font-weight: var(--weight-bold);
+
+    &:focus-visible {
+      box-shadow: 0 0 0 $focus-ring-width var(--actions-high-stroke-focused);
+    }
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    color: var(--actions-low-content-disabled);
+
+    &._selected {
+      color: var(--actions-high-content-disabled);
+    }
+  }
+}
+
+// --- Multiple mode: no thumb, each selected segment paints its surface ---
+:host._multiple .ui-segment-control-option._selected {
+  background-color: var(--actions-high-surface-default);
+
+  &:hover:not(:disabled) {
+    background-color: var(--actions-high-surface-hover);
+    color: var(--actions-high-content-hover);
+  }
+  &:active:not(:disabled) {
+    background-color: var(--actions-high-surface-pressed);
+    color: var(--actions-high-content-pressed);
+  }
+  &:disabled {
+    background-color: var(--actions-high-surface-disabled);
+  }
+}
+
+// --- Fluid: fill the parent, segments share the width evenly ----------
+:host._fluid {
+  display: flex;
+  width: 100%;
+
+  .ui-segment-control-option {
+    flex: 1 1 0;
+  }
+}
+
+// --- Vertical axis ----------------------------------------------------
+:host._vertical {
+  flex-direction: column;
+  align-items: stretch;
+
+  .ui-segment-control-option {
+    width: 100%;
+  }
+}
+
+// --- Invalid ----------------------------------------------------------
+:host._invalid {
+  box-shadow: inset 0 0 0 $stroke-width var(--form-error-stroke-default);
+}
+
+// --- Disabled ---------------------------------------------------------
+:host._disabled {
+  cursor: not-allowed;
+
+  .ui-segment-control-thumb {
+    background-color: var(--actions-high-surface-disabled);
+  }
+}

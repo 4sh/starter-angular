@@ -1,0 +1,45 @@
+@if (showThumb()) {
+  <span
+    class="ui-segment-control-thumb"
+    aria-hidden="true"
+    [style.transform]="thumbTransform()"
+    [style.width.px]="thumb()?.w"
+    [style.height.px]="thumb()?.h"
+  ></span>
+}
+
+@for (option of normalizedOptions(); track option.key) {
+  <button
+    #optionBtn
+    type="button"
+    class="ui-segment-control-option"
+    [class._selected]="option.selected"
+    [disabled]="option.disabled"
+    [attr.role]="multiple() ? null : 'radio'"
+    [attr.aria-checked]="multiple() ? null : option.selected"
+    [attr.aria-pressed]="multiple() ? option.selected : null"
+    [attr.aria-label]="option.ariaLabel"
+    [attr.tabindex]="tabindexFor(option.index)"
+    (click)="select(option, $event)"
+    (focus)="onOptionFocus(option.index)"
+  >
+    @if (itemTemplate(); as tpl) {
+      <ng-container
+        [ngTemplateOutlet]="tpl"
+        [ngTemplateOutletContext]="{
+          $implicit: option.original,
+          option: option.original,
+          selected: option.selected,
+          index: option.index,
+        }"
+      />
+    } @else {
+      @if (option.icon) {
+        <ui-icon class="ui-segment-control-icon" [name]="option.icon" [size]="iconSize()" />
+      }
+      @if (option.label) {
+        <span class="ui-segment-control-label" [attr.data-label]="option.label">{{ option.label }}</span>
+      }
+    }
+  </button>
+}

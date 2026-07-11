@@ -20,7 +20,7 @@
 - ✅ `ui-label` — Libellé de champ (requis *, tailles, hook `--ui-label-color`)
 - ✅ `ui-toggle` — Interrupteur on/off (headless, `role="switch"`, CVA, trueValue/falseValue, erreur auto)
 - ⬜ `ui-toggle-button` — Choix exclusif stylisé
-- ⬜ `ui-segment-control` — Sélection segmentée
+- ✅ `ui-segment-control` — Sélection segmentée (headless, CVA ; simple/`multiple`, options primitives/objets + mapping de champs, indicateur glissant motion, tailles, `fluid`, `orientation` horizontal/vertical, template de segment, clavier roving radiogroup/group, erreur auto)
 - ✅ `ui-datepicker` — Sélecteur de date/heure (headless, CVA, overlay CDK ou inline, min/max, jours désactivés, showTime 12/24h, inline, focus roving clavier)
 - ⬜ `ui-nudger` — Champ numérique +/-
 - ✅ `ui-rating` — Notation étoiles (headless, CVA, clavier natif range, focus)

@@ -1,0 +1,201 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as SegmentStories from './ui-segment-control.stories';
+
+<Meta of={SegmentStories} />
+
+# ui-segment-control
+
+Contrôle segmenté headless : un choix parmi une courte liste de segments inline
+(ou plusieurs avec `multiple`). Chaque segment est un `<button>` natif ; le groupe
+porte la sémantique WAI-ARIA (`radiogroup`/`radio` en mode simple avec navigation
+aux flèches et sélection au déplacement, `group`/`aria-pressed` en mode `multiple`).
+En mode simple, un **indicateur glissant** se déplace sous le segment sélectionné,
+cadencé par le [système de motion](?path=/docs/foundations-motion--docs) (respecte
+`prefers-reduced-motion` et l'opt-out `motion`).
+
+Compatible autonome, `[(ngModel)]`, Reactive Forms, ou Signal Forms (`[field]`) —
+c'est un `ControlValueAccessor`.
+
+<Canvas of={SegmentStories.Basic} />
+
+## API
+
+<ArgTypes of={SegmentStories} />
+
+## Options
+
+Les options acceptent trois formes :
+
+```ts
+// 1. Primitives — la valeur EST le label
+options = ['Liste', 'Grille', 'Tableau'];
+
+// 2. Objets { value, label?, icon?, disabled?, ariaLabel? }
+options = [
+  { value: 'list', label: 'Liste', icon: 'list' },
+  { value: 'grid', label: 'Grille', icon: 'table-cells' },
+];
+
+// 3. Objets métier + mapping de champs
+options = [{ id: 1, name: 'Liste', off: false }];
+// <ui-segment-control optionValue="id" optionLabel="name" optionDisabled="off" />
+```
+
+Pour comparer des valeurs **objet** lors de la sélection, fournir `dataKey`
+(ex. `dataKey="id"`).
+
+## Sélection
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Mode</th>
+      <th>Modèle</th>
+      <th>Comportement</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Simple (défaut)</td>
+      <td><code>T | null</code></td>
+      <td>Un seul segment actif. Re-cliquer le segment actif le désélectionne si <code>allowEmpty</code> (défaut).</td>
+    </tr>
+    <tr>
+      <td><code>multiple</code></td>
+      <td><code>T[]</code></td>
+      <td>Chaque segment se coche/décoche. <code>allowEmpty=false</code> empêche de vider le dernier.</td>
+    </tr>
+  </tbody>
+</table>
+
+<Canvas of={SegmentStories.Multiple} />
+
+## Template personnalisé
+
+Le contenu d'un segment est surchargeable via l'input `[itemTemplate]`, qui reçoit
+`{ $implicit, option, selected, index }`.
+
+```html
+<ui-segment-control [(ngModel)]="plan" [options]="plans" [itemTemplate]="item" ariaLabel="Forfait" />
+<ng-template #item let-plan let-selected="selected">
+  <strong>{{ plan.label }}</strong>
+  <small>{{ plan.hint }}</small>
+</ng-template>
+```
+
+<Canvas of={SegmentStories.Template} />
+
+## Icônes
+
+Une option peut porter une `icon` (avec ou sans `label`). En mode **icon-only**
+(aucun `label`), un `ariaLabel` par segment est **obligatoire** (nom accessible).
+
+<Canvas of={SegmentStories.IconsOnly} />
+
+## Tailles, fluid, orientation
+
+`size` (`default` | `small`), `fluid` (pleine largeur, segments à parts égales),
+`orientation` (`horizontal` | `vertical` — pilote aussi les flèches de navigation :
+↑/↓ en vertical, ←/→ en horizontal).
+
+<Canvas of={SegmentStories.Sizes} />
+<Canvas of={SegmentStories.Vertical} />
+<Canvas of={SegmentStories.Fluid} />
+
+## États
+
+<Canvas of={SegmentStories.Disabled} />
+<Canvas of={SegmentStories.Invalid} />
+
+## Formulaires
+
+Le composant est un `ControlValueAccessor`, donc il se branche à toutes les APIs de
+formulaire sans code additionnel.
+
+<Canvas of={SegmentStories.SignalForms} />
+<Canvas of={SegmentStories.TemplateDriven} />
+<Canvas of={SegmentStories.ReactiveForms} />
+
+```html
+<!-- Signal Forms -->
+<ui-segment-control [field]="color" [options]="colors" ariaLabel="Couleur" />
+
+<!-- Template-driven -->
+<ui-segment-control [(ngModel)]="view" name="view" [options]="views" ariaLabel="Affichage" />
+
+<!-- Reactive -->
+<ui-segment-control [formControl]="viewCtrl" [options]="views" ariaLabel="Affichage" />
+```
+
+- Le style **erreur s'applique automatiquement** quand le contrôle attaché est invalide
+  **et** touché/modifié ; `invalid` permet de le forcer.
+- `disabled` désactive tout le groupe (par input ou via `control.disable()`) ;
+  une option objet `disabled` grise un seul segment.
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Règle</th>
+      <th>Détail</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Sémantique</strong></td>
+      <td>Mode simple : <code>role="radiogroup"</code> + segments <code>role="radio"</code> / <code>aria-checked</code>. Mode <code>multiple</code> : <code>role="group"</code> + <code>aria-pressed</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Clavier</strong></td>
+      <td>Roving tabindex (un seul segment tabbable). Flèches ←/→ (ou ↑/↓ en vertical) + Début/Fin naviguent ; en mode simple, elles sélectionnent aussi (motif radio). Entrée/Espace activent (bouton natif).</td>
+    </tr>
+    <tr>
+      <td><strong>Nom accessible</strong></td>
+      <td><code>ariaLabel</code> (ou <code>ariaLabelledBy</code>) obligatoire sur le groupe. Un segment icon-only exige un <code>ariaLabel</code> sur l'option (avertissement en dev sinon).</td>
+    </tr>
+    <tr>
+      <td><strong>États</strong></td>
+      <td><code>:focus-visible</code> = anneau distinct du hover. <code>disabled</code> natif. <code>aria-invalid</code> posé quand le style erreur est actif. L'indicateur glissant est <code>aria-hidden</code>.</td>
+    </tr>
+  </tbody>
+</table>
+
+## Configuration (SCSS)
+
+Variables locales en tête de `ui-segment-control.scss`. Celles qui pointent vers
+`utils.*` sont le **point d'ajustement per-composant** (remplacer ici n'affecte que ce
+composant) ; voir le groupe partagé [Forms](?path=/docs/components-configuration-forms--docs)
+et le [fonctionnement de la configuration](?path=/docs/components-configuration--docs).
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Variable locale</th>
+      <th>Source</th>
+      <th>Rôle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>$stroke-width</code></td>
+      <td><code>utils.$control-stroke-width</code></td>
+      <td>Épaisseur de la bordure de la piste</td>
+    </tr>
+    <tr>
+      <td><code>$focus-ring-width</code></td>
+      <td><code>utils.$action-focus-ring-width</code></td>
+      <td>Épaisseur de l'anneau de focus des segments</td>
+    </tr>
+    <tr>
+      <td><code>$gutter</code></td>
+      <td>local : <code>var(--units-xs)</code> (4px)</td>
+      <td>Gouttière interne autour des segments (coins de l'indicateur concentriques au track)</td>
+    </tr>
+    <tr>
+      <td><code>$sizes</code></td>
+      <td>local (map)</td>
+      <td>Hauteur / padding / taille de police par taille</td>
+    </tr>
+  </tbody>
+</table>

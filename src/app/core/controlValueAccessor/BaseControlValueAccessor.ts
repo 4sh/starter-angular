@@ -102,6 +102,10 @@ export abstract class BaseControlValueAccessor<T> implements ControlValueAccesso
         this.controlInvalid.set(control.invalid);
         this.controlErrors.set(control.errors);
 
+        // Signal-forms interop provides a fake NgControl without an `events`
+        // stream: keep the seeded state, just skip the live subscription.
+        if (!control.events) return;
+
         control.events.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(event => {
             if (event instanceof PristineChangeEvent) {
                 this.pristine.set(event.pristine);
