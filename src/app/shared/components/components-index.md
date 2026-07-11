@@ -46,7 +46,7 @@
 
 ## layout
 - ✅ `ui-card` — Conteneur flexible (slots média/titre/sous-titre/contenu/pied via directives marqueurs + raccourcis `header`/`subheader`, variantes outlined/elevated/flat)
-- ⬜ `ui-modal` — Fenêtre modale
+- ✅ `ui-modal` — Fenêtre modale headless (two-way `visible`, masque modal / non-modal, `dismissableMask`, blocage du scroll de fond, piège + restauration de focus CDK, `Échap`, déplaçable, agrandissable, redimensionnable, `contained` (embarqué), 9 positions, `breakpoints`, motion `zoom`/fondu, templates en-tête/pied)
 
 ## navigation
 - ⬜ `ui-breadcrumb` — Fil d'Ariane

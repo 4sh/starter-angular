@@ -23,6 +23,7 @@ import * as TagStories from "../../src/app/shared/components/ui/informative/ui-t
 import * as ToastStories from "../../src/app/shared/components/ui/informative/ui-toast/ui-toast.stories";
 import * as AccordionStories from "../../src/app/shared/components/ui/informative/ui-accordion/ui-accordion.stories";
 import * as CardStories from "../../src/app/shared/components/ui/layout/ui-card/ui-card.stories";
+import * as ModalStories from "../../src/app/shared/components/ui/layout/ui-modal/ui-modal.stories";
 
 <Meta title="Overview" />
 
@@ -31,7 +32,7 @@ import * as CardStories from "../../src/app/shared/components/ui/layout/ui-card/
 Bibliothèque de composants **maison** (headless · Angular CDK), accessibles, stylés via design tokens.
 Vue d'ensemble par catégorie.
 
-export const ComponentCard = ({ name, description, link, story }) => (
+export const ComponentCard = ({ name, description, link, story, previewHeight = 154, previewScale = 0.9 }) => (
   <a href={link} style={{ textDecoration: 'none', color: 'inherit', display: 'block'}}>
     <div
       style={{
@@ -42,8 +43,8 @@ export const ComponentCard = ({ name, description, link, story }) => (
       onMouseOver={(e) => { e.currentTarget.style.borderColor = 'var(--sb-code-color)'; e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,.1)'; }}
       onMouseOut={(e) => { e.currentTarget.style.borderColor = 'var(--sb-border)'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 154, background: 'var(--sb-bg-subtle)', borderRadius: 8, marginBottom: 16, overflow: 'hidden', border: '1px solid var(--sb-border-subtle)' }}>
-        <div style={{ transform: 'scale(.9)' }}><Story of={story} /></div>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: previewHeight, background: 'var(--sb-bg-subtle)', borderRadius: 8, marginBottom: 16, overflow: 'hidden', border: '1px solid var(--sb-border-subtle)' }}>
+        <div style={{ transform: `scale(${previewScale})` }}><Story of={story} /></div>
       </div>
       <div style={{ fontWeight: 'bold', fontSize: 15, marginBottom: 6 }}>{name}</div>
       <div style={{ fontSize: 12, color: 'var(--sb-text-subtle)', lineHeight: 1.4, marginBottom: 12 }}>{description}</div>
@@ -64,7 +65,7 @@ export const CategorySection = ({ title, components }) => (
 <CategorySection
   title="Actions"
   components={[
-    { name: 'ui-button', description: 'Bouton (niveaux, tailles, icônes, icon-only) : accessible.', link: '?path=/docs/components-ui-actions-ui-button--docs', story: ButtonStories.IconLeft },
+    { name: 'ui-button', description: 'Bouton (niveaux, tailles, icônes, icon-only) : accessible.', link: '?path=/docs/components-ui-actions-ui-button--docs', story: ButtonStories.High },
   ]}
 />
 
@@ -95,7 +96,7 @@ export const CategorySection = ({ title, components }) => (
     { name: 'ui-separator', description: 'Séparateur (horizontal/vertical, solid/dashed, libellé start/center/end).', link: '?path=/docs/components-ui-informative-ui-separator--docs', story: SeparatorStories.LabelCenter },
     { name: 'ui-tooltip', description: 'Infobulle headless (directive [uiTooltip] + CDK Overlay, 4 côtés avec retournement auto, hover/focus, tooltipStyleClass).', link: '?path=/docs/components-ui-informative-ui-tooltip--docs', story: TooltipStories.Default },
     { name: 'ui-tag', description: 'Étiquette / pilule (level × sub-level × size, icônes gauche/droite, forme pill/rounded).', link: '?path=/docs/components-ui-informative-ui-tag--docs', story: TagStories.WithIconLeft },
-    { name: 'ui-accordion', description: 'Accordéon repliable (composition, single/multiple, clavier roving, motion, tokens).', link: '?path=/docs/components-ui-informative-ui-accordion--docs', story: AccordionStories.Default },
+    { name: 'ui-accordion', description: 'Accordéon repliable (composition, single/multiple, clavier roving, motion, tokens).', link: '?path=/docs/components-ui-informative-ui-accordion--docs', story: AccordionStories.Default, previewHeight: 300, previewScale: 1 },
     { name: 'ui-toast', description: 'Notification éphémère (service add/clear + conteneur, 7 positions, niveaux, auto-fermeture pausable, sticky, bannière, actions, motion).', link: '?path=/docs/components-ui-informative-ui-toast--docs', story: ToastStories.Default },
   ]}
 />
@@ -103,7 +104,8 @@ export const CategorySection = ({ title, components }) => (
 <CategorySection
   title="Layout"
   components={[
-    { name: 'ui-card', description: 'Conteneur flexible (slots média/titre/sous-titre/contenu/pied, variantes outlined/elevated/flat).', link: '?path=/docs/components-ui-layout-ui-card--docs', story: CardStories.Default },
+    { name: 'ui-card', description: 'Conteneur flexible (slots média/titre/sous-titre/contenu/pied, variantes outlined/elevated/flat).', link: '?path=/docs/components-ui-layout-ui-card--docs', story: CardStories.Default, previewHeight: 300, previewScale: 1 },
+    { name: 'ui-modal', description: 'Fenêtre modale (two-way visible, masque modal/non-modal, dismissableMask, blocage du scroll, piège de focus, déplaçable, agrandissable, redimensionnable, 9 positions, breakpoints, motion).', link: '?path=/docs/components-ui-layout-ui-modal--docs', story: ModalStories.Contained, previewHeight: 300, previewScale: 1 },
   ]}
 />
 

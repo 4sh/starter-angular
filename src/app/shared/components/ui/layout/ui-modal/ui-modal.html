@@ -1,0 +1,113 @@
+@if (visible()) {
+  <!-- Scrim + frame are SIBLINGS (both direct @if children) so each animates its own
+       leave independently — a nested animated element would deadlock the removal.
+       The frame carries the dialog's zoom; the dialog itself has no leave binding. -->
+  @if (modal()) {
+    <div
+      #scrim
+      class="ui-modal-scrim"
+      [class._contained]="contained()"
+      [style.z-index]="zIndex()"
+      [uiMotion]="'fade'"
+      [motionDisabled]="motionDisabled()"
+      #scrimMotion="uiMotion"
+      [animate.enter]="scrimMotion.enter()"
+      [animate.leave]="scrimMotion.leave()"
+    ></div>
+  }
+
+  <div
+    class="ui-modal-frame"
+    [class._modal]="modal()"
+    [class._contained]="contained()"
+    [style.align-items]="alignItems()"
+    [style.justify-content]="justifyContent()"
+    [style.z-index]="zIndex()"
+    [uiMotion]="motion()"
+    [motionDisabled]="motionDisabled()"
+    #frameMotion="uiMotion"
+    [animate.enter]="frameMotion.enter()"
+    [animate.leave]="frameMotion.leave()"
+    (pointerdown)="onMaskPointerdown($event)"
+    (keydown)="onKeydown($event)"
+  >
+    <div
+      #dialog
+      [class]="dialogClasses()"
+      [attr.data-modal-uid]="uid"
+      [attr.role]="role()"
+      aria-modal="true"
+      [attr.aria-label]="resolvedAriaLabel()"
+      [attr.aria-labelledby]="labelledBy()"
+      tabindex="-1"
+      [ngStyle]="resolvedDialogStyle()"
+      [style.translate]="dragTranslate()"
+      [cdkTrapFocus]="focusTrap()"
+      [cdkTrapFocusAutoCapture]="focusOnShow()"
+    >
+      @if (showHeader()) {
+        <div
+          class="ui-modal-header"
+          [class._draggable]="headerDraggable()"
+          (pointerdown)="onHeaderPointerdown($event)"
+        >
+          <div [attr.id]="titleId" class="ui-modal-title">
+            @if (headerTemplate(); as tpl) {
+              <ng-container [ngTemplateOutlet]="tpl" />
+            } @else {
+              {{ header() }}
+            }
+          </div>
+
+          <div class="ui-modal-header-actions">
+            @if (maximizable()) {
+              <button
+                type="button"
+                class="ui-modal-action"
+                [attr.aria-label]="maximizeAriaLabel()"
+                [attr.aria-pressed]="maximized()"
+                (click)="toggleMaximize()"
+              >
+                <ui-icon [name]="maximized() ? minimizeIcon() : maximizeIcon()" size="sm" />
+              </button>
+            }
+            @if (closable()) {
+              <button
+                type="button"
+                class="ui-modal-action"
+                [attr.aria-label]="closeAriaLabel()"
+                (click)="close()"
+              >
+                @if (closeIconTemplate(); as tpl) {
+                  <ng-container [ngTemplateOutlet]="tpl" />
+                } @else {
+                  <ui-icon [name]="closeIcon()" size="sm" />
+                }
+              </button>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Body: long content scrolls inside this region. -->
+      <div class="ui-modal-content">
+        <ng-content />
+      </div>
+
+      @if (footerTemplate(); as tpl) {
+        <div class="ui-modal-footer">
+          <ng-container [ngTemplateOutlet]="tpl" />
+        </div>
+      }
+
+      @if (showResizeHandle()) {
+        <!-- Corner resize grip (pointer only, like a native textarea corner). -->
+        <span
+          class="ui-modal-resize-handle"
+          aria-hidden="true"
+          (pointerdown)="onResizeStart($event)"
+        ></span>
+      }
+    </div>
+  </div>
+}

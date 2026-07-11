@@ -1,0 +1,193 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as ModalStories from './ui-modal.stories';
+
+<Meta of={ModalStories} />
+
+# ui-modal
+
+Fenêtre modale **headless** : une surface flottante stylée par tokens, rendue au-dessus
+d'un masque de viewport et pilotée par le modèle two-way `visible`. L'apparition / la
+disparition passent par le **système de motion** (fondu du masque + `zoom` du dialogue par
+défaut, surchargeable via `motion`). Pensée pour l'accessibilité : **piège de focus** avec
+restauration (`@angular/cdk/a11y`), `aria-modal`, **blocage du scroll de fond**, fermeture
+au clavier (`Échap`), et fermeture optionnelle au clic extérieur.
+
+Le dialogue compose trois régions : un `header` (chaîne simple ou template `#header`), le
+contenu par défaut (`<ng-content>`, qui **scrolle en interne** si long) et un pied via le
+template `#footer`. Il gère `draggable`, `maximizable`, neuf positions, le mode modal /
+non-modal et des largeurs par palier (`breakpoints`).
+
+<Canvas of={ModalStories.Basic} />
+
+## API
+
+<ArgTypes of={ModalStories} />
+
+## Anatomie
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Élément</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Masque</strong></td>
+      <td><code>.ui-modal-mask</code> — couche <code>fixed</code> plein viewport. Assombrit et capture les clics quand <code>modal</code> ; sinon transparente et traversante (arrière-plan interactif).</td>
+    </tr>
+    <tr>
+      <td><strong>Dialogue</strong></td>
+      <td><code>.ui-modal</code> — surface flottante (<code>role="dialog"</code> + <code>aria-modal</code>), colonne flex : en-tête / contenu / pied.</td>
+    </tr>
+    <tr>
+      <td><strong>En-tête</strong></td>
+      <td>Titre (<code>header</code> ou template <code>#header</code>) + actions (agrandir, fermer). Poignée de déplacement quand <code>draggable</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Contenu</strong></td>
+      <td><code>&lt;ng-content&gt;</code> — scroll interne (<code>overflow-y</code>) au-delà de <code>max-height: 90vh</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Pied</strong></td>
+      <td>Template <code>#footer</code> — rangée d'actions alignée à droite, séparée par un filet.</td>
+    </tr>
+  </tbody>
+</table>
+
+## Contenu & templates
+
+- `header` (chaîne) ou `#header` (contenu riche) pour le titre.
+- `<ng-content>` pour le corps.
+- `#footer` pour les actions.
+- `#closeicon` pour remplacer l'icône de fermeture.
+
+<Canvas of={ModalStories.Template} />
+
+## Déplacement
+
+`draggable` active la saisie du dialogue par son en-tête (les boutons d'action ne
+déclenchent pas de déplacement). `keepInViewport` (défaut) le maintient dans les limites de
+l'écran ; `minX` / `minY` bornent le coin haut-gauche. Le déplacement s'applique via la
+propriété CSS indépendante `translate`, sans interférer avec l'animation `zoom`.
+
+<Canvas of={ModalStories.Draggable} />
+
+## Position
+
+Neuf ancrages dans le viewport via `position`.
+
+<Canvas of={ModalStories.Position} />
+
+## Agrandissement
+
+`maximizable` ajoute un bouton d'en-tête pour occuper tout le viewport puis restaurer.
+
+<Canvas of={ModalStories.Maximizable} />
+
+## Redimensionnement
+
+`resizable` ajoute une poignée au coin bas-droit du dialogue (pointeur uniquement, à la
+manière d'un coin de `textarea`). Les tailles minimales sont bornées par `minWidth` /
+`minHeight`. Pour un contrôle au clavier de la taille, utiliser `maximizable`.
+
+<Canvas of={ModalStories.Resizable} />
+
+## Embarqué (`contained`)
+
+`contained` scope le dialogue à l'ancêtre positionné le plus proche (`position: absolute`
+au lieu de `fixed`) et **n'affecte pas** le scroll du body : idéal pour intégrer une modale
+dans un conteneur borné (panneau, aperçu). Le conteneur parent doit être positionné
+(`position: relative`).
+
+<Canvas of={ModalStories.Contained} />
+
+## Modal / non-modal
+
+En mode `modal` (défaut), le masque assombrit et **bloque le scroll** de l'arrière-plan ;
+`dismissableMask` autorise la fermeture au clic extérieur. En mode non-modal, l'arrière-plan
+reste **interactif et scrollable** (`blockScroll` peut tout de même figer le scroll).
+
+<Canvas of={ModalStories.Modal} />
+<Canvas of={ModalStories.WithoutModal} />
+
+## Cas d'usage
+
+<Canvas of={ModalStories.Confirmation} />
+<Canvas of={ModalStories.LongContent} />
+<Canvas of={ModalStories.Responsive} />
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Règle</th>
+      <th>Détail</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Rôle & nom</strong></td>
+      <td><code>role="dialog"</code> + <code>aria-modal="true"</code>. Nom accessible via <code>aria-labelledby</code> (titre de l'en-tête) sinon <code>ariaLabel</code> / <code>ariaLabelledBy</code>. Un warning dev signale un dialogue sans nom accessible.</td>
+    </tr>
+    <tr>
+      <td><strong>Focus</strong></td>
+      <td>Piège de focus (<code>cdkTrapFocus</code>) tant que le dialogue est ouvert ; le focus est capturé à l'ouverture (<code>focusOnShow</code>) et <strong>restauré</strong> sur l'élément déclencheur à la fermeture.</td>
+    </tr>
+    <tr>
+      <td><strong>Clavier</strong></td>
+      <td><code>Échap</code> ferme (<code>closeOnEscape</code> + <code>closable</code>). Boutons d'en-tête <code>&lt;button&gt;</code> natifs avec <code>aria-label</code> ; l'agrandissement expose <code>aria-pressed</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Scroll de fond</strong></td>
+      <td>Bloqué quand <code>modal</code> (ou <code>blockScroll</code>), avec compensation de la gouttière de scrollbar (pas de saut de mise en page). Compteur partagé : le scroll est rétabli à la fermeture du dernier dialogue.</td>
+    </tr>
+    <tr>
+      <td><strong>Clic extérieur</strong></td>
+      <td>Optionnel via <code>dismissableMask</code> (modal uniquement) ; désactivé par défaut pour éviter les fermetures accidentelles.</td>
+    </tr>
+    <tr>
+      <td><strong>Motion</strong></td>
+      <td>Respecte <code>prefers-reduced-motion</code> et l'interrupteur global <code>data-motion="off"</code> ; désactivable par dialogue via <code>motionDisabled</code>.</td>
+    </tr>
+  </tbody>
+</table>
+
+## Configuration (SCSS)
+
+Variables locales en tête de `ui-modal.scss`. Voir le
+[fonctionnement de la configuration](?path=/docs/components-configuration--docs).
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Variable locale</th>
+      <th>Source</th>
+      <th>Rôle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>$focus-ring-width</code></td>
+      <td><code>utils.$focus-ring-width</code></td>
+      <td>Épaisseur de l'anneau de focus des boutons d'en-tête</td>
+    </tr>
+    <tr>
+      <td><code>$modal-z-index</code></td>
+      <td>local (1100)</td>
+      <td>Palier d'empilement de base (au-dessus des overlays CDK à 1000)</td>
+    </tr>
+    <tr>
+      <td><code>$mask-background</code></td>
+      <td>local (<code>--primitives-black-50</code>)</td>
+      <td>Assombrissement du masque — pas de token sémantique de scrim ; exposé via la custom property <code>--ui-modal-mask-background</code></td>
+    </tr>
+    <tr>
+      <td><code>$dialog-padding</code> · <code>$dialog-radius</code> · <code>$action-size</code></td>
+      <td>local (tokens metrics)</td>
+      <td>Insets des régions, rayon de la surface, cible des boutons d'en-tête</td>
+    </tr>
+  </tbody>
+</table>
