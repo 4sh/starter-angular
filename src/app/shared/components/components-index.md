@@ -51,6 +51,7 @@
 ## navigation
 - ⬜ `ui-breadcrumb` — Fil d'Ariane
 - ⬜ `ui-drawer` — Panneau latéral glissant
+- ✅ `ui-tabs` — Onglets (composition `ui-tabs` + `ui-tab-list`/`ui-tab` + `ui-tab-panels`/`ui-tab-panel` ; two-way `value`, orientation horizontale/verticale, `scrollable` + navigateurs, `lazy` (groupe/panneau, template `#content`), `selectOnFocus`, boutons `role="tab"` natifs + clavier roving WAI-ARIA, indicateur actif glissant motion personnalisable `--ui-tabs-active-bar-*`, panneaux en fondu, mode menu de navigation)
 
 ## table
 - ⬜ `ui-table` — Tableau de données

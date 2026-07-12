@@ -1,0 +1,46 @@
+@if (showNavigators()) {
+  <button
+    type="button"
+    class="ui-tab-list-nav _prev"
+    aria-label="Défiler vers les onglets précédents"
+    tabindex="-1"
+    [disabled]="!prevEnabled()"
+    (click)="scrollBy(-1)"
+  >
+    <ui-icon [name]="orientation() === 'vertical' ? 'chevron-up' : 'chevron-left'" size="sm" />
+  </button>
+}
+
+<div #scroll class="ui-tab-list-scroll" (scroll)="onScroll()">
+  <div
+    #inner
+    class="ui-tab-list-tabs"
+    role="tablist"
+    [attr.aria-label]="ariaLabel() || null"
+    [attr.aria-orientation]="orientation()"
+  >
+    <ng-content />
+
+    <span
+      class="ui-tab-list-active-bar"
+      aria-hidden="true"
+      [class._hidden]="!bar()"
+      [style.transform]="barTransform()"
+      [style.width.px]="orientation() === 'horizontal' ? bar()?.length : null"
+      [style.height.px]="orientation() === 'vertical' ? bar()?.length : null"
+    ></span>
+  </div>
+</div>
+
+@if (showNavigators()) {
+  <button
+    type="button"
+    class="ui-tab-list-nav _next"
+    aria-label="Défiler vers les onglets suivants"
+    tabindex="-1"
+    [disabled]="!nextEnabled()"
+    (click)="scrollBy(1)"
+  >
+    <ui-icon [name]="orientation() === 'vertical' ? 'chevron-down' : 'chevron-right'" size="sm" />
+  </button>
+}

@@ -1,0 +1,212 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as TabsStories from './ui-tabs.stories';
+
+<Meta of={TabsStories} />
+
+# ui-tabs
+
+Onglets **headless** : bascule entre plusieurs vues. API de **composition** , un
+conteneur `ui-tabs` qui pilote l'état, une liste `ui-tab-list` d'onglets `ui-tab`,
+et un `ui-tab-panels` regroupant les `ui-tab-panel`. Chaque onglet et son panneau
+sont appariés par leur `value`.
+
+100 % piloté par les **design tokens** (`navigation.*` pour la liste, `global` pour
+le contenu). L'indicateur d'onglet actif glisse , et chaque panneau apparaît en
+fondu , via le **système de motion** partagé, qui respecte automatiquement
+`prefers-reduced-motion` et le commutateur global `data-motion="off"`.
+
+<Canvas of={TabsStories.Basic} />
+
+## API
+
+### ui-tabs (conteneur)
+
+<ArgTypes of={TabsStories} />
+
+### ui-tab-list
+
+<table className="doc-table">
+  <thead>
+    <tr><th>Entrée</th><th>Type</th><th>Défaut</th><th>Rôle</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>`ariaLabel`</td><td>`string`</td><td>`undefined`</td><td>Nom accessible de la liste (`aria-label` sur `role="tablist"`).</td></tr>
+  </tbody>
+</table>
+
+### ui-tab
+
+<table className="doc-table">
+  <thead>
+    <tr><th>Entrée</th><th>Type</th><th>Défaut</th><th>Rôle</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>`value` *(requis)*</td><td>`string \| number`</td><td>,</td><td>Identifiant de l'onglet (comparé au `value` du conteneur).</td></tr>
+    <tr><td>`disabled`</td><td>`boolean`</td><td>`false`</td><td>Onglet non sélectionnable, ignoré par la navigation clavier.</td></tr>
+    <tr><td>`icon`</td><td>`string`</td><td>`undefined`</td><td>Icône (FontAwesome) optionnelle.</td></tr>
+    <tr><td>`iconPos`</td><td>`'left' \| 'right'`</td><td>`'left'`</td><td>Position de l'icône par rapport au libellé.</td></tr>
+    <tr><td>`ariaLabel`</td><td>`string`</td><td>`undefined`</td><td>Nom accessible (sinon le libellé projeté).</td></tr>
+  </tbody>
+</table>
+
+### ui-tab-panel
+
+<table className="doc-table">
+  <thead>
+    <tr><th>Entrée</th><th>Type</th><th>Défaut</th><th>Rôle</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>`value` *(requis)*</td><td>`string \| number`</td><td>,</td><td>Identifiant du panneau (apparié à l'onglet de même `value`).</td></tr>
+    <tr><td>`lazy`</td><td>`boolean`</td><td>`false`</td><td>Ne rend le contenu qu'à la première activation (surcharge locale du défaut de groupe).</td></tr>
+  </tbody>
+</table>
+
+## Onglets dynamiques
+
+Construisez la liste et les panneaux depuis un tableau : l'appariement par `value`
+garde les libellés et le contenu synchronisés.
+
+<Canvas of={TabsStories.Dynamic} />
+
+## Contrôlé
+
+Pilotez l'onglet actif de l'extérieur via le modèle two-way `[(value)]`.
+
+<Canvas of={TabsStories.Controlled} />
+
+## Défilement
+
+`scrollable` transforme la liste en zone défilante ; les boutons **précédent /
+suivant** (`showNavigators`, par défaut visibles) apparaissent quand la liste
+déborde.
+
+<Canvas of={TabsStories.Scrollable} />
+
+## Activation au focus
+
+Avec `selectOnFocus`, déplacer le focus au clavier (flèches) **active** l'onglet
+au passage (activation automatique du motif WAI-ARIA Tabs). Sinon, l'activation
+reste manuelle (`Entrée` / `Espace`).
+
+<Canvas of={TabsStories.SelectOnFocus} />
+
+## Chargement paresseux
+
+Par défaut le contenu d'un onglet inactif est **rendu** (mais masqué). `lazy` (sur
+`ui-tabs` pour tout le groupe, ou sur un `ui-tab-panel`) ne rend le contenu **qu'à
+la première activation**. Pour n'initialiser des composants complexes qu'à ce
+moment, enveloppez le contenu dans `<ng-template #content>…</ng-template>`.
+
+<Canvas of={TabsStories.Lazy} />
+
+## États
+
+Un onglet `disabled` n'est pas sélectionnable et est sauté par les flèches.
+
+<Canvas of={TabsStories.Disabled} />
+
+## Indicateur personnalisé
+
+L'indicateur d'onglet actif s'ajuste via deux variables CSS exposées :
+`--ui-tabs-active-bar-color` et `--ui-tabs-active-bar-size`.
+
+<Canvas of={TabsStories.CustomIndicator} />
+
+## Contenu riche
+
+Onglets avec icône (`icon` / `iconPos`) et panneaux au balisage libre.
+
+<Canvas of={TabsStories.Template} />
+
+## Menu de navigation
+
+Des onglets **sans panneaux** : le contenu est fourni par un composant de route
+(un `router-outlet`). Reliez `[(value)]` à la route active (ex. via le `Router`).
+
+<Canvas of={TabsStories.TabMenu} />
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr><th>Point</th><th>Implémentation</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Boutons natifs</td>
+      <td>Chaque onglet est un `&lt;button role="tab"&gt;` natif (l'hôte `ui-tab` est `display: contents`), donc focusable et actionnable au clavier ; `disabled` natif.</td>
+    </tr>
+    <tr>
+      <td>Structure ARIA</td>
+      <td>`role="tablist"` (avec `aria-orientation`) → `role="tab"` (`aria-selected`, `aria-controls`) → `role="tabpanel"` (`aria-labelledby` vers son onglet, `tabindex="0"`).</td>
+    </tr>
+    <tr>
+      <td>Clavier</td>
+      <td>`←`/`→` (horizontal) ou `↑`/`↓` (vertical) déplacent le focus entre onglets (roving, boucle) ; `Début`/`Fin` au premier/dernier ; `Entrée`/`Espace` activent. `selectOnFocus` active au déplacement.</td>
+    </tr>
+    <tr>
+      <td>Tab stop unique</td>
+      <td>Seul l'onglet actif (ou le premier disponible) est dans l'ordre de tabulation (roving `tabindex`) ; les autres sont atteints par les flèches.</td>
+    </tr>
+    <tr>
+      <td>Panneau masqué</td>
+      <td>Le panneau inactif reste dans le DOM mais est `hidden` (état conservé, invisible pour les lecteurs d'écran).</td>
+    </tr>
+    <tr>
+      <td>Icône décorative</td>
+      <td>`ui-icon` en `aria-hidden` ; le sens passe par le libellé, pas seulement par l'icône.</td>
+    </tr>
+    <tr>
+      <td>Motion</td>
+      <td>Indicateur et fondu neutralisés sous `prefers-reduced-motion`, `data-motion="off"` et `[motion]="false"`.</td>
+    </tr>
+  </tbody>
+</table>
+
+## Configuration (SCSS)
+
+Variables **locales** aux composants (co-localisées) :
+
+<table className="doc-table">
+  <thead>
+    <tr><th>Variable locale</th><th>Source</th><th>Rôle</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>`$tab-min-height` *(ui-tab)*</td><td>`utils.rem-calc(44)`</td><td>Hauteur minimale d'un onglet (Figma 44px).</td></tr>
+    <tr><td>`$bar-thickness` *(ui-tab-list)*</td><td>`var(--stroke-default)`</td><td>Épaisseur par défaut de l'indicateur actif (surchargeable via `--ui-tabs-active-bar-size`).</td></tr>
+    <tr><td>`$track-thickness` *(ui-tab-list)*</td><td>`var(--stroke-sm)`</td><td>Épaisseur du trait de repos sous la liste.</td></tr>
+    <tr><td>`$nav-size` *(ui-tab-list)*</td><td>`utils.rem-calc(40)`</td><td>Taille des boutons de défilement.</td></tr>
+    <tr><td>`$focus-ring-width`</td><td>`utils.$action-focus-ring-width`</td><td>Épaisseur de l'anneau de focus (constante partagée `ui-config`).</td></tr>
+  </tbody>
+</table>
+
+Le timing d'animation provient du groupe partagé `$motion-*` (`ui-config`, catégorie
+**global**) , voir [Components / Configuration](?path=/docs/components-configuration--docs).
+
+## Exemples
+
+```html
+<!-- Base -->
+<ui-tabs [(value)]="active">
+  <ui-tab-list ariaLabel="Sections">
+    <ui-tab [value]="0">Aperçu</ui-tab>
+    <ui-tab [value]="1">Activité</ui-tab>
+  </ui-tab-list>
+  <ui-tab-panels>
+    <ui-tab-panel [value]="0">Contenu 1…</ui-tab-panel>
+    <ui-tab-panel [value]="1">Contenu 2…</ui-tab-panel>
+  </ui-tab-panels>
+</ui-tabs>
+
+<!-- Vertical + scrollable + chargement paresseux -->
+<ui-tabs [(value)]="active" orientation="vertical" [scrollable]="true" [lazy]="true"> … </ui-tabs>
+
+<!-- Menu de navigation (onglets seuls + router-outlet) -->
+<ui-tabs [value]="url">
+  <ui-tab-list ariaLabel="Navigation">
+    <ui-tab [value]="'/dashboard'" icon="gauge">Tableau de bord</ui-tab>
+    <ui-tab [value]="'/team'" icon="users">Équipe</ui-tab>
+  </ui-tab-list>
+</ui-tabs>
+<router-outlet />
+```

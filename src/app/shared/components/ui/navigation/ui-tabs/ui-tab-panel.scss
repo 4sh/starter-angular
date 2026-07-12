@@ -1,0 +1,33 @@
+@use 'utils';
+
+// =====================================================================
+// ui-tab-panel : co-located styles. All values come from design tokens.
+//
+// The panel stays mounted but is [hidden] when inactive (state preserved).
+// On activation it fades in via the shared motion system's keyframes
+// (reduced-motion / data-motion="off" / [motion]="false" all neutralise it).
+// =====================================================================
+
+:host {
+  display: block;
+  padding: var(--units-default) 0;
+  color: var(--global-high-content-default);
+  font-family: var(--fontfamily-base);
+  font-size: var(--size-typography-text-default);
+  line-height: 1.5;
+  outline: none;
+}
+
+// The host [hidden] must win over the display above.
+:host([hidden]) {
+  display: none;
+}
+
+// Fade the panel in when it becomes active.
+:host(._active:not(._no-motion)) {
+  animation: ui-motion-fade-in var(--transition-default) var(--transition-easeout) both;
+
+  @include utils.motion-reduce {
+    animation-duration: 0.01ms;
+  }
+}

@@ -1,0 +1,82 @@
+@use 'utils';
+
+// =====================================================================
+// ui-tab : co-located styles. All values come from `navigation` tokens.
+//
+// The host is `display: contents` so the native <button role="tab"> sits
+// directly inside the role="tablist" strip. Interactive states are pure
+// CSS driven by the navigation tokens; the active indicator is owned by
+// the tab list, not the tab.
+// =====================================================================
+
+// --- Config ---------------------------------------------------
+$tab-min-height: utils.rem-calc(44);
+$focus-ring-width: utils.$action-focus-ring-width;
+
+:host {
+  display: contents;
+}
+
+.ui-tab-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--units-sm);
+  box-sizing: border-box;
+  min-height: $tab-min-height;
+  margin: 0;
+  padding: 0 var(--units-default);
+  border: 0;
+  background-color: var(--navigation-high-surface-default);
+  color: var(--navigation-high-content-default);
+  font-family: var(--fontfamily-base);
+  font-weight: var(--weight-bold);
+  font-size: var(--size-typography-text-default);
+  line-height: 1.2;
+  white-space: nowrap;
+  cursor: pointer;
+  @include utils.control-transition(color, background-color, box-shadow);
+
+  &:hover:not(:disabled) {
+    background-color: var(--navigation-high-surface-hover);
+    color: var(--navigation-high-content-hover);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: inset 0 0 0 $focus-ring-width var(--global-high-stroke-focused);
+  }
+
+  &:disabled {
+    background-color: var(--navigation-high-surface-disabled);
+    color: var(--navigation-high-content-disabled);
+    cursor: not-allowed;
+  }
+}
+
+// Icon on the trailing side.
+:host._icon-right .ui-tab-button {
+  flex-direction: row-reverse;
+}
+
+// Active tab
+:host._active .ui-tab-button {
+  color: var(--navigation-high-content-active);
+}
+
+// Vertical axis: tabs stack and fill the list width, left-aligned.
+:host._vertical .ui-tab-button {
+  width: 100%;
+  justify-content: flex-start;
+}
+:host._vertical._icon-right .ui-tab-button {
+  justify-content: space-between;
+}
+
+.ui-tab-icon {
+  line-height: 0;
+}
+
+.ui-tab-label {
+  min-width: 0;
+}

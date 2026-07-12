@@ -1,0 +1,137 @@
+@use 'utils';
+
+// =====================================================================
+// ui-tab-list : co-located styles. All values come from design tokens.
+//
+// Layout is a flex strip (row / column) with an optional scroll viewport
+// and prev/next navigators. The active indicator is an absolutely-placed
+// bar that glides under (horizontal) or beside (vertical) the active tab,
+// timed by the motion system. Colour/size are themable via the exposed
+// `--ui-tabs-active-bar-*` custom properties (Custom Indicator).
+// =====================================================================
+
+// --- Config ---------------------------------------------------
+$bar-thickness: var(--stroke-default);
+$track-thickness: var(--stroke-sm);
+$nav-size: utils.rem-calc(40);
+$focus-ring-width: utils.$action-focus-ring-width;
+
+// Themable indicator.
+$bar-color: var(--ui-tabs-active-bar-color, var(--navigation-high-stroke-active));
+$bar-size: var(--ui-tabs-active-bar-size, #{$bar-thickness});
+
+:host {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  position: relative;
+  min-width: 0;
+  box-shadow: inset 0 calc(-1 * #{$track-thickness}) 0 0 var(--global-high-stroke-default);
+}
+
+// --- Scroll viewport --------------------------------------------------
+.ui-tab-list-scroll {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+}
+
+:host._scrollable .ui-tab-list-scroll {
+  overflow-x: auto;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+// --- Tablist -------------------
+.ui-tab-list-tabs {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  width: max-content;
+  min-width: 100%;
+}
+
+// --- Active indicator -------------------------------------------------
+.ui-tab-list-active-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: $bar-size;
+  border-radius: var(--radius-full);
+  background-color: $bar-color;
+  pointer-events: none;
+  will-change: transform, width;
+  @include utils.motion-transition(transform, width, height);
+
+  &._hidden {
+    opacity: 0;
+  }
+
+  @include utils.motion-reduce {
+    transition: none;
+  }
+}
+
+// Explicit opt-out (`[motion]="false"` on ui-tabs).
+:host._no-motion .ui-tab-list-active-bar {
+  transition: none;
+}
+
+// --- Navigators -------------------------------------------------------
+.ui-tab-list-nav {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: $nav-size;
+  align-self: stretch;
+  border: 0;
+  background-color: var(--navigation-high-surface-default);
+  color: var(--navigation-high-content-default);
+  cursor: pointer;
+  @include utils.control-transition(color, background-color);
+
+  &:hover:not(:disabled) {
+    background-color: var(--navigation-high-surface-hover);
+    color: var(--navigation-high-content-hover);
+  }
+  &:disabled {
+    color: var(--navigation-high-content-disabled);
+    cursor: default;
+  }
+}
+
+// --- Vertical axis ----------------------------------------------------
+:host._vertical {
+  flex-direction: column;
+  align-items: stretch;
+  box-shadow: inset calc(-1 * #{$track-thickness}) 0 0 0 var(--global-high-stroke-default);
+
+  .ui-tab-list-tabs {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  &._scrollable .ui-tab-list-scroll {
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .ui-tab-list-active-bar {
+    bottom: auto;
+    top: 0;
+    right: 0;
+    left: auto;
+    width: $bar-size;
+    height: auto;
+  }
+
+  .ui-tab-list-nav {
+    width: auto;
+    height: $nav-size;
+    align-self: auto;
+  }
+}

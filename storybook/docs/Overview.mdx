@@ -25,6 +25,7 @@ import * as ToastStories from "../../src/app/shared/components/ui/informative/ui
 import * as AccordionStories from "../../src/app/shared/components/ui/informative/ui-accordion/ui-accordion.stories";
 import * as CardStories from "../../src/app/shared/components/ui/layout/ui-card/ui-card.stories";
 import * as ModalStories from "../../src/app/shared/components/ui/layout/ui-modal/ui-modal.stories";
+import * as TabsStories from "../../src/app/shared/components/ui/navigation/ui-tabs/ui-tabs.stories";
 
 <Meta title="Overview" />
 
@@ -108,6 +109,13 @@ export const CategorySection = ({ title, components }) => (
   components={[
     { name: 'ui-card', description: 'Conteneur flexible (slots média/titre/sous-titre/contenu/pied, variantes outlined/elevated/flat).', link: '?path=/docs/components-ui-layout-ui-card--docs', story: CardStories.Default, previewHeight: 300, previewScale: 1 },
     { name: 'ui-modal', description: 'Fenêtre modale (two-way visible, masque modal/non-modal, dismissableMask, blocage du scroll, piège de focus, déplaçable, agrandissable, redimensionnable, 9 positions, breakpoints, motion).', link: '?path=/docs/components-ui-layout-ui-modal--docs', story: ModalStories.Contained, previewHeight: 300, previewScale: 1 },
+  ]}
+/>
+
+<CategorySection
+  title="Navigation"
+  components={[
+    { name: 'ui-tabs', description: 'Onglets (composition, two-way value, horizontal/vertical, scrollable + navigateurs, lazy, selectOnFocus, clavier roving WAI-ARIA, indicateur glissant motion, mode menu).', link: '?path=/docs/components-ui-navigation-ui-tabs--docs', story: TabsStories.Basic, previewHeight: 220, previewScale: 1 },
   ]}
 />
 
