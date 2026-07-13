@@ -15,7 +15,7 @@ C'est le volet **Starter Angular** de la stratégie *Double-Moteur* :
 | Couche       | Techno |
 |--------------|---|
 | Framework    | Angular 21 standalone, signals |
-| Comportement | Composants maison + `@angular/cdk` |
+| Comportement | Composants + `@angular/cdk` |
 | Style        | Co-localisé par composant (`.scss` scopé) + CSS custom properties |
 | Tokens       | JSON (Token Flow Manager) → `scripts/tokens.build.mjs` → SCSS (`src/styles/src/generated/`) |
 | Storybook    | 10.x + addon-designs (Figma) |
@@ -56,7 +56,7 @@ src/
 │   ├── core/service/             ← ThemeService ([data-theme]), BrandService ([data-brand])
 │   ├── core/controlValueAccessor/← BaseControlValueAccessor (formulaires)
 │   ├── shared/
-│   │   ├── components/ui/         ← composants maison ui-* (ui-button, ui-icon…)
+│   │   ├── components/ui/         ← composants ui-* (ui-button, ui-icon…)
 │   │   └── types/                ← types partagés (UiLevel, UiSize…)
 │   └── pages/                    ← démo (home, preview)
 ├── design-tokens/                ← SOURCE des tokens (JSON, export Token Flow Manager)

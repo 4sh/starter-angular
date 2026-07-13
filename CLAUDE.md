@@ -19,7 +19,7 @@ Avant de générer quoi que ce soit dans Figma, tu **dois** auditer le composant
 | Couche | Technologie |
 |---|---|
 | Framework | Angular 21, standalone, signals API |
-| Comportement (headless) | Composants maison + Angular CDK (overlay, a11y, focus-trap…) |
+| Comportement (headless) | Composants + Angular CDK (overlay, a11y, focus-trap…) |
 | Style | Co-localisé par composant (`.scss` scopé) + CSS custom properties (`--var`) |
 | Design Tokens | JSON (Token Flow Manager) → `scripts/tokens.build.mjs` → SCSS (`src/styles/src/generated/`) |
 | Storybook | v10.1.11 + addon-designs (Figma panel) |
@@ -519,7 +519,7 @@ Typography/fontSize/md
 
 ## Style des composants : Points d'attention Figma
 
-Les composants sont **headless maison**. Le style est **co-localisé** dans le `.scss` du
+Les composants sont **headless**. Le style est **co-localisé** dans le `.scss` du
 composant (scopé Angular) et consomme les variables CSS générées (`src/styles/src/generated/`).
 
 Les états `hover`/`focused`/`pressed`/`disabled` sont gérés en CSS via les tokens sémantiques
