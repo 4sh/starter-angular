@@ -1,0 +1,87 @@
+@use 'utils';
+@use 'sass:map';
+
+// =====================================================================
+// ui-breadcrumb : co-located styles. All values come from design tokens.
+// Extend:
+//   • Size → add an entry to $sizes (+ the `BreadcrumbSize` type).
+// =====================================================================
+
+// --- Config (extension points) ---------------------------------------
+// `default` = base styles; other keys become `._<name>` modifiers.
+$sizes: (
+  'default': (
+    font-size: var(--size-typography-text-default),
+  ),
+  'small': (
+    font-size: var(--size-typography-text-md),
+  ),
+);
+$size-default: map.get($sizes, 'default');
+$item-gap: var(--spacing-default);
+$focus-ring-width: utils.$action-focus-ring-width;
+
+.ui-breadcrumb {
+  // --- Base (nav landmark) --------------------------------------------
+  display: block;
+  font-family: var(--fontfamily-base);
+
+  &-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: $item-gap;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: map.get($size-default, font-size);
+  }
+
+  // --- Sizes (all but `default`) ---------------------------------------
+  @each $name, $size in $sizes {
+    @if $name != 'default' {
+      &._#{$name} .ui-breadcrumb-list {
+        font-size: map.get($size, font-size);
+      }
+    }
+  }
+
+  // --- Sub-elements ------------------------------------------------------
+  &-item {
+    display: inline-flex;
+    align-items: center;
+    min-width: 0;
+  }
+
+  &-separator {
+    display: inline-flex;
+    align-items: center;
+    color: var(--global-high-content-default);
+    user-select: none;
+  }
+
+  // Overflow ellipsis: a real <button> revealing the hidden crumbs.
+  &-ellipsis {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: none;
+    background: none;
+    line-height: 0;
+    color: var(--global-high-content-default);
+    border-radius: var(--radius-2xs);
+    cursor: pointer;
+    @include utils.control-transition(color, box-shadow);
+
+    &:hover { color: var(--actions-low-content-hover); }
+
+    &:focus-visible {
+      outline: none;
+      color: var(--actions-low-content-focused);
+      box-shadow: 0 0 0 $focus-ring-width var(--actions-low-content-focused);
+    }
+
+    &:active { color: var(--actions-low-content-pressed); }
+  }
+}

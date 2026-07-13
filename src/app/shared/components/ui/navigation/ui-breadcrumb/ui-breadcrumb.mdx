@@ -1,0 +1,203 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as BreadcrumbStories from './ui-breadcrumb.stories';
+
+<Meta of={BreadcrumbStories} />
+
+# ui-breadcrumb
+
+Fil d'Ariane **headless** : indique la position courante dans une hiérarchie de navigation.
+Chaque élément est une **instance `ui-link`** (composition , pas de styles dupliqués), le
+séparateur et le bouton ellipsis consomment les tokens `global` / `actions` (light **et** dark).
+
+<Canvas of={BreadcrumbStories.Basic} />
+
+## API
+
+<ArgTypes of={BreadcrumbStories} />
+
+## Anatomie
+
+<table>
+  <thead>
+    <tr>
+      <th>Élément</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Structure</strong></td>
+      <td>landmark <code>&lt;nav&gt;</code> → liste ordonnée <code>&lt;ol&gt;</code> → <code>&lt;li&gt;</code> par élément, séparés par des <code>&lt;li&gt;</code> décoratifs (<code>aria-hidden</code>).</td>
+    </tr>
+    <tr>
+      <td><strong>Élément</strong></td>
+      <td>instance <code>ui-link</code> (label + icône optionnelle), ou contenu libre via le template <code>#item</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Séparateur</strong></td>
+      <td>chaîne <code>separator</code> (défaut <code>/</code>) ou template <code>#separator</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Ellipsis</strong></td>
+      <td><code>&lt;button&gt;</code> natif (icône <code>ellipsis</code>) qui révèle les éléments repliés par <code>maxItems</code>.</td>
+    </tr>
+  </tbody>
+</table>
+
+## Basic
+
+La position courante dans la hiérarchie : le dernier élément représente la page courante
+(<code>aria-current="page"</code>) , il n'a typiquement pas de destination.
+
+```html
+<ui-breadcrumb
+  [items]="[
+    { icon: 'house', ariaLabel: 'Accueil', url: '/' },
+    { label: 'Électronique', url: '/electronique' },
+    { label: 'Clavier sans fil' },
+  ]"
+/>
+```
+
+## Route
+
+Le fil s'utilise avec le routeur Angular pour naviguer entre les pages : `routerLink`
+(chaîne ou tableau de segments) bascule chaque élément sur la directive `RouterLink`
+(navigation SPA, comportement natif de l'ancre préservé).
+
+<Canvas of={BreadcrumbStories.Route} />
+
+```html
+<ui-breadcrumb
+  [items]="[
+    { icon: 'house', ariaLabel: 'Accueil', routerLink: '/' },
+    { label: 'Catalogue', routerLink: '/catalogue' },
+    { label: 'Clavier sans fil' },
+  ]"
+/>
+```
+
+## Custom Separator
+
+Le séparateur se personnalise via l'input `separator` (chaîne) ou, pour un contenu riche,
+via le template `#separator` :
+
+<Canvas of={BreadcrumbStories.CustomSeparator} />
+
+```html
+<ui-breadcrumb [items]="items">
+  <ng-template #separator>
+    <ui-icon name="chevron-right" size="sm" />
+  </ng-template>
+</ui-breadcrumb>
+```
+
+## Ellipsis
+
+Une ellipse peut indiquer des éléments masqués : au-delà de `maxItems`, le milieu du fil
+se replie derrière un **bouton** ellipsis (premier élément + « … » + éléments de fin).
+L'activer révèle les éléments masqués et déplace le focus sur le premier élément révélé ,
+les pages intermédiaires restent atteignables au clavier et au lecteur d'écran.
+
+<Canvas of={BreadcrumbStories.Ellipsis} />
+
+```html
+<ui-breadcrumb [items]="items" [maxItems]="3" />
+```
+
+## Custom Item
+
+Le contenu des éléments se personnalise via le template `#item` (contexte : `$implicit` =
+item, `last`) , par exemple pour rendre la page courante en texte simple :
+
+<Canvas of={BreadcrumbStories.CustomItem} />
+
+```html
+<ui-breadcrumb [items]="items">
+  <ng-template #item let-item let-last="last">
+    @if (!last) {
+      <ui-link [label]="item.label" [href]="item.url" size="small" />
+    } @else {
+      <span class="current">{{ item.label }}</span>
+    }
+  </ng-template>
+</ui-breadcrumb>
+```
+
+## Tailles
+
+<Canvas of={BreadcrumbStories.Small} />
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Règle</th>
+      <th>Détail</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Landmark</strong></td>
+      <td>Racine <code>&lt;nav&gt;</code> nommée par <code>ariaLabel</code> (défaut « Fil d'Ariane ») , repérable par les lecteurs d'écran.</td>
+    </tr>
+    <tr>
+      <td><strong>Liste ordonnée</strong></td>
+      <td>Les éléments sont des <code>&lt;li&gt;</code> d'une <code>&lt;ol&gt;</code> : la hiérarchie est annoncée avec son ordre et son nombre d'éléments.</td>
+    </tr>
+    <tr>
+      <td><strong>Séparateurs</strong></td>
+      <td>Purement décoratifs : <code>aria-hidden="true"</code>, ignorés par les lecteurs d'écran.</td>
+    </tr>
+    <tr>
+      <td><strong>Page courante</strong></td>
+      <td>Le dernier élément porte <code>aria-current="page"</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Clavier</strong></td>
+      <td>Aucune interaction spécifique : les liens (et le bouton ellipsis) suivent la séquence de tabulation naturelle de la page.</td>
+    </tr>
+    <tr>
+      <td><strong>Ellipsis</strong></td>
+      <td><code>&lt;button&gt;</code> natif nommé (<code>ellipsisAriaLabel</code>) + <code>aria-expanded</code> ; l'activation révèle les éléments et déplace le focus sur le premier révélé.</td>
+    </tr>
+    <tr>
+      <td><strong>Icon-only</strong></td>
+      <td>Un élément icône sans label (accueil) doit fournir <code>ariaLabel</code> , garde-fou dev hérité de <code>ui-link</code>.</td>
+    </tr>
+  </tbody>
+</table>
+
+## Configuration (SCSS)
+
+Variables locales en tête de `ui-breadcrumb.scss`. Voir le groupe partagé
+[Actions](?path=/docs/components-configuration-actions--docs) et le
+[fonctionnement de la configuration](?path=/docs/components-configuration--docs).
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Variable locale</th>
+      <th>Source</th>
+      <th>Rôle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>$sizes</code></td>
+      <td>local (map : font-size par taille)</td>
+      <td>Dimensions par densité (séparateur ; les liens suivent la taille <code>ui-link</code>)</td>
+    </tr>
+    <tr>
+      <td><code>$item-gap</code></td>
+      <td><code>var(--spacing-default)</code></td>
+      <td>Espacement entre éléments et séparateurs</td>
+    </tr>
+    <tr>
+      <td><code>$focus-ring-width</code></td>
+      <td><code>utils.$action-focus-ring-width</code></td>
+      <td>Épaisseur de l'anneau de focus du bouton ellipsis</td>
+    </tr>
+  </tbody>
+</table>

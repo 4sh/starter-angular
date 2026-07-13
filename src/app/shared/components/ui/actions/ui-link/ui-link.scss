@@ -30,7 +30,7 @@ $focus-ring-width: utils.$action-focus-ring-width;
   font-size: map.get($size-default, font-size);
   line-height: 1.4;
   color: var(--actions-low-content-default);
-  text-decoration: underline;
+  text-decoration: none;
   text-decoration-thickness: from-font;
   text-underline-offset: 0.15em;
   border-radius: var(--radius-2xs);
@@ -59,11 +59,15 @@ $focus-ring-width: utils.$action-focus-ring-width;
   }
 
   // --- Interactive states ----------------------
-  &:hover:not(._disabled) { color: var(--actions-low-content-hover); }
+  &:hover:not(._disabled) {
+    color: var(--actions-low-content-hover);
+    text-decoration: underline;
+  }
 
   &:focus-visible {
     outline: none;
     color: var(--actions-low-content-focused);
+    text-decoration: underline;
     box-shadow: 0 0 0 $focus-ring-width var(--actions-low-content-focused);
   }
 

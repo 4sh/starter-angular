@@ -76,6 +76,11 @@ const meta: Meta<UiLink> = {
       description: 'tabindex du lien.',
       table: { type: { summary: 'number' }, defaultValue: { summary: 'undefined' } },
     },
+    ariaCurrent: {
+      control: { type: 'text' },
+      description: 'aria-current posé sur l\'ancre (ex : "page" pour l\'élément courant d\'un fil d\'Ariane).',
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
     linkClick: {
       action: 'clicked',
       description: 'Émis au clic (jamais si disabled). La navigation reste native.',

@@ -50,7 +50,7 @@
 - ✅ `ui-drawer` — Panneau latéral glissant headless (two-way `visible`, 4 bords `position` + `fullScreen`, glissement directionnel dérivé de la position via le système de motion, masque modal/non-modal, `dismissableMask`, blocage du scroll, piège + restauration de focus CDK, `Échap`, `contained` (embarqué), templates en-tête/contenu/pied + `#headless`)
 
 ## navigation
-- ⬜ `ui-breadcrumb` — Fil d'Ariane
+- ✅ `ui-breadcrumb` — Fil d'Ariane (modèle déclaratif `UiBreadcrumbItem[]` : `url`/`routerLink`/`command`, éléments rendus en instances `ui-link`, dernier élément `aria-current="page"` ; séparateur string ou template `#separator`, repli `maxItems` derrière un bouton ellipsis accessible qui révèle les éléments masqués, template `#item`, tailles default/small, landmark `nav` + `ol`)
 - ✅ `ui-menu` — Menu de navigation / commandes (modèle déclaratif `UiMenuItem[]` : groupes à en-tête + séparateurs, sous-menus repliables `toggleable` contrôlables via `expandedKeys` two-way, `command`, `routerLink`/`url` ; mode `popup` en overlay CDK ancré au déclencheur, motion `slide-down` + repli grid-rows, clavier roving WAI-ARIA, templates `#item`/`#submenuheader`/`#start`/`#end`, familles `navigation.high`/`low`, densités `size` default/small, panneau borderless à fond `global` opaque, coque partagée `overlay-panel`)
 - ✅ `ui-tabs` — Onglets (composition `ui-tabs` + `ui-tab-list`/`ui-tab` + `ui-tab-panels`/`ui-tab-panel` ; two-way `value`, orientation horizontale/verticale, `scrollable` + navigateurs, `lazy` (groupe/panneau, template `#content`), `selectOnFocus`, boutons `role="tab"` natifs + clavier roving WAI-ARIA, indicateur actif glissant motion personnalisable `--ui-tabs-active-bar-*`, panneaux en fondu, mode menu de navigation)
 

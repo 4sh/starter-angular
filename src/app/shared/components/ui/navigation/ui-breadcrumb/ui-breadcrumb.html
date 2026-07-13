@@ -1,0 +1,51 @@
+<nav [class]="classes()" [attr.aria-label]="ariaLabel()">
+  <ol #list class="ui-breadcrumb-list">
+    @for (entry of entries(); track entry.key) {
+      @if (entry.kind === 'ellipsis') {
+        <li class="ui-breadcrumb-item">
+          <button
+            type="button"
+            class="ui-breadcrumb-ellipsis"
+            [attr.aria-label]="ellipsisAriaLabel()"
+            aria-expanded="false"
+            (click)="expandOverflow()"
+          >
+            <ui-icon name="ellipsis" [size]="iconSize()" />
+          </button>
+        </li>
+      } @else {
+        <li [class]="itemClasses(entry.item!)">
+          @if (itemTemplate()) {
+            <ng-container
+              [ngTemplateOutlet]="itemTemplate()!"
+              [ngTemplateOutletContext]="{ $implicit: entry.item, last: entry.last }"
+            />
+          } @else {
+            <ui-link
+              [label]="entry.item!.label"
+              [ariaLabel]="entry.item!.ariaLabel"
+              [iconLeft]="entry.item!.icon"
+              [size]="linkSize()"
+              [href]="entry.item!.url"
+              [routerLink]="entry.item!.routerLink"
+              [target]="entry.item!.target"
+              [disabled]="entry.item!.disabled ?? false"
+              [ariaCurrent]="entry.last ? 'page' : undefined"
+              (linkClick)="onItemClick($event, entry.item!)"
+            />
+          }
+        </li>
+      }
+
+      @if (!$last) {
+        <li class="ui-breadcrumb-separator" aria-hidden="true">
+          @if (separatorTemplate()) {
+            <ng-container [ngTemplateOutlet]="separatorTemplate()!" />
+          } @else {
+            {{ separator() }}
+          }
+        </li>
+      }
+    }
+  </ol>
+</nav>

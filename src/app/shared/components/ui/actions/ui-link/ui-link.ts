@@ -59,6 +59,8 @@ export class UiLink {
 
   disabled = input(false, { transform: booleanAttribute });
   tabindex = input<number>();
+  /** aria-current exposed on the anchor (e.g. "page" for the current breadcrumb item). */
+  ariaCurrent = input<string>();
 
   /** Emitted on click (never when disabled). Navigation stays native. */
   linkClick = output<MouseEvent>();
