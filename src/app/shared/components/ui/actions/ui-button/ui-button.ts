@@ -1,5 +1,6 @@
 import {
   afterNextRender,
+  afterRenderEffect,
   booleanAttribute,
   Component,
   computed,
@@ -91,9 +92,10 @@ export class UiButton {
     });
 
     // Pass additional native attributes (buttonProps) to the host element.
-    effect(() => {
+    afterRenderEffect(() => {
+      const props = this.buttonProps();
+      if (!props) return;
       const el = this.hostEl().nativeElement;
-      const props = this.buttonProps() ?? {};
       for (const [key, value] of Object.entries(props)) {
         if (value === null || value === undefined || value === false) {
           el.removeAttribute(key);
