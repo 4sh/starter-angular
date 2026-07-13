@@ -1,0 +1,104 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as UiNudgerStories from './ui-nudger.stories';
+
+<Meta of={UiNudgerStories} />
+
+# ui-nudger
+
+Le composant `ui-nudger` est un **incrémenteur numérique** compact : deux boutons
+`ui-button` icon-only (`−` / `+`) encadrant la valeur courante. Il n'a pas de champ
+de saisie, c'est un pas-à-pas pur, idéal pour de petites quantités (panier, filtres,
+paramètres). La valeur est portée via `ControlValueAccessor` : autonome, `[(ngModel)]`,
+Reactive Forms ou Signal Forms.
+
+<Canvas of={UiNudgerStories.Default} />
+
+## API
+
+<ArgTypes />
+
+## Bornes (min / max)
+
+`min` et `max` bornent la valeur. Le bouton concerné est **désactivé** dès que la borne
+est atteinte, les états Figma `Min` / `Max` sont donc **dérivés** de la valeur, jamais
+des props (idiome Angular). Le pas est réglé par `step`.
+
+<Canvas of={UiNudgerStories.MinMax} />
+<Canvas of={UiNudgerStories.Step} />
+
+## Tailles
+
+`default` (44px, valeur `title/xl`) et `small` (40px, valeur `title/lg`).
+
+<Canvas of={UiNudgerStories.Small} />
+
+## Niveaux
+
+La famille de couleur des deux boutons suit l'input `level` (tokens `actions.*`).
+
+<Canvas of={UiNudgerStories.LevelLow} />
+
+## États
+
+<Canvas of={UiNudgerStories.Disabled} />
+<Canvas of={UiNudgerStories.Readonly} />
+<Canvas of={UiNudgerStories.Invalid} />
+
+## Formatage de la valeur
+
+L'input `formatValue` reçoit la valeur numérique et retourne la chaîne affichée
+(unité, symbole, etc.).
+
+<Canvas of={UiNudgerStories.Formatted} />
+
+```html
+<ui-nudger [(ngModel)]="poids" [min]="0" [formatValue]="(v) => v + ' kg'" ariaLabel="Poids" />
+```
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Élément</th>
+      <th>Attribut / Rôle</th>
+      <th>Détail</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Racine</td>
+      <td><code>role="group"</code> + <code>aria-label</code></td>
+      <td>Regroupe les deux boutons ; nom accessible requis (garde-fou en dev). Utiliser <code>ariaLabelledBy</code> si un libellé externe existe.</td>
+    </tr>
+    <tr>
+      <td>Boutons <code>−</code> / <code>+</code></td>
+      <td><code>&lt;button&gt;</code> natif + <code>aria-label</code></td>
+      <td>Opérables au clavier (Tab, Entrée/Espace). Libellés via <code>decrementLabel</code> / <code>incrementLabel</code>. <code>disabled</code> natif aux bornes.</td>
+    </tr>
+    <tr>
+      <td>Valeur</td>
+      <td><code>aria-live="polite"</code></td>
+      <td>Chaque changement de valeur est annoncé par le lecteur d'écran.</td>
+    </tr>
+  </tbody>
+</table>
+
+## Configuration (SCSS)
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Variable locale</th>
+      <th>Source</th>
+      <th>Rôle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>$sizes</code></td>
+      <td>local</td>
+      <td>Map taille → <code>font-size</code> de la valeur (token <code>title</code>) + <code>min-width</code> stabilisant la largeur. La taille des boutons est transmise à <code>ui-button</code>.</td>
+    </tr>
+  </tbody>
+</table>

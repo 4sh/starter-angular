@@ -1,0 +1,59 @@
+@use 'utils';
+@use 'sass:map';
+
+// =====================================================================
+// ui-nudger : co-located styles. All values come from design tokens.
+// The two buttons carry their own colors/states (ui-button); this file
+// only lays out the stepper and styles the value display.
+//
+// Extend:
+//   • Size → add an entry to $sizes (+ the `NudgerSize` type). The button
+//            size is forwarded to ui-button (matching `ButtonSize`).
+// =====================================================================
+
+// `default` = base styles; other keys become `._<name>` modifiers.
+$sizes: (
+  'default': (
+    font-size: var(--size-typography-title-xl),
+    min-width: 40px,
+  ),
+  'small': (
+    font-size: var(--size-typography-title-lg),
+    min-width: 32px,
+  ),
+);
+$size-default: map.get($sizes, 'default');
+
+.ui-nudger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--units-default);
+
+  // --- Value display -------------------------------------------------
+  &-value {
+    min-width: utils.rem-calc(map.get($size-default, min-width));
+    font-family: var(--fontfamily-title);
+    font-weight: var(--weight-bold);
+    font-size: map.get($size-default, font-size);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.2;
+    text-align: center;
+    color: var(--form-high-content-default);
+    user-select: none;
+    @include utils.control-transition(color);
+  }
+
+  // --- Sizes  -------------------------------------
+  @each $name, $size in $sizes {
+    @if $name != 'default' {
+      &._#{$name} .ui-nudger-value {
+        min-width: utils.rem-calc(map.get($size, min-width));
+        font-size: map.get($size, font-size);
+      }
+    }
+  }
+
+  // --- States ---------------
+  &._invalid &-value { color: var(--form-error-content-default); }
+  &._disabled &-value { color: var(--form-high-content-disabled); }
+}

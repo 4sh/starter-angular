@@ -13,6 +13,7 @@ import * as ToggleStories from "../../src/app/shared/components/ui/forms/ui-togg
 import * as SegmentControlStories from "../../src/app/shared/components/ui/forms/ui-segment-control/ui-segment-control.stories";
 import * as DatepickerStories from "../../src/app/shared/components/ui/forms/ui-datepicker/ui-datepicker.stories";
 import * as RatingStories from "../../src/app/shared/components/ui/forms/ui-rating/ui-rating.stories";
+import * as NudgerStories from "../../src/app/shared/components/ui/forms/ui-nudger/ui-nudger.stories";
 import * as TextareaStories from "../../src/app/shared/components/ui/forms/ui-textarea/ui-textarea.stories";
 import * as HelperStories from "../../src/app/shared/components/ui/informative/ui-helper/ui-helper.stories";
 import * as BadgeStories from "../../src/app/shared/components/ui/informative/ui-badge/ui-badge.stories";
@@ -31,7 +32,7 @@ import * as TabsStories from "../../src/app/shared/components/ui/navigation/ui-t
 
 # Composants
 
-Bibliothèque de composants **maison** (headless · Angular CDK), accessibles, stylés via design tokens.
+Bibliothèque de composants (headless · Angular CDK), accessibles, stylés via design tokens.
 Vue d'ensemble par catégorie.
 
 export const ComponentCard = ({ name, description, link, story, previewHeight = 154, previewScale = 0.9 }) => (
@@ -84,6 +85,7 @@ export const CategorySection = ({ title, components }) => (
     { name: 'ui-toggle', description: 'Interrupteur on/off (headless, role=switch, CVA, tailles).', link: '?path=/docs/components-ui-forms-ui-toggle--docs', story: ToggleStories.Default },
     { name: 'ui-datepicker', description: 'Sélecteur de date/heure (calendrier overlay/inline, CVA, min/max, showTime 12/24h, clavier).', link: '?path=/docs/components-ui-forms-ui-datepicker--docs', story: DatepickerStories.Default },
     { name: 'ui-rating', description: 'Notation étoiles (headless, CVA, clavier natif via range caché).', link: '?path=/docs/components-ui-forms-ui-rating--docs', story: RatingStories.Default },
+    { name: 'ui-nudger', description: 'Incrémenteur numérique [−] valeur [+] (headless, CVA, min/max/step, tailles, formatValue).', link: '?path=/docs/components-ui-forms-ui-nudger--docs', story: NudgerStories.MinMax },
     { name: 'ui-textarea', description: 'Zone de texte multiligne (headless, CVA, rows, autoResize, poignée native, niveaux).', link: '?path=/docs/components-ui-forms-ui-textarea--docs', story: TextareaStories.WithHelper },
     { name: 'ui-segment-control', description: 'Sélection segmentée (headless, CVA, simple/multiple, indicateur glissant motion, fluid, template).', link: '?path=/docs/components-ui-forms-ui-segment-control--docs', story: SegmentControlStories.Sizes },
   ]}

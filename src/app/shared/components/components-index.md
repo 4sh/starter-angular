@@ -22,7 +22,7 @@
 - ⬜ `ui-toggle-button` — Choix exclusif stylisé
 - ✅ `ui-segment-control` — Sélection segmentée (headless, CVA ; simple/`multiple`, options primitives/objets + mapping de champs, indicateur glissant motion, tailles, `fluid`, `orientation` horizontal/vertical, template de segment, clavier roving radiogroup/group, erreur auto)
 - ✅ `ui-datepicker` — Sélecteur de date/heure (headless, CVA, overlay CDK ou inline, min/max, jours désactivés, showTime 12/24h, inline, focus roving clavier)
-- ⬜ `ui-nudger` — Champ numérique +/-
+- ✅ `ui-nudger` — Incrémenteur numérique `[−] valeur [+]` (headless, CVA ; deux `ui-button` icon-only, min/max/step, bornes dérivées désactivant le bouton, tailles, niveaux, `formatValue`, valeur en région live)
 - ✅ `ui-rating` — Notation étoiles (headless, CVA, clavier natif range, focus)
 - ⬜ `ui-file-upload` — Téléversement de fichiers
 - ✅ `ui-textarea` — Zone de texte multiligne (headless, CVA ; label + helper, niveaux/états, `rows`, `maxlength`, `autoResize`, poignée native)

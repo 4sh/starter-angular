@@ -1,0 +1,38 @@
+<div
+  [class]="classes()"
+  [id]="resolvedId()"
+  role="group"
+  [attr.aria-label]="ariaLabel() || null"
+  [attr.aria-labelledby]="ariaLabelledBy() || null"
+  (focusout)="onBlur($event)"
+>
+  <ui-button
+    class="ui-nudger-button"
+    [level]="level()"
+    [size]="size()"
+    [icon]="decrementIcon()"
+    [ariaLabel]="decrementLabel()"
+    [disabled]="decrementDisabled()"
+    iconOnly
+    (buttonClick)="decrement()"
+  />
+
+  <span class="ui-nudger-value" aria-live="polite" [attr.aria-hidden]="null">{{ displayValue() }}</span>
+
+  <ui-button
+    class="ui-nudger-button"
+    [level]="level()"
+    [size]="size()"
+    [icon]="incrementIcon()"
+    [ariaLabel]="incrementLabel()"
+    [disabled]="incrementDisabled()"
+    [tabindex]="tabindex()"
+    iconOnly
+    (buttonClick)="increment()"
+  />
+
+  <!-- Hidden holder so a native `name` participates in form submission. -->
+  @if (name(); as n) {
+    <input type="hidden" [name]="n" [value]="currentValue()" />
+  }
+</div>
