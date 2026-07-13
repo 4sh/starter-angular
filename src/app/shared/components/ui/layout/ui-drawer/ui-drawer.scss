@@ -1,0 +1,192 @@
+@use 'utils';
+
+// =====================================================================
+// ui-drawer : co-located styles. All values come from design tokens.
+//
+// Structure:
+//   .ui-drawer-scrim       → viewport mask (fades; captures outside clicks)
+//   .ui-drawer-positioner  → edge-anchored wrapper (carries the slide motion)
+//   .ui-drawer             → the surface (border on the inner edge + elevation)
+//
+// Extend:
+//   • Default size → edit `$size-side` / `$size-edge` (or pass `drawerStyle`).
+// =====================================================================
+
+// --- Config (local) ---------------------------------------------------
+$drawer-z-index: 1100;
+$stroke-width: var(--stroke-sm);
+$panel-padding: var(--units-lg);
+$header-gap: var(--units-sm);
+$action-size: 32px;
+$focus-ring-width: utils.$focus-ring-width;
+$mask-background: var(--primitives-black-50);
+$size-side: utils.rem-calc(320); // width of a left/right drawer
+$size-edge: utils.rem-calc(160); // height of a top/bottom drawer
+
+.ui-drawer-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: $drawer-z-index;
+  background-color: var(--ui-drawer-mask-background, #{$mask-background});
+
+  &._contained {
+    position: absolute;
+  }
+}
+
+// Edge-anchored wrapper. Hugs the panel so clicks beside it fall through to the
+// scrim (dismiss). Slides in/out via the motion system (carries enter/leave).
+.ui-drawer-positioner {
+  position: fixed;
+  z-index: $drawer-z-index;
+  display: flex;
+
+  &._left {
+    inset-block: 0;
+    inset-inline-start: 0;
+  }
+  &._right {
+    inset-block: 0;
+    inset-inline-end: 0;
+  }
+  &._top {
+    inset-inline: 0;
+    inset-block-start: 0;
+  }
+  &._bottom {
+    inset-inline: 0;
+    inset-block-end: 0;
+  }
+  &._full-screen {
+    inset: 0;
+  }
+
+  &._contained {
+    position: absolute;
+  }
+}
+
+.ui-drawer {
+  // --- Base ----------------------------------------------------------
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--global-default-surface-default);
+  color: var(--global-high-content-default);
+  box-shadow: var(--shadow-default-lg); // floats above the page → strong elevation
+  font-family: var(--fontfamily-base);
+  outline: none;
+
+  // --- Size & border side (from the parent anchor) ------------------
+  .ui-drawer-positioner._left &,
+  .ui-drawer-positioner._right & {
+    width: $size-side;
+    max-width: 100%;
+    height: 100%;
+  }
+  .ui-drawer-positioner._top &,
+  .ui-drawer-positioner._bottom & {
+    width: 100%;
+    height: $size-edge;
+    max-height: 100%;
+  }
+  .ui-drawer-positioner._full-screen & {
+    width: 100%;
+    height: 100%;
+  }
+
+  // Border faces the content area (opposite the docked edge).
+  .ui-drawer-positioner._left & {
+    border-inline-end: $stroke-width solid var(--global-default-stroke-default);
+  }
+  .ui-drawer-positioner._right & {
+    border-inline-start: $stroke-width solid var(--global-default-stroke-default);
+  }
+  .ui-drawer-positioner._top & {
+    border-block-end: $stroke-width solid var(--global-default-stroke-default);
+  }
+  .ui-drawer-positioner._bottom & {
+    border-block-start: $stroke-width solid var(--global-default-stroke-default);
+  }
+  .ui-drawer-positioner._full-screen & {
+    border: none;
+  }
+
+  // --- Header --------------------------------------------------------
+  &-header {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: flex-start;
+    gap: $header-gap;
+    padding: $panel-padding $panel-padding var(--units-sm);
+  }
+
+  &-title {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-family: var(--fontfamily-title);
+    font-size: var(--size-typography-title-default);
+    font-weight: var(--weight-bold);
+    line-height: 1.3;
+    overflow-wrap: break-word;
+  }
+
+  // Native close icon button — not ui-button, kept lightweight.
+  &-action {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: utils.rem-calc($action-size);
+    height: utils.rem-calc($action-size);
+    padding: 0;
+    border: none;
+    border-radius: var(--radius-xs);
+    background: transparent;
+    color: inherit;
+    line-height: 0;
+    cursor: pointer;
+    @include utils.control-transition(background-color, color);
+
+    &:hover {
+      background-color: var(--global-low-surface-hover);
+      color: var(--global-low-content-hover);
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 $focus-ring-width var(--global-high-stroke-focused);
+    }
+
+    @include utils.motion-reduce {
+      transition-duration: 0.01ms;
+    }
+  }
+
+  // --- Content -------------------------------------------------------
+  &-content {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto; // long content scrolls inside the drawer
+    padding: $panel-padding;
+    font-size: var(--size-typography-text-md);
+    line-height: 1.5;
+  }
+
+  // Header present → the content owns no top inset (header already padded).
+  &-header + &-content {
+    padding-top: 0;
+  }
+
+  // --- Footer --------------------------------------------------------
+  &-footer {
+    flex: 0 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--units-sm);
+    padding: var(--units-md) $panel-padding $panel-padding;
+    border-top: $stroke-width solid var(--global-default-stroke-default);
+  }
+}

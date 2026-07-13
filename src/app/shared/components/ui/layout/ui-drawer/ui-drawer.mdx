@@ -1,0 +1,177 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as DrawerStories from './ui-drawer.stories';
+
+<Meta of={DrawerStories} />
+
+# ui-drawer
+
+Panneau **glissant** headless ancré à un bord de l'écran : une surface stylée par tokens,
+rendue au-dessus d'un masque de viewport optionnel et pilotée par le modèle two-way
+`visible`. L'apparition / la disparition passent par le **système de motion** — le masque
+fait un fondu pendant que le panneau **glisse depuis son bord** (la direction est déduite de
+`position`, l'amplitude étirée à la taille propre du panneau). Pensé pour l'accessibilité :
+**piège de focus** avec restauration (`@angular/cdk/a11y`), `aria-modal`, **blocage du scroll
+de fond**, fermeture au clavier (`Échap`) et fermeture optionnelle au clic extérieur.
+
+Le panneau compose trois régions : un `header` (chaîne simple ou template `#header`), le
+contenu par défaut (`<ng-content>`, qui **scrolle en interne** si long) et un pied via le
+template `#footer`. Un template `#headless` prend la main sur **tout l'intérieur** du panneau
+quand un contrôle total de l'interface est nécessaire.
+
+<Canvas of={DrawerStories.Basic} />
+
+## API
+
+<ArgTypes of={DrawerStories} />
+
+## Anatomie
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Élément</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Masque</strong></td>
+      <td><code>.ui-drawer-scrim</code> — couche <code>fixed</code> plein viewport. Assombrit et capture les clics quand <code>modal</code> ; ferme au clic extérieur si <code>dismissableMask</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Positionneur</strong></td>
+      <td><code>.ui-drawer-positioner</code> — enveloppe ancrée au bord (<code>_left</code>/<code>_right</code>/<code>_top</code>/<code>_bottom</code>/<code>_full-screen</code>) ; porte l'animation de glissement.</td>
+    </tr>
+    <tr>
+      <td><strong>Panneau</strong></td>
+      <td><code>.ui-drawer</code> — surface (<code>role="dialog"</code> + <code>aria-modal</code>), colonne flex : en-tête / contenu / pied. Bordure sur le bord intérieur + élévation.</td>
+    </tr>
+  </tbody>
+</table>
+
+## Position
+
+Le panneau s'ancre à l'un des quatre bords via `position` (`left`, `right`, `top`, `bottom`)
+et glisse depuis ce bord. Le preset de motion est **dérivé automatiquement** de la position.
+
+<Canvas of={DrawerStories.Position} />
+
+## Plein écran
+
+`fullScreen` étend le panneau à tout le viewport ; l'apparition passe alors en fondu (pas de
+glissement d'un écran entier).
+
+<Canvas of={DrawerStories.FullScreen} />
+
+## Largeur responsive
+
+La taille du panneau se pilote via `drawerStyle` (ou `styleClass`). Une valeur fluide comme
+`min(90vw, 28rem)` garde le panneau dans l'écran sur mobile tout en le plafonnant sur grand
+écran.
+
+<Canvas of={DrawerStories.Responsive} />
+
+## Contenu & templates
+
+- `header` (chaîne) ou `#header` (contenu riche) pour le titre.
+- `<ng-content>` pour le corps.
+- `#footer` pour les actions.
+- `#closeicon` pour remplacer l'icône de fermeture.
+
+<Canvas of={DrawerStories.Template} />
+
+## Mode headless
+
+`#headless` remplace **tout l'intérieur** du panneau (en-tête, contenu, pied) par un contenu
+sur mesure, tandis que le drawer conserve la mécanique d'overlay : masque, motion, piège de
+focus et fermeture `Échap`. Idéal pour un panneau de navigation entièrement personnalisé.
+
+<Canvas of={DrawerStories.Headless} />
+
+## Embarqué (`contained`)
+
+`contained` scope le panneau à l'ancêtre positionné le plus proche (`position: absolute` au
+lieu de `fixed`) et **n'affecte pas** le scroll du body : idéal pour intégrer un drawer dans
+un conteneur borné (panneau, aperçu). Le conteneur parent doit être positionné
+(`position: relative`).
+
+<Canvas of={DrawerStories.Contained} />
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Règle</th>
+      <th>Détail</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Rôle & nom</strong></td>
+      <td><code>role="dialog"</code> + <code>aria-modal="true"</code> (en mode modal). Nom accessible via <code>aria-labelledby</code> (titre de l'en-tête) sinon <code>ariaLabel</code> / <code>ariaLabelledBy</code>. Un warning dev signale un panneau sans nom accessible.</td>
+    </tr>
+    <tr>
+      <td><strong>Focus</strong></td>
+      <td>Piège de focus (<code>cdkTrapFocus</code>) tant que le panneau est ouvert ; le focus est capturé à l'ouverture (<code>focusOnShow</code>) et <strong>restauré</strong> sur l'élément déclencheur à la fermeture.</td>
+    </tr>
+    <tr>
+      <td><strong>Clavier</strong></td>
+      <td><code>Échap</code> ferme (<code>closeOnEscape</code> + <code>closable</code>). Bouton de fermeture <code>&lt;button&gt;</code> natif avec <code>aria-label</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Scroll de fond</strong></td>
+      <td>Bloqué quand <code>modal</code> (ou <code>blockScroll</code>), avec compensation de la gouttière de scrollbar (pas de saut de mise en page). Compteur partagé : le scroll est rétabli à la fermeture du dernier panneau.</td>
+    </tr>
+    <tr>
+      <td><strong>Clic extérieur</strong></td>
+      <td>Activé par défaut via <code>dismissableMask</code> (modal uniquement) ; désactivable pour un panneau bloquant.</td>
+    </tr>
+    <tr>
+      <td><strong>Motion</strong></td>
+      <td>Respecte <code>prefers-reduced-motion</code> et l'interrupteur global <code>data-motion="off"</code> ; désactivable par panneau via <code>motionDisabled</code>.</td>
+    </tr>
+  </tbody>
+</table>
+
+## Configuration (SCSS)
+
+Variables locales en tête de `ui-drawer.scss`. Voir le
+[fonctionnement de la configuration](?path=/docs/components-configuration--docs).
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Variable locale</th>
+      <th>Source</th>
+      <th>Rôle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>$focus-ring-width</code></td>
+      <td><code>utils.$focus-ring-width</code></td>
+      <td>Épaisseur de l'anneau de focus du bouton de fermeture</td>
+    </tr>
+    <tr>
+      <td><code>$drawer-z-index</code></td>
+      <td>local (1100)</td>
+      <td>Palier d'empilement de base (au-dessus des overlays CDK à 1000)</td>
+    </tr>
+    <tr>
+      <td><code>$mask-background</code></td>
+      <td>local (<code>--primitives-black-50</code>)</td>
+      <td>Assombrissement du masque — pas de token sémantique de scrim ; exposé via la custom property <code>--ui-drawer-mask-background</code></td>
+    </tr>
+    <tr>
+      <td><code>$size-side</code> · <code>$size-edge</code></td>
+      <td>local (rem)</td>
+      <td>Largeur d'un panneau gauche/droite · hauteur d'un panneau haut/bas (surchargeable par <code>drawerStyle</code>)</td>
+    </tr>
+    <tr>
+      <td><code>$panel-padding</code> · <code>$action-size</code></td>
+      <td>local (tokens metrics)</td>
+      <td>Insets des régions · cible du bouton de fermeture</td>
+    </tr>
+  </tbody>
+</table>

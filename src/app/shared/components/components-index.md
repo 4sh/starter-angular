@@ -47,10 +47,10 @@
 ## layout
 - ✅ `ui-card` — Conteneur flexible (slots média/titre/sous-titre/contenu/pied via directives marqueurs + raccourcis `header`/`subheader`, variantes outlined/elevated/flat)
 - ✅ `ui-modal` — Fenêtre modale headless (two-way `visible`, masque modal / non-modal, `dismissableMask`, blocage du scroll de fond, piège + restauration de focus CDK, `Échap`, déplaçable, agrandissable, redimensionnable, `contained` (embarqué), 9 positions, `breakpoints`, motion `zoom`/fondu, templates en-tête/pied)
+- ✅ `ui-drawer` — Panneau latéral glissant headless (two-way `visible`, 4 bords `position` + `fullScreen`, glissement directionnel dérivé de la position via le système de motion, masque modal/non-modal, `dismissableMask`, blocage du scroll, piège + restauration de focus CDK, `Échap`, `contained` (embarqué), templates en-tête/contenu/pied + `#headless`)
 
 ## navigation
 - ⬜ `ui-breadcrumb` — Fil d'Ariane
-- ⬜ `ui-drawer` — Panneau latéral glissant
 - ✅ `ui-menu` — Menu de navigation / commandes (modèle déclaratif `UiMenuItem[]` : groupes à en-tête + séparateurs, sous-menus repliables `toggleable` contrôlables via `expandedKeys` two-way, `command`, `routerLink`/`url` ; mode `popup` en overlay CDK ancré au déclencheur, motion `slide-down` + repli grid-rows, clavier roving WAI-ARIA, templates `#item`/`#submenuheader`/`#start`/`#end`, familles `navigation.high`/`low`, densités `size` default/small, panneau borderless à fond `global` opaque, coque partagée `overlay-panel`)
 - ✅ `ui-tabs` — Onglets (composition `ui-tabs` + `ui-tab-list`/`ui-tab` + `ui-tab-panels`/`ui-tab-panel` ; two-way `value`, orientation horizontale/verticale, `scrollable` + navigateurs, `lazy` (groupe/panneau, template `#content`), `selectOnFocus`, boutons `role="tab"` natifs + clavier roving WAI-ARIA, indicateur actif glissant motion personnalisable `--ui-tabs-active-bar-*`, panneaux en fondu, mode menu de navigation)
 
