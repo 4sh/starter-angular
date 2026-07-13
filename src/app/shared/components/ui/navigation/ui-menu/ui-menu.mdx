@@ -1,0 +1,152 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as MenuStories from './ui-menu.stories';
+
+<Meta of={MenuStories} />
+
+# ui-menu
+
+Menu de **navigation / commandes** headless, statique ou **popup**, piloté par un
+modèle déclaratif `items` (`UiMenuItem[]`) : groupes à en-tête, séparateurs,
+**sous-menus repliables**, commandes (`command`), liens routeur (`routerLink`)
+et URL externes (`url`).
+
+<Canvas of={MenuStories.Basic} />
+
+## API
+
+<ArgTypes of={MenuStories} />
+
+Méthodes publiques (mode `popup`) : `toggle(event)`, `show(event)`, `hide(focusTrigger?)`.
+Sorties : `opened` / `closed` (popup) et `itemClick` (`{ originalEvent, item }`).
+
+### UiMenuItem
+
+<table className="doc-table">
+  <thead>
+    <tr><th>Propriété</th><th>Type</th><th>Rôle</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>`id`</td><td>`string`</td><td>Identifiant stable — requis pour piloter le groupe via `expandedKeys`.</td></tr>
+    <tr><td>`label`</td><td>`string`</td><td>Libellé de l'item / de l'en-tête de groupe.</td></tr>
+    <tr><td>`icon`</td><td>`string`</td><td>Icône FontAwesome de tête (rendue via `ui-icon`).</td></tr>
+    <tr><td>`items`</td><td>`UiMenuItem[]`</td><td>Enfants : transforme l'entrée en groupe (section à en-tête ou sous-menu repliable).</td></tr>
+    <tr><td>`separator`</td><td>`boolean`</td><td>Rend un trait séparateur à la place d'une entrée.</td></tr>
+    <tr><td>`toggleable`</td><td>`boolean`</td><td>Groupe repliable. **Défaut : `true` pour les groupes imbriqués, `false` au premier niveau** (en-tête de section) ; la valeur explicite gagne dans les deux sens.</td></tr>
+    <tr><td>`expanded`</td><td>`boolean`</td><td>État ouvert initial d'un groupe repliable (une clé présente dans `expandedKeys` gagne).</td></tr>
+    <tr><td>`command`</td><td>`(e: UiMenuItemCommandEvent) => void`</td><td>Callback au clic / à l'activation clavier.</td></tr>
+    <tr><td>`routerLink` / `queryParams` / `queryParamsHandling` / `routerLinkActiveExact`</td><td>—</td><td>Navigation Angular Router (ancre `RouterLink`, style actif via `routerLinkActive`).</td></tr>
+    <tr><td>`url` / `target`</td><td>`string`</td><td>URL externe (ancre native ; `rel` sécurisé auto quand `target="_blank"`).</td></tr>
+    <tr><td>`disabled` / `visible`</td><td>`boolean`</td><td>Entrée désactivée (sautée au clavier) / masquée.</td></tr>
+    <tr><td>`title` / `ariaLabel` / `styleClass`</td><td>`string`</td><td>Tooltip natif / nom accessible / classe(s) sur le `<li>`.</td></tr>
+  </tbody>
+</table>
+
+## Groupes & sélection pilotée par le modèle
+
+Les items sont groupés par la propriété `items` (en-tête + séparateur plat entre
+sections). Ici, cases à cocher et radios sont **dérivées du modèle** : le
+`command` bascule l'état, et l'icône de l'item est recalculée depuis ce même état.
+
+<Canvas of={MenuStories.Group} />
+
+## Sous-menus repliables (`toggleable`)
+
+Les groupes **imbriqués** sont repliables par défaut. `toggleable` force le
+comportement par item : ici le groupe **racine** « Fichiers » est rendu repliable,
+et le groupe imbriqué « Partagés » est **figé ouvert** (`toggleable: false`).
+Le repli est animé par le système de motion (technique grid-rows, comme
+l'accordéon), coupé par `[motion]="false"` / `prefers-reduced-motion`.
+
+<Canvas of={MenuStories.Toggleable} />
+
+## Popup
+
+`popup` + la méthode `toggle(event)` : le panneau s'ouvre dans un **overlay CDK**
+ancré sous l'élément déclencheur (retournement automatique au-dessus quand la
+place manque — `autoFlip`), avec le preset de motion `slide-down`. Fermeture au
+clic extérieur, à `Échap` (focus rendu au déclencheur) et après activation d'un item.
+
+```html
+<ui-button label="Options" (buttonClick)="menu.toggle($event)"
+  [buttonProps]="{ 'aria-haspopup': 'menu', 'aria-controls': menu.uid }" />
+<ui-menu #menu popup [items]="items" ariaLabel="Options" />
+```
+
+<Canvas of={MenuStories.Popup} />
+
+## Compact (`size="small"`)
+
+Densité réduite pour les **menus d'actions contextuels** — typiquement un bouton
+icon-only « … » sur une ligne de liste, une carte ou une cellule de tableau.
+
+<Canvas of={MenuStories.Compact} />
+
+## Templates
+
+`#item` personnalise le **contenu** de chaque menuitem (contexte `$implicit` =
+l'item du modèle), `#submenuheader` celui des en-têtes de groupe ; les slots
+`#start` / `#end` encadrent la liste.
+
+<Canvas of={MenuStories.Template} />
+
+## Command
+
+<Canvas of={MenuStories.Command} />
+
+## Router
+
+`routerLink` (ancre `RouterLink`, entrée active stylée par les tokens
+`navigation.*-active`), routage programmatique dans un `command`, ou `url` externe.
+
+<Canvas of={MenuStories.Router} />
+
+## Controlled (`expandedKeys`)
+
+`expandedKeys` définit les groupes repliables ouverts : un objet dont la **clé
+est l'`id` de l'item** et la valeur un booléen. La propriété est **two-way
+bindable** (`[(expandedKeys)]`). Sans `id`, une clé positionnelle interne est
+générée — stable tant que le tableau `items` ne change pas, mais donnez un `id`
+dès que vous contrôlez l'état de l'extérieur.
+
+<Canvas of={MenuStories.Controlled} />
+
+## Niveau `low`
+
+<Canvas of={MenuStories.Low} />
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr><th>Point</th><th>Implémentation</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Rôles</td><td>`role="menu"` → `role="menuitem"` sur de **vrais** `<a>` / `<button>` (jamais de `div` cliquable) ; sections `role="group"` + `aria-labelledby`, séparateurs `role="separator"`.</td></tr>
+    <tr><td>Clavier</td><td>Motif menu WAI-ARIA : **tab stop unique** (roving tabindex), `↑`/`↓` en boucle, `Début`/`Fin`, `Entrée`/`Espace` activent, `→`/`←` ouvrent/ferment un groupe repliable, `Échap` ferme le popup.</td></tr>
+    <tr><td>Sous-menus</td><td>Toggle `aria-expanded` + `aria-controls` ; contenu replié `inert` (invisible au clavier et aux lecteurs d'écran).</td></tr>
+    <tr><td>Focus</td><td>`:focus-visible` distinct du hover (anneau `--global-high-stroke-focused`, la famille `navigation` n'ayant pas d'état `focused`). Ouverture popup → focus sur le premier item ; fermeture → retour au déclencheur.</td></tr>
+    <tr><td>Désactivé</td><td>`disabled` natif sur `<button>` (une entrée lien désactivée retombe sur un `<button>` désactivé), tokens `-disabled`, sautée par la navigation clavier.</td></tr>
+    <tr><td>Nom accessible</td><td>`ariaLabel` / `ariaLabelledBy` sur la liste ; `ariaLabel` par item si besoin.</td></tr>
+  </tbody>
+</table>
+
+## Configuration (SCSS)
+
+Variables **locales** de `ui-menu.scss` (voir aussi la
+[configuration Global UI](?path=/docs/components-configuration-global-ui--docs) et le
+[fonctionnement général](?path=/docs/components-configuration--docs)) :
+
+<table className="doc-table">
+  <thead>
+    <tr><th>Variable locale</th><th>Source</th><th>Rôle</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>`$sizes`</td><td>map `default` / `small`</td><td>Densités : min-width du panneau, hauteur / padding / typo des items et en-têtes (ajouter une entrée = nouvelle densité + le type `MenuSize`).</td></tr>
+    <tr><td>`$panel-surface`</td><td>`var(--global-high-surface-default)`</td><td>Fond opaque du panneau (le token surface `navigation` est transparent par design).</td></tr>
+    <tr><td>`$item-radius`</td><td>`var(--radius-sm)`</td><td>Rayon des menuitems.</td></tr>
+    <tr><td>`$group-indent`</td><td>`var(--units-default)`</td><td>Indentation des groupes imbriqués.</td></tr>
+    <tr><td>`$panel-padding`</td><td>`utils.$overlay-panel-padding`</td><td>Gouttière interne du panneau (**partagée** avec les autres panneaux flottants).</td></tr>
+    <tr><td>`$separator-width`</td><td>`var(--stroke-sm)`</td><td>Épaisseur des séparateurs.</td></tr>
+    <tr><td>`$focus-ring-width`</td><td>`utils.$focus-ring-width`</td><td>Épaisseur de l'anneau de focus.</td></tr>
+  </tbody>
+</table>

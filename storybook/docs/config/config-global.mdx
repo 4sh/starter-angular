@@ -47,6 +47,61 @@ Constantes structurelles qui s'appliquent à **tous** les composants interactifs
   </tbody>
 </table>
 
+## Panneaux flottants (`$overlay-panel-*`)
+
+Structure partagée des **panneaux flottants** (dropdown de `ui-menu`, calendrier de
+`ui-datepicker`, futurs select/multiselect…), consommée via le mixin
+`utils.overlay-panel($surface, $stroke)`. Les **couleurs** ne sont pas ici : chaque
+composant passe sa propre famille de tokens au mixin (menu → `navigation.*`,
+forms → `form.*`) — re-styler une famille n'impacte pas les autres. Échappatoire
+par instance via les custom properties `--ui-overlay-radius` / `--ui-overlay-shadow` /
+`--ui-overlay-surface` / `--ui-overlay-stroke`.
+
+<table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
+  <thead>
+    <tr style={{ textAlign: 'left', borderBottom: '2px solid rgba(128,128,128,.25)' }}>
+      <th style={{ padding: 8, width: 260 }}>Variable</th>
+      <th style={{ padding: 8 }}>Rôle</th>
+      <th style={{ padding: 8 }}>Token par défaut</th>
+      <th style={{ padding: 8 }}>Valeur</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$overlay-panel-radius</code></td>
+      <td style={{ padding: 8 }}>Rayon du panneau</td>
+      <td style={{ padding: 8 }}><code>var(--radius-default)</code></td>
+      <td style={{ padding: 8 }}>16px</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$overlay-panel-padding</code></td>
+      <td style={{ padding: 8 }}>Gouttière interne du panneau</td>
+      <td style={{ padding: 8 }}><code>var(--units-sm)</code></td>
+      <td style={{ padding: 8 }}>8px</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$overlay-panel-shadow</code></td>
+      <td style={{ padding: 8 }}>Ombre portée du panneau</td>
+      <td style={{ padding: 8 }}><code>var(--shadow-default-md)</code></td>
+      <td style={{ padding: 8 }}>:</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$overlay-panel-stroke-width</code></td>
+      <td style={{ padding: 8 }}>Épaisseur de bordure du panneau</td>
+      <td style={{ padding: 8 }}><code>$control-stroke-width</code></td>
+      <td style={{ padding: 8 }}>2px</td>
+    </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><code>$overlay-panel-offset</code></td>
+      <td style={{ padding: 8 }}>Écart déclencheur ↔ panneau (constante miroir côté TS : <code>offsetY</code> CDK)</td>
+      <td style={{ padding: 8 }}>aligné sur <code>--units-sm</code></td>
+      <td style={{ padding: 8 }}>8px</td>
+    </tr>
+  </tbody>
+</table>
+
+> Consommée par : `ui-menu`, `ui-datepicker`.
+
 ## Motion (`$motion-*`)
 
 Timing partagé du **système de motion** (presets d'entrée/sortie + transitions d'état).

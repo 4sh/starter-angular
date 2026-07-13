@@ -9,10 +9,10 @@
 
 // --- Local structural config  ------------
 $panel-width: utils.rem-calc(360);
-$panel-radius: var(--radius-default);
-$panel-padding: var(--units-sm);
+$panel-radius: utils.$overlay-panel-radius;
+$panel-padding: utils.$overlay-panel-padding;
 $panel-gap: var(--units-sm);
-$panel-shadow: var(--shadow-default-md);
+$panel-shadow: utils.$overlay-panel-shadow;
 
 $day-size: var(--size-components-default);
 $day-radius: var(--radius-full);

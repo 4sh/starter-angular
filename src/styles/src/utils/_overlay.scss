@@ -1,0 +1,26 @@
+// =====================================================================
+// Overlay mixins — shared structural recipe for floating panels
+// (dropdowns, menus, datepicker calendar, future select/multiselect…).
+//
+// The STRUCTURE (radius, padding, shadow, stroke width) is shared through
+// the `$overlay-panel-*` constants in `ui-config`; the COLORS stay a
+// per-component choice: each caller passes its own token family (a menu
+// panel uses `navigation.*`, a form dropdown uses `form.*`), so restyling
+// one family never leaks into the others. A last per-instance escape
+// hatch is available through the `--ui-overlay-*` custom properties.
+// =====================================================================
+
+@use 'src/settings/ui-config';
+
+/// Floating panel shell. Pass the surface/stroke tokens of the component's
+/// family; structure resolves from `--ui-overlay-*` (per-instance override)
+/// falling back to the shared `$overlay-panel-*` constants.
+/// e.g. @include utils.overlay-panel(var(--navigation-high-surface-default), var(--navigation-high-stroke-default));
+@mixin overlay-panel($surface, $stroke) {
+  box-sizing: border-box;
+  border: ui-config.$overlay-panel-stroke-width solid var(--ui-overlay-stroke, #{$stroke});
+  border-radius: var(--ui-overlay-radius, #{ui-config.$overlay-panel-radius});
+  background-color: var(--ui-overlay-surface, #{$surface});
+  box-shadow: var(--ui-overlay-shadow, #{ui-config.$overlay-panel-shadow});
+  font-family: var(--fontfamily-base);
+}

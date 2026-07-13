@@ -1,0 +1,238 @@
+@use 'utils';
+@use 'sass:map';
+
+// =====================================================================
+// ui-menu : co-located styles.
+// =====================================================================
+
+// --- Config (extension points) ----------------------------------------
+$levels: high, low;
+
+$sizes: (
+  'default': (
+    min-width: utils.rem-calc(210),
+    item-height: utils.rem-calc(40),
+    item-padding-x: var(--units-md),
+    font-size: var(--size-typography-text-default),
+    header-height: utils.rem-calc(32),
+    header-font-size: var(--size-typography-text-md),
+  ),
+  'small': (
+    min-width: utils.rem-calc(160),
+    item-height: utils.rem-calc(32),
+    item-padding-x: var(--units-sm),
+    font-size: var(--size-typography-text-md),
+    header-height: utils.rem-calc(24),
+    header-font-size: var(--size-typography-text-sm),
+  ),
+);
+$size-default: map.get($sizes, 'default');
+
+$panel-surface: var(--global-high-surface-default);
+$item-radius: var(--radius-sm);
+$group-indent: var(--units-default);
+$panel-padding: utils.$overlay-panel-padding;
+$separator-width: var(--stroke-sm);
+$focus-ring-width: utils.$focus-ring-width;
+
+@mixin menu-size($size) {
+  min-width: map.get($size, min-width);
+
+  .ui-menu-action {
+    min-height: map.get($size, item-height);
+    padding: 0 map.get($size, item-padding-x);
+    font-size: map.get($size, font-size);
+  }
+
+  .ui-menu-header {
+    min-height: map.get($size, header-height);
+    padding: 0 map.get($size, item-padding-x);
+    font-size: map.get($size, header-font-size);
+  }
+}
+
+.ui-menu {
+  display: flex;
+  flex-direction: column;
+  gap: var(--units-2xs);
+  box-sizing: border-box;
+  padding: $panel-padding;
+  @include utils.overlay-panel($panel-surface, transparent);
+  border: none;
+
+  @include menu-size($size-default);
+
+  // Popup panel floats: cap it to the viewport and scroll internally.
+  &._popup {
+    width: max-content;
+    max-width: calc(100vw - var(--units-lg));
+    max-height: calc(100vh - var(--units-lg));
+    overflow: auto;
+  }
+
+  // --- Lists -----------------------------------------------------------
+  &-list,
+  &-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--units-2xs);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  // Nested (toggleable) groups are indented under their toggle.
+  &-group._nested {
+    padding-left: $group-indent;
+  }
+
+  &-section,
+  &-entry {
+    display: flex;
+    flex-direction: column;
+    gap: var(--units-2xs);
+  }
+
+  // --- Sizes (all but `default`) ----------------------------------------
+  @each $name, $size in $sizes {
+    @if $name != 'default' {
+      &._#{$name} { @include menu-size($size); }
+    }
+  }
+
+  // --- Group header (non-toggleable section) ---------------------------
+  &-header {
+    display: flex;
+    align-items: center;
+    gap: var(--units-sm);
+    font-weight: var(--weight-bold);
+    user-select: none;
+  }
+
+  // --- Menuitem / toggle (shared action shell) --------------------------
+  &-action {
+    display: flex;
+    align-items: center;
+    gap: var(--units-sm);
+    box-sizing: border-box;
+    width: 100%;
+    border: none;
+    border-radius: $item-radius;
+    background: none;
+    font-family: var(--fontfamily-base);
+    font-size: var(--size-typography-text-default);
+    font-weight: var(--weight-regular);
+    line-height: 1.2;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+    @include utils.control-transition(background-color, color, box-shadow);
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: inset 0 0 0 $focus-ring-width var(--global-high-stroke-focused);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+    }
+  }
+
+  &-item-icon,
+  &-chevron {
+    flex-shrink: 0;
+    line-height: 0;
+  }
+
+  &-item-label {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  // Toggle chevron rotates with the expanded state.
+  // `_open` (not `_expanded`: that's a global width:100% helper class).
+  &-chevron {
+    margin-left: auto;
+    @include utils.motion-transition(rotate);
+
+    &._open {
+      rotate: 180deg;
+    }
+  }
+
+  // --- Collapsible submenu (grid-rows technique) ------------------------
+  &-collapse {
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    @include utils.motion-transition(grid-template-rows, opacity);
+
+    &._open {
+      grid-template-rows: 1fr;
+      opacity: 1;
+    }
+  }
+
+  &-collapse-inner {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  // Group opt-out ([motion]="false").
+  &._no-motion &-collapse,
+  &._no-motion &-chevron {
+    transition: none;
+  }
+
+  // --- Separator ---------------------------------------------------------
+  &-separator {
+    margin: var(--units-2xs) 0;
+    border: none;
+  }
+
+  // --- Start / end slots ---------------------------------------------------
+  &-start,
+  &-end {
+    padding: var(--units-2xs) var(--units-md);
+  }
+
+  // --- Colors (one set per navigation level) ------------------------------
+  // The panel surface stays `global` (opaque) whatever the level; only the
+  // items/headers/separators switch navigation family.
+  @each $lvl in $levels {
+    &._#{$lvl} {
+      .ui-menu-header {
+        color: var(--navigation-#{$lvl}-content-default);
+      }
+
+      .ui-menu-separator {
+        border-top: $separator-width solid var(--navigation-#{$lvl}-stroke-default);
+      }
+
+      .ui-menu-action {
+        color: var(--navigation-#{$lvl}-content-default);
+
+        &:hover:not(:disabled) {
+          background-color: var(--navigation-#{$lvl}-surface-hover);
+          color: var(--navigation-#{$lvl}-content-hover);
+        }
+
+        &:active:not(:disabled) {
+          background-color: var(--navigation-#{$lvl}-surface-active);
+          color: var(--navigation-#{$lvl}-content-active);
+        }
+
+        // Current route (routerLinkActive) / active entry.
+        &._active {
+          background-color: var(--navigation-#{$lvl}-surface-active);
+          color: var(--navigation-#{$lvl}-content-active);
+        }
+
+        &:disabled {
+          background-color: var(--navigation-#{$lvl}-surface-disabled);
+          color: var(--navigation-#{$lvl}-content-disabled);
+        }
+      }
+    }
+  }
+}

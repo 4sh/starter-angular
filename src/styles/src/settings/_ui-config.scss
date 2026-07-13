@@ -27,6 +27,13 @@ $motion-easing-leave: var(--transition-easein); // accelerate (dismiss)
 $motion-distance: 0.5rem; // slide offset (8px)
 $motion-scale: 0.96; // zoom start/end scale
 
+// --- Global : overlay panels ------------------------------------------
+$overlay-panel-radius: var(--radius-default);
+$overlay-panel-padding: var(--units-sm);
+$overlay-panel-shadow: var(--shadow-default-md);
+$overlay-panel-stroke-width: $control-stroke-width;
+$overlay-panel-offset: 8px;
+
 // --- Category : forms -------------------------------------------------
 $form-control-size: var(--size-components-2xs);
 $form-control-gap: var(--units-sm);

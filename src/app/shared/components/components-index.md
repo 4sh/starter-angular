@@ -51,6 +51,7 @@
 ## navigation
 - ⬜ `ui-breadcrumb` — Fil d'Ariane
 - ⬜ `ui-drawer` — Panneau latéral glissant
+- ✅ `ui-menu` — Menu de navigation / commandes (modèle déclaratif `UiMenuItem[]` : groupes à en-tête + séparateurs, sous-menus repliables `toggleable` contrôlables via `expandedKeys` two-way, `command`, `routerLink`/`url` ; mode `popup` en overlay CDK ancré au déclencheur, motion `slide-down` + repli grid-rows, clavier roving WAI-ARIA, templates `#item`/`#submenuheader`/`#start`/`#end`, familles `navigation.high`/`low`, densités `size` default/small, panneau borderless à fond `global` opaque, coque partagée `overlay-panel`)
 - ✅ `ui-tabs` — Onglets (composition `ui-tabs` + `ui-tab-list`/`ui-tab` + `ui-tab-panels`/`ui-tab-panel` ; two-way `value`, orientation horizontale/verticale, `scrollable` + navigateurs, `lazy` (groupe/panneau, template `#content`), `selectOnFocus`, boutons `role="tab"` natifs + clavier roving WAI-ARIA, indicateur actif glissant motion personnalisable `--ui-tabs-active-bar-*`, panneaux en fondu, mode menu de navigation)
 
 ## table

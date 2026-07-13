@@ -27,6 +27,7 @@ import * as AccordionStories from "../../src/app/shared/components/ui/informativ
 import * as CardStories from "../../src/app/shared/components/ui/layout/ui-card/ui-card.stories";
 import * as ModalStories from "../../src/app/shared/components/ui/layout/ui-modal/ui-modal.stories";
 import * as TabsStories from "../../src/app/shared/components/ui/navigation/ui-tabs/ui-tabs.stories";
+import * as MenuStories from "../../src/app/shared/components/ui/navigation/ui-menu/ui-menu.stories";
 
 <Meta title="Overview" />
 
@@ -117,7 +118,8 @@ export const CategorySection = ({ title, components }) => (
 <CategorySection
   title="Navigation"
   components={[
-    { name: 'ui-tabs', description: 'Onglets (composition, two-way value, horizontal/vertical, scrollable + navigateurs, lazy, selectOnFocus, clavier roving WAI-ARIA, indicateur glissant motion, mode menu).', link: '?path=/docs/components-ui-navigation-ui-tabs--docs', story: TabsStories.Basic, previewHeight: 220, previewScale: 1 },
+    { name: 'ui-tabs', description: 'Onglets (composition, two-way value, horizontal/vertical, scrollable + navigateurs, lazy, selectOnFocus, clavier roving WAI-ARIA, indicateur glissant motion, mode menu).', link: '?path=/docs/components-ui-navigation-ui-tabs--docs', story: TabsStories.Basic, previewHeight: 220, previewScale: 0.85 },
+    { name: 'ui-menu', description: 'Menu navigation / commandes (groupes + séparateurs, sous-menus repliables expandedKeys, command, routerLink/url, popup overlay, clavier roving, templates).', link: '?path=/docs/components-ui-navigation-ui-menu--docs', story: MenuStories.Basic, previewHeight: 300, previewScale: 0.85 },
   ]}
 />
 
