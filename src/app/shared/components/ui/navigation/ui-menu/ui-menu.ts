@@ -3,7 +3,9 @@ import {
   Component,
   computed,
   contentChild,
+  effect,
   ElementRef,
+  inject,
   input,
   model,
   numberAttribute,
@@ -11,16 +13,25 @@ import {
   signal,
   TemplateRef,
   viewChild,
+  viewChildren,
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { QueryParamsHandling, RouterLink, RouterLinkActive } from '@angular/router';
-import { ConnectedPosition, OverlayModule } from '@angular/cdk/overlay';
+import { CdkConnectedOverlay, ConnectedPosition, OverlayModule } from '@angular/cdk/overlay';
+import { DOCUMENT } from '@angular/common';
 import { UiSubLevel } from '@app/shared/types/ui-level';
 import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
 import { UiMotion } from '@app/shared/motion/ui-motion';
 
 /** Menu density: `small` = compact rendering ("…" action menus). */
 export type MenuSize = 'default' | 'small';
+
+/**
+ * How groups (`items`) render: `inline` = labeled sections / collapsible
+ * accordion groups inside the panel; `flyout` = cascading side panels
+ * (classic context-menu behavior — every group becomes a flyout).
+ */
+export type MenuSubmenuMode = 'inline' | 'flyout';
 
 /** Payload passed to `command` callbacks and emitted by `itemClick`. */
 export interface UiMenuItemCommandEvent {
@@ -83,7 +94,7 @@ interface UiMenuNode {
   item: UiMenuItem;
   /** `item.id`, or a generated positional key. */
   key: string;
-  kind: 'separator' | 'header' | 'toggle' | 'item';
+  kind: 'separator' | 'header' | 'toggle' | 'flyout' | 'item';
   children: UiMenuNode[];
   expanded: boolean;
   depth: number;
@@ -143,6 +154,8 @@ export class UiMenu {
   level = input<UiSubLevel>('high');
   /** Density: `default`, or `small` for compact action menus ("…" buttons). */
   size = input<MenuSize>('default');
+  /** Group rendering: `inline` sections/accordions (default) or `flyout` cascading side panels. */
+  submenus = input<MenuSubmenuMode>('inline');
   /** Animate the popup entrance and the submenu collapse (reduced-motion always wins). */
   motion = input(true, { transform: booleanAttribute });
   /** Auto-flip the popup above the trigger when space is lacking below. */
@@ -157,10 +170,22 @@ export class UiMenu {
   /** Emitted when a leaf item is clicked / keyboard-activated (never when disabled). */
   itemClick = output<UiMenuItemCommandEvent>();
 
+  /** Menuitem content template, provided programmatically (embedding components like ui-context-menu). */
+  itemTemplate = input<TemplateRef<unknown>>();
+  /** Group-header content template, provided programmatically (embedding components). */
+  submenuHeaderTemplate = input<TemplateRef<unknown>>();
+
   /** Custom menuitem content: `<ng-template #item let-item>`. */
-  protected readonly itemTemplate = contentChild<TemplateRef<unknown>>('item');
+  private readonly itemTemplateContent = contentChild<TemplateRef<unknown>>('item');
   /** Custom group-header content: `<ng-template #submenuheader let-item>`. */
-  protected readonly submenuHeaderTemplate = contentChild<TemplateRef<unknown>>('submenuheader');
+  private readonly submenuHeaderTemplateContent = contentChild<TemplateRef<unknown>>('submenuheader');
+
+  /** @ignore Input wins over the projected `#item` template. */
+  protected readonly resolvedItemTemplate = computed(() => this.itemTemplate() ?? this.itemTemplateContent());
+  /** @ignore Input wins over the projected `#submenuheader` template. */
+  protected readonly resolvedSubmenuHeaderTemplate = computed(
+    () => this.submenuHeaderTemplate() ?? this.submenuHeaderTemplateContent(),
+  );
   /** Free content rendered before the list. */
   protected readonly startTemplate = contentChild<TemplateRef<unknown>>('start');
   /** Free content rendered after the list. */
@@ -177,6 +202,35 @@ export class UiMenu {
   protected readonly overlayOrigin = signal<Element | null>(null);
   /** @ignore Key of the node owning the roving tabindex. */
   protected readonly focusedKey = signal<string | null>(null);
+  /** @ignore Key of the open flyout submenu (one per level; children have their own). */
+  protected readonly openFlyoutKey = signal<string | null>(null);
+  /** @ignore Nested flyout menus rendered by this instance (matched by `items` reference). */
+  private readonly childMenus = viewChildren(UiMenu);
+  /** @ignore All connected overlays of this instance (popup + flyouts). */
+  private readonly connectedOverlays = viewChildren(CdkConnectedOverlay);
+  /** @ignore */
+  private readonly doc = inject(DOCUMENT);
+
+  constructor() {
+    // Keep floating panels GLUED to their scrolling anchors: while the popup
+    // or a flyout is open, re-apply the overlay positions on any scroll (the
+    // CDK reposition scroll strategy proved unreliable in zoneless contexts).
+    effect((onCleanup) => {
+      const active = this.popupOpen() || this.openFlyoutKey() !== null;
+      if (!active || typeof window === 'undefined') return;
+      // Deferred a macrotask: when this menu is itself in an overlay (context
+      // menu / popup), ITS panel is re-anchored during the next change
+      // detection — flyouts must re-read their origin AFTER that move.
+      const handler = () =>
+        setTimeout(() => {
+          for (const overlay of this.connectedOverlays()) {
+            if (overlay.open) overlay.overlayRef?.updatePosition();
+          }
+        });
+      this.doc.addEventListener('scroll', handler, { capture: true, passive: true });
+      onCleanup(() => this.doc.removeEventListener('scroll', handler, true));
+    });
+  }
 
   /** @ignore Below the trigger, flipping above when `autoFlip` and space is lacking. */
   protected readonly overlayPositions = computed<ConnectedPosition[]>(() => {
@@ -184,6 +238,15 @@ export class UiMenu {
     const above: ConnectedPosition = { originX: 'start', originY: 'top', overlayX: 'start', overlayY: 'bottom', offsetY: -OVERLAY_OFFSET };
     return this.autoFlip() ? [below, above] : [below];
   });
+
+  /** @ignore Flyout panel beside its parent item: right-start first, then flips.
+   * The vertical offset aligns the child's first item with the parent item. */
+  protected readonly flyoutPositions: ConnectedPosition[] = [
+    { originX: 'end', originY: 'top', overlayX: 'start', overlayY: 'top', offsetY: -OVERLAY_OFFSET },
+    { originX: 'start', originY: 'top', overlayX: 'end', overlayY: 'top', offsetY: -OVERLAY_OFFSET },
+    { originX: 'end', originY: 'bottom', overlayX: 'start', overlayY: 'bottom', offsetY: OVERLAY_OFFSET },
+    { originX: 'start', originY: 'bottom', overlayX: 'end', overlayY: 'bottom', offsetY: OVERLAY_OFFSET },
+  ];
 
   /** @ignore Resolved render tree (kinds, keys, expanded state). */
   protected readonly nodes = computed<UiMenuNode[]>(() => this.buildNodes(this.items(), this.uid, 0));
@@ -194,7 +257,7 @@ export class UiMenu {
     const walk = (nodes: UiMenuNode[]): void => {
       for (const node of nodes) {
         if (node.kind === 'separator') continue;
-        if (node.kind === 'item' && !node.item.disabled) keys.push(node.key);
+        if ((node.kind === 'item' || node.kind === 'flyout') && !node.item.disabled) keys.push(node.key);
         if (node.kind === 'toggle' && !node.item.disabled) {
           keys.push(node.key);
           if (node.expanded) walk(node.children);
@@ -240,13 +303,24 @@ export class UiMenu {
     this.queueFocusTabStop();
   }
 
+  /** Moves focus onto the menu's roving tab stop (first focusable entry). */
+  focusFirst(): void {
+    this.queueFocusTabStop();
+  }
+
   /** Closes the popup. */
   hide(focusTrigger = false): void {
     if (!this.popupOpen()) return;
     this.popupOpen.set(false);
     this.focusedKey.set(null);
+    this.openFlyoutKey.set(null);
     this.closed.emit();
     if (focusTrigger) (this.overlayOrigin() as HTMLElement | null)?.focus?.();
+  }
+
+  /** Closes any open flyout submenu (recursively, children detach with their parent). */
+  closeFlyouts(): void {
+    this.openFlyoutKey.set(null);
   }
 
   // --- Interactions -------------------------------------------------------
@@ -263,6 +337,50 @@ export class UiMenu {
     item.command?.({ originalEvent: event, item });
     this.itemClick.emit({ originalEvent: event, item });
     if (this.popup()) this.hide(true);
+  }
+
+  // --- Flyout submenus ------------------------------------------------------
+
+  /** @ignore Click on a flyout parent item: toggle its side panel. */
+  protected onFlyoutClick(node: UiMenuNode): void {
+    if (node.item.disabled) return;
+    this.focusedKey.set(node.key);
+    this.openFlyoutKey.update((key) => (key === node.key ? null : node.key));
+  }
+
+  /** @ignore Hovering an entry: open its flyout, or close the sibling one. */
+  protected onEntryHover(node: UiMenuNode): void {
+    if (node.kind === 'flyout' && !node.item.disabled) this.openFlyoutKey.set(node.key);
+    else this.openFlyoutKey.set(null);
+  }
+
+  /** @ignore `ArrowLeft`/`Escape` inside a flyout panel: close it, focus its parent item. */
+  protected onFlyoutPanelKeydown(event: KeyboardEvent, node: UiMenuNode): void {
+    if (event.key !== 'ArrowLeft' && event.key !== 'Escape') return;
+    event.preventDefault();
+    event.stopPropagation();
+    this.openFlyoutKey.set(null);
+    this.focusByKey(node.key);
+  }
+
+  /** @ignore Activation bubbling up from a flyout submenu: re-emit and close. */
+  protected onChildItemClick(event: UiMenuItemCommandEvent): void {
+    this.itemClick.emit(event);
+    this.openFlyoutKey.set(null);
+    if (this.popup()) this.hide(true);
+  }
+
+  /** @ignore Open a flyout and move focus onto its first entry. The overlay
+   * attaches after change detection: retry over macrotasks (NOT rAF — it
+   * never fires in throttled/background tabs). */
+  private openFlyoutAndFocus(node: UiMenuNode, attempts = 20): void {
+    this.openFlyoutKey.set(node.key);
+    setTimeout(() => {
+      // Nested menus are view children; match ours by its `items` reference.
+      const menu = this.childMenus().find((child) => child.items() === node.item.items);
+      if (menu) menu.focusFirst();
+      else if (attempts > 0) this.openFlyoutAndFocus(node, attempts - 1);
+    });
   }
 
   /** @ignore Expand/collapse a toggleable group (updates `expandedKeys`). */
@@ -308,6 +426,10 @@ export class UiMenu {
         if (node?.kind === 'toggle') {
           event.preventDefault();
           this.setExpanded(node, event.key === 'ArrowRight');
+        } else if (node?.kind === 'flyout') {
+          event.preventDefault();
+          if (event.key === 'ArrowRight') this.openFlyoutAndFocus(node);
+          else this.openFlyoutKey.set(null);
         }
         break;
       }
@@ -334,6 +456,13 @@ export class UiMenu {
     this.focusedKey.set(node.key);
   }
 
+  /** @ignore Popup outside interaction: ignore events landing in ANY overlay
+   * (our flyout side panels are separate overlay elements). */
+  protected onPopupOutsideClick(event: MouseEvent): void {
+    if (event.target instanceof Element && event.target.closest('.cdk-overlay-container')) return;
+    this.hide();
+  }
+
   /** @ignore id of a header label (aria-labelledby of its group). */
   protected headerId(node: UiMenuNode): string {
     return `${this.uid}-${node.key}-label`;
@@ -357,6 +486,10 @@ export class UiMenu {
           return { item, key, kind: 'separator', children: [], expanded: false, depth } satisfies UiMenuNode;
         }
         if (item.items) {
+          // Flyout mode: every group becomes a cascading side panel.
+          if (this.submenus() === 'flyout') {
+            return { item, key, kind: 'flyout', children: [], expanded: false, depth } satisfies UiMenuNode;
+          }
           const toggleable = item.toggleable ?? depth > 0;
           const expanded = toggleable ? (expandedKeys[key] ?? item.expanded ?? false) : true;
           return {
@@ -397,9 +530,9 @@ export class UiMenu {
       ?.focus();
   }
 
-  /** @ignore Focus the roving tab stop once the popup panel is rendered. */
+  /** @ignore Focus the roving tab stop once the panel is rendered
+   * (macrotask, not rAF: rAF never fires in throttled/background tabs). */
   private queueFocusTabStop(): void {
-    if (typeof requestAnimationFrame === 'undefined') return;
-    requestAnimationFrame(() => this.focusByKey(this.tabStopKey() ?? undefined));
+    setTimeout(() => this.focusByKey(this.tabStopKey() ?? undefined));
   }
 }

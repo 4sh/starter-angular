@@ -62,8 +62,9 @@ $focus-ring-width: utils.$focus-ring-width;
 
   @include menu-size($size-default);
 
-  // Popup panel floats: cap it to the viewport and scroll internally.
-  &._popup {
+  // Floating panels (popup / context menu / flyout side panels): cap to the
+  &._popup,
+  &._floating {
     width: max-content;
     max-width: calc(100vw - var(--units-lg));
     max-height: calc(100vh - var(--units-lg));
@@ -160,6 +161,11 @@ $focus-ring-width: utils.$focus-ring-width;
     }
   }
 
+  // --- Flyout submenu (cascading side panel) -----------------------------
+  &-flyout {
+    display: block;
+  }
+
   // --- Collapsible submenu (grid-rows technique) ------------------------
   &-collapse {
     display: grid;
@@ -220,6 +226,12 @@ $focus-ring-width: utils.$focus-ring-width;
         &:active:not(:disabled) {
           background-color: var(--navigation-#{$lvl}-surface-active);
           color: var(--navigation-#{$lvl}-content-active);
+        }
+
+        // Flyout parent whose side panel is open: keep the hover look.
+        &._sub-open:not(:disabled) {
+          background-color: var(--navigation-#{$lvl}-surface-hover);
+          color: var(--navigation-#{$lvl}-content-hover);
         }
 
         // Current route (routerLinkActive) / active entry.

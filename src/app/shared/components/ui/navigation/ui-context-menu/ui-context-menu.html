@@ -1,0 +1,32 @@
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="overlayPoint()"
+  [cdkConnectedOverlayOpen]="open()"
+  [cdkConnectedOverlayPositions]="overlayPositions"
+  (detach)="hide()"
+>
+  <div
+    class="ui-context-menu"
+    [uiMotion]="'zoom'"
+    [motionDisabled]="!motion()"
+    #panelMotion="uiMotion"
+    [animate.enter]="panelMotion.enter()"
+    (keydown.escape)="onEscape($event)"
+  >
+    <!-- Projected #item / #submenuheader templates are forwarded as inputs:
+         the embedded menu outlets them with its own item context. -->
+    <ui-menu
+      #menu
+      [items]="items()"
+      [level]="level()"
+      [size]="size()"
+      [motion]="motion()"
+      [submenus]="submenus()"
+      [styleClass]="menuClasses()"
+      [ariaLabel]="ariaLabel()"
+      [itemTemplate]="itemTemplateContent()"
+      [submenuHeaderTemplate]="submenuHeaderTemplateContent()"
+      (itemClick)="onItemClick($event)"
+    />
+  </div>
+</ng-template>

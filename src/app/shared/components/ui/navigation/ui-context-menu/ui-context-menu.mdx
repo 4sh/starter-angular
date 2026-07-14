@@ -1,0 +1,114 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as ContextMenuStories from './ui-context-menu.stories';
+
+<Meta of={ContextMenuStories} />
+
+# ui-context-menu
+
+Menu **contextuel** headless : un clic droit (ou tout autre `triggerEvent`) sur
+l'élément `target` — ou n'importe où avec `global` — ouvre un menu **positionné
+au pointeur** dans un overlay CDK (repli automatique sur les bords du viewport).
+
+Le panneau **est un [`ui-menu`](?path=/docs/components-ui-navigation-ui-menu--docs)
+embarqué** : même modèle déclaratif `UiMenuItem[]` (sous-menus imbriqués,
+`command`, `routerLink` / `url`), même navigation clavier, mêmes tokens
+`navigation.*` et même coque `overlay-panel` — en densité **compacte
+(`size="small"`) par défaut**, la bonne densité d'un menu d'actions contextuel.
+
+<Canvas of={ContextMenuStories.Basic} />
+
+## API
+
+<ArgTypes of={ContextMenuStories} />
+
+Méthodes publiques : `show(event)` (ouvre au pointeur), `hide()`, `toggle(event)` —
+pour un câblage manuel sans `target`. Sorties : `opened` / `closed` et
+`itemClick` (`{ originalEvent, item }`, le menu se ferme après activation).
+
+Le modèle d'items est **exactement** celui de `ui-menu` : voir la
+[table `UiMenuItem`](?path=/docs/components-ui-navigation-ui-menu--docs#uimenuitem).
+
+## Basic
+
+Le menu s'attache à un élément via `target` (variable de référence de template)
+et s'active au **clic droit** — l'événement natif est intercepté (`preventDefault`)
+et le panneau s'ouvre aux coordonnées du pointeur. Un clic (ou clic droit)
+ailleurs referme ; un clic droit **dans la cible** repositionne le menu.
+
+Le menu est **ancré au document, pas à l'écran** : au scroll, il défile avec le
+contenu (comme un élément du DOM) et reste exactement là où il a été ouvert —
+les panneaux flyout restent collés à leur item parent.
+
+```html
+<div #zone>Clic droit ici</div>
+<ui-context-menu [target]="zone" [items]="items" ariaLabel="Actions" />
+```
+
+## Submenus
+
+Les sous-menus se définissent en **imbriquant des items** dans la propriété
+`items` d'un item parent. Ils s'ouvrent en **panneaux latéraux en cascade**
+(flyout) : survol ou clic du parent (chevron `›`), `→` ouvre et pose le focus
+sur le premier item, `←` referme et rend le focus au parent, retournement
+automatique sur les bords du viewport. Survoler une autre entrée du même niveau
+referme le panneau frère ouvert.
+
+> C'est le mode `submenus="flyout"` (défaut du menu contextuel). Passez
+> `submenus="inline"` pour retrouver les sections / accordéons de `ui-menu`.
+
+<Canvas of={ContextMenuStories.Submenus} />
+
+## Global
+
+`global` attache le menu contextuel au **document** entier : le clic droit
+n'importe où l'ouvre au pointeur (et un nouveau clic droit le repositionne).
+Un seul menu global à la fois par page — c'est un remplacement du menu natif.
+
+<Canvas of={ContextMenuStories.Global} />
+
+## Template
+
+Le template `#item` reçoit l'**item du modèle** en paramètre (`$implicit`) et
+personnalise le contenu du menuitem (l'élément interactif reste géré par le
+composant : clavier et a11y garantis). `#submenuheader` est aussi transmis.
+
+<Canvas of={ContextMenuStories.Template} />
+
+## Command
+
+La fonction à invoquer au clic d'un item se définit avec `command`
+(`{ originalEvent, item }`) ; le menu se referme après l'activation.
+
+<Canvas of={ContextMenuStories.Command} />
+
+## Router
+
+Les items naviguent via `routerLink` (ancre `RouterLink`), un routage
+programmatique dans un `command` (`router.navigate(...)`), ou une `url` externe
+(`rel` sécurisé automatique avec `target="_blank"`).
+
+<Canvas of={ContextMenuStories.Router} />
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr><th>Point</th><th>Implémentation</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Rôles & clavier</td><td>Hérités du `ui-menu` embarqué : `role="menu"`/`menuitem` sur de vrais `<a>`/`<button>`, roving tabindex, `↑`/`↓`/`Début`/`Fin`, `Entrée`/`Espace`. Sous-menus flyout : parents `aria-haspopup="menu"` + `aria-expanded`, `→` ouvre + focus le premier item, `←`/`Échap` referme + focus le parent.</td></tr>
+    <tr><td>Ouverture</td><td>Le focus est placé sur le **premier item** dès l'ouverture (opérable au clavier immédiatement).</td></tr>
+    <tr><td>Fermeture</td><td>`Échap` ferme et **rend le focus à la cible** ; clic extérieur et activation d'item ferment aussi.</td></tr>
+    <tr><td>Nom accessible</td><td>`ariaLabel` sur la liste (recommandé). Ajouter `aria-haspopup="menu"` sur la cible si elle est interactive.</td></tr>
+    <tr><td>Motion</td><td>Apparition `zoom` via le système de motion — `prefers-reduced-motion` et `data-motion="off"` respectés, opt-out `[motion]="false"`.</td></tr>
+  </tbody>
+</table>
+
+## Configuration (SCSS)
+
+Le rendu visuel (panneau, items, densités, tokens) est entièrement porté par
+`ui-menu` : voir sa section
+[Configuration (SCSS)](?path=/docs/components-ui-navigation-ui-menu--docs#configuration-scss)
+et le groupe partagé
+[`$overlay-panel-*`](?path=/docs/components-configuration-global-ui--docs).
+Le fichier local ne définit que l'enveloppe d'overlay (plafonnement au viewport).

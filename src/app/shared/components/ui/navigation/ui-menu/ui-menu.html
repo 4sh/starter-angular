@@ -44,7 +44,7 @@
       @case ('header') {
         <li class="ui-menu-section" role="none" [class]="node.item.styleClass ?? ''">
           <span class="ui-menu-header" [attr.id]="headerId(node)">
-            @if (submenuHeaderTemplate(); as tpl) {
+            @if (resolvedSubmenuHeaderTemplate(); as tpl) {
               <ng-container [ngTemplateOutlet]="tpl" [ngTemplateOutletContext]="{ $implicit: node.item }" />
             } @else {
               @if (node.item.icon; as icon) {
@@ -73,9 +73,10 @@
             [disabled]="node.item.disabled ?? false"
             [attr.tabindex]="node.key === tabStopKey() ? tabindex() : -1"
             (click)="onToggleClick(node)"
+            (mouseenter)="onEntryHover(node)"
             (focus)="onEntryFocus(node)"
           >
-            @if (submenuHeaderTemplate(); as tpl) {
+            @if (resolvedSubmenuHeaderTemplate(); as tpl) {
               <ng-container [ngTemplateOutlet]="tpl" [ngTemplateOutletContext]="{ $implicit: node.item }" />
             } @else {
               @if (node.item.icon; as icon) {
@@ -96,11 +97,72 @@
         </li>
       }
 
+      @case ('flyout') {
+        <li class="ui-menu-entry" role="none" [class]="node.item.styleClass ?? ''" cdkOverlayOrigin #flyoutOrigin="cdkOverlayOrigin">
+          <button
+            type="button"
+            class="ui-menu-action _has-sub"
+            [class._sub-open]="openFlyoutKey() === node.key"
+            role="menuitem"
+            aria-haspopup="menu"
+            [attr.data-key]="node.key"
+            [attr.aria-expanded]="openFlyoutKey() === node.key"
+            [attr.aria-label]="node.item.ariaLabel || null"
+            [attr.title]="node.item.title || null"
+            [disabled]="node.item.disabled ?? false"
+            [attr.tabindex]="node.key === tabStopKey() ? tabindex() : -1"
+            (click)="onFlyoutClick(node)"
+            (mouseenter)="onEntryHover(node)"
+            (focus)="onEntryFocus(node)"
+          >
+            @if (resolvedItemTemplate(); as tpl) {
+              <ng-container [ngTemplateOutlet]="tpl" [ngTemplateOutletContext]="{ $implicit: node.item }" />
+            } @else {
+              @if (node.item.icon; as icon) {
+                <ui-icon class="ui-menu-item-icon" [name]="icon" size="sm" />
+              }
+              <span class="ui-menu-item-label">{{ node.item.label }}</span>
+            }
+            <ui-icon class="ui-menu-chevron" name="chevron-right" size="sm" />
+          </button>
+
+          <!-- Cascading side panel: a nested menu in its own overlay, anchored to the item. -->
+          <ng-template
+            cdkConnectedOverlay
+            [cdkConnectedOverlayOrigin]="flyoutOrigin"
+            [cdkConnectedOverlayOpen]="openFlyoutKey() === node.key"
+            [cdkConnectedOverlayPositions]="flyoutPositions"
+          >
+            <div
+              class="ui-menu-flyout"
+              [uiMotion]="'fade'"
+              [motionDisabled]="!motion()"
+              #flyoutMotion="uiMotion"
+              [animate.enter]="flyoutMotion.enter()"
+              (keydown)="onFlyoutPanelKeydown($event, node)"
+            >
+              <ui-menu
+                [items]="node.item.items ?? []"
+                [level]="level()"
+                [size]="size()"
+                [motion]="motion()"
+                submenus="flyout"
+                styleClass="_floating"
+                [itemTemplate]="resolvedItemTemplate()"
+                [submenuHeaderTemplate]="resolvedSubmenuHeaderTemplate()"
+                [ariaLabel]="node.item.label"
+                (itemClick)="onChildItemClick($event)"
+              />
+            </div>
+          </ng-template>
+        </li>
+      }
+
       @case ('item') {
         <li class="ui-menu-entry" role="none" [class]="node.item.styleClass ?? ''">
           <!-- Shared menuitem content (icon + label, or the #item template). -->
           <ng-template #content>
-            @if (itemTemplate(); as tpl) {
+            @if (resolvedItemTemplate(); as tpl) {
               <ng-container [ngTemplateOutlet]="tpl" [ngTemplateOutletContext]="{ $implicit: node.item }" />
             } @else {
               @if (node.item.icon; as icon) {
@@ -125,6 +187,7 @@
               [attr.title]="node.item.title || null"
               [attr.tabindex]="node.key === tabStopKey() ? tabindex() : -1"
               (click)="onItemClick($event, node)"
+              (mouseenter)="onEntryHover(node)"
               (focus)="onEntryFocus(node)"
             >
               <ng-container [ngTemplateOutlet]="content" />
@@ -141,6 +204,7 @@
               [attr.title]="node.item.title || null"
               [attr.tabindex]="node.key === tabStopKey() ? tabindex() : -1"
               (click)="onItemClick($event, node)"
+              (mouseenter)="onEntryHover(node)"
               (focus)="onEntryFocus(node)"
             >
               <ng-container [ngTemplateOutlet]="content" />
@@ -156,6 +220,7 @@
               [attr.title]="node.item.title || null"
               [attr.tabindex]="node.key === tabStopKey() ? tabindex() : -1"
               (click)="onItemClick($event, node)"
+              (mouseenter)="onEntryHover(node)"
               (focus)="onEntryFocus(node)"
             >
               <ng-container [ngTemplateOutlet]="content" />
@@ -176,7 +241,7 @@
     [cdkConnectedOverlayHasBackdrop]="true"
     cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
     (backdropClick)="hide()"
-    (overlayOutsideClick)="hide()"
+    (overlayOutsideClick)="onPopupOutsideClick($event)"
     (detach)="hide()"
   >
     <ng-container [ngTemplateOutlet]="panelTpl" />
