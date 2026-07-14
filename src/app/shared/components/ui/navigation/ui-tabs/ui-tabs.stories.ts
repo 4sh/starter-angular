@@ -155,10 +155,11 @@ export const Scrollable: Story = {
   render: (args) => ({
     props: {
       ...args,
+      active: '1',
       items: Array.from({ length: 12 }, (_, i) => `${i + 1}`),
     },
     template: box(`
-      <ui-tabs [value]="'1'" [scrollable]="scrollable" [showNavigators]="showNavigators" [motion]="motion">
+      <ui-tabs [(value)]="active" [scrollable]="scrollable" [showNavigators]="showNavigators" [motion]="motion">
         <ui-tab-list ariaLabel="Nombreux onglets">
           @for (n of items; track n) {
             <ui-tab [value]="n">Onglet {{ n }}</ui-tab>

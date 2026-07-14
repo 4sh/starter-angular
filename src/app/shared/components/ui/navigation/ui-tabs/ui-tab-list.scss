@@ -38,10 +38,19 @@ $bar-size: var(--ui-tabs-active-bar-size, #{$bar-thickness});
 
 :host._scrollable .ui-tab-list-scroll {
   overflow-x: auto;
+  scroll-behavior: smooth;
   scrollbar-width: none;
   &::-webkit-scrollbar {
     display: none;
   }
+
+  @include utils.motion-reduce {
+    scroll-behavior: auto;
+  }
+}
+
+:host._no-motion .ui-tab-list-scroll {
+  scroll-behavior: auto;
 }
 
 // --- Tablist -------------------

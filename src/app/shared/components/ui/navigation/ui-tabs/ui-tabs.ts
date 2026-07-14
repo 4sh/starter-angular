@@ -289,6 +289,13 @@ export class UiTabList {
         this.bar.set(next);
       }
     });
+
+    afterRenderEffect(() => {
+      const activeValue = this.tabs.value();
+      if (!this.scrollable()) return;
+      const item = this.tabItems().find((t) => t.value() === activeValue && !t.disabled());
+      if (item) this.scrollIntoView(item.buttonEl().nativeElement);
+    });
   }
 
   /** @ignore CSS transform positioning the indicator along the main axis. */
@@ -326,9 +333,33 @@ export class UiTabList {
     this.scrollIntoView(target.buttonEl().nativeElement);
   }
 
-  /** @ignore Keep the given tab visible inside the scroll viewport. */
+  /**
+   * @ignore Bring the given tab fully inside the scroll viewport, scrolling by
+   * the minimum needed along the active axis. Uses the viewport's own metrics
+   * (never the page): a tab clipped at either edge slides back into view.
+   */
   private scrollIntoView(el: HTMLElement): void {
-    el.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    if (!this.scrollable()) return;
+    const viewport = this.scrollEl().nativeElement;
+    const horizontal = this.orientation() === 'horizontal';
+    const start = horizontal ? el.offsetLeft : el.offsetTop;
+    const size = horizontal ? el.offsetWidth : el.offsetHeight;
+    const viewStart = horizontal ? viewport.scrollLeft : viewport.scrollTop;
+    const viewSize = horizontal ? viewport.clientWidth : viewport.clientHeight;
+    if (viewSize === 0) return; // not laid out yet , a later pass will re-run.
+
+    let target = viewStart;
+    if (start < viewStart) {
+      target = start; // clipped at the start edge , align to it.
+    } else if (start + size > viewStart + viewSize) {
+      target = start + size - viewSize; // clipped at the end edge , align flush.
+    } else {
+      return; // already fully visible.
+    }
+    // Plain scrollTo (no `behavior` option) , the animation comes from the
+    // container's CSS `scroll-behavior`, which the motion system tunes and
+    // reduced-motion disables.
+    viewport.scrollTo(horizontal ? { left: target } : { top: target });
   }
 
   /** @ignore Refresh the prev/next enabled state from the scroll position. */
@@ -351,13 +382,17 @@ export class UiTabList {
     this.updateNavigators();
   }
 
-  /** @ignore Scroll the strip by roughly one viewport in the given direction. */
+  /**
+   * @ignore Scroll the strip by roughly one viewport in the given direction.
+   * Smoothness comes from the container's CSS `scroll-behavior` (motion-aware),
+   * not the JS `behavior` option.
+   */
   protected scrollBy(direction: -1 | 1): void {
     const el = this.scrollEl().nativeElement;
     if (this.orientation() === 'horizontal') {
-      el.scrollBy({ left: direction * el.clientWidth * 0.8, behavior: 'smooth' });
+      el.scrollBy({ left: direction * el.clientWidth * 0.8 });
     } else {
-      el.scrollBy({ top: direction * el.clientHeight * 0.8, behavior: 'smooth' });
+      el.scrollBy({ top: direction * el.clientHeight * 0.8 });
     }
   }
 }
