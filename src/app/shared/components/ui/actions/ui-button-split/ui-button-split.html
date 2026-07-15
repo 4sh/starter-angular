@@ -1,0 +1,48 @@
+<div [class]="classes()">
+  <!-- Default action -->
+  <ui-button
+    #action
+    class="ui-button-split-action"
+    [label]="label()"
+    [ariaLabel]="ariaLabel()"
+    [icon]="icon()"
+    [iconPos]="iconPos()"
+    [level]="level()"
+    [size]="size()"
+    [disabled]="actionDisabled()"
+    [tabindex]="tabindex()"
+    [buttonProps]="buttonProps()"
+    (buttonClick)="onButtonClick($event)"
+  >
+    <ng-content />
+  </ui-button>
+
+  <!-- Dropdown trigger -->
+  <ui-button
+    class="ui-button-split-trigger"
+    [icon]="dropdownIcon()"
+    [ariaLabel]="menuButtonAriaLabel()"
+    [level]="level()"
+    [size]="size()"
+    [disabled]="triggerDisabled()"
+    iconOnly
+    [buttonProps]="{ 'aria-haspopup': 'menu', 'aria-expanded': menuOpen() ? 'true' : 'false', 'aria-controls': menu.uid }"
+    (buttonClick)="onDropdownClick($event)"
+  />
+
+  <!-- Options popup (anchored to the trigger) -->
+  <ui-menu
+    #menu
+    popup
+    [items]="model()"
+    [level]="menuLevel()"
+    [size]="menuSize()"
+    [motion]="motion()"
+    [autoFlip]="autoFlip()"
+    [ariaLabel]="menuAriaLabel()"
+    [styleClass]="menuStyleClass()"
+    (opened)="menuOpen.set(true); menuShow.emit()"
+    (closed)="menuOpen.set(false); menuHide.emit()"
+    (itemClick)="itemClick.emit($event)"
+  />
+</div>

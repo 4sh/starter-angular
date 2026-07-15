@@ -1,0 +1,155 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as ButtonSplitStories from './ui-button-split.stories';
+
+<Meta of={ButtonSplitStories} />
+
+# ui-button-split
+
+Un **bouton d'action** principal accolé à un **déclencheur déroulant** qui révèle
+une collection d'options additionnelles. La logique de composition réutilise
+[`ui-button`](?path=/docs/components-ui-actions-ui-button--docs) (les deux boutons,
+tokens `actions.*`) et [`ui-menu`](?path=/docs/components-ui-navigation-ui-menu--docs)
+(le panneau, tokens `navigation.*`). Les options sont pilotées par un modèle
+déclaratif `UiMenuItem[]` — le même que celui du menu.
+
+<Canvas of={ButtonSplitStories.Basic} />
+
+## API
+
+<ArgTypes of={ButtonSplitStories} />
+
+## Basic
+
+Le bouton d'action déclenche l'action par défaut (`buttonClick`) ; le déclencheur
+ouvre un menu d'options additionnelles défini par la propriété `model`, basée sur
+le modèle `UiMenuItem`.
+
+```html
+<ui-button-split label="Enregistrer" [model]="options" (buttonClick)="save()" (itemClick)="onOption($event)" />
+```
+
+## Icons
+
+Les boutons comme les options du menu supportent l'affichage d'icônes.
+
+```html
+<ui-button-split label="Enregistrer" icon="floppy-disk" [model]="optionsWithIcons" />
+```
+
+<Canvas of={ButtonSplitStories.Icons} />
+
+## Nested
+
+Les options peuvent s'imbriquer en sous-menus (groupes repliables), toujours via le
+modèle `UiMenuItem` (un item avec `items` devient un groupe).
+
+<Canvas of={ButtonSplitStories.Nested} />
+
+## Level
+
+La propriété `level` définit le type de bouton.
+
+<Canvas of={ButtonSplitStories.Level} />
+
+## Disabled
+
+Avec l'attribut `disabled`, le composant est inactif et non focusable. Les états
+désactivés du bouton et du déclencheur se gèrent aussi indépendamment : le bouton
+d'action est désactivé via `buttonDisabled`, le déclencheur du menu via
+`menuButtonDisabled`.
+
+<Canvas of={ButtonSplitStories.Disabled} />
+
+## Sizes
+
+<Canvas of={ButtonSplitStories.Sizes} />
+
+## Anatomie
+
+<table>
+  <thead>
+    <tr>
+      <th>Élément</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Structure</strong></td>
+      <td><code>ui-button</code> (action) + <code>ui-button</code> (déclencheur icon-only, chevron) accolés + <code>ui-menu</code> en popup.</td>
+    </tr>
+    <tr>
+      <td><strong>Level</strong></td>
+      <td><code>high</code> · <code>low</code> · <code>success</code> · <code>warning</code> · <code>error</code> (appliqué aux deux boutons)</td>
+    </tr>
+    <tr>
+      <td><strong>Size</strong></td>
+      <td><code>default</code> · <code>small</code> (boutons + densité du menu)</td>
+    </tr>
+    <tr>
+      <td><strong>Model</strong></td>
+      <td><code>model: UiMenuItem[]</code> — options : <code>command</code>, <code>routerLink</code>/<code>url</code>, sous-menus <code>items</code>, séparateurs, icônes.</td>
+    </tr>
+    <tr>
+      <td><strong>Désactivation</strong></td>
+      <td><code>disabled</code> (les deux) · <code>buttonDisabled</code> (action) · <code>menuButtonDisabled</code> (déclencheur)</td>
+    </tr>
+  </tbody>
+</table>
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Règle</th>
+      <th>Détail</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Sémantique</strong></td>
+      <td>Deux <code>&lt;button&gt;</code> natifs. Le déclencheur porte <code>aria-haspopup="menu"</code>, <code>aria-controls</code> vers le panneau et <code>aria-expanded</code> reflétant l'état ouvert.</td>
+    </tr>
+    <tr>
+      <td><strong>Labeling</strong></td>
+      <td>Le déclencheur est icon-only : <code>menuButtonAriaLabel</code> fournit son nom accessible (défaut « Plus d'options »). Renseigner <code>menuAriaLabel</code> pour nommer la liste.</td>
+    </tr>
+    <tr>
+      <td><strong>Clavier</strong></td>
+      <td>Menu ouvert : navigation roving <kbd>↑</kbd>/<kbd>↓</kbd>, <kbd>Début</kbd>/<kbd>Fin</kbd>, <kbd>Échap</kbd> ferme et rend le focus au déclencheur (hérité de <code>ui-menu</code>).</td>
+    </tr>
+    <tr>
+      <td><strong>États</strong></td>
+      <td><code>:focus-visible</code> visible et distinct du <code>hover</code>. <code>disabled</code> natif sur chaque bouton (pas seulement visuel).</td>
+    </tr>
+  </tbody>
+</table>
+
+## Configuration (SCSS)
+
+Variables locales en tête de `ui-button-split.scss`. Voir le groupe partagé
+[Actions](?path=/docs/components-configuration-actions--docs) et le
+[fonctionnement de la configuration](?path=/docs/components-configuration--docs).
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Variable locale</th>
+      <th>Source</th>
+      <th>Rôle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>$stroke-width</code></td>
+      <td><code>utils.$control-stroke-width</code></td>
+      <td>Chevauchement des deux boutons (= largeur de bordure, évite le doublement du trait partagé)</td>
+    </tr>
+    <tr>
+      <td><code>--ui-button-radius</code></td>
+      <td>hook exposé par <code>ui-button</code></td>
+      <td>Reforme les coins intérieurs des deux boutons</td>
+    </tr>
+  </tbody>
+</table>

@@ -1,0 +1,40 @@
+@use 'utils';
+
+// =====================================================================
+// ui-button-split : co-located styles. All values come from design tokens.
+// The two buttons carry their own colors/states (ui-button); this file only
+// glues them into a single control — the action keeps its left corners, the
+// trigger its right corners, and their shared border overlaps (no doubling).
+// =====================================================================
+
+// Shared default (ui-config) — the overlap must equal the button border width.
+$stroke-width: utils.$control-stroke-width;
+
+.ui-button-split {
+  display: inline-flex;
+  align-items: stretch;
+
+  // Each button owns its stacking context so the hovered/focused one (and its
+  // focus ring) paints above the overlapping neighbour.
+  &-action,
+  &-trigger {
+    position: relative;
+
+    &:hover,
+    &:focus-within {
+      z-index: 1;
+    }
+  }
+
+  // Reshape the inner corners through ui-button's `--ui-button-radius` hook —
+  // custom properties inherit across the component boundary, no ::ng-deep.
+  &-action {
+    --ui-button-radius: var(--radius-sm) 0 0 var(--radius-sm);
+  }
+
+  &-trigger {
+    --ui-button-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    // Pull onto the shared border so the two strokes collapse into one.
+    margin-left: calc(-1 * #{$stroke-width});
+  }
+}

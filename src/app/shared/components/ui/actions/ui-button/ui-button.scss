@@ -45,7 +45,9 @@ $focus-ring-width: utils.$action-focus-ring-width;
   justify-content: center;
   gap: var(--units-sm);
   border: utils.$control-stroke-width solid transparent;
-  border-radius: var(--radius-sm);
+  // Radius hook: a host can reshape the corners (e.g. glued buttons in
+  // ui-button-split) by setting `--ui-button-radius` on the <ui-button> host.
+  border-radius: var(--ui-button-radius, var(--radius-sm));
   font-family: var(--fontfamily-base);
   font-weight: var(--weight-bold);
   line-height: 1.2;
