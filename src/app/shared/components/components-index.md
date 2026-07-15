@@ -41,7 +41,7 @@
 - ✅ `ui-accordion` — Accordéon (composition `ui-accordion` + `ui-accordion-panel` ; single/multiple, en-tête bouton WAI-ARIA, clavier roving ↑↓/Début/Fin, `selectOnFocus`, collapse animé grid-rows via motion system, `disabled`, chevron/séparateur optionnels)
 - ⬜ `ui-empty-state` — État vide (illustration, titre, description, actions)
 - ⬜ `ui-skeleton` — Placeholder de chargement
-- ⬜ `ui-spinner` — Indicateur de chargement
+- ✅ `ui-spinner` — Indicateur de chargement indéterminé (cercle SVG token-coloré par défaut, marqueur **remplaçable** image/icône FontAwesome/template libre, tailles default/small + `--ui-spinner-size`, `orientation` + libellé, réglages `strokeWidth`/`fill`/`animationDuration`, `delay` anti-flash, `role="status"` live region, reduced-motion)
 - ✅ `ui-toast` — Notification éphémère (carte `ui-toast` + `UiToastService` `add`/`clear`/`remove` + `ui-toast-container` ; 7 positions, niveaux `informative`, auto-fermeture pausable au survol/focus, `sticky`, mode bannière `expanded`, contenu `template` custom + actions, entrée/sortie via motion system, région live a11y)
 
 ## layout

@@ -1,0 +1,136 @@
+@use 'utils';
+@use 'sass:map';
+
+// =====================================================================
+// ui-spinner : co-located styles. All values come from design tokens.
+// =====================================================================
+
+// --- Config ---------------------------------------
+// `default` = base styles; other keys become `._<name>` modifiers.
+$sizes: (
+  'default': (
+    box: 32px,
+    font-size: var(--size-typography-text-md),
+  ),
+  'small': (
+    box: 20px,
+    font-size: var(--size-typography-text-sm),
+  ),
+);
+$size-default: map.get($sizes, 'default');
+
+@function box($size) {
+  @return var(--ui-spinner-size, #{utils.rem-calc(map.get($size, box))});
+}
+
+.ui-spinner {
+  // --- Base ----------------------------------------------------------
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--units-sm);
+  color: var(--ui-spinner-color, var(--global-high-content-default));
+
+  // Horizontal orientation: mark beside the label.
+  &._horizontal { flex-direction: row; }
+
+  // --- Mark box ------------------------------------------------------
+  &-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: box($size-default);
+    height: box($size-default);
+    line-height: 0;
+  }
+
+  // --- Sizes (all but `default`) -------------------------------------
+  @each $name, $size in $sizes {
+    @if $name != 'default' {
+      &._#{$name} .ui-spinner-mark {
+        width: box($size);
+        height: box($size);
+      }
+      &._#{$name} .ui-spinner-label { font-size: map.get($size, font-size); }
+    }
+  }
+
+  // --- Default SVG mark ----------------------------------------------
+  &-svg {
+    width: 100%;
+    height: 100%;
+    transform-origin: center;
+    animation: ui-spinner-rotate var(--ui-spinner-duration, 1.2s) linear infinite;
+  }
+
+  &-circle {
+    stroke: currentColor;
+    stroke-linecap: round;
+    transform-origin: center;
+    animation: ui-spinner-dash calc(var(--ui-spinner-duration, 1.2s) * 1.25) ease-in-out infinite;
+  }
+
+  // --- Icon mark (component owns the rotation) -----------------------
+  &-spin {
+    display: inline-flex;
+    transform-origin: center;
+    animation: ui-spinner-rotate var(--ui-spinner-duration, 1.2s) linear infinite;
+  }
+
+  // --- Image mark (shown as-is: carries its own motion) --------------
+  &-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  // --- Label ---------------------------------------------------------
+  &-label {
+    color: var(--global-default-content-default);
+    font-family: var(--fontfamily-base);
+    font-weight: var(--weight-bold);
+    font-size: map.get($size-default, font-size);
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+}
+
+// --- Keyframes -------------------------------------------------------
+@keyframes ui-spinner-rotate {
+  to { transform: rotate(360deg); }
+}
+
+// Growing/shrinking arc (circumference of r=20 ≈ 125.7).
+@keyframes ui-spinner-dash {
+  0% {
+    stroke-dasharray: 1, 125;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 90, 125;
+    stroke-dashoffset: -30;
+  }
+  100% {
+    stroke-dasharray: 90, 125;
+    stroke-dashoffset: -124;
+  }
+}
+
+// --- Reduced motion / kit-wide motion off ----------------------------
+@mixin motion-still {
+  .ui-spinner-svg,
+  .ui-spinner-spin { animation: none; }
+
+  .ui-spinner-circle {
+    animation: none;
+    stroke-dasharray: none;
+    opacity: 0.65;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-spinner { @include motion-still; }
+}
+
+:root[data-motion='off'] .ui-spinner { @include motion-still; }

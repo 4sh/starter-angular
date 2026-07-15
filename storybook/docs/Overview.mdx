@@ -24,6 +24,7 @@ import * as SeparatorStories from "../../src/app/shared/components/ui/informativ
 import * as TooltipStories from "../../src/app/shared/components/ui/informative/ui-tooltip/ui-tooltip.stories";
 import * as TagStories from "../../src/app/shared/components/ui/informative/ui-tag/ui-tag.stories";
 import * as ToastStories from "../../src/app/shared/components/ui/informative/ui-toast/ui-toast.stories";
+import * as SpinnerStories from "../../src/app/shared/components/ui/informative/ui-spinner/ui-spinner.stories";
 import * as AccordionStories from "../../src/app/shared/components/ui/informative/ui-accordion/ui-accordion.stories";
 import * as CardStories from "../../src/app/shared/components/ui/layout/ui-card/ui-card.stories";
 import * as ModalStories from "../../src/app/shared/components/ui/layout/ui-modal/ui-modal.stories";
@@ -120,6 +121,7 @@ export const CategorySection = ({ title, components }) => (
     { name: 'ui-tag', description: 'Étiquette / pilule (level × sub-level × size, icônes gauche/droite, forme pill/rounded).', link: '?path=/docs/components-ui-informative-ui-tag--docs', story: TagStories.WithIconLeft },
     { name: 'ui-toast', description: 'Notification éphémère (service add/clear + conteneur, 7 positions, niveaux, auto-fermeture pausable, sticky, bannière, actions, motion).', link: '?path=/docs/components-ui-informative-ui-toast--docs', story: ToastStories.Default },
       { name: 'ui-accordion', description: 'Accordéon repliable (composition, single/multiple, clavier roving, motion, tokens).', link: '?path=/docs/components-ui-informative-ui-accordion--docs', story: AccordionStories.Default, previewHeight: 300, previewScale: 0.85 },
+    { name: 'ui-spinner', description: 'Indicateur de chargement indéterminé (cercle SVG token-coloré, marqueur remplaçable image/icône/template, tailles, delay anti-flash, role=status, reduced-motion).', link: '?path=/docs/components-ui-informative-ui-spinner--docs', story: SpinnerStories.WithLabel },
   ]}
 />
 

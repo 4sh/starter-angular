@@ -1,0 +1,118 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as SpinnerStories from './ui-spinner.stories';
+
+<Meta of={SpinnerStories} />
+
+# ui-spinner
+
+Indicateur de chargement **indéterminé** headless. Rend par défaut un cercle SVG
+lissé, coloré par les tokens (`--global-high-content-default`, surchargeable via
+`--ui-spinner-color`). Le marqueur animé est **entièrement remplaçable** : image,
+icône FontAwesome, ou template libre. La motion respecte `prefers-reduced-motion`
+et l'interrupteur global `data-motion="off"`.
+
+<Canvas of={SpinnerStories.WithLabel} />
+
+## API
+
+<ArgTypes of={SpinnerStories} />
+
+## Marqueur remplaçable
+
+Le marqueur est choisi par **présence d'input**, dans cet ordre de priorité :
+
+1. `spinnerTemplate`: contenu libre (`TemplateRef`)
+2. `image`: URL d'image (affichée telle quelle : un GIF/SVG animé porte sa propre motion)
+3. `icon`: nom FontAwesome (mis en rotation par le composant)
+4. *défaut*: cercle SVG intégré (`strokeWidth` / `fill` / `animationDuration`)
+
+<Canvas of={SpinnerStories.IconMark} />
+<Canvas of={SpinnerStories.CustomTemplate} />
+<Canvas of={SpinnerStories.Tuned} />
+
+## Tailles & disposition
+
+<Canvas of={SpinnerStories.Small} />
+<Canvas of={SpinnerStories.Horizontal} />
+
+## Éviter le flash
+
+Pour une attente très courte, un spinner qui clignote une fraction de seconde
+dégrade l'UX. `delay` (ms) diffère l'apparition : si le contenu arrive avant la
+fin du délai, le spinner n'est jamais monté.
+
+```html
+<!-- N'apparaît que si le chargement dépasse 300 ms -->
+<ui-spinner [delay]="300" label="Chargement" />
+```
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Point</th>
+      <th>Implémentation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Région live</strong></td>
+      <td>La racine est un <code>role="status"</code> <code>aria-live="polite"</code> <code>aria-busy="true"</code> : l'apparition du chargement est annoncée sans voler le focus.</td>
+    </tr>
+    <tr>
+      <td><strong>Nom accessible</strong></td>
+      <td>Le <code>label</code> visible est lu tel quel ; sinon <code>ariaLabel</code> ; sinon repli sur « Chargement ». Il y a donc toujours un nom.</td>
+    </tr>
+    <tr>
+      <td><strong>Marqueur décoratif</strong></td>
+      <td>Le SVG / l'icône / l'image portent <code>aria-hidden</code> : le sens vient du texte, jamais de la seule animation.</td>
+    </tr>
+    <tr>
+      <td><strong>Motion réduite</strong></td>
+      <td><code>prefers-reduced-motion: reduce</code> et <code>data-motion="off"</code> figent la rotation et affichent un anneau plein atténué (le texte reste le vecteur d'information).</td>
+    </tr>
+  </tbody>
+</table>
+
+```html
+<!-- Zone en cours de chargement -->
+<div [attr.aria-busy]="loading">
+  @if (loading) {
+    <ui-spinner label="Chargement des résultats" />
+  } @else {
+    <!-- contenu -->
+  }
+</div>
+```
+
+## Configuration (SCSS)
+
+Toutes les valeurs proviennent des design tokens. Points de réglage exposés (par instance, via custom properties CSS) :
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Variable</th>
+      <th>Défaut</th>
+      <th>Rôle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>--ui-spinner-size</code></td>
+      <td>préréglage <code>size</code> (32/20px)</td>
+      <td>Taille brute de la boîte du marqueur.</td>
+    </tr>
+    <tr>
+      <td><code>--ui-spinner-color</code></td>
+      <td><code>--global-high-content-default</code></td>
+      <td>Couleur du marqueur (le SVG et l'icône utilisent <code>currentColor</code>).</td>
+    </tr>
+    <tr>
+      <td><code>--ui-spinner-duration</code></td>
+      <td><code>1.2s</code> (input <code>animationDuration</code>)</td>
+      <td>Durée d'une rotation.</td>
+    </tr>
+  </tbody>
+</table>

@@ -1,0 +1,41 @@
+@if (visible()) {
+  <div
+    [class]="classes()"
+    role="status"
+    aria-live="polite"
+    [attr.aria-busy]="true"
+    [attr.aria-label]="rootAriaLabel()"
+  >
+    <span class="ui-spinner-mark" aria-hidden="true">
+      @switch (markKind()) {
+        @case ('template') {
+          <ng-container [ngTemplateOutlet]="spinnerTemplate()!" />
+        }
+        @case ('image') {
+          <img class="ui-spinner-image" [src]="image()!" [alt]="imageAlt()" />
+        }
+        @case ('icon') {
+          <span class="ui-spinner-spin">
+            <ui-icon [name]="icon()!" [size]="iconSize()" />
+          </span>
+        }
+        @default {
+          <svg class="ui-spinner-svg" viewBox="0 0 50 50">
+            <circle
+              class="ui-spinner-circle"
+              cx="25"
+              cy="25"
+              r="20"
+              [attr.fill]="fill()"
+              [attr.stroke-width]="strokeWidth()"
+            />
+          </svg>
+        }
+      }
+    </span>
+
+    @if (label(); as text) {
+      <span class="ui-spinner-label">{{ text }}</span>
+    }
+  </div>
+}
