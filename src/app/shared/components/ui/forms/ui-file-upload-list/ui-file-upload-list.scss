@@ -1,0 +1,161 @@
+@use 'utils';
+@use 'sass:map';
+
+// =====================================================================
+// ui-file-upload-list : a single file row. All values come from tokens.
+//
+// Extend:
+//   • Size → add an entry to $sizes (+ the `UiFileUploadListSize` type).
+// =====================================================================
+
+// --- Config ----------------------------------------------------------
+$sizes: (
+  'default': (
+    radius: var(--radius-lg),
+    padding-y: var(--units-md),
+    padding-x: var(--units-default),
+    gap: var(--units-md),
+    media: 40px,
+    name-size: var(--size-typography-title-sm),
+    meta-size: var(--size-typography-text-sm),
+  ),
+  'small': (
+    radius: var(--radius-md),
+    padding-y: var(--units-sm),
+    padding-x: var(--units-md),
+    gap: var(--units-sm),
+    media: 32px,
+    name-size: var(--size-typography-text-md),
+    meta-size: var(--size-typography-text-sm),
+  ),
+);
+$size-default: map.get($sizes, 'default');
+$stroke-width: utils.$form-field-stroke-width;
+
+@mixin row-size($s) {
+  border-radius: map.get($s, radius);
+  padding: map.get($s, padding-y) map.get($s, padding-x);
+  gap: map.get($s, gap);
+
+  .ui-file-upload-list-media {
+    width: utils.rem-calc(map.get($s, media));
+    height: utils.rem-calc(map.get($s, media));
+  }
+  .ui-file-upload-list-name { font-size: map.get($s, name-size); }
+  .ui-file-upload-list-meta { font-size: map.get($s, meta-size); }
+}
+
+.ui-file-upload-list {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--units-md);
+  box-sizing: border-box;
+  width: 100%;
+  overflow: hidden;
+  background-color: var(--form-high-surface-default);
+  border: $stroke-width solid var(--form-high-stroke-default);
+  color: var(--form-high-content-default);
+
+  @include row-size($size-default);
+
+  @each $name, $s in $sizes {
+    @if $name != 'default' {
+      &._#{$name} { @include row-size($s); }
+    }
+  }
+
+  // --- File (media + infos) ------------------------------------------
+  &-file {
+    display: flex;
+    align-items: center;
+    gap: var(--units-sm);
+    min-width: 0; // allow the name to truncate
+    flex: 1 1 auto;
+  }
+
+  &-media {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    line-height: 0;
+    color: var(--form-high-content-default);
+  }
+
+  &-thumb {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+  }
+
+  &-infos {
+    display: flex;
+    flex-direction: column;
+    gap: var(--units-2xs);
+    min-width: 0;
+  }
+
+  &-name {
+    font-family: var(--fontfamily-base);
+    font-weight: var(--weight-bold);
+    line-height: 1.3;
+    // Truncate long names on a single line.
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &-meta {
+    font-family: var(--fontfamily-base);
+    font-weight: var(--weight-light);
+    line-height: 1.2;
+    color: var(--form-high-content-default);
+  }
+
+  // --- Remove button --------------------------------------------------
+  &-remove {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    padding: var(--units-2xs);
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-sm);
+    color: var(--form-high-content-default);
+    cursor: pointer;
+    line-height: 0;
+    @include utils.control-transition(background-color, color);
+
+    &:hover { color: var(--global-high-content-default); }
+    &:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 utils.$form-focus-ring-width var(--form-high-stroke-focused);
+    }
+  }
+
+  // --- Progress bar (uploading) --------------------------------------
+  &-progress {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: var(--stroke-default);
+    background-color: var(--form-high-surface-hover);
+  }
+  &-progress-bar {
+    display: block;
+    height: 100%;
+    background-color: var(--global-high-content-default);
+    @include utils.control-transition(width);
+  }
+
+  // --- Error ----------------------------------------------------------
+  &._error {
+    border-color: var(--informative-errorhigh-stroke-default);
+    .ui-file-upload-list-media,
+    .ui-file-upload-list-meta { color: var(--informative-errorhigh-content-default); }
+  }
+}

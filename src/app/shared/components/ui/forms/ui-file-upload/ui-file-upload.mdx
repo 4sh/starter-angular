@@ -1,0 +1,144 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as FileUploadStories from './ui-file-upload.stories';
+
+<Meta of={FileUploadStories} />
+
+# ui-file-upload
+
+Téléverseur de fichiers **headless** — champ compact (`field`) ou zone de
+**glisser-déposer** (`drag`). La sélection s'appuie sur un `<input type="file">`
+natif (masqué mais focusable) : sélecteur système, clavier et lecteurs d'écran
+fonctionnent nativement, et toute la surface accepte le dépôt. Les fichiers sont
+validés côté client (type / taille / nombre) puis téléversés automatiquement
+(`auto`), à la demande, ou via un gestionnaire personnalisé (`customUpload`). La
+progression est suivie via `XMLHttpRequest` (aucun provider HTTP global requis) ;
+les vignettes d'images utilisent des object URLs révoqués à la suppression.
+
+<Canvas of={FileUploadStories.Basic} />
+
+## API
+
+<ArgTypes of={FileUploadStories} />
+
+## Basic
+
+Sélection de fichiers avec prise en charge du glisser-déposer (équivalent du
+type « Field »).
+
+<Canvas of={FileUploadStories.Basic} />
+
+## Auto
+
+Quand `auto` est activé, un fichier est téléversé instantanément après sa sélection.
+
+<Canvas of={FileUploadStories.Auto} />
+
+## Advanced
+
+Le téléverseur avancé offre le glisser-déposer, le multi-fichiers, le
+téléversement automatique, le suivi de progression et les validations.
+
+<Canvas of={FileUploadStories.Advanced} />
+
+## Custom Upload
+
+L'implémentation du téléversement peut être remplacée en activant `customUpload`
+et en définissant un gestionnaire personnalisé (`uploadHandler`). Le gestionnaire
+reçoit les fichiers en attente et des callbacks (`setProgress` / `markUploaded` /
+`markError`) pour piloter l'état.
+
+<Canvas of={FileUploadStories.CustomUpload} />
+
+## Image Preview
+
+Aperçu en grille avec vignettes + nom / taille. Au survol d'une image, le bouton
+de suppression apparaît. Réalisé via le template `content`.
+
+<Canvas of={FileUploadStories.ImagePreview} />
+
+## Template
+
+L'UI est personnalisable via des templates. `file` (variable implicite : le
+fichier) remplace le rendu d'une ligne. `content` reçoit les fichiers sélectionnés
+et permet de gérer les fichiers téléversés (ex. suppression). `toolbar` affiche du
+contenu personnalisé dans la barre d'actions.
+
+<Canvas of={FileUploadStories.Template} />
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Point</th>
+      <th>Implémentation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Contrôle natif</strong></td>
+      <td>Un vrai <code>&lt;input type="file"&gt;</code> (masqué visuellement mais focusable) porte la sélection : sélecteur système, tabulation et activation clavier natifs. Nom accessible via <code>ariaLabel</code> (garde-fou dev si absent).</td>
+    </tr>
+    <tr>
+      <td><strong>Zone de dépôt</strong></td>
+      <td>Toute la surface est un <code>&lt;label&gt;</code> cliquable ; l'anneau de focus s'affiche sur la zone quand l'input reçoit le focus (<code>:focus-visible</code>).</td>
+    </tr>
+    <tr>
+      <td><strong>Progression</strong></td>
+      <td>Chaque ligne en cours affiche un <code>ui-spinner</code> et une barre <code>role="progressbar"</code> (<code>aria-valuenow</code>). Les boutons de suppression sont de vrais <code>&lt;button&gt;</code> nommés (nom du fichier inclus).</td>
+    </tr>
+    <tr>
+      <td><strong>Erreurs</strong></td>
+      <td>Les messages de validation sont rendus dans une région <code>role="alert"</code> <code>aria-live="assertive"</code> ; la couleur n'est pas le seul vecteur (message texte + icône).</td>
+    </tr>
+  </tbody>
+</table>
+
+## Sécurité
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Point</th>
+      <th>Implémentation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Validation client</strong></td>
+      <td><code>accept</code> / <code>maxFileSize</code> / <code>fileLimit</code> filtrent avant téléversement — <strong>confort UX uniquement</strong>. Revalidez <strong>toujours</strong> côté serveur (type réel, taille, nombre, contenu).</td>
+    </tr>
+    <tr>
+      <td><strong>Fuites mémoire</strong></td>
+      <td>Les object URLs des aperçus sont révoqués à la suppression, au vidage et à la destruction du composant.</td>
+    </tr>
+    <tr>
+      <td><strong>Noms de fichiers</strong></td>
+      <td>Affichés via l'interpolation Angular (échappement automatique) — jamais via <code>innerHTML</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Requête</strong></td>
+      <td><code>withCredentials</code> est désactivé par défaut (pas d'envoi de cookies cross-origin sans opt-in explicite).</td>
+    </tr>
+  </tbody>
+</table>
+
+```html
+<!-- Téléversement réel vers un endpoint -->
+<ui-file-upload
+  mode="drag"
+  [multiple]="true"
+  accept="image/*,.pdf"
+  [maxFileSize]="5 * 1024 * 1024"
+  url="/api/upload"
+  ariaLabel="Téléverser des documents"
+  (onUpload)="onUploaded($event)"
+  (onError)="onError($event)"
+/>
+```
+
+## Composition
+
+La liste des fichiers est composée de lignes **`ui-file-upload-list`** (une par
+fichier) — la même unité que dans Figma. Chaque ligne bascule sur `ui-spinner`
+pendant le téléversement. Voir [ui-file-upload-list](?path=/docs/components-ui-forms-ui-file-upload-list--docs).

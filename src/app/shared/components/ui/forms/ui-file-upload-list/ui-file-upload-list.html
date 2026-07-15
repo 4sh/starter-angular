@@ -1,0 +1,42 @@
+<div [class]="classes()">
+  <div class="ui-file-upload-list-file">
+    <span class="ui-file-upload-list-media">
+      @if (isUploading()) {
+        <ui-spinner size="small" [ariaLabel]="'Téléversement de ' + file().name" />
+      } @else if (thumbnail(); as src) {
+        <img class="ui-file-upload-list-thumb" [src]="src" alt="" />
+      } @else {
+        <ui-icon [name]="isError() ? 'triangle-exclamation' : icon()" [size]="iconSize()" />
+      }
+    </span>
+
+    <span class="ui-file-upload-list-infos">
+      <span class="ui-file-upload-list-name" [title]="file().name">{{ file().name }}</span>
+      <span class="ui-file-upload-list-meta">{{ infoLabel() }}</span>
+    </span>
+  </div>
+
+  @if (removable()) {
+    <button
+      type="button"
+      class="ui-file-upload-list-remove"
+      [attr.aria-label]="removeLabel() + ' : ' + file().name"
+      (click)="onRemove()"
+    >
+      <ui-icon name="trash" [size]="iconSize()" />
+    </button>
+  }
+
+  @if (isUploading()) {
+    <div
+      class="ui-file-upload-list-progress"
+      role="progressbar"
+      [attr.aria-valuenow]="file().progress"
+      aria-valuemin="0"
+      aria-valuemax="100"
+      [attr.aria-label]="'Progression du téléversement de ' + file().name"
+    >
+      <span class="ui-file-upload-list-progress-bar" [style.width.%]="file().progress"></span>
+    </div>
+  }
+</div>

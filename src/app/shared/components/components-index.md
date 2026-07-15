@@ -24,7 +24,8 @@
 - ✅ `ui-datepicker` — Sélecteur de date/heure (headless, CVA, overlay CDK ou inline, min/max, jours désactivés, showTime 12/24h, inline, focus roving clavier)
 - ✅ `ui-nudger` — Incrémenteur numérique `[−] valeur [+]` (headless, CVA ; deux `ui-button` icon-only, min/max/step, bornes dérivées désactivant le bouton, tailles, niveaux, `formatValue`, valeur en région live)
 - ✅ `ui-rating` — Notation étoiles (headless, CVA, clavier natif range, focus)
-- ⬜ `ui-file-upload` — Téléversement de fichiers
+- ✅ `ui-file-upload` — Téléversement de fichiers (headless ; modes `field`/`drag` + glisser-déposer, `multiple`, validation `accept`/`maxFileSize`/`fileLimit`, `auto`, `customUpload` + `uploadHandler`, upload XHR avec suivi de progression, templates `file`/`content`/`toolbar`, région d'erreurs live, aperçus image révoqués ; compose `ui-file-upload-list`)
+- ✅ `ui-file-upload-list` — Ligne de fichier (unité répétée : vignette/icône, nom + taille/état, suppression ; bascule sur `ui-spinner` pendant le téléversement + barre de progression)
 - ✅ `ui-textarea` — Zone de texte multiligne (headless, CVA ; label + helper, niveaux/états, `rows`, `maxlength`, `autoResize`, poignée native)
 - ⬜ `ui-slider` — Curseur de sélection de valeur
 

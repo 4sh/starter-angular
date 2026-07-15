@@ -1,0 +1,221 @@
+@use 'utils';
+@use 'sass:map';
+
+// =====================================================================
+// ui-file-upload : co-located styles. All values come from design tokens.
+//
+// Extend:
+//   • Size → add entries to $field-height / $zone-min (+ the size type).
+// =====================================================================
+
+// --- Config ----------------------------------------------------------
+$stroke: utils.$form-field-stroke-width;
+$radius: utils.$form-field-radius;
+$focus-ring: utils.$form-focus-ring-width;
+
+$field-height: (
+  'default': utils.$form-field-height,
+  'small': utils.$form-field-height-small,
+);
+$zone-min: (
+  'default': 112px,
+  'small': 94px,
+);
+
+.ui-file-upload {
+  display: flex;
+  flex-direction: column;
+  gap: var(--units-default);
+  width: 100%;
+  font-family: var(--fontfamily-base);
+
+  // --- Native input: visually hidden but focusable -------------------
+  &-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  // =================================================================
+  // Field mode
+  // =================================================================
+  &-field {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--units-sm);
+    height: map.get($field-height, 'default');
+    padding-left: var(--units-md);
+    overflow: hidden;
+    background-color: var(--form-high-surface-default);
+    border: $stroke solid var(--form-high-stroke-default);
+    border-radius: $radius;
+    color: var(--form-high-content-default);
+    cursor: pointer;
+    @include utils.control-transition(background-color, border-color, color, box-shadow);
+
+    &:hover {
+      background-color: var(--form-high-surface-hover);
+      border-color: var(--form-high-stroke-hover);
+    }
+  }
+
+  &._small &-field { height: map.get($field-height, 'small'); }
+
+  &-field-text {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: var(--size-typography-text-default);
+    font-weight: var(--weight-regular);
+
+    &._placeholder { color: var(--form-high-content-default); opacity: 0.75; }
+  }
+  &._small &-field-text { font-size: var(--size-typography-text-md); }
+
+  // Browse "button" (styled span — the label owns the click) ----------
+  &-browse {
+    display: inline-flex;
+    align-items: center;
+    align-self: stretch;
+    flex: none;
+    padding: 0 var(--units-default);
+    background-color: var(--actions-high-surface-default);
+    color: var(--actions-high-content-default);
+    font-size: var(--size-typography-text-default);
+    font-weight: var(--weight-bold);
+  }
+  &._small &-browse { padding: 0 var(--units-md); font-size: var(--size-typography-text-md); }
+  &-field:hover &-browse { background-color: var(--actions-high-surface-hover); }
+
+  // =================================================================
+  // Drag mode
+  // =================================================================
+  &-zone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--units-lg);
+    min-height: map.get($zone-min, 'default');
+    padding: var(--units-default);
+    background-color: var(--form-high-surface-default);
+    border: $stroke dashed var(--form-high-stroke-default);
+    border-radius: $radius;
+    color: var(--form-high-content-default);
+    text-align: center;
+    cursor: pointer;
+    @include utils.control-transition(background-color, border-color, box-shadow);
+
+    &:hover {
+      background-color: var(--form-high-surface-hover);
+      border-color: var(--form-high-stroke-hover);
+    }
+  }
+  &._small &-zone { gap: var(--units-sm); min-height: map.get($zone-min, 'small'); }
+
+  // Active drag-over highlight (solid border + focused surface).
+  &._dragging &-zone {
+    background-color: var(--form-high-surface-focused);
+    border-style: solid;
+    border-color: var(--form-high-stroke-focused);
+  }
+
+  &-zone-icon { color: var(--form-high-content-default); line-height: 0; }
+
+  &-zone-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--units-xs);
+  }
+
+  &-zone-title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--units-2xs);
+    font-size: var(--size-typography-text-default);
+    font-weight: var(--weight-regular);
+  }
+  &._small &-zone-title { font-size: var(--size-typography-text-md); }
+
+  // "Click to upload" styled as a link (the whole zone is the trigger).
+  &-zone-link {
+    color: var(--actions-low-content-default);
+    font-weight: var(--weight-bold);
+    text-decoration: underline;
+  }
+  &-zone-prompt { color: var(--form-high-content-default); }
+
+  &-zone-hint {
+    color: var(--global-low-content-default);
+    font-size: var(--size-typography-text-md);
+  }
+  &._small &-zone-hint { font-size: var(--size-typography-text-sm); }
+
+  // =================================================================
+  // Focus ring (native input drives it) — sibling of the label
+  // =================================================================
+  &-input:focus-visible ~ &-field,
+  &-input:focus-visible ~ &-zone {
+    outline: none;
+    border-color: var(--form-high-stroke-focused);
+    box-shadow: 0 0 0 $focus-ring var(--form-high-stroke-focused);
+  }
+
+  // =================================================================
+  // Toolbar / content / messages
+  // =================================================================
+  &-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--units-sm);
+  }
+
+  &-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--units-sm);
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li { display: block; }
+  }
+
+  &-messages { display: flex; flex-direction: column; gap: var(--units-2xs); }
+  &-message {
+    margin: 0;
+    color: var(--informative-errorhigh-content-default);
+    font-size: var(--size-typography-text-md);
+  }
+
+  // =================================================================
+  // Disabled
+  // =================================================================
+  &._disabled {
+    .ui-file-upload-field,
+    .ui-file-upload-zone {
+      background-color: var(--form-high-surface-disabled);
+      border-color: var(--form-high-stroke-disabled);
+      color: var(--form-high-content-disabled);
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+    .ui-file-upload-browse {
+      background-color: var(--actions-high-surface-disabled);
+      color: var(--actions-high-content-disabled);
+    }
+  }
+}

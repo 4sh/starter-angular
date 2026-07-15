@@ -1,0 +1,50 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as ListStories from './ui-file-upload-list.stories';
+
+<Meta of={ListStories} />
+
+# ui-file-upload-list
+
+Ligne de fichier — l'**unité répétée** d'une liste de téléversement (miroir du
+composant Figma). [ui-file-upload](?path=/docs/components-ui-forms-ui-file-upload--docs)
+en empile une par fichier. Présentationnelle : vignette (images) ou icône de
+fichier, nom + taille/état, bouton de suppression. Pendant le téléversement, le
+marqueur bascule sur `ui-spinner` et une barre de progression apparaît.
+
+<Canvas of={ListStories.Default} />
+
+## API
+
+<ArgTypes of={ListStories} />
+
+## États
+
+<Canvas of={ListStories.Uploading} />
+<Canvas of={ListStories.ErrorState} />
+<Canvas of={ListStories.ImageThumbnail} />
+<Canvas of={ListStories.Small} />
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Point</th>
+      <th>Implémentation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Suppression</strong></td>
+      <td>Vrai <code>&lt;button&gt;</code> avec <code>aria-label</code> incluant le nom du fichier.</td>
+    </tr>
+    <tr>
+      <td><strong>Progression</strong></td>
+      <td>Barre <code>role="progressbar"</code> (<code>aria-valuenow</code>/<code>min</code>/<code>max</code>) ; <code>ui-spinner</code> en région <code>status</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Vignette</strong></td>
+      <td>Décorative (<code>alt=""</code>) — le nom du fichier reste le texte lu.</td>
+    </tr>
+  </tbody>
+</table>

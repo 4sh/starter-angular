@@ -1,0 +1,105 @@
+<div
+  [class]="classes()"
+  (dragover)="onDragOver($event)"
+  (dragleave)="onDragLeave($event)"
+  (drop)="onDrop($event)"
+>
+  <!-- Real native control (visually hidden, keeps keyboard + screen-reader support) -->
+  <input
+    #fileInput
+    class="ui-file-upload-input"
+    type="file"
+    [id]="inputId"
+    [attr.name]="name()"
+    [attr.accept]="accept() || null"
+    [multiple]="multiple()"
+    [disabled]="disabled()"
+    [attr.aria-label]="ariaLabel()"
+    (change)="onInputChange($event)"
+  />
+
+  @if (mode() === 'field') {
+    <!-- Field mode: compact summary + Browse trigger (whole label opens picker) -->
+    <label class="ui-file-upload-field" [attr.for]="inputId">
+      <span class="ui-file-upload-field-text" [class._placeholder]="!hasFiles()">{{ fieldSummary() }}</span>
+      <span class="ui-file-upload-browse" aria-hidden="true">{{ browseLabel() }}</span>
+    </label>
+  } @else {
+    <!-- Drag mode: full drop zone -->
+    <label class="ui-file-upload-zone" [attr.for]="inputId">
+      <ui-icon class="ui-file-upload-zone-icon" name="cloud-arrow-up" size="lg" />
+      <span class="ui-file-upload-zone-content">
+        <span class="ui-file-upload-zone-title">
+          <span class="ui-file-upload-zone-link">{{ dragLinkLabel() }}</span>
+          <span class="ui-file-upload-zone-prompt">{{ dragPromptLabel() }}</span>
+        </span>
+        @if (hint(); as h) {
+          <span class="ui-file-upload-zone-hint">{{ h }}</span>
+        }
+      </span>
+    </label>
+
+    <!-- Toolbar (custom, or default Upload/Clear actions) -->
+    @if (toolbarTemplate(); as tpl) {
+      <div class="ui-file-upload-toolbar">
+        <ng-container
+          [ngTemplateOutlet]="tpl"
+          [ngTemplateOutletContext]="{ $implicit: files(), choose: chooseFn, upload: uploadFn, clear: clearFn }"
+        />
+      </div>
+    } @else if (showControls() && hasFiles()) {
+      <div class="ui-file-upload-toolbar">
+        @if (!auto()) {
+          <ui-button
+            [label]="uploadLabel()"
+            [size]="size() === 'small' ? 'small' : 'default'"
+            icon="cloud-arrow-up"
+            [disabled]="!canUpload()"
+            (buttonClick)="upload()"
+          />
+        }
+        <ui-button
+          [label]="cancelLabel()"
+          level="low"
+          [size]="size() === 'small' ? 'small' : 'default'"
+          icon="xmark"
+          (buttonClick)="clear()"
+        />
+      </div>
+    }
+  }
+
+  <!-- Content section: the file list -->
+  @if (contentTemplate(); as tpl) {
+    <div class="ui-file-upload-content">
+      <ng-container
+        [ngTemplateOutlet]="tpl"
+        [ngTemplateOutletContext]="{ $implicit: files(), remove: removeFn, clear: clearFn }"
+      />
+    </div>
+  } @else if (showFileList() && hasFiles()) {
+    <ul class="ui-file-upload-content" role="list">
+      @for (f of files(); track f.id) {
+        <li>
+          @if (fileTemplate(); as tpl) {
+            <ng-container
+              [ngTemplateOutlet]="tpl"
+              [ngTemplateOutletContext]="{ $implicit: f, remove: removeFn }"
+            />
+          } @else {
+            <ui-file-upload-list [file]="f" [size]="size()" (remove)="remove($event)" />
+          }
+        </li>
+      }
+    </ul>
+  }
+
+  <!-- Validation messages (assertive live region) -->
+  @if (messages().length) {
+    <div class="ui-file-upload-messages" role="alert" aria-live="assertive">
+      @for (msg of messages(); track msg) {
+        <p class="ui-file-upload-message">{{ msg }}</p>
+      }
+    </div>
+  }
+</div>
