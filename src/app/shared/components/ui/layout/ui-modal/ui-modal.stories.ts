@@ -12,7 +12,7 @@ const meta: Meta<UiModal> = {
     layout: 'centered',
     design: {
       type: 'figma',
-      url: 'https://www.figma.com/design/GZww5hdUA49LB8XWeWP6tl/-Projet----UI-Kit?node-id=134-9609&t=UVjo39F2me7Bsklt-1',
+      url: 'https://www.figma.com/design/GZww5hdUA49LB8XWeWP6tl/-Projet----UI-Kit?node-id=278-2826&t=inUHXSiILDu9zvad-1',
     },
   },
   argTypes: {

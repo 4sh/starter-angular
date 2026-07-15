@@ -8,20 +8,20 @@ import * as ToastStories from './ui-toast.stories';
 Notification transitoire, empilée dans un coin de l'écran. Le composant se décline en
 trois pièces complémentaires :
 
-- **`UiToast`** — la carte présentational (icône · titre/texte · fermeture). Entièrement
+- **`UiToast`** : la carte présentational (icône · titre/texte · fermeture). Entièrement
   pilotée par les tokens `informative` (surface / content / stroke), en `light` **et** `dark`.
-- **`UiToastService`** — le point d'entrée programmatique (`add` / `addAll` / `clear` / `remove`).
-- **`ui-toast-container`** — la pile ancrée dans le viewport : elle lit le service, positionne
+- **`UiToastService`** : le point d'entrée programmatique (`add` / `addAll` / `clear` / `remove`).
+- **`ui-toast-container`** : la pile ancrée dans le viewport : elle lit le service, positionne
   les toasts, anime l'entrée/sortie via le **système de motion** partagé et gère l'auto-fermeture
   (mise en pause au survol / focus).
 
 <Canvas of={ToastStories.Default} />
 
-## API — `UiToast` (carte)
+## API : `UiToast` (carte)
 
 <ArgTypes of={ToastStories} />
 
-## API — `UiToastService`
+## API : `UiToastService`
 
 <table className="doc-table">
   <thead>
@@ -39,7 +39,7 @@ trois pièces complémentaires :
 Champs d'un `UiToastMessage` : `title`, `text`, `level`, `subLevel`, `icon`, `closable`,
 `sticky`, `life`, `key`, `data`, `styleClass`, `id`.
 
-## API — `ui-toast-container`
+## API : `ui-toast-container`
 
 <table className="doc-table">
   <thead>
@@ -53,7 +53,7 @@ Champs d'un `UiToastMessage` : `title`, `text`, `level`, `subLevel`, `icon`, `cl
     <tr><td><code>motion</code></td><td><code>UiMotionPreset</code></td><td>selon position</td><td>Override du preset d'animation.</td></tr>
     <tr><td><code>motionDisabled</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Désactive l'animation d'entrée/sortie.</td></tr>
     <tr><td><code>contained</code></td><td><code>boolean</code></td><td><code>false</code></td><td><code>position: absolute</code> (scopé à un ancêtre positionné) au lieu de <code>fixed</code>.</td></tr>
-    <tr><td><code>template</code></td><td><code>TemplateRef</code></td><td><code>undefined</code></td><td>Contenu personnalisé — contexte <code>&#123; $implicit: message, closeFn &#125;</code>.</td></tr>
+    <tr><td><code>template</code></td><td><code>TemplateRef</code></td><td><code>undefined</code></td><td>Contenu personnalisé : contexte <code>&#123; $implicit: message, closeFn &#125;</code>.</td></tr>
     <tr><td><code>stackVisibleLimit</code></td><td><code>number</code></td><td><code>0</code></td><td>N'affiche que les N toasts les plus récents (<code>0</code> = illimité) ; les autres attendent (leur compte à rebours court quand même).</td></tr>
     <tr><td><code>stackGap</code></td><td><code>number</code></td><td>token <code>--units-sm</code></td><td>Écart (px) entre cartes empilées.</td></tr>
     <tr><td><code>preventDuplicates</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Ignore un toast dont le contenu (<code>level</code>+<code>title</code>+<code>text</code>) est déjà affiché.</td></tr>
@@ -64,7 +64,7 @@ Champs d'un `UiToastMessage` : `title`, `text`, `level`, `subLevel`, `icon`, `cl
 
 > **`breakpoints` (PrimeNG)** n'est **pas** repris : la largeur de la pile est déjà responsive
 > (bornée au viewport via `min(largeur, calc(100vw - marges))`). Pour des styles par palier,
-> passer une classe via `styleClass` et cibler des `@media` en CSS — plutôt que des styles inline
+> passer une classe via `styleClass` et cibler des `@media` en CSS : plutôt que des styles inline
 > par breakpoint, non alignés avec l'approche token-first du design system.
 
 ## Niveaux & intensité
@@ -135,7 +135,7 @@ respectés automatiquement.
     </tr>
     <tr>
       <td><strong>Pause au survol / focus</strong></td>
-      <td>Le compte à rebours d'auto-fermeture se met en pause au survol et au focus clavier — l'utilisateur a le temps de lire et d'agir (WCAG « enough time »).</td>
+      <td>Le compte à rebours d'auto-fermeture se met en pause au survol et au focus clavier : l'utilisateur a le temps de lire et d'agir (WCAG « enough time »).</td>
     </tr>
     <tr>
       <td><strong>Icône</strong></td>
@@ -150,7 +150,7 @@ respectés automatiquement.
 
 ## Configuration (SCSS)
 
-Constantes locales à `ui-toast-container.scss` (structurelles, jamais de couleur — les couleurs
+Constantes locales à `ui-toast-container.scss` (structurelles, jamais de couleur : les couleurs
 restent des design tokens runtime). Voir aussi **[Components / Configuration](?path=/docs/components-configuration--docs)**.
 
 <table className="doc-table">

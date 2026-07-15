@@ -9,8 +9,7 @@ const ITEMS = [
   { icon: 'house', ariaLabel: 'Accueil', url: '#' },
   { label: 'Électronique', url: '#' },
   { label: 'Ordinateurs', url: '#' },
-  { label: 'Accessoires', url: '#' },
-  { label: 'Clavier sans fil' },
+  { label: 'Accessoires'  },
 ];
 
 const meta: Meta<UiBreadcrumb> = {
