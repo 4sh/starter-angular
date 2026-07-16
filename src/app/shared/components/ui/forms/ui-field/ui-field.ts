@@ -39,6 +39,11 @@ export class UiField {
   readonly = input(false, { transform: booleanAttribute });
   /** Multiline box (top-aligned, auto-height with min-height) — used by `ui-textarea`. */
   multiline = input(false, { transform: booleanAttribute });
+  /**
+   * Auto-height box (grows with wrapping content, keeps padding + centering) —
+   * used by `ui-select` in `multiple` mode so chips/values can wrap.
+   */
+  autoHeight = input(false, { transform: booleanAttribute });
   /** Message under the field (helper or error, already resolved by the component). */
   message = input<string>();
   /** id of the message (for `aria-describedby`, set by the component on the input). */
@@ -65,6 +70,7 @@ export class UiField {
     if (this.disabled()) c.push('_disabled');
     if (this.readonly()) c.push('_readonly');
     if (this.multiline()) c.push('_multiline');
+    if (this.autoHeight()) c.push('_auto-height');
     return c.join(' ');
   });
 }

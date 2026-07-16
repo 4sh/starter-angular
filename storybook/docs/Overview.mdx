@@ -16,6 +16,7 @@ import * as DatepickerStories from "../../src/app/shared/components/ui/forms/ui-
 import * as RatingStories from "../../src/app/shared/components/ui/forms/ui-rating/ui-rating.stories";
 import * as NudgerStories from "../../src/app/shared/components/ui/forms/ui-nudger/ui-nudger.stories";
 import * as TextareaStories from "../../src/app/shared/components/ui/forms/ui-textarea/ui-textarea.stories";
+import * as SelectStories from "../../src/app/shared/components/ui/forms/ui-select/ui-select.stories";
 import * as FileUploadStories from "../../src/app/shared/components/ui/forms/ui-file-upload/ui-file-upload.stories";
 import * as HelperStories from "../../src/app/shared/components/ui/informative/ui-helper/ui-helper.stories";
 import * as BadgeStories from "../../src/app/shared/components/ui/informative/ui-badge/ui-badge.stories";
@@ -109,6 +110,7 @@ export const CategorySection = ({ title, components }) => (
     { name: 'ui-nudger', description: 'Incrémenteur numérique [−] valeur [+] (headless, CVA, min/max/step, tailles, formatValue).', link: '?path=/docs/components-ui-forms-ui-nudger--docs', story: NudgerStories.MinMax },
     { name: 'ui-textarea', description: 'Zone de texte multiligne (headless, CVA, rows, autoResize, poignée native, niveaux).', link: '?path=/docs/components-ui-forms-ui-textarea--docs', story: TextareaStories.WithHelper },
     { name: 'ui-segment-control', description: 'Sélection segmentée (headless, CVA, simple/multiple, indicateur glissant motion, fluid, template).', link: '?path=/docs/components-ui-forms-ui-segment-control--docs', story: SegmentControlStories.Sizes },
+    { name: 'ui-select', description: 'Liste déroulante (combobox WAI-ARIA, options/groupes, multiple, filtre, editable, virtual scroll + lazy).', link: '?path=/docs/components-ui-forms-ui-select--docs', story: SelectStories.Checkmark },
     { name: 'ui-file-upload', description: 'Téléversement de fichiers (field/drag + glisser-déposer, validation, auto/customUpload, progression, templates, aperçus image).', link: '?path=/docs/components-ui-forms-ui-file-upload--docs', story: FileUploadStories.Basic },
   ]}
 />

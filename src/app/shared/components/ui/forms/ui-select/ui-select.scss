@@ -1,0 +1,346 @@
+@use 'utils';
+@use 'sass:map';
+
+// =====================================================================
+// ui-select : the trigger box + label + helper live in `ui-field`
+// =====================================================================
+
+// --- Config (extension points) ----------------------------------------
+$sizes: (
+  'default': (
+    option-height: utils.rem-calc(40),
+    option-padding-x: var(--units-default),
+    font-size: var(--size-typography-text-default),
+    group-height: utils.rem-calc(32),
+    group-font-size: var(--size-typography-text-md),
+    filter-height: var(--size-components-sm),
+    scroll-height: utils.rem-calc(312),
+  ),
+  'small': (
+    option-height: utils.rem-calc(32),
+    option-padding-x: var(--units-md),
+    font-size: var(--size-typography-text-md),
+    group-height: utils.rem-calc(24),
+    group-font-size: var(--size-typography-text-sm),
+    filter-height: var(--size-components-xs),
+    scroll-height: utils.rem-calc(256),
+  ),
+);
+$size-default: map.get($sizes, 'default');
+$size-small: map.get($sizes, 'small');
+
+$panel-padding: var(--units-xs);
+$panel-gap: var(--units-xs);
+$option-radius: var(--radius-sm);
+$option-gap: var(--units-sm);
+$checkbox-size: utils.rem-calc(18);
+$stroke-width: utils.$control-stroke-width;
+
+.ui-select {
+  display: block;
+  cursor: pointer;
+
+  // --- Trigger (combobox button filling the field box) ----------------
+  &-trigger {
+    display: flex;
+    align-items: center;
+    flex: 1 1 auto;
+    align-self: stretch;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: transparent;
+    outline: none;
+    text-align: left;
+    font-family: var(--fontfamily-base);
+    font-size: map.get($size-default, font-size);
+    color: var(--form-high-content-default);
+    cursor: pointer;
+
+    &._small { font-size: map.get($size-small, font-size); }
+    &:disabled { cursor: not-allowed; color: var(--form-high-content-disabled); }
+  }
+
+  &-value,
+  &-placeholder {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  &-placeholder { color: var(--form-low-content-default); }
+
+  // Multiple: the joined labels wrap instead of truncating (auto-height box).
+  &-value._wrap {
+    overflow: visible;
+    text-overflow: clip;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  &-values {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--units-xs);
+    min-width: 0;
+  }
+
+  // Collapsed-count indicator (`maxSelectedLabels`).
+  &-overflow {
+    flex-shrink: 0;
+    font-family: var(--fontfamily-base);
+    font-size: map.get($size-default, group-font-size);
+    color: var(--form-low-content-default);
+    white-space: nowrap;
+
+    &._small { font-size: map.get($size-small, group-font-size); }
+  }
+
+  // Visually-hidden accessible value of the combobox in chips mode.
+  &-sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  // --- Editable input --------------------------------------------------
+  &-native {
+    @include utils.field-native-input;
+    &._small { font-size: map.get($size-small, font-size); }
+  }
+
+  // --- Affixes ----------------------------------------------------------
+  &-clear {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: var(--size-components-2xs);
+    height: var(--size-components-2xs);
+    flex-shrink: 0;
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-radius: var(--radius-full);
+    background: none;
+    color: var(--form-low-content-default);
+    cursor: pointer;
+    @include utils.control-transition(color, box-shadow);
+
+    &:hover:not(:disabled) { color: var(--form-high-content-hover); }
+    &:focus-visible {
+      outline: none;
+      color: var(--form-high-content-focused);
+      box-shadow: 0 0 0 utils.$form-focus-ring-width rgb(from var(--form-high-stroke-focused) r g b / 50%);
+    }
+    &:disabled { cursor: not-allowed; color: var(--form-high-content-disabled); }
+  }
+
+  &-chevron {
+    @include utils.field-affix;
+    @include utils.motion-transition(rotate);
+
+    &._open { rotate: 180deg; }
+  }
+
+  &-loading { flex-shrink: 0; }
+}
+
+// --- Panel----------
+.ui-select-panel {
+  @include utils.overlay-panel(var(--form-high-surface-default), var(--form-high-stroke-default));
+  display: flex;
+  flex-direction: column;
+  gap: $panel-gap;
+  box-sizing: border-box;
+  max-width: calc(100vw - var(--units-lg));
+  padding: $panel-padding;
+
+  // --- Header / footer (projected templates) --------------------------
+  .ui-select-header,
+  .ui-select-footer {
+    padding: var(--units-xs) var(--units-sm);
+    font-family: var(--fontfamily-base);
+    font-size: map.get($size-default, group-font-size);
+    color: var(--form-high-content-default);
+  }
+
+  // --- Filter ----------------------------------------------------------
+  .ui-select-filter {
+    display: flex;
+    align-items: center;
+    gap: var(--units-sm);
+    box-sizing: border-box;
+    height: map.get($size-default, filter-height);
+    flex-shrink: 0;
+    padding: 0 var(--units-sm);
+    border: var(--stroke-sm) solid var(--form-high-stroke-default);
+    border-radius: $option-radius;
+    background-color: var(--form-high-surface-default);
+    @include utils.control-transition(border-color);
+
+    &:hover:not(:focus-within) { border-color: var(--form-high-stroke-hover); }
+    &:focus-within { border-color: var(--form-high-stroke-focused); }
+    &._small { height: map.get($size-small, filter-height); }
+  }
+
+  .ui-select-filter-icon {
+    flex-shrink: 0;
+    color: var(--form-low-content-default);
+  }
+
+  .ui-select-filter-input {
+    @include utils.field-native-input;
+    font-size: map.get($size-default, group-font-size);
+  }
+
+  // --- Scrollers ---------------------------------------------------------
+  .ui-select-scroller {
+    overflow: auto;
+    max-height: map.get($size-default, scroll-height);
+    &._small { max-height: map.get($size-small, scroll-height); }
+  }
+
+  .ui-select-viewport { width: 100%; }
+
+  .ui-select-list {
+    display: flex;
+    flex-direction: column;
+    gap: $panel-gap;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .ui-select-viewport .ui-select-list { gap: 0; }
+  .ui-select-viewport .ui-select-group { height: map.get($size-default, option-height); }
+  .ui-select-viewport .ui-select-group._small { height: map.get($size-small, option-height); }
+
+  // --- Option row --------------------------------------------------------
+  .ui-select-option {
+    display: flex;
+    align-items: center;
+    gap: $option-gap;
+    box-sizing: border-box;
+    height: map.get($size-default, option-height);
+    flex-shrink: 0;
+    padding: 0 map.get($size-default, option-padding-x);
+    border-radius: $option-radius;
+    font-family: var(--fontfamily-base);
+    font-size: map.get($size-default, font-size);
+    color: var(--form-high-content-default);
+    cursor: pointer;
+    user-select: none;
+    @include utils.control-transition(background-color, color);
+
+    &._small {
+      height: map.get($size-small, option-height);
+      padding: 0 map.get($size-small, option-padding-x);
+      font-size: map.get($size-small, font-size);
+    }
+
+    // Visual focus (aria-activedescendant) and pointer hover share the look.
+    &._focused,
+    &:hover:not(._disabled) { background-color: var(--global-high-surface-hover); }
+
+    &._selected {
+      background-color: var(--form-high-surface-hover);
+      color: var(--form-high-content-checked);
+    }
+
+    &._disabled {
+      color: var(--form-high-content-disabled);
+      cursor: not-allowed;
+    }
+  }
+
+  .ui-select-option-label {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  // Check indicator (`checkmark`), pinned to the right edge of the row.
+  .ui-select-checkmark {
+    flex-shrink: 0;
+    margin-left: auto;
+    color: var(--form-high-content-checked);
+  }
+
+  // Purely visual checkbox
+  .ui-select-checkbox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: $checkbox-size;
+    height: $checkbox-size;
+    flex-shrink: 0;
+    border: $stroke-width solid var(--form-high-stroke-default);
+    border-radius: var(--radius-xs);
+    background-color: var(--form-high-surface-default);
+    @include utils.control-transition(background-color, border-color);
+
+    .ui-select-checkbox-icon {
+      color: var(--form-high-content-checked);
+      opacity: 0;
+      transform: scale(0.6);
+      @include utils.control-transition(opacity, transform);
+    }
+
+    &._checked {
+      border-color: var(--form-high-stroke-checked);
+
+      .ui-select-checkbox-icon {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+  }
+
+  .ui-select-option._disabled .ui-select-checkbox {
+    border-color: var(--form-high-stroke-disabled);
+    background-color: var(--form-high-surface-disabled);
+  }
+
+  // --- Group header --------------------------------------------------------
+  .ui-select-group {
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    height: map.get($size-default, group-height);
+    flex-shrink: 0;
+    padding: 0 map.get($size-default, option-padding-x);
+    font-family: var(--fontfamily-base);
+    font-size: map.get($size-default, group-font-size);
+    font-weight: var(--weight-bold);
+    color: var(--form-low-content-default);
+
+    &._small {
+      height: map.get($size-small, group-height);
+      padding: 0 map.get($size-small, option-padding-x);
+      font-size: map.get($size-small, group-font-size);
+    }
+  }
+
+  // --- Empty state -----------------------------------------------------------
+  .ui-select-empty {
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    min-height: map.get($size-default, option-height);
+    padding: 0 map.get($size-default, option-padding-x);
+    font-family: var(--fontfamily-base);
+    font-size: map.get($size-default, font-size);
+    color: var(--form-low-content-default);
+  }
+}

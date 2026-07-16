@@ -72,6 +72,14 @@ $textarea-min-height-small: utils.$form-textarea-min-height-small;
   }
   &._readonly &-box { cursor: default; }
 
+  // --- Auto-height (wrapping content: chips/values of ui-select) ------
+  &._auto-height &-box {
+    height: auto;
+    min-height: $height;
+    padding-block: var(--units-xs);
+  }
+  &._auto-height._small &-box { min-height: $height-small; }
+
   // --- Multiline (textarea) ------------------------------------------
   // Box grows with content: top-aligned, auto height with a min-height.
   // Padding is dropped here and owned by the projected control instead, so a

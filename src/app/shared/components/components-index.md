@@ -14,7 +14,7 @@
 - ✅ `ui-input` — Champ texte (headless, CVA ; label + helper, icônes, unité, zone d'action, niveaux)
 - ✅ `ui-input-number` — Champ numérique (min/max/step, spinner, clamp, `role="spinbutton"`)
 - ✅ `ui-input-mask` — Champ masqué (tokens 9/a/*, littéraux auto, unmask)
-- ⬜ `ui-select` — Liste déroulante
+- ✅ `ui-select` — Liste déroulante (headless, CVA sur shell `ui-field` ; motif combobox WAI-ARIA `aria-activedescendant`, options primitives/objets + mapping de champs, groupes, `multiple` avec checkmark/checkbox + repli `maxSelectedLabels` (+n autres) + wrap auto-height, chips **retirables** via `#selectedItem` (callback `remove`, `Retour arrière`), `showClear`, filtre intégré, `editable` autocomplete (la frappe ouvre + filtre), `loading`, focus configurable `autoOptionFocus`/`selectOnFocus`/`focusOnHover`, type-ahead, virtual scroll CDK + `lazyLoad`, templates `#item`/`#group`/`#header`/`#footer`/`#empty`)
 - ✅ `ui-checkbox` — Case à cocher (headless, CVA, indeterminate, trueValue/falseValue, erreur auto)
 - ✅ `ui-radio` — Bouton radio (headless, CVA, groupe natif par name, erreur auto)
 - ✅ `ui-label` — Libellé de champ (requis *, tailles, hook `--ui-label-color`)

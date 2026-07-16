@@ -1,0 +1,275 @@
+<!-- One rendered row: group header or option (shared by the plain and virtual lists). -->
+<ng-template #rowTpl let-row>
+  @if (row.kind === 'group') {
+    <li class="ui-select-group" role="presentation" [class._small]="size() === 'small'">
+      @if (groupTemplate(); as tpl) {
+        <ng-container [ngTemplateOutlet]="tpl" [ngTemplateOutletContext]="{ $implicit: row.original, group: row.original }" />
+      } @else {
+        {{ row.label }}
+      }
+    </li>
+  } @else {
+    <li
+      class="ui-select-option"
+      role="option"
+      [attr.id]="row.id"
+      [class._small]="size() === 'small'"
+      [class._selected]="row.selected"
+      [class._focused]="row.index === focusedIndex()"
+      [class._disabled]="row.entry.disabled"
+      [attr.aria-selected]="row.selected"
+      [attr.aria-disabled]="row.entry.disabled || null"
+      [attr.aria-setsize]="optionCount()"
+      [attr.aria-posinset]="row.index + 1"
+      (mousedown)="onOptionMousedown($event)"
+      (click)="onOptionClick(row, $event)"
+      (mouseenter)="onOptionMouseEnter(row)"
+    >
+      @if (checkbox() && multiple()) {
+        <!-- Purely visual checkbox: the option itself carries the aria-selected state. -->
+        <span class="ui-select-checkbox" [class._checked]="row.selected" aria-hidden="true">
+          <ui-icon class="ui-select-checkbox-icon" name="check" size="sm" />
+        </span>
+      }
+      @if (itemTemplate(); as tpl) {
+        <ng-container
+          [ngTemplateOutlet]="tpl"
+          [ngTemplateOutletContext]="{ $implicit: row.entry.original, option: row.entry.original, selected: row.selected, index: row.index }"
+        />
+      } @else {
+        <span class="ui-select-option-label">{{ row.entry.label }}</span>
+      }
+      @if (checkmark() && row.selected) {
+        <ui-icon class="ui-select-checkmark" name="check" [size]="iconSize()" />
+      }
+    </li>
+  }
+</ng-template>
+
+<!-- Options panel (CDK overlay). -->
+<ng-template #panelTpl>
+  <div
+    #panel
+    class="ui-select-panel"
+    [class]="panelStyleClass()"
+    [class._small]="size() === 'small'"
+    [style.width.px]="overlayWidth()"
+    [uiMotion]="'slide-down'"
+    #panelMotion="uiMotion"
+    [animate.enter]="panelMotion.enter()"
+  >
+    @if (headerTemplate(); as tpl) {
+      <div class="ui-select-header">
+        <ng-container [ngTemplateOutlet]="tpl" />
+      </div>
+    }
+
+    @if (filter()) {
+      <div class="ui-select-filter" [class._small]="size() === 'small'">
+        <ui-icon class="ui-select-filter-icon" name="magnifying-glass" size="sm" />
+        <input
+          #filterInput
+          type="text"
+          class="ui-select-filter-input"
+          autocomplete="off"
+          role="searchbox"
+          [value]="filterValue()"
+          [placeholder]="filterPlaceholder() ?? ''"
+          [attr.aria-label]="filterAriaLabel()"
+          [attr.aria-controls]="listboxId()"
+          [attr.aria-activedescendant]="activeDescendant()"
+          (input)="onFilterInput($event)"
+          (keydown)="onFilterKeydown($event)"
+        />
+      </div>
+    }
+
+    @if (virtualScroll()) {
+      <cdk-virtual-scroll-viewport
+        class="ui-select-viewport"
+        [itemSize]="virtualScrollItemSize()"
+        [style.height]="viewportHeight()"
+      >
+        <ul
+          class="ui-select-list"
+          role="listbox"
+          [attr.id]="listboxId()"
+          [attr.aria-label]="label() || ariaLabel() || null"
+          [attr.aria-multiselectable]="multiple() ? 'true' : null"
+        >
+          <ng-container *cdkVirtualFor="let row of visibleRows(); trackBy: trackRow">
+            <ng-container [ngTemplateOutlet]="rowTpl" [ngTemplateOutletContext]="{ $implicit: row }" />
+          </ng-container>
+          @if (!visibleRows().length) {
+            <ng-container [ngTemplateOutlet]="emptyTpl" />
+          }
+        </ul>
+      </cdk-virtual-scroll-viewport>
+    } @else {
+      <div class="ui-select-scroller" [class._small]="size() === 'small'" [style.max-height]="scrollHeight() || null">
+        <ul
+          class="ui-select-list"
+          role="listbox"
+          [attr.id]="listboxId()"
+          [attr.aria-label]="label() || ariaLabel() || null"
+          [attr.aria-multiselectable]="multiple() ? 'true' : null"
+        >
+          @for (row of visibleRows(); track row.key) {
+            <ng-container [ngTemplateOutlet]="rowTpl" [ngTemplateOutletContext]="{ $implicit: row }" />
+          } @empty {
+            <ng-container [ngTemplateOutlet]="emptyTpl" />
+          }
+        </ul>
+      </div>
+    }
+
+    @if (footerTemplate(); as tpl) {
+      <div class="ui-select-footer">
+        <ng-container [ngTemplateOutlet]="tpl" />
+      </div>
+    }
+  </div>
+</ng-template>
+
+<!-- Empty state row. -->
+<ng-template #emptyTpl>
+  <li class="ui-select-empty" role="presentation">
+    @if (emptyTemplate(); as tpl) {
+      <ng-container [ngTemplateOutlet]="tpl" />
+    } @else {
+      {{ emptyLabel() }}
+    }
+  </li>
+</ng-template>
+
+<!-- Trigger: composed field. Clicking the box opens the panel (backdrop closes it). -->
+<div #container class="ui-select" (click)="onContainerClick($event)">
+  <ui-field
+    [label]="label()"
+    [for]="resolvedId()"
+    [required]="required()"
+    [size]="size()"
+    [level]="effectiveLevel()"
+    [disabled]="isDisabled()"
+    [readonly]="readonly()"
+    [autoHeight]="multiple()"
+    [message]="displayMessage()"
+    [messageId]="messageId()"
+  >
+    @if (isEditable()) {
+      <input
+        #trigger
+        type="text"
+        class="ui-select-native"
+        [class._small]="size() === 'small'"
+        role="combobox"
+        aria-haspopup="listbox"
+        aria-autocomplete="list"
+        [id]="resolvedId()"
+        [value]="selectedLabel()"
+        [placeholder]="placeholder() ?? ''"
+        [disabled]="isDisabled()"
+        [readOnly]="readonly()"
+        [required]="required()"
+        [attr.name]="name() || null"
+        [attr.tabindex]="tabindex()"
+        [attr.aria-expanded]="panelOpen()"
+        [attr.aria-controls]="panelOpen() ? listboxId() : null"
+        [attr.aria-activedescendant]="activeDescendant()"
+        [attr.aria-label]="label() ? null : ariaLabel() || null"
+        [attr.aria-labelledby]="ariaLabelledBy() || null"
+        [attr.aria-describedby]="displayMessage() ? messageId() : null"
+        [attr.aria-invalid]="effectiveLevel() === 'error' ? 'true' : null"
+        (input)="onEditableInput($event)"
+        (keydown)="onTriggerKeydown($event)"
+        (focus)="onTriggerFocus($event)"
+        (blur)="onTriggerBlur($event)"
+      />
+    } @else {
+      <!-- Multiple + #selectedItem: the values (e.g. removable chips) live OUTSIDE the
+           combobox button so their own buttons stay valid, interactive HTML. -->
+      @if (multiple() && selectedItemTemplate() && hasValue()) {
+        <div class="ui-select-values">
+          @for (ctx of selectedItemContexts(); track $index) {
+            <ng-container [ngTemplateOutlet]="selectedItemTemplate()!" [ngTemplateOutletContext]="ctx" />
+          }
+          @if (overflowCount() > 0) {
+            <span class="ui-select-overflow" [class._small]="size() === 'small'">{{ overflowText() }}</span>
+          }
+        </div>
+      }
+      <button
+        #trigger
+        type="button"
+        class="ui-select-trigger"
+        [class._small]="size() === 'small'"
+        role="combobox"
+        aria-haspopup="listbox"
+        [id]="resolvedId()"
+        [disabled]="isDisabled()"
+        [attr.tabindex]="tabindex()"
+        [attr.aria-expanded]="panelOpen()"
+        [attr.aria-controls]="panelOpen() ? listboxId() : null"
+        [attr.aria-activedescendant]="activeDescendant()"
+        [attr.aria-label]="label() ? null : ariaLabel() || null"
+        [attr.aria-labelledby]="ariaLabelledBy() || null"
+        [attr.aria-describedby]="displayMessage() ? messageId() : null"
+        [attr.aria-required]="required() ? 'true' : null"
+        [attr.aria-invalid]="effectiveLevel() === 'error' ? 'true' : null"
+        (keydown)="onTriggerKeydown($event)"
+        (focus)="onTriggerFocus($event)"
+        (blur)="onTriggerBlur($event)"
+      >
+        @if (multiple() && selectedItemTemplate() && hasValue()) {
+          <!-- Accessible value of the combobox (the visual value is the chips next to it). -->
+          <span class="ui-select-sr">{{ selectedLabel() }}</span>
+        } @else if (!multiple() && selectedItemTemplate() && hasValue()) {
+          <ng-container [ngTemplateOutlet]="selectedItemTemplate()!" [ngTemplateOutletContext]="selectedItemContexts()[0]" />
+        } @else if (hasValue()) {
+          <span class="ui-select-value" [class._wrap]="multiple()">{{ selectedLabel() }}</span>
+        } @else {
+          <span class="ui-select-placeholder">{{ placeholder() ?? '' }}</span>
+        }
+      </button>
+    }
+
+    @if (showClearButton()) {
+      <button
+        uiFieldSuffix
+        type="button"
+        class="ui-select-clear"
+        [attr.aria-label]="clearAriaLabel()"
+        (click)="onClearClick($event)"
+      >
+        <ui-icon name="xmark" [size]="iconSize()" />
+      </button>
+    }
+
+    @if (loading()) {
+      <ui-spinner uiFieldSuffix class="ui-select-loading" size="small" orientation="horizontal" ariaLabel="Chargement des options" />
+    } @else {
+      <ui-icon
+        uiFieldSuffix
+        class="ui-select-chevron"
+        [class._open]="panelOpen()"
+        [class._disabled]="isDisabled()"
+        [name]="icon()"
+        [size]="iconSize()"
+      />
+    }
+  </ui-field>
+</div>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="overlayOrigin()!"
+  [cdkConnectedOverlayOpen]="panelOpen()"
+  [cdkConnectedOverlayPositions]="overlayPositions()"
+  [cdkConnectedOverlayHasBackdrop]="true"
+  cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
+  (backdropClick)="close(false)"
+  (overlayOutsideClick)="close(false)"
+  (detach)="close(false)"
+>
+  <ng-container [ngTemplateOutlet]="panelTpl" />
+</ng-template>
