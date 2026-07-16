@@ -1,0 +1,118 @@
+@use 'utils';
+@use 'sass:map';
+
+// =====================================================================
+// ui-empty-state : co-located styles. All values come from design tokens.
+//
+// Extend:
+//   • Size (density) → add an entry to $sizes (+ the `EmptyStateSize` type).
+// =====================================================================
+
+// --- Config (extension points) ---------------------------------------
+// `default` = base styles; other keys become `._<name>` modifiers.
+$sizes: (
+  'default': (
+    gap: var(--units-lg),
+    media-size: var(--units-4xl),
+    title-font: var(--size-typography-title-default),
+    desc-font: var(--size-typography-text-default),
+  ),
+  'small': (
+    gap: var(--units-default),
+    media-size: var(--units-2xl), // (40px)
+    title-font: var(--size-typography-title-md),
+    desc-font: var(--size-typography-text-md),
+  ),
+);
+$size-default: map.get($sizes, 'default');
+$text-gap: var(--units-xs);
+$actions-gap: var(--units-sm);
+$max-width: 40ch;
+
+@mixin empty-state-size($size) {
+  --ui-empty-state-media-size: #{map.get($size, media-size)};
+  gap: map.get($size, gap);
+
+  .ui-empty-state-title {
+    font-size: map.get($size, title-font);
+  }
+  .ui-empty-state-description {
+    font-size: map.get($size, desc-font);
+  }
+}
+
+:host {
+  display: block;
+}
+
+.ui-empty-state {
+  // --- Base ----------------------------------------------------------
+  --ui-empty-state-media-color: var(--global-low-content-default);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  font-family: var(--fontfamily-base);
+
+  @include empty-state-size($size-default);
+
+  // --- Sub-elements --------------------------------------------------
+  &-media {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 100%; // keeps a projected illustration from blowing out the column
+    // `color` cascades into the icon (ui-icon uses `currentColor`); the icon size
+    // is driven through ui-icon's `--ui-icon-size` hook (a custom property, so it
+    // inherits across the component boundary — no ::ng-deep needed to reach it).
+    color: var(--ui-empty-state-media-color);
+    --ui-icon-size: var(--ui-empty-state-media-size);
+  }
+
+  &-text {
+    display: flex;
+    flex-direction: column;
+    gap: $text-gap;
+    max-width: $max-width;
+
+    &._empty {
+      display: none;
+    }
+  }
+
+  &-title {
+    margin: 0;
+    font-family: var(--fontfamily-title);
+    font-weight: var(--weight-bold);
+    line-height: 1.2;
+    color: var(--global-high-content-default);
+  }
+
+  &-description {
+    margin: 0;
+    font-weight: var(--weight-regular);
+    line-height: 1.5;
+    color: var(--global-low-content-default);
+  }
+
+  &-body._empty {
+    display: none;
+  }
+
+  &-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: $actions-gap;
+  }
+
+  // --- Sizes -------------------------------------
+  @each $name, $size in $sizes {
+    @if $name != 'default' {
+      &._#{$name} {
+        @include empty-state-size($size);
+      }
+    }
+  }
+}

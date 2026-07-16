@@ -1,0 +1,36 @@
+<div
+  [class]="classes()"
+  [attr.role]="role()"
+  [attr.aria-label]="ariaLabel() ?? null"
+  [attr.aria-labelledby]="ariaLabelledBy() ?? null"
+>
+  @if (showVisual()) {
+    <div class="ui-empty-state-media">
+      @if (hasMedia()) {
+        <ng-content select="[uiEmptyStateMedia], ui-empty-state-media" />
+      } @else {
+        <ui-icon [name]="icon()!" [type]="iconType()" size="xl" />
+      }
+    </div>
+  }
+
+  <!-- Always mounted so the default slot can be detected; hidden when the whole
+       text region is empty (no title, no description, no projected body). -->
+  <div class="ui-empty-state-text" [class._empty]="!hasText()">
+    @if (hasTitle()) {
+      <p class="ui-empty-state-title">{{ title() }}</p>
+    }
+    @if (hasDescription()) {
+      <p class="ui-empty-state-description">{{ description() }}</p>
+    }
+    <div class="ui-empty-state-body" #bodyWrap [class._empty]="!hasBody()">
+      <ng-content />
+    </div>
+  </div>
+
+  @if (hasActions()) {
+    <div class="ui-empty-state-actions">
+      <ng-content select="[uiEmptyStateActions], ui-empty-state-actions" />
+    </div>
+  }
+</div>

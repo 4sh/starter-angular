@@ -1,0 +1,119 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as EmptyStateStories from './ui-empty-state.stories';
+
+<Meta of={EmptyStateStories} />
+
+# ui-empty-state
+
+Communique l'**absence de contenu** (liste vide, aucun résultat de recherche, boîte
+à jour…) et propose une issue.
+
+<Canvas of={EmptyStateStories.Default} />
+
+## API
+
+<ArgTypes of={EmptyStateStories} />
+
+Le **visuel** et les **actions** se projettent via des directives marqueurs :
+
+```html
+<ui-empty-state title="Boîte vide" description="Vous êtes à jour.">
+  <!-- Visuel : illustration / image / SVG (remplace le raccourci `icon`) -->
+  <img uiEmptyStateMedia src="/illustrations/empty.svg" alt="" />
+  <!-- Actions -->
+  <div uiEmptyStateActions>
+    <ui-button label="Nouveau message" level="high" icon="pen" />
+  </div>
+</ui-empty-state>
+```
+
+Un **corps libre** (contenu par défaut) peut aussi être projeté entre la description
+et les actions pour des cas riches (mini-formulaire, liste de suggestions…).
+
+## Visuel : icône ou illustration
+
+Deux voies, exclusives (une illustration projetée l'emporte sur le raccourci `icon`) :
+
+- **Raccourci `icon`** : un nom FontAwesome, rendu en grand via `ui-icon` (décoratif).
+- **Slot `uiEmptyStateMedia`** : une illustration, image ou SVG sur mesure.
+
+<Canvas of={EmptyStateStories.WithIllustration} />
+
+La zone visuelle est **affichée par défaut** ; `showMedia = false` la masque sans
+retirer le visuel du markup (état vide texte seul).
+
+<Canvas of={EmptyStateStories.TextOnly} />
+
+## Actions
+
+<Canvas of={EmptyStateStories.WithoutAction} />
+<Canvas of={EmptyStateStories.MultipleActions} />
+
+## Tailles
+
+<Canvas of={EmptyStateStories.Small} />
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Point</th>
+      <th>Implémentation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Visuel décoratif</strong></td>
+      <td>L'icône raccourci est décorative (<code>aria-hidden</code> via <code>ui-icon</code>) : le sens vient du titre et de la description, jamais du seul visuel. Une illustration projetée porte son propre <code>alt</code>/<code>aria-label</code> (ou <code>alt=""</code> si purement décorative).</td>
+    </tr>
+    <tr>
+      <td><strong>Région (landmark)</strong></td>
+      <td>Renseigner <code>ariaLabel</code> (ou <code>ariaLabelledBy</code>) ajoute <code>role="region"</code> pour exposer l'état vide comme repère navigable. Sans nom, aucun rôle n'est imposé (évite un landmark anonyme).</td>
+    </tr>
+    <tr>
+      <td><strong>Titre</strong></td>
+      <td>Rendu en paragraphe stylé (pas de niveau de titre imposé) pour ne pas perturber le plan du document ; reliez-le à votre propre <code>&lt;h*&gt;</code> via <code>ariaLabelledBy</code> si l'état vide constitue une section.</td>
+    </tr>
+    <tr>
+      <td><strong>Apparition dynamique</strong></td>
+      <td>Si l'état vide remplace un contenu en cours de chargement, l'annoncer via une région live côté conteneur (ex. <code>aria-live="polite"</code>) plutôt que de voler le focus.</td>
+    </tr>
+    <tr>
+      <td><strong>Actions</strong></td>
+      <td>Les actions sont de vrais <code>ui-button</code> / liens natifs (focus clavier, nom accessible). La couleur n'est jamais le seul vecteur de sens.</td>
+    </tr>
+  </tbody>
+</table>
+
+<Canvas of={EmptyStateStories.AsRegion} />
+
+## Configuration (SCSS)
+
+Toutes les valeurs proviennent des design tokens. Points de réglage exposés par
+instance (custom properties CSS) :
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Variable</th>
+      <th>Défaut</th>
+      <th>Rôle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>--ui-empty-state-media-size</code></td>
+      <td>préréglage <code>size</code> (56 / 40px)</td>
+      <td>Côté de l'icône raccourci (le visuel hero).</td>
+    </tr>
+    <tr>
+      <td><code>--ui-empty-state-media-color</code></td>
+      <td><code>--global-low-content-default</code></td>
+      <td>Couleur de la zone visuelle (l'icône utilise <code>currentColor</code>).</td>
+    </tr>
+  </tbody>
+</table>
+
+Les constantes structurelles (gap, largeur de texte max, densités) sont locales au
+composant : voir l'en-tête de `ui-empty-state.scss`.
