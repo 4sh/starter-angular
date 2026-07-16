@@ -33,6 +33,7 @@
 - ⬜ `ui-alert` — Message d'alerte (erreur, succès, info)
 - ✅ `ui-badge` — Pastille compteur / statut
 - ✅ `ui-tag` — Étiquette colorée / pilule (level × sub-level × size, icônes gauche/droite, forme pill/rounded, tokens informative)
+- ✅ `ui-chip` — Jeton compact **interactif** (relative de `ui-tag` : icône **ou image** de tête façon avatar ; action de suppression `removable` — `<button>` natif, clavier `Entrée`/`Espace`/`Retour`/`Suppr`, output `remove` ; mode **sélectionnable** `selectable` — racine `<button aria-pressed>`, `[(selected)]` two-way, remplissage `high` + icône `selectedIcon` (check) sur sélection, motif choice/filter chip ; contenu projeté libre, `disabled`, level × sub-level × size, forme pill/rounded, `aria-label`/`aria-labelledby`, repli image + `imageError`, garde-fous a11y ; tokens `informative`)
 - ✅ `ui-helper` — Texte d'aide sous un champ
 - ⬜ `ui-progress-bar` — Barre de progression
 - ✅ `ui-avatar` — Avatar utilisateur (image / initiales / icône, tailles, forme, badge projeté, repli image)

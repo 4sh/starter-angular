@@ -1,0 +1,177 @@
+@use 'utils';
+@use 'sass:map';
+
+// =====================================================================
+// ui-chip : co-located styles. All values come from design tokens.
+//
+// Extend:
+//   • Level     → add to $levels (tokens --informative-{level}{sub}-* must
+//                 exist + extend the `UiFeedbackLevel` type).
+//   • Sub-level → add to $sublevels (+ the `UiSubLevel` type).
+//   • Size      → add an entry to $sizes (+ the `ChipSize` type).
+// =====================================================================
+
+// --- Config ---------------------------------------
+$levels: default, highlight, success, warning, error;
+$sublevels: high, low;
+
+$sizes: (
+  'default': (
+    height: 32px,
+    gap: var(--units-xs),
+    padding-x: var(--units-sm),
+    font-size: var(--size-typography-text-default),
+    visual: 24px,
+  ),
+  'small': (
+    height: 24px,
+    gap: var(--units-2xs),
+    padding-x: var(--units-sm),
+    font-size: var(--size-typography-text-md),
+    visual: 18px,
+  ),
+);
+$size-default: map.get($sizes, 'default');
+$focus-ring-width: utils.$focus-ring-width;
+
+@mixin chip-size($size) {
+  height: utils.rem-calc(map.get($size, height));
+  min-width: utils.rem-calc(map.get($size, height));
+  gap: map.get($size, gap);
+  padding: 0 map.get($size, padding-x);
+  font-size: map.get($size, font-size);
+
+  .ui-chip-image {
+    width: utils.rem-calc(map.get($size, visual));
+    height: utils.rem-calc(map.get($size, visual));
+  }
+}
+
+.ui-chip {
+  // --- Base ----------------------------------------------------------
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  max-width: 100%;
+  border: var(--stroke-sm) solid transparent;
+  border-radius: var(--radius-full);
+  font-family: var(--fontfamily-base);
+  font-weight: var(--weight-regular);
+  line-height: 1;
+  white-space: nowrap;
+
+  @include chip-size($size-default);
+
+  // --- Sub-elements --------------------------------------------------
+  &-icon { line-height: 0; flex: none; }
+
+  &-image {
+    flex: none;
+    margin-inline-start: calc(-1 * var(--units-2xs));
+    border-radius: var(--radius-full);
+    object-fit: cover;
+  }
+
+  &-label {
+    display: inline-flex;
+    align-items: center;
+    height: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  // Remove action — native <button>, focusable with Tab.
+  &-remove {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: var(--units-2xs);
+    border: 0;
+    border-radius: var(--radius-full);
+    background: transparent;
+    color: inherit;
+    line-height: 0;
+    cursor: pointer;
+    @include utils.control-transition(background-color, color, box-shadow);
+
+    &:disabled { cursor: not-allowed; }
+  }
+
+  // --- Layout tweaks ---------------------------------
+  &._removable {
+    padding-inline-end: var(--units-2xs) !important;
+  }
+
+  // --- Selectable (choice / filter chip) -------------
+  &._selectable {
+    appearance: none;
+    cursor: pointer;
+    text-align: center;
+    @include utils.control-transition(background-color, color, border-color, box-shadow);
+
+    &:disabled { cursor: not-allowed; }
+  }
+
+  // --- Shape -----------------------------------------
+  &._square {
+    border-radius: var(--radius-sm);
+    .ui-chip-image { border-radius: var(--radius-xs); }
+  }
+
+  &._disabled { cursor: not-allowed; }
+
+  // --- Sizes -----------------------------------------
+  @each $name, $size in $sizes {
+    @if $name != 'default' {
+      &._#{$name} { @include chip-size($size); }
+    }
+  }
+
+  // --- Colors ----------------------------------------
+  @each $lvl in $levels {
+    @each $sub in $sublevels {
+      &._#{$lvl}._#{$sub} {
+        background-color: var(--informative-#{$lvl}#{$sub}-surface-default);
+        color: var(--informative-#{$lvl}#{$sub}-content-default);
+        border-color: var(--informative-#{$lvl}#{$sub}-stroke-default);
+
+        .ui-chip-remove {
+          &:hover:not(:disabled) {
+            background-color: var(--informative-#{$lvl}#{$sub}-surface-hover);
+            color: var(--informative-#{$lvl}#{$sub}-content-hover);
+          }
+
+          &:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 $focus-ring-width var(--informative-#{$lvl}#{$sub}-content-default);
+          }
+        }
+
+        &._selectable:not(._selected):hover:not(:disabled) {
+          background-color: var(--informative-#{$lvl}#{$sub}-surface-hover);
+          color: var(--informative-#{$lvl}#{$sub}-content-hover);
+        }
+      }
+    }
+
+    &._#{$lvl}._selected {
+      background-color: var(--informative-#{$lvl}high-surface-default);
+      color: var(--informative-#{$lvl}high-content-default);
+      border-color: var(--informative-#{$lvl}high-stroke-default);
+
+      &._selectable:hover:not(:disabled) {
+        background-color: var(--informative-#{$lvl}high-surface-hover);
+        color: var(--informative-#{$lvl}high-content-hover);
+      }
+    }
+
+    // Focus ring for the whole selectable chip (keyboard), per level.
+    &._#{$lvl}._selectable:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 $focus-ring-width var(--informative-#{$lvl}high-surface-default);
+    }
+  }
+}

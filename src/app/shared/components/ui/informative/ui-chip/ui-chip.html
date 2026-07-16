@@ -1,0 +1,56 @@
+@if (selectable()) {
+  <button
+    type="button"
+    [class]="classes()"
+    [disabled]="disabled()"
+    [attr.aria-pressed]="selected()"
+    [attr.aria-label]="rootAriaLabel()"
+    [attr.aria-labelledby]="ariaLabelledBy() ?? null"
+    (click)="onToggle($event)"
+  >
+    <ng-container [ngTemplateOutlet]="inner" />
+  </button>
+} @else {
+  <span
+    [class]="classes()"
+    [attr.aria-label]="rootAriaLabel()"
+    [attr.aria-labelledby]="ariaLabelledBy() ?? null"
+  >
+    <ng-container [ngTemplateOutlet]="inner" />
+  </span>
+}
+
+<ng-template #inner>
+  @if (showSelectedIcon()) {
+    <ui-icon class="ui-chip-icon" [name]="selectedIcon()!" [size]="iconSize()" />
+  } @else if (showLeadingImage()) {
+    <img
+      class="ui-chip-image"
+      [src]="image()"
+      [attr.alt]="alt() ?? ''"
+      (error)="onImageError($event)"
+    />
+  } @else if (showLeadingIcon()) {
+    <ui-icon class="ui-chip-icon" [name]="icon()!" [size]="iconSize()" />
+  }
+
+  @if (hasLabel()) {
+    <span class="ui-chip-label">{{ label() }}</span>
+  }
+
+  <!-- Custom / templated content -->
+  <ng-content />
+
+  @if (showRemove()) {
+    <button
+      type="button"
+      class="ui-chip-remove"
+      [disabled]="disabled()"
+      [attr.aria-label]="removeAriaLabel()"
+      (click)="onRemove($event)"
+      (keydown)="onRemoveKeydown($event)"
+    >
+      <ui-icon [name]="removeIcon()" [size]="removeIconSize" />
+    </button>
+  }
+</ng-template>

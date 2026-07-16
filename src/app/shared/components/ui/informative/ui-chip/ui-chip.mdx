@@ -1,0 +1,156 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as ChipStories from './ui-chip.stories';
+
+<Meta of={ChipStories} />
+
+# ui-chip
+
+Jeton compact et **interactif** représentant une entité : une valeur sélectionnée dans un
+multi-select, un filtre actif, un mot-clé d'une liste… Proche de `ui-tag` mais **actionnable** :
+il accepte une icône ou une **image** de tête (façon avatar), une **action de suppression**
+optionnelle, du **contenu projeté** libre, et un mode **sélectionnable** (bascule
+choice / filter chip) pour la sélection d'entités.
+
+<Canvas of={ChipStories.Basic} />
+
+## API
+
+<ArgTypes of={ChipStories} />
+
+## Basic
+
+Affiche une information compacte, avec une action de suppression optionnelle (`removable`).
+L'événement `remove` est émis au clic ou au clavier sur l'action de suppression.
+
+<Canvas of={ChipStories.Removable} />
+
+## Niveaux & intensité
+
+Cinq familles (`default`, `highlight`, `success`, `warning`, `error`) × deux intensités
+(`low` discret , défaut du chip, `high` soutenu).
+
+<Canvas of={ChipStories.Success} />
+<Canvas of={ChipStories.Warning} />
+<Canvas of={ChipStories.Error} />
+<Canvas of={ChipStories.SubLevelHigh} />
+
+## Tailles
+
+<Canvas of={ChipStories.Small} />
+
+## Icon
+
+Une icône (nom FontAwesome) peut précéder le label via `icon`. Combinez avec `removable` pour
+ajouter l'action de suppression.
+
+<Canvas of={ChipStories.Icon} />
+<Canvas of={ChipStories.IconRemovable} />
+
+## Image
+
+`image` affiche une image de tête façon avatar (prioritaire sur `icon`). En cas d'échec de
+chargement, le chip retombe sur l'icône/le label et émet `imageError`.
+
+<Canvas of={ChipStories.Image} />
+
+## Template
+
+Du contenu personnalisé peut être projeté dans le chip (slot par défaut) à la place du simple
+`label`. Renseignez alors `ariaLabel` pour garantir un nom accessible.
+
+<Canvas of={ChipStories.Template} />
+
+## Sélectionnable
+
+Avec `selectable`, le chip devient une **bascule** (choice / filter chip) : la racine est un
+`<button aria-pressed>` focusable au clavier, un clic (ou `Entrée`/`Espace`) bascule l'état
+`selected` (two-way). Sélectionné, le chip prend le remplissage **soutenu** (`high`) de sa
+famille et affiche l'icône `selectedIcon` (`check` par défaut) en tête. `selectable` et
+`removable` sont exclusifs.
+
+<Canvas of={ChipStories.Selectable} />
+
+### Liste de sélection multiple
+
+Composé en liste, c'est le motif de sélection d'entités / d'intérêts (chaque chip est
+indépendant).
+
+<Canvas of={ChipStories.SelectableList} />
+
+## En liste
+
+Cas d'usage typique : les valeurs sélectionnées d'un multi-select, chacune supprimable.
+
+<Canvas of={ChipStories.List} />
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Point</th>
+      <th>Implémentation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Nom accessible</td>
+      <td>Le `label` sert d'`aria-label` par défaut ; `ariaLabel` ou `ariaLabelledBy` le remplacent.</td>
+    </tr>
+    <tr>
+      <td>Suppression au clavier</td>
+      <td>L'action de suppression est un `<button>` natif : focusable au `Tab`, déclenchable via `Entrée`/`Espace` (natif) et `Retour arrière`/`Suppr`.</td>
+    </tr>
+    <tr>
+      <td>Sélectionnable (bascule)</td>
+      <td>`selectable` rend la racine en `<button aria-pressed>` : focusable au `Tab`, bascule via `Entrée`/`Espace`. Exclusif de `removable` (pas d'imbrication de boutons ; avertissement `isDevMode()`).</td>
+    </tr>
+    <tr>
+      <td>Chip sans texte</td>
+      <td>`ariaLabel`/`ariaLabelledBy` obligatoire ; un avertissement `isDevMode()` prévient si un chip icône/image seule n'a pas de nom accessible.</td>
+    </tr>
+    <tr>
+      <td>Icône / image décoratives</td>
+      <td>Icône de tête décorative (`aria-hidden` via `ui-icon`) ; image de tête en `alt=""` à côté d'un label (le nom vient du chip).</td>
+    </tr>
+    <tr>
+      <td>Focus visible</td>
+      <td>Anneau de focus distinct du survol sur l'action de suppression (`:focus-visible`, token content de la famille).</td>
+    </tr>
+    <tr>
+      <td>Désactivé</td>
+      <td>`disabled` désactive nativement l'action de suppression (non focusable, non cliquable).</td>
+    </tr>
+    <tr>
+      <td>Sécurité</td>
+      <td>`image` est liée via `[src]` (URL assainie par Angular) ; aucun HTML injecté , le contenu riche passe par la projection, sous la responsabilité de l'appelant.</td>
+    </tr>
+  </tbody>
+</table>
+
+## Exemples
+
+```html
+<!-- Basic supprimable -->
+<ui-chip label="Angular" removable (remove)="onRemove()" />
+
+<!-- Icône + suppression -->
+<ui-chip label="Filtre" level="highlight" icon="filter" removable />
+
+<!-- Image (façon avatar) -->
+<ui-chip label="Jane Doe" image="/assets/jane.png" alt="" removable />
+
+<!-- Intensité soutenue, petit -->
+<ui-chip label="Actif" level="success" subLevel="high" size="small" />
+
+<!-- Icon-only (nom accessible requis) -->
+<ui-chip icon="user" ariaLabel="Utilisateur" level="highlight" />
+
+<!-- Contenu personnalisé (Template) -->
+<ui-chip level="highlight" ariaLabel="Jane Doe en ligne" removable>
+  <span class="status">● Jane Doe</span>
+</ui-chip>
+
+<!-- Sélectionnable (bascule) -->
+<ui-chip selectable [(selected)]="interested" label="Photography" icon="camera" />
+```
