@@ -24,13 +24,12 @@ $size-default: map.get($sizes, 'default');
 }
 
 .ui-spinner {
-  // --- Base ----------------------------------------------------------
   display: inline-flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: var(--units-sm);
-  color: var(--ui-spinner-color, var(--global-high-content-default));
+  color: var(--ui-spinner-color, var(--informative-highlightlow-content-default));
 
   // Horizontal orientation: mark beside the label.
   &._horizontal { flex-direction: row; }
