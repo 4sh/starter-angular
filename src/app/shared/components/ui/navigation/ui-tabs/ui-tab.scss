@@ -61,6 +61,7 @@ $focus-ring-width: utils.$action-focus-ring-width;
 
 // Active tab
 :host._active .ui-tab-button {
+  background-color: var(--navigation-high-surface-active);
   color: var(--navigation-high-content-active);
 }
 
