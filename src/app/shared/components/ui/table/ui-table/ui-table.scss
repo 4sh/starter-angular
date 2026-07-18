@@ -1,0 +1,335 @@
+@use 'utils';
+@use 'sass:map';
+
+// =====================================================================
+// ui-table : co-located styles. All values come from design tokens.
+// Extend:
+//   • Size (cell density) → add an entry to $sizes (+ the `TableSize` type).
+// =====================================================================
+
+// --- Config (extension points) ---------------------------------------
+// `default` = base styles; other keys become `._<name>` modifiers.
+$sizes: (
+  'default': (
+    cell-padding: var(--units-default),
+    head-padding: var(--units-md) var(--units-default),
+  ),
+  'small': (
+    cell-padding: var(--units-sm) var(--units-md),
+    head-padding: var(--units-sm) var(--units-md),
+  ),
+  'large': (
+    cell-padding: var(--units-xl) var(--units-default),
+    head-padding: var(--units-default),
+  ),
+);
+$size-default: map.get($sizes, 'default');
+$stroke-width: var(--stroke-sm);
+$focus-ring-width: utils.$focus-ring-width;
+$resizer-hit-width: var(--units-sm);
+$drop-indicator-width: var(--stroke-lg);
+$loading-padding-y: var(--units-3xl);
+
+ui-table {
+  display: block;
+  min-width: 0;
+
+  // scrollHeight="flex" : the host itself stretches inside its flex parent.
+  &:has(> .ui-table._flex-scroll) {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+}
+
+.ui-table {
+  // --- Base ----------------------------------------------------------
+  font-family: var(--fontfamily-base);
+  font-size: var(--size-typography-text-default);
+  color: var(--table-body-content-odd);
+
+  &-container {
+    min-width: 0;
+  }
+
+  &-wrapper {
+    min-width: 0;
+    overflow-x: auto;
+  }
+
+  // Loading state: the body rows are replaced by a single centered spinner
+  &-loading-cell {
+    text-align: center;
+
+    ui-spinner {
+      display: flex;
+      justify-content: center;
+      padding: $loading-padding-y 0;
+    }
+  }
+
+  &-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+
+    th,
+    td {
+      box-sizing: border-box;
+    }
+  }
+
+  &-caption {
+    padding: var(--units-md) var(--units-default);
+    font-weight: var(--weight-bold);
+  }
+
+  // --- Head ------------------------------------------------------------
+  &-thead th {
+    padding: map.get($size-default, head-padding);
+    background-color: var(--table-head-surface-default);
+    color: var(--table-head-content-default);
+    border-bottom: $stroke-width solid var(--table-head-stroke-default);
+    font-size: var(--size-typography-text-md);
+    font-weight: var(--weight-bold);
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  // --- Body ------------------------------------------------------------
+  &-tbody td {
+    padding: map.get($size-default, cell-padding);
+    background-color: var(--table-body-surface-odd);
+    color: var(--table-body-content-odd);
+    border-bottom: $stroke-width solid var(--table-body-stroke-odd);
+    @include utils.control-transition(background-color, color);
+  }
+
+  &-tbody tr:last-child td {
+    border-bottom-color: transparent;
+  }
+
+  // Striped rows
+  &._striped &-tbody tr:nth-child(even) td {
+    background-color: var(--table-body-surface-even);
+    color: var(--table-body-content-even);
+    border-bottom-color: var(--table-body-stroke-even);
+  }
+
+  // Hovered row (rowHover or any selection mode).
+  &._hoverable &-tbody tr:hover td {
+    background-color: var(--table-body-surface-hover);
+    color: var(--table-body-content-hover);
+  }
+
+  &-tbody tr._selected td,
+  &._striped &-tbody tr._selected td {
+    background-color: var(--informative-highlightlow-surface-default);
+    color: var(--informative-highlightlow-content-default);
+    border-bottom-color: var(--informative-highlightlow-stroke-default);
+  }
+  &._hoverable &-tbody tr._selected:hover td {
+    background-color: var(--informative-highlightlow-surface-hover);
+    color: var(--informative-highlightlow-content-hover);
+  }
+
+  &-selectable-row {
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: $focus-ring-width solid var(--global-high-stroke-focused);
+      outline-offset: calc(-1 * #{$focus-ring-width});
+    }
+  }
+
+  // Reorderable rows: grab affordance + drop-edge indicator.
+  &-reorderable-row {
+    cursor: grab;
+  }
+  &-reorderable-row._drop-above td {
+    box-shadow: inset 0 $drop-indicator-width 0 0 var(--global-high-stroke-focused);
+  }
+  &-reorderable-row._drop-below td {
+    box-shadow: inset 0 calc(-1 * #{$drop-indicator-width}) 0 0 var(--global-high-stroke-focused);
+  }
+
+  &-empty-cell {
+    text-align: center;
+
+    ui-empty-state {
+      display: flex;
+      justify-content: center;
+      padding: var(--units-xl) 0;
+    }
+  }
+
+  // Virtual scroll spacers: pure height, no visual.
+  &-virtual-spacer td {
+    padding: 0;
+    border: none;
+    background: none;
+  }
+
+  // --- Foot ------------------------------------------------------------
+  &-tfoot td {
+    padding: map.get($size-default, head-padding);
+    background-color: var(--table-footer-surface-default);
+    color: var(--table-footer-content-default);
+    border-top: $stroke-width solid var(--table-footer-stroke-default);
+    font-weight: var(--weight-bold);
+    text-align: left;
+  }
+
+  // --- Sizes (all but `default`) -----------------------------------------
+  @each $name, $size in $sizes {
+    @if $name != 'default' {
+      &._#{$name} {
+        .ui-table-tbody td {
+          padding: map.get($size, cell-padding);
+        }
+        .ui-table-thead th,
+        .ui-table-tfoot td {
+          padding: map.get($size, head-padding);
+        }
+      }
+    }
+  }
+
+  // --- Grid lines ----------------------------------------------------------
+  &._gridlines {
+    .ui-table-table {
+      border: $stroke-width solid var(--table-body-stroke-odd);
+    }
+    .ui-table-thead th,
+    .ui-table-tbody td,
+    .ui-table-tfoot td {
+      border-right: $stroke-width solid var(--table-body-stroke-odd);
+
+      &:last-child {
+        border-right: none;
+      }
+    }
+  }
+
+  // --- Sortable columns ------------------------------------------------------
+  &-sortable-column {
+    cursor: pointer;
+    user-select: none;
+    @include utils.control-transition(background-color, color);
+
+    &:hover {
+      background-color: var(--table-head-surface-hover);
+      color: var(--table-head-content-hover);
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: inset 0 0 0 $focus-ring-width var(--global-high-stroke-focused);
+    }
+
+    .ui-table-sort-icon {
+      margin-left: var(--units-xs);
+      vertical-align: middle;
+    }
+  }
+
+  // --- Scroll shell -------------------------------------------------------------
+  &._scrollable {
+    .ui-table-wrapper {
+      overflow: auto;
+    }
+
+    .ui-table-thead th {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+
+    // Frozen header cells must stay above their scrolling siblings — this
+    // rule out-specifies the generic `th { z-index: 2 }` right above.
+    .ui-table-thead th._frozen-left,
+    .ui-table-thead th._frozen-right {
+      z-index: 3;
+    }
+
+    .ui-table-tfoot td {
+      position: sticky;
+      bottom: 0;
+      z-index: 2;
+    }
+
+    // Frozen rows: pinned right under the sticky header (measured height).
+    .ui-table-tbody._frozen-rows td {
+      position: sticky;
+      top: var(--ui-table-frozen-top, 0);
+      z-index: 1;
+      font-weight: var(--weight-bold);
+    }
+  }
+
+  &._flex-scroll {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+
+    .ui-table-container {
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 0;
+      min-height: 0;
+    }
+
+    .ui-table-wrapper {
+      flex: 1 1 0;
+      min-height: 0;
+    }
+  }
+
+  // --- Virtual scroll ---------------------------------------------------------
+  // Scroll anchoring would fight the windowing: when the top spacer height
+  // changes, the browser "re-anchors" the scroll position, which fires a new
+  // scroll event, which moves the window again — an endless feedback loop.
+  &._virtual .ui-table-wrapper {
+    overflow-anchor: none;
+  }
+
+  // --- Frozen columns -----------------------------------------------------------
+  .ui-table-table th,
+  .ui-table-table td {
+    &._frozen-left,
+    &._frozen-right {
+      position: sticky;
+      z-index: 1;
+    }
+  }
+
+  &-thead th._frozen-left,
+  &-thead th._frozen-right {
+    z-index: 3;
+  }
+
+  // --- Column resize ---------------------------------------------------------------
+  &._resizable {
+    .ui-table-thead th {
+      position: relative;
+      overflow: hidden;
+    }
+  }
+
+  &-column-resizer {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: $resizer-hit-width;
+    height: 100%;
+    cursor: col-resize;
+    touch-action: none;
+
+    &:hover {
+      border-right: var(--stroke-default) solid var(--global-high-stroke-hover);
+    }
+  }
+
+}

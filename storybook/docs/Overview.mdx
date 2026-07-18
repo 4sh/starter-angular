@@ -37,6 +37,8 @@ import * as TabsStories from "../../src/app/shared/components/ui/navigation/ui-t
 import * as MenuStories from "../../src/app/shared/components/ui/navigation/ui-menu/ui-menu.stories";
 import * as BreadcrumbStories from "../../src/app/shared/components/ui/navigation/ui-breadcrumb/ui-breadcrumb.stories";
 import * as ContextMenuStories from "../../src/app/shared/components/ui/navigation/ui-context-menu/ui-context-menu.stories";
+import * as TableStories from "../../src/app/shared/components/ui/table/ui-table/ui-table.stories";
+import * as PaginatorStories from "../../src/app/shared/components/ui/table/ui-paginator/ui-paginator.stories";
 
 <Meta title="Overview" />
 
@@ -149,6 +151,14 @@ export const CategorySection = ({ title, components }) => (
     { name: 'ui-menu', description: 'Menu navigation / commandes (groupes + séparateurs, sous-menus repliables expandedKeys, command, routerLink/url, popup overlay, clavier roving, templates).', link: '?path=/docs/components-ui-navigation-ui-menu--docs', story: MenuStories.Basic, previewHeight: 300, previewScale: 0.85 },
     { name: 'ui-context-menu', description: 'Menu contextuel (clic droit sur target ou global, positionné au pointeur, ui-menu embarqué : sous-menus, command, routerLink/url, clavier, densité small).', link: '?path=/docs/components-ui-navigation-ui-context-menu--docs', story: ContextMenuStories.Basic, previewHeight: 200 },
     { name: 'ui-breadcrumb', description: "Fil d'Ariane (items url/routerLink/command rendus en ui-link, aria-current=page, séparateur custom, repli maxItems via bouton ellipsis, template #item).", link: '?path=/docs/components-ui-navigation-ui-breadcrumb--docs', story: BreadcrumbStories.Basic, previewHeight: 120 },
+  ]}
+/>
+
+<CategorySection
+  title="Table"
+  components={[
+    { name: 'ui-table', description: 'Tableau de données headless (templates header/body/footer, tri simple/multiple, sélection ligne/checkbox/radio + clavier complet, pagination ui-paginator, scroll sticky, virtual scroll, colonnes/lignes figées, expansion, resize fit, row reorder, loading).', link: '?path=/docs/components-ui-table-ui-table--docs', story: TableStories.StripedRows, previewHeight: 320, previewScale: 0.5 },
+    { name: 'ui-paginator', description: 'Pagination autonome (composition ui-button cercles + ui-select lignes/page, two-way first/rows, fenêtre pageLinks, aria-current, pageChange). Consommée par ui-table.', link: '?path=/docs/components-ui-table-ui-paginator--docs', story: PaginatorStories.Basic, previewHeight: 140 },
   ]}
 />
 

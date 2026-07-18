@@ -1,0 +1,124 @@
+@use 'utils';
+
+// =====================================================================
+// ui-paginator : co-located styles. All values come from design tokens.
+// =====================================================================
+
+$focus-ring-width: utils.$action-focus-ring-width;
+$button-size: 40px;
+$button-radius: var(--radius-default);
+$bar-gap: var(--units-2xl);
+$blocks-gap: var(--units-default);
+$numbers-gap: var(--units-sm);
+
+// Base
+@mixin paginator-button($family) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: utils.rem-calc($button-size);
+  min-width: utils.rem-calc($button-size);
+  border: none;
+  border-radius: $button-radius;
+  background-color: var(--actions-#{$family}-surface-default);
+  color: var(--actions-#{$family}-content-default);
+  font-family: var(--fontfamily-base);
+  font-size: var(--size-typography-text-md);
+  font-weight: var(--weight-bold);
+  line-height: 1;
+  cursor: pointer;
+  user-select: none;
+  @include utils.control-transition(background-color, color, box-shadow);
+
+  &:hover:not(:disabled) {
+    background-color: var(--actions-#{$family}-surface-hover);
+    color: var(--actions-#{$family}-content-hover);
+  }
+
+  &:focus-visible {
+    outline: none;
+    background-color: var(--actions-#{$family}-surface-focused);
+    box-shadow: 0 0 0 $focus-ring-width var(--actions-#{$family}-stroke-focused);
+  }
+
+  &:active:not(:disabled) {
+    background-color: var(--actions-#{$family}-surface-pressed);
+    color: var(--actions-#{$family}-content-pressed);
+  }
+
+  &:disabled {
+    background-color: var(--actions-#{$family}-surface-disabled);
+    color: var(--actions-#{$family}-content-disabled);
+    cursor: not-allowed;
+  }
+}
+
+.ui-paginator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: $bar-gap;
+  padding: var(--units-default);
+
+  &-content {
+    display: flex;
+    align-items: center;
+    gap: $blocks-gap;
+  }
+
+  // First / previous / next / last (Figma _paginator-button-controls).
+  &-control {
+    @include paginator-button('low');
+    width: utils.rem-calc($button-size);
+    padding: 0 var(--units-sm);
+  }
+
+  &-pages {
+    display: flex;
+    align-items: center;
+    gap: $numbers-gap;
+  }
+
+  // Page numbers (Figma _paginator-button-numbers, State=Default).
+  &-page {
+    @include paginator-button('low');
+    padding: 0 var(--units-md);
+
+    // Current page (State=Current) switches to the high family.
+    &._current {
+      @include paginator-button('high');
+      padding: 0 var(--units-md);
+    }
+  }
+
+  // Current-page report ("1 - 10 sur 120") + free start/end slots.
+  &-report {
+    display: inline-flex;
+    align-items: center;
+    color: var(--global-low-content-default);
+    font-size: var(--size-typography-text-md);
+    white-space: nowrap;
+  }
+
+  &-start,
+  &-end {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--units-sm);
+    color: var(--global-low-content-default);
+    font-size: var(--size-typography-text-md);
+  }
+
+  &-ellipsis {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: utils.rem-calc($button-size);
+    min-width: utils.rem-calc($button-size);
+    color: var(--actions-low-content-default);
+    font-size: var(--size-typography-text-md);
+    font-weight: var(--weight-bold);
+    user-select: none;
+  }
+}

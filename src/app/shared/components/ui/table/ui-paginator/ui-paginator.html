@@ -1,0 +1,122 @@
+<nav class="ui-paginator" [attr.aria-label]="ariaLabel()">
+  @if (startTemplate(); as tpl) {
+    <div class="ui-paginator-start">
+      <ng-container [ngTemplateOutlet]="tpl" [ngTemplateOutletContext]="stateContext()" />
+    </div>
+  }
+
+  <div class="ui-paginator-content">
+    @if (showCurrentPageReport()) {
+      <span class="ui-paginator-report">
+        @if (reportTemplate(); as tpl) {
+          <ng-container [ngTemplateOutlet]="tpl" [ngTemplateOutletContext]="stateContext()" />
+        } @else {
+          {{ reportText() }}
+        }
+      </span>
+    }
+
+    @if (showFirstLastIcon()) {
+      <button
+        type="button"
+        class="ui-paginator-control"
+        [disabled]="disabled() || isFirstPage()"
+        [attr.aria-label]="firstPageAriaLabel()"
+        (click)="goToPage(0)"
+      >
+        @if (firstIconTemplate(); as tpl) {
+          <ng-container [ngTemplateOutlet]="tpl" />
+        } @else {
+          <ui-icon name="angles-left" size="default" />
+        }
+      </button>
+    }
+    <button
+      type="button"
+      class="ui-paginator-control"
+      [disabled]="disabled() || isFirstPage()"
+      [attr.aria-label]="prevPageAriaLabel()"
+      (click)="goToPage(currentPage() - 1)"
+    >
+      @if (prevIconTemplate(); as tpl) {
+        <ng-container [ngTemplateOutlet]="tpl" />
+      } @else {
+        <ui-icon name="chevron-left" size="default" />
+      }
+    </button>
+
+    @if (showPageLinks()) {
+      <div class="ui-paginator-pages">
+        @for (item of pageItems(); track $index) {
+          @if (item === ELLIPSIS) {
+            <span class="ui-paginator-ellipsis" aria-hidden="true">&hellip;</span>
+          } @else {
+            <button
+              type="button"
+              class="ui-paginator-page"
+              [class._current]="item === currentPage()"
+              [disabled]="disabled()"
+              [attr.aria-label]="pageLabel(item)"
+              [attr.aria-current]="item === currentPage() ? 'page' : null"
+              (click)="goToPage(item)"
+            >
+              @if (pageLinkTemplate(); as tpl) {
+                <ng-container [ngTemplateOutlet]="tpl" [ngTemplateOutletContext]="pageLinkContext(item)" />
+              } @else {
+                {{ item + 1 }}
+              }
+            </button>
+          }
+        }
+      </div>
+    }
+
+    <button
+      type="button"
+      class="ui-paginator-control"
+      [disabled]="disabled() || isLastPage()"
+      [attr.aria-label]="nextPageAriaLabel()"
+      (click)="goToPage(currentPage() + 1)"
+    >
+      @if (nextIconTemplate(); as tpl) {
+        <ng-container [ngTemplateOutlet]="tpl" />
+      } @else {
+        <ui-icon name="chevron-right" size="default" />
+      }
+    </button>
+    @if (showFirstLastIcon()) {
+      <button
+        type="button"
+        class="ui-paginator-control"
+        [disabled]="disabled() || isLastPage()"
+        [attr.aria-label]="lastPageAriaLabel()"
+        (click)="goToPage(pageCount() - 1)"
+      >
+        @if (lastIconTemplate(); as tpl) {
+          <ng-container [ngTemplateOutlet]="tpl" />
+        } @else {
+          <ui-icon name="angles-right" size="default" />
+        }
+      </button>
+    }
+  </div>
+
+  @if (rowsPerPageOptions()?.length) {
+    <div class="ui-paginator-rows">
+      <ui-select
+        size="small"
+        [options]="rowsPerPageOptions()!"
+        [ngModel]="rowsState()"
+        [disabled]="disabled()"
+        [ariaLabel]="rowsPerPageAriaLabel()"
+        (valueChange)="onRowsPerPageChange($event)"
+      />
+    </div>
+  }
+
+  @if (endTemplate(); as tpl) {
+    <div class="ui-paginator-end">
+      <ng-container [ngTemplateOutlet]="tpl" [ngTemplateOutletContext]="stateContext()" />
+    </div>
+  }
+</nav>

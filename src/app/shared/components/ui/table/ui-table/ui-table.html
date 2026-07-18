@@ -1,0 +1,98 @@
+<div [class]="classes()" [attr.aria-busy]="loading() ? 'true' : null">
+  @if (captionTemplate(); as caption) {
+    <div class="ui-table-caption">
+      <ng-container [ngTemplateOutlet]="caption" />
+    </div>
+  }
+
+  <div class="ui-table-container">
+    <div
+      #wrapperEl
+      class="ui-table-wrapper"
+      [style.max-height]="scrollMaxHeight()"
+      [style.--ui-table-frozen-top.px]="frozenRowsTop()"
+      (scroll)="onWrapperScroll()"
+    >
+      <table #tableEl class="ui-table-table" [style]="tableStyle() ?? null">
+        @if (headerTemplate(); as header) {
+          <thead #theadEl class="ui-table-thead">
+            <ng-container [ngTemplateOutlet]="header" />
+          </thead>
+        }
+
+        @if (!loading() && frozenValue()?.length) {
+          <tbody class="ui-table-tbody _frozen-rows">
+            @for (row of frozenValue(); track $index) {
+              @if (bodyTemplate(); as body) {
+                <ng-container [ngTemplateOutlet]="body" [ngTemplateOutletContext]="rowContext(row, $index, true)" />
+              }
+            }
+          </tbody>
+        }
+
+        <tbody class="ui-table-tbody">
+          @if (loading()) {
+            <tr class="ui-table-loading-row">
+              <td class="ui-table-loading-cell" [attr.colspan]="columnCount()">
+                <ui-spinner [ariaLabel]="loadingAriaLabel()" />
+              </td>
+            </tr>
+          } @else {
+          @if (virtualScroll() && virtualPadding().top > 0) {
+            <tr class="ui-table-virtual-spacer" aria-hidden="true">
+              <td [attr.colspan]="columnCount()" [style.height.px]="virtualPadding().top"></td>
+            </tr>
+          }
+
+          @for (row of pageData(); track $index) {
+            @if (bodyTemplate(); as body) {
+              <ng-container [ngTemplateOutlet]="body" [ngTemplateOutletContext]="rowContext(row, $index)" />
+            }
+            @if (expandedRowTemplate(); as expansion) {
+              @if (isRowExpanded(row)) {
+                <ng-container [ngTemplateOutlet]="expansion" [ngTemplateOutletContext]="rowContext(row, $index)" />
+              }
+            }
+          } @empty {
+            <tr class="ui-table-empty-row">
+              <td class="ui-table-empty-cell" [attr.colspan]="columnCount()">
+                @if (emptyMessageTemplate(); as empty) {
+                  <ng-container [ngTemplateOutlet]="empty" />
+                } @else {
+                  <ui-empty-state size="small" [icon]="emptyIcon()" [title]="emptyMessage()" />
+                }
+              </td>
+            </tr>
+          }
+
+          @if (virtualScroll() && virtualPadding().bottom > 0) {
+            <tr class="ui-table-virtual-spacer" aria-hidden="true">
+              <td [attr.colspan]="columnCount()" [style.height.px]="virtualPadding().bottom"></td>
+            </tr>
+          }
+          }
+        </tbody>
+
+        @if (footerTemplate(); as footer) {
+          <tfoot class="ui-table-tfoot">
+            <ng-container [ngTemplateOutlet]="footer" />
+          </tfoot>
+        }
+      </table>
+    </div>
+  </div>
+
+  @if (paginator()) {
+    <ui-paginator
+      [totalRecords]="totalRecords()"
+      [rows]="rowsState()"
+      (rowsChange)="onPaginatorRows($event)"
+      [first]="first()"
+      (firstChange)="first.set($event)"
+      [pageLinks]="pageLinks()"
+      [rowsPerPageOptions]="rowsPerPageOptions()"
+      ariaLabel="Pagination du tableau"
+      (pageChange)="pageChange.emit($event)"
+    />
+  }
+</div>
