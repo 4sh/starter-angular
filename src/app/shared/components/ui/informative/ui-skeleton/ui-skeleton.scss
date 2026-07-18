@@ -1,0 +1,151 @@
+@use 'utils';
+@use 'sass:map';
+
+// =====================================================================
+// ui-skeleton : co-located styles. All values come from design tokens.
+//
+// Extend:
+//   • Shape → add an entry to $shapes (base dimensions + radius).
+//   • Size  → add per-shape overrides to $small (or a new size map).
+// =====================================================================
+
+// --- Config (extension points) ---------------------------------------
+// Base dimensions per shape (the `default` size).
+$shapes: (
+  'text': (
+    width: 224px,
+    height: 20px,
+    radius: var(--radius-xl),
+  ),
+  'circle': (
+    width: 100px,
+    height: 100px,
+    radius: var(--radius-full),
+  ),
+  'rectangle': (
+    width: 100px,
+    height: 100px,
+    radius: var(--radius-default),
+  ),
+);
+
+// `small` size: per-shape overrides (only the keys that change).
+$small: (
+  'text': (
+    height: 12px,
+  ),
+  'circle': (
+    width: 64px,
+    height: 64px,
+  ),
+  'rectangle': (
+    width: 64px,
+    height: 64px,
+  ),
+);
+
+:host {
+  display: contents;
+}
+
+.ui-skeleton {
+  display: block;
+  flex: none;
+  position: relative;
+  overflow: hidden;
+  background-color: var(--ui-skeleton-background, var(--global-low-surface-default));
+
+  // --- Reflection sweep (base animation) -----------------------------
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      var(--ui-skeleton-shine, rgba(255, 255, 255, 0.6)) 50%,
+      transparent 100%
+    );
+    will-change: transform;
+    animation: ui-skeleton-wave 1.6s ease-in-out infinite;
+  }
+
+  // --- Shapes (base = `default` size) --------------------------------
+  @each $name, $s in $shapes {
+    &._#{$name} {
+      width: utils.rem-calc(map.get($s, width));
+      height: utils.rem-calc(map.get($s, height));
+      border-radius: map.get($s, radius);
+    }
+  }
+
+  // Circle stays round when only one dimension is overridden.
+  &._circle {
+    aspect-ratio: 1 / 1;
+  }
+
+  // --- Small size overrides ------------------------------------------
+  @each $name, $s in $small {
+    &._#{$name}._small {
+      @if map.has-key($s, width) {
+        width: utils.rem-calc(map.get($s, width));
+      }
+      height: utils.rem-calc(map.get($s, height));
+    }
+  }
+
+  // --- Pulse animation (opacity blink instead of the sweep) ----------
+  &._pulse {
+    animation: ui-skeleton-pulse 1.5s ease-in-out infinite;
+
+    &::after {
+      content: none;
+    }
+  }
+
+  // --- No animation --------------------------------------------------
+  &._static::after {
+    content: none;
+  }
+}
+
+:host-context([data-theme='dark']),
+:host-context(.dark) {
+  --ui-skeleton-shine: rgba(255, 255, 255, 0.09);
+}
+
+// --- Keyframes -------------------------------------------------------
+@keyframes ui-skeleton-pulse {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+@keyframes ui-skeleton-wave {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+// --- Reduced motion / kit-wide motion off ----------------------------
+@mixin motion-still {
+  animation: none;
+
+  &::after {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-skeleton {
+    @include motion-still;
+  }
+}
+
+// `:host-context` (not a plain ancestor selector) so encapsulation doesn't
+// break the match against the kit-wide `data-motion="off"` root switch.
+:host-context([data-motion='off']) .ui-skeleton {
+  @include motion-still;
+}

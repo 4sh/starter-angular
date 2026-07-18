@@ -243,6 +243,17 @@ une région `role="status"` nommée.
 
 <Canvas of={TableStories.Loading} />
 
+## Skeleton
+
+Pendant qu'une requête est en vol, on peut rendre des **lignes de substitution**
+remplies de `ui-skeleton` plutôt qu'un voile de chargement. On alimente le
+tableau avec un tableau d'espaces réservés et le template `#body` place un
+`ui-skeleton` par cellule : la structure (en-têtes, colonnes, densité) reste
+identique au contenu réel, ce qui évite tout saut de mise en page à l'arrivée
+des données.
+
+<Canvas of={TableStories.Skeleton} />
+
 ## Virtual Scroll
 
 ### Preload

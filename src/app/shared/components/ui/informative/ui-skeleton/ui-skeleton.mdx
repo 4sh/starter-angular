@@ -1,0 +1,156 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as SkeletonStories from './ui-skeleton.stories';
+
+<Meta of={SkeletonStories} />
+
+# ui-skeleton
+
+Placeholder affiché **à la place du contenu** pendant son chargement. Rend une
+boîte unique colorée par les tokens (`--global-low-surface-default`,
+surchargeable via `--ui-skeleton-background`). Trois formes (`text`, `circle`,
+`rectangle`) fournissent des dimensions par défaut ; `width` / `height` /
+`borderRadius` acceptent une valeur CSS brute pour composer cartes, grilles,
+listes et tableaux. La motion respecte `prefers-reduced-motion` et
+l'interrupteur global `data-motion="off"`.
+
+## Basic
+
+Des formes qui imitent la mise en page du contenu attendu.
+
+<Canvas of={SkeletonStories.Basic} />
+
+## API
+
+<ArgTypes of={SkeletonStories} />
+
+## Card
+
+Composition d'une carte à partir de plusieurs `ui-skeleton`.
+
+<Canvas of={SkeletonStories.Card} />
+
+## Shapes
+
+Formes et tailles variées via `shape`, `width`, `height`, `borderRadius` et
+`size`.
+
+<Canvas of={SkeletonStories.Shapes} />
+
+```html
+<ui-skeleton shape="text" />
+<ui-skeleton shape="rectangle" />
+<ui-skeleton shape="circle" />
+<ui-skeleton shape="rectangle" size="small" />
+<ui-skeleton shape="rectangle" width="10rem" height="4rem" borderRadius="8px" />
+```
+
+## Color
+
+La couleur de fond se personnalise par instance via la custom property
+`--ui-skeleton-background`.
+
+<Canvas of={SkeletonStories.Color} />
+
+```html
+<ui-skeleton width="100%" style="--ui-skeleton-background: var(--primitives-primary-200)" />
+```
+
+## Grid
+
+Composition d'une grille de cartes.
+
+<Canvas of={SkeletonStories.Grid} />
+
+## List
+
+Composition d'une liste.
+
+<Canvas of={SkeletonStories.List} />
+
+## DataTable
+
+Composition d'un tableau de données (en-tête + lignes).
+
+<Canvas of={SkeletonStories.DataTable} />
+
+## Animation
+
+L'animation de base est **`wave`** : un reflet clair, large et doux, glisse de
+gauche à droite et s'estompe aux bords (teinte pilotable via
+`--ui-skeleton-shine`, atténuée automatiquement en thème sombre). `pulse`
+propose à la place une pulsation d'opacité ; `none` fige la boîte. Toutes
+s'arrêtent sous `prefers-reduced-motion` ou `data-motion="off"`.
+
+```html
+<ui-skeleton animation="wave" />
+<ui-skeleton animation="pulse" />
+<ui-skeleton animation="none" />
+```
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Point</th>
+      <th>Implémentation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Ignoré par les lecteurs d'écran</strong></td>
+      <td>La racine porte <code>aria-hidden="true"</code> : le chargement est un état purement visuel, jamais annoncé comme du contenu.</td>
+    </tr>
+    <tr>
+      <td><strong>Région en chargement</strong></td>
+      <td>Regrouper plusieurs skeletons sous un conteneur portant <code>aria-busy="true"</code> pour signaler la zone en cours de chargement.</td>
+    </tr>
+    <tr>
+      <td><strong>Clavier</strong></td>
+      <td>Aucun élément interactif : le composant n'est jamais dans l'ordre de tabulation.</td>
+    </tr>
+    <tr>
+      <td><strong>Motion réduite</strong></td>
+      <td><code>prefers-reduced-motion: reduce</code> et <code>data-motion="off"</code> figent l'animation.</td>
+    </tr>
+  </tbody>
+</table>
+
+```html
+<!-- Zone en cours de chargement -->
+<div [attr.aria-busy]="loading">
+  @if (loading) {
+    <ui-skeleton width="100%" />
+    <ui-skeleton width="80%" />
+  } @else {
+    <!-- contenu -->
+  }
+</div>
+```
+
+## Configuration (SCSS)
+
+Toutes les valeurs proviennent des design tokens. Point de réglage exposé (par
+instance, via custom property CSS) :
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Variable</th>
+      <th>Défaut</th>
+      <th>Rôle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>--ui-skeleton-background</code></td>
+      <td><code>--global-low-surface-default</code></td>
+      <td>Couleur de fond de la boîte du placeholder.</td>
+    </tr>
+    <tr>
+      <td><code>--ui-skeleton-shine</code></td>
+      <td><code>rgba(255,255,255,.6)</code> (clair) / <code>rgba(255,255,255,.09)</code> (sombre)</td>
+      <td>Teinte du reflet glissant de l'animation <code>wave</code>.</td>
+    </tr>
+  </tbody>
+</table>

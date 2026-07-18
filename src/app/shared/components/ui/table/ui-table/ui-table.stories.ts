@@ -16,6 +16,7 @@ import {
 } from '@app/shared/components/ui/table/ui-table/ui-table';
 import { UiButton } from '@app/shared/components/ui/actions/ui-button/ui-button';
 import { UiSelect } from '@app/shared/components/ui/forms/ui-select/ui-select';
+import { UiSkeleton } from '@app/shared/components/ui/informative/ui-skeleton/ui-skeleton';
 
 interface Product {
   id: number;
@@ -83,6 +84,7 @@ const meta: Meta<UiTable<Product>> = {
         UiTableReorderableRow,
         UiButton,
         UiSelect,
+        UiSkeleton,
         FormsModule,
       ],
     }),
@@ -916,6 +918,39 @@ export const VirtualScrollLazy: Story = {
             <td>{{ product?.name ?? '…' }}</td>
             <td>{{ product?.category ?? '…' }}</td>
             <td>{{ product?.quantity ?? '…' }}</td>
+          </tr>
+        </ng-template>
+      </ui-table>
+    `,
+  }),
+};
+
+/**
+ * Skeleton : pendant qu'une requête est en vol, on rend des **lignes de
+ * substitution** remplies de `ui-skeleton`. On alimente le tableau avec un
+ * tableau d'espaces réservés (ici 5 lignes) et le template `#body` place un
+ * `ui-skeleton` par cellule — la structure du tableau (en-têtes, colonnes,
+ * densité) reste identique au contenu réel, évitant tout saut de mise en page.
+ */
+export const Skeleton: Story = {
+  render: () => ({
+    props: { placeholders: Array.from({ length: 5 }) },
+    template: `
+      <ui-table [value]="placeholders">
+        <ng-template #header>
+          <tr>
+            <th>Code</th>
+            <th>Nom</th>
+            <th>Catégorie</th>
+            <th>Quantité</th>
+          </tr>
+        </ng-template>
+        <ng-template #body>
+          <tr>
+            <td><ui-skeleton width="80%" size="small" /></td>
+            <td><ui-skeleton width="90%" size="small" /></td>
+            <td><ui-skeleton width="70%" size="small" /></td>
+            <td><ui-skeleton width="40%" size="small" /></td>
           </tr>
         </ng-template>
       </ui-table>
