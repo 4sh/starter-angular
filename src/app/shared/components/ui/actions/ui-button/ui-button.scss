@@ -16,24 +16,23 @@ $levels: high, low, success, warning, error;
 // `default` = base styles; other keys become `._<name>` modifiers.
 $sizes: (
   'default': (
-    height: 44px,
+    height: var(--size-components-default),
     padding-x: var(--units-default),
     font-size: var(--size-typography-text-default),
   ),
   'small': (
-    height: 40px,
+    height: var(--size-components-default),
     padding-x: var(--units-md),
     font-size: var(--size-typography-text-md),
   ),
 );
 $size-default: map.get($sizes, 'default');
-
-// Shared default (ui-config) — replace the value here to detune ONLY this component.
 $focus-ring-width: utils.$action-focus-ring-width;
 
 // Height/padding/font-size for a $sizes entry.
 @mixin button-size($size) {
-  height: utils.rem-calc(map.get($size, height));
+  $height: map.get($size, height);
+  height: if(str-index($height, 'var('), $height, utils.rem-calc($height));
   padding: 0 map.get($size, padding-x);
   font-size: map.get($size, font-size);
 }
@@ -90,12 +89,14 @@ $focus-ring-width: utils.$action-focus-ring-width;
 
   // Icon-only: square (width = size height), no horizontal padding.
   &._icon-only {
-    width: utils.rem-calc(map.get($size-default, height));
+    $default-height: map.get($size-default, height);
+    width: if(str-index($default-height, 'var('), $default-height, utils.rem-calc($default-height));
     padding: 0;
 
     @each $name, $size in $sizes {
       @if $name != 'default' {
-        &._#{$name} { width: utils.rem-calc(map.get($size, height)); }
+        $height: map.get($size, height);
+        &._#{$name} { width: if(str-index($height, 'var('), $height, utils.rem-calc($height)); }
       }
     }
   }

@@ -33,6 +33,8 @@ function modeSegments(col) {
   for (const a of col.modeAxes ?? []) {
     for (const k of Object.keys(a.map ?? {})) s.add(k);
     if (a.default) s.add(a.default);
+    const detected = detectModeNames(col, a);
+    for (const m of detected) s.add(m);
   }
   return s;
 }
