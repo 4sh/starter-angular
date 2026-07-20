@@ -39,6 +39,9 @@ $stroke-width: utils.$control-stroke-width;
 .ui-select {
   display: block;
   cursor: pointer;
+  --ui-field-box-cursor: pointer;
+
+  &._editable { --ui-field-box-cursor: text; }
 
   // --- Trigger (combobox button filling the field box) ----------------
   &-trigger {
@@ -146,6 +149,7 @@ $stroke-width: utils.$control-stroke-width;
   &-chevron {
     @include utils.field-affix;
     @include utils.motion-transition(rotate);
+    cursor: pointer;
 
     &._open { rotate: 180deg; }
   }

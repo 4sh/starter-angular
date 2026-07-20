@@ -48,6 +48,21 @@ const GROUPED_CITIES = [
   },
 ];
 
+interface Language {
+  label: string;
+  value: string;
+  icon: string;
+}
+
+const LANGUAGES: Language[] = [
+  { label: 'Français', value: 'fr', icon: 'earth-europe' },
+  { label: 'English', value: 'en', icon: 'earth-americas' },
+  { label: 'Español', value: 'es', icon: 'earth-europe' },
+  { label: 'Deutsch', value: 'de', icon: 'earth-europe' },
+  { label: '日本語', value: 'ja', icon: 'earth-asia' },
+  { label: '中文', value: 'zh', icon: 'earth-asia' },
+];
+
 const MANY_ITEMS = Array.from({ length: 10000 }, (_, i) => `Élément ${i + 1}`);
 
 const meta: Meta<UiSelect> = {
@@ -390,6 +405,37 @@ export const CustomOption: Story = {
             </span>
           </ng-template>
         </ui-select>
+      </div>
+    `,
+  }),
+};
+
+// --- Selected Value : valeur affichée custom (#selectedItem, mode simple) ---
+// Le même rendu riche pour l'option (#item) et pour la valeur du champ (#selectedItem).
+export const SelectedValue: Story = {
+  name: 'Selected Value',
+  render: () => ({
+    props: { languages: LANGUAGES, model: 'fr' },
+    template: `
+      <div style="display:grid; gap:12px; width:280px;">
+        <ui-select
+          label="Langue" placeholder="Choisir une langue"
+          [(ngModel)]="model" [options]="languages" optionLabel="label" optionValue="value"
+          [filter]="true" filterBy="label" [checkmark]="true">
+          <ng-template #selectedItem let-lang>
+            <span style="display:flex; align-items:center; gap:8px;">
+              <ui-icon [name]="lang.icon" size="sm" />
+              <span>{{ lang.label }}</span>
+            </span>
+          </ng-template>
+          <ng-template #item let-lang>
+            <span style="display:flex; align-items:center; gap:8px;">
+              <ui-icon [name]="lang.icon" size="sm" />
+              <span>{{ lang.label }}</span>
+            </span>
+          </ng-template>
+        </ui-select>
+        <code>model = {{ model | json }}</code>
       </div>
     `,
   }),

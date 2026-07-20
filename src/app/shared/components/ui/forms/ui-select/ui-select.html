@@ -143,7 +143,7 @@
 </ng-template>
 
 <!-- Trigger: composed field. Clicking the box opens the panel (backdrop closes it). -->
-<div #container class="ui-select" (click)="onContainerClick($event)">
+<div #container class="ui-select" [class._editable]="isEditable()" (click)="onContainerClick($event)">
   <ui-field
     [label]="label()"
     [for]="resolvedId()"

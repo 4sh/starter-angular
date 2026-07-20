@@ -95,6 +95,26 @@ Le template `#item` remplace le rendu d'une option
 
 <Canvas of={SelectStories.CustomOption} />
 
+## Selected Value
+
+Le template `#selectedItem` personnalise la **valeur affichée dans le champ** (pas seulement
+en mode `multiple` : il s'applique aussi au mono-sélect). Combiné à `#item`, on obtient un
+rendu riche identique pour l'option de la liste et pour la valeur sélectionnée (contexte :
+`$implicit`/`option`, `index`, callback `remove`).
+
+```html
+<ui-select [(ngModel)]="lang" [options]="languages" optionLabel="label" optionValue="value" [filter]="true" [checkmark]="true">
+  <ng-template #selectedItem let-lang>
+    <span class="row"><ui-icon [name]="lang.icon" size="sm" /> {{ lang.label }}</span>
+  </ng-template>
+  <ng-template #item let-lang>
+    <span class="row"><ui-icon [name]="lang.icon" size="sm" /> {{ lang.label }}</span>
+  </ng-template>
+</ui-select>
+```
+
+<Canvas of={SelectStories.SelectedValue} />
+
 ## Group
 
 Avec `group`, `options` est une structure imbriquée : `optionGroupLabel` (défaut `label`) et

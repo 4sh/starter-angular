@@ -41,7 +41,7 @@ $textarea-min-height-small: utils.$form-textarea-min-height-small;
     border: $stroke-width solid var(--_stroke);
     border-radius: $radius;
     background-color: var(--form-high-surface-default);
-    cursor: text;
+    cursor: var(--ui-field-box-cursor, text);
     @include utils.control-transition(background-color, box-shadow);
   }
   &._small &-box { height: $height-small; }
