@@ -1,0 +1,114 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as ProgressBarStories from './ui-progress-bar.stories';
+
+<Meta of={ProgressBarStories} />
+
+# ui-progress-bar
+
+Indicateur d'état de processus.
+
+## API
+
+<ArgTypes of={ProgressBarStories} />
+
+## Basic
+
+Reflète le pourcentage d'avancement d'un processus en cours.
+
+<Canvas of={ProgressBarStories.Basic} />
+
+## Dynamic
+
+La valeur est réactive : la mettre à jour anime la barre en conséquence (la
+largeur transite via le système de motion partagé).
+
+<Canvas of={ProgressBarStories.Dynamic} />
+
+## Template
+
+La valeur affichée peut être formatée librement via `valueTemplate` (contexte
+`{ $implicit: value }`) et la barre recolorée via `color`. Ici plusieurs barres
+partagent la même progression avec des formateurs différents.
+
+<Canvas of={ProgressBarStories.Template} />
+
+```html
+<ui-progress-bar [value]="70" [valueTemplate]="fraction" ariaLabel="Progression" />
+<ng-template #fraction let-v>{{ v / 10 }} / 10</ng-template>
+```
+
+## Indeterminate
+
+Pour les processus dont la progression n'est pas mesurable, passer `mode` à
+`indeterminate` : la barre boucle sans afficher de valeur.
+
+<Canvas of={ProgressBarStories.Indeterminate} />
+
+## As Steps
+
+`steps` découpe la barre en N segments discrets pour représenter une progression
+par étapes ; le nombre de segments remplis est dérivé de `value`.
+
+<Canvas of={ProgressBarStories.AsSteps} />
+
+## Valeur dans la jauge
+
+`valuePosition="inside"` intègre le pourcentage **dans le remplissage** de la
+barre (centré, texte contrasté `informative.highlightHigh.content`). La piste
+grandit pour accueillir le texte ; le libellé est rogné si le remplissage est
+trop étroit.
+
+<Canvas of={ProgressBarStories.ValueInside} />
+
+```html
+<ui-progress-bar [value]="50" valuePosition="inside" ariaLabel="Progression" />
+```
+
+## Position & taille
+
+<Canvas of={ProgressBarStories.ValueBottom} />
+<Canvas of={ProgressBarStories.NoValue} />
+<Canvas of={ProgressBarStories.Small} />
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Point</th>
+      <th>Implémentation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Rôle</strong></td>
+      <td>La piste porte <code>role="progressbar"</code> avec <code>aria-valuemin="0"</code>, <code>aria-valuemax="100"</code> et, en mode déterminé, <code>aria-valuenow</code> (omis en <code>indeterminate</code>).</td>
+    </tr>
+    <tr>
+      <td><strong>Nom accessible</strong></td>
+      <td>Fournir <code>ariaLabel</code> ou <code>ariaLabelledBy</code> pour décrire ce que la barre mesure.</td>
+    </tr>
+    <tr>
+      <td><strong>Étapes</strong></td>
+      <td>En mode <code>steps</code>, <code>aria-valuetext</code> annonce « n / total » (ex. « 3 / 5 ») en plus du pourcentage.</td>
+    </tr>
+    <tr>
+      <td><strong>Motion</strong></td>
+      <td>La transition de largeur et l'animation indéterminée sont neutralisées sous <code>prefers-reduced-motion: reduce</code> et via l'interrupteur global <code>data-motion="off"</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Couleur</strong></td>
+      <td>La couleur n'est jamais le seul vecteur de sens : la valeur numérique (ou le libellé) complète la barre.</td>
+    </tr>
+  </tbody>
+</table>
+
+## Personnalisation
+
+La couleur de remplissage est surchargeable par instance via l'input `color`
+(ou directement la custom property `--ui-progress-bar-color`), sans percer
+l'encapsulation :
+
+```html
+<ui-progress-bar [value]="80" color="var(--informative-successhigh-surface-default)" />
+```

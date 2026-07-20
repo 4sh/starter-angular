@@ -1,0 +1,180 @@
+@use 'utils';
+@use 'sass:map';
+
+// =====================================================================
+// ui-progress-bar : co-located styles. All values come from design tokens.
+//
+// Extend:
+//   • Size → add an entry to $sizes (+ the `UiProgressBarSize` type).
+// =====================================================================
+
+// --- Config (extension points) ---------------------------------------
+// `default` = base styles; other keys become `._<name>` modifiers.
+$sizes: (
+  'default': (
+    track-height: 8px,
+    radius: var(--radius-xs),
+  ),
+  'small': (
+    track-height: 4px,
+    radius: var(--radius-2xs),
+  ),
+);
+$size-default: map.get($sizes, 'default');
+
+// Component-specific (local): one indeterminate cycle duration.
+$indeterminate-duration: 1.6s;
+
+// --- Host: block, fills its container --------------------------------
+:host {
+  display: block;
+  width: 100%;
+}
+
+.ui-progress-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--units-md);
+  width: 100%;
+
+  // --- Track (the bar container; carries role="progressbar") ---------
+  &-track {
+    position: relative;
+    display: flex;
+    flex: 1 1 auto;
+    overflow: hidden;
+    height: utils.rem-calc(map.get($size-default, track-height));
+    border-radius: map.get($size-default, radius);
+    background-color: var(--global-high-stroke-default);
+  }
+
+  // --- Determinate fill ----------------------------------------------
+  &-value {
+    height: 100%;
+    border-radius: inherit;
+    background-color: var(--ui-progress-bar-color, var(--informative-highlighthigh-surface-default));
+    @include utils.motion-transition(width);
+  }
+
+  // --- Segments (steps mode) -----------------------------------------
+  &-segment {
+    flex: 1 1 0;
+    height: 100%;
+    border-radius: var(--radius-2xs);
+    background-color: var(--global-high-stroke-default);
+
+    &._active {
+      background-color: var(--ui-progress-bar-color, var(--informative-highlighthigh-surface-default));
+    }
+  }
+
+  // --- Label ---------------------------------------------------------
+  &-label {
+    flex: 0 0 auto;
+    color: var(--global-high-content-default);
+    font-family: var(--fontfamily-base);
+    font-weight: var(--weight-regular);
+    font-size: var(--size-typography-text-default);
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  // --- Value position: label below the bar ---------------------------
+  &._bottom {
+    flex-direction: column;
+    align-items: flex-end; // Figma counterAxisAlignItems = MAX
+    gap: var(--units-sm);
+  }
+
+  // --- Value position: label inside the filled portion ---------------
+  // The bar grows tall enough to hold text; the label is centered inside
+  // the fill and clipped when the fill is too narrow (overflow: hidden).
+  &._inside &-track {
+    height: var(--size-components-xs);
+    border-radius: var(--radius-sm);
+  }
+
+  &._inside &-value {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  &-value-label {
+    padding-inline: var(--units-sm);
+    color: var(--informative-highlighthigh-content-default);
+    font-family: var(--fontfamily-base);
+    font-weight: var(--weight-bold);
+    font-size: var(--size-typography-text-md);
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  // --- Steps: discrete segments with a hairline gap ------------------
+  &._steps .ui-progress-bar-track {
+    gap: var(--units-2xs);
+    overflow: visible;
+    border-radius: 0;
+    background-color: transparent;
+  }
+
+  // --- Sizes (all but `default`) -------------------------------------
+  @each $name, $size in $sizes {
+    @if $name != 'default' {
+      &._#{$name} .ui-progress-bar-track {
+        height: utils.rem-calc(map.get($size, track-height));
+        border-radius: map.get($size, radius);
+      }
+    }
+  }
+
+  // --- Indeterminate: looping sweep, no tracked width ----------------
+  &._indeterminate .ui-progress-bar-value {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    width: 40%;
+    animation: ui-progress-bar-indeterminate $indeterminate-duration var(--transition-easeinout) infinite;
+  }
+}
+
+// --- Keyframes -------------------------------------------------------
+@keyframes ui-progress-bar-indeterminate {
+  0% {
+    inset-inline-start: -40%;
+    width: 40%;
+  }
+  50% {
+    inset-inline-start: 30%;
+    width: 60%;
+  }
+  100% {
+    inset-inline-start: 100%;
+    width: 40%;
+  }
+}
+
+// --- Reduced motion / kit-wide motion off ----------------------------
+// Uses :host-context() (not `:root … &`): with emulated encapsulation the
+// scoping attribute lands on the ancestor otherwise, making the switch a no-op.
+@mixin motion-still {
+  .ui-progress-bar-value {
+    transition: none;
+    animation: none;
+  }
+
+  .ui-progress-bar._indeterminate .ui-progress-bar-value {
+    inset-inline-start: 0;
+    width: 100%;
+    opacity: 0.6;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @include motion-still;
+}
+
+:host-context([data-motion='off']) {
+  @include motion-still;
+}

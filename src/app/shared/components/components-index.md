@@ -35,7 +35,7 @@
 - ✅ `ui-tag` — Étiquette colorée / pilule (level × sub-level × size, icônes gauche/droite, forme pill/rounded, tokens informative)
 - ✅ `ui-chip` — Jeton compact **interactif** (relative de `ui-tag` : icône **ou image** de tête façon avatar ; action de suppression `removable` — `<button>` natif, clavier `Entrée`/`Espace`/`Retour`/`Suppr`, output `remove` ; mode **sélectionnable** `selectable` — racine `<button aria-pressed>`, `[(selected)]` two-way, remplissage `high` + icône `selectedIcon` (check) sur sélection, motif choice/filter chip ; contenu projeté libre, `disabled`, level × sub-level × size, forme pill/rounded, `aria-label`/`aria-labelledby`, repli image + `imageError`, garde-fous a11y ; tokens `informative`)
 - ✅ `ui-helper` — Texte d'aide sous un champ
-- ⬜ `ui-progress-bar` — Barre de progression
+- ✅ `ui-progress-bar` — Barre de progression (headless ; modes `determinate`/`indeterminate`, `value` 0–100 borné, libellé `right`/`bottom` ou masqué, formateur libre `valueTemplate`, mode `steps` (segments discrets), couleur surchargeable `color`/`--ui-progress-bar-color`, `role="progressbar"` + aria-value*, motion réductible)
 - ✅ `ui-avatar` — Avatar utilisateur (image / initiales / icône, tailles, forme, badge projeté, repli image)
 - ✅ `ui-avatar-group` — Empilement d'avatars avec chevauchement (débordement « +N » par avatar Label)
 - ✅ `ui-tooltip` — Infobulle headless (directive `[uiTooltip]` + CDK Overlay ; placement 4 côtés avec retournement auto `fitContent`, hover/focus/both, délais, `escape` HTML/`TemplateRef`, `autoHide`/`hideOnEscape`/`life`, `tooltipStyleClass`)

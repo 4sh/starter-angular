@@ -1,0 +1,42 @@
+<div [class]="classes()" [style.--ui-progress-bar-color]="color() ?? null">
+  <div
+    class="ui-progress-bar-track"
+    role="progressbar"
+    [attr.aria-valuemin]="0"
+    [attr.aria-valuemax]="100"
+    [attr.aria-valuenow]="ariaValueNow()"
+    [attr.aria-valuetext]="ariaValueText()"
+    [attr.aria-label]="ariaLabel() ?? null"
+    [attr.aria-labelledby]="ariaLabelledBy() ?? null"
+  >
+    @if (isSteps()) {
+      @for (active of segments(); track $index) {
+        <span class="ui-progress-bar-segment" [class._active]="active"></span>
+      }
+    } @else if (isIndeterminate()) {
+      <div class="ui-progress-bar-value _indeterminate"></div>
+    } @else {
+      <div class="ui-progress-bar-value" [style.width.%]="clampedValue()">
+        @if (labelInside()) {
+          <span class="ui-progress-bar-value-label">
+            <ng-container [ngTemplateOutlet]="labelTpl" />
+          </span>
+        }
+      </div>
+    }
+  </div>
+
+  @if (showLabel() && !labelInside()) {
+    <div class="ui-progress-bar-label">
+      <ng-container [ngTemplateOutlet]="labelTpl" />
+    </div>
+  }
+</div>
+
+<ng-template #labelTpl>
+  @if (valueTemplate(); as tpl) {
+    <ng-container [ngTemplateOutlet]="tpl" [ngTemplateOutletContext]="{ $implicit: clampedValue() }" />
+  } @else {
+    {{ clampedValue() }}{{ unit() }}
+  }
+</ng-template>
