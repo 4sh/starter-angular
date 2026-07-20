@@ -27,7 +27,7 @@
 - ✅ `ui-file-upload` — Téléversement de fichiers (headless ; modes `field`/`drag` + glisser-déposer, `multiple`, validation `accept`/`maxFileSize`/`fileLimit`, `auto`, `customUpload` + `uploadHandler`, upload XHR avec suivi de progression, templates `file`/`content`/`toolbar`, région d'erreurs live, aperçus image révoqués ; compose `ui-file-upload-list`)
 - ✅ `ui-file-upload-list` — Ligne de fichier (unité répétée : vignette/icône, nom + taille/état, suppression ; bascule sur `ui-spinner` pendant le téléversement + barre de progression)
 - ✅ `ui-textarea` — Zone de texte multiligne (headless, CVA ; label + helper, niveaux/états, `rows`, `maxlength`, `autoResize`, poignée native)
-- ⬜ `ui-slider` — Curseur de sélection de valeur
+- ✅ `ui-slider` — Curseur de sélection de valeur (headless, CVA ; simple/`range`, `step`, `marks`, écart min. entre poignées, orientation, drag pointeur + clavier WAI-ARIA `role=slider`)
 
 ## informative
 - ⬜ `ui-alert` — Message d'alerte (erreur, succès, info)

@@ -1,0 +1,49 @@
+<div #root
+     [class]="classes()"
+     (pointerdown)="onPointerDown($event)"
+     (pointermove)="onPointerMove($event)"
+     (pointerup)="onPointerUp($event)"
+     (pointercancel)="onPointerUp($event)">
+  <!-- Rail + filled portion -->
+  <div class="ui-slider-track">
+    <div class="ui-slider-range"
+         [style.inset-inline-start]="orientation() === 'horizontal' ? fill().start + '%' : null"
+         [style.width]="orientation() === 'horizontal' ? fill().size + '%' : null"
+         [style.bottom]="orientation() === 'vertical' ? fill().start + '%' : null"
+         [style.height]="orientation() === 'vertical' ? fill().size + '%' : null"></div>
+  </div>
+
+  <!-- Step ticks (decorative) -->
+  @if (markList().length) {
+    <div class="ui-slider-marks" aria-hidden="true">
+      @for (mark of markList(); track mark.value) {
+        <span class="ui-slider-mark"
+              [class._active]="mark.active"
+              [style.inset-inline-start]="orientation() === 'horizontal' ? mark.percent + '%' : null"
+              [style.bottom]="orientation() === 'vertical' ? mark.percent + '%' : null"></span>
+      }
+    </div>
+  }
+
+  <!-- Handles (WAI-ARIA slider pattern) -->
+  @for (handle of handles(); track handle.index) {
+    <div #handle
+         class="ui-slider-handle"
+         role="slider"
+         [attr.id]="handle.index === 0 ? resolvedId() : null"
+         [attr.tabindex]="isDisabled() ? -1 : (tabindex() ?? 0)"
+         [attr.aria-valuemin]="min()"
+         [attr.aria-valuemax]="max()"
+         [attr.aria-valuenow]="handle.value"
+         [attr.aria-orientation]="orientation()"
+         [attr.aria-label]="ariaLabel()"
+         [attr.aria-labelledby]="ariaLabelledBy()"
+         [attr.aria-disabled]="isDisabled() ? true : null"
+         [attr.aria-readonly]="readonly() ? true : null"
+         [style.inset-inline-start]="orientation() === 'horizontal' ? handle.percent + '%' : null"
+         [style.bottom]="orientation() === 'vertical' ? handle.percent + '%' : null"
+         (keydown)="onKeyDown($event, handle.index)"
+         (focus)="onFocus($event)"
+         (blur)="onBlur($event)"></div>
+  }
+</div>

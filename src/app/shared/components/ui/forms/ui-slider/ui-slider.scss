@@ -1,0 +1,172 @@
+@use 'utils';
+
+// =====================================================================
+// ui-slider : co-located styles. All values come from design tokens.
+// =====================================================================
+
+// --- Config ---------------------------------------
+$track-thickness: utils.rem-calc(8);
+$handle-size: utils.rem-calc(22);
+$mark-size: utils.rem-calc(6);
+$vertical-length: 12rem;
+$focus-ring-width: utils.$form-focus-ring-width;
+
+.ui-slider {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: $handle-size;
+  touch-action: none;
+  cursor: pointer;
+  user-select: none;
+
+  // --- Rail ----------------------------------------------------------
+  &-track {
+    position: relative;
+    width: 100%;
+    height: var(--ui-slider-thickness, #{$track-thickness});
+    border-radius: var(--radius-full);
+    background-color: var(--global-low-surface-default);
+  }
+
+  // --- Filled portion ------------------------------------------------
+  &-range {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    border-radius: var(--radius-full);
+    background-color: var(--actions-high-surface-default);
+    @include utils.control-transition(background-color);
+  }
+
+  // --- Handle (role="slider") ----------------------------------------
+  &-handle {
+    position: absolute;
+    top: 50%;
+    width: var(--ui-slider-handle-size, #{$handle-size});
+    height: var(--ui-slider-handle-size, #{$handle-size});
+    transform: translate(-50%, -50%);
+    box-sizing: border-box;
+    border: utils.$control-stroke-width solid transparent;
+    border-radius: var(--radius-full);
+    background-color: var(--actions-high-surface-default);
+    cursor: grab;
+    @include utils.control-transition(background-color, border-color, box-shadow);
+
+    &:hover {
+      background-color: var(--actions-high-surface-hover);
+    }
+
+    &:focus-visible {
+      outline: none;
+      border-color: var(--actions-high-stroke-focused);
+      box-shadow: 0 0 0 $focus-ring-width var(--actions-high-stroke-focused);
+    }
+
+    &:active {
+      background-color: var(--actions-high-surface-pressed);
+      cursor: grabbing;
+    }
+  }
+
+  // --- Step ticks ----------------------------------------------------
+  &-marks {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  &-mark {
+    position: absolute;
+    top: 50%;
+    width: $mark-size;
+    height: $mark-size;
+    transform: translate(-50%, -50%);
+    border-radius: var(--radius-full);
+    background-color: var(--informative-defaulthigh-surface-default);
+
+    &._active {
+      background-color: var(--actions-high-content-default);
+    }
+  }
+
+  // --- Vertical orientation ------------------------------------------
+  &._vertical {
+    flex-direction: column;
+    width: auto;
+    min-width: $handle-size;
+    height: var(--ui-slider-length, #{$vertical-length});
+    min-height: 0;
+
+    .ui-slider-track {
+      width: var(--ui-slider-thickness, #{$track-thickness});
+      height: 100%;
+    }
+
+    .ui-slider-range {
+      top: auto;
+      bottom: 0;
+      width: 100%;
+      height: auto;
+    }
+
+    .ui-slider-handle {
+      top: auto;
+      left: 50%;
+      transform: translate(-50%, 50%);
+    }
+
+    .ui-slider-mark {
+      top: auto;
+      left: 50%;
+      transform: translate(-50%, 50%);
+    }
+  }
+
+  // --- Disabled ------------------------------------------------------
+  &._disabled {
+    cursor: not-allowed;
+
+    .ui-slider-range {
+      background-color: var(--actions-high-surface-disabled);
+    }
+    .ui-slider-handle {
+      cursor: not-allowed;
+      background-color: var(--actions-high-surface-disabled);
+
+      &:hover {
+        background-color: var(--actions-high-surface-disabled);
+      }
+    }
+  }
+
+  // --- Read-only -----------------------------------------------------
+  &._readonly {
+    cursor: default;
+
+    .ui-slider-handle {
+      cursor: default;
+    }
+  }
+
+  // --- Invalid -------------------------------------------------------
+  // The saturated error color lives in the `content` tokens (the `surface`
+  // token is the pale field background — see ui-rating / ui-toggle).
+  &._invalid {
+    .ui-slider-range {
+      background-color: var(--form-error-content-default);
+    }
+    .ui-slider-handle {
+      background-color: var(--form-error-content-default);
+
+      &:hover {
+        background-color: var(--form-error-content-hover);
+      }
+      &:focus-visible {
+        border-color: var(--form-error-stroke-focused);
+        box-shadow: 0 0 0 $focus-ring-width var(--form-error-stroke-focused);
+      }
+    }
+  }
+}

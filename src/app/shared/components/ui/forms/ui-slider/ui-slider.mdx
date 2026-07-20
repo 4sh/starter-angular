@@ -1,0 +1,183 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as SliderStories from './ui-slider.stories';
+
+<Meta of={SliderStories} />
+
+# ui-slider
+
+Le composant `ui-slider` permet de choisir une valeur numérique (ou un intervalle)
+en faisant glisser une poignée le long d'une piste. Il implémente le motif
+WAI-ARIA « slider » : chaque poignée porte `role="slider"` avec `aria-valuemin`,
+`aria-valuemax`, `aria-valuenow` et `aria-orientation`, et se pilote entièrement au
+clavier. Les interactions pointeur (souris, tactile, stylet) passent par un unique
+chemin de code (`PointerEvent` + pointer capture).
+
+<Canvas of={SliderStories.Basic} />
+
+## API
+
+<ArgTypes of={SliderStories} />
+
+## Step
+
+La granularité de chaque déplacement (drag et clavier) est définie par `step`.
+
+<Canvas of={SliderStories.Step} />
+
+## Range
+
+Avec `range`, le curseur affiche deux poignées définissant deux valeurs. Le modèle
+doit alors être un tableau `[début, fin]`.
+
+<Canvas of={SliderStories.Range} />
+
+### Écart entre poignées
+
+`minStepsBetweenHandles` définit le nombre minimal de pas conservés entre les deux
+poignées en mode `range`.
+
+<Canvas of={SliderStories.HandlesDistance} />
+
+## Controlled
+
+Le curseur partage son modèle avec un [`ui-input-number`](?path=/docs/components-ui-forms-ui-input-number--docs)
+via une liaison bidirectionnelle : les deux restent synchronisés.
+
+<Canvas of={SliderStories.Controlled} />
+
+## Value Change
+
+`sliderChange` est émis **en continu** pendant le déplacement, tandis que `slideEnd`
+ne l'est qu'une fois le glissement (ou le clic sur la piste) **terminé**.
+
+<Canvas of={SliderStories.ValueChange} />
+
+## Repères (marks)
+
+`marks` affiche un repère par pas le long de la piste (borné pour préserver le DOM :
+désactivé au-delà de 100 pas).
+
+<Canvas of={SliderStories.Marks} />
+
+## Custom
+
+Le composant est headless : au-delà des thèmes/tokens, trois **hooks structurels**
+(CSS custom properties) permettent de le réaccorder par instance sans surcharge SCSS.
+
+```html
+<ui-slider [(ngModel)]="value"
+           style="--ui-slider-thickness: 4px; --ui-slider-handle-size: 28px;" />
+```
+
+<Canvas of={SliderStories.Custom} />
+
+## Orientation
+
+`orientation="vertical"` bascule la disposition (et adapte les flèches clavier). La
+longueur en vertical se règle via `--ui-slider-length`.
+
+<Canvas of={SliderStories.Vertical} />
+
+## États
+
+<Canvas of={SliderStories.States} />
+
+## Formulaires
+
+Le composant est un `ControlValueAccessor`, donc il se branche à toutes les APIs de
+formulaire sans code additionnel. Le projet est en Angular 21 ; les Signal Forms
+(`@angular/forms/signals`, directive `[field]`) fonctionnent déjà via la couche
+d'interop CVA, ce qui prépare une migration Angular 22 sans réécriture.
+
+<Canvas of={SliderStories.SignalForms} />
+<Canvas of={SliderStories.TemplateDriven} />
+<Canvas of={SliderStories.ReactiveForms} />
+
+```html
+<!-- Signal Forms -->
+<ui-slider [field]="volume" ariaLabel="Volume" />
+
+<!-- Template-driven -->
+<ui-slider [(ngModel)]="level" name="level" required ariaLabel="Niveau" />
+
+<!-- Reactive -->
+<ui-slider [formControl]="levelCtrl" ariaLabel="Niveau" />
+```
+
+- Le style **erreur s'applique automatiquement** quand le contrôle attaché est invalide
+  **et** touché/modifié ; `invalid` permet de le forcer.
+- `disabled` désactive le contrôle (par input ou via `control.disable()`).
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Règle</th>
+      <th>Détail</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Sémantique</strong></td>
+      <td>Chaque poignée est un <code>role="slider"</code> exposant <code>aria-valuemin</code> / <code>aria-valuemax</code> / <code>aria-valuenow</code> / <code>aria-orientation</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Clavier</strong></td>
+      <td>Flèches ←/→ (ou ↓/↑) : ± <code>step</code>. Page↑/↓ : ± 10 pas. Début/Fin : <code>min</code> / <code>max</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Nom accessible</strong></td>
+      <td><code>ariaLabel</code> (ou <code>ariaLabelledBy</code>) requis sur le contrôle — un avertissement est émis en développement s'il manque.</td>
+    </tr>
+    <tr>
+      <td><strong>États</strong></td>
+      <td><code>:focus-visible</code> = anneau distinct du hover. <code>aria-disabled</code> / <code>aria-readonly</code> reflètent l'état. Les repères sont <code>aria-hidden</code>.</td>
+    </tr>
+  </tbody>
+</table>
+
+## Configuration (SCSS)
+
+Variables locales en tête de `ui-slider.scss`. Celles qui pointent vers `utils.*`
+sont le **point d'ajustement per-composant** ; voir le groupe partagé
+[Forms](?path=/docs/components-configuration-forms--docs) et le
+[fonctionnement de la configuration](?path=/docs/components-configuration--docs). Les
+hooks `--ui-slider-*` se surchargent par instance (voir [Custom](#custom)).
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Variable locale</th>
+      <th>Source</th>
+      <th>Rôle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>$track-thickness</code></td>
+      <td>local : <code>rem-calc(8)</code> · hook <code>--ui-slider-thickness</code></td>
+      <td>Épaisseur de la piste</td>
+    </tr>
+    <tr>
+      <td><code>$handle-size</code></td>
+      <td>local : <code>rem-calc(22)</code> · hook <code>--ui-slider-handle-size</code></td>
+      <td>Diamètre des poignées</td>
+    </tr>
+    <tr>
+      <td><code>$mark-size</code></td>
+      <td>local : <code>rem-calc(6)</code></td>
+      <td>Taille des repères (Figma 3px, agrandi pour la lisibilité)</td>
+    </tr>
+    <tr>
+      <td><code>$vertical-length</code></td>
+      <td>local : <code>12rem</code> · hook <code>--ui-slider-length</code></td>
+      <td>Longueur de la piste en orientation verticale</td>
+    </tr>
+    <tr>
+      <td><code>$focus-ring-width</code></td>
+      <td><code>utils.$form-focus-ring-width</code></td>
+      <td>Épaisseur de l'anneau de focus des poignées</td>
+    </tr>
+  </tbody>
+</table>
