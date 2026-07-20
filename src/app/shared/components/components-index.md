@@ -30,7 +30,7 @@
 - ✅ `ui-slider` — Curseur de sélection de valeur (headless, CVA ; simple/`range`, `step`, `marks`, écart min. entre poignées, orientation, drag pointeur + clavier WAI-ARIA `role=slider`)
 
 ## informative
-- ⬜ `ui-alert` — Message d'alerte (erreur, succès, info)
+- ✅ `ui-alert` — Message **inline** (catégorie *informative*, sibling non-flottant de `ui-toast`) : titre + texte + `<ng-content>`, niveaux `default`/`highlight`/`success`/`warning`/`error` × sous-niveau `high`/`low`, tailles `default`/`large`, icône de tête (nom FA / `false` / défaut du niveau), bouton de fermeture optionnel (`<button>` natif, clavier), **auto-disparition `life` (ms)** avec émission `close`, auto-masquage à la fermeture, racine `role="alert"` (`aria-live=assertive`/`aria-atomic`) + `ariaLabel`/`ariaLabelledBy` ; usages Dynamic (`@for`) et Forms (résumé d'erreurs) ; 100 % tokens `informative.*`
 - ✅ `ui-badge` — Pastille compteur / statut
 - ✅ `ui-tag` — Étiquette colorée / pilule (level × sub-level × size, icônes gauche/droite, forme pill/rounded, tokens informative)
 - ✅ `ui-chip` — Jeton compact **interactif** (relative de `ui-tag` : icône **ou image** de tête façon avatar ; action de suppression `removable` — `<button>` natif, clavier `Entrée`/`Espace`/`Retour`/`Suppr`, output `remove` ; mode **sélectionnable** `selectable` — racine `<button aria-pressed>`, `[(selected)]` two-way, remplissage `high` + icône `selectedIcon` (check) sur sélection, motif choice/filter chip ; contenu projeté libre, `disabled`, level × sub-level × size, forme pill/rounded, `aria-label`/`aria-labelledby`, repli image + `imageError`, garde-fous a11y ; tokens `informative`)

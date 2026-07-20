@@ -1,0 +1,127 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as AlertStories from './ui-alert.stories';
+
+<Meta of={AlertStories} />
+
+# ui-alert
+
+Message **inline** pour un retour informatif, de succès, d'avertissement ou d'erreur.
+
+Contrairement à [`ui-toast`](/docs/components-ui-informative-ui-toast--docs) (notification
+flottante, pilotée par service), `ui-alert` s'insère dans le flux de la page : bandeau de
+formulaire, résumé d'erreurs, statut inline. La racine porte `role="alert"`
+(`aria-live="assertive"` + `aria-atomic="true"` implicites) : le message est annoncé dès
+son apparition.
+
+<Canvas of={AlertStories.Basic} />
+
+## API
+
+<ArgTypes of={AlertStories} />
+
+## Level
+
+Le niveau (`level`) définit la sévérité : couleur + icône par défaut.
+
+<Canvas of={AlertStories.Info} />
+<Canvas of={AlertStories.Highlight} />
+<Canvas of={AlertStories.Success} />
+<Canvas of={AlertStories.Warning} />
+<Canvas of={AlertStories.Error} />
+
+## Icon
+
+L'icône de tête se pilote via `icon` : un nom FontAwesome pour surcharger,
+`false` pour la masquer, `true` (défaut) pour l'icône par défaut du niveau.
+
+<Canvas of={AlertStories.CustomIcon} />
+<Canvas of={AlertStories.NoIcon} />
+
+## Variant
+
+Le sous-niveau (`subLevel`) module l'intensité : `high` (soutenu) ou `low` (discret).
+
+<Canvas of={AlertStories.SubLevelLow} />
+
+## Sizes
+
+Deux tailles : `default` et `large`.
+
+<Canvas of={AlertStories.Large} />
+
+## Dynamic
+
+Plusieurs messages s'affichent via un bloc `@for` ; chacun se retire à la fermeture.
+
+<Canvas of={AlertStories.Dynamic} />
+
+## Life
+
+Renseigner `life` (ms) fait disparaître l'alerte automatiquement (elle se masque et
+émet `close`).
+
+<Canvas of={AlertStories.Life} />
+
+```html
+<ui-alert level="success" text="Enregistré." [life]="4000" (close)="onClose()" />
+```
+
+## Forms
+
+Les erreurs de validation d'un formulaire s'affichent en sévérité `error`.
+
+<Canvas of={AlertStories.Forms} />
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Point</th>
+      <th>Implémentation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Rôle</strong></td>
+      <td>La racine porte <code>role="alert"</code> : <code>aria-live="assertive"</code> et <code>aria-atomic="true"</code> implicites : le lecteur d'écran annonce le message entier dès son apparition.</td>
+    </tr>
+    <tr>
+      <td><strong>Étiquetage</strong></td>
+      <td><code>ariaLabel</code> / <code>ariaLabelledBy</code> optionnels pour nommer la région.</td>
+    </tr>
+    <tr>
+      <td><strong>Bouton de fermeture</strong></td>
+      <td><code>&lt;button&gt;</code> natif avec <code>aria-label</code> (<code>closeAriaLabel</code>, défaut « Fermer ») ; support clavier <kbd>Entrée</kbd> / <kbd>Espace</kbd> natif.</td>
+    </tr>
+    <tr>
+      <td><strong>Couleur</strong></td>
+      <td>Jamais le seul vecteur de sens : l'icône et le texte (titre/corps) complètent la sévérité.</td>
+    </tr>
+    <tr>
+      <td><strong>Focus</strong></td>
+      <td><code>:focus-visible</code> visible et distinct du <code>:hover</code> sur le bouton de fermeture.</td>
+    </tr>
+  </tbody>
+</table>
+
+### Support clavier du bouton de fermeture
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Touche</th>
+      <th>Fonction</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><kbd>Entrée</kbd></td>
+      <td>Ferme le message.</td>
+    </tr>
+    <tr>
+      <td><kbd>Espace</kbd></td>
+      <td>Ferme le message.</td>
+    </tr>
+  </tbody>
+</table>

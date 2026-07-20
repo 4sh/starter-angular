@@ -1,0 +1,36 @@
+@if (!dismissed()) {
+  <div
+    [class]="classes()"
+    role="alert"
+    aria-atomic="true"
+    [attr.aria-label]="ariaLabel()"
+    [attr.aria-labelledby]="ariaLabelledBy()"
+  >
+    @if (iconName(); as name) {
+      <span class="ui-alert-icon">
+        <ui-icon [name]="name" [size]="iconSize()" />
+      </span>
+    }
+
+    <div class="ui-alert-content">
+      @if (title(); as t) {
+        <span class="ui-alert-title">{{ t }}</span>
+      }
+      @if (text(); as txt) {
+        <span class="ui-alert-text">{{ txt }}</span>
+      }
+      <ng-content />
+    </div>
+
+    @if (closable()) {
+      <button
+        type="button"
+        class="ui-alert-close"
+        [attr.aria-label]="closeAriaLabel()"
+        (click)="onClose()"
+      >
+        <ui-icon [name]="closeIcon()" [size]="closeIconSize()" />
+      </button>
+    }
+  </div>
+}
