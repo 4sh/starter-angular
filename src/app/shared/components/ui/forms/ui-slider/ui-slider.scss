@@ -48,7 +48,7 @@ $focus-ring-width: utils.$form-focus-ring-width;
     height: var(--ui-slider-handle-size, #{$handle-size});
     transform: translate(-50%, -50%);
     box-sizing: border-box;
-    border: utils.$control-stroke-width solid transparent;
+    border: utils.$control-stroke-width solid var(--actions-high-stroke-default);
     border-radius: var(--radius-full);
     background-color: var(--actions-high-surface-default);
     cursor: grab;
