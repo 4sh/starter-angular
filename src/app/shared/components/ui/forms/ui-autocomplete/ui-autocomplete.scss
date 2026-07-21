@@ -1,0 +1,208 @@
+@use 'utils';
+@use 'sass:map';
+
+// =====================================================================
+// ui-autocomplete : the input box + label + helper live in `ui-field`.
+// =====================================================================
+
+// --- Config ----------------------------------------
+$sizes: (
+  'default': (
+    option-height: utils.rem-calc(40),
+    option-padding-x: var(--units-default),
+    font-size: var(--size-typography-text-default),
+    group-height: utils.rem-calc(32),
+    group-font-size: var(--size-typography-text-md),
+    scroll-height: utils.rem-calc(312),
+  ),
+  'small': (
+    option-height: utils.rem-calc(32),
+    option-padding-x: var(--units-md),
+    font-size: var(--size-typography-text-md),
+    group-height: utils.rem-calc(24),
+    group-font-size: var(--size-typography-text-sm),
+    scroll-height: utils.rem-calc(256),
+  ),
+);
+$size-default: map.get($sizes, 'default');
+$size-small: map.get($sizes, 'small');
+
+$panel-padding: var(--units-xs);
+$panel-gap: var(--units-xs);
+$option-radius: var(--radius-sm);
+$option-gap: var(--units-sm);
+
+.ui-autocomplete {
+  display: block;
+  --ui-field-box-cursor: text;
+
+  // --- Native combobox input (fills the field box) --------------------
+  &-input {
+    @include utils.field-native-input;
+    &._small { font-size: map.get($size-small, font-size); }
+  }
+
+  // --- Affixes ----------------------------------------------------------
+  &-clear {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: var(--size-components-2xs);
+    height: var(--size-components-2xs);
+    flex-shrink: 0;
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-radius: var(--radius-full);
+    background: none;
+    color: var(--form-low-content-default);
+    cursor: pointer;
+    @include utils.control-transition(color, box-shadow);
+
+    &:hover:not(:disabled) { color: var(--form-high-content-hover); }
+    &:focus-visible {
+      outline: none;
+      color: var(--form-high-content-focused);
+      box-shadow: 0 0 0 utils.$form-focus-ring-width rgb(from var(--form-high-stroke-focused) r g b / 50%);
+    }
+    &:disabled { cursor: not-allowed; color: var(--form-high-content-disabled); }
+  }
+
+  &-dropdown {
+    @include utils.field-affix;
+    @include utils.motion-transition(rotate);
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--form-low-content-default);
+    cursor: pointer;
+
+    &:hover:not(:disabled) { color: var(--form-high-content-hover); }
+    &._open { rotate: 180deg; }
+    &:disabled { cursor: not-allowed; color: var(--form-high-content-disabled); }
+  }
+
+  &-loading { flex-shrink: 0; }
+}
+
+// --- Panel -------------------------------------------------------------
+.ui-autocomplete-panel {
+  @include utils.overlay-panel(var(--form-high-surface-default), var(--form-high-stroke-default));
+  display: flex;
+  flex-direction: column;
+  gap: $panel-gap;
+  box-sizing: border-box;
+  max-width: calc(100vw - var(--units-lg));
+  padding: $panel-padding;
+
+  // --- Header / footer (projected templates) --------------------------
+  .ui-autocomplete-header,
+  .ui-autocomplete-footer {
+    padding: var(--units-xs) var(--units-sm);
+    font-family: var(--fontfamily-base);
+    font-size: map.get($size-default, group-font-size);
+    color: var(--form-high-content-default);
+  }
+
+  // --- Scrollers ------------------------------------------------------
+  .ui-autocomplete-scroller {
+    overflow: auto;
+    max-height: map.get($size-default, scroll-height);
+    &._small { max-height: map.get($size-small, scroll-height); }
+  }
+
+  .ui-autocomplete-viewport { width: 100%; }
+
+  .ui-autocomplete-list {
+    display: flex;
+    flex-direction: column;
+    gap: $panel-gap;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .ui-autocomplete-viewport .ui-autocomplete-list { gap: 0; }
+  .ui-autocomplete-viewport .ui-autocomplete-group { height: map.get($size-default, option-height); }
+  .ui-autocomplete-viewport .ui-autocomplete-group._small { height: map.get($size-small, option-height); }
+
+  // --- Suggestion row -------------------------------------------------
+  .ui-autocomplete-option {
+    display: flex;
+    align-items: center;
+    gap: $option-gap;
+    box-sizing: border-box;
+    height: map.get($size-default, option-height);
+    flex-shrink: 0;
+    padding: 0 map.get($size-default, option-padding-x);
+    border-radius: $option-radius;
+    font-family: var(--fontfamily-base);
+    font-size: map.get($size-default, font-size);
+    color: var(--form-high-content-default);
+    cursor: pointer;
+    user-select: none;
+    @include utils.control-transition(background-color, color);
+
+    &._small {
+      height: map.get($size-small, option-height);
+      padding: 0 map.get($size-small, option-padding-x);
+      font-size: map.get($size-small, font-size);
+    }
+
+    // Visual focus (aria-activedescendant) and pointer hover share the look.
+    &._focused,
+    &:hover:not(._disabled) { background-color: var(--global-high-surface-hover); }
+
+    &._selected {
+      background-color: var(--form-high-surface-hover);
+      color: var(--form-high-content-checked);
+    }
+
+    &._disabled {
+      color: var(--form-high-content-disabled);
+      cursor: not-allowed;
+    }
+  }
+
+  .ui-autocomplete-option-label {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  // --- Group header ---------------------------------------------------
+  .ui-autocomplete-group {
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    height: map.get($size-default, group-height);
+    flex-shrink: 0;
+    padding: 0 map.get($size-default, option-padding-x);
+    font-family: var(--fontfamily-base);
+    font-size: map.get($size-default, group-font-size);
+    font-weight: var(--weight-bold);
+    color: var(--form-low-content-default);
+
+    &._small {
+      height: map.get($size-small, group-height);
+      padding: 0 map.get($size-small, option-padding-x);
+      font-size: map.get($size-small, group-font-size);
+    }
+  }
+
+  // --- Empty state ----------------------------------------------------
+  .ui-autocomplete-empty {
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    min-height: map.get($size-default, option-height);
+    padding: 0 map.get($size-default, option-padding-x);
+    font-family: var(--fontfamily-base);
+    font-size: map.get($size-default, font-size);
+    color: var(--form-low-content-default);
+  }
+}

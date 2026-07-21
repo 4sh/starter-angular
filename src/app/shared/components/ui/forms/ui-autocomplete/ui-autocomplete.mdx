@@ -1,0 +1,194 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as AutocompleteStories from './ui-autocomplete.stories';
+
+<Meta of={AutocompleteStories} />
+
+# ui-autocomplete
+
+Champ de **suggestions** bâti sur le shell partagé
+[`ui-field`](?path=/docs/components-ui-forms-ui-field--docs) (label + boîte + helper) et un
+panneau de suggestions token-stylé en overlay CDK. Le déclencheur est un `<input>` natif
+suivant le motif WAI-ARIA **combobox** (`aria-activedescendant` : le focus ne quitte jamais
+l'input, les suggestions ne reçoivent qu'un focus visuel).
+
+<Canvas of={AutocompleteStories.Basic} />
+
+## Basic
+
+Contrôle piloté par `ngModel` (ou reactive forms). La frappe émet `completeMethod` — la
+requête est **anti-rebondie** (`delay`, 300 ms par défaut) et déclenchée à partir de
+`minLength` caractères (1 par défaut). Le parent renseigne alors `suggestions` avec les
+résultats. `optionLabel` indique quelle propriété afficher quand les suggestions sont des
+objets.
+
+```html
+<ui-autocomplete
+  label="Pays"
+  [(ngModel)]="country"
+  [suggestions]="results()"
+  optionLabel="name"
+  (completeMethod)="search($event)"
+/>
+```
+
+```ts
+search(event: AutocompleteCompleteEvent): void {
+  const q = event.query.toLowerCase();
+  this.results.set(ALL.filter((c) => c.name.toLowerCase().includes(q)));
+}
+```
+
+## Dropdown
+
+`dropdown` affiche un bouton déclencheur à côté de l'input. `dropdownMode` définit sa requête :
+`blank` envoie une chaîne vide (toutes les suggestions), `current` envoie le texte courant de
+l'input.
+
+<Canvas of={AutocompleteStories.Dropdown} />
+
+## Custom Option
+
+Le template `#item` personnalise le contenu d'une suggestion (contexte : `$implicit`/`option`,
+`selected`, `index`).
+
+<Canvas of={AutocompleteStories.CustomOption} />
+
+## Group
+
+Avec `group`, les suggestions sont regroupées par catégorie via `optionGroupLabel` et
+`optionGroupChildren`. Le template `#group` personnalise l'en-tête de chaque groupe.
+
+<Canvas of={AutocompleteStories.Group} />
+
+## Force Selection
+
+`forceSelection` valide la saisie manuelle au blur : si le texte ne correspond à aucune
+suggestion, l'input est effacé — la valeur portée dans le modèle est **toujours** l'une des
+suggestions.
+
+<Canvas of={AutocompleteStories.ForceSelection} />
+
+## Clear Icon
+
+`showClear` affiche une icône d'effacement qui réinitialise la valeur.
+
+<Canvas of={AutocompleteStories.ClearIcon} />
+
+## Loading
+
+`loading` compose un indicateur de chargement à la place du déclencheur pendant qu'une requête
+asynchrone est en cours (typiquement passé à `true` avant l'appel réseau, `false` une fois les
+`suggestions` renseignées).
+
+<Canvas of={AutocompleteStories.Loading} />
+
+## Sizes
+
+Tailles `default` et `small`.
+
+<Canvas of={AutocompleteStories.Sizes} />
+
+## Disabled
+
+Avec `disabled`, le champ ne peut être ni édité ni focalisé.
+
+<Canvas of={AutocompleteStories.Disabled} />
+
+## Invalid
+
+L'état d'erreur s'applique via `invalid` (ou automatiquement lorsqu'un contrôle Angular attaché
+est invalide et touché/modifié).
+
+<Canvas of={AutocompleteStories.Invalid} />
+
+## Focus Behavior
+
+Personnalisez le comportement de focus clavier/souris avec `autoOptionFocus` (focus visuel
+initial sur la première suggestion), `selectOnFocus` (applique la valeur dès qu'une suggestion
+reçoit le focus clavier) et `focusOnHover` (focus visuel sur la suggestion survolée).
+
+<Canvas of={AutocompleteStories.FocusBehavior} />
+
+## Objects
+
+Les suggestions peuvent être des objets : `optionLabel` définit le label affiché, mais la valeur
+portée par le modèle reste l'**instance** de la suggestion (ex. `{ name: 'France', code: 'FR' }`).
+`optionValue` permet de ne porter qu'un champ.
+
+<Canvas of={AutocompleteStories.Objects} />
+
+## Template
+
+Le composant offre plusieurs templates de personnalisation : `#item` (une suggestion), `#group`
+(en-tête de groupe), `#header` / `#footer` (contenu épinglé au-dessus/en-dessous de la liste) et
+`#empty` (état vide).
+
+## Virtual Scroll
+
+Le défilement virtuel rend un petit sous-ensemble des suggestions dans le viewport à tout
+instant — indispensable pour de très grandes listes. `virtualScroll` l'active et
+`virtualScrollItemSize` fixe la hauteur d'une ligne.
+
+<Canvas of={AutocompleteStories.VirtualScroll} />
+
+## API
+
+<ArgTypes of={AutocompleteStories} />
+
+## États
+
+L'input suit les états `form.*` du shell `ui-field` (défaut / hover / focus / disabled / error).
+Dans le panneau, chaque suggestion partage un même rendu pour le **focus visuel**
+(`aria-activedescendant`) et le **survol** (`global.high.surface.hover`) ; la suggestion
+correspondant à la valeur courante est mise en évidence (`form.high.surface.hover` +
+`form.high.content.checked`). Les états interactifs sont gérés en CSS via les tokens, jamais par
+des props Angular.
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Aspect</th>
+      <th>Comportement</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Nom accessible</td>
+      <td>`label` (associé via `for`/`inputId`), ou `ariaLabel` / `ariaLabelledBy`.</td>
+    </tr>
+    <tr>
+      <td>Rôles</td>
+      <td>Input `role="combobox"` + `aria-autocomplete="list"`, `aria-haspopup="listbox"`, `aria-expanded` ; panneau `role="listbox"`, suggestions `role="option"`.</td>
+    </tr>
+    <tr>
+      <td>Relation input ↔ liste</td>
+      <td>`aria-controls` pointe vers l'`id` de la liste ; `aria-activedescendant` désigne la suggestion focalisée à lire.</td>
+    </tr>
+    <tr>
+      <td>`↑` / `↓`</td>
+      <td>Surligne la suggestion précédente / suivante (ouvre le panneau si fermé).</td>
+    </tr>
+    <tr>
+      <td>`Début` / `Fin`</td>
+      <td>Surligne la première / dernière suggestion.</td>
+    </tr>
+    <tr>
+      <td>`Entrée`</td>
+      <td>Sélectionne la suggestion surlignée et ferme le panneau.</td>
+    </tr>
+    <tr>
+      <td>`Échap`</td>
+      <td>Ferme le panneau.</td>
+    </tr>
+    <tr>
+      <td>`Tab`</td>
+      <td>Ferme le panneau et déplace le focus vers l'élément suivant.</td>
+    </tr>
+    <tr>
+      <td>États</td>
+      <td>`disabled` natif ; `:focus-visible` distinct du `:hover` ; contrastes conformes WCAG AA.</td>
+    </tr>
+  </tbody>
+</table>

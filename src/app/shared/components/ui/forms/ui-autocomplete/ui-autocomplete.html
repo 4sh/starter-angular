@@ -1,0 +1,211 @@
+<!-- One rendered row: group header or suggestion (shared by the plain and virtual lists). -->
+<ng-template #rowTpl let-row>
+  @if (row.kind === 'group') {
+    <li class="ui-autocomplete-group" role="presentation" [class._small]="size() === 'small'">
+      @if (groupTemplate(); as tpl) {
+        <ng-container [ngTemplateOutlet]="tpl" [ngTemplateOutletContext]="{ $implicit: row.original, group: row.original }" />
+      } @else {
+        {{ row.label }}
+      }
+    </li>
+  } @else {
+    <li
+      class="ui-autocomplete-option"
+      role="option"
+      [attr.id]="row.id"
+      [class._small]="size() === 'small'"
+      [class._selected]="row.selected"
+      [class._focused]="row.index === focusedIndex()"
+      [class._disabled]="row.entry.disabled"
+      [attr.aria-selected]="row.selected"
+      [attr.aria-disabled]="row.entry.disabled || null"
+      [attr.aria-setsize]="optionCount()"
+      [attr.aria-posinset]="row.index + 1"
+      (mousedown)="onOptionMousedown($event)"
+      (click)="onOptionClick(row, $event)"
+      (mouseenter)="onOptionMouseEnter(row)"
+    >
+      @if (itemTemplate(); as tpl) {
+        <ng-container
+          [ngTemplateOutlet]="tpl"
+          [ngTemplateOutletContext]="{ $implicit: row.entry.original, option: row.entry.original, selected: row.selected, index: row.index }"
+        />
+      } @else {
+        <span class="ui-autocomplete-option-label">{{ row.entry.label }}</span>
+      }
+    </li>
+  }
+</ng-template>
+
+<!-- Suggestions panel (CDK overlay). -->
+<ng-template #panelTpl>
+  <div
+    #panel
+    class="ui-autocomplete-panel"
+    [class]="panelStyleClass()"
+    [class._small]="size() === 'small'"
+    [style.width.px]="overlayWidth()"
+    [uiMotion]="'slide-down'"
+    #panelMotion="uiMotion"
+    [animate.enter]="panelMotion.enter()"
+  >
+    @if (headerTemplate(); as tpl) {
+      <div class="ui-autocomplete-header">
+        <ng-container [ngTemplateOutlet]="tpl" />
+      </div>
+    }
+
+    @if (virtualScroll()) {
+      <cdk-virtual-scroll-viewport
+        class="ui-autocomplete-viewport"
+        [itemSize]="virtualScrollItemSize()"
+        [style.height]="viewportHeight()"
+      >
+        <ul
+          class="ui-autocomplete-list"
+          role="listbox"
+          [attr.id]="listboxId()"
+          [attr.aria-label]="label() || ariaLabel() || null"
+        >
+          <ng-container *cdkVirtualFor="let row of visibleRows(); trackBy: trackRow">
+            <ng-container [ngTemplateOutlet]="rowTpl" [ngTemplateOutletContext]="{ $implicit: row }" />
+          </ng-container>
+          @if (showEmpty()) {
+            <ng-container [ngTemplateOutlet]="emptyTpl" />
+          }
+        </ul>
+      </cdk-virtual-scroll-viewport>
+    } @else {
+      <div class="ui-autocomplete-scroller" [class._small]="size() === 'small'" [style.max-height]="scrollHeight() || null">
+        <ul
+          class="ui-autocomplete-list"
+          role="listbox"
+          [attr.id]="listboxId()"
+          [attr.aria-label]="label() || ariaLabel() || null"
+        >
+          @for (row of visibleRows(); track row.key) {
+            <ng-container [ngTemplateOutlet]="rowTpl" [ngTemplateOutletContext]="{ $implicit: row }" />
+          }
+          @if (showEmpty()) {
+            <ng-container [ngTemplateOutlet]="emptyTpl" />
+          }
+        </ul>
+      </div>
+    }
+
+    @if (footerTemplate(); as tpl) {
+      <div class="ui-autocomplete-footer">
+        <ng-container [ngTemplateOutlet]="tpl" />
+      </div>
+    }
+  </div>
+</ng-template>
+
+<!-- Empty state row. -->
+<ng-template #emptyTpl>
+  <li class="ui-autocomplete-empty" role="presentation">
+    @if (emptyTemplate(); as tpl) {
+      <ng-container [ngTemplateOutlet]="tpl" />
+    } @else {
+      {{ emptyMessage() }}
+    }
+  </li>
+</ng-template>
+
+<!-- Trigger: composed field around a native combobox input. -->
+<div #container class="ui-autocomplete">
+  <ui-field
+    [label]="label()"
+    [for]="resolvedId()"
+    [required]="required()"
+    [size]="size()"
+    [level]="effectiveLevel()"
+    [disabled]="isDisabled()"
+    [readonly]="readonly()"
+    [message]="displayMessage()"
+    [messageId]="messageId()"
+  >
+    <input
+      #inputEl
+      type="text"
+      class="ui-autocomplete-input"
+      [class._small]="size() === 'small'"
+      role="combobox"
+      autocomplete="off"
+      aria-haspopup="listbox"
+      aria-autocomplete="list"
+      [id]="resolvedId()"
+      [value]="inputText()"
+      [placeholder]="placeholder() ?? ''"
+      [disabled]="isDisabled()"
+      [readOnly]="readonly()"
+      [required]="required()"
+      [attr.name]="name() || null"
+      [attr.tabindex]="tabindex()"
+      [attr.aria-expanded]="panelOpen()"
+      [attr.aria-controls]="panelOpen() ? listboxId() : null"
+      [attr.aria-activedescendant]="activeDescendant()"
+      [attr.aria-label]="label() ? null : ariaLabel() || null"
+      [attr.aria-labelledby]="ariaLabelledBy() || null"
+      [attr.aria-describedby]="displayMessage() ? messageId() : null"
+      [attr.aria-required]="required() ? 'true' : null"
+      [attr.aria-invalid]="effectiveLevel() === 'error' ? 'true' : null"
+      (input)="onInput($event)"
+      (keydown)="onInputKeydown($event)"
+      (focus)="onInputFocus($event)"
+      (blur)="onInputBlur($event)"
+    />
+
+    @if (showClearButton()) {
+      <button
+        uiFieldSuffix
+        type="button"
+        class="ui-autocomplete-clear"
+        [attr.aria-label]="clearAriaLabel()"
+        (click)="onClearClick($event)"
+      >
+        <ui-icon name="xmark" [size]="iconSize()" />
+      </button>
+    }
+
+    @if (loading()) {
+      <ui-spinner
+        uiFieldSuffix
+        class="ui-autocomplete-loading"
+        size="small"
+        orientation="horizontal"
+        ariaLabel="Recherche en cours"
+      />
+    } @else if (dropdown()) {
+      <button
+        uiFieldSuffix
+        type="button"
+        class="ui-autocomplete-dropdown"
+        [class._open]="panelOpen()"
+        [disabled]="isDisabled()"
+        tabindex="-1"
+        aria-haspopup="listbox"
+        [attr.aria-expanded]="panelOpen()"
+        [attr.aria-controls]="panelOpen() ? listboxId() : null"
+        [attr.aria-label]="dropdownAriaLabel()"
+        (click)="onDropdownClick($event)"
+      >
+        <ui-icon [name]="dropdownIcon()" [size]="iconSize()" />
+      </button>
+    }
+  </ui-field>
+</div>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="overlayOrigin()!"
+  [cdkConnectedOverlayOpen]="panelOpen()"
+  [cdkConnectedOverlayPositions]="overlayPositions()"
+  [cdkConnectedOverlayHasBackdrop]="true"
+  cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
+  (backdropClick)="close(false)"
+  (overlayOutsideClick)="close(false)"
+  (detach)="close(false)"
+>
+  <ng-container [ngTemplateOutlet]="panelTpl" />
+</ng-template>
