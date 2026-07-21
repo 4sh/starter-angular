@@ -146,7 +146,7 @@ $rail-width-default: utils.rem-calc(72); // collapsed icon rail
     block-size: utils.rem-calc($close-size);
     padding: 0;
     border: none;
-    border-radius: var(--radius-xs);
+    border-radius: var(--radius-default);
     background: transparent;
     color: inherit;
     line-height: 0;

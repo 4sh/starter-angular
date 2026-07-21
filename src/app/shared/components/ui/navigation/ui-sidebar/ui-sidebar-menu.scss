@@ -27,12 +27,11 @@ $sizes: (
   ),
 );
 $size-default: map.get($sizes, 'default');
-
-$item-radius: var(--radius-sm);
+$item-radius: var(--radius-default);
 $group-indent: var(--units-lg);
 $separator-width: var(--stroke-sm);
 $focus-ring-width: utils.$focus-ring-width;
-$icon-slot: utils.rem-calc(20); // fixed icon column → labels align; rail centers icons
+$icon-slot: utils.rem-calc(20);
 
 @mixin menu-size($size) {
   // Exposed so the collapsed rail can size square icon buttons from the same value.
