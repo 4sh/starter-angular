@@ -1,0 +1,109 @@
+@if (isOverlay()) {
+  <!-- Overlay (offcanvas) presentation: rendered only while open so the panel
+       animates its slide on insert/removal. Backdrop + positioner are SIBLINGS
+       (both direct @if children) so each runs its own leave independently. -->
+  @if (visible()) {
+    @if (backdrop()) {
+      <div
+        class="ui-sidebar-backdrop"
+        [class._contained]="contained()"
+        [style.z-index]="zIndex()"
+        [uiMotion]="'fade'"
+        [motionDisabled]="motionDisabled()"
+        #backdropMotion="uiMotion"
+        [animate.enter]="backdropMotion.enter()"
+        [animate.leave]="backdropMotion.leave()"
+        (pointerdown)="onBackdropPointerdown($event)"
+      ></div>
+    }
+
+    <div
+      class="ui-sidebar-positioner"
+      [class._left]="side() === 'left'"
+      [class._right]="side() === 'right'"
+      [class._contained]="contained()"
+      [style.z-index]="zIndex()"
+      [uiMotion]="motionPreset()"
+      [motionDistance]="'100%'"
+      [motionDisabled]="motionDisabled()"
+      #posMotion="uiMotion"
+      [animate.enter]="posMotion.enter()"
+      [animate.leave]="posMotion.leave()"
+      (keydown)="onKeydown($event)"
+    >
+      <aside
+        #panel
+        [class]="panelClasses()"
+        [attr.id]="controlsId"
+        [attr.aria-modal]="'true'"
+        [attr.aria-label]="resolvedAriaLabel()"
+        [attr.aria-labelledby]="labelledBy()"
+        tabindex="-1"
+        [cdkTrapFocus]="true"
+        [cdkTrapFocusAutoCapture]="true"
+      >
+        <ng-container [ngTemplateOutlet]="shell" />
+      </aside>
+    </div>
+  }
+} @else {
+  <!-- Static presentation: an in-flow rail reserves the layout footprint while
+       the absolutely-positioned panel can float wider than the rail on hover. -->
+  <div
+    class="ui-sidebar-rail"
+    [class._collapsed]="railCollapsed()"
+    [class._left]="side() === 'left'"
+    [class._right]="side() === 'right'"
+    (pointerenter)="onRailPointerEnter()"
+    (pointerleave)="onRailPointerLeave()"
+    (focusin)="onRailFocusIn()"
+    (focusout)="onRailFocusOut($event)"
+  >
+    <aside
+      #panel
+      [class]="panelClasses()"
+      [attr.id]="controlsId"
+      [attr.aria-label]="resolvedAriaLabel()"
+      [attr.aria-labelledby]="labelledBy()"
+    >
+      <ng-container [ngTemplateOutlet]="shell" />
+    </aside>
+  </div>
+}
+
+<!-- Shared interior: header slot + scrollable body (projected) + footer slot.
+     Instantiated by exactly one presentation at a time. -->
+<ng-template #shell>
+  @if (isOverlay() && showCloseButton()) {
+    <button
+      type="button"
+      class="ui-sidebar-close"
+      [attr.aria-label]="closeAriaLabel()"
+      (click)="visible.set(false)"
+    >
+      <ui-icon [name]="closeIcon()" size="sm" />
+    </button>
+  }
+
+  @if (headerTemplate(); as tpl) {
+    <div class="ui-sidebar-header">
+      <ng-container
+        [ngTemplateOutlet]="tpl"
+        [ngTemplateOutletContext]="{ $implicit: effectiveCollapsed(), collapsed: effectiveCollapsed() }"
+      />
+    </div>
+  }
+
+  <div class="ui-sidebar-body">
+    <ng-content />
+  </div>
+
+  @if (footerTemplate(); as tpl) {
+    <div class="ui-sidebar-footer">
+      <ng-container
+        [ngTemplateOutlet]="tpl"
+        [ngTemplateOutletContext]="{ $implicit: effectiveCollapsed(), collapsed: effectiveCollapsed() }"
+      />
+    </div>
+  }
+</ng-template>

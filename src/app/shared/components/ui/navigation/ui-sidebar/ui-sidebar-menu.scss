@@ -1,0 +1,287 @@
+@use 'utils';
+@use 'sass:map';
+
+// =====================================================================
+// ui-sidebar-menu : co-located styles. All values come from design tokens.
+//
+// Colors switch on the navigation family (`_high` / `_low`). The active entry
+// pairs `surface-active` + `content-active` (the active content token is only
+// legible ON the active surface).
+// =====================================================================
+
+// --- Config (extension points) ---------------------------------------
+$levels: high, low;
+
+$sizes: (
+  'default': (
+    item-height: utils.rem-calc(40),
+    item-padding-x: var(--units-md),
+    font-size: var(--size-typography-text-default),
+    header-font-size: var(--size-typography-text-sm),
+  ),
+  'small': (
+    item-height: utils.rem-calc(32),
+    item-padding-x: var(--units-sm),
+    font-size: var(--size-typography-text-md),
+    header-font-size: var(--size-typography-text-sm),
+  ),
+);
+$size-default: map.get($sizes, 'default');
+
+$item-radius: var(--radius-sm);
+$group-indent: var(--units-lg);
+$separator-width: var(--stroke-sm);
+$focus-ring-width: utils.$focus-ring-width;
+$icon-slot: utils.rem-calc(20); // fixed icon column → labels align; rail centers icons
+
+@mixin menu-size($size) {
+  // Exposed so the collapsed rail can size square icon buttons from the same value.
+  --ui-sidebar-menu-item-size: #{map.get($size, item-height)};
+
+  .ui-sidebar-menu-action {
+    min-height: var(--ui-sidebar-menu-item-size);
+    padding: 0 map.get($size, item-padding-x);
+    font-size: map.get($size, font-size);
+  }
+  .ui-sidebar-menu-section-header {
+    padding: 0 map.get($size, item-padding-x);
+    font-size: map.get($size, header-font-size);
+  }
+}
+
+.ui-sidebar-menu {
+  display: block;
+  box-sizing: border-box;
+  font-family: var(--fontfamily-base);
+
+  @include menu-size($size-default);
+
+  @each $name, $size in $sizes {
+    @if $name != 'default' {
+      &._#{$name} {
+        @include menu-size($size);
+      }
+    }
+  }
+
+  // --- Lists ------------------------------------------------------------
+  &-list,
+  &-sub {
+    display: flex;
+    flex-direction: column;
+    gap: var(--units-2xs);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  // Nested (collapsible) groups indent under their toggle.
+  &-sub._nested {
+    padding-inline-start: $group-indent;
+  }
+
+  &-section,
+  &-entry {
+    display: flex;
+    flex-direction: column;
+    gap: var(--units-2xs);
+  }
+
+  &-section {
+    margin-block-start: var(--units-sm);
+
+    &:first-child {
+      margin-block-start: 0;
+    }
+  }
+
+  // --- Section header (non-collapsible) ---------------------------------
+  &-section-header {
+    display: flex;
+    align-items: center;
+    gap: var(--units-sm);
+    min-height: utils.rem-calc(28);
+    font-weight: var(--weight-bold);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    user-select: none;
+  }
+
+  // --- Action shell (leaf link / button / group toggle) -----------------
+  &-action {
+    display: flex;
+    align-items: center;
+    gap: var(--units-sm);
+    box-sizing: border-box;
+    width: 100%;
+    border: none;
+    border-radius: $item-radius;
+    background: none;
+    font-family: inherit;
+    font-weight: var(--weight-regular);
+    line-height: 1.2;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+    @include utils.control-transition(background-color, color, box-shadow);
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: inset 0 0 0 $focus-ring-width var(--global-high-stroke-focused);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+    }
+  }
+
+  &-icon {
+    flex: 0 0 auto;
+    inline-size: $icon-slot;
+    line-height: 0;
+    text-align: center;
+  }
+
+  &-label {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  // Trailing ui-badge — layout only; the badge owns its own colors/typography.
+  &-badge {
+    flex: 0 0 auto;
+    margin-inline-start: auto;
+    line-height: 0;
+  }
+
+  // Trailing "opens elsewhere" icon (external links).
+  &-external {
+    flex: 0 0 auto;
+    margin-inline-start: auto;
+    line-height: 0;
+    opacity: 0.6;
+  }
+
+  // A badge following an external icon must not re-consume the auto margin.
+  &-external + &-badge {
+    margin-inline-start: var(--units-sm);
+  }
+
+  &-chevron {
+    flex: 0 0 auto;
+    margin-inline-start: auto;
+    line-height: 0;
+    @include utils.motion-transition(rotate);
+
+    &._open {
+      rotate: 180deg;
+    }
+  }
+
+  // --- Collapsible submenu (grid-rows technique) ------------------------
+  &-collapse {
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    @include utils.motion-transition(grid-template-rows, opacity);
+
+    &._open {
+      grid-template-rows: 1fr;
+      opacity: 1;
+    }
+  }
+
+  &-collapse-inner {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  &._no-motion {
+    .ui-sidebar-menu-collapse,
+    .ui-sidebar-menu-chevron {
+      transition: none;
+    }
+  }
+
+  // --- Separator --------------------------------------------------------
+  &-separator {
+    margin: var(--units-2xs) var(--units-sm);
+    border: none;
+  }
+
+  // --- Collapsed (icon rail) --------------------------------------------
+  // Hide labels / badges / chevrons and section headers; center the icons.
+  &._collapsed {
+    .ui-sidebar-menu-label,
+    .ui-sidebar-menu-badge,
+    .ui-sidebar-menu-external,
+    .ui-sidebar-menu-chevron {
+      display: none;
+    }
+
+    .ui-sidebar-menu-section-header {
+      display: none;
+    }
+
+    .ui-sidebar-menu-sub._nested {
+      padding-inline-start: 0;
+    }
+
+    // Perfect square icon buttons, centered in the rail.
+    .ui-sidebar-menu-action {
+      justify-content: center;
+      inline-size: var(--ui-sidebar-menu-item-size);
+      block-size: var(--ui-sidebar-menu-item-size);
+      min-height: var(--ui-sidebar-menu-item-size);
+      padding: 0;
+      margin-inline: auto;
+    }
+
+    // Collapsed rail has no room for open sub-trees.
+    .ui-sidebar-menu-collapse {
+      display: none;
+    }
+  }
+
+  // --- Colors (one set per navigation level) ----------------------------
+  @each $lvl in $levels {
+    &._#{$lvl} {
+      .ui-sidebar-menu-section-header {
+        color: var(--navigation-#{$lvl}-content-default);
+        opacity: 0.75;
+      }
+
+      .ui-sidebar-menu-separator {
+        border-top: $separator-width solid var(--navigation-#{$lvl}-stroke-default);
+      }
+
+      .ui-sidebar-menu-action {
+        color: var(--navigation-#{$lvl}-content-default);
+
+        &:hover:not(:disabled) {
+          background-color: var(--navigation-#{$lvl}-surface-hover);
+          color: var(--navigation-#{$lvl}-content-hover);
+        }
+
+        &:active:not(:disabled) {
+          background-color: var(--navigation-#{$lvl}-surface-active);
+          color: var(--navigation-#{$lvl}-content-active);
+        }
+
+        // Active route / entry — active content is only legible on the active surface.
+        &._active {
+          background-color: var(--navigation-#{$lvl}-surface-active);
+          color: var(--navigation-#{$lvl}-content-active);
+          font-weight: var(--weight-bold);
+        }
+
+        &:disabled {
+          color: var(--navigation-#{$lvl}-content-disabled);
+        }
+      }
+    }
+  }
+}

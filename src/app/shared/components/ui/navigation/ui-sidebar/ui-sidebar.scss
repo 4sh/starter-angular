@@ -1,0 +1,206 @@
+@use 'utils';
+
+// =====================================================================
+// ui-sidebar : co-located styles. All values come from design tokens.
+//
+// Structure:
+//   .ui-sidebar-backdrop    → viewport mask (overlay presentation)
+//   .ui-sidebar-positioner  → edge-anchored wrapper (carries the slide motion)
+//   .ui-sidebar-rail        → in-flow footprint (static presentation)
+//   .ui-sidebar             → the surface (rail ↔ expanded width)
+//
+// Extend:
+//   • Widths → override `--ui-sidebar-width` / `--ui-sidebar-rail-width`.
+// =====================================================================
+
+// --- Config (local) ---------------------------------------------------
+$z-index: 1000;
+$stroke-width: var(--stroke-sm);
+$region-padding: var(--units-md);
+$close-size: 32px;
+$focus-ring-width: utils.$focus-ring-width;
+$backdrop-background: var(--primitives-black-50);
+$width-default: utils.rem-calc(280); // expanded width
+$rail-width-default: utils.rem-calc(72); // collapsed icon rail
+
+:host {
+  --ui-sidebar-width: #{$width-default};
+  --ui-sidebar-rail-width: #{$rail-width-default};
+  display: contents;
+}
+
+// --- Backdrop (overlay) -----------------------------------------------
+.ui-sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: $z-index;
+  background-color: var(--ui-sidebar-backdrop-background, #{$backdrop-background});
+
+  &._contained {
+    position: absolute;
+  }
+}
+
+// --- Positioner (overlay) ---------------------------------------------
+.ui-sidebar-positioner {
+  position: fixed;
+  inset-block: 0;
+  z-index: $z-index;
+  display: flex;
+
+  &._left {
+    inset-inline-start: 0;
+  }
+  &._right {
+    inset-inline-end: 0;
+  }
+
+  &._contained {
+    position: absolute;
+  }
+}
+
+// --- Rail (static in-flow footprint) ----------------------------------
+.ui-sidebar-rail {
+  position: relative;
+  flex: 0 0 auto;
+  inline-size: var(--ui-sidebar-width);
+  align-self: stretch;
+  @include utils.motion-transition(inline-size);
+
+  &._collapsed {
+    inline-size: var(--ui-sidebar-rail-width);
+  }
+
+  @include utils.motion-reduce {
+    transition: none;
+  }
+}
+
+// --- Panel surface ----------------------------------------------------
+.ui-sidebar {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  inline-size: var(--ui-sidebar-width);
+  overflow: hidden; // collapsed rail clips over-wide header/footer content
+  background-color: var(--global-high-surface-default);
+  color: var(--global-high-content-default);
+  font-family: var(--fontfamily-base);
+  outline: none;
+  @include utils.motion-transition(inline-size, box-shadow);
+
+  &._collapsed {
+    inline-size: var(--ui-sidebar-rail-width);
+  }
+
+  // Border faces the content area (opposite the docked edge).
+  &._left {
+    border-inline-end: $stroke-width solid var(--global-default-stroke-default);
+  }
+  &._right {
+    border-inline-start: $stroke-width solid var(--global-default-stroke-default);
+  }
+
+  // --- Static panel: fills the in-flow rail, floats when hover-expanded ---
+  .ui-sidebar-rail & {
+    position: absolute;
+    inset-block: 0;
+    block-size: 100%;
+  }
+  .ui-sidebar-rail._left & {
+    inset-inline-start: 0;
+  }
+  .ui-sidebar-rail._right & {
+    inset-inline-end: 0;
+  }
+
+  // Floating over the content (hover-expanded rail) → elevate + layer.
+  &._floating {
+    z-index: 1;
+    box-shadow: var(--shadow-default-lg);
+  }
+
+  // --- Overlay panel: full-height offcanvas surface ----------------------
+  &._overlay {
+    block-size: 100%;
+    max-inline-size: calc(100vw - var(--units-3xl));
+    box-shadow: var(--shadow-default-lg);
+  }
+
+  @include utils.motion-reduce {
+    transition: none;
+  }
+
+  // --- Close button (overlay) -------------------------------------------
+  &-close {
+    position: absolute;
+    inset-block-start: var(--units-sm);
+    inset-inline-end: var(--units-sm);
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: utils.rem-calc($close-size);
+    block-size: utils.rem-calc($close-size);
+    padding: 0;
+    border: none;
+    border-radius: var(--radius-xs);
+    background: transparent;
+    color: inherit;
+    line-height: 0;
+    cursor: pointer;
+    @include utils.control-transition(background-color, color);
+
+    &:hover {
+      background-color: var(--global-low-surface-hover);
+      color: var(--global-low-content-hover);
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 $focus-ring-width var(--global-high-stroke-focused);
+    }
+
+    @include utils.motion-reduce {
+      transition-duration: 0.01ms;
+    }
+  }
+
+  // --- Regions -----------------------------------------------------------
+  &-header {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: var(--units-sm);
+    padding: $region-padding;
+    border-block-end: $stroke-width solid var(--global-default-stroke-default);
+  }
+
+  &-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: var(--units-sm);
+  }
+
+  &-footer {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: var(--units-sm);
+    padding: $region-padding;
+    border-block-start: $stroke-width solid var(--global-default-stroke-default);
+  }
+
+  // Collapsed rail: tighten region padding so icons stay centered in the rail.
+  &._collapsed {
+    .ui-sidebar-header,
+    .ui-sidebar-footer {
+      padding-inline: var(--units-sm);
+      justify-content: center;
+    }
+  }
+}

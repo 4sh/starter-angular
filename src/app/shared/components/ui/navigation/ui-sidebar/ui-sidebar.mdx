@@ -1,0 +1,197 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as SidebarStories from './ui-sidebar.stories';
+
+<Meta of={SidebarStories} />
+
+# ui-sidebar
+
+Barre latérale applicative :
+
+- **Statique** (défaut) : la barre vit dans le flux et **pousse le contenu**. Repliable en
+  **rail d'icônes** (`collapsed`, two-way). Avec `openOnHover`, un rail replié **flotte
+  temporairement** ouvert au survol / focus, sans décaler le contenu.
+- **Overlay** : la barre **flotte** au-dessus du contenu en offcanvas avec un `backdrop`
+  optionnel, piloté par le modèle two-way `visible` — **piège de focus** + restauration
+  (`@angular/cdk/a11y`), `aria-modal`, **blocage du scroll**, `Échap` et clic extérieur.
+
+<Canvas of={SidebarStories.Variants} />
+
+## API
+<ArgTypes of={SidebarStories} />
+
+## Anatomie
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Élément</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Rail</strong></td>
+      <td><code>.ui-sidebar-rail</code> — empreinte <strong>dans le flux</strong> (statique) qui réserve la largeur ; le panneau peut flotter plus large au survol.</td>
+    </tr>
+    <tr>
+      <td><strong>Fond / Positionneur</strong></td>
+      <td><code>.ui-sidebar-backdrop</code> + <code>.ui-sidebar-positioner</code> — couche masquante et enveloppe ancrée au bord ; portent le glissement (overlay).</td>
+    </tr>
+    <tr>
+      <td><strong>Panneau</strong></td>
+      <td><code>.ui-sidebar</code> — surface (<code>&lt;aside&gt;</code>, bordure sur le bord intérieur) ; colonne flex : en-tête / corps scrollable / pied.</td>
+    </tr>
+  </tbody>
+</table>
+
+## Avec menu
+
+Chrome applicatif complet : sélecteur d'espace de travail en en-tête (`#header`), navigation
+groupée via `ui-sidebar-menu`, carte utilisateur en pied (`#footer`). Le déclencheur replie la
+barre en rail d'icônes — libellés, en-têtes de sections et badges masqués.
+
+Les templates `#header` / `#footer` reçoivent l'**état replié résolu** dans leur contexte
+(`let-collapsed="collapsed"`), pour n'afficher que les icônes en mode rail :
+
+```html
+<ng-template #header let-collapsed="collapsed">
+  <ui-icon name="layer-group" size="lg" />
+  @if (!collapsed) { <strong>App</strong> }
+</ng-template>
+```
+
+<Canvas of={SidebarStories.WithMenu} />
+
+## Responsive
+
+Sous `breakpoint` (ici `1024px`, aligné sur l'échelle `$breakpoint-*` du design system), la
+barre devient un offcanvas avec fond ; au-dessus, elle reste un rail d'icônes qui pousse le
+contenu. Redimensionnez l'aperçu pour observer la bascule.
+
+<Canvas of={SidebarStories.Responsive} />
+
+## Double barre
+
+Chrome à deux niveaux façon console d'administration : un **rail d'icônes** permanent (replié,
+libellés en info-bulle) comme navigation primaire, accolé à une **barre de navigation
+secondaire** listant les sections d'un module, le tout bordant le contenu. Deux `ui-sidebar`
+statiques côte à côte — pas d'offcanvas.
+
+<Canvas of={SidebarStories.DualSidebar} />
+
+## Menu imbriqué
+
+Les entrées deviennent des groupes **repliables** révélant un sous-arbre imbriqué. L'**état
+actif est suivi** : un groupe contenant l'élément actif se déplie automatiquement.
+
+<Canvas of={SidebarStories.NestedMenu} />
+
+## ui-sidebar-menu
+
+Menu de navigation déclaratif (`UiSidebarMenuItem[]`) rendu comme **landmark de navigation** :
+un `<nav>` enveloppant des conteneurs `role="list"` / `role="listitem"`. Il gère :
+
+- des **sections** libellées (navigation groupée) ;
+- des **groupes repliables** (`toggleable`) révélant des sous-arbres profonds, avec état
+  d'expansion (`expandedKeys` two-way) ;
+- le **suivi d'état actif** par item (RouterLink pour les liens de route, `active` pour la
+  navigation manuelle — les groupes contenant un descendant actif se déplient d'office) ;
+- un **badge** de fin rendu via `ui-badge` (`badge` + `badgeLevel`) et une icône « ouvre
+  ailleurs » automatique pour les liens externes (`external` ou `target="_blank"`).
+
+Déposé dans un `ui-sidebar`, il lit l'état replié résolu par DI et se replie en **rail
+d'icônes** (libellés masqués, boutons parfaitement carrés). En usage autonome, pilotez le rail
+avec l'entrée `collapsed`. En rail, activez **`tooltips`** pour révéler le libellé de chaque
+icône au survol / focus (via la directive `[uiTooltip]`, positionnée à droite).
+
+### Modèle `UiSidebarMenuItem`
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Champ</th>
+      <th>Type</th>
+      <th>Rôle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td><code>label</code></td><td><code>string</code></td><td>Texte de l'entrée / en-tête de groupe.</td></tr>
+    <tr><td><code>icon</code></td><td><code>string</code></td><td>Icône FontAwesome (aussi affichée dans le rail).</td></tr>
+    <tr><td><code>items</code></td><td><code>UiSidebarMenuItem[]</code></td><td>Enfants → section ou groupe repliable.</td></tr>
+    <tr><td><code>toggleable</code></td><td><code>boolean</code></td><td>Groupe repliable (défaut : faux au 1<sup>er</sup> niveau, vrai imbriqué).</td></tr>
+    <tr><td><code>routerLink</code> / <code>url</code></td><td><code>…</code></td><td>Lien de route (RouterLink) ou URL externe.</td></tr>
+    <tr><td><code>command</code></td><td><code>(e) =&gt; void</code></td><td>Callback d'activation (item bouton).</td></tr>
+    <tr><td><code>active</code></td><td><code>boolean</code></td><td>État actif manuel (navigation hors route).</td></tr>
+    <tr><td><code>badge</code> / <code>badgeLevel</code></td><td><code>string</code> / <code>UiFeedbackLevel</code></td><td>Badge de fin rendu via <code>ui-badge</code> (compteur, statut).</td></tr>
+    <tr><td><code>external</code></td><td><code>boolean</code></td><td>Force l'icône « ouvre ailleurs » (auto si <code>target="_blank"</code>).</td></tr>
+    <tr><td><code>separator</code> / <code>disabled</code> / <code>visible</code></td><td><code>boolean</code></td><td>Séparateur / désactivation / masquage.</td></tr>
+  </tbody>
+</table>
+
+## uiSidebarTrigger
+
+Directive qui **bascule** une barre depuis n'importe quel élément. Elle reflète le contrat
+d'accessibilité entre un contrôle et la barre : `aria-controls` (id du panneau) et
+`aria-expanded` (état résolu ouvert / replié), et bascule à l'activation. `Entrée` / `Espace`
+sont natifs sur un `<button>`.
+
+```html
+<button [uiSidebarTrigger]="sb" aria-label="Basculer le menu">☰</button>
+<ui-sidebar #sb>…</ui-sidebar>
+```
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Aspect</th>
+      <th>Comportement</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Landmark</strong></td>
+      <td>Panneau <code>&lt;aside&gt;</code> nommé (<code>ariaLabel</code> / <code>ariaLabelledBy</code>) ; les menus s'enveloppent dans un <code>&lt;nav&gt;</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Listes</strong></td>
+      <td>Les entrées de menu sont des <code>role="listitem"</code> dans des conteneurs <code>role="list"</code> (sémantique préservée malgré <code>list-style:none</code>).</td>
+    </tr>
+    <tr>
+      <td><strong>Déclencheur</strong></td>
+      <td><code>[uiSidebarTrigger]</code> expose <code>aria-controls</code> / <code>aria-expanded</code> liés à la barre.</td>
+    </tr>
+    <tr>
+      <td><strong>Overlay</strong></td>
+      <td><code>aria-modal</code>, piège de focus + restauration ; <code>Échap</code> ferme si <code>dismissable</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Clavier</strong></td>
+      <td><code>Tab</code> / <code>Maj+Tab</code> parcourent les contrôles ; <code>Entrée</code> / <code>Espace</code> activent ; <code>Échap</code> ferme l'overlay.</td>
+    </tr>
+    <tr>
+      <td><strong>Rail replié</strong></td>
+      <td>Chaque icône conserve un nom accessible (<code>aria-label</code> / <code>title</code> = libellé).</td>
+    </tr>
+  </tbody>
+</table>
+
+## Theming
+
+Largeurs pilotables par variables CSS locales (aucune constante partagée ajoutée) :
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Variable</th>
+      <th>Défaut</th>
+      <th>Rôle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td><code>--ui-sidebar-width</code></td><td><code>280px</code></td><td>Largeur déployée.</td></tr>
+    <tr><td><code>--ui-sidebar-rail-width</code></td><td><code>72px</code></td><td>Largeur du rail d'icônes replié.</td></tr>
+    <tr><td><code>--ui-sidebar-backdrop-background</code></td><td><code>black-50</code></td><td>Fond de l'overlay.</td></tr>
+  </tbody>
+</table>

@@ -1,0 +1,149 @@
+<nav
+  [class]="'ui-sidebar-menu _' + level() + (size() !== 'default' ? ' _' + size() : '') + (isCollapsed() ? ' _collapsed' : '') + (motion() ? '' : ' _no-motion')"
+  [attr.aria-label]="ariaLabel() || null"
+  [attr.aria-labelledby]="ariaLabelledBy() || null"
+>
+  <ul class="ui-sidebar-menu-list" role="list">
+    <ng-container [ngTemplateOutlet]="nodesTpl" [ngTemplateOutletContext]="{ $implicit: nodes() }" />
+  </ul>
+</nav>
+
+<!-- Recursive node list (separator | section | collapsible group | leaf). -->
+<ng-template #nodesTpl let-nodes>
+  @for (node of nodes; track node.key) {
+    @switch (node.kind) {
+      @case ('separator') {
+        <li class="ui-sidebar-menu-separator" role="separator" aria-hidden="true"></li>
+      }
+
+      @case ('section') {
+        <li class="ui-sidebar-menu-section" role="listitem" [class]="node.item.styleClass ?? ''">
+          <span class="ui-sidebar-menu-section-header" [attr.id]="node.key + '-h'">
+            @if (node.item.icon; as icon) {
+              <ui-icon class="ui-sidebar-menu-icon" [name]="icon" size="sm" />
+            }
+            <span class="ui-sidebar-menu-label">{{ node.item.label }}</span>
+          </span>
+          <ul class="ui-sidebar-menu-sub" role="list" [attr.aria-labelledby]="node.key + '-h'">
+            <ng-container [ngTemplateOutlet]="nodesTpl" [ngTemplateOutletContext]="{ $implicit: node.children }" />
+          </ul>
+        </li>
+      }
+
+      @case ('group') {
+        <li
+          class="ui-sidebar-menu-entry"
+          role="listitem"
+          [class._active-within]="node.activeWithin"
+          [class]="node.item.styleClass ?? ''"
+        >
+          <button
+            type="button"
+            class="ui-sidebar-menu-action _toggle"
+            [attr.aria-expanded]="isExpanded(node)"
+            [attr.aria-controls]="node.key + '-g'"
+            [attr.aria-label]="railTitle(node)"
+            [attr.title]="showTooltips() ? null : railTitle(node)"
+            [uiTooltip]="node.item.label || ''"
+            [tooltipDisabled]="!showTooltips()"
+            tooltipPosition="right"
+            [disabled]="node.item.disabled ?? false"
+            (click)="onToggle(node)"
+          >
+            @if (node.item.icon; as icon) {
+              <ui-icon class="ui-sidebar-menu-icon" [name]="icon" size="sm" />
+            }
+            <span class="ui-sidebar-menu-label">{{ node.item.label }}</span>
+            @if (node.item.badge; as badge) {
+              <ui-badge class="ui-sidebar-menu-badge" [value]="badge" [level]="node.item.badgeLevel ?? 'default'" size="small" />
+            }
+            <!-- `_open` (not `_expanded`: a global width:100% helper class exists). -->
+            <ui-icon class="ui-sidebar-menu-chevron" [class._open]="isExpanded(node)" name="chevron-down" size="sm" />
+          </button>
+
+          <div
+            class="ui-sidebar-menu-collapse"
+            [class._open]="isExpanded(node)"
+            [attr.id]="node.key + '-g'"
+            [attr.inert]="isExpanded(node) ? null : ''"
+          >
+            <div class="ui-sidebar-menu-collapse-inner">
+              <ul class="ui-sidebar-menu-sub _nested" role="list">
+                <ng-container [ngTemplateOutlet]="nodesTpl" [ngTemplateOutletContext]="{ $implicit: node.children }" />
+              </ul>
+            </div>
+          </div>
+        </li>
+      }
+
+      @case ('item') {
+        <li class="ui-sidebar-menu-entry" role="listitem" [class]="node.item.styleClass ?? ''">
+          <ng-template #content>
+            @if (node.item.icon; as icon) {
+              <ui-icon class="ui-sidebar-menu-icon" [name]="icon" size="sm" />
+            }
+            <span class="ui-sidebar-menu-label">{{ node.item.label }}</span>
+            @if (isExternal(node)) {
+              <ui-icon class="ui-sidebar-menu-external" name="arrow-up-right-from-square" size="sm" aria-hidden="true" />
+            }
+            @if (node.item.badge; as badge) {
+              <ui-badge class="ui-sidebar-menu-badge" [value]="badge" [level]="node.item.badgeLevel ?? 'default'" size="small" />
+            }
+          </ng-template>
+
+          @if (node.item.routerLink != null && !node.item.disabled) {
+            <a
+              class="ui-sidebar-menu-action"
+              [routerLink]="node.item.routerLink"
+              [queryParams]="node.item.queryParams ?? null"
+              routerLinkActive="_active"
+              [routerLinkActiveOptions]="{ exact: node.item.routerLinkActiveExact ?? false }"
+              [attr.target]="node.item.target || null"
+              [attr.aria-label]="railTitle(node)"
+              [attr.title]="showTooltips() ? null : railTitle(node)"
+              [uiTooltip]="node.item.label || ''"
+              [tooltipDisabled]="!showTooltips()"
+              tooltipPosition="right"
+              (click)="onItemClick($event, node)"
+            >
+              <ng-container [ngTemplateOutlet]="content" />
+            </a>
+          } @else if (node.item.url && !node.item.disabled) {
+            <a
+              class="ui-sidebar-menu-action"
+              [class._active]="node.item.active"
+              [attr.href]="node.item.url"
+              [attr.target]="node.item.target || null"
+              [attr.rel]="node.item.target === '_blank' ? 'noopener noreferrer' : null"
+              [attr.aria-label]="railTitle(node)"
+              [attr.title]="showTooltips() ? null : railTitle(node)"
+              [uiTooltip]="node.item.label || ''"
+              [tooltipDisabled]="!showTooltips()"
+              tooltipPosition="right"
+              [attr.aria-current]="node.item.active ? 'page' : null"
+              (click)="onItemClick($event, node)"
+            >
+              <ng-container [ngTemplateOutlet]="content" />
+            </a>
+          } @else {
+            <button
+              type="button"
+              class="ui-sidebar-menu-action"
+              [class._active]="node.item.active"
+              [attr.aria-current]="node.item.active ? 'true' : null"
+              [attr.aria-label]="railTitle(node)"
+              [attr.title]="showTooltips() ? null : railTitle(node)"
+              [uiTooltip]="node.item.label || ''"
+              [tooltipDisabled]="!showTooltips()"
+              tooltipPosition="right"
+              [disabled]="node.item.disabled ?? false"
+              (click)="onItemClick($event, node)"
+            >
+              <ng-container [ngTemplateOutlet]="content" />
+            </button>
+          }
+        </li>
+      }
+    }
+  }
+</ng-template>
