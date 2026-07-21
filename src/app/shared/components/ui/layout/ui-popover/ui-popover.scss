@@ -1,0 +1,85 @@
+@use 'utils';
+
+// =====================================================================
+// ui-popover : co-located styles for the anchored panel (shell + arrow).
+// =====================================================================
+
+// --- Config (local, component-scoped) ---------------------------------
+$popover-arrow-size: utils.rem-calc(8);
+$popover-arrow-half: utils.rem-calc(4);
+$popover-padding: var(--units-md);
+$popover-max-width: utils.rem-calc(320);
+
+$popover-surface: var(--global-high-surface-default);
+$popover-stroke: var(--global-high-stroke-default);
+
+.ui-popover {
+  position: relative;
+  display: block;
+  box-sizing: border-box;
+  width: max-content;
+  max-width: $popover-max-width;
+  color: var(--global-high-content-default);
+  @include utils.overlay-panel($popover-surface, $popover-stroke);
+  overflow: visible;
+
+  &:focus {
+    outline: none;
+  }
+
+  // --- Content ---------------------------------------------------------
+  &-content {
+    box-sizing: border-box;
+    padding: $popover-padding;
+    max-height: var(--ui-popover-max-height);
+    overflow: auto;
+    border-radius: inherit;
+  }
+
+  // --- Arrow -----------------------------------------------------------
+  &-arrow {
+    position: absolute;
+    width: $popover-arrow-size;
+    height: $popover-arrow-size;
+    background-color: $popover-surface;
+    border: utils.$overlay-panel-stroke-width solid $popover-stroke;
+    rotate: 45deg;
+  }
+
+  &._no-arrow &-arrow {
+    display: none;
+  }
+
+  // Panel above the trigger : arrow on the bottom edge, pointing down.
+  &._top &-arrow {
+    bottom: -$popover-arrow-half;
+    left: 50%;
+    margin-left: -$popover-arrow-half;
+    border-top: 0;
+    border-left: 0;
+  }
+  // Panel below : arrow on top, pointing up.
+  &._bottom &-arrow {
+    top: -$popover-arrow-half;
+    left: 50%;
+    margin-left: -$popover-arrow-half;
+    border-right: 0;
+    border-bottom: 0;
+  }
+  // Panel on the left of the trigger : arrow on the right edge, pointing right.
+  &._left &-arrow {
+    right: -$popover-arrow-half;
+    top: 50%;
+    margin-top: -$popover-arrow-half;
+    border-bottom: 0;
+    border-left: 0;
+  }
+  // Panel on the right : arrow on the left edge, pointing left.
+  &._right &-arrow {
+    left: -$popover-arrow-half;
+    top: 50%;
+    margin-top: -$popover-arrow-half;
+    border-top: 0;
+    border-right: 0;
+  }
+}

@@ -1,0 +1,172 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as PopoverStories from './ui-popover.stories';
+
+<Meta of={PopoverStories} />
+
+# ui-popover
+
+Panneau flottant ancré à un déclencheur.
+
+<Canvas of={PopoverStories.Basic} />
+
+## API
+
+<ArgTypes of={PopoverStories} />
+
+## Méthodes
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Méthode</th>
+      <th>Signature</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>show</code></td>
+      <td><code>show(event?, target?)</code></td>
+      <td>Ouvre le panneau, ancré à <code>target</code> (ou au <code>currentTarget</code> de l'événement).</td>
+    </tr>
+    <tr>
+      <td><code>hide</code></td>
+      <td><code>hide()</code></td>
+      <td>Ferme le panneau ; rend le focus au déclencheur si le focus était à l'intérieur.</td>
+    </tr>
+    <tr>
+      <td><code>toggle</code></td>
+      <td><code>toggle(event?, target?)</code></td>
+      <td>Bascule l'état, en ancrant comme <code>show</code> à l'ouverture.</td>
+    </tr>
+    <tr>
+      <td><code>visible</code></td>
+      <td><code>Signal&lt;boolean&gt;</code></td>
+      <td>Signal en lecture seule de l'état d'ouverture.</td>
+    </tr>
+  </tbody>
+</table>
+
+## Basique
+
+Le panneau est accédé via sa référence : l'événement de clic du déclencheur transporte
+l'ancre, et la visibilité est pilotée par `toggle` / `show` / `hide`.
+
+```html
+<ui-button label="Détails" (buttonClick)="op.toggle($event)" />
+<ui-popover #op ariaLabel="Détails du produit">
+  <p>Contenu du panneau…</p>
+</ui-popover>
+```
+
+## Contrôlé
+
+La visibilité peut être pilotée depuis l'extérieur via la variable de référence. On passe
+**l'élément déclencheur en second argument** pour que l'overlay reste ancré à lui, quel que
+soit le bouton qui commande l'état.
+
+```html
+<span #anchor>Ancre</span>
+<ui-button label="Afficher" (buttonClick)="op.show($event, anchor)" />
+<ui-button label="Masquer" (buttonClick)="op.hide()" />
+<ui-button label="Basculer" (buttonClick)="op.toggle($event, anchor)" />
+<ui-popover #op ariaLabel="Panneau contrôlé"><p>…</p></ui-popover>
+```
+
+<Canvas of={PopoverStories.Controlled} />
+
+## Positions
+
+`position` choisit le côté préféré (`top` / `bottom` / `left` / `right`) ; l'overlay
+retourne automatiquement vers un autre côté si la place manque, et la flèche s'oriente selon
+le côté effectif.
+
+<Canvas of={PopoverStories.Positions} />
+
+## Contenu riche
+
+Le contenu projeté est libre et peut être interactif. Un bouton de fermeture dédié appelle
+simplement `hide()` — son activation au clavier (`Entrée` / `Espace`) est le comportement
+natif d'un `<button>`.
+
+<Canvas of={PopoverStories.RichContent} />
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Règle</th>
+      <th>Détail</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Rôle & nom</strong></td>
+      <td><code>role="dialog"</code> + <code>aria-modal="true"</code> (le focus reste dans le panneau). Nommez-le via <code>ariaLabel</code> ou <code>ariaLabelledBy</code> ; un warning dev signale un panneau ouvert sans nom accessible.</td>
+    </tr>
+    <tr>
+      <td><strong>Relation déclencheur</strong></td>
+      <td>À l'ouverture, le déclencheur reçoit <code>aria-expanded="true"</code> et <code>aria-controls</code> (id du panneau) ; nettoyés à la fermeture. Utilisez un déclencheur accessible au clavier (<code>&lt;button&gt;</code>), sinon ajoutez <code>tabindex</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Focus</strong></td>
+      <td>Piège de focus (<code>cdkTrapFocus</code>) tant que le panneau est ouvert. À l'ouverture (<code>focusOnShow</code>), le <strong>premier élément focusable</strong> reçoit le focus — personnalisable en ajoutant l'attribut <code>autofocus</code> sur un élément du panneau.</td>
+    </tr>
+    <tr>
+      <td><strong>Clavier</strong></td>
+      <td><code>Tab</code> / <code>Maj+Tab</code> circulent dans le panneau. <code>Échap</code> ferme (<code>closeOnEscape</code>) et rend le focus au déclencheur.</td>
+    </tr>
+    <tr>
+      <td><strong>Clic extérieur</strong></td>
+      <td><code>dismissable</code> (défaut) ferme au clic hors du panneau ; un clic sur le déclencheur est ignoré (c'est son propre gestionnaire qui bascule l'état).</td>
+    </tr>
+    <tr>
+      <td><strong>Motion</strong></td>
+      <td>Entrée <code>zoom</code> via le système de motion ; respecte <code>prefers-reduced-motion</code> et l'interrupteur global <code>data-motion="off"</code>, désactivable par instance via <code>motion="false"</code>.</td>
+    </tr>
+  </tbody>
+</table>
+
+## Theming
+
+Variables locales en tête de `ui-popover.scss`. La coque du panneau (rayon, épaisseur de
+bordure, ombre) provient des constantes partagées `$overlay-panel-*` de `ui-config` — voir le
+[fonctionnement de la configuration](?path=/docs/components-configuration--docs).
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Variable locale</th>
+      <th>Source</th>
+      <th>Rôle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>$popover-padding</code></td>
+      <td>local (<code>--units-md</code>)</td>
+      <td>Espacement interne du contenu projeté</td>
+    </tr>
+    <tr>
+      <td><code>$popover-max-width</code></td>
+      <td>local (320px)</td>
+      <td>Largeur maximale avant retour à la ligne (le CDK garde le panneau dans le viewport)</td>
+    </tr>
+    <tr>
+      <td><code>--ui-popover-max-height</code></td>
+      <td>hook par instance</td>
+      <td>Hauteur maximale du contenu avant scroll interne (non définie par défaut ; ex. <code>60vh</code>)</td>
+    </tr>
+    <tr>
+      <td><code>$popover-arrow-size</code></td>
+      <td>local (8px)</td>
+      <td>Diamètre de la flèche — synchronisé avec <code>ARROW_GAP</code> dans le <code>.ts</code></td>
+    </tr>
+    <tr>
+      <td><code>utils.overlay-panel(...)</code></td>
+      <td><code>ui-config.$overlay-panel-&#42;</code></td>
+      <td>Coque partagée : rayon, épaisseur de bordure, ombre (surchargeables par instance via <code>--ui-overlay-&#42;</code>)</td>
+    </tr>
+  </tbody>
+</table>

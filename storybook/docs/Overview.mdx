@@ -37,6 +37,7 @@ import * as ProgressBarStories from "../../src/app/shared/components/ui/informat
 import * as CardStories from "../../src/app/shared/components/ui/layout/ui-card/ui-card.stories";
 import * as ModalStories from "../../src/app/shared/components/ui/layout/ui-modal/ui-modal.stories";
 import * as DrawerStories from "../../src/app/shared/components/ui/layout/ui-drawer/ui-drawer.stories";
+import * as PopoverStories from "../../src/app/shared/components/ui/layout/ui-popover/ui-popover.stories";
 import * as TabsStories from "../../src/app/shared/components/ui/navigation/ui-tabs/ui-tabs.stories";
 import * as StepperStories from "../../src/app/shared/components/ui/navigation/ui-stepper/ui-stepper.stories";
 import * as MenuStories from "../../src/app/shared/components/ui/navigation/ui-menu/ui-menu.stories";
@@ -105,19 +106,19 @@ export const CategorySection = ({ title, components }) => (
 <CategorySection
   title="Forms"
   components={[
-    { name: 'ui-checkbox', description: 'Case à cocher headless (CVA, indeterminate, erreur auto).', link: '?path=/docs/components-ui-forms-ui-checkbox--docs', story: CheckboxStories.Checked },
-    { name: 'ui-radio', description: 'Bouton radio headless (groupe natif par name, CVA).', link: '?path=/docs/components-ui-forms-ui-radio--docs', story: RadioStories.Checked },
+    { name: 'ui-checkbox', description: 'Case à cocher (CVA, indeterminate, erreur auto).', link: '?path=/docs/components-ui-forms-ui-checkbox--docs', story: CheckboxStories.Checked },
+    { name: 'ui-radio', description: 'Bouton radio (groupe natif par name, CVA).', link: '?path=/docs/components-ui-forms-ui-radio--docs', story: RadioStories.Checked },
     { name: 'ui-label', description: 'Libellé de champ (marqueur requis, tailles).', link: '?path=/docs/components-ui-forms-ui-label--docs', story: LabelStories.Required },
     { name: 'ui-input', description: 'Champ texte composé (label + helper, icônes, zone d’action, niveaux).', link: '?path=/docs/components-ui-forms-ui-input--docs', story: InputStories.WithHelper },
     { name: 'ui-input-number', description: 'Champ numérique (min/max/step, spinner ±, clamp).', link: '?path=/docs/components-ui-forms-ui-input-number--docs', story: InputNumberStories.WithUnit },
     { name: 'ui-input-mask', description: 'Champ masqué (téléphone, date… littéraux auto).', link: '?path=/docs/components-ui-forms-ui-input-mask--docs', story: InputMaskStories.Phone },
-    { name: 'ui-toggle', description: 'Interrupteur on/off (headless, role=switch, CVA, tailles).', link: '?path=/docs/components-ui-forms-ui-toggle--docs', story: ToggleStories.Default },
+    { name: 'ui-toggle', description: 'Interrupteur on/off (role=switch, CVA, tailles).', link: '?path=/docs/components-ui-forms-ui-toggle--docs', story: ToggleStories.Default },
     { name: 'ui-datepicker', description: 'Sélecteur de date/heure (calendrier overlay/inline, CVA, min/max, showTime 12/24h, clavier).', link: '?path=/docs/components-ui-forms-ui-datepicker--docs', story: DatepickerStories.Default },
-    { name: 'ui-rating', description: 'Notation étoiles (headless, CVA, clavier natif via range caché).', link: '?path=/docs/components-ui-forms-ui-rating--docs', story: RatingStories.Default },
-    { name: 'ui-slider', description: 'Curseur de valeur (headless, CVA, simple/range, step, marks, écart min., drag pointeur + clavier WAI-ARIA).', link: '?path=/docs/components-ui-forms-ui-slider--docs', story: SliderStories.Basic },
-    { name: 'ui-nudger', description: 'Incrémenteur numérique [−] valeur [+] (headless, CVA, min/max/step, tailles, formatValue).', link: '?path=/docs/components-ui-forms-ui-nudger--docs', story: NudgerStories.MinMax },
-    { name: 'ui-textarea', description: 'Zone de texte multiligne (headless, CVA, rows, autoResize, poignée native, niveaux).', link: '?path=/docs/components-ui-forms-ui-textarea--docs', story: TextareaStories.WithHelper },
-    { name: 'ui-segment-control', description: 'Sélection segmentée (headless, CVA, simple/multiple, indicateur glissant motion, fluid, template).', link: '?path=/docs/components-ui-forms-ui-segment-control--docs', story: SegmentControlStories.Sizes },
+    { name: 'ui-rating', description: 'Notation étoiles (CVA, clavier natif via range caché).', link: '?path=/docs/components-ui-forms-ui-rating--docs', story: RatingStories.Default },
+    { name: 'ui-slider', description: 'Curseur de valeur (CVA, simple/range, step, marks, écart min., drag pointeur + clavier WAI-ARIA).', link: '?path=/docs/components-ui-forms-ui-slider--docs', story: SliderStories.Basic },
+    { name: 'ui-nudger', description: 'Incrémenteur numérique [−] valeur [+] (CVA, min/max/step, tailles, formatValue).', link: '?path=/docs/components-ui-forms-ui-nudger--docs', story: NudgerStories.MinMax },
+    { name: 'ui-textarea', description: 'Zone de texte multiligne (CVA, rows, autoResize, poignée native, niveaux).', link: '?path=/docs/components-ui-forms-ui-textarea--docs', story: TextareaStories.WithHelper },
+    { name: 'ui-segment-control', description: 'Sélection segmentée (CVA, simple/multiple, indicateur glissant motion, fluid, template).', link: '?path=/docs/components-ui-forms-ui-segment-control--docs', story: SegmentControlStories.Sizes },
     { name: 'ui-select', description: 'Liste déroulante (combobox WAI-ARIA, options/groupes, multiple, filtre, editable, virtual scroll + lazy).', link: '?path=/docs/components-ui-forms-ui-select--docs', story: SelectStories.Checkmark },
     { name: 'ui-file-upload', description: 'Téléversement de fichiers (field/drag + glisser-déposer, validation, auto/customUpload, progression, templates, aperçus image).', link: '?path=/docs/components-ui-forms-ui-file-upload--docs', story: FileUploadStories.Basic },
   ]}
@@ -131,7 +132,7 @@ export const CategorySection = ({ title, components }) => (
     { name: 'ui-avatar', description: 'Avatar utilisateur (image / initiales / icône, tailles, forme, badge projeté).', link: '?path=/docs/components-ui-informative-ui-avatar--docs', story: AvatarStories.Label },
     { name: 'ui-avatar-group', description: 'Empilement d’avatars avec chevauchement (débordement « +N »).', link: '?path=/docs/components-ui-informative-ui-avatar-group--docs', story: AvatarGroupStories.Mixed },
     { name: 'ui-separator', description: 'Séparateur (horizontal/vertical, solid/dashed, libellé start/center/end).', link: '?path=/docs/components-ui-informative-ui-separator--docs', story: SeparatorStories.LabelCenter },
-    { name: 'ui-tooltip', description: 'Infobulle headless (directive [uiTooltip] + CDK Overlay, 4 côtés avec retournement auto, hover/focus, tooltipStyleClass).', link: '?path=/docs/components-ui-informative-ui-tooltip--docs', story: TooltipStories.Default },
+    { name: 'ui-tooltip', description: 'Infobulle (directive [uiTooltip] + CDK Overlay, 4 côtés avec retournement auto, hover/focus, tooltipStyleClass).', link: '?path=/docs/components-ui-informative-ui-tooltip--docs', story: TooltipStories.Default },
     { name: 'ui-tag', description: 'Étiquette / pilule (level × sub-level × size, icônes gauche/droite, forme pill/rounded).', link: '?path=/docs/components-ui-informative-ui-tag--docs', story: TagStories.WithIconLeft },
     { name: 'ui-chip', description: 'Jeton compact interactif (icône/image de tête, suppression removable au clavier, contenu projeté, level × sub-level × size).', link: '?path=/docs/components-ui-informative-ui-chip--docs', story: ChipStories.Removable },
     { name: 'ui-toast', description: 'Notification éphémère (service add/clear + conteneur, 7 positions, niveaux, auto-fermeture pausable, sticky, bannière, actions, motion).', link: '?path=/docs/components-ui-informative-ui-toast--docs', story: ToastStories.Default },
@@ -149,7 +150,8 @@ export const CategorySection = ({ title, components }) => (
   components={[
     { name: 'ui-card', description: 'Conteneur flexible (slots média/titre/sous-titre/contenu/pied, variantes outlined/elevated/flat).', link: '?path=/docs/components-ui-layout-ui-card--docs', story: CardStories.Default, previewHeight: 300, previewScale: 1 },
     { name: 'ui-modal', description: 'Fenêtre modale (two-way visible, masque modal/non-modal, dismissableMask, blocage du scroll, piège de focus, déplaçable, agrandissable, redimensionnable, 9 positions, breakpoints, motion).', link: '?path=/docs/components-ui-layout-ui-modal--docs', story: ModalStories.Contained, previewHeight: 300, previewScale: 1 },
-    { name: 'ui-drawer', description: 'Panneau glissant (two-way visible, 4 bords + fullScreen, glissement directionnel motion, masque modal/non-modal, dismissableMask, piège de focus, contained, templates + headless).', link: '?path=/docs/components-ui-layout-ui-drawer--docs', story: DrawerStories.Contained, previewHeight: 300, previewScale: 1 },
+    { name: 'ui-drawer', description: 'Panneau glissant (two-way visible, 4 bords + fullScreen, glissement directionnel motion, masque modal/non-modal, dismissableMask, piège de focus, contained, templates +).', link: '?path=/docs/components-ui-layout-ui-drawer--docs', story: DrawerStories.Contained, previewHeight: 300, previewScale: 1 },
+    { name: 'ui-popover', description: 'Panneau flottant ancré à un déclencheur (overlay CDK, show/hide/toggle, contenu projeté, 4 côtés + flèche, role=dialog + aria-modal, piège de focus, Échap, dismissable).', link: '?path=/docs/components-ui-layout-ui-popover--docs', story: PopoverStories.Basic },
   ]}
 />
 
@@ -167,7 +169,7 @@ export const CategorySection = ({ title, components }) => (
 <CategorySection
   title="Table"
   components={[
-    { name: 'ui-table', description: 'Tableau de données headless (templates header/body/footer, tri simple/multiple, sélection ligne/checkbox/radio + clavier complet, pagination ui-paginator, scroll sticky, virtual scroll, colonnes/lignes figées, expansion, resize fit, row reorder, loading).', link: '?path=/docs/components-ui-table-ui-table--docs', story: TableStories.StripedRows, previewHeight: 320, previewScale: 0.5 },
+    { name: 'ui-table', description: 'Tableau de données (templates header/body/footer, tri simple/multiple, sélection ligne/checkbox/radio + clavier complet, pagination ui-paginator, scroll sticky, virtual scroll, colonnes/lignes figées, expansion, resize fit, row reorder, loading).', link: '?path=/docs/components-ui-table-ui-table--docs', story: TableStories.StripedRows, previewHeight: 320, previewScale: 0.5 },
     { name: 'ui-paginator', description: 'Pagination autonome (composition ui-button cercles + ui-select lignes/page, two-way first/rows, fenêtre pageLinks, aria-current, pageChange). Consommée par ui-table.', link: '?path=/docs/components-ui-table-ui-paginator--docs', story: PaginatorStories.Basic, previewHeight: 140 },
   ]}
 />
