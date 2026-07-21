@@ -1,0 +1,13 @@
+@use 'utils';
+
+// =====================================================================
+// ui-step-list : co-located styles.
+// =====================================================================
+
+:host {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  width: 100%;
+  min-width: 0;
+}

@@ -1,0 +1,58 @@
+@use 'utils';
+
+// =====================================================================
+// ui-step-panel : co-located styles.
+// =====================================================================
+
+// --- Config ---------------------------------------------------
+$marker-size: utils.rem-calc(44);
+
+:host {
+  display: block;
+  color: var(--global-high-content-default);
+  font-family: var(--fontfamily-base);
+  font-size: var(--size-typography-text-default);
+  line-height: 1.5;
+  outline: none;
+}
+
+// --- Collapsible content (grid-rows technique) ------------------------
+.ui-step-panel-collapse {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  @include utils.motion-transition(grid-template-rows, opacity);
+
+  &._open {
+    grid-template-rows: 1fr;
+    opacity: 1;
+  }
+
+  // Explicit opt-out (`[motion]="false"` on ui-stepper).
+  &._no-motion {
+    transition: none;
+  }
+
+  // Respect reduced-motion / global kill-switch.
+  @include utils.motion-reduce {
+    transition-duration: 0.01ms;
+  }
+}
+
+.ui-step-panel-inner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.ui-step-panel-body {
+  padding: var(--units-default) 0;
+}
+
+// --- Vertical layout : indent under the step title, beside the rail ---
+:host-context(.ui-stepper._vertical) {
+  margin-left: calc(#{$marker-size} + var(--units-sm));
+
+  .ui-step-panel-body {
+    padding: var(--units-sm) 0 var(--units-md);
+  }
+}

@@ -38,6 +38,7 @@ import * as CardStories from "../../src/app/shared/components/ui/layout/ui-card/
 import * as ModalStories from "../../src/app/shared/components/ui/layout/ui-modal/ui-modal.stories";
 import * as DrawerStories from "../../src/app/shared/components/ui/layout/ui-drawer/ui-drawer.stories";
 import * as TabsStories from "../../src/app/shared/components/ui/navigation/ui-tabs/ui-tabs.stories";
+import * as StepperStories from "../../src/app/shared/components/ui/navigation/ui-stepper/ui-stepper.stories";
 import * as MenuStories from "../../src/app/shared/components/ui/navigation/ui-menu/ui-menu.stories";
 import * as BreadcrumbStories from "../../src/app/shared/components/ui/navigation/ui-breadcrumb/ui-breadcrumb.stories";
 import * as ContextMenuStories from "../../src/app/shared/components/ui/navigation/ui-context-menu/ui-context-menu.stories";
@@ -156,6 +157,7 @@ export const CategorySection = ({ title, components }) => (
   title="Navigation"
   components={[
     { name: 'ui-tabs', description: 'Onglets (composition, two-way value, horizontal/vertical, scrollable + navigateurs, lazy, selectOnFocus, clavier roving WAI-ARIA, indicateur glissant motion, mode menu).', link: '?path=/docs/components-ui-navigation-ui-tabs--docs', story: TabsStories.Basic, previewHeight: 300, previewScale: 0.85 },
+    { name: 'ui-stepper', description: 'Assistant de progression / wizard (composition, two-way value, horizontal/vertical, linear, lazy, completedIcon ; état dérivé à venir/actif/terminé, en-têtes role=tab natifs Tab/Entrée/Espace, panneaux role=tabpanel en fondu, mode étapes seules).', link: '?path=/docs/components-ui-navigation-ui-stepper--docs', story: StepperStories.Basic, previewHeight: 220, previewScale: 0.85 },
     { name: 'ui-menu', description: 'Menu navigation / commandes (groupes + séparateurs, sous-menus repliables expandedKeys, command, routerLink/url, popup overlay, clavier roving, templates).', link: '?path=/docs/components-ui-navigation-ui-menu--docs', story: MenuStories.Basic, previewHeight: 300, previewScale: 0.85 },
     { name: 'ui-context-menu', description: 'Menu contextuel (clic droit sur target ou global, positionné au pointeur, ui-menu embarqué : sous-menus, command, routerLink/url, clavier, densité small).', link: '?path=/docs/components-ui-navigation-ui-context-menu--docs', story: ContextMenuStories.Basic, previewHeight: 200 },
     { name: 'ui-breadcrumb', description: "Fil d'Ariane (items url/routerLink/command rendus en ui-link, aria-current=page, séparateur custom, repli maxItems via bouton ellipsis, template #item).", link: '?path=/docs/components-ui-navigation-ui-breadcrumb--docs', story: BreadcrumbStories.Basic, previewHeight: 120 },

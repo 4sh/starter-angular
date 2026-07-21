@@ -1,0 +1,33 @@
+@use 'utils';
+
+// =====================================================================
+// ui-step-item : co-located styles.
+// =====================================================================
+
+// --- Config ---------------------------------------------------
+$marker-size: utils.rem-calc(44);
+$rail-stroke: var(--stroke-default);
+
+:host {
+  display: block;
+  position: relative;
+  padding-bottom: var(--units-lg);
+}
+
+:host._last {
+  padding-bottom: 0;
+}
+
+:host:not(._last)::before {
+  content: '';
+  position: absolute;
+  left: calc(#{$marker-size} / 2 - #{$rail-stroke} / 2);
+  top: calc(#{$marker-size} + var(--units-xs));
+  bottom: 0;
+  width: $rail-stroke;
+  background-color: var(--global-high-stroke-default);
+}
+
+:host._completed:not(._last)::before {
+  background-color: var(--navigation-high-stroke-default);
+}

@@ -1,0 +1,197 @@
+@use 'utils';
+
+// =====================================================================
+// ui-step : co-located styles.
+// =====================================================================
+
+// --- Config ---------------------------------------------------
+$marker-size: utils.rem-calc(44);
+$marker-stroke: var(--stroke-sm);
+$separator-stroke: var(--stroke-default);
+$focus-ring-width: utils.$action-focus-ring-width;
+
+:host {
+  display: flex;
+  flex: 1 1 0;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+:host._last {
+  flex: 0 0 auto;
+}
+
+// --- Header (the focusable step control) ------------------------------
+.ui-step-header {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--units-sm);
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  text-align: center;
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  &:focus-visible {
+    outline: none;
+  }
+}
+
+// --- Marker (numbered circle) -----------------------------------------
+.ui-step-marker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: $marker-size;
+  height: $marker-size;
+  flex: 0 0 auto;
+  border: $marker-stroke solid var(--navigation-high-stroke-default);
+  border-radius: var(--radius-full);
+  background-color: var(--navigation-high-surface-default);
+  color: var(--navigation-high-content-default);
+  font-family: var(--fontfamily-base);
+  font-weight: var(--weight-bold);
+  font-size: var(--size-typography-text-default);
+  line-height: 1;
+  @include utils.control-transition(color, background-color, border-color, box-shadow);
+}
+
+// --- Title ------------------------------------------------------------
+// In the horizontal strip the title takes zero width and its text overflows,
+// centred, under the marker: the header hugs the marker (44px) so the
+// connector bridges marker-to-marker, and toggling the active weight to bold
+// never shifts the layout (the title box stays 0-wide). Overridden in vertical.
+.ui-step-title {
+  width: 0;
+  display: flex;
+  justify-content: center;
+  white-space: nowrap;
+  color: var(--navigation-high-content-default);
+  font-family: var(--fontfamily-title);
+  font-size: var(--size-typography-title-sm);
+  line-height: 1.2;
+  @include utils.control-transition(color);
+}
+
+// --- Focus ring (drawn around the marker) -----------------------------
+.ui-step-header:focus-visible .ui-step-marker {
+  box-shadow: 0 0 0 $focus-ring-width var(--global-high-stroke-focused);
+}
+
+// --- Connector (horizontal strip) -------------------------------------
+.ui-step-separator {
+  flex: 1 1 auto;
+  min-width: var(--units-lg);
+  height: 0;
+  // Symmetric horizontal breathing room on both sides of the line.
+  margin: calc(#{$marker-size} / 2 - #{$separator-stroke} / 2) var(--units-sm) 0;
+  border-top: $separator-stroke solid var(--global-high-stroke-default);
+  @include utils.control-transition(border-color);
+
+  &._completed {
+    border-top-color: var(--navigation-high-stroke-default);
+  }
+}
+
+// =====================================================================
+// State colours (host class set by the container)
+// =====================================================================
+
+// --- Active -----------------------------------------------------------
+:host._active {
+  .ui-step-marker {
+    background-color: var(--navigation-high-surface-active);
+    border-color: var(--navigation-high-stroke-active);
+    color: var(--informative-defaulthigh-content-default);
+  }
+  .ui-step-title {
+    color: var(--global-high-content-default);
+    font-weight: var(--weight-bold);
+  }
+}
+
+// --- Completed --------------------------------------------------------
+:host._completed {
+  .ui-step-marker {
+    background-color: var(--informative-defaulthigh-surface-default);
+    color: var(--informative-defaulthigh-content-default);
+  }
+}
+
+// =====================================================================
+// Interactive states (navigable steps only)
+// =====================================================================
+.ui-step-header:hover:not(:disabled) {
+  // Upcoming (base)
+  .ui-step-marker {
+    background-color: var(--navigation-high-surface-hover);
+    border-color: var(--navigation-high-stroke-hover);
+    color: var(--navigation-high-content-hover);
+  }
+  .ui-step-title {
+    color: var(--informative-highlightlow-content-hover);
+  }
+}
+
+:host._active .ui-step-header:hover:not(:disabled) {
+  .ui-step-marker {
+    background-color: var(--navigation-high-surface-active);
+    border-color: var(--navigation-high-stroke-hover);
+  }
+  .ui-step-title {
+    color: var(--informative-highlightlow-content-hover);
+  }
+}
+
+:host._completed .ui-step-header:hover:not(:disabled) {
+  .ui-step-marker {
+    background-color: var(--informative-defaulthigh-surface-hover);
+    border-color: var(--informative-defaulthigh-stroke-hover);
+    color: var(--informative-defaulthigh-content-hover);
+  }
+  .ui-step-title {
+    color: var(--informative-defaultlow-content-default);
+  }
+}
+
+// --- Disabled ---------------------------------------------------------
+:host._disabled {
+  .ui-step-marker {
+    background-color: var(--navigation-high-surface-disabled);
+    border-color: var(--navigation-high-stroke-disabled);
+    color: var(--navigation-high-content-disabled);
+  }
+  .ui-step-title {
+    color: var(--navigation-high-content-disabled);
+  }
+}
+
+// =====================================================================
+// Vertical orientation : marker beside the title (rail drawn by the item)
+// =====================================================================
+:host._vertical {
+  display: block;
+
+  .ui-step-header {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--units-sm);
+    width: 100%;
+    text-align: left;
+  }
+
+  // Title flows normally beside the marker (no zero-width centring trick).
+  .ui-step-title {
+    width: auto;
+    display: block;
+    white-space: normal;
+  }
+}

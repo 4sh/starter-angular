@@ -1,0 +1,27 @@
+<button
+  #stepBtn
+  type="button"
+  role="tab"
+  class="ui-step-header"
+  [id]="stepper.stepId(value())"
+  [attr.aria-controls]="stepper.panelId(value())"
+  [attr.aria-selected]="state() === 'active'"
+  [attr.aria-current]="state() === 'active' ? 'step' : null"
+  [attr.aria-label]="ariaLabel() || null"
+  [disabled]="isDisabled()"
+  [attr.tabindex]="isDisabled() ? null : stepper.tabindex()"
+  (click)="onClick($event)"
+>
+  <span class="ui-step-marker" aria-hidden="true">
+    @if (markerIcon(); as name) {
+      <ui-icon [name]="name" size="default" />
+    } @else {
+      {{ number() }}
+    }
+  </span>
+  <span class="ui-step-title"><ng-content /></span>
+</button>
+
+@if (showSeparator()) {
+  <span class="ui-step-separator" aria-hidden="true" [class._completed]="separatorCompleted()"></span>
+}

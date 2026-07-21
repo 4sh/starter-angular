@@ -1,0 +1,226 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as StepperStories from './ui-stepper.stories';
+
+<Meta of={StepperStories} />
+
+# ui-stepper
+
+Assistant de progression **headless** : guide l'utilisateur au fil d'étapes
+numérotées (formulaire multi-étapes, tunnel, wizard). API de **composition** , un
+conteneur `ui-stepper` qui pilote l'état, une liste d'en-têtes `ui-step`, et des
+panneaux `ui-step-panel` appariés à chaque étape par leur `value`.
+
+## API
+
+### ui-stepper (conteneur)
+
+<ArgTypes of={StepperStories} />
+
+<table className="doc-table">
+  <thead>
+    <tr><th>Sortie / méthode</th><th>Type</th><th>Rôle</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>`value`</td><td>`model<string \| number \| undefined>`</td><td>Étape active (two-way `[(value)]`).</td></tr>
+    <tr><td>`stepChange`</td><td>`output<UiStepperChangeEvent>`</td><td>Émis au changement d'étape (`{ value, originalEvent? }`).</td></tr>
+    <tr><td>`next()` / `prev()`</td><td>`method`</td><td>Active l'étape suivante / précédente dans la séquence.</td></tr>
+  </tbody>
+</table>
+
+### ui-step (en-tête)
+
+<table className="doc-table">
+  <thead>
+    <tr><th>Entrée</th><th>Type</th><th>Défaut</th><th>Rôle</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>`value`</td><td>`string \| number`</td><td>`undefined`</td><td>Identifiant de l'étape (comparé au `value` du conteneur ; fourni par `ui-step-item` en vertical).</td></tr>
+    <tr><td>`disabled`</td><td>`boolean`</td><td>`false`</td><td>Étape non activable, ignorée par le focus clavier.</td></tr>
+    <tr><td>`icon`</td><td>`string`</td><td>`undefined`</td><td>Icône remplaçant le numéro dans le marqueur (tous états).</td></tr>
+    <tr><td>`ariaLabel`</td><td>`string`</td><td>`undefined`</td><td>Nom accessible (sinon le titre projeté).</td></tr>
+  </tbody>
+</table>
+
+### ui-step-list
+
+<table className="doc-table">
+  <thead>
+    <tr><th>Entrée</th><th>Type</th><th>Défaut</th><th>Rôle</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>`ariaLabel`</td><td>`string`</td><td>`undefined`</td><td>Nom accessible de la liste (`aria-label` sur `role="tablist"`).</td></tr>
+  </tbody>
+</table>
+
+### ui-step-panel
+
+<table className="doc-table">
+  <thead>
+    <tr><th>Entrée</th><th>Type</th><th>Défaut</th><th>Rôle</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>`value`</td><td>`string \| number`</td><td>`undefined`</td><td>Identifiant du panneau (apparié à l'étape de même `value` ; fourni par `ui-step-item` en vertical).</td></tr>
+    <tr><td>`lazy`</td><td>`boolean`</td><td>`false`</td><td>Ne rend le contenu qu'à la première activation (surcharge locale du défaut de groupe).</td></tr>
+  </tbody>
+</table>
+
+### ui-step-item
+
+Enveloppe du layout **vertical** : un `value` (requis) propagé au `ui-step` et au
+`ui-step-panel` qu'il contient.
+
+## Horizontal
+
+Combinaison `ui-step-list` (bandeau d'en-têtes) et `ui-step-panels` (panneaux
+en-dessous). Chaque `ui-step` et le `ui-step-panel` de même `value` forment une
+paire ; le `value` du conteneur détermine l'étape active.
+
+<Canvas of={StepperStories.Basic} />
+
+## Vertical
+
+Le layout vertical requiert un `ui-step-item` comme enveloppe d'un `ui-step` et de
+son `ui-step-panel`. Le panneau actif se **déplie** (collapse) sous son en-tête, le
+long du rail de connexion, tandis que les autres se replient , animation pilotée
+par `[motion]` via le système de motion partagé (`prefers-reduced-motion` /
+`data-motion="off"` respectés).
+
+<Canvas of={StepperStories.Vertical} />
+
+## Linéaire
+
+Avec `linear`, l'étape courante doit être complétée avant de passer à la suivante :
+les étapes situées **après** l'étape active sont désactivées (impossible de sauter
+en avant). On progresse en pilotant `value` (bouton « Continuer » dans le panneau,
+ou méthodes `next()`/`prev()`). Les étapes déjà terminées restent cliquables pour
+revenir en arrière.
+
+<Canvas of={StepperStories.Linear} />
+
+## Étapes seules
+
+Un `ui-step-list` **sans panneaux** : un simple indicateur de progression. Utile
+pour visualiser l'avancement quand le contenu vit ailleurs.
+
+<Canvas of={StepperStories.StepsOnly} />
+
+## Contenu riche (template)
+
+Les panneaux acceptent un balisage libre et des composants de la librairie
+(`ui-tag`, `ui-button`…). `completedIcon` remplace le numéro des étapes terminées
+par une icône (ici `check`), et `icon` sur un `ui-step` fixe le glyphe du marqueur.
+
+<Canvas of={StepperStories.Template} />
+
+## Contrôlé
+
+L'étape active est pilotée de l'extérieur via le modèle two-way `[(value)]`.
+
+<Canvas of={StepperStories.Controlled} />
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr><th>Point</th><th>Implémentation</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Structure ARIA</td>
+      <td>Le conteneur d'en-têtes porte `role="tablist"` (le `ui-step-list` en horizontal, l'hôte `ui-stepper` en vertical) avec `aria-orientation` ; `aria-label` (via `ariaLabel`) décrit la progression.</td>
+    </tr>
+    <tr>
+      <td>En-têtes</td>
+      <td>Chaque en-tête est un `&lt;button role="tab"&gt;` natif, avec `aria-controls` vers son panneau, `aria-selected` et `aria-current="step"` sur l'étape active.</td>
+    </tr>
+    <tr>
+      <td>Panneaux</td>
+      <td>Chaque panneau a `role="tabpanel"`, un `id` correspondant à l'`aria-controls` de son en-tête, et `aria-labelledby` pointant vers cet en-tête ; le panneau inactif reste dans le DOM mais est `hidden`.</td>
+    </tr>
+    <tr>
+      <td>Clavier , <kbd>Tab</kbd></td>
+      <td>Déplace le focus à travers les en-têtes (chaque en-tête activable est un point d'arrêt natif ; les étapes désactivées sont sautées).</td>
+    </tr>
+    <tr>
+      <td>Clavier , <kbd>Entrée</kbd> / <kbd>Espace</kbd></td>
+      <td>Active l'en-tête ayant le focus (comportement natif du `&lt;button&gt;`).</td>
+    </tr>
+    <tr>
+      <td>Marqueur décoratif</td>
+      <td>Le numéro / l'icône du marqueur est `aria-hidden` ; le sens passe par le titre de l'étape, pas seulement par la couleur.</td>
+    </tr>
+    <tr>
+      <td>Focus visible</td>
+      <td>`:focus-visible` dessine un anneau autour du marqueur, distinct du `:hover`.</td>
+    </tr>
+    <tr>
+      <td>Désactivé</td>
+      <td>`disabled` natif (pas seulement visuel) : couleurs via les tokens `-disabled`.</td>
+    </tr>
+    <tr>
+      <td>Motion</td>
+      <td>Le repli/déploiement (collapse `grid-rows`) et le fondu du panneau sont neutralisés sous `prefers-reduced-motion`, `data-motion="off"` et `[motion]="false"`.</td>
+    </tr>
+  </tbody>
+</table>
+
+## Configuration (SCSS)
+
+Variables **locales** aux composants (co-localisées) :
+
+<table className="doc-table">
+  <thead>
+    <tr><th>Variable locale</th><th>Source</th><th>Rôle</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>`$marker-size`</td><td>`utils.rem-calc(44)`</td><td>Diamètre du marqueur numéroté (Figma 44px) ; partagé par `ui-step`, `ui-step-panel` (indent vertical) et `ui-step-item` (position du rail).</td></tr>
+    <tr><td>`$marker-stroke`</td><td>`var(--stroke-sm)`</td><td>Épaisseur de la bordure du marqueur.</td></tr>
+    <tr><td>`$separator-stroke` / `$rail-stroke`</td><td>`var(--stroke-default)`</td><td>Épaisseur du connecteur (horizontal) / du rail (vertical).</td></tr>
+    <tr><td>`$focus-ring-width`</td><td>`utils.$action-focus-ring-width`</td><td>Épaisseur de l'anneau de focus (constante partagée `ui-config`).</td></tr>
+  </tbody>
+</table>
+
+Le timing d'animation provient du groupe partagé `$motion-*` (`ui-config`, catégorie
+**global**) , voir [Components / Configuration](?path=/docs/components-configuration--docs).
+
+## Exemples
+
+```html
+<!-- Horizontal -->
+<ui-stepper [(value)]="active">
+  <ui-step-list ariaLabel="Étapes">
+    <ui-step [value]="1">Compte</ui-step>
+    <ui-step [value]="2">Profil</ui-step>
+    <ui-step [value]="3">Confirmation</ui-step>
+  </ui-step-list>
+  <ui-step-panels>
+    <ui-step-panel [value]="1">…</ui-step-panel>
+    <ui-step-panel [value]="2">…</ui-step-panel>
+    <ui-step-panel [value]="3">…</ui-step-panel>
+  </ui-step-panels>
+</ui-stepper>
+
+<!-- Vertical (ui-step-item enveloppe l'étape et son panneau) -->
+<ui-stepper [(value)]="active" orientation="vertical" ariaLabel="Installation">
+  <ui-step-item [value]="1">
+    <ui-step [value]="1">Prérequis</ui-step>
+    <ui-step-panel [value]="1">…</ui-step-panel>
+  </ui-step-item>
+  <ui-step-item [value]="2">
+    <ui-step [value]="2">Configuration</ui-step>
+    <ui-step-panel [value]="2">…</ui-step-panel>
+  </ui-step-item>
+</ui-stepper>
+
+<!-- Linéaire + icône de complétion -->
+<ui-stepper [(value)]="active" [linear]="true" completedIcon="check"> … </ui-stepper>
+
+<!-- Étapes seules (indicateur de progression) -->
+<ui-stepper [value]="2">
+  <ui-step-list ariaLabel="Progression">
+    <ui-step [value]="1">Devis</ui-step>
+    <ui-step [value]="2">Validation</ui-step>
+    <ui-step [value]="3">Livraison</ui-step>
+  </ui-step-list>
+</ui-stepper>
+```
