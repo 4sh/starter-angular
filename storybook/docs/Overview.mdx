@@ -10,6 +10,7 @@ import * as LabelStories from "../../src/app/shared/components/ui/forms/ui-label
 import * as InputStories from "../../src/app/shared/components/ui/forms/ui-input/ui-input.stories";
 import * as InputNumberStories from "../../src/app/shared/components/ui/forms/ui-input-number/ui-input-number.stories";
 import * as InputMaskStories from "../../src/app/shared/components/ui/forms/ui-input-mask/ui-input-mask.stories";
+import * as InputOtpStories from "../../src/app/shared/components/ui/forms/ui-input-otp/ui-input-otp.stories";
 import * as ToggleStories from "../../src/app/shared/components/ui/forms/ui-toggle/ui-toggle.stories";
 import * as SegmentControlStories from "../../src/app/shared/components/ui/forms/ui-segment-control/ui-segment-control.stories";
 import * as DatepickerStories from "../../src/app/shared/components/ui/forms/ui-datepicker/ui-datepicker.stories";
@@ -115,6 +116,7 @@ export const CategorySection = ({ title, components }) => (
     { name: 'ui-input', description: 'Champ texte composé (label + helper, icônes, zone d’action, niveaux).', link: '?path=/docs/components-ui-forms-ui-input--docs', story: InputStories.WithHelper },
     { name: 'ui-input-number', description: 'Champ numérique (min/max/step, spinner ±, clamp).', link: '?path=/docs/components-ui-forms-ui-input-number--docs', story: InputNumberStories.WithUnit },
     { name: 'ui-input-mask', description: 'Champ masqué (téléphone, date… littéraux auto).', link: '?path=/docs/components-ui-forms-ui-input-mask--docs', story: InputMaskStories.Phone },
+    { name: 'ui-input-otp', description: 'Code à usage unique / OTP (cellules maxlength=1, mask, integerOnly, tailles, avance auto + collage, roving Tab/←/→, template #input).', link: '?path=/docs/components-ui-forms-ui-input-otp--docs', story: InputOtpStories.Basic },
     { name: 'ui-toggle', description: 'Interrupteur on/off (role=switch, CVA, tailles).', link: '?path=/docs/components-ui-forms-ui-toggle--docs', story: ToggleStories.Default },
     { name: 'ui-datepicker', description: 'Sélecteur de date/heure (calendrier overlay/inline, CVA, min/max, showTime 12/24h, clavier).', link: '?path=/docs/components-ui-forms-ui-datepicker--docs', story: DatepickerStories.Default },
     { name: 'ui-rating', description: 'Notation étoiles (CVA, clavier natif via range caché).', link: '?path=/docs/components-ui-forms-ui-rating--docs', story: RatingStories.Default },

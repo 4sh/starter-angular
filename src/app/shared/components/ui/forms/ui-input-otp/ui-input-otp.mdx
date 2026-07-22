@@ -1,0 +1,183 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as InputOtpStories from './ui-input-otp.stories';
+
+<Meta of={InputOtpStories} />
+
+# ui-input-otp
+
+Champ de **mot de passe à usage unique** (OTP)
+
+<Canvas of={InputOtpStories.Basic} />
+
+## Basic
+
+Un OTP éclaté en cellules d'un caractère. `length` fixe le nombre de cellules (4 par défaut).
+
+```html
+<ui-input-otp [length]="4" ariaLabel="Code de vérification" />
+```
+
+## Controlled
+
+Composant contrôlé via `[(ngModel)]` : la valeur jointe est disponible côté parent.
+
+<Canvas of={InputOtpStories.Controlled} />
+
+```html
+<ui-input-otp [(ngModel)]="code" ariaLabel="Code de vérification" />
+```
+
+## Mask
+
+`mask` masque les caractères saisis (rendu `type="password"`).
+
+<Canvas of={InputOtpStories.Mask} />
+
+```html
+<ui-input-otp [(ngModel)]="code" [mask]="true" ariaLabel="Code secret" />
+```
+
+## Integer Only
+
+`integerOnly` restreint la saisie aux chiffres (`inputmode="numeric"` → clavier numérique sur
+mobile). Les caractères non numériques sont rejetés, à la frappe comme au collage.
+
+<Canvas of={InputOtpStories.IntegerOnly} />
+
+```html
+<ui-input-otp [(ngModel)]="code" [integerOnly]="true" [length]="6" ariaLabel="Code numérique" />
+```
+
+## Sizes
+
+Trois tailles : `small`, `default` (base) et `large`.
+
+<Canvas of={InputOtpStories.Sizes} />
+
+```html
+<ui-input-otp size="small" ariaLabel="Code" />
+<ui-input-otp size="large" ariaLabel="Code" />
+```
+
+## Disabled
+
+Avec `disabled`, le composant devient non-interactif (attribut natif sur chaque cellule).
+
+<Canvas of={InputOtpStories.Disabled} />
+
+```html
+<ui-input-otp [(ngModel)]="code" [disabled]="true" ariaLabel="Code de vérification" />
+```
+
+## Template
+
+Le template `#input` **remplace la cellule par défaut** par votre propre UI. Il reçoit le contexte
+`value` (`$implicit`), `index`, `tabindex` (le roving à reporter sur votre `<input>`) et `events` —
+les gestionnaires à brancher (`input`/`keydown`/`focus`/`blur`/`paste`) pour conserver toute la
+mécanique (navigation clavier, avance auto, collage réparti).
+
+<Canvas of={InputOtpStories.Template} />
+
+```html
+<ui-input-otp [(ngModel)]="code" [integerOnly]="true" [length]="4" ariaLabel="Code">
+  <ng-template #input let-value let-i="index" let-events="events" let-tabindex="tabindex">
+    <input
+      [value]="value"
+      [attr.tabindex]="tabindex"
+      maxlength="1"
+      (input)="events.input($event)"
+      (keydown)="events.keydown($event)"
+      (focus)="events.focus($event)"
+      (blur)="events.blur($event)"
+      (paste)="events.paste($event)"
+    />
+  </ng-template>
+</ui-input-otp>
+```
+
+## Sample
+
+Implémentation d'exemple mêlant templating et éléments additionnels : un séparateur central, un
+titre, un sous-titre et deux actions — composée avec les composants existants de la librairie
+([`ui-button`](?path=/docs/components-ui-actions-ui-button--docs)). L'output `completed` (émis
+lorsque toutes les cellules sont remplies) sert ici à activer le bouton d'envoi.
+
+<Canvas of={InputOtpStories.Sample} />
+
+## API
+
+<ArgTypes of={InputOtpStories} />
+
+### Outputs
+
+| Output | Type | Description |
+| --- | --- | --- |
+| `valueChange` | `string` | Émis avec la valeur jointe à chaque changement. |
+| `completed` | `string` | Émis avec la valeur une fois **toutes** les cellules remplies (utile pour auto-soumettre). |
+
+## États
+
+- **Base** — bordure `form.high.stroke.default`, surface `form.high.surface.default`.
+- **Hover** — `form.high.stroke.hover`.
+- **Focus** — `form.high.stroke.focused` + anneau de focus (`:focus-visible`, distinct du hover).
+- **Invalid** — palette `form.error.*` (via `invalid`, ou automatiquement quand le contrôle attaché
+  est invalide **et** touché/modifié).
+- **Disabled / Read-only** — attributs natifs ; couleurs via tokens `form.high.*-disabled`.
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr><th>Touche</th><th>Fonction</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>Tab</code></td><td>Amène le focus dans le champ OTP (une seule tabulation grâce au roving).</td></tr>
+    <tr><td><code>→</code></td><td>Déplace le focus vers la cellule suivante.</td></tr>
+    <tr><td><code>←</code></td><td>Déplace le focus vers la cellule précédente.</td></tr>
+    <tr><td><code>Retour arrière</code></td><td>Efface la cellule et recule d'une position.</td></tr>
+  </tbody>
+</table>
+
+- Chaque cellule est un `<input>` natif (support lecteur d'écran hérité du champ texte), nommée
+  « `ariaLabel` + numéro de la cellule ».
+- Le groupe **exige** un nom accessible : renseignez `ariaLabel` (ou `ariaLabelledBy`) — un
+  avertissement est émis en dev sinon.
+- `:focus-visible` reste distinct du `:hover` ; l'état `disabled` est natif (pas seulement visuel).
+
+## Formulaires
+
+`ui-input-otp` est un `ControlValueAccessor` : il fonctionne en `[(ngModel)]`, avec les
+**Reactive Forms** (`[formControl]`/`[formControlName]`) et est prêt pour les **Signal Forms**
+(`[field]`, Angular 22) sans réécriture — l'interop est gérée par `BaseControlValueAccessor`
+(contrôle sans flux `events`). La valeur du modèle est la **chaîne jointe** des cellules.
+
+```html
+<!-- Template-driven -->
+<ui-input-otp [(ngModel)]="code" ariaLabel="Code" />
+
+<!-- Reactive -->
+<ui-input-otp [formControl]="codeCtrl" ariaLabel="Code" />
+
+<!-- Signal Forms (Angular 22) -->
+<ui-input-otp [field]="form.code" ariaLabel="Code" />
+```
+
+## Theming
+
+Les dimensions des cellules sont pilotées par une map locale `$sizes` ; les constantes
+structurelles (rayon, épaisseur de bordure, anneau de focus) sont **réutilisées** de la
+configuration partagée `ui-config` (voir [Configuration](?path=/docs/design-system-configuration--docs)
+et la page [Forms](?path=/docs/design-system-configuration-forms--docs)).
+
+<table className="doc-table">
+  <thead>
+    <tr><th>Variable locale</th><th>Source</th><th>Rôle</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>$sizes</code></td><td>local</td><td>Map avec clés <code>size</code> (dimension) et <code>font-size</code> (typographie) pour chaque variante (<code>small</code>/<code>default</code>/<code>large</code>).</td></tr>
+    <tr><td><code>$radius</code></td><td><code>utils.$form-field-radius</code></td><td>Rayon des cellules (aligné sur <code>ui-field</code>).</td></tr>
+    <tr><td><code>$stroke-width</code></td><td><code>utils.$form-field-stroke-width</code></td><td>Épaisseur de la bordure.</td></tr>
+    <tr><td><code>$focus-ring-width</code></td><td><code>utils.$form-field-focus-ring-width</code></td><td>Largeur de l'anneau de focus.</td></tr>
+    <tr><td><code>$gap</code></td><td>local</td><td>Espace entre les cellules (<code>--units-sm</code>).</td></tr>
+  </tbody>
+</table>

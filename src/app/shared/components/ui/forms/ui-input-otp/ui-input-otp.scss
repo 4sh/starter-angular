@@ -1,0 +1,108 @@
+@use 'utils';
+@use 'sass:map';
+
+// =====================================================================
+// ui-input-otp : co-located styles. All values come from design tokens.
+//
+// Extend:
+//   • Size → add an entry to $sizes (+ the `InputOtpSize` type).
+// =====================================================================
+
+// --- Config (extension points) ---------------------------------------
+// `default` = base styles; other keys become `._<name>` modifiers.
+$sizes: (
+  'default': (
+    size: var(--size-components-default),
+    font-size: var(--size-typography-text-default),
+  ),
+  'small': (
+    size: var(--size-components-sm),
+    font-size: var(--size-typography-text-md),
+  ),
+  'large': (
+    size: var(--size-components-xl),
+    font-size: var(--size-typography-text-lg),
+  ),
+);
+$size-default: map.get($sizes, 'default');
+$radius: utils.$form-field-radius;
+$stroke-width: utils.$form-field-stroke-width;
+$focus-ring-width: utils.$form-field-focus-ring-width;
+$gap: var(--units-sm);
+
+@mixin otp-size($size) {
+  .ui-input-otp-cell {
+    inline-size: map.get($size, size);
+    block-size: map.get($size, size);
+    font-size: map.get($size, font-size);
+  }
+}
+
+:host {
+  display: inline-flex;
+  align-items: center;
+  gap: $gap;
+  font-family: var(--fontfamily-base);
+
+  @include otp-size($size-default);
+}
+
+// --- Sizes (all but `default`) ---------------------------------------
+@each $name, $size in $sizes {
+  @if $name != 'default' {
+    :host._#{$name} {
+      @include otp-size($size);
+    }
+  }
+}
+
+// --- Cell -------------------------------------------------------------
+.ui-input-otp-cell {
+  --_stroke: var(--form-high-stroke-default);
+  --_stroke-hover: var(--form-high-stroke-hover);
+  --_stroke-focus: var(--form-high-stroke-focused);
+
+  box-sizing: border-box;
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: $stroke-width solid var(--_stroke);
+  border-radius: $radius;
+  background-color: var(--form-high-surface-default);
+  color: var(--form-high-content-default);
+  font-family: inherit;
+  font-weight: var(--weight-bold);
+  text-align: center;
+  caret-color: var(--form-high-content-default);
+  @include utils.control-transition(background-color, border-color, box-shadow);
+
+  &:hover:not(:disabled):not(:focus) {
+    border-color: var(--_stroke-hover);
+  }
+
+  &:focus,
+  &:focus-visible {
+    outline: none;
+    border-color: var(--_stroke-focus);
+    box-shadow: 0 0 0 $focus-ring-width rgb(from var(--_stroke-focus) r g b / 50%);
+  }
+
+  &:disabled {
+    border-color: var(--form-high-stroke-disabled);
+    background-color: var(--form-high-surface-disabled);
+    color: var(--form-high-content-disabled);
+    cursor: not-allowed;
+  }
+}
+
+// --- Read-only --------------------------------------------------------
+:host._readonly .ui-input-otp-cell {
+  cursor: default;
+}
+
+// --- Invalid ------------------------------------------
+:host._invalid .ui-input-otp-cell {
+  --_stroke: var(--form-error-stroke-default);
+  --_stroke-hover: var(--form-error-stroke-hover);
+  --_stroke-focus: var(--form-error-stroke-focused);
+}

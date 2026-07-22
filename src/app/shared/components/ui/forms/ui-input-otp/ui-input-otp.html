@@ -1,0 +1,34 @@
+@for (cell of cells(); track cell.index) {
+  @if (inputTemplate(); as tpl) {
+    <ng-container
+      [ngTemplateOutlet]="tpl"
+      [ngTemplateOutletContext]="{
+        $implicit: cell.value,
+        value: cell.value,
+        index: cell.index,
+        events: cellEvents(cell.index),
+        tabindex: tabindexFor(cell.index),
+      }"
+    />
+  } @else {
+    <input
+      class="ui-input-otp-cell"
+      [id]="cell.id"
+      [type]="inputType()"
+      [value]="cell.value"
+      maxlength="1"
+      autocomplete="one-time-code"
+      [attr.inputmode]="inputMode()"
+      [attr.name]="name() ? name() + '-' + cell.index : null"
+      [attr.tabindex]="tabindexFor(cell.index)"
+      [disabled]="isDisabled()"
+      [readOnly]="readonly()"
+      [attr.aria-label]="(ariaLabel() || 'Caractère') + ' ' + (cell.index + 1)"
+      [attr.aria-invalid]="isInvalid() ? 'true' : null"
+      (input)="onInput($event, cell.index)"
+      (keydown)="onKeydown($event, cell.index)"
+      (focus)="onFocus($event, cell.index)"
+      (paste)="onPaste($event, cell.index)"
+    />
+  }
+}
