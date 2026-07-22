@@ -68,7 +68,17 @@ Piloté par `locale` / `currency` / `useGrouping` / `minFractionDigits` / `maxFr
 
 ## Theming
 
-Aucune variable locale surchargeable : la boîte vient du shell `ui-field`. La configuration passe
-par ses variables (groupe partagé [Forms](?path=/docs/components-configuration-forms--docs)),
-détaillées sur la doc [`ui-input`](?path=/docs/components-ui-forms-ui-input--docs). Voir le
+La boîte vient du shell `ui-field` : sa configuration passe par ses variables (groupe partagé
+[Forms](?path=/docs/components-configuration-forms--docs)), détaillées sur la doc
+[`ui-input`](?path=/docs/components-ui-forms-ui-input--docs). Voir le
 [fonctionnement de la configuration](?path=/docs/components-configuration--docs).
+
+
+<table className="doc-table">
+  <thead>
+    <tr><th>Variable locale</th><th>Source</th><th>Rôle</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>$spinner-width</code></td><td>local (<code>30px</code>)</td><td>Largeur de la colonne du spinner (mixin partagé <code>utils.field-spinner($btn, $width)</code>).</td></tr>
+  </tbody>
+</table>

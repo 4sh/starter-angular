@@ -5,6 +5,8 @@
 // Box/label/helper/states come from `ui-field`.
 // =====================================================================
 
+$spinner-width: utils.rem-calc(30);
+
 .ui-input-number {
   &-native {
     @include utils.field-native-input;
@@ -21,5 +23,5 @@
     &._small { font-size: var(--size-typography-text-md); }
   }
 
-  &-spinner { @include utils.field-spinner('button'); }
+  &-spinner { @include utils.field-spinner('button', $spinner-width); }
 }

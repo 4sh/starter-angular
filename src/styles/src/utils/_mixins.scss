@@ -115,25 +115,40 @@
   &:disabled { cursor: not-allowed; color: var(--form-high-content-disabled); }
 }
 
-/// Vertical up/down spinner (number stepper). `$btn` = the button selector.
-@mixin field-spinner($btn: 'button') {
+/// Vertical up/down spinner (number stepper), flush right + full height, split
+@mixin field-spinner($btn: 'button', $width: 2rem) {
   display: flex;
   flex-direction: column;
+  align-self: stretch;
   flex-shrink: 0;
+  width: $width;
+  margin-right: calc(-1 * #{ui-config.$form-field-padding-x});
+  border-left: ui-config.$form-field-stroke-width solid var(--form-high-stroke-default);
+  border-radius: 0 ui-config.$form-field-radius ui-config.$form-field-radius 0;
+  overflow: hidden;
 
   #{$btn} {
     display: flex;
+    flex: 1 1 50%;
     align-items: center;
     justify-content: center;
+    min-height: 0;
     padding: 0;
     border: none;
     background: none;
     line-height: 0;
     color: var(--form-low-content-default);
     cursor: pointer;
-    @include control-transition(color);
+    @include control-transition(color, background-color);
 
-    &:hover:not(:disabled) { color: var(--form-high-content-hover); }
+    &:hover:not(:disabled) {
+      color: var(--form-high-content-hover);
+      background-color: var(--form-high-surface-hover);
+    }
     &:disabled { cursor: not-allowed; color: var(--form-high-content-disabled); }
+  }
+
+  #{$btn} + #{$btn} {
+    border-top: ui-config.$form-field-stroke-width solid var(--form-high-stroke-default);
   }
 }
