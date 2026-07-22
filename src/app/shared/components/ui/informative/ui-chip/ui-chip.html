@@ -46,6 +46,7 @@
       type="button"
       class="ui-chip-remove"
       [disabled]="disabled()"
+      [attr.tabindex]="removeTabindex()"
       [attr.aria-label]="removeAriaLabel()"
       (click)="onRemove($event)"
       (keydown)="onRemoveKeydown($event)"

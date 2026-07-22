@@ -75,6 +75,12 @@ export class UiChip {
   ariaLabelledBy = input<string>();
   /** Accessible name of the remove action. */
   removeAriaLabel = input<string>('Supprimer');
+  /**
+   * `tabindex` of the remove action. Leave unset for the natural tab order;
+   * set `-1` when the chip lives inside a roving-focus container (e.g.
+   * `ui-input-tags`) so the button is not a separate tab stop.
+   */
+  removeTabindex = input<number>();
 
   /** Emitted when the chip is removed (click or keyboard on the remove action). */
   remove = output<Event>();

@@ -1,0 +1,187 @@
+@use 'utils';
+@use 'sass:map';
+
+// =====================================================================
+// ui-input-tags : label + box + helper live in `ui-field` (autoHeight).
+// =====================================================================
+
+// --- Config ----------------------------------------
+$sizes: (
+  'default': (
+    tag-height: utils.rem-calc(24),
+    option-height: utils.rem-calc(40),
+    option-padding-x: var(--units-default),
+    font-size: var(--size-typography-text-default),
+    tag-font-size: var(--size-typography-text-md),
+    scroll-height: utils.rem-calc(200),
+  ),
+  'small': (
+    tag-height: utils.rem-calc(20),
+    option-height: utils.rem-calc(32),
+    option-padding-x: var(--units-md),
+    font-size: var(--size-typography-text-md),
+    tag-font-size: var(--size-typography-text-sm),
+    scroll-height: utils.rem-calc(180),
+  ),
+);
+$size-default: map.get($sizes, 'default');
+$size-small: map.get($sizes, 'small');
+
+$panel-padding: var(--units-xs);
+$panel-gap: var(--units-xs);
+$option-radius: var(--radius-sm);
+$tag-gap: var(--units-xs);
+$input-min-width: utils.rem-calc(80);
+
+.ui-input-tags {
+  display: block;
+  --ui-field-box-cursor: text;
+
+  // --- Control : wrapping tag listbox + inline input ------------------
+  &-control {
+    display: flex;
+    align-items: center;
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+    gap: $tag-gap;
+    min-width: 0;
+  }
+
+  // --- Tag (role=option, roving focus) --------------------------------
+  // The tag IS the focusable option: a `ui-chip` host by default, or a bare
+  // wrapper around a custom `#item` template. The visual (fill, padding,
+  // remove action) comes from `ui-chip` / the projected template — this rule
+  // only handles layout + the roving focus ring.
+  &-tag {
+    display: inline-flex;
+    align-items: center;
+    max-width: 100%;
+    border-radius: var(--radius-full);
+    @include utils.control-transition(box-shadow);
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 utils.$form-focus-ring-width rgb(from var(--form-high-stroke-focused) r g b / 50%);
+    }
+
+    // Custom-template wrapper baseline (matches the default chip height).
+    &._custom {
+      gap: var(--units-2xs);
+      min-height: map.get($size-default, tag-height);
+      color: var(--form-high-content-default);
+      font-family: var(--fontfamily-base);
+      font-size: map.get($size-default, tag-font-size);
+    }
+  }
+
+  // --- Inline editable input ------------------------------------------
+  &-input {
+    @include utils.field-native-input;
+    flex: 1 1 $input-min-width;
+    min-width: $input-min-width;
+    width: auto;
+
+    &._small { font-size: map.get($size-small, font-size); }
+  }
+}
+
+// --- Suggestions panel (typeahead) -------------------------------------
+.ui-input-tags-panel {
+  @include utils.overlay-panel(var(--form-high-surface-default), var(--form-high-stroke-default));
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  max-width: calc(100vw - var(--units-lg));
+  padding: $panel-padding;
+
+  .ui-input-tags-scroller {
+    overflow: auto;
+    max-height: map.get($size-default, scroll-height);
+    &._small { max-height: map.get($size-small, scroll-height); }
+  }
+
+  .ui-input-tags-list {
+    display: flex;
+    flex-direction: column;
+    gap: $panel-gap;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  // --- Suggestion row -------------------------------------------------
+  .ui-input-tags-option {
+    display: flex;
+    align-items: center;
+    gap: var(--units-sm);
+    box-sizing: border-box;
+    height: map.get($size-default, option-height);
+    flex-shrink: 0;
+    padding: 0 map.get($size-default, option-padding-x);
+    border-radius: $option-radius;
+    font-family: var(--fontfamily-base);
+    font-size: map.get($size-default, font-size);
+    color: var(--form-high-content-default);
+    cursor: pointer;
+    user-select: none;
+    @include utils.control-transition(background-color, color);
+
+    &._small {
+      height: map.get($size-small, option-height);
+      padding: 0 map.get($size-small, option-padding-x);
+      font-size: map.get($size-small, font-size);
+    }
+
+    &._focused,
+    &:hover:not(._disabled) { background-color: var(--global-high-surface-hover); }
+
+    &._present { color: var(--form-high-content-checked); }
+
+    &._disabled {
+      color: var(--form-high-content-disabled);
+      cursor: not-allowed;
+    }
+  }
+
+  .ui-input-tags-option-label {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ui-input-tags-option-check {
+    flex-shrink: 0;
+    margin-left: auto;
+    color: var(--form-high-content-checked);
+  }
+
+  // --- Group header ---------------------------------------------------
+  .ui-input-tags-group {
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    height: utils.rem-calc(32);
+    flex-shrink: 0;
+    padding: 0 map.get($size-default, option-padding-x);
+    font-family: var(--fontfamily-base);
+    font-size: var(--size-typography-text-md);
+    font-weight: var(--weight-bold);
+    color: var(--form-low-content-default);
+
+    &._small { padding: 0 map.get($size-small, option-padding-x); }
+  }
+
+  // --- Empty state ----------------------------------------------------
+  .ui-input-tags-empty {
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    min-height: map.get($size-default, option-height);
+    padding: 0 map.get($size-default, option-padding-x);
+    font-family: var(--fontfamily-base);
+    font-size: map.get($size-default, font-size);
+    color: var(--form-low-content-default);
+  }
+}
