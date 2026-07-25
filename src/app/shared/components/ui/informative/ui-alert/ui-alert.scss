@@ -132,6 +132,15 @@ $focus-ring-width: utils.$focus-ring-width;
     }
   }
 
+  &._title-only {
+    min-height: auto;
+    align-items: center;
+
+    .ui-alert-icon {
+      padding-top: 0;
+    }
+  }
+
   // --- Colours (level × sub-level) -----------------------------------
   @each $lvl in $levels {
     @each $sub in $sublevels {

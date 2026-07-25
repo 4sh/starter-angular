@@ -99,10 +99,14 @@ export class UiAlert {
   /** @ignore Dismiss icon size follows the alert size (Figma). */
   protected readonly closeIconSize = computed(() => (this.size() === 'large' ? 'md' : 'sm'));
 
+  /** @ignore Alert has only a title (no text, no projected content). */
+  protected readonly isTitleOnly = computed(() => !!this.title() && !this.text());
+
   /** @ignore */
   protected readonly classes = computed(() => {
     const c = ['ui-alert', `_${this.level()}`, `_${this.subLevel()}`];
     if (this.size() !== 'default') c.push(`_${this.size()}`);
+    if (this.isTitleOnly()) c.push('_title-only');
     const sc = this.styleClass();
     if (sc) c.push(sc);
     return c.join(' ');
