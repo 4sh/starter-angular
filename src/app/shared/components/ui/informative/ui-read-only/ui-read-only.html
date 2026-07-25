@@ -1,0 +1,43 @@
+@if (hasLabel()) {
+  <dl [class]="rootClasses()" [style.--ui-read-only-label-width]="labelWidth()">
+    <dt [class]="labelClasses()">
+      @if (labelTemplate(); as tpl) {
+        <ng-container [ngTemplateOutlet]="tpl" />
+      } @else {
+        <ui-label [label]="label()!" [size]="size()" [required]="required()" />
+      }
+    </dt>
+    <dd [class]="valueCellClasses()">
+      <ng-container [ngTemplateOutlet]="valueBlock" />
+    </dd>
+  </dl>
+} @else {
+  <!-- No label → no <dl> (a <dd> without a <dt> would be invalid markup). -->
+  <div [class]="rootClasses()">
+    <div [class]="valueCellClasses()">
+      <ng-container [ngTemplateOutlet]="valueBlock" />
+    </div>
+  </div>
+}
+
+<ng-template #valueBlock>
+  <!-- Projected rich value (badge, link…). Wrapper is measured after render. -->
+  <span #projectedWrap class="ui-read-only-projected"><ng-content /></span>
+
+  @if (!hasProjectedContent()) {
+    @if (isFallback() && emptyLabel()) {
+      <!-- Empty: show the fallback symbol visually, announce meaningful text. -->
+      <span class="ui-read-only-value _fallback" [class._multiline]="multiline()">
+        <span aria-hidden="true">{{ displayValue() }}</span>
+        <span class="ui-read-only-sr">{{ emptyLabel() }}</span>
+      </span>
+    } @else {
+      <span
+        class="ui-read-only-value"
+        [class._fallback]="isFallback()"
+        [class._multiline]="multiline()"
+        >{{ displayValue() }}</span
+      >
+    }
+  }
+</ng-template>

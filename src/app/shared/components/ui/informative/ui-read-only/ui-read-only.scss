@@ -1,0 +1,97 @@
+@use 'utils';
+@use 'sass:map';
+
+// =====================================================================
+// ui-read-only : co-located styles. All values come from design tokens.
+//
+// Presentational only (no interactive states). Colors use the neutral
+// `global.*` semantics: muted label, high-contrast value.
+//
+// Layout:
+//   • vertical (base) / horizontal → the component owns the flex layout.
+//   • grid (`._grid`)              → no display imposed; the caller's row
+//                                    class (rowClass) + cell classes drive it.
+//
+// Extend:
+//   • Size → add an entry to $sizes (+ the `ReadOnlySize` type).
+// =====================================================================
+
+// --- Config ---------------------------------------
+$sizes: (
+  'default': var(--size-typography-text-default),
+  'small': var(--size-typography-text-md),
+);
+
+$label-gap: utils.$form-field-gap;
+$field-height: utils.$form-field-height;
+$field-height-small: utils.$form-field-height-small;
+
+.ui-read-only {
+  margin: 0; // reset native <dl> margin
+  font-family: var(--fontfamily-base);
+
+  &:not(._grid) { display: flex; }
+
+  &:not(._grid):not(._horizontal) {
+    flex-direction: column;
+    gap: $label-gap;
+  }
+  &._small:not(._grid):not(._horizontal) { gap: var(--units-xs); }
+
+  &._horizontal {
+    flex-direction: row;
+    align-items: baseline;
+    gap: var(--units-default);
+
+    .ui-read-only-label { flex: 0 0 var(--ui-read-only-label-width, auto); }
+    .ui-read-only-value-cell { flex: 1 1 auto; }
+  }
+
+  // --- Sub-elements --------------------------------------------------
+  &-label { margin: 0; }
+
+  &-value-cell {
+    margin: 0;
+    min-width: 0;
+    color: var(--global-high-content-default);
+  }
+
+  &-value {
+    font-size: map.get($sizes, 'default');
+    font-weight: var(--weight-regular);
+    line-height: 1.3;
+
+    &._fallback { color: var(--global-low-content-default); }
+    &._multiline { white-space: pre-line; }
+  }
+
+  &-sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  // --- Sizes  -------------------------------------
+  @each $name, $font-size in $sizes {
+    @if $name != 'default' {
+      &._#{$name} .ui-read-only-value { font-size: $font-size; }
+    }
+  }
+
+  // --- Label alignment (horizontal only) -----------------------------
+  &._label-right .ui-read-only-label { text-align: right; }
+
+  // --- Match adjacent form-field height ------------------------------
+  &._match-field-height .ui-read-only-value-cell {
+    display: flex;
+    align-items: center;
+    min-height: $field-height;
+  }
+  &._small._match-field-height .ui-read-only-value-cell { min-height: $field-height-small; }
+}
