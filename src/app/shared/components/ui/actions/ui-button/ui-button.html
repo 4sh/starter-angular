@@ -56,12 +56,14 @@
     <ng-container [ngTemplateOutlet]="iconSlot" />
   }
 
-  <span class="ui-button-content" #contentWrap>
-    @if (label() && !isIconOnly()) {
-      <span class="ui-button-label">{{ label() }}</span>
-    }
-    <ng-content />
-  </span>
+  @if (label() || !isIconOnly()) {
+    <span class="ui-button-content" #contentWrap>
+      @if (label() && !isIconOnly()) {
+        <span class="ui-button-label">{{ label() }}</span>
+      }
+      <ng-content />
+    </span>
+  }
 
   @if (!iconBefore()) {
     <ng-container [ngTemplateOutlet]="iconSlot" />
