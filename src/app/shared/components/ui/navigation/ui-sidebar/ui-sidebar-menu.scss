@@ -139,6 +139,7 @@ $icon-slot: utils.rem-calc(20);
     inline-size: $icon-slot;
     line-height: 0;
     text-align: center;
+    justify-content: center;
   }
 
   &-label {
