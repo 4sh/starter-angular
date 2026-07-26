@@ -57,10 +57,9 @@ export class UiReadOnly {
   /** Hug content and flow inline instead of filling the container. */
   inline = input(false, { transform: booleanAttribute });
   /**
-   * Size the value zone to a form field's height (value vertically centered,
-   * no horizontal padding) so a read-only aligns with an adjacent `ui-field`.
+   * Adapt the layout to sit alongside form fields
    */
-  matchFieldHeight = input(false, { transform: booleanAttribute });
+  matchField = input(false, { transform: booleanAttribute });
 
   // --- Layout passthrough (grid / utility systems) ---------------------
   // Classes forwarded verbatim onto the row / label cell / value cell, so any
@@ -115,7 +114,7 @@ export class UiReadOnly {
     else if (layout === 'grid') c.push('_grid');
     if (this.size() !== 'default') c.push(`_${this.size()}`);
     if (this.labelAlign() === 'right') c.push('_label-right');
-    if (this.matchFieldHeight()) c.push('_match-field-height');
+    if (this.matchField()) c.push('_match-field');
     const extra = this.rowClass();
     if (extra) c.push(extra);
     return c.join(' ');

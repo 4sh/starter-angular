@@ -53,9 +53,9 @@ const meta: Meta<UiReadOnly> = {
       description: 'Disposition : label au-dessus (`vertical`), à côté (`horizontal`), ou pilotée par un système de grille (`grid` + `rowClass`/`labelClass`/`valueClass`).',
       table: { type: { summary: 'ReadOnlyLayout' }, defaultValue: { summary: '"vertical"' } },
     },
-    matchFieldHeight: {
+    matchField: {
       control: { type: 'boolean' },
-      description: 'Aligne la zone de valeur sur la hauteur d’un champ de formulaire (valeur centrée verticalement, sans padding horizontal) - pour cohabiter avec un `ui-field`.',
+      description: 'Adapte la mise en page pour cohabiter avec des champs : reprend l’écart label→valeur ET la hauteur d’un `ui-field` (valeur centrée, sans padding horizontal). Désactivé par défaut → un read-only autonome reste compact.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     rowClass: {
@@ -169,7 +169,7 @@ export const GridLayout: Story = {
   }),
 };
 
-// Alignement avec un champ de formulaire voisin (matchFieldHeight)
+// Alignement avec un champ de formulaire voisin (matchField, opt-in)
 export const NextToField: Story = {
   name: 'À côté d’un champ',
   render: (args) => ({
@@ -177,7 +177,7 @@ export const NextToField: Story = {
     template: `
       <div class="flex-x flex-gap-x" style="min-width:560px;">
         <div class="cell phone-24 desktop-12">
-          <ui-read-only matchFieldHeight label="Référence" value="REF-2026-0042" />
+          <ui-read-only matchField label="Référence" value="REF-2026-0042" />
         </div>
         <div class="cell phone-24 desktop-12">
           <ui-input label="Commentaire" placeholder="Saisir…" />

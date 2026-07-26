@@ -47,6 +47,12 @@ injectées via `rowClass` (rangée `<dl>`), `labelClass` (cellule `<dt>`) et `va
 
 ## Cohabitation avec un champ de formulaire
 
+Par défaut un read-only reste **compact** (écart label→valeur serré, valeur ajustée au contenu) —
+idéal pour une fiche autonome. Quand il **cohabite avec des champs**, activer **`matchField`** : le
+composant reprend alors l'**écart label→valeur** du champ (`--units-sm` / `--units-xs` en `small`) **et**
+cale la **zone de valeur sur la hauteur du champ** (valeur centrée, sans padding horizontal). Combiné
+au libellé partagé (`ui-label`), l'alignement est **pixel-perfect**.
+
 <Canvas of={ReadOnlyStories.NextToField} />
 
 ## Contenu & états
@@ -102,8 +108,8 @@ la ligne. Un contenu projeté remplace la valeur textuelle par une valeur riche.
 
 Le composant est présentationnel : les tailles de police sont des tokens de typographie locaux
 (`$sizes` en tête du `.scss`) et la largeur de la colonne de libellé se pilote par instance via
-l'input `labelWidth` (custom property `--ui-read-only-label-width`). Le mode `matchFieldHeight`
-**consomme** les constantes partagées de hauteur de champ (aucune nouvelle constante) :
+l'input `labelWidth` (custom property `--ui-read-only-label-width`). Le mode `matchField`
+**consomme** les constantes partagées du champ (écart + hauteur ; aucune nouvelle constante) :
 
 <table className="doc-table">
   <thead>
@@ -117,12 +123,12 @@ l'input `labelWidth` (custom property `--ui-read-only-label-width`). Le mode `ma
     <tr>
       <td><code>$label-gap</code></td>
       <td><code>utils.$form-field-gap</code></td>
-      <td>Écart label→valeur en disposition verticale (identique à l'écart label→boîte d'un <code>ui-field</code>).</td>
+      <td>Écart label→valeur appliqué en mode <code>matchField</code> (identique à l'écart label→boîte d'un <code>ui-field</code>). Hors <code>matchField</code>, l'écart par défaut est compact (<code>--units-2xs</code>).</td>
     </tr>
     <tr>
       <td><code>$field-height</code></td>
       <td><code>utils.$form-field-height</code></td>
-      <td>Hauteur de la zone de valeur en <code>matchFieldHeight</code> (taille <code>default</code>).</td>
+      <td>Hauteur de la zone de valeur en <code>matchField</code> (taille <code>default</code>).</td>
     </tr>
     <tr>
       <td><code>$field-height-small</code></td>

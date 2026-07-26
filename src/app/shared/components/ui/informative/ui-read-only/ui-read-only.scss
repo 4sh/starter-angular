@@ -34,9 +34,8 @@ $field-height-small: utils.$form-field-height-small;
 
   &:not(._grid):not(._horizontal) {
     flex-direction: column;
-    gap: $label-gap;
+    gap: var(--units-2xs);
   }
-  &._small:not(._grid):not(._horizontal) { gap: var(--units-xs); }
 
   &._horizontal {
     flex-direction: row;
@@ -87,11 +86,14 @@ $field-height-small: utils.$form-field-height-small;
   // --- Label alignment (horizontal only) -----------------------------
   &._label-right .ui-read-only-label { text-align: right; }
 
-  // --- Match adjacent form-field height ------------------------------
-  &._match-field-height .ui-read-only-value-cell {
+  // --- Match ui-field (opt-in) ---------------------------------------
+  &._match-field:not(._grid):not(._horizontal) { gap: $label-gap; }
+  &._small._match-field:not(._grid):not(._horizontal) { gap: var(--units-xs); }
+
+  &._match-field .ui-read-only-value-cell {
     display: flex;
     align-items: center;
     min-height: $field-height;
   }
-  &._small._match-field-height .ui-read-only-value-cell { min-height: $field-height-small; }
+  &._small._match-field .ui-read-only-value-cell { min-height: $field-height-small; }
 }
