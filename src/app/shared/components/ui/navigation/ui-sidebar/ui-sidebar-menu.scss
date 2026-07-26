@@ -27,7 +27,7 @@ $sizes: (
   ),
 );
 $size-default: map.get($sizes, 'default');
-$item-radius: var(--radius-default);
+$item-radius: var(--radius-sm);
 $group-indent: var(--units-lg);
 $separator-width: var(--stroke-sm);
 $focus-ring-width: utils.$focus-ring-width;
