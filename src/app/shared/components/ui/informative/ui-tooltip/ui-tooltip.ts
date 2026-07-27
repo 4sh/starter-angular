@@ -127,7 +127,7 @@ export class UiTooltip {
   private lifeTimer: ReturnType<typeof setTimeout> | null = null;
 
   /** @ignore Teardown handles for host / document listeners. */
-  private readonly disposers: Array<() => void> = [];
+  private readonly disposers: (() => void)[] = [];
 
   /** @ignore Content is a template (vs a string). */
   private readonly hasTemplate = computed(() => this.content() instanceof TemplateRef);

@@ -2,12 +2,11 @@ import { ChangeDetectionStrategy,Component, Input, signal, inject, computed, eff
 import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {HttpClient} from '@angular/common/http';
 import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
-import {subdomain} from '@app/app.config';
 import assetsMapRaw from '../../../../../assets/assets-map.json';
 import {ThemeService} from "@app/core/service/theme.service";
 import {BrandService} from "@app/core/service/brand.service";
 
-type ModeMap = { base?: string; light?: string; dark?: string };
+interface ModeMap { base?: string; light?: string; dark?: string }
 type ThemeMap = Record<string, ModeMap>;
 const assetsMap = assetsMapRaw as Record<string, ThemeMap>;
 

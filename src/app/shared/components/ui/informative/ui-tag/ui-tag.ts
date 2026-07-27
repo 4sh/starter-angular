@@ -6,9 +6,7 @@ import {
   effect,
   input,
   isDevMode,
-  TemplateRef,
 } from '@angular/core';
-import { NgTemplateOutlet } from '@angular/common';
 import { UiIcon, UiIconSize } from '@app/shared/components/ui/ui-icon/ui-icon';
 import { UiFeedbackLevel, UiSubLevel } from '@app/shared/types/ui-level';
 

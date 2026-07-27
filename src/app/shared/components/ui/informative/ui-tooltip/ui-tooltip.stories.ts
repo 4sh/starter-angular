@@ -22,7 +22,7 @@ if (typeof document !== 'undefined' && !document.getElementById('ui-tooltip-demo
  * Args of the demo host (the directive is applied on a `ui-button` trigger).
  * Keys mirror the directive inputs; `uiTooltip` is the content alias.
  */
-type TooltipArgs = {
+interface TooltipArgs {
   uiTooltip: string;
   tooltipPosition: 'top' | 'bottom' | 'left' | 'right';
   fitContent: boolean;
@@ -35,7 +35,7 @@ type TooltipArgs = {
   hideOnEscape: boolean;
   life: number;
   tooltipStyleClass: string;
-};
+}
 
 const meta: Meta<TooltipArgs> = {
   title: 'Components/ui/informative/ui-tooltip',

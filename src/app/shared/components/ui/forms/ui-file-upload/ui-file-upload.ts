@@ -27,7 +27,6 @@ import {
   UiUploadEvent,
   UiUploadFile,
   UiUploadHandlerEvent,
-  UiUploadStatus,
 } from '@app/shared/components/ui/forms/ui-file-upload/ui-file-upload.model';
 
 export type UiFileUploadMode = 'field' | 'drag';

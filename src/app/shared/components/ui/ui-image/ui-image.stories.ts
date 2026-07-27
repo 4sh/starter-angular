@@ -66,13 +66,13 @@ class StorybookWrapper implements OnChanges {
 
     @Input() name!: string;
     @Input() width?: number;
-    @Input() widthUnit: string = 'px';
+    @Input() widthUnit = 'px';
     @Input() height?: number;
-    @Input() heightUnit: string = 'px';
+    @Input() heightUnit = 'px';
     @Input() alt?: string;
     @Input() priority = false;
     @Input() fill = false;
-    @Input() brandName: string = 'common';
+    @Input() brandName = 'common';
 
     ngOnChanges() {
         this.brandService.setBrand(this.brandName);
@@ -100,7 +100,7 @@ const meta: Meta<StorybookWrapper> = {
         },
         width: {
             control: 'number',
-            description: "Largeur de l\'image",
+            description: "Largeur de l'image",
             table: { defaultValue: { summary: 'undefined' } },
         },
         widthUnit: {
@@ -110,7 +110,7 @@ const meta: Meta<StorybookWrapper> = {
         },
         height: {
             control: 'number',
-            description: "Hauteur de l\'image",
+            description: "Hauteur de l'image",
             table: { defaultValue: { summary: 'undefined' } },
         },
         heightUnit: {
@@ -120,7 +120,7 @@ const meta: Meta<StorybookWrapper> = {
         },
         alt: {
             control: 'text',
-            description: "Texte alternatif pour l\'accessibilité",
+            description: "Texte alternatif pour l'accessibilité",
             table: { defaultValue: { summary: 'undefined' } },
         },
         priority: {
@@ -130,7 +130,7 @@ const meta: Meta<StorybookWrapper> = {
         },
         fill: {
             control: 'boolean',
-            description: "L\'image remplit son conteneur parent (position: relative requis)",
+            description: "L'image remplit son conteneur parent (position: relative requis)",
             table: { defaultValue: { summary: 'false' } },
         },
         brandName: {

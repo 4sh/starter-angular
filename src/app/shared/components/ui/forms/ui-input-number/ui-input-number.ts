@@ -174,7 +174,7 @@ export class UiInputNumber extends BaseFormField<number> {
     s = s
       .replace(/\s/g, '') // spaces (incl. U+202F/U+00A0 grouping separators)
       .replace(decimal, '.')
-      .replace(/[^0-9.\-]/g, ''); // strip currency/symbols
+      .replace(/[^0-9.-]/g, ''); // strip currency/symbols
     if (s === '' || s === '-' || s === '.' || s === '-.') return null;
     const n = Number(s);
     if (Number.isNaN(n)) return null;
