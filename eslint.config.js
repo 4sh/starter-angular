@@ -66,13 +66,6 @@ module.exports = tseslint.config(
         "error",
         { allowNullOrUndefined: true },
       ],
-      // TEMPORAIRE (migration Angular 22) : règles a11y à traiter dans un
-      // chantier accessibilité dédié (focus/clavier sur les éléments interactifs).
-      "@angular-eslint/template/interactive-supports-focus": "off",
-      "@angular-eslint/template/click-events-have-key-events": "off",
-      // L'auto-fix de no-autofocus supprime le binding [attr.autofocus] alors que
-      // c'est un input opt-in délibéré (ui-rating). À réévaluer avec le chantier a11y.
-      "@angular-eslint/template/no-autofocus": "off",
     },
   }
 );

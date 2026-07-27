@@ -17,6 +17,8 @@
       ></div>
     }
 
+    <!-- Escape géré sur le conteneur, le focus vit dans le contenu du panneau. -->
+    <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
     <div
       class="ui-sidebar-positioner"
       [class._left]="side() === 'left'"

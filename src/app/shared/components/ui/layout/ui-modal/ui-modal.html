@@ -16,6 +16,9 @@
     ></div>
   }
 
+  <!-- Dialog : Escape/Tab gérés sur le conteneur, le focus vit dans le
+       contenu (focus-trap CDK). -->
+  <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
   <div
     class="ui-modal-frame"
     [class._modal]="modal()"
