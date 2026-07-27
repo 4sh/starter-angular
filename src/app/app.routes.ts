@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
+import { DemoOrders } from '@app/shared/components/domain/demo-orders/demo-orders';
 
-// La documentation vivante du starter est Storybook (`npm start`).
-// L'app de démo ne contient volontairement aucune page custom à maintenir.
-export const routes: Routes = [];
+export const routes: Routes = [
+  { path: '', component: DemoOrders },
+  { path: '**', redirectTo: '' },
+];
