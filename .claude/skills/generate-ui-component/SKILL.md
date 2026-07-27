@@ -1,7 +1,7 @@
 ---
 name: generate-ui-component
 description: >-
-  Génère un composant headless `ui-*` (Angular 21 signals + CDK) et sa doc
+  Génère un composant headless `ui-*` (Angular 22 signals + CDK) et sa doc
   Storybook (stories + MDX) à partir d'un YAML de composant Figma, en respectant
   les conventions de ce starter (design tokens, types partagés, a11y, SCSS
   co-localisé). À utiliser dès que l'utilisateur fournit un YAML de specs Figma
@@ -126,6 +126,7 @@ Si le composant tient une valeur (checked, sélection, saisie) :
 - `writeValue` → set d'un signal `modelValue`. `onNativeChange` → source unique des toggles user (respecte `readonly`), `emitChange` + output `{name}Change`. `onBlur` → `emitTouch()`.
 - `isDisabled = disabled() || controlDisabled()`, `isInvalid = invalid() || showError()`.
 - Label inline (span + marqueur requis) — **pas** d'instance `ui-label` (label imbriqué invalide). `--ui-label-color` pour piloter la couleur via états.
+- Le CVA suffit pour l'interop **Signal Forms** (`@angular/forms/signals`, directive `[formField]`, stable depuis Angular 22) — aucun code additionnel dans le composant.
 
 ## Accessibilité (obligatoire)
 
@@ -141,6 +142,7 @@ Si le composant tient une valeur (checked, sélection, saisie) :
 - `parameters.design.url` Figma (fichier `XgSemnGLFrAq75CxcjPVf1`) — pointer le `node-id` du ComponentSet si connu.
 - `argTypes` documentés (control, description FR, `table.type`/`defaultValue`).
 - Une story par état visuel distinct du YAML (levels, sizes, states…). Contrôles de formulaire : piloter avec `[(ngModel)]` via un `render` factory pour une interactivité réelle.
+- Contrôles de formulaire : ajouter une story **`SignalForms`** (`form()` + `required()` + `[formField]` depuis `@angular/forms/signals`, démo dans une classe `@Component` co-localisée) sur le modèle de `ui-slider.stories.ts`, en plus des démos Template-driven/Reactive ; la section « Formulaires » du mdx montre les trois APIs.
 
 **mdx** (co-localisée, importe sa story sœur en relatif `./ui-{name}.stories`) : `import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks'` ; sections `# ui-{name}` (intro FR + tokens), `## API` (`<ArgTypes>`), `## États`, `## Accessibilité` (table `className="doc-table"`), exemples `html`, et — dès que le composant a des variables locales configurables — `## Configuration (SCSS)` (table variable locale → source → rôle, avec lien vers la page de groupe `config/` et vers `Components/Configuration`).
 

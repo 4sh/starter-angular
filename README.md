@@ -1,6 +1,6 @@
 # Angular Starter
 
-Starter Angular 21 (standalone, signals) pour construire un design system **100% maison**,
+Starter Angular 22 (standalone, signals, zoneless) pour construire un design system **100% maison**,
 sans dépendance à une librairie UI propriétaire. Composants **headless** (Angular CDK +
 signals natifs) stylés exclusivement via des **design tokens**.
 
@@ -14,7 +14,7 @@ C'est le volet **Starter Angular** de la stratégie *Double-Moteur* :
 
 | Couche       | Techno |
 |--------------|---|
-| Framework    | Angular 21 standalone, signals |
+| Framework    | Angular 22 standalone, signals, zoneless |
 | Comportement | Composants + `@angular/cdk` |
 | Style        | Co-localisé par composant (`.scss` scopé) + CSS custom properties |
 | Tokens       | JSON (Token Flow Manager) → `scripts/tokens.build.mjs` → SCSS (`src/styles/src/generated/`) |

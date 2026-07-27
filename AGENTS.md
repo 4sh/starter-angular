@@ -8,7 +8,7 @@
 
 | Technologie | Rôle |
 |---|---|
-| Angular 21 | Framework — standalone, Signals API obligatoire |
+| Angular 22 | Framework — standalone, Signals API obligatoire, zoneless |
 | Composants headless | Aucune librairie UI propriétaire ; Angular CDK au besoin (overlay, a11y, focus-trap) |
 | Design Tokens JSON | `src/design-tokens/*.json` (DTCG) → Style Dictionary → variables CSS générées |
 | Gridaflex 1.0.0 | Grille flexbox (24 col) + breakpoints, configurée par les tokens |

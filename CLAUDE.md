@@ -2,7 +2,7 @@
 
 ## À lire avant toute action
 
-Ce repository est un Design System Angular 21 (standalone) **100% maison** : composants
+Ce repository est un Design System Angular 22 (standalone) **100% maison** : composants
 **headless** (Angular CDK + signals natifs) stylés exclusivement via des design tokens.
 
 C'est le volet « Starter Angular » de la stratégie **Double-Moteur** : la *logique* dépend
@@ -18,11 +18,11 @@ Avant de générer quoi que ce soit dans Figma, tu **dois** auditer le composant
 
 | Couche | Technologie |
 |---|---|
-| Framework | Angular 21, standalone, signals API |
+| Framework | Angular 22, standalone, signals API, zoneless |
 | Comportement (headless) | Composants + Angular CDK (overlay, a11y, focus-trap…) |
 | Style | Co-localisé par composant (`.scss` scopé) + CSS custom properties (`--var`) |
 | Design Tokens | JSON (Token Flow Manager) → `scripts/tokens.build.mjs` → SCSS (`src/styles/src/generated/`) |
-| Storybook | v10.1.11 + addon-designs (Figma panel) |
+| Storybook | v10.5.4 + addon-designs (Figma panel) |
 | Thèmes | themeOne (purple), themeTwo, themeThree × light/dark (via classes `._themeX` / `.dark-mode`) |
 | Icons | FontAwesome Free |
 | Grid | Gridaflex 1.0.0 |
@@ -118,7 +118,7 @@ ui-{name}/
 | UI générique | `ui-` | `src/app/shared/components/ui/` |
 | Domaine métier | `sp-` ou préfixe projet | `src/app/shared/components/domain/` |
 
-### Patterns signals (Angular 17+)
+### Patterns signals
 
 ```typescript
 // Inputs

@@ -9,6 +9,15 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+### Changed
+- **Migration Angular 22.0.8 / TypeScript 6** — `ng update` + Storybook 10.5.4, Node 22.23.1 ; `ChangeDetectionStrategy.OnPush` généralisé (défaut v22), outputs renommés (`no-output-on-prefix`/`no-output-native`), lint `angular-eslint` 22 + règles a11y template réactivées
+- **Zoneless** : `provideZonelessChangeDetection()` remplace `provideZoneChangeDetection` ; `zone.js` retiré des dépendances et des polyfills (le code étant 100 % signals + OnPush)
+- **Signal Forms stables (Angular 22)** : chaque composant de formulaire (16 champs CVA) dispose désormais d'une story « Signal Forms » (`@angular/forms/signals` : `form()` + `required()` + directive `[formField]`) et sa doc MDX présente les trois APIs (Signal Forms / Template-driven / Reactive) au présent — l'interop passe par la couche CVA existante, sans réécriture des composants. NB : le sélecteur stabilisé est `[formField]` (les entrées historiques ci-dessous mentionnent l'expérimental `[field]`)
+- `ui-image` : migration des derniers `@Input()` décorateurs vers les signal inputs (`input()`/`input.required()`) ; les deux `[ngStyle]` restants (`ui-drawer`, `ui-modal`) deviennent des bindings natifs `[style]`
+
+### Fixed
+- `BaseControlValueAccessor` : **miroir d'état figé sous Signal Forms** — l'interop fournit un `NgControl` sans flux `events`, l'état (`invalid`/`touched`/`dirty`/`errors`) n'était donc capturé qu'une fois au premier rendu : un champ requis restait par exemple en style erreur (`aria-invalid="true"`) même une fois valide. Les getters de l'`InteropNgControl` lisant les signals du champ, le miroir est désormais rafraîchi dans un `effect()` (chemin classique inchangé : seed + flux `events`)
+
 ### Fixed
 - `ui-button` : suppression d'un `NG0951` (« Child query result is required but no value is available ») émis à chaque rendu. L'effet de forwarding des `buttonProps` lisait le `viewChild.required('#host')` dans un `effect()` nu, exécuté pendant `runEffectsInView` avant la résolution de la requête de vue (le `#host` est sous `@if/@else`). Basculé en `afterRenderEffect` (browser-only, vue garantie résolue) avec court-circuit quand `buttonProps` est absent : plus d'erreur dans le `ErrorHandler`, comportement de forwarding inchangé
 
