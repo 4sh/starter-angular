@@ -39,11 +39,22 @@ import * as RadioStories from './ui-radio.stories';
 ## Groupes & formulaires
 
 Chaque <code>ui-radio</code> porte une <code>value</code> ; le groupe se forme en liant tous les
-membres **au même contrôle** (même <code>formControlName</code> ou même <code>[(ngModel)]</code>)
-**et** en leur donnant le même <code>name</code> (groupement natif → navigation aux flèches).
-Le radio dont la <code>value</code> égale la valeur du modèle est sélectionné.
+membres **au même contrôle** (même <code>[formField]</code>, même <code>formControlName</code> ou
+même <code>[(ngModel)]</code>) **et** en leur donnant le même <code>name</code> (groupement natif
+→ navigation aux flèches). Le radio dont la <code>value</code> égale la valeur du modèle est
+sélectionné. Le composant est un <code>ControlValueAccessor</code> : il se branche sans code
+additionnel aux **Signal Forms** (`@angular/forms/signals`, directive `[formField]`, stables
+depuis Angular 22) via l'interop CVA native, ainsi qu'aux formulaires template-driven et réactifs.
+
+<Canvas of={RadioStories.SignalForms} />
 
 ```html
+<!-- Signal Forms : chaque membre lié au même [formField] -->
+<div role="radiogroup" aria-label="Parfum">
+  <ui-radio [formField]="flavor" name="flavor" value="vanilla" label="Vanille" />
+  <ui-radio [formField]="flavor" name="flavor" value="chocolate" label="Chocolat" />
+</div>
+
 <!-- Template-driven -->
 <div role="radiogroup" aria-label="Parfum">
   <ui-radio [(ngModel)]="flavor" name="flavor" value="vanilla" label="Vanille" />

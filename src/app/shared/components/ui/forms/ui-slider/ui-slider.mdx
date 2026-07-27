@@ -85,9 +85,9 @@ longueur en vertical se règle via `--ui-slider-length`.
 ## Formulaires
 
 Le composant est un `ControlValueAccessor`, donc il se branche à toutes les APIs de
-formulaire sans code additionnel. Le projet est en Angular 21 ; les Signal Forms
-(`@angular/forms/signals`, directive `[formField]`) fonctionnent déjà via la couche
-d'interop CVA, ce qui prépare une migration Angular 22 sans réécriture.
+formulaire sans code additionnel. Les Signal Forms (`@angular/forms/signals`,
+directive `[formField]`), stables depuis Angular 22, fonctionnent via la couche
+d'interop CVA native, sans réécriture du composant.
 
 <Canvas of={SliderStories.SignalForms} />
 <Canvas of={SliderStories.TemplateDriven} />

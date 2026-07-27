@@ -45,11 +45,18 @@ import * as CheckboxStories from './ui-checkbox.stories';
 ## Formulaires
 
 Le composant implémente <code>ControlValueAccessor</code> (via <code>BaseControlValueAccessor</code>) :
-il fonctionne en standalone, avec <code>[(ngModel)]</code> ou en reactive forms.
+il fonctionne en standalone, avec les **Signal Forms** (`@angular/forms/signals`, directive
+`[formField]`, stables depuis Angular 22) via l'interop CVA native, avec <code>[(ngModel)]</code>
+ou en reactive forms.
+
+<Canvas of={CheckboxStories.SignalForms} />
 
 ```html
 <!-- Standalone -->
 <ui-checkbox label="Accepter les CGU" (checkboxChange)="onToggle($event)" />
+
+<!-- Signal Forms -->
+<ui-checkbox [formField]="accepted" label="Accepter les CGU" />
 
 <!-- Template-driven -->
 <ui-checkbox [(ngModel)]="accepted" label="Accepter les CGU" />

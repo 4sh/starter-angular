@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
+import { Component, signal } from '@angular/core';
 import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
 import { FormsModule, ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
+import { FormField, form, required } from '@angular/forms/signals';
 import { UiInputTags, InputTagsCompleteEvent, InputTagsAddEvent, InputTagsRemoveEvent } from './ui-input-tags';
 import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
 import { UiChip } from '@app/shared/components/ui/informative/ui-chip/ui-chip';
@@ -333,6 +335,31 @@ export const Invalid: Story = {
       />
     `,
   }),
+};
+
+// --- Signal Forms (@angular/forms/signals) ------------------------------
+@Component({
+  selector: 'demo-input-tags-signal-forms',
+  standalone: true,
+  imports: [UiInputTags, FormField, CommonModule],
+  template: `
+    <div style="width: 22rem; display: grid; gap: 12px; justify-items: start;">
+      <ui-input-tags [formField]="skills" label="Compétences" placeholder="Ajouter…" style="width: 100%" />
+      <code>value = {{ skills().value() | json }} · valid = {{ skills().valid() }}</code>
+    </div>
+  `,
+})
+class SignalFormsDemo {
+  protected readonly model = signal<string[]>(['Angular']);
+  protected readonly skills = form(this.model, (path) => {
+    required(path);
+  });
+}
+
+export const SignalForms: Story = {
+  name: 'Signal Forms',
+  render: () => ({ template: `<demo-input-tags-signal-forms />` }),
+  decorators: [moduleMetadata({ imports: [SignalFormsDemo] })],
 };
 
 /** Avec `disabled`, le champ ne peut être ni édité ni focalisé. */

@@ -1,6 +1,8 @@
+import { Component, signal } from '@angular/core';
 import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
 import { FormsModule } from '@angular/forms';
+import { FormField, form } from '@angular/forms/signals';
 import { UiToggle } from '@app/shared/components/ui/forms/ui-toggle/ui-toggle';
 import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
 
@@ -107,6 +109,29 @@ export const NoLabel: Story = { render: story(), args: { label: undefined, ariaL
 
 // Label à gauche (before) — cliquable des deux côtés
 export const LabelBefore: Story = { render: story(), args: { label: 'Mode sombre', labelPosition: 'before' } };
+
+// --- Signal Forms (@angular/forms/signals) ------------------------------
+@Component({
+  selector: 'demo-toggle-signal-forms',
+  standalone: true,
+  imports: [UiToggle, FormField],
+  template: `
+    <div style="display: grid; gap: 8px; justify-items: start;">
+      <ui-toggle [formField]="notifications" label="Notifications" />
+      <code>value = {{ notifications().value() }}</code>
+    </div>
+  `,
+})
+class SignalFormsDemo {
+  protected readonly model = signal(false);
+  protected readonly notifications = form(this.model);
+}
+
+export const SignalForms: Story = {
+  name: 'Signal Forms',
+  render: () => ({ template: `<demo-toggle-signal-forms />` }),
+  decorators: [moduleMetadata({ imports: [SignalFormsDemo] })],
+};
 
 // Curseur personnalisé : icône check / xmark selon l'état
 export const CustomHandle: Story = {

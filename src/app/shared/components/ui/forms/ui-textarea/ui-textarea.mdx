@@ -35,12 +35,16 @@ la bordure rouge et `errorText` apparaissent quand le contrôle est **invalide E
 
 ## Validation
 
-Avec les formulaires réactifs (ou template-driven), l'erreur est **dynamique** : elle n'apparaît
+Le composant est un `ControlValueAccessor` : il se branche sans code additionnel aux
+**Signal Forms** (`@angular/forms/signals`, directive `[formField]`, stables depuis Angular 22)
+via l'interop CVA native, ainsi qu'aux formulaires template-driven (`[(ngModel)]`) et réactifs
+(`[formControl]`). Quelle que soit l'API, l'erreur est **dynamique** : elle n'apparaît
 qu'après interaction et se lève automatiquement quand le champ redevient valide. `required` affiche
 aussi le marqueur `*` sur le label. Pas besoin de forcer `level="error"`.
 
 <Canvas of={TextareaStories.Required} />
 <Canvas of={TextareaStories.Validation} />
+<Canvas of={TextareaStories.SignalForms} />
 
 ## Redimensionnement
 
@@ -83,6 +87,9 @@ saisi et la poignée est désactivée.
 </table>
 
 ```html
+<!-- Signal Forms -->
+<ui-textarea [formField]="field" label="Message" placeholder="Votre message…" />
+
 <!-- Reactive forms + message d'erreur -->
 <ui-textarea formControlName="bio" label="Bio" errorText="Minimum 20 caractères" required />
 

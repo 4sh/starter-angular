@@ -55,6 +55,26 @@ L'input `formatValue` reçoit la valeur numérique et retourne la chaîne affich
 <ui-nudger [(ngModel)]="poids" [min]="0" [formatValue]="(v) => v + ' kg'" ariaLabel="Poids" />
 ```
 
+## Formulaires
+
+Le composant est un `ControlValueAccessor` : il se branche sans code additionnel aux
+**Signal Forms** (`@angular/forms/signals`, directive `[formField]`, stables depuis
+Angular 22) via l'interop CVA native, ainsi qu'aux formulaires template-driven
+(`[(ngModel)]`) et réactifs (`[formControl]`).
+
+<Canvas of={UiNudgerStories.SignalForms} />
+
+```html
+<!-- Signal Forms -->
+<ui-nudger [formField]="quantity" [min]="0" [max]="10" ariaLabel="Quantité" />
+
+<!-- Template-driven -->
+<ui-nudger [(ngModel)]="quantity" [min]="0" [max]="10" ariaLabel="Quantité" />
+
+<!-- Reactive -->
+<ui-nudger [formControl]="quantityCtrl" ariaLabel="Quantité" />
+```
+
 ## Accessibilité
 
 <table className="doc-table">

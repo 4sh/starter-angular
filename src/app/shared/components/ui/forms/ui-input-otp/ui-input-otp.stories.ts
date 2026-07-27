@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
+import { Component, signal } from '@angular/core';
 import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
 import { FormsModule, ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
+import { FormField, form, required } from '@angular/forms/signals';
 import { UiInputOtp } from './ui-input-otp';
 import { UiButton } from '@app/shared/components/ui/actions/ui-button/ui-button';
 
@@ -179,6 +181,31 @@ export const Invalid: Story = {
       </div>
     `,
   }),
+};
+
+// --- Signal Forms (@angular/forms/signals) ------------------------------
+@Component({
+  selector: 'demo-input-otp-signal-forms',
+  standalone: true,
+  imports: [UiInputOtp, FormField],
+  template: `
+    <div style="display: flex; flex-direction: column; gap: 1rem; align-items: center">
+      <ui-input-otp [formField]="field" ariaLabel="Code de vérification" />
+      <code>value = {{ field().value() || '—' }} · valid = {{ field().valid() }}</code>
+    </div>
+  `,
+})
+class SignalFormsDemo {
+  protected readonly model = signal('');
+  protected readonly field = form(this.model, (path) => {
+    required(path);
+  });
+}
+
+export const SignalForms: Story = {
+  name: 'Signal Forms',
+  render: () => ({ template: `<demo-input-otp-signal-forms />` }),
+  decorators: [moduleMetadata({ imports: [SignalFormsDemo] })],
 };
 
 /**

@@ -13,7 +13,8 @@ modes `MonthPicker` / `YearPicker`, plusieurs mois côte à côte, navigation me
 roving et support clavier complet (motif WAI-ARIA date picker).
 `p-datepicker`.
 
-Valeur `Date | null` câblée via `ControlValueAccessor` (`[(ngModel)]` ou reactive forms) sur
+Valeur `Date | Date[] | null` câblée via `ControlValueAccessor` (Signal Forms `[formField]`,
+`[(ngModel)]` ou `[formControl]`) sur
 [`BaseFormField`](?path=/docs/components-ui-forms-ui-input--docs) : `label`, `helperText`/`errorText`,
 `level`, la validation et les états `disabled`/`readonly` sont partagés avec les autres champs.
 
@@ -142,6 +143,29 @@ Deux points d'extension via `<ng-template>` projetés, résolus par `contentChil
 </ui-datepicker>
 ```
 
+## Formulaires
+
+Le composant est un `ControlValueAccessor` : il se branche sans code additionnel aux
+**Signal Forms** (`@angular/forms/signals`, directive `[formField]`, stables depuis Angular 22)
+via l'interop CVA native, ainsi qu'aux formulaires template-driven (`[(ngModel)]`) et réactifs
+(`[formControl]`).
+
+<Canvas of={DatepickerStories.SignalForms} />
+
+```html
+<!-- Signal Forms -->
+<ui-datepicker [formField]="birth" label="Date de naissance" />
+
+<!-- Reactive forms -->
+<ui-datepicker formControlName="birth" label="Date de naissance" [maxDate]="today" required />
+
+<!-- Date + heure, ngModel -->
+<ui-datepicker [(ngModel)]="appointment" label="Rendez-vous" showTime hourFormat="12" showButtonBar />
+
+<!-- Inline (pas d'overlay) -->
+<ui-datepicker [(ngModel)]="date" inline />
+```
+
 ## Accessibilité
 
 <table className="doc-table">
@@ -174,17 +198,6 @@ Deux points d'extension via `<ng-template>` projetés, résolus par `contentChil
     </tr>
   </tbody>
 </table>
-
-```html
-<!-- Reactive forms -->
-<ui-datepicker formControlName="birth" label="Date de naissance" [maxDate]="today" required />
-
-<!-- Date + heure, ngModel -->
-<ui-datepicker [(ngModel)]="appointment" label="Rendez-vous" showTime hourFormat="12" showButtonBar />
-
-<!-- Inline (pas d'overlay) -->
-<ui-datepicker [(ngModel)]="date" inline />
-```
 
 > **Périmètre / choix** : le champ déclencheur est en **lecture seule** (choix par le calendrier ;
 > pas de saisie/parsing texte libre). Le tiroir de vues (jour → mois → année) et le focus roving

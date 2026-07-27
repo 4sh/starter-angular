@@ -200,6 +200,15 @@ dans `options`.
 
 <ArgTypes of={SelectStories} />
 
+## Formulaires
+
+Le composant est un `ControlValueAccessor` : il se branche sans code additionnel aux
+**Signal Forms** (`@angular/forms/signals`, directive `[formField]`, stables depuis Angular 22)
+via l'interop CVA native, ainsi qu'aux formulaires template-driven (`[(ngModel)]`) et réactifs
+(`[formControl]`).
+
+<Canvas of={SelectStories.SignalForms} />
+
 ## Accessibilité
 
 <table className="doc-table">
@@ -247,6 +256,10 @@ dans `options`.
 > repousse le chargement des données au défilement.
 
 ```html
+<!-- Signal Forms -->
+<ui-select [formField]="city" label="Ville" [options]="cities"
+           optionLabel="name" optionValue="code" />
+
 <!-- Reactive forms + erreur automatique -->
 <ui-select formControlName="country" label="Pays" [options]="countries"
            optionLabel="name" optionValue="iso" required errorText="Sélection obligatoire" />

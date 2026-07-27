@@ -41,6 +41,20 @@ renseigne `iconRightAriaLabel` ; le clic émet `iconRightClick`.
 <Canvas of={InputStories.Password} />
 <Canvas of={InputStories.WithUnit} />
 
+## Formulaires
+
+Le composant est un `ControlValueAccessor` : il se branche sans code additionnel aux
+**Signal Forms** (`@angular/forms/signals`, directive `[formField]`, stables depuis Angular 22)
+via l'interop CVA native, ainsi qu'aux formulaires template-driven (`[(ngModel)]`) et réactifs
+(`[formControl]`).
+
+<Canvas of={InputStories.SignalForms} />
+
+```html
+<!-- Signal Forms -->
+<ui-input [formField]="field" label="Nom" placeholder="Votre nom" />
+```
+
 ## Accessibilité
 
 <table className="doc-table">

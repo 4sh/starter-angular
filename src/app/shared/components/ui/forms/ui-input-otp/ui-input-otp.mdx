@@ -146,20 +146,23 @@ lorsque toutes les cellules sont remplies) sert ici à activer le bouton d'envoi
 
 ## Formulaires
 
-`ui-input-otp` est un `ControlValueAccessor` : il fonctionne en `[(ngModel)]`, avec les
-**Reactive Forms** (`[formControl]`/`[formControlName]`) et est prêt pour les **Signal Forms**
-(`[formField]`, Angular 22) sans réécriture — l'interop est gérée par `BaseControlValueAccessor`
+`ui-input-otp` est un `ControlValueAccessor` : il se branche sans code additionnel aux
+**Signal Forms** (`@angular/forms/signals`, directive `[formField]`, stables depuis Angular 22)
+via l'interop CVA native, ainsi qu'en `[(ngModel)]` et avec les **Reactive Forms**
+(`[formControl]`/`[formControlName]`) — l'interop est gérée par `BaseControlValueAccessor`
 (contrôle sans flux `events`). La valeur du modèle est la **chaîne jointe** des cellules.
 
+<Canvas of={InputOtpStories.SignalForms} />
+
 ```html
+<!-- Signal Forms -->
+<ui-input-otp [formField]="field" ariaLabel="Code" />
+
 <!-- Template-driven -->
 <ui-input-otp [(ngModel)]="code" ariaLabel="Code" />
 
 <!-- Reactive -->
 <ui-input-otp [formControl]="codeCtrl" ariaLabel="Code" />
-
-<!-- Signal Forms (Angular 22) -->
-<ui-input-otp [formField]="form.code" ariaLabel="Code" />
 ```
 
 ## Theming

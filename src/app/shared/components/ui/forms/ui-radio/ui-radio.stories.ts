@@ -1,6 +1,8 @@
+import { Component, signal } from '@angular/core';
 import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
 import { FormsModule } from '@angular/forms';
+import { FormField, form, required } from '@angular/forms/signals';
 import { UiRadio } from '@app/shared/components/ui/forms/ui-radio/ui-radio';
 
 const meta: Meta<UiRadio> = {
@@ -111,6 +113,36 @@ export const Groupe: Story = {
       </div>
     `,
   }),
+};
+
+// --- Signal Forms (@angular/forms/signals) ------------------------------
+// Même principe qu'en template-driven : tous les membres liés au même [formField]
+// + même name (groupement natif). Modèle '' initial → required invalide tant
+// qu'aucune option n'est sélectionnée.
+@Component({
+  selector: 'demo-radio-signal-forms',
+  standalone: true,
+  imports: [UiRadio, FormField],
+  template: `
+    <div role="radiogroup" aria-label="Parfum" style="display: grid; gap: 8px; justify-items: start;">
+      <ui-radio [formField]="flavor" name="sf-flavor" value="vanilla" label="Vanille" />
+      <ui-radio [formField]="flavor" name="sf-flavor" value="chocolate" label="Chocolat" />
+      <ui-radio [formField]="flavor" name="sf-flavor" value="strawberry" label="Fraise" />
+      <code>value = {{ flavor().value() }} · valid = {{ flavor().valid() }}</code>
+    </div>
+  `,
+})
+class SignalFormsDemo {
+  protected readonly model = signal('');
+  protected readonly flavor = form(this.model, (path) => {
+    required(path);
+  });
+}
+
+export const SignalForms: Story = {
+  name: 'Signal Forms',
+  render: () => ({ template: `<demo-radio-signal-forms />` }),
+  decorators: [moduleMetadata({ imports: [SignalFormsDemo] })],
 };
 
 // Groupe avec option désactivée

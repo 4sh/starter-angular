@@ -1,6 +1,8 @@
+import { Component, signal } from '@angular/core';
 import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
 import { FormsModule } from '@angular/forms';
+import { FormField, form, required } from '@angular/forms/signals';
 import { UiCheckbox } from '@app/shared/components/ui/forms/ui-checkbox/ui-checkbox';
 
 const meta: Meta<UiCheckbox> = {
@@ -149,6 +151,31 @@ export const CustomValues: Story = {
       </div>
     `,
   }),
+};
+
+// --- Signal Forms (@angular/forms/signals) ------------------------------
+@Component({
+  selector: 'demo-checkbox-signal-forms',
+  standalone: true,
+  imports: [UiCheckbox, FormField],
+  template: `
+    <div style="display: grid; gap: 8px; justify-items: start;">
+      <ui-checkbox [formField]="accepted" label="Accepter les CGU" />
+      <code>value = {{ accepted().value() }} · valid = {{ accepted().valid() }}</code>
+    </div>
+  `,
+})
+class SignalFormsDemo {
+  protected readonly model = signal(false);
+  protected readonly accepted = form(this.model, (path) => {
+    required(path);
+  });
+}
+
+export const SignalForms: Story = {
+  name: 'Signal Forms',
+  render: () => ({ template: `<demo-checkbox-signal-forms />` }),
+  decorators: [moduleMetadata({ imports: [SignalFormsDemo] })],
 };
 
 // Groupe (indeterminate piloté par un parent)

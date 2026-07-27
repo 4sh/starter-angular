@@ -45,9 +45,12 @@ icône `check` / `xmark` selon l'état.
 ## Formulaires
 
 Branché au système de formulaires du starter via `ControlValueAccessor`
-(`BaseControlValueAccessor`) : fonctionne avec `[(ngModel)]`, les reactive forms
-(`formControlName`) ou en autonome. L'état d'erreur se peint automatiquement quand le contrôle
-attaché est invalide **et** touché/modifié.
+(`BaseControlValueAccessor`) : fonctionne avec les **Signal Forms** (`@angular/forms/signals`,
+directive `[formField]`, stables depuis Angular 22) via l'interop CVA native, avec
+`[(ngModel)]`, les reactive forms (`formControlName`) ou en autonome. L'état d'erreur se peint
+automatiquement quand le contrôle attaché est invalide **et** touché/modifié.
+
+<Canvas of={ToggleStories.SignalForms} />
 
 ## Accessibilité
 
@@ -85,6 +88,9 @@ attaché est invalide **et** touché/modifié.
 <Canvas of={ToggleStories.NoLabel} />
 
 ```html
+<!-- Signal Forms -->
+<ui-toggle [formField]="notifications" label="Notifications" />
+
 <!-- Reactive forms -->
 <ui-toggle formControlName="darkMode" label="Mode sombre" />
 

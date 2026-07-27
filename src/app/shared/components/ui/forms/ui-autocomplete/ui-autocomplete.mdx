@@ -15,7 +15,8 @@ l'input, les suggestions ne reçoivent qu'un focus visuel).
 
 ## Basic
 
-Contrôle piloté par `ngModel` (ou reactive forms). La frappe émet `completeMethod` — la
+Contrôle piloté par `ngModel` (ou Signal Forms / reactive forms — voir
+[Formulaires](#formulaires)). La frappe émet `completeMethod` — la
 requête est **anti-rebondie** (`delay`, 300 ms par défaut) et déclenchée à partir de
 `minLength` caractères (1 par défaut). Le parent renseigne alors `suggestions` avec les
 résultats. `optionLabel` indique quelle propriété afficher quand les suggestions sont des
@@ -143,6 +144,30 @@ Dans le panneau, chaque suggestion partage un même rendu pour le **focus visuel
 correspondant à la valeur courante est mise en évidence (`form.high.surface.hover` +
 `form.high.content.checked`). Les états interactifs sont gérés en CSS via les tokens, jamais par
 des props Angular.
+
+## Formulaires
+
+Le composant est un `ControlValueAccessor` : il se branche sans code additionnel aux
+**Signal Forms** (`@angular/forms/signals`, directive `[formField]`, stables depuis Angular 22)
+via l'interop CVA native, ainsi qu'aux formulaires template-driven (`[(ngModel)]`) et réactifs
+(`[formControl]`). Dans tous les cas, le modèle porte la valeur sélectionnée (chaîne, objet
+suggestion ou champ `optionValue`) ; le flux `completeMethod` → `suggestions` reste inchangé.
+
+<Canvas of={AutocompleteStories.SignalForms} />
+
+L'exemple [Invalid](#invalid) ci-dessus illustre le branchement `[formControl]` (réactif) avec
+validation `required`.
+
+```html
+<!-- Signal Forms -->
+<ui-autocomplete [formField]="country" [suggestions]="results()" (completeMethod)="search($event)" />
+
+<!-- Template-driven -->
+<ui-autocomplete [(ngModel)]="country" [suggestions]="results()" (completeMethod)="search($event)" />
+
+<!-- Reactive -->
+<ui-autocomplete [formControl]="countryCtrl" [suggestions]="results()" (completeMethod)="search($event)" />
+```
 
 ## Accessibilité
 

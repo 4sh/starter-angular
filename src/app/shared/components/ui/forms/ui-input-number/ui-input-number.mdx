@@ -9,7 +9,7 @@ Champ **numérique** bâti sur le shell [`ui-field`](?path=/docs/components-ui-f
 Valeur modèle = `number | null`. Saisie tolérante (pas de reformatage pendant la frappe →
 pas de saut de curseur), `min`/`max`/`step`, spinner ± et flèches clavier ↑/↓, **clamp au blur**.
 
-Autonome, `[(ngModel)]` ou reactive forms.
+Autonome, `[(ngModel)]`, reactive forms ou Signal Forms (`[formField]`).
 
 <Canvas of={NumberStories.Default} />
 
@@ -36,6 +36,26 @@ Piloté par `locale` / `currency` / `useGrouping` / `minFractionDigits` / `maxFr
 <Canvas of={NumberStories.Grouped} />
 <Canvas of={NumberStories.Currency} />
 
+## Formulaires
+
+Le composant est un `ControlValueAccessor` : il se branche sans code additionnel aux
+**Signal Forms** (`@angular/forms/signals`, directive `[formField]`, stables depuis
+Angular 22) via l'interop CVA native, ainsi qu'aux formulaires template-driven
+(`[(ngModel)]`) et réactifs (`[formControl]`).
+
+<Canvas of={NumberStories.SignalForms} />
+
+```html
+<!-- Signal Forms -->
+<ui-input-number [formField]="quantity" label="Note (0–10)" [min]="0" [max]="10" />
+
+<!-- Template-driven -->
+<ui-input-number [(ngModel)]="price" label="Prix" locale="fr-FR" currency="EUR" [step]="0.5" />
+
+<!-- Reactive -->
+<ui-input-number [formControl]="ageCtrl" label="Âge" [min]="0" [max]="120" [allowDecimals]="false" />
+```
+
 ## Accessibilité
 
 <table className="doc-table">
@@ -57,11 +77,6 @@ Piloté par `locale` / `currency` / `useGrouping` / `minFractionDigits` / `maxFr
     </tr>
   </tbody>
 </table>
-
-```html
-<ui-input-number formControlName="age" label="Âge" [min]="0" [max]="120" [allowDecimals]="false" />
-<ui-input-number [(ngModel)]="price" label="Prix" locale="fr-FR" currency="EUR" [step]="0.5" />
-```
 
 > Cas très spécifique : surcharger la méthode protégée `format(value: number): string` dans une
 > sous-classe (le parsing locale-aware reste géré par le composant).
