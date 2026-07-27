@@ -177,7 +177,7 @@
             }
           </ng-template>
 
-          @if (node.item.routerLink != null && !node.item.disabled) {
+          @if (node.item.routerLink !== undefined && !node.item.disabled) {
             <a
               class="ui-menu-action"
               role="menuitem"

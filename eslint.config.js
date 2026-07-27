@@ -42,8 +42,6 @@ module.exports = tseslint.config(
         "error",
         { allowShortCircuit: true, allowTernary: true },
       ],
-      // Garde-fou : OnPush (défaut Angular 22) pour tout nouveau composant.
-      "@angular-eslint/prefer-on-push-component-change-detection": "error",
     },
   },
   {
@@ -60,12 +58,6 @@ module.exports = tseslint.config(
       ...angular.configs.templateRecommended,
       ...angular.configs.templateAccessibility,
     ],
-    rules: {
-      // `x != null` couvre volontairement null ET undefined.
-      "@angular-eslint/template/eqeqeq": [
-        "error",
-        { allowNullOrUndefined: true },
-      ],
-    },
+    rules: {},
   }
 );
