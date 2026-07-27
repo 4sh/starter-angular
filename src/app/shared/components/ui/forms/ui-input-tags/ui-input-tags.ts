@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   booleanAttribute,
   Component,
   computed,
@@ -121,7 +122,7 @@ type TagRow =
  *
  * The model is an **array** driven through {@link BaseFormField}
  * (`ControlValueAccessor`) — compatible with `[(ngModel)]`, Reactive Forms and
- * the upcoming Signal Forms (`[field]`, Angular 22). Options: `max`,
+ * the upcoming Signal Forms (`[formField]`, Angular 22). Options: `max`,
  * `allowDuplicate`, `addOnBlur` / `addOnTab` / `addOnPaste`, and a `typeahead`
  * mode (a CDK-overlay suggestions panel fed by the parent via `completeMethod`).
  *
@@ -136,6 +137,7 @@ type TagRow =
  * ```
  */
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-input-tags',
   imports: [NgTemplateOutlet, OverlayModule, UiField, UiIcon, UiChip, UiMotion],
   templateUrl: './ui-input-tags.html',

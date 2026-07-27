@@ -1,4 +1,4 @@
-import { Component, computed, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
 import { UiMotion, UiMotionPreset } from './ui-motion';
 import { UiButton } from '@app/shared/components/ui/actions/ui-button/ui-button';
 
@@ -9,6 +9,7 @@ import { UiButton } from '@app/shared/components/ui/actions/ui-button/ui-button'
  * @ignore
  */
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-motion-demo',
   imports: [UiMotion, UiButton],
   template: `

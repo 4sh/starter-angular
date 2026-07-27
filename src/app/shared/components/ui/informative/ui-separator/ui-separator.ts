@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
 export type SeparatorOrientation = 'horizontal' | 'vertical';
 export type SeparatorVariant = 'solid' | 'dashed';
@@ -14,6 +14,7 @@ export type SeparatorLabelAlign = 'start' | 'center' | 'end';
  * and its thickness by `size` (default 2px / small 1px).
  */
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-separator',
   templateUrl: './ui-separator.html',
   styleUrl: './ui-separator.scss',

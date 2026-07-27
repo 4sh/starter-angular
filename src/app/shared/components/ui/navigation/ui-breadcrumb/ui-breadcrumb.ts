@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   afterNextRender,
   Component,
   computed,
@@ -77,6 +78,7 @@ interface UiBreadcrumbEntry {
  * and `#item` template (crumb content, `$implicit` = item, `last`).
  */
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-breadcrumb',
   imports: [NgTemplateOutlet, UiIcon, UiLink],
   templateUrl: './ui-breadcrumb.html',

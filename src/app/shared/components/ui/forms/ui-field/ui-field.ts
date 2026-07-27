@@ -1,4 +1,4 @@
-import { booleanAttribute, Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, booleanAttribute, Component, computed, input } from '@angular/core';
 import { UiLabel } from '@app/shared/components/ui/forms/ui-label/ui-label';
 import { UiHelper } from '@app/shared/components/ui/informative/ui-helper/ui-helper';
 import { FieldLevel, FieldSize } from '@app/shared/components/ui/forms/base-form-field';
@@ -17,6 +17,7 @@ import { FieldLevel, FieldSize } from '@app/shared/components/ui/forms/base-form
  * computed `id`/`level`/`message` (via `BaseFormField`).
  */
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-field',
   imports: [UiLabel, UiHelper],
   templateUrl: './ui-field.html',

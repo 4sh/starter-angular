@@ -1,4 +1,4 @@
-import { Component, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
 import { UiButton } from '@app/shared/components/ui/actions/ui-button/ui-button';
@@ -18,6 +18,7 @@ const DEMO_BOX =
   'position:relative; min-height:240px; padding:16px; border:1px dashed var(--global-low-stroke-default, #ccc); border-radius:12px; overflow:hidden;';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'toast-demo-basic',
   imports: [UiButton, UiToastContainer],
   providers: [UiToastService],
@@ -42,6 +43,7 @@ class ToastDemoBasic {
 }
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'toast-demo-promise',
   imports: [UiButton, UiToastContainer],
   providers: [UiToastService],
@@ -81,6 +83,7 @@ class ToastDemoPromise {
 }
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'toast-demo-sticky',
   imports: [UiButton, UiToastContainer],
   providers: [UiToastService],
@@ -105,6 +108,7 @@ class ToastDemoSticky {
 }
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'toast-demo-custom',
   imports: [UiToastContainer],
   providers: [UiToastService],
@@ -133,6 +137,7 @@ class ToastDemoCustom {
 }
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'toast-demo-position',
   imports: [UiButton, UiToastContainer],
   providers: [UiToastService],
@@ -157,6 +162,7 @@ class ToastDemoPosition {
 }
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'toast-demo-expanded',
   imports: [UiButton, UiToastContainer],
   providers: [UiToastService],
@@ -180,6 +186,7 @@ class ToastDemoExpanded {
 }
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'toast-demo-action',
   imports: [UiButton, UiToastContainer],
   providers: [UiToastService],
@@ -216,6 +223,7 @@ class ToastDemoAction {
 }
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'toast-demo-stacking',
   imports: [UiButton, UiToastContainer],
   providers: [UiToastService],

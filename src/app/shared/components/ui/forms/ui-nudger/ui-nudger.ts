@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   booleanAttribute,
   Component,
   computed,
@@ -32,6 +33,7 @@ let nextUid = 0;
  * is a live region announced on change.
  */
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-nudger',
   imports: [UiButton],
   templateUrl: './ui-nudger.html',

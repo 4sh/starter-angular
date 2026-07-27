@@ -108,7 +108,7 @@ Angular 22** vers les Signal Forms sans réécriture du composant.
 <ui-input-tags label="Tags" [formControl]="tagsCtrl" />
 
 <!-- Signal Forms (Angular 22) -->
-<ui-input-tags label="Tags" [field]="form.tags" />
+<ui-input-tags label="Tags" [formField]="form.tags" />
 ```
 
 L'état de validation (`touched`/`dirty`/`invalid`) est reflété dans des signaux internes

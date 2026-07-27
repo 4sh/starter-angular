@@ -1,4 +1,4 @@
-import { Component, computed, effect, input, signal, TemplateRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, input, signal, TemplateRef } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { UiIcon, UiIconSize } from '@app/shared/components/ui/ui-icon/ui-icon';
 
@@ -23,6 +23,7 @@ type SpinnerMark = 'template' | 'image' | 'icon' | 'svg';
  * reduced-motion preference and the kit-wide `data-motion="off"` switch.
  */
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-spinner',
   imports: [UiIcon, NgTemplateOutlet],
   templateUrl: './ui-spinner.html',

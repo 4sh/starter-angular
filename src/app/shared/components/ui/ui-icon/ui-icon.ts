@@ -1,4 +1,4 @@
-import { booleanAttribute, Component, computed, inject, input, isDevMode } from '@angular/core';
+import { ChangeDetectionStrategy, booleanAttribute, Component, computed, inject, input, isDevMode } from '@angular/core';
 import {
   fontAwesomeFamily,
   UI_ICON_BUILTIN_FAMILIES,
@@ -22,6 +22,7 @@ export type { UiIconType };
  * when the icon conveys meaning on its own.
  */
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-icon',
   templateUrl: './ui-icon.html',
   styleUrl: './ui-icon.scss',

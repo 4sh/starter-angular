@@ -1,4 +1,4 @@
-import { Component, computed, input, TemplateRef, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, TemplateRef, ViewEncapsulation } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 
 /** Side of the trigger the tooltip is displayed on (drives the arrow position). */
@@ -12,6 +12,7 @@ export type TooltipPosition = 'top' | 'bottom' | 'left' | 'right';
  * token-driven; every value is overridable through the `--ui-tooltip-*` CSS hooks.
  */
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-tooltip',
   imports: [NgTemplateOutlet],
   templateUrl: './ui-tooltip-panel.html',

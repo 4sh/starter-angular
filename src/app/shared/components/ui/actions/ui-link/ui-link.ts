@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   booleanAttribute,
   Component,
   computed,
@@ -27,6 +28,7 @@ export type LinkSize = 'default' | 'small';
  * Interactive states (hover/focus/pressed) are CSS-driven, never Angular props.
  */
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-link',
   imports: [UiIcon, RouterLink, NgTemplateOutlet],
   templateUrl: './ui-link.html',

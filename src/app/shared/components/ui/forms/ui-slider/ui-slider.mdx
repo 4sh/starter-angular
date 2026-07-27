@@ -86,7 +86,7 @@ longueur en vertical se règle via `--ui-slider-length`.
 
 Le composant est un `ControlValueAccessor`, donc il se branche à toutes les APIs de
 formulaire sans code additionnel. Le projet est en Angular 21 ; les Signal Forms
-(`@angular/forms/signals`, directive `[field]`) fonctionnent déjà via la couche
+(`@angular/forms/signals`, directive `[formField]`) fonctionnent déjà via la couche
 d'interop CVA, ce qui prépare une migration Angular 22 sans réécriture.
 
 <Canvas of={SliderStories.SignalForms} />
@@ -95,7 +95,7 @@ d'interop CVA, ce qui prépare une migration Angular 22 sans réécriture.
 
 ```html
 <!-- Signal Forms -->
-<ui-slider [field]="volume" ariaLabel="Volume" />
+<ui-slider [formField]="volume" ariaLabel="Volume" />
 
 <!-- Template-driven -->
 <ui-slider [(ngModel)]="level" name="level" required ariaLabel="Niveau" />

@@ -1,9 +1,9 @@
-import { Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
 import { FormsModule, ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
-import { Field, form, required } from '@angular/forms/signals';
+import { FormField, form, required } from '@angular/forms/signals';
 import { UiSlider } from './ui-slider';
 import { UiInputNumber } from '@app/shared/components/ui/forms/ui-input-number/ui-input-number';
 
@@ -11,7 +11,7 @@ const meta: Meta<UiSlider> = {
   title: 'Components/ui/forms/ui-slider',
   component: UiSlider,
   decorators: [
-    moduleMetadata({ imports: [UiSlider, CommonModule, FormsModule, ReactiveFormsModule, Field] }),
+    moduleMetadata({ imports: [UiSlider, CommonModule, FormsModule, ReactiveFormsModule, FormField] }),
   ],
   parameters: {
     layout: 'centered',
@@ -262,12 +262,13 @@ export const States: Story = {
 
 // --- Signal Forms (@angular/forms/signals) ------------------------------
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'demo-slider-signal-forms',
   standalone: true,
-  imports: [UiSlider, Field, CommonModule],
+  imports: [UiSlider, FormField, CommonModule],
   template: `
     <div style="width:280px; display:grid; gap:12px; justify-items:start;">
-      <ui-slider [field]="volume" ariaLabel="Volume" />
+      <ui-slider [formField]="volume" ariaLabel="Volume" />
       <code>value = {{ volume().value() }} · valid = {{ volume().valid() }}</code>
     </div>
   `,

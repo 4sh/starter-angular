@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   booleanAttribute,
   Component,
   computed,
@@ -73,6 +74,7 @@ let nextId = 0;
  * ```
  */
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-popover',
   imports: [OverlayModule, A11yModule, UiMotion],
   templateUrl: './ui-popover.html',

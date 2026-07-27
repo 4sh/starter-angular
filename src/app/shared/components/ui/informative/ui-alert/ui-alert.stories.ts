@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
@@ -12,6 +12,7 @@ import { UiAlert } from '@app/shared/components/ui/informative/ui-alert/ui-alert
  * Re-showing destroys/re-creates the alert, restarting its `life` timer.
  */
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'sb-alert-life',
   imports: [UiAlert, UiButton],
   template: `
@@ -45,6 +46,7 @@ class AlertLifeDemo {
  * or blur) and disappears the moment the value becomes valid.
  */
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'sb-alert-forms',
   imports: [UiAlert, UiInput, UiButton, ReactiveFormsModule],
   template: `

@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   booleanAttribute,
   Component,
   computed,
@@ -27,6 +28,7 @@ export type TextareaResize = 'none' | 'vertical' | 'horizontal' | 'both';
  * Standalone, `[(ngModel)]` or reactive forms (ControlValueAccessor via BaseFormField).
  */
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-textarea',
   imports: [UiField],
   templateUrl: './ui-textarea.html',

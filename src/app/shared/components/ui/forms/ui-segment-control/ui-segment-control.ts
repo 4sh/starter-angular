@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   afterNextRender,
   afterRenderEffect,
   booleanAttribute,
@@ -107,7 +108,7 @@ let nextUid = 0;
  * the shared motion system (honours reduced-motion and the `motion` opt-out).
  *
  * Works standalone, with `[(ngModel)]`, reactive forms, or signal forms
- * (`[field]`) — it is a `ControlValueAccessor`.
+ * (`[formField]`) — it is a `ControlValueAccessor`.
  *
  * @example
  * ```html
@@ -115,6 +116,7 @@ let nextUid = 0;
  * ```
  */
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-segment-control',
   imports: [UiIcon, NgTemplateOutlet],
   templateUrl: './ui-segment-control.html',

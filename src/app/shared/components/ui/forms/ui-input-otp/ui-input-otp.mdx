@@ -148,7 +148,7 @@ lorsque toutes les cellules sont remplies) sert ici à activer le bouton d'envoi
 
 `ui-input-otp` est un `ControlValueAccessor` : il fonctionne en `[(ngModel)]`, avec les
 **Reactive Forms** (`[formControl]`/`[formControlName]`) et est prêt pour les **Signal Forms**
-(`[field]`, Angular 22) sans réécriture — l'interop est gérée par `BaseControlValueAccessor`
+(`[formField]`, Angular 22) sans réécriture — l'interop est gérée par `BaseControlValueAccessor`
 (contrôle sans flux `events`). La valeur du modèle est la **chaîne jointe** des cellules.
 
 ```html
@@ -159,7 +159,7 @@ lorsque toutes les cellules sont remplies) sert ici à activer le bouton d'envoi
 <ui-input-otp [formControl]="codeCtrl" ariaLabel="Code" />
 
 <!-- Signal Forms (Angular 22) -->
-<ui-input-otp [field]="form.code" ariaLabel="Code" />
+<ui-input-otp [formField]="form.code" ariaLabel="Code" />
 ```
 
 ## Theming

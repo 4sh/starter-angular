@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   booleanAttribute,
   Component,
   computed,
@@ -35,6 +36,7 @@ let nextUid = 0;
  * carry any pair of values (e.g. 'on'/'off', 1/0).
  */
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-toggle',
   imports: [NgTemplateOutlet],
   templateUrl: './ui-toggle.html',

@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
 /**
  * ui-avatar-group — stacks a set of `ui-avatar` instances with a slight overlap.
@@ -10,6 +10,7 @@ import { Component, ViewEncapsulation } from '@angular/core';
  * `ui-avatar` host elements; all styling stays namespaced under `.ui-avatar-group`.
  */
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-avatar-group',
   template: '<ng-content />',
   styleUrl: './ui-avatar-group.scss',

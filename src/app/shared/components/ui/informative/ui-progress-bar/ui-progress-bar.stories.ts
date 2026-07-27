@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/angular';
 import { componentWrapperDecorator, moduleMetadata } from '@storybook/angular';
-import { Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { UiProgressBar } from '@app/shared/components/ui/informative/ui-progress-bar/ui-progress-bar';
 import { UiButton } from '@app/shared/components/ui/actions/ui-button/ui-button';
 
@@ -97,6 +97,7 @@ export const Small: Story = { args: { size: 'small' } };
 
 // --- Dynamic (value réactif : la barre suit l'état) ------------------
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'sb-progress-dynamic',
   imports: [UiProgressBar, UiButton],
   template: `
@@ -128,6 +129,7 @@ export const Dynamic: Story = {
 // Several bars share the same value; each formats it differently via
 // `valueTemplate` and is recoloured through the `color` input.
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'sb-progress-template',
   imports: [UiProgressBar],
   template: `

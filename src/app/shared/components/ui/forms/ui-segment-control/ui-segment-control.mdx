@@ -13,7 +13,7 @@ En mode simple, un **indicateur glissant** se déplace sous le segment sélectio
 cadencé par le [système de motion](?path=/docs/foundations-motion--docs) (respecte
 `prefers-reduced-motion` et l'opt-out `motion`).
 
-Compatible autonome, `[(ngModel)]`, Reactive Forms, ou Signal Forms (`[field]`) —
+Compatible autonome, `[(ngModel)]`, Reactive Forms, ou Signal Forms (`[formField]`) —
 c'est un `ControlValueAccessor`.
 
 <Canvas of={SegmentStories.Basic} />
@@ -118,7 +118,7 @@ formulaire sans code additionnel.
 
 ```html
 <!-- Signal Forms -->
-<ui-segment-control [field]="color" [options]="colors" ariaLabel="Couleur" />
+<ui-segment-control [formField]="color" [options]="colors" ariaLabel="Couleur" />
 
 <!-- Template-driven -->
 <ui-segment-control [(ngModel)]="view" name="view" [options]="views" ariaLabel="Affichage" />

@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   booleanAttribute,
   Component,
   computed,
@@ -87,6 +88,7 @@ function unlockBodyScroll(doc: Document): void {
  * ```
  */
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-drawer',
   imports: [NgTemplateOutlet, NgStyle, A11yModule, UiMotion, UiIcon],
   templateUrl: './ui-drawer.html',

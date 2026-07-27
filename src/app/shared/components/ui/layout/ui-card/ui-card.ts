@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   afterNextRender,
   booleanAttribute,
   Component,
@@ -54,6 +55,7 @@ export class UiCardFooter {}
  * exported marker directives (`UiCardMedia`, `UiCardTitle`, `UiCardSubtitle`, `UiCardFooter`).
  */
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-card',
   imports: [],
   templateUrl: './ui-card.html',

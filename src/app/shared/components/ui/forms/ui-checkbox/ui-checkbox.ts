@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   booleanAttribute,
   Component,
   computed,
@@ -29,6 +30,7 @@ let nextUid = 0;
  * carry any pair of values (e.g. 'yes'/'no', 1/0).
  */
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-checkbox',
   imports: [UiIcon],
   templateUrl: './ui-checkbox.html',
