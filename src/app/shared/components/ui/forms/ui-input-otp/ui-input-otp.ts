@@ -1,5 +1,4 @@
 import {
-  ChangeDetectionStrategy,
   afterNextRender,
   booleanAttribute,
   Component,
@@ -79,7 +78,6 @@ let nextUid = 0;
  * ```
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-input-otp',
   imports: [NgTemplateOutlet],
   templateUrl: './ui-input-otp.html',

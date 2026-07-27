@@ -1,5 +1,4 @@
 import {
-  ChangeDetectionStrategy,
   booleanAttribute,
   Component,
   computed,
@@ -27,7 +26,6 @@ let nextUid = 0;
  * `form.*` design tokens.
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-radio',
   templateUrl: './ui-radio.html',
   styleUrl: './ui-radio.scss',

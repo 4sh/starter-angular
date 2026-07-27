@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, ElementRef, forwardRef, input, output, viewChild } from '@angular/core';
+import { Component, computed, ElementRef, forwardRef, input, output, viewChild } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { BaseFormField } from '@app/shared/components/ui/forms/base-form-field';
 import { UiField } from '@app/shared/components/ui/forms/ui-field/ui-field';
@@ -19,7 +19,6 @@ export type InputType = 'text' | 'password' | 'email' | 'tel' | 'url' | 'search'
  * For numbers → `ui-input-number`, for masks → `ui-input-mask`.
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-input',
   imports: [UiField, UiIcon],
   templateUrl: './ui-input.html',

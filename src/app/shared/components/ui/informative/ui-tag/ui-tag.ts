@@ -1,5 +1,4 @@
 import {
-  ChangeDetectionStrategy,
   booleanAttribute,
   Component,
   computed,
@@ -22,7 +21,6 @@ export type TagSize = 'default' | 'small';
  * customization surface; no per-component CSS hooks.
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-tag',
   imports: [UiIcon],
   templateUrl: './ui-tag.html',

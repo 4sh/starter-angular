@@ -1,5 +1,4 @@
 import {
-  ChangeDetectionStrategy,
   booleanAttribute,
   Component,
   computed,
@@ -52,7 +51,6 @@ let nextUid = 0;
  * two-item array, otherwise a single number.
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-slider',
   standalone: true,
   templateUrl: './ui-slider.html',

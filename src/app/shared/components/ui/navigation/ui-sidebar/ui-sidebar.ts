@@ -1,5 +1,4 @@
 import {
-  ChangeDetectionStrategy,
   booleanAttribute,
   Component,
   computed,
@@ -108,7 +107,6 @@ function unlockBodyScroll(doc: Document): void {
  * ```
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-sidebar',
   imports: [NgTemplateOutlet, A11yModule, UiMotion, UiIcon],
   templateUrl: './ui-sidebar.html',

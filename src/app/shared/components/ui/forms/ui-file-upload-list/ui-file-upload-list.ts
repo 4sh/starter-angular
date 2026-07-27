@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, booleanAttribute, Component, computed, input, output } from '@angular/core';
+import { booleanAttribute, Component, computed, input, output } from '@angular/core';
 import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
 import { UiSpinner } from '@app/shared/components/ui/informative/ui-spinner/ui-spinner';
 import { formatFileSize, UiUploadFile } from '@app/shared/components/ui/forms/ui-file-upload/ui-file-upload.model';
@@ -15,7 +15,6 @@ export type UiFileUploadListSize = 'default' | 'small';
  * Named to mirror the Figma component; the uploader stacks one row per file.
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-file-upload-list',
   imports: [UiIcon, UiSpinner],
   templateUrl: './ui-file-upload-list.html',

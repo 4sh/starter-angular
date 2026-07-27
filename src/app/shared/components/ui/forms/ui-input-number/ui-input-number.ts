@@ -1,5 +1,4 @@
 import {
-  ChangeDetectionStrategy,
   booleanAttribute,
   Component,
   computed,
@@ -29,7 +28,6 @@ import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
  * for a very specific case, override the protected `format()` method.
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-input-number',
   imports: [UiField, UiIcon],
   templateUrl: './ui-input-number.html',

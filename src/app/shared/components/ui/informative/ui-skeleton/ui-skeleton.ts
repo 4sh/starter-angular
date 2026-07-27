@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 
 /** Visual shape of the placeholder. */
 export type UiSkeletonShape = 'text' | 'circle' | 'rectangle';
@@ -25,7 +25,6 @@ export type UiSkeletonAnimation = 'wave' | 'pulse' | 'none';
  * reduced-motion preference and the kit-wide `data-motion="off"` switch.
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-skeleton',
   templateUrl: './ui-skeleton.html',
   styleUrl: './ui-skeleton.scss',

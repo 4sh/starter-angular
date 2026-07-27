@@ -1,5 +1,4 @@
 import {
-  ChangeDetectionStrategy,
   booleanAttribute,
   Component,
   computed,
@@ -31,7 +30,6 @@ export interface UiRatingIconContext {
  * ui-rating — headless rating component built over a native <input type="range">.
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-rating',
   templateUrl: './ui-rating.html',
   styleUrl: './ui-rating.scss',

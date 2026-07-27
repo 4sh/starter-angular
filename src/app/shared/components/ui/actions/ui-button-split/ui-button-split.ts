@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, booleanAttribute, Component, computed, input, output, signal, viewChild } from '@angular/core';
+import { booleanAttribute, Component, computed, input, output, signal, viewChild } from '@angular/core';
 import { UiLevel } from '@app/shared/types/ui-level';
 import {
   ButtonIconPos,
@@ -31,7 +31,6 @@ export type ButtonSplitSize = ButtonSize;
  * action, `menuButtonDisabled` for the trigger, or `disabled` for both.
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-button-split',
   imports: [UiButton, UiMenu],
   templateUrl: './ui-button-split.html',

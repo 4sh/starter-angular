@@ -1,5 +1,4 @@
 import {
-  ChangeDetectionStrategy,
   booleanAttribute,
   Component,
   computed,
@@ -126,7 +125,6 @@ const OVERLAY_OFFSET = 8;
  * `#submenuheader` (group headers), `#start` / `#end` slots around the list.
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-menu',
   imports: [NgTemplateOutlet, OverlayModule, RouterLink, RouterLinkActive, UiIcon, UiMotion],
   templateUrl: './ui-menu.html',

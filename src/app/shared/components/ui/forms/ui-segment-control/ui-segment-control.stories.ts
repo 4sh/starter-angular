@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
@@ -287,7 +287,6 @@ export const Invalid: Story = {
 
 // --- Signal Forms (@angular/forms/signals) ------------------------------
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'demo-segment-signal-forms',
   standalone: true,
   imports: [UiSegmentControl, FormField, CommonModule],

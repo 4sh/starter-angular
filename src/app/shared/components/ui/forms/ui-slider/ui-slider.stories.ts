@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
@@ -262,7 +262,6 @@ export const States: Story = {
 
 // --- Signal Forms (@angular/forms/signals) ------------------------------
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'demo-slider-signal-forms',
   standalone: true,
   imports: [UiSlider, FormField, CommonModule],

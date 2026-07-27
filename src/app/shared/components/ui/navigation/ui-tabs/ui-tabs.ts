@@ -1,5 +1,4 @@
 import {
-  ChangeDetectionStrategy,
   afterNextRender,
   afterRenderEffect,
   booleanAttribute,
@@ -62,7 +61,6 @@ let nextUid = 0;
  * can reference it without a temporal-dead-zone error at class-definition time.
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-tab',
   imports: [UiIcon],
   template: `
@@ -149,7 +147,6 @@ export class UiTab {
  * a `<ng-template #content>` so it initialises lazily.
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-tab-panel',
   imports: [NgTemplateOutlet],
   template: `
@@ -210,7 +207,6 @@ export class UiTabPanel {
  * navigators that scroll the overflowing strip.
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-tab-list',
   imports: [UiIcon],
   templateUrl: './ui-tab-list.html',
@@ -406,7 +402,6 @@ export class UiTabList {
  * remaining space beside/under the tab list.
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-tab-panels',
   template: '<ng-content />',
   styles: `
@@ -446,7 +441,6 @@ export class UiTabPanels {}
  * ```
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-tabs',
   template: '<ng-content />',
   styles: `

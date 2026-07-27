@@ -1,5 +1,4 @@
 import {
-  ChangeDetectionStrategy,
   booleanAttribute,
   Component,
   computed,
@@ -33,7 +32,6 @@ const MASK_TOKENS: Record<string, RegExp> = {
  * when `unmask`. Standalone, `[(ngModel)]` or reactive forms.
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-input-mask',
   imports: [UiField, UiIcon],
   templateUrl: './ui-input-mask.html',

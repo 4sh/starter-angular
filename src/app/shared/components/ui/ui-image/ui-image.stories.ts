@@ -1,6 +1,6 @@
 import { Meta, StoryObj, applicationConfig, componentWrapperDecorator } from '@storybook/angular';
 import { provideHttpClient } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, Input, OnChanges, inject, signal, Injectable, OnDestroy } from '@angular/core';
+import { Component, Input, OnChanges, inject, signal, Injectable, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 // Imports de votre app
@@ -43,7 +43,6 @@ class MockBrandService {
 
 // --- 3. WRAPPER COMPONENT (Sans encart de debug) ---
 @Component({
-    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'storybook-ui-image-wrapper',
     standalone: true,
     imports: [UiImage, CommonModule],

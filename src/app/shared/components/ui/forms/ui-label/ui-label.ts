@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, booleanAttribute, Component, computed, input } from '@angular/core';
+import { booleanAttribute, Component, computed, input } from '@angular/core';
 
 export type LabelSize = 'default' | 'small';
 
@@ -17,7 +17,6 @@ export type LabelSize = 'default' | 'small';
  * ```
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-label',
   templateUrl: './ui-label.html',
   styleUrl: './ui-label.scss',

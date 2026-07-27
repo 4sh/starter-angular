@@ -1,5 +1,4 @@
 import {
-  ChangeDetectionStrategy,
   booleanAttribute,
   Component,
   computed,
@@ -115,7 +114,6 @@ let nextPanelUid = 0;
  * (`let-todayCallback let-clearCallback`), plus the local SCSS variables.
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-datepicker',
   imports: [NgTemplateOutlet, FormsModule, OverlayModule, UiInput, UiButton, UiIcon],
   templateUrl: './ui-datepicker.html',

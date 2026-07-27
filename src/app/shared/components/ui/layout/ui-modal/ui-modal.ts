@@ -1,5 +1,4 @@
 import {
-  ChangeDetectionStrategy,
   booleanAttribute,
   Component,
   computed,
@@ -97,7 +96,6 @@ function unlockBodyScroll(doc: Document): void {
  * ```
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-modal',
   imports: [NgTemplateOutlet, NgStyle, A11yModule, UiMotion, UiIcon],
   templateUrl: './ui-modal.html',

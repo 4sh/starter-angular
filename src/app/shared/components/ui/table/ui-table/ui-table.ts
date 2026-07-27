@@ -1,5 +1,4 @@
 import {
-  ChangeDetectionStrategy,
   afterNextRender,
   afterRenderEffect,
   booleanAttribute,
@@ -164,7 +163,6 @@ let nextUid = 0;
  * would not match emulated-encapsulation selectors.
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-table',
   imports: [NgTemplateOutlet, UiPaginator, UiEmptyState, UiSpinner],
   templateUrl: './ui-table.html',
@@ -851,7 +849,6 @@ export class UiTableSortableColumn {
  * Decorative: the accessible state lives on the `<th>` (`aria-sort`).
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-table-sort-icon',
   imports: [UiIcon],
   template: `<ui-icon class="ui-table-sort-icon" [name]="iconName()" size="sm" />`,
@@ -993,7 +990,6 @@ export class UiTableSelectableRow<T = unknown> {
  * Instantiates `ui-checkbox` bound to the table selection.
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-table-checkbox',
   imports: [UiCheckbox, FormsModule],
   template: `
@@ -1032,7 +1028,6 @@ export class UiTableCheckbox<T = unknown> {
  * Checked when every row is selected, indeterminate on partial selection.
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-table-header-checkbox',
   imports: [UiCheckbox, FormsModule],
   template: `
@@ -1065,7 +1060,6 @@ export class UiTableHeaderCheckbox<T = unknown> {
  * Instantiates `ui-radio` bound to the table selection.
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-table-radio',
   imports: [UiRadio, FormsModule],
   template: `

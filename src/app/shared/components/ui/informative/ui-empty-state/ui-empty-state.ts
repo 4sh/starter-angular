@@ -1,5 +1,4 @@
 import {
-  ChangeDetectionStrategy,
   afterNextRender,
   booleanAttribute,
   Component,
@@ -49,7 +48,6 @@ export class UiEmptyStateActions {}
  * actions into the default flow via the `uiEmptyStateActions` marker.
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-empty-state',
   imports: [UiIcon],
   templateUrl: './ui-empty-state.html',

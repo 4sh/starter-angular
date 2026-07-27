@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, booleanAttribute, Component, computed, inject, input, model, output } from '@angular/core';
+import { booleanAttribute, Component, computed, inject, input, model, output } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { UiFeedbackLevel, UiSubLevel } from '@app/shared/types/ui-level';
@@ -99,7 +99,6 @@ interface UiSidebarMenuNode {
  * toggles and rails; `Enter` / `Space` activate the focused control.
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-sidebar-menu',
   imports: [NgTemplateOutlet, RouterLink, RouterLinkActive, UiIcon, UiBadge, UiTooltip],
   templateUrl: './ui-sidebar-menu.html',

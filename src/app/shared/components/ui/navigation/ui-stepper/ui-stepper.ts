@@ -1,5 +1,4 @@
 import {
-  ChangeDetectionStrategy,
   booleanAttribute,
   Component,
   computed,
@@ -51,7 +50,6 @@ let nextUid = 0;
  * reference it without a temporal-dead-zone error at class-definition time.
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-step',
   imports: [UiIcon],
   templateUrl: './ui-step.html',
@@ -127,7 +125,6 @@ export class UiStep {
  * `<ng-template #content>` so it initialises lazily.
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-step-panel',
   imports: [NgTemplateOutlet],
   template: `
@@ -193,7 +190,6 @@ export class UiStepPanel {
  * progress indicator ("steps only").
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-step-list',
   template: '<ng-content />',
   styleUrl: './ui-step-list.scss',
@@ -214,7 +210,6 @@ export class UiStepList {
  * horizontal step list.
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-step-panels',
   template: '<ng-content />',
   styles: `
@@ -234,7 +229,6 @@ export class UiStepPanels {}
  * the item itself, alongside the panel.
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-step-item',
   template: '<ng-content />',
   styleUrl: './ui-step-item.scss',
@@ -301,7 +295,6 @@ export class UiStepItem {
  * ```
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-stepper',
   template: '<ng-content />',
   styles: `

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, booleanAttribute, Component, computed, input, output } from '@angular/core';
+import { booleanAttribute, Component, computed, input, output } from '@angular/core';
 import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
 import { UiFeedbackLevel, UiSubLevel } from '@app/shared/types/ui-level';
 import { UI_TOAST_DEFAULT_ICONS } from './ui-toast.types';
@@ -20,7 +20,6 @@ import { UI_TOAST_DEFAULT_ICONS } from './ui-toast.types';
  * ```
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-toast',
   imports: [UiIcon],
   templateUrl: './ui-toast.html',

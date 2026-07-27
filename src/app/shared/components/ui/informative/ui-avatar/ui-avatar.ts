@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, input, isDevMode, output, signal } from '@angular/core';
+import { Component, computed, effect, input, isDevMode, output, signal } from '@angular/core';
 import { UiIcon, UiIconSize } from '@app/shared/components/ui/ui-icon/ui-icon';
 
 export type AvatarSize = 'small' | 'default' | 'large';
@@ -18,7 +18,6 @@ export type AvatarMode = 'image' | 'label' | 'icon';
  * avatar with no name is treated as decorative (aria-hidden).
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-avatar',
   imports: [UiIcon],
   templateUrl: './ui-avatar.html',

@@ -1,7 +1,6 @@
 import { isPlatformBrowser } from '@angular/common';
 import { NgTemplateOutlet } from '@angular/common';
 import {
-  ChangeDetectionStrategy,
   booleanAttribute,
   Component,
   computed,
@@ -54,7 +53,6 @@ let zIndexSeq = 0;
  * ```
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-toast-container',
   imports: [UiToast, UiMotion, NgTemplateOutlet],
   templateUrl: './ui-toast-container.html',

@@ -1,5 +1,4 @@
 import {
-  ChangeDetectionStrategy,
   afterNextRender,
   afterRenderEffect,
   booleanAttribute,
@@ -116,7 +115,6 @@ let nextUid = 0;
  * ```
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-segment-control',
   imports: [UiIcon, NgTemplateOutlet],
   templateUrl: './ui-segment-control.html',

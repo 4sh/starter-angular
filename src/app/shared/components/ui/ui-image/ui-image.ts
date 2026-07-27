@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy,Component, Input, signal, inject, computed, effect} from '@angular/core';
+import { Component, Input, signal, inject, computed, effect} from '@angular/core';
 import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {HttpClient} from '@angular/common/http';
 import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
@@ -13,7 +13,6 @@ const assetsMap = assetsMapRaw as Record<string, ThemeMap>;
 const SVG_CACHE = new Map<string, string>();
 
 @Component({
-    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'ui-image',
     templateUrl: './ui-image.html',
     styleUrls: ['./ui-image.scss'],

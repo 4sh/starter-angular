@@ -1,5 +1,4 @@
 import {
-  ChangeDetectionStrategy,
   booleanAttribute,
   Component,
   computed,
@@ -137,7 +136,6 @@ type TagRow =
  * ```
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-input-tags',
   imports: [NgTemplateOutlet, OverlayModule, UiField, UiIcon, UiChip, UiMotion],
   templateUrl: './ui-input-tags.html',

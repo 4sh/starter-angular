@@ -1,5 +1,4 @@
 import {
-  ChangeDetectionStrategy,
   booleanAttribute,
   Component,
   computed,
@@ -70,7 +69,6 @@ const ELLIPSIS = -1;
  * templates.
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-paginator',
   imports: [NgTemplateOutlet, FormsModule, UiIcon, UiSelect],
   templateUrl: './ui-paginator.html',

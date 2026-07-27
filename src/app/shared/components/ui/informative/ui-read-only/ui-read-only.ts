@@ -1,5 +1,4 @@
 import {
-  ChangeDetectionStrategy,
   afterNextRender,
   booleanAttribute,
   Component,
@@ -21,7 +20,6 @@ export type ReadOnlyAlign = 'left' | 'right';
  * ui-read-only — displays a labelled value in read-only mode.
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-read-only',
   imports: [NgTemplateOutlet, UiLabel],
   templateUrl: './ui-read-only.html',

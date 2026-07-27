@@ -1,5 +1,4 @@
 import {
-  ChangeDetectionStrategy,
   booleanAttribute,
   Component,
   computed,
@@ -49,7 +48,6 @@ let nextInstanceId = 0;
  * server-side. Image previews use object URLs that are revoked on removal/clear.
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-file-upload',
   imports: [NgTemplateOutlet, UiIcon, UiButton, UiLink, UiFileUploadList],
   templateUrl: './ui-file-upload.html',

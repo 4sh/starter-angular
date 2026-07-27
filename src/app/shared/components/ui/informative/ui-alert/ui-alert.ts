@@ -1,5 +1,4 @@
 import {
-  ChangeDetectionStrategy,
   afterNextRender,
   booleanAttribute,
   Component,
@@ -38,7 +37,6 @@ import { UI_ALERT_DEFAULT_ICONS, UiAlertSize } from './ui-alert.types';
  * ```
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-alert',
   imports: [UiIcon],
   templateUrl: './ui-alert.html',

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, booleanAttribute, Component, computed, input } from '@angular/core';
+import { booleanAttribute, Component, computed, input } from '@angular/core';
 import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
 import { UiFeedbackLevel } from '@app/shared/types/ui-level';
 
@@ -28,7 +28,6 @@ const LEVEL_ICONS: Record<UiFeedbackLevel, string> = {
  */
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-helper',
   imports: [UiIcon],
   templateUrl: './ui-helper.html',

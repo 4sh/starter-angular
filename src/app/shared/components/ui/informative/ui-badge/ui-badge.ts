@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, input, isDevMode } from '@angular/core';
+import { Component, computed, effect, input, isDevMode } from '@angular/core';
 import { UiIcon, UiIconSize } from '@app/shared/components/ui/ui-icon/ui-icon';
 import { UiFeedbackLevel, UiSubLevel } from '@app/shared/types/ui-level';
 
@@ -8,7 +8,6 @@ export type BadgeSize = 'default' | 'small' | 'large';
  * ui-badge — small status / count indicator.
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-badge',
   imports: [UiIcon],
   templateUrl: './ui-badge.html',

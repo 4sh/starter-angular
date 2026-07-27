@@ -1,5 +1,4 @@
 import {
-  ChangeDetectionStrategy,
   booleanAttribute,
   Component,
   computed,
@@ -67,7 +66,6 @@ export class UiAccordionContent {}
  * reference it without a temporal-dead-zone error at class-definition time.
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-accordion-panel',
   templateUrl: './ui-accordion-panel.html',
   styleUrl: './ui-accordion-panel.scss',
@@ -152,7 +150,6 @@ export class UiAccordionPanel {
  * ```
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-accordion',
   template: '<ng-content />',
   styleUrl: './ui-accordion.scss',

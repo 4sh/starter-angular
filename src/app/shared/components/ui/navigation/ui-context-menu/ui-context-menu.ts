@@ -1,5 +1,4 @@
 import {
-  ChangeDetectionStrategy,
   booleanAttribute,
   Component,
   computed,
@@ -46,7 +45,6 @@ export type ContextMenuTarget = HTMLElement | ElementRef<HTMLElement> | null;
  * embedded menu), `styleClass`, `level`, `size`.
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-context-menu',
   imports: [OverlayModule, UiMenu, UiMotion],
   templateUrl: './ui-context-menu.html',

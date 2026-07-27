@@ -1,5 +1,4 @@
 import {
-  ChangeDetectionStrategy,
   booleanAttribute,
   Component,
   computed,
@@ -32,7 +31,6 @@ export type ChipSize = 'default' | 'small';
  * with Tab and removable with Enter/Space (native) plus Backspace/Delete.
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-chip',
   imports: [UiIcon, NgTemplateOutlet],
   templateUrl: './ui-chip.html',

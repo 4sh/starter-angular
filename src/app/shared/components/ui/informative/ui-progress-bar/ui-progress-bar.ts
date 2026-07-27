@@ -1,5 +1,4 @@
 import {
-  ChangeDetectionStrategy,
   booleanAttribute,
   Component,
   computed,
@@ -34,7 +33,6 @@ export interface UiProgressBarValueContext {
  * preference and the kit-wide `data-motion="off"` switch.
  */
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-progress-bar',
   imports: [NgTemplateOutlet],
   templateUrl: './ui-progress-bar.html',

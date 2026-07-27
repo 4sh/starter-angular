@@ -1,5 +1,4 @@
 import {
-  ChangeDetectionStrategy,
   afterNextRender,
   afterRenderEffect,
   booleanAttribute,
@@ -25,7 +24,6 @@ export type ButtonIconPos = 'left' | 'right' | 'top' | 'bottom';
 export type ButtonNativeProps = Record<string, string | number | boolean | null | undefined>;
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'ui-button',
   imports: [UiIcon, NgTemplateOutlet, RouterLink],
   templateUrl: './ui-button.html',
