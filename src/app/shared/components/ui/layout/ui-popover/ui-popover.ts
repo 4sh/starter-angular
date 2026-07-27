@@ -101,9 +101,9 @@ export class UiPopover {
   styleClass = input<string>();
 
   /** Emitted after the panel becomes visible. */
-  onShow = output<void>();
+  shown = output<void>();
   /** Emitted after the panel is hidden. */
-  onHide = output<void>();
+  hidden = output<void>();
 
   /** @ignore */
   private readonly doc = inject(DOCUMENT);
@@ -155,7 +155,7 @@ export class UiPopover {
     if (!this._open()) {
       this._open.set(true);
       this.applyTriggerAria(anchor);
-      this.onShow.emit();
+      this.shown.emit();
     }
     if (this.focusOnShow()) this.queueFocus();
   }
@@ -170,7 +170,7 @@ export class UiPopover {
     this._open.set(false);
     this.clearTriggerAria();
     if (focusWasInside) this.targetEl?.focus();
-    this.onHide.emit();
+    this.hidden.emit();
   }
 
   /** Toggle the panel, anchoring it like {@link show} when it opens. */

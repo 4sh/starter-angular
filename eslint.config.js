@@ -44,10 +44,6 @@ module.exports = tseslint.config(
       ],
       // Garde-fou : OnPush (défaut Angular 22) pour tout nouveau composant.
       "@angular-eslint/prefer-on-push-component-change-detection": "error",
-      // TEMPORAIRE : renommer les outputs `onXxx` / natifs = breaking change de
-      // l'API publique du design system. À traiter dans un chantier dédié.
-      "@angular-eslint/no-output-on-prefix": "off",
-      "@angular-eslint/no-output-native": "off",
     },
   },
   {

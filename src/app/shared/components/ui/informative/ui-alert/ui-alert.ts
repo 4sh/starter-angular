@@ -25,7 +25,7 @@ import { UI_ALERT_DEFAULT_ICONS, UiAlertSize } from './ui-alert.types';
  * The root carries `role="alert"` (implicit `aria-live="assertive"` +
  * `aria-atomic="true"`), so screen readers announce it as soon as it appears —
  * ideal for form validation summaries or transient status banners. Set `life`
- * to auto-dismiss after a delay; the alert hides itself and emits `close`.
+ * to auto-dismiss after a delay; the alert hides itself and emits `closed`.
  *
  * Unlike {@link UiToast} (a floating, service-driven notification), `ui-alert`
  * is a plain inline block — drop it in the page flow, a form, or a `@for` loop.
@@ -33,7 +33,7 @@ import { UI_ALERT_DEFAULT_ICONS, UiAlertSize } from './ui-alert.types';
  * @example
  * ```html
  * <ui-alert level="error" title="Erreur" text="Le formulaire est invalide." />
- * <ui-alert level="success" text="Enregistré." [life]="4000" (close)="onClose()" />
+ * <ui-alert level="success" text="Enregistré." [life]="4000" (closed)="onClose()" />
  * ```
  */
 @Component({
@@ -80,7 +80,7 @@ export class UiAlert {
   styleClass = input<string>();
 
   /** Emitted when the alert is dismissed (close button or `life` expiry). */
-  close = output<void>();
+  closed = output<void>();
 
   /** @ignore Hidden after a dismiss so the close button works standalone. */
   protected readonly dismissed = signal(false);
@@ -133,6 +133,6 @@ export class UiAlert {
   private dismiss(): void {
     if (this.dismissed()) return;
     this.dismissed.set(true);
-    this.close.emit();
+    this.closed.emit();
   }
 }

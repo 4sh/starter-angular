@@ -23,7 +23,7 @@ import { UiAlert } from '@app/shared/components/ui/informative/ui-alert/ui-alert
           title="Enregistré"
           text="Ce message disparaît après 3 secondes."
           [life]="3000"
-          (close)="visible.set(false)"
+          (closed)="visible.set(false)"
         />
       }
     </div>
@@ -164,7 +164,7 @@ const meta: Meta<UiAlert> = {
       description: 'Nom accessible de la région alerte.',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
-    close: { action: 'close', table: { category: 'Events' } },
+    closed: { action: 'closed', table: { category: 'Events' } },
   },
   args: {
     title: 'Alert title',
@@ -216,7 +216,7 @@ export const Dynamic: Story = {
     template: `
       <div style="display:flex; flex-direction:column; gap:12px; max-width:520px;">
         @for (m of messages; track m.id) {
-          <ui-alert [level]="m.level" [title]="m.title" [text]="m.text" (close)="remove(m.id)" />
+          <ui-alert [level]="m.level" [title]="m.title" [text]="m.text" (closed)="remove(m.id)" />
         }
       </div>
     `,

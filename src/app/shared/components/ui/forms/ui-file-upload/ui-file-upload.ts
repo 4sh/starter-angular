@@ -114,19 +114,19 @@ export class UiFileUpload {
 
   // --- Outputs ---------------------------------------------------------
   /** Files added to the selection (validated). */
-  onSelect = output<UiUploadFile[]>();
+  selected = output<UiUploadFile[]>();
   /** The full current selection changed. */
   filesChange = output<UiUploadFile[]>();
   /** A custom upload was requested (customUpload = true). */
   uploadHandler = output<UiUploadHandlerEvent>();
   /** Built-in upload completed for a batch. */
-  onUpload = output<UiUploadEvent>();
+  uploaded = output<UiUploadEvent>();
   /** A file failed validation or upload. */
-  onError = output<UiUploadErrorEvent>();
+  uploadError = output<UiUploadErrorEvent>();
   /** A file was removed. */
-  onRemove = output<UiUploadFile>();
+  removed = output<UiUploadFile>();
   /** The selection was cleared. */
-  onClear = output<void>();
+  cleared = output<void>();
 
   /** @ignore Stable id linking the visible label(s) to the native input. */
   protected readonly inputId = `ui-file-upload-${nextInstanceId++}`;
@@ -224,7 +224,7 @@ export class UiFileUpload {
     this.requests.delete(target.id);
     this.revoke(target);
     this.selection.update((files) => files.filter((f) => f.id !== target.id));
-    this.onRemove.emit(target);
+    this.removed.emit(target);
     this.filesChange.emit(this.selection());
   }
 
@@ -236,7 +236,7 @@ export class UiFileUpload {
     this.selection.set([]);
     this.messages.set([]);
     this.resetInput();
-    this.onClear.emit();
+    this.cleared.emit();
     this.filesChange.emit([]);
   }
 
@@ -313,7 +313,7 @@ export class UiFileUpload {
     if (!added.length) return;
 
     this.selection.update((files) => (this.multiple() ? [...files, ...added] : added));
-    this.onSelect.emit(added);
+    this.selected.emit(added);
     this.filesChange.emit(this.selection());
 
     if (this.auto()) this.upload();
@@ -335,7 +335,7 @@ export class UiFileUpload {
   private fail(item: UiUploadFile, reason: UiUploadErrorEvent['reason'], message: string, sink: string[]): void {
     this.revoke(item);
     sink.push(message);
-    this.onError.emit({ file: { ...item, status: 'error', error: message }, reason, message });
+    this.uploadError.emit({ file: { ...item, status: 'error', error: message }, reason, message });
   }
 
   /** Mutates one file in place (immutably) and pushes a new array reference. */
@@ -355,7 +355,7 @@ export class UiFileUpload {
       },
       markError: (file, msg) => {
         this.patch(file.id, { status: 'error', error: msg ?? 'Échec du téléversement' });
-        this.onError.emit({
+        this.uploadError.emit({
           file,
           reason: 'upload',
           message: msg ?? 'Échec du téléversement',
@@ -379,7 +379,7 @@ export class UiFileUpload {
       this.requests.delete(item.id);
       if (xhr.status >= 200 && xhr.status < 300) {
         this.patch(item.id, { status: 'completed', progress: 100 });
-        this.onUpload.emit({ files: [item], xhr });
+        this.uploaded.emit({ files: [item], xhr });
         this.filesChange.emit(this.selection());
       } else {
         this.uploadFailed(item, `Erreur ${xhr.status}`);
@@ -396,7 +396,7 @@ export class UiFileUpload {
   private uploadFailed(item: UiUploadFile, message: string): void {
     this.requests.delete(item.id);
     this.patch(item.id, { status: 'error', error: message });
-    this.onError.emit({ file: item, reason: 'upload', message });
+    this.uploadError.emit({ file: item, reason: 'upload', message });
   }
 
   private revoke(file: UiUploadFile): void {

@@ -182,9 +182,9 @@ export class UiSidebar {
   protected readonly footerTemplate = contentChild<TemplateRef<unknown>>('footer');
 
   /** Emitted after the overlay becomes visible. */
-  onShow = output<void>();
+  shown = output<void>();
   /** Emitted after the overlay is hidden. */
-  onHide = output<void>();
+  hidden = output<void>();
 
   /** @ignore */
   private readonly panelRef = viewChild<ElementRef<HTMLElement>>('panel');
@@ -272,11 +272,11 @@ export class UiSidebar {
             lockBodyScroll(this.document);
             this.locked = true;
           }
-          this.onShow.emit();
+          this.shown.emit();
         } else if (!open && wasOpen) {
           wasOpen = false;
           this.releaseLock();
-          this.onHide.emit();
+          this.hidden.emit();
         }
       });
     });

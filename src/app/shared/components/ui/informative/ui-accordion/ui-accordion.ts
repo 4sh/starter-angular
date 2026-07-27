@@ -177,9 +177,9 @@ export class UiAccordion {
   motion = input(true, { transform: booleanAttribute });
 
   /** Fired when a panel is expanded. */
-  onOpen = output<UiAccordionChangeEvent>();
+  opened = output<UiAccordionChangeEvent>();
   /** Fired when a panel is collapsed. */
-  onClose = output<UiAccordionChangeEvent>();
+  closed = output<UiAccordionChangeEvent>();
 
   /** @ignore Projected panels (for keyboard roving focus). */
   private readonly panels = contentChildren(UiAccordionPanel);
@@ -195,14 +195,14 @@ export class UiAccordion {
   toggle(value: UiAccordionValue, event: Event): void {
     const wasActive = this.isActive(value);
     this.setActive(value, !wasActive);
-    (wasActive ? this.onClose : this.onOpen).emit({ value, originalEvent: event });
+    (wasActive ? this.closed : this.opened).emit({ value, originalEvent: event });
   }
 
   /** @ignore Open a panel if it is not already open (used by `selectOnFocus`). */
   open(value: UiAccordionValue, event: Event): void {
     if (this.isActive(value)) return;
     this.setActive(value, true);
-    this.onOpen.emit({ value, originalEvent: event });
+    this.opened.emit({ value, originalEvent: event });
   }
 
   /** @ignore */

@@ -28,7 +28,7 @@
         [closable]="item.closable ?? true"
         [expanded]="expanded()"
         [styleClass]="item.styleClass"
-        (close)="dismiss(item)"
+        (closed)="dismiss(item)"
       >
         @if (template(); as tpl) {
           <ng-container *ngTemplateOutlet="tpl; context: { $implicit: item, closeFn: closeFn(item) }" />

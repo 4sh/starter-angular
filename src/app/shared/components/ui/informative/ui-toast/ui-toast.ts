@@ -16,7 +16,7 @@ import { UI_TOAST_DEFAULT_ICONS } from './ui-toast.types';
  *
  * @example
  * ```html
- * <ui-toast level="success" title="Enregistré" text="Profil mis à jour." (close)="…" />
+ * <ui-toast level="success" title="Enregistré" text="Profil mis à jour." (closed)="…" />
  * ```
  */
 @Component({
@@ -56,7 +56,7 @@ export class UiToast {
   styleClass = input<string>();
 
   /** Emitted when the user clicks the dismiss button. */
-  close = output<MouseEvent>();
+  closed = output<MouseEvent>();
 
   /** @ignore Resolved leading icon name (null when hidden). */
   protected readonly iconName = computed<string | null>(() => {
@@ -77,6 +77,6 @@ export class UiToast {
 
   /** @ignore */
   protected onClose(event: MouseEvent): void {
-    this.close.emit(event);
+    this.closed.emit(event);
   }
 }

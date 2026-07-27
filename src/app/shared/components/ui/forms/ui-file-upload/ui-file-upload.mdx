@@ -132,8 +132,8 @@ contenu personnalisé dans la barre d'actions.
   [maxFileSize]="5 * 1024 * 1024"
   url="/api/upload"
   ariaLabel="Téléverser des documents"
-  (onUpload)="onUploaded($event)"
-  (onError)="onError($event)"
+  (uploaded)="onUploaded($event)"
+  (uploadError)="uploadError($event)"
 />
 ```
 
