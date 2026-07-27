@@ -17,7 +17,7 @@ import {
   untracked,
   viewChild,
 } from '@angular/core';
-import { DOCUMENT, isPlatformBrowser, NgStyle, NgTemplateOutlet } from '@angular/common';
+import { DOCUMENT, isPlatformBrowser, NgTemplateOutlet } from '@angular/common';
 import { A11yModule } from '@angular/cdk/a11y';
 import { UiMotion, UiMotionPreset } from '@app/shared/motion/ui-motion';
 import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
@@ -88,7 +88,7 @@ function unlockBodyScroll(doc: Document): void {
  */
 @Component({
   selector: 'ui-drawer',
-  imports: [NgTemplateOutlet, NgStyle, A11yModule, UiMotion, UiIcon],
+  imports: [NgTemplateOutlet, A11yModule, UiMotion, UiIcon],
   templateUrl: './ui-drawer.html',
   styleUrl: './ui-drawer.scss',
 })

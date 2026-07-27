@@ -1,6 +1,6 @@
 import { Meta, StoryObj, applicationConfig, componentWrapperDecorator } from '@storybook/angular';
 import { provideHttpClient } from '@angular/common/http';
-import { Component, Input, OnChanges, inject, signal, Injectable, OnDestroy } from '@angular/core';
+import { Component, effect, inject, input, signal, Injectable, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 // Imports de votre app
@@ -48,33 +48,35 @@ class MockBrandService {
     imports: [UiImage, CommonModule],
     template: `
     <ui-image 
-        [name]="name" 
-        [width]="width" 
-        [widthUnit]="widthUnit" 
-        [height]="height" 
-        [heightUnit]="heightUnit"
-        [alt]="alt"
-        [priority]="priority"
-        [fill]="fill"
+        [name]="name()" 
+        [width]="width()" 
+        [widthUnit]="widthUnit()" 
+        [height]="height()" 
+        [heightUnit]="heightUnit()"
+        [alt]="alt()"
+        [priority]="priority()"
+        [fill]="fill()"
     ></ui-image>
   `
 })
-class StorybookWrapper implements OnChanges {
+class StorybookWrapper {
     themeService = inject(ThemeService) as unknown as MockThemeService;
     brandService = inject(BrandService) as unknown as MockBrandService;
 
-    @Input() name!: string;
-    @Input() width?: number;
-    @Input() widthUnit = 'px';
-    @Input() height?: number;
-    @Input() heightUnit = 'px';
-    @Input() alt?: string;
-    @Input() priority = false;
-    @Input() fill = false;
-    @Input() brandName = 'common';
+    name = input.required<string>();
+    width = input<number>();
+    widthUnit = input('px');
+    height = input<number>();
+    heightUnit = input('px');
+    alt = input<string>();
+    priority = input(false);
+    fill = input(false);
+    brandName = input('common');
 
-    ngOnChanges() {
-        this.brandService.setBrand(this.brandName);
+    constructor() {
+        effect(() => {
+            this.brandService.setBrand(this.brandName());
+        });
     }
 }
 
