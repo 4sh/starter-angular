@@ -122,7 +122,7 @@
 
       <ui-tab-panels>
 
-        <!-- Panel : Commandes -->
+        <!-- Panel: Orders -->
         <ui-tab-panel value="orders">
             <!-- Toolbar -->
             <div class="demo-toolbar flex-x">
@@ -267,7 +267,7 @@
             </div>
         </ui-tab-panel>
 
-        <!-- Panel : Statistiques (skeleton placeholder) -->
+        <!-- Panel: Statistics (skeleton placeholder) -->
         <ui-tab-panel value="stats">
           <div class="demo-placeholder-panel">
             <div class="flex-x" style="gap: var(--units-md); margin-bottom: var(--units-md)">
@@ -281,7 +281,7 @@
           </div>
         </ui-tab-panel>
 
-        <!-- Panel : Retours (skeleton placeholder) -->
+        <!-- Panel: Returns (skeleton placeholder) -->
         <ui-tab-panel value="returns">
           <div class="demo-placeholder-panel">
             <ui-skeleton height="48px" shape="rectangle" style="margin-bottom: var(--units-sm)" />
@@ -294,7 +294,7 @@
   </main>
 </div>
 
-<!-- ================================================================ DRAWER : Filtres avancés -->
+<!-- ================================================================ DRAWER: Advanced filters -->
 <ui-drawer
   [(visible)]="filterVisible"
   position="right"
@@ -305,7 +305,7 @@
   <div class="demo-drawer-body">
     <div class="flex-y" style="gap: var(--units-lg);">
     
-    <!-- Période -->
+    <!-- Period -->
     <div class="demo-filter-section">
       <div class="demo-filter-header-row flex-x">
         <span class="demo-filter-label">Période</span>
@@ -317,7 +317,7 @@
       </div>
     </div>
 
-    <!-- Statut -->
+    <!-- Status -->
     <div class="demo-filter-section">
       <div class="demo-filter-header-row flex-x">
         <span class="demo-filter-label">Statut</span>
@@ -331,7 +331,7 @@
       </div>
     </div>
 
-    <!-- Montant -->
+    <!-- Amount -->
     <div class="demo-filter-section">
       <div class="demo-filter-header-row flex-x">
         <span class="demo-filter-label">Montant</span>
@@ -342,7 +342,7 @@
       </div>
     </div>
 
-    <!-- Options d'affichage -->
+    <!-- Display options -->
     <div class="demo-filter-section">
       <div class="demo-filter-header-row flex-x">
         <span class="demo-filter-label">Options d'affichage</span>
@@ -361,7 +361,7 @@
   </ng-template>
 </ui-drawer>
 
-<!-- ================================================================ MODAL : Détail commande -->
+<!-- ================================================================ MODAL: Order detail -->
 <ui-modal
   [(visible)]="modalVisible"
   dismissableMask
@@ -377,7 +377,7 @@
 
   @if (selectedOrder(); as order) {
     <div class="demo-modal-body">
-      <!-- Info client -->
+      <!-- Customer info -->
       <section class="demo-modal-section">
         <h2 class="demo-modal-section-title">Informations client</h2>
         <div class="flex-x flex-gap-x flex-gap-y">
@@ -398,7 +398,7 @@
 
       <ui-separator />
 
-      <!-- Articles -->
+      <!-- Items -->
       <section class="demo-modal-section">
         <h2 class="demo-modal-section-title">Articles commandés</h2>
         <ui-table [value]="order.items" size="small">
@@ -436,7 +436,7 @@
   }
 </ui-modal>
 
-<!-- ================================================================ DRAWER : Nouvelle commande -->
+<!-- ================================================================ DRAWER: New order -->
 <ui-drawer
   [(visible)]="newOrderDrawerVisible"
   position="right"
@@ -446,7 +446,7 @@
 >
   <div class="demo-drawer-body flex-y flex-gap-xy">
     
-    <!-- Section 1 : Client -->
+    <!-- Section 1: Customer -->
     <section class="demo-filter-section">
       <div class="demo-filter-header-row flex-x">
         <span class="demo-filter-label">Informations client</span>
@@ -459,7 +459,7 @@
       </div>
     </section>
 
-    <!-- Section 2 : Commande -->
+    <!-- Section 2: Order -->
     <section class="demo-filter-section">
       <div class="demo-filter-header-row flex-x">
         <span class="demo-filter-label">Détails de la commande</span>
@@ -475,7 +475,7 @@
       </div>
     </section>
 
-    <!-- Section 3 : Produits & Remise -->
+    <!-- Section 3: Products & Discount -->
     <section class="demo-filter-section">
       <div class="demo-filter-header-row flex-x">
         <span class="demo-filter-label">Produits & Tarification</span>
@@ -494,7 +494,7 @@
       </div>
     </section>
 
-    <!-- Section 4 : Options -->
+    <!-- Section 4: Options -->
     <section class="demo-filter-section">
       <div class="demo-filter-header-row flex-x">
         <span class="demo-filter-label">Options supplémentaires</span>

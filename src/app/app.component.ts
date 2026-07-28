@@ -9,7 +9,7 @@ import { ThemeService } from '@app/core/service/theme.service';
   template: `<router-outlet />`,
 })
 export class AppComponent {
-  // Instancie les services : leurs effects appliquent [data-brand] / [data-theme] sur <html>.
+  // Instantiates the services: their effects apply [data-brand] / [data-theme] on <html>.
   protected readonly brand = inject(BrandService);
   protected readonly theme = inject(ThemeService);
 }
