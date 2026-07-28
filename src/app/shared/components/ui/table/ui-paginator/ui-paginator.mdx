@@ -1,5 +1,6 @@
 import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
 import * as PaginatorStories from './ui-paginator.stories';
+import { ConfigTable } from '../../../../../../../storybook/blocks/config-table';
 
 <Meta of={PaginatorStories} />
 
@@ -141,14 +142,4 @@ portés par les boutons quel que soit le contenu injecté.
 
 Constantes locales en tête de `ui-paginator.scss` :
 
-<table className="doc-table">
-  <thead>
-    <tr><th>Variable locale</th><th>Source</th><th>Rôle</th></tr>
-  </thead>
-  <tbody>
-    <tr><td>`$focus-ring-width`</td><td>`utils.$action-focus-ring-width`</td><td>Anneau de focus des boutons.</td></tr>
-    <tr><td>`$button-size`</td><td>locale (40px)</td><td>Taille des contrôles / min-width des numéros.</td></tr>
-    <tr><td>`$button-radius`</td><td>locale (`--radius-default`)</td><td>Rayon des boutons (carré arrondi Figma 16px).</td></tr>
-    <tr><td>`$bar-gap` / `$blocks-gap` / `$numbers-gap`</td><td>locales (`--units-2xl` / `--units-default` / `--units-sm`)</td><td>Espacements de la barre.</td></tr>
-  </tbody>
-</table>
+<ConfigTable of="ui-paginator" />

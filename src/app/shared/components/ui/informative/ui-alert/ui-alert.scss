@@ -12,9 +12,10 @@
 // =====================================================================
 
 // --- Config -----------------------------------------------------------
-$levels: default, highlight, success, warning, error;
-$sublevels: high, low;
+$levels: default, highlight, success, warning, error; /// Niveaux sémantiques générant les modifiers `._<niveau>`.
+$sublevels: high, low;                                /// Intensités générant les modifiers `._<intensité>`.
 
+/// Hauteur minimale et typo, par taille.
 $sizes: (
   'default': (
     min-height: 56px,
@@ -27,10 +28,10 @@ $sizes: (
     text-size: var(--size-typography-text-lg),
   ),
 );
-$size-default: map.get($sizes, 'default');
+$size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default` de `$sizes`.
 
 // Reused structural constant (kit-wide focus ring). Local alias, never copied.
-$focus-ring-width: utils.$focus-ring-width;
+$focus-ring-width: utils.$focus-ring-width; /// Épaisseur de l'anneau de focus.
 
 @mixin alert-size($size) {
   min-height: utils.rem-calc(map.get($size, min-height));

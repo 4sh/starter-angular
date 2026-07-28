@@ -1,5 +1,6 @@
 import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
 import * as DrawerStories from './ui-drawer.stories';
+import { ConfigTable } from '../../../../../../../storybook/blocks/config-table';
 
 <Meta of={DrawerStories} />
 
@@ -139,39 +140,4 @@ un conteneur borné (panneau, aperçu). Le conteneur parent doit être positionn
 Variables locales en tête de `ui-drawer.scss`. Voir le
 [fonctionnement de la configuration](?path=/docs/components-configuration--docs).
 
-<table className="doc-table">
-  <thead>
-    <tr>
-      <th>Variable locale</th>
-      <th>Source</th>
-      <th>Rôle</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>$focus-ring-width</code></td>
-      <td><code>utils.$focus-ring-width</code></td>
-      <td>Épaisseur de l'anneau de focus du bouton de fermeture</td>
-    </tr>
-    <tr>
-      <td><code>$drawer-z-index</code></td>
-      <td>local (1100)</td>
-      <td>Palier d'empilement de base (au-dessus des overlays CDK à 1000)</td>
-    </tr>
-    <tr>
-      <td><code>$mask-background</code></td>
-      <td>local (<code>--primitives-black-50</code>)</td>
-      <td>Assombrissement du masque — pas de token sémantique de scrim ; exposé via la custom property <code>--ui-drawer-mask-background</code></td>
-    </tr>
-    <tr>
-      <td><code>$size-side</code> · <code>$size-edge</code></td>
-      <td>local (rem)</td>
-      <td>Largeur d'un panneau gauche/droite · hauteur d'un panneau haut/bas (surchargeable par <code>drawerStyle</code>)</td>
-    </tr>
-    <tr>
-      <td><code>$panel-padding</code> · <code>$action-size</code></td>
-      <td>local (tokens metrics)</td>
-      <td>Insets des régions · cible du bouton de fermeture</td>
-    </tr>
-  </tbody>
-</table>
+<ConfigTable of="ui-drawer" />

@@ -1,5 +1,6 @@
 import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
 import * as ModalStories from './ui-modal.stories';
+import { ConfigTable } from '../../../../../../../storybook/blocks/config-table';
 
 <Meta of={ModalStories} />
 
@@ -160,34 +161,4 @@ reste **interactif et scrollable** (`blockScroll` peut tout de même figer le sc
 Variables locales en tête de `ui-modal.scss`. Voir le
 [fonctionnement de la configuration](?path=/docs/components-configuration--docs).
 
-<table className="doc-table">
-  <thead>
-    <tr>
-      <th>Variable locale</th>
-      <th>Source</th>
-      <th>Rôle</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>$focus-ring-width</code></td>
-      <td><code>utils.$focus-ring-width</code></td>
-      <td>Épaisseur de l'anneau de focus des boutons d'en-tête</td>
-    </tr>
-    <tr>
-      <td><code>$modal-z-index</code></td>
-      <td>local (1100)</td>
-      <td>Palier d'empilement de base (au-dessus des overlays CDK à 1000)</td>
-    </tr>
-    <tr>
-      <td><code>$mask-background</code></td>
-      <td>local (<code>--primitives-black-50</code>)</td>
-      <td>Assombrissement du masque — pas de token sémantique de scrim ; exposé via la custom property <code>--ui-modal-mask-background</code></td>
-    </tr>
-    <tr>
-      <td><code>$dialog-padding</code> · <code>$dialog-radius</code> · <code>$action-size</code></td>
-      <td>local (tokens metrics)</td>
-      <td>Insets des régions, rayon de la surface, cible des boutons d'en-tête</td>
-    </tr>
-  </tbody>
-</table>
+<ConfigTable of="ui-modal" />

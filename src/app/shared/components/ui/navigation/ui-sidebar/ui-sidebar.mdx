@@ -1,5 +1,6 @@
 import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
 import * as SidebarStories from './ui-sidebar.stories';
+import { ConfigTable } from '../../../../../../../storybook/blocks/config-table';
 
 <Meta of={SidebarStories} />
 
@@ -181,17 +182,6 @@ sont natifs sur un `<button>`.
 
 Largeurs pilotables par variables CSS locales (aucune constante partagée ajoutée) :
 
-<table className="doc-table">
-  <thead>
-    <tr>
-      <th>Variable</th>
-      <th>Défaut</th>
-      <th>Rôle</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr><td><code>--ui-sidebar-width</code></td><td><code>280px</code></td><td>Largeur déployée.</td></tr>
-    <tr><td><code>--ui-sidebar-rail-width</code></td><td><code>72px</code></td><td>Largeur du rail d'icônes replié.</td></tr>
-    <tr><td><code>--ui-sidebar-backdrop-background</code></td><td><code>black-50</code></td><td>Fond de l'overlay.</td></tr>
-  </tbody>
-</table>
+<ConfigTable of="ui-sidebar" label="ui-sidebar" />
+
+<ConfigTable of="ui-sidebar-menu" label="ui-sidebar-menu" />

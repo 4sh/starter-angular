@@ -1,5 +1,6 @@
 import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
 import * as InputOtpStories from './ui-input-otp.stories';
+import { ConfigTable } from '../../../../../../../storybook/blocks/config-table';
 
 <Meta of={InputOtpStories} />
 
@@ -172,15 +173,4 @@ structurelles (rayon, épaisseur de bordure, anneau de focus) sont **réutilisé
 configuration partagée `ui-config` (voir [Configuration](?path=/docs/design-system-configuration--docs)
 et la page [Forms](?path=/docs/design-system-configuration-forms--docs)).
 
-<table className="doc-table">
-  <thead>
-    <tr><th>Variable locale</th><th>Source</th><th>Rôle</th></tr>
-  </thead>
-  <tbody>
-    <tr><td><code>$sizes</code></td><td>local</td><td>Map avec clés <code>size</code> (dimension) et <code>font-size</code> (typographie) pour chaque variante (<code>small</code>/<code>default</code>/<code>large</code>).</td></tr>
-    <tr><td><code>$radius</code></td><td><code>utils.$form-field-radius</code></td><td>Rayon des cellules (aligné sur <code>ui-field</code>).</td></tr>
-    <tr><td><code>$stroke-width</code></td><td><code>utils.$form-field-stroke-width</code></td><td>Épaisseur de la bordure.</td></tr>
-    <tr><td><code>$focus-ring-width</code></td><td><code>utils.$form-field-focus-ring-width</code></td><td>Largeur de l'anneau de focus.</td></tr>
-    <tr><td><code>$gap</code></td><td>local</td><td>Espace entre les cellules (<code>--units-sm</code>).</td></tr>
-  </tbody>
-</table>
+<ConfigTable of="ui-input-otp" />

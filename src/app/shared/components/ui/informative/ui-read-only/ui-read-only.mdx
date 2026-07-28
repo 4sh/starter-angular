@@ -1,5 +1,6 @@
 import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
 import * as ReadOnlyStories from './ui-read-only.stories';
+import { ConfigTable } from '../../../../../../../storybook/blocks/config-table';
 
 <Meta of={ReadOnlyStories} />
 
@@ -111,32 +112,7 @@ Le composant est présentationnel : les tailles de police sont des tokens de typ
 l'input `labelWidth` (custom property `--ui-read-only-label-width`). Le mode `matchField`
 **consomme** les constantes partagées du champ (écart + hauteur ; aucune nouvelle constante) :
 
-<table className="doc-table">
-  <thead>
-    <tr>
-      <th>Variable locale</th>
-      <th>Source (<code>ui-config</code>)</th>
-      <th>Rôle</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>$label-gap</code></td>
-      <td><code>utils.$form-field-gap</code></td>
-      <td>Écart label→valeur appliqué en mode <code>matchField</code> (identique à l'écart label→boîte d'un <code>ui-field</code>). Hors <code>matchField</code>, l'écart par défaut est compact (<code>--units-2xs</code>).</td>
-    </tr>
-    <tr>
-      <td><code>$field-height</code></td>
-      <td><code>utils.$form-field-height</code></td>
-      <td>Hauteur de la zone de valeur en <code>matchField</code> (taille <code>default</code>).</td>
-    </tr>
-    <tr>
-      <td><code>$field-height-small</code></td>
-      <td><code>utils.$form-field-height-small</code></td>
-      <td>Idem pour la taille <code>small</code>.</td>
-    </tr>
-  </tbody>
-</table>
+<ConfigTable of="ui-read-only" />
 
 Voir la page de groupe <a href="?path=/docs/components-configuration-forms--docs">Configuration → Forms</a>
 et <a href="?path=/docs/components-configuration--docs">Components / Configuration</a>.

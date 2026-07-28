@@ -9,6 +9,7 @@
 
 // --- Config (extension points) ---------------------------------------
 // `default` = base styles; other keys become `._<name>` modifiers.
+/// Dimensions par densité (séparateur ; les liens suivent la taille `ui-link`)
 $sizes: (
   'default': (
     font-size: var(--size-typography-text-default),
@@ -17,9 +18,9 @@ $sizes: (
     font-size: var(--size-typography-text-md),
   ),
 );
-$size-default: map.get($sizes, 'default');
-$item-gap: var(--spacing-default);
-$focus-ring-width: utils.$action-focus-ring-width;
+$size-default: map.get($sizes, 'default');         /// Raccourci vers l'entrée `default` de `$sizes`.
+$item-gap: var(--spacing-default);                 /// Espacement entre éléments et séparateurs
+$focus-ring-width: utils.$action-focus-ring-width; /// Épaisseur de l'anneau de focus du bouton ellipsis
 
 .ui-breadcrumb {
   // --- Base (nav landmark) --------------------------------------------

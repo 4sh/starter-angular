@@ -8,17 +8,17 @@
 // =====================================================================
 
 // --- Local structural config  ------------
-$panel-width: utils.rem-calc(360);
-$panel-radius: utils.$overlay-panel-radius;
-$panel-padding: utils.$overlay-panel-padding;
-$panel-gap: var(--units-sm);
-$panel-shadow: utils.$overlay-panel-shadow;
+$panel-width: utils.rem-calc(360);            /// Largeur du panneau calendrier
+$panel-radius: utils.$overlay-panel-radius;   /// Rayon de bordure du panneau
+$panel-padding: utils.$overlay-panel-padding; /// Padding interne du panneau
+$panel-gap: var(--units-sm);                  /// Espace entre sections (header / grille / heure)
+$panel-shadow: utils.$overlay-panel-shadow;   /// Ombre du panneau en overlay (retirée en inline)
 
-$day-size: var(--size-components-default);
-$day-radius: var(--radius-full);
-$nav-size: var(--size-components-default);
-$focus-ring-width: utils.$focus-ring-width;
-$stroke-width: utils.$control-stroke-width;
+$day-size: var(--size-components-default);  /// Diamètre d'une cellule jour
+$day-radius: var(--radius-full);            /// Rayon des cellules jour (cercle)
+$nav-size: var(--size-components-default);  /// Taille des boutons de navigation mensuelle
+$focus-ring-width: utils.$focus-ring-width; /// Anneau de focus (jours, navigation)
+$stroke-width: utils.$control-stroke-width; /// Épaisseur des bordures (panneau, cellule « today »)
 
 .ui-datepicker {
   &-trigger { display: block; cursor: pointer; }

@@ -5,7 +5,7 @@
 // =====================================================================
 
 // --- Config ---------------------------------------------------
-$marker-size: utils.rem-calc(44);
+$marker-size: utils.rem-calc(44); /// Diamètre du marqueur d'étape, pour aligner le panneau.
 
 :host {
   display: block;

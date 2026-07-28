@@ -1,5 +1,6 @@
 import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
 import * as CardStories from './ui-card.stories';
+import { ConfigTable } from '../../../../../../../storybook/blocks/config-table';
 
 <Meta of={CardStories} />
 
@@ -172,49 +173,4 @@ ne sont pas gérés : la carte est un conteneur).
 Variables locales en tête de `ui-card.scss` (spécifiques à ce composant). Voir le
 [fonctionnement de la configuration](?path=/docs/components-configuration--docs).
 
-<table className="doc-table">
-  <thead>
-    <tr>
-      <th>Variable locale</th>
-      <th>Source</th>
-      <th>Rôle</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>$card-padding</code></td>
-      <td><code>var(--units-lg)</code></td>
-      <td>Inset du corps (24px).</td>
-    </tr>
-    <tr>
-      <td><code>$card-gap</code></td>
-      <td><code>var(--units-md)</code></td>
-      <td>Espacement entre en-tête / contenu / pied (12px).</td>
-    </tr>
-    <tr>
-      <td><code>$card-header-gap</code></td>
-      <td><code>var(--units-2xs)</code></td>
-      <td>Espacement titre ↔ sous-titre (2px).</td>
-    </tr>
-    <tr>
-      <td><code>$card-footer-gap</code></td>
-      <td><code>var(--units-sm)</code></td>
-      <td>Espacement entre éléments du pied (8px).</td>
-    </tr>
-    <tr>
-      <td><code>$card-radius</code></td>
-      <td><code>var(--radius-md)</code></td>
-      <td>Rayon des coins (12px).</td>
-    </tr>
-    <tr>
-      <td><code>$card-stroke-width</code></td>
-      <td><code>var(--stroke-sm)</code></td>
-      <td>Épaisseur de bordure (1px).</td>
-    </tr>
-    <tr>
-      <td><code>--ui-card-padding</code></td>
-      <td>custom property (= <code>$card-padding</code>)</td>
-      <td>Gouttière exposée pour regouttiérer un contenu <code>contentFlush</code>.</td>
-    </tr>
-  </tbody>
-</table>
+<ConfigTable of="ui-card" />

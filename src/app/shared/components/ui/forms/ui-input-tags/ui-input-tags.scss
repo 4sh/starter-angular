@@ -6,6 +6,7 @@
 // =====================================================================
 
 // --- Config ----------------------------------------
+/// Géométrie et typo des tags, des options et du panneau, par taille.
 $sizes: (
   'default': (
     tag-height: utils.rem-calc(24),
@@ -24,14 +25,14 @@ $sizes: (
     scroll-height: utils.rem-calc(180),
   ),
 );
-$size-default: map.get($sizes, 'default');
-$size-small: map.get($sizes, 'small');
+$size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default` de `$sizes`.
+$size-small: map.get($sizes, 'small');     /// Raccourci vers l'entrée `small` de `$sizes`.
 
-$panel-padding: var(--units-xs);
-$panel-gap: var(--units-xs);
-$option-radius: var(--radius-sm);
-$tag-gap: var(--units-xs);
-$input-min-width: utils.rem-calc(80);
+$panel-padding: var(--units-xs);      /// Inset du panneau de suggestions.
+$panel-gap: var(--units-xs);          /// Espacement entre les groupes du panneau.
+$option-radius: var(--radius-sm);     /// Rayon d'une option.
+$tag-gap: var(--units-xs);            /// Espacement entre les tags saisis.
+$input-min-width: utils.rem-calc(80); /// Largeur minimale de la zone de saisie restante.
 
 .ui-input-tags {
   display: block;

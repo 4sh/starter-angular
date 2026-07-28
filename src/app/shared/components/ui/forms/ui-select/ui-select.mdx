@@ -1,5 +1,6 @@
 import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
 import * as SelectStories from './ui-select.stories';
+import { ConfigTable } from '../../../../../../../storybook/blocks/config-table';
 
 <Meta of={SelectStories} />
 
@@ -285,47 +286,7 @@ Variables locales en tête de `ui-select.scss` (la boîte du déclencheur est co
 `ui-field`, voir le groupe partagé [Forms](?path=/docs/components-configuration-forms--docs) et
 le [fonctionnement de la configuration](?path=/docs/components-configuration--docs)) :
 
-<table className="doc-table">
-  <thead>
-    <tr>
-      <th>Variable locale</th>
-      <th>Source</th>
-      <th>Rôle</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>$sizes</code></td>
-      <td>map locale (YAML Figma)</td>
-      <td>Hauteur/padding/typo des options, en-têtes de groupe, filtre et hauteur de défilement par taille (default : ligne 40px / liste 312px ; small : 32px / 256px)</td>
-    </tr>
-    <tr>
-      <td><code>$panel-padding</code> / <code>$panel-gap</code></td>
-      <td><code>var(--units-xs)</code></td>
-      <td>Padding interne du panneau et espacement entre lignes</td>
-    </tr>
-    <tr>
-      <td><code>$option-radius</code></td>
-      <td><code>var(--radius-sm)</code></td>
-      <td>Rayon d'une ligne d'option</td>
-    </tr>
-    <tr>
-      <td><code>$option-gap</code></td>
-      <td><code>var(--units-sm)</code></td>
-      <td>Espace entre case/contenu/coche dans une ligne</td>
-    </tr>
-    <tr>
-      <td><code>$checkbox-size</code></td>
-      <td><code>utils.rem-calc(18)</code></td>
-      <td>Taille de la case visuelle (mode <code>checkbox</code>)</td>
-    </tr>
-    <tr>
-      <td><code>$stroke-width</code></td>
-      <td><code>utils.$control-stroke-width</code></td>
-      <td>Épaisseur de bordure (case visuelle)</td>
-    </tr>
-  </tbody>
-</table>
+<ConfigTable of="ui-select" />
 
 La coque du panneau (rayon, ombre, bordure) vient des constantes partagées
 `utils.$overlay-panel-*` ; surcharge ponctuelle possible via les custom properties

@@ -104,8 +104,11 @@ page liste les variables, leur rôle et leur valeur par défaut.
 ## Sommaire : configuration par composant
 
 Les variables **locales** de chaque composant (dont celles qui pointent vers `ui-config` =
-points d'ajustement per-composant) sont documentées dans une section **« Configuration (SCSS) »**
-sur la doc du composant :
+points d'ajustement per-composant) sont documentées dans la section **« Theming »** de la doc du
+composant. Cette table est **générée** depuis le `.scss` par `npm run docs:config` : le rôle de
+chaque variable vient de son commentaire `///`, le binding et la chaîne vers `ui-config` sont
+déduits, et la valeur affichée est **mesurée** dans le thème, la marque et le viewport actifs.
+Rebinder une variable dans un projet ne demande donc aucune reprise de doc.
 
 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
   <thead>
@@ -210,7 +213,7 @@ garde `utils.motion-reduce`, presets `ui-motion-*` et directive `[uiMotion]`, do
   si propre à une famille `forms`/`actions`/`informative`, **global** sinon), et l'ajouter à la
   page de groupe correspondante ci-dessus.
 - Valeur d'un **seul** composant → elle reste **locale** à son `.scss` (documentée dans la
-  section « Configuration (SCSS) » de sa doc).
+  section « Theming » de sa doc).
 - `ui-config` porte des **choix de tokens** (structure). Les couleurs thémables restent des
   **design tokens** runtime : **jamais** de couleur ici.
 
@@ -219,4 +222,4 @@ garde `utils.motion-reduce`, presets `ui-motion-*` et directive `[uiMotion]`, do
 > **Recherche Storybook** : la barre de recherche indexe les **titres** de l'arborescence
 > (nom / chemin), pas le contenu des pages. Pour retrouver une variable, cherchez son **groupe**
 > (`Global UI`, `Forms`, `Actions`, `Informative`) ou le **composant** qui la consomme
-> (`ui-radio`, `ui-avatar`…), puis sa section « Configuration (SCSS) ».
+> (`ui-radio`, `ui-avatar`…), puis sa section « Theming ».

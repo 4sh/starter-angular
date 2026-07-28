@@ -1,5 +1,6 @@
 import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
 import * as TextareaStories from './ui-textarea.stories';
+import { ConfigTable } from '../../../../../../../storybook/blocks/config-table';
 
 <Meta of={TextareaStories} />
 
@@ -109,34 +110,6 @@ La boîte est fournie par le shell `ui-field` en mode multiline. Les constantes 
 sont partagées dans le groupe [Forms](?path=/docs/components-configuration-forms--docs) ; voir aussi
 le [fonctionnement de la configuration](?path=/docs/components-configuration--docs).
 
-<table className="doc-table">
-  <thead>
-    <tr>
-      <th>Variable locale (ui-field)</th>
-      <th>Source</th>
-      <th>Rôle</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>$textarea-min-height</code></td>
-      <td><code>utils.$form-textarea-min-height</code></td>
-      <td>Hauteur minimale de la boîte</td>
-    </tr>
-    <tr>
-      <td><code>$textarea-min-height-small</code></td>
-      <td><code>utils.$form-textarea-min-height-small</code></td>
-      <td>Hauteur minimale variante small</td>
-    </tr>
-    <tr>
-      <td><code>$textarea-padding-y</code></td>
-      <td><code>utils.$form-textarea-padding-y</code></td>
-      <td>Padding vertical de la boîte</td>
-    </tr>
-    <tr>
-      <td><code>$textarea-padding-y-small</code></td>
-      <td><code>utils.$form-textarea-padding-y-small</code></td>
-      <td>Padding vertical variante small</td>
-    </tr>
-  </tbody>
-</table>
+<ConfigTable of="ui-field" label="ui-field" />
+
+<ConfigTable of="ui-textarea" label="ui-textarea" />

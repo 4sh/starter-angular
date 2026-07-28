@@ -4,14 +4,14 @@
 // ui-accordion-panel : co-located styles. All values come from tokens.
 //
 // The whole header is the toggle button; the chevron sits in a circular
-// "control" affordance (Figma) whose surface reacts to the header state.
+// "control" affordance whose surface reacts to the header state.
 // The body collapses with the grid-rows technique, timed by the motion
 // system (utils.motion-transition), and stays in the DOM (form state kept).
 // =====================================================================
 
 // --- Config (local) ---------------------------------------------------
-$control-size: utils.rem-calc(40); // circular chevron affordance (Figma 40×40)
-$focus-ring-width: utils.$action-focus-ring-width;
+$control-size: utils.rem-calc(40);                 /// Diamètre du chevron circulaire.
+$focus-ring-width: utils.$action-focus-ring-width; /// Épaisseur de l'anneau de focus de l'en-tête (constante partagée `ui-config`).
 
 :host {
   display: block;

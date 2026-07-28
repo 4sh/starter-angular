@@ -1,5 +1,6 @@
 import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
 import * as HelperStories from './ui-helper.stories';
+import { ConfigTable } from '../../../../../../../storybook/blocks/config-table';
 
 <Meta of={HelperStories} />
 
@@ -59,3 +60,7 @@ via `icon`).
 <input id="email" aria-describedby="email-help" aria-invalid="true" />
 <ui-helper id="email-help" level="error" ariaLive="assertive" message="Adresse e-mail invalide." />
 ```
+
+## Theming
+
+<ConfigTable of="ui-helper" />

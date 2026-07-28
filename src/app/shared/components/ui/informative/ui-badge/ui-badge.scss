@@ -12,9 +12,10 @@
 // =====================================================================
 
 // --- Config ---------------------------------------
-$levels: default, highlight, success, warning, error;
-$sublevels: high, low;
+$levels: default, highlight, success, warning, error; /// Niveaux sémantiques générant les modifiers `._<niveau>`.
+$sublevels: high, low;                                /// Intensités générant les modifiers `._<intensité>`.
 
+/// Hauteur, padding, typo et diamètre du point, par taille.
 $sizes: (
   'default': (
     height: 28px,
@@ -35,7 +36,7 @@ $sizes: (
     dot: 12px,
   ),
 );
-$size-default: map.get($sizes, 'default');
+$size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default` de `$sizes`.
 
 @mixin badge-size($size) {
   height: utils.rem-calc(map.get($size, height));

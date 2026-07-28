@@ -12,12 +12,12 @@
 
 // --- Config (extension points) ---------------------------------------
 // Local structural constants — retune here to detune ONLY this component.
-$card-padding: var(--units-lg); // body inset (24px)
-$card-gap: var(--units-md); // between header / content / footer (12px)
-$card-header-gap: var(--units-2xs); // between title and subtitle (2px)
-$card-footer-gap: var(--units-sm); // between footer items (8px)
-$card-radius: var(--radius-md);
-$card-stroke-width: var(--stroke-sm); // 1px, as in the Figma slots
+$card-padding: var(--units-lg);       /// Inset du corps.
+$card-gap: var(--units-md);           /// Espacement entre en-tête / contenu / pied.
+$card-header-gap: var(--units-2xs);   /// Espacement titre ↔ sous-titre.
+$card-footer-gap: var(--units-sm);    /// Espacement entre éléments du pied.
+$card-radius: var(--radius-md);       /// Rayon des coins.
+$card-stroke-width: var(--stroke-sm); /// Épaisseur de bordure.
 
 // Block host so consumer width/height (and layout) apply to the card box.
 :host {
@@ -28,7 +28,7 @@ $card-stroke-width: var(--stroke-sm); // 1px, as in the Figma slots
   // --- Base ----------------------------------------------------------
   // Gutter exposed as a custom property so consumers can re-apply it inside a
   // flush content region (e.g. `padding-inline: var(--ui-card-padding)`).
-  --ui-card-padding: #{$card-padding};
+  --ui-card-padding: #{$card-padding}; /// Gouttière exposée pour regouttiérer un contenu `contentFlush`.
 
   display: flex;
   flex-direction: column;
@@ -110,7 +110,7 @@ $card-stroke-width: var(--stroke-sm); // 1px, as in the Figma slots
     }
   }
 
-  // Footer aligned to the end by default (Figma: primaryAxisAlignItems = MAX).
+  // Footer aligned to the end by default.
   // A full-width child (e.g. a Gridaflex `flex-x` group) overrides this to lay
   // out its own distribution (tags left / action right, etc.).
   &-footer {

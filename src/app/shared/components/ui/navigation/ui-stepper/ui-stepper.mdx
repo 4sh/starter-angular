@@ -1,5 +1,6 @@
 import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
 import * as StepperStories from './ui-stepper.stories';
+import { ConfigTable } from '../../../../../../../storybook/blocks/config-table';
 
 <Meta of={StepperStories} />
 
@@ -164,25 +165,6 @@ L'étape active est pilotée de l'extérieur via le modèle two-way `[(value)]`.
   </tbody>
 </table>
 
-## Theming
-
-Variables **locales** aux composants (co-localisées) :
-
-<table className="doc-table">
-  <thead>
-    <tr><th>Variable locale</th><th>Source</th><th>Rôle</th></tr>
-  </thead>
-  <tbody>
-    <tr><td>`$marker-size`</td><td>`utils.rem-calc(44)`</td><td>Diamètre du marqueur numéroté (Figma 44px) ; partagé par `ui-step`, `ui-step-panel` (indent vertical) et `ui-step-item` (position du rail).</td></tr>
-    <tr><td>`$marker-stroke`</td><td>`var(--stroke-sm)`</td><td>Épaisseur de la bordure du marqueur.</td></tr>
-    <tr><td>`$separator-stroke` / `$rail-stroke`</td><td>`var(--stroke-default)`</td><td>Épaisseur du connecteur (horizontal) / du rail (vertical).</td></tr>
-    <tr><td>`$focus-ring-width`</td><td>`utils.$action-focus-ring-width`</td><td>Épaisseur de l'anneau de focus (constante partagée `ui-config`).</td></tr>
-  </tbody>
-</table>
-
-Le timing d'animation provient du groupe partagé `$motion-*` (`ui-config`, catégorie
-**global**) , voir [Components / Configuration](?path=/docs/components-configuration--docs).
-
 ## Exemples
 
 ```html
@@ -224,3 +206,16 @@ Le timing d'animation provient du groupe partagé `$motion-*` (`ui-config`, cat�
   </ui-step-list>
 </ui-stepper>
 ```
+
+## Theming
+
+Variables **locales** aux composants (co-localisées) :
+
+<ConfigTable of="ui-step" label="ui-step" />
+
+<ConfigTable of="ui-step-item" label="ui-step-item" />
+
+<ConfigTable of="ui-step-panel" label="ui-step-panel" />
+
+Le timing d'animation provient du groupe partagé `$motion-*` (`ui-config`, catégorie
+**global**) , voir [Components / Configuration](?path=/docs/components-configuration--docs).

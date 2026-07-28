@@ -4,7 +4,7 @@
 // ui-rating : co-located styles. All values come from design tokens.
 // =====================================================================
 
-$focus-ring-width: utils.$form-focus-ring-width;
+$focus-ring-width: utils.$form-focus-ring-width; /// Épaisseur de l'anneau de focus.
 
 .ui-rating {
   position: relative;

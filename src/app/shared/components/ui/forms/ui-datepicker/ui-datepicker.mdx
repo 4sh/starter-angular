@@ -1,5 +1,6 @@
 import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
 import * as DatepickerStories from './ui-datepicker.stories';
+import { ConfigTable } from '../../../../../../../storybook/blocks/config-table';
 
 <Meta of={DatepickerStories} />
 
@@ -212,64 +213,4 @@ Le champ déclencheur réutilise le shell `ui-field` (voir groupe
 variables locales (structurelles, propres au composant) — à retarger dans `ui-datepicker.scss` ou à
 surcharger via `panelStyleClass`. Voir le [fonctionnement de la configuration](?path=/docs/components-configuration--docs).
 
-<table className="doc-table">
-  <thead>
-    <tr>
-      <th>Variable locale</th>
-      <th>Source</th>
-      <th>Rôle</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>$panel-width</code></td>
-      <td><code>utils.rem-calc(360)</code></td>
-      <td>Largeur du panneau calendrier</td>
-    </tr>
-    <tr>
-      <td><code>$panel-radius</code></td>
-      <td><code>var(--radius-default)</code></td>
-      <td>Rayon de bordure du panneau</td>
-    </tr>
-    <tr>
-      <td><code>$panel-padding</code></td>
-      <td><code>var(--units-sm)</code></td>
-      <td>Padding interne du panneau</td>
-    </tr>
-    <tr>
-      <td><code>$panel-gap</code></td>
-      <td><code>var(--units-sm)</code></td>
-      <td>Espace entre sections (header / grille / heure)</td>
-    </tr>
-    <tr>
-      <td><code>$panel-shadow</code></td>
-      <td><code>var(--shadow-default-md)</code></td>
-      <td>Ombre du panneau en overlay (retirée en inline)</td>
-    </tr>
-    <tr>
-      <td><code>$day-size</code></td>
-      <td><code>var(--size-components-default)</code></td>
-      <td>Diamètre d'une cellule jour</td>
-    </tr>
-    <tr>
-      <td><code>$day-radius</code></td>
-      <td><code>var(--radius-full)</code></td>
-      <td>Rayon des cellules jour (cercle)</td>
-    </tr>
-    <tr>
-      <td><code>$nav-size</code></td>
-      <td><code>var(--size-components-default)</code></td>
-      <td>Taille des boutons de navigation mensuelle</td>
-    </tr>
-    <tr>
-      <td><code>$focus-ring-width</code></td>
-      <td><code>utils.$focus-ring-width</code></td>
-      <td>Anneau de focus (jours, navigation)</td>
-    </tr>
-    <tr>
-      <td><code>$stroke-width</code></td>
-      <td><code>utils.$control-stroke-width</code></td>
-      <td>Épaisseur des bordures (panneau, cellule « today »)</td>
-    </tr>
-  </tbody>
-</table>
+<ConfigTable of="ui-datepicker" />

@@ -4,15 +4,17 @@
   "private": true,
   "scripts": {
     "ng": "ng",
-    "start": "ng run demo:storybook",
+    "start": "npm run docs:config && ng run demo:storybook",
     "serve": "ng serve",
     "build": "ng build",
     "lint": "ng lint --fix",
-    "storybook": "ng run demo:storybook",
-    "build-storybook": "ng run demo:build-storybook",
+    "storybook": "npm run docs:config && ng run demo:storybook",
+    "build-storybook": "npm run docs:config && ng run demo:build-storybook",
     "generate:assets": "node src/scripts/build-assets.js",
-    "postinstall": "npm run tokens:build",
-    "tokens:build": "node scripts/tokens.build.mjs"
+    "postinstall": "npm run tokens:build && npm run docs:config",
+    "tokens:build": "node scripts/tokens.build.mjs",
+    "docs:config": "node scripts/docs.config.mjs",
+    "docs:config:check": "node scripts/docs.config.mjs --check"
   },
   "dependencies": {
     "@angular/animations": "22.0.8",

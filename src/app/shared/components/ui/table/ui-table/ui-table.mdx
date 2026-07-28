@@ -1,5 +1,6 @@
 import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
 import * as TableStories from './ui-table.stories';
+import { ConfigTable } from '../../../../../../../storybook/blocks/config-table';
 
 <Meta of={TableStories} />
 
@@ -400,16 +401,4 @@ entièrement.
 Constantes locales en tête de `ui-table.scss` (voir aussi
 [Configuration des composants](?path=/docs/components-configuration--docs)) :
 
-<table className="doc-table">
-  <thead>
-    <tr><th>Variable locale</th><th>Source</th><th>Rôle</th></tr>
-  </thead>
-  <tbody>
-    <tr><td>`$sizes`</td><td>locale</td><td>Densités de padding (`default`/`small`/`large`).</td></tr>
-    <tr><td>`$stroke-width`</td><td>locale (`--stroke-sm`)</td><td>Épaisseur des traits de séparation / gridlines.</td></tr>
-    <tr><td>`$focus-ring-width`</td><td>`utils.$focus-ring-width`</td><td>Anneau de focus (lignes, en-têtes).</td></tr>
-    <tr><td>`$resizer-hit-width`</td><td>locale (`--units-sm`)</td><td>Largeur de la zone de saisie du redimensionneur.</td></tr>
-    <tr><td>`$drop-indicator-width`</td><td>locale (`--stroke-lg`)</td><td>Épaisseur de l'indicateur de dépose (row reorder).</td></tr>
-    <tr><td>`$loading-padding-y`</td><td>locale (`--units-3xl`)</td><td>Hauteur d'air de la ligne d'attente (`loading`).</td></tr>
-  </tbody>
-</table>
+<ConfigTable of="ui-table" />

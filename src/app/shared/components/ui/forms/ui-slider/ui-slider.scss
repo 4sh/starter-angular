@@ -5,11 +5,11 @@
 // =====================================================================
 
 // --- Config ---------------------------------------
-$track-thickness: utils.rem-calc(8);
-$handle-size: utils.rem-calc(22);
-$mark-size: utils.rem-calc(6);
-$vertical-length: 12rem;
-$focus-ring-width: utils.$form-focus-ring-width;
+$track-thickness: utils.rem-calc(8);             /// Épaisseur de la piste
+$handle-size: utils.rem-calc(22);                /// Diamètre des poignées
+$mark-size: utils.rem-calc(6);                   /// Taille des repères (agrandie pour la lisibilité).
+$vertical-length: 12rem;                         /// Longueur de la piste en orientation verticale
+$focus-ring-width: utils.$form-focus-ring-width; /// Épaisseur de l'anneau de focus des poignées
 
 .ui-slider {
   position: relative;

@@ -7,7 +7,7 @@
 // =====================================================================
 
 .ui-avatar-group {
-  --_overlap: #{utils.$avatar-group-overlap};
+  --_overlap: #{utils.$avatar-group-overlap}; /// Chevauchement horizontal entre avatars empilés.
 
   display: inline-flex;
   align-items: center;

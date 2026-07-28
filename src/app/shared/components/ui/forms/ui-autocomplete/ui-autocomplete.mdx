@@ -1,5 +1,6 @@
 import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
 import * as AutocompleteStories from './ui-autocomplete.stories';
+import { ConfigTable } from '../../../../../../../storybook/blocks/config-table';
 
 <Meta of={AutocompleteStories} />
 
@@ -217,3 +218,9 @@ validation `required`.
     </tr>
   </tbody>
 </table>
+
+## Theming
+
+La boîte du champ vient du shell `ui-field` ; les variables ci-dessous ne couvrent que le panneau de suggestions.
+
+<ConfigTable of="ui-autocomplete" />

@@ -1,5 +1,6 @@
 import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
 import * as SegmentStories from './ui-segment-control.stories';
+import { ConfigTable } from '../../../../../../../storybook/blocks/config-table';
 
 <Meta of={SegmentStories} />
 
@@ -168,34 +169,4 @@ Variables locales en tête de `ui-segment-control.scss`. Celles qui pointent ver
 composant) ; voir le groupe partagé [Forms](?path=/docs/components-configuration-forms--docs)
 et le [fonctionnement de la configuration](?path=/docs/components-configuration--docs).
 
-<table className="doc-table">
-  <thead>
-    <tr>
-      <th>Variable locale</th>
-      <th>Source</th>
-      <th>Rôle</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>$stroke-width</code></td>
-      <td><code>utils.$control-stroke-width</code></td>
-      <td>Épaisseur de la bordure de la piste</td>
-    </tr>
-    <tr>
-      <td><code>$focus-ring-width</code></td>
-      <td><code>utils.$action-focus-ring-width</code></td>
-      <td>Épaisseur de l'anneau de focus des segments</td>
-    </tr>
-    <tr>
-      <td><code>$gutter</code></td>
-      <td>local : <code>var(--units-xs)</code> (4px)</td>
-      <td>Gouttière interne autour des segments (coins de l'indicateur concentriques au track)</td>
-    </tr>
-    <tr>
-      <td><code>$sizes</code></td>
-      <td>local (map)</td>
-      <td>Hauteur / padding / taille de police par taille</td>
-    </tr>
-  </tbody>
-</table>
+<ConfigTable of="ui-segment-control" />

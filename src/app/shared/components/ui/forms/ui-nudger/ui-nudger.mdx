@@ -1,5 +1,6 @@
 import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
 import * as UiNudgerStories from './ui-nudger.stories';
+import { ConfigTable } from '../../../../../../../storybook/blocks/config-table';
 
 <Meta of={UiNudgerStories} />
 
@@ -106,19 +107,4 @@ Angular 22) via l'interop CVA native, ainsi qu'aux formulaires template-driven
 
 ## Theming
 
-<table className="doc-table">
-  <thead>
-    <tr>
-      <th>Variable locale</th>
-      <th>Source</th>
-      <th>Rôle</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>$sizes</code></td>
-      <td>local</td>
-      <td>Map taille → <code>font-size</code> de la valeur (token <code>title</code>) + <code>min-width</code> stabilisant la largeur. La taille des boutons est transmise à <code>ui-button</code>.</td>
-    </tr>
-  </tbody>
-</table>
+<ConfigTable of="ui-nudger" />

@@ -5,7 +5,7 @@
 // Box/label/helper/states come from `ui-field`.
 // =====================================================================
 
-$spinner-width: utils.rem-calc(30);
+$spinner-width: utils.rem-calc(30); /// Largeur de la colonne du spinner (mixin partagé `utils.field-spinner($btn, $width)`).
 
 .ui-input-number {
   &-native {

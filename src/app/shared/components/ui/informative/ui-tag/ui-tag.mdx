@@ -1,5 +1,6 @@
 import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
 import * as TagStories from './ui-tag.stories';
+import { ConfigTable } from '../../../../../../../storybook/blocks/config-table';
 
 <Meta of={TagStories} />
 
@@ -97,3 +98,7 @@ Pilule par défaut (`rounded`), ou rectangle arrondi (`rounded=false`).
 <!-- Icon-only (nom accessible requis) -->
 <ui-tag iconLeft="star" ariaLabel="Favori" level="warning" />
 ```
+
+## Theming
+
+<ConfigTable of="ui-tag" />

@@ -1,5 +1,6 @@
 import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
 import * as AccordionStories from './ui-accordion.stories';
+import { ConfigTable } from '../../../../../../../storybook/blocks/config-table';
 
 <Meta of={AccordionStories} />
 
@@ -102,23 +103,6 @@ système `reduced-motion` la neutraliser. Voir **Foundations → Motion**.
   </tbody>
 </table>
 
-## Theming
-
-Variables **locales** au composant (co-localisées dans `ui-accordion-panel.scss`) :
-
-<table className="doc-table">
-  <thead>
-    <tr><th>Variable locale</th><th>Source</th><th>Rôle</th></tr>
-  </thead>
-  <tbody>
-    <tr><td>`$control-size`</td><td>`utils.rem-calc(40)`</td><td>Diamètre du chevron circulaire (Figma 40×40).</td></tr>
-    <tr><td>`$focus-ring-width`</td><td>`utils.$action-focus-ring-width`</td><td>Épaisseur de l'anneau de focus de l'en-tête (constante partagée `ui-config`).</td></tr>
-  </tbody>
-</table>
-
-Le timing d'animation provient du groupe partagé `$motion-*` (`ui-config`, catégorie
-**global**) — voir [Components / Configuration](?path=/docs/components-configuration--docs).
-
 ## Exemples
 
 ```html
@@ -140,3 +124,12 @@ Le timing d'animation provient du groupe partagé `$motion-*` (`ui-config`, cat�
 <!-- Sans animation -->
 <ui-accordion [motion]="false"> … </ui-accordion>
 ```
+
+## Theming
+
+Variables **locales** au composant (co-localisées dans `ui-accordion-panel.scss`) :
+
+<ConfigTable of="ui-accordion-panel" />
+
+Le timing d'animation provient du groupe partagé `$motion-*` (`ui-config`, catégorie
+**global**) — voir [Components / Configuration](?path=/docs/components-configuration--docs).

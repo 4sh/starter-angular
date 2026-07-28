@@ -12,9 +12,10 @@
 // =====================================================================
 
 // --- Config ---------------------------------------
-$levels: default, highlight, success, warning, error;
-$sublevels: high, low;
+$levels: default, highlight, success, warning, error; /// Niveaux sémantiques générant les modifiers `._<niveau>`.
+$sublevels: high, low;                                /// Intensités générant les modifiers `._<intensité>`.
 
+/// Hauteur, gouttière et typo, par taille.
 $sizes: (
   'default': (
     height: 28px,
@@ -27,7 +28,7 @@ $sizes: (
     font-size: var(--size-typography-text-md),
   ),
 );
-$size-default: map.get($sizes, 'default');
+$size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default` de `$sizes`.
 
 @mixin tag-size($size) {
   height: utils.rem-calc(map.get($size, height));

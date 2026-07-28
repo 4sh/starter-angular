@@ -12,6 +12,7 @@
 // =====================================================================
 
 // --- Config ---------------------------------------
+/// Diamètre et typo des initiales, par taille.
 $sizes: (
   'small': (
     diameter: utils.$avatar-size-small,
@@ -26,7 +27,7 @@ $sizes: (
     font: var(--size-typography-title-2xl),
   ),
 );
-$size-default: map.get($sizes, 'default');
+$size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default` de `$sizes`.
 
 @mixin avatar-size($size) {
   width: utils.rem-calc(map.get($size, diameter));

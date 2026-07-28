@@ -9,6 +9,7 @@
 // =====================================================================
 
 // --- Config (extension points) ---------------------------------------
+/// Hauteur / padding / taille de police par taille
 $sizes: (
   'default': (
     height: 44px,
@@ -23,11 +24,11 @@ $sizes: (
     min: 40px,
   ),
 );
-$size-default: map.get($sizes, 'default');
-$stroke-width: utils.$control-stroke-width;
-$focus-ring-width: utils.$action-focus-ring-width;
-$gutter: var(--units-xs);
-$gutter-size: 4px; // numeric mirror of $gutter, for the size math below
+$size-default: map.get($sizes, 'default');         /// Raccourci vers l'entrée `default` de `$sizes`.
+$stroke-width: utils.$control-stroke-width;        /// Épaisseur de la bordure de la piste
+$focus-ring-width: utils.$action-focus-ring-width; /// Épaisseur de l'anneau de focus des segments
+$gutter: var(--units-xs);                          /// Gouttière interne autour des segments (coins de l'indicateur concentriques au track)
+$gutter-size: 4px;                                 /// Miroir numérique de la gouttière, pour le calcul des tailles.
 
 @mixin segment-size($size) {
   min-height: utils.rem-calc(map.get($size, height));

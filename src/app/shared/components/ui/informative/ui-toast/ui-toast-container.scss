@@ -8,11 +8,11 @@
 // =====================================================================
 
 // --- Config (local) ---------------------------------------------------
-$toast-z-index: 1100; // sits above CDK overlays (prebuilt stack = 1000)
-$toast-width: utils.rem-calc(360); // default stack width
-$toast-width-expanded: utils.rem-calc(480); // banner-mode width
-$toast-edge-gap: var(--units-lg); // margin from the viewport edges
-$toast-stack-gap: var(--units-sm); // gap between stacked cards
+$toast-z-index: 1100;                       /// Plan d'empilement, au-dessus des overlays CDK.
+$toast-width: utils.rem-calc(360);          /// Largeur d'un toast empilé.
+$toast-width-expanded: utils.rem-calc(480); /// Largeur en mode bannière.
+$toast-edge-gap: var(--units-lg);           /// Marge par rapport aux bords du viewport.
+$toast-stack-gap: var(--units-sm);          /// Espacement entre les toasts empilés.
 
 .ui-toast-region {
   position: fixed;

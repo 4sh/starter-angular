@@ -8,9 +8,10 @@
 //     slide) is derived: track-w − 2·pad − thumb.
 // =====================================================================
 
-$focus-ring-width: utils.$form-focus-ring-width;
-$gap: utils.$form-control-gap;
+$focus-ring-width: utils.$form-focus-ring-width; /// Épaisseur de l'anneau de focus
+$gap: utils.$form-control-gap;                   /// Espace entre l'interrupteur et le label
 
+/// Dimensions de la piste et de la pastille par taille (spécifique toggle)
 $sizes: (
   'default': (track-w: 44px, track-h: 24px, thumb: 20px, pad: 1px),
   'small': (track-w: 36px, track-h: 20px, thumb: 16px, pad: 1px),

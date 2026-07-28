@@ -10,6 +10,7 @@
 
 // --- Config (extension points) ---------------------------------------
 // `default` = base styles; other keys become `._<name>` modifiers.
+/// Map avec clés `size` (dimension) et `font-size` (typographie) pour chaque variante (`small`/`default`/`large`).
 $sizes: (
   'default': (
     size: var(--size-components-default),
@@ -24,11 +25,11 @@ $sizes: (
     font-size: var(--size-typography-text-lg),
   ),
 );
-$size-default: map.get($sizes, 'default');
-$radius: utils.$form-field-radius;
-$stroke-width: utils.$form-field-stroke-width;
-$focus-ring-width: utils.$form-field-focus-ring-width;
-$gap: var(--units-sm);
+$size-default: map.get($sizes, 'default');             /// Raccourci vers l'entrée `default` de `$sizes`.
+$radius: utils.$form-field-radius;                     /// Rayon des cellules (aligné sur `ui-field`).
+$stroke-width: utils.$form-field-stroke-width;         /// Épaisseur de la bordure.
+$focus-ring-width: utils.$form-field-focus-ring-width; /// Largeur de l'anneau de focus.
+$gap: var(--units-sm);                                 /// Espace entre les cellules (`--units-sm`).
 
 @mixin otp-size($size) {
   .ui-input-otp-cell {

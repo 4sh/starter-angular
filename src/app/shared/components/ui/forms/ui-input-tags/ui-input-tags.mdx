@@ -1,5 +1,6 @@
 import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
 import * as InputTagsStories from './ui-input-tags.stories';
+import { ConfigTable } from '../../../../../../../storybook/blocks/config-table';
 
 <Meta of={InputTagsStories} />
 
@@ -174,3 +175,9 @@ marquée `form.high.content.checked`. Les états interactifs sont gérés en CSS
     </tr>
   </tbody>
 </table>
+
+## Theming
+
+La boîte du champ vient du shell `ui-field` ; les variables ci-dessous couvrent les tags et le panneau.
+
+<ConfigTable of="ui-input-tags" />

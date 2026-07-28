@@ -7,11 +7,11 @@
 // =====================================================================
 
 // --- Config (local, component-scoped) ---------------------------------
-// Max content width before wrapping — mirrors the Figma tooltip slot (256px).
-$tooltip-max-width: utils.rem-calc(256);
+// Max content width before wrapping.
+$tooltip-max-width: utils.rem-calc(256); /// Largeur max avant retour à la ligne.
 // Arrow diameter — kept in sync with `ARROW_GAP` in ui-tooltip.ts.
-$tooltip-arrow-size: utils.rem-calc(8);
-$tooltip-arrow-half: utils.rem-calc(4);
+$tooltip-arrow-size: utils.rem-calc(8);  /// Taille de la flèche, tenue en phase avec la constante `ARROW_GAP` du `.ts`.
+$tooltip-arrow-half: utils.rem-calc(4);  /// Demi-largeur de la flèche, pour son positionnement.
 
 .ui-tooltip {
   position: relative;

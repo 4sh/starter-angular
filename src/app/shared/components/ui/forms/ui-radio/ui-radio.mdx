@@ -1,5 +1,6 @@
 import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
 import * as RadioStories from './ui-radio.stories';
+import { ConfigTable } from '../../../../../../../storybook/blocks/config-table';
 
 <Meta of={RadioStories} />
 
@@ -120,34 +121,4 @@ Variables locales en tête de `ui-radio.scss`. Celles qui pointent vers `utils.$
 partagé [Forms](?path=/docs/components-configuration-forms--docs) et le
 [fonctionnement de la configuration](?path=/docs/components-configuration--docs).
 
-<table className="doc-table">
-  <thead>
-    <tr>
-      <th>Variable locale</th>
-      <th>Source</th>
-      <th>Rôle</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>$box-size</code></td>
-      <td><code>utils.$form-control-size</code></td>
-      <td>Diamètre du cercle radio</td>
-    </tr>
-    <tr>
-      <td><code>$focus-ring-width</code></td>
-      <td><code>utils.$form-focus-ring-width</code></td>
-      <td>Épaisseur de l'anneau de focus</td>
-    </tr>
-    <tr>
-      <td><code>$gap</code></td>
-      <td><code>utils.$form-control-gap</code></td>
-      <td>Espace entre le cercle et le label</td>
-    </tr>
-    <tr>
-      <td><code>$dot-size</code></td>
-      <td>local : <code>var(--units-md)</code> (12px)</td>
-      <td>Diamètre du point sélectionné (spécifique radio)</td>
-    </tr>
-  </tbody>
-</table>
+<ConfigTable of="ui-radio" />

@@ -6,6 +6,7 @@
 // =====================================================================
 
 // --- Config (extension points) ----------------------------------------
+/// Géométrie et typo des options, des en-têtes de groupe, du filtre et hauteur de défilement, par taille.
 $sizes: (
   'default': (
     option-height: utils.rem-calc(40),
@@ -26,15 +27,15 @@ $sizes: (
     scroll-height: utils.rem-calc(256),
   ),
 );
-$size-default: map.get($sizes, 'default');
-$size-small: map.get($sizes, 'small');
+$size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default` de `$sizes`.
+$size-small: map.get($sizes, 'small');     /// Raccourci vers l'entrée `small` de `$sizes`.
 
-$panel-padding: var(--units-xs);
-$panel-gap: var(--units-xs);
-$option-radius: var(--radius-sm);
-$option-gap: var(--units-sm);
-$checkbox-size: utils.rem-calc(18);
-$stroke-width: utils.$control-stroke-width;
+$panel-padding: var(--units-xs);            /// Inset du panneau d'options.
+$panel-gap: var(--units-xs);                /// Espacement entre les groupes du panneau.
+$option-radius: var(--radius-sm);           /// Rayon d'une ligne d'option
+$option-gap: var(--units-sm);               /// Espace entre case/contenu/coche dans une ligne
+$checkbox-size: utils.rem-calc(18);         /// Taille de la case visuelle (mode `checkbox`)
+$stroke-width: utils.$control-stroke-width; /// Épaisseur de bordure (case visuelle)
 
 .ui-select {
   display: block;
