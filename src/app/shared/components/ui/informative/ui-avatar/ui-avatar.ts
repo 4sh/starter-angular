@@ -57,7 +57,7 @@ export class UiAvatar {
       effect(() => {
         if (this.mode() === 'image' && !this.alt() && !this.ariaLabel()) {
           console.warn(
-            '[ui-avatar] Avatar image sans nom accessible : renseignez `alt` (ou `ariaLabel`).',
+            '[ui-avatar] Image avatar has no accessible name: provide `alt` (or `ariaLabel`).',
           );
         }
       });

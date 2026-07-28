@@ -116,8 +116,8 @@ type TagRow =
 
 /**
  * ui-input-tags — headless multi-value tag entry built on the `ui-field` shell
- * (label + box + helper). Tags are entered by typing and pressing `Entrée`
- * (and/or a `delimiter`), and removed with `Retour arrière` / the × action.
+ * (label + box + helper). Tags are entered by typing and pressing `Enter`
+ * (and/or a `delimiter`), and removed with `Backspace` / the × action.
  *
  * The model is an **array** driven through {@link BaseFormField}
  * (`ControlValueAccessor`) — compatible with `[(ngModel)]`, Reactive Forms and
@@ -127,7 +127,7 @@ type TagRow =
  *
  * A11y: the tag list is a `role="listbox"` (`aria-orientation="horizontal"`);
  * each tag is a `role="option"` with roving focus (`←` / `→` between tags,
- * `Retour arrière` / `Suppr` to delete). The editable input follows the combobox
+ * `Backspace` / `Delete` to delete). The editable input follows the combobox
  * pattern in `typeahead` mode.
  *
  * @example
@@ -147,7 +147,7 @@ export class UiInputTags<T = unknown> extends BaseFormField<T[]> {
   placeholder = input<string>();
   /** Maximum number of tags allowed (`undefined` = unlimited). */
   max = input<number, unknown>(undefined, { transform: numberAttribute });
-  /** Delimiter that splits typed/pasted text into several tags (in addition to `Entrée`). */
+  /** Delimiter that splits typed/pasted text into several tags (in addition to `Enter`). */
   delimiter = input<TagDelimiter>();
   /** Allow the same value to be added several times. */
   allowDuplicate = input(false, { transform: booleanAttribute });
@@ -265,7 +265,7 @@ export class UiInputTags<T = unknown> extends BaseFormField<T[]> {
       effect(() => {
         if (!this.label() && !this.ariaLabel() && !this.ariaLabelledBy()) {
           console.warn(
-            '[ui-input-tags] Champ sans nom accessible : renseignez `label`, `ariaLabel` ou `ariaLabelledBy`.',
+            '[ui-input-tags] Field has no accessible name: provide `label`, `ariaLabel` or `ariaLabelledBy`.',
           );
         }
       });

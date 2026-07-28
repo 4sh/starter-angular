@@ -98,7 +98,7 @@ export class UiNudger extends BaseControlValueAccessor<number> {
     if (isDevMode()) {
       effect(() => {
         if (!this.ariaLabel() && !this.ariaLabelledBy()) {
-          console.warn('[ui-nudger] Sans nom accessible : renseignez `ariaLabel` (ou `ariaLabelledBy`).');
+          console.warn('[ui-nudger] No accessible name: provide `ariaLabel` (or `ariaLabelledBy`).');
         }
       });
     }

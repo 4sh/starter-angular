@@ -296,13 +296,13 @@ export class UiSelect<T = unknown> extends BaseFormField<SelectValue<T>> {
     if (isDevMode()) {
       effect(() => {
         if (!this.label() && !this.ariaLabel() && !this.ariaLabelledBy()) {
-          console.warn('[ui-select] Champ sans nom accessible : renseignez `label`, `ariaLabel` ou `ariaLabelledBy`.');
+          console.warn('[ui-select] Field has no accessible name: provide `label`, `ariaLabel` or `ariaLabelledBy`.');
         }
         if (this.editable() && this.multiple()) {
-          console.warn('[ui-select] `editable` est ignoré en mode `multiple` (saisie libre mono-valeur uniquement).');
+          console.warn('[ui-select] `editable` is ignored in `multiple` mode (free-text entry is single-value only).');
         }
         if (this.checkbox() && !this.multiple()) {
-          console.warn('[ui-select] `checkbox` est prévu pour le mode `multiple` (une case par option).');
+          console.warn('[ui-select] `checkbox` is meant for `multiple` mode (one checkbox per option).');
         }
       });
     }

@@ -242,13 +242,13 @@ export class UiSegmentControl<T = unknown> extends BaseControlValueAccessor<Segm
       effect(() => {
         if (!this.ariaLabel() && !this.ariaLabelledBy()) {
           console.warn(
-            '[ui-segment-control] Groupe sans nom accessible : renseignez `ariaLabel` (ou `ariaLabelledBy`).',
+            '[ui-segment-control] Group has no accessible name: provide `ariaLabel` (or `ariaLabelledBy`).',
           );
         }
         const iconOnly = this.normalizedOptions().some((o) => o.icon && !o.label && !o.ariaLabel);
         if (iconOnly) {
           console.warn(
-            '[ui-segment-control] Segment icon-only sans nom accessible : ajoutez `ariaLabel` sur l’option.',
+            '[ui-segment-control] Icon-only segment has no accessible name: add `ariaLabel` on the option.',
           );
         }
       });

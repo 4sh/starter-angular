@@ -110,7 +110,7 @@ export class UiButton {
       effect(() => {
         if (this.isIconOnly() && !this.accessibleLabel()) {
           console.warn(
-            '[ui-button] Bouton icon-only sans nom accessible : renseignez `ariaLabel` (ou `label`).',
+            '[ui-button] Icon-only button has no accessible name: provide `ariaLabel` (or `label`).',
           );
         }
       });

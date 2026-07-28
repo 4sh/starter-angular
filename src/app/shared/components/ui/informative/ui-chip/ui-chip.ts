@@ -104,7 +104,7 @@ export class UiChip {
       effect(() => {
         if (this.isVisualOnly() && !this.accessibleName()) {
           console.warn(
-            '[ui-chip] Chip sans texte : renseignez `label`, `ariaLabel` ou `ariaLabelledBy`.',
+            '[ui-chip] Chip has no text: provide `label`, `ariaLabel` or `ariaLabelledBy`.',
           );
         }
       });
@@ -113,7 +113,7 @@ export class UiChip {
       effect(() => {
         if (this.selectable() && this.removable()) {
           console.warn(
-            '[ui-chip] `selectable` et `removable` sont exclusifs : l’action de suppression est ignorée.',
+            '[ui-chip] `selectable` and `removable` are mutually exclusive: the remove action is ignored.',
           );
         }
       });

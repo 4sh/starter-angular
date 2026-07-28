@@ -159,7 +159,7 @@ export class UiFileUpload {
     if (isDevMode()) {
       effect(() => {
         if (!this.ariaLabel()) {
-          console.warn('[ui-file-upload] Renseignez `ariaLabel` pour nommer le contrôle.');
+          console.warn('[ui-file-upload] Provide `ariaLabel` to name the control.');
         }
       });
     }

@@ -286,7 +286,7 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
       effect(() => {
         if (!this.label() && !this.ariaLabel() && !this.ariaLabelledBy()) {
           console.warn(
-            '[ui-autocomplete] Champ sans nom accessible : renseignez `label`, `ariaLabel` ou `ariaLabelledBy`.',
+            '[ui-autocomplete] Field has no accessible name: provide `label`, `ariaLabel` or `ariaLabelledBy`.',
           );
         }
       });

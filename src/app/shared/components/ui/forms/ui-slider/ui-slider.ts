@@ -127,7 +127,7 @@ export class UiSlider extends BaseControlValueAccessor<SliderValue> {
       effect(() => {
         if (!this.ariaLabel() && !this.ariaLabelledBy()) {
           console.warn(
-            '[ui-slider] Aucun nom accessible : renseignez `ariaLabel` (ou `ariaLabelledBy`).',
+            '[ui-slider] No accessible name: provide `ariaLabel` (or `ariaLabelledBy`).',
           );
         }
       });

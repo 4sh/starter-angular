@@ -49,7 +49,7 @@ export class UiTag {
     if (isDevMode()) {
       effect(() => {
         if (this.isIconOnly() && !this.ariaLabel()) {
-          console.warn('[ui-tag] Tag sans texte : renseignez `label` ou `ariaLabel`.');
+          console.warn('[ui-tag] Tag has no text: provide `label` or `ariaLabel`.');
         }
       });
     }

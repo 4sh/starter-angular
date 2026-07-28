@@ -274,7 +274,7 @@ export class UiDrawer {
       effect(() => {
         if (this.visible() && !this.labelledBy() && !this.resolvedAriaLabel()) {
           console.warn(
-            '[ui-drawer] Panneau sans nom accessible : renseignez `header`, `ariaLabel` ou `ariaLabelledBy`.',
+            '[ui-drawer] Panel has no accessible name: provide `header`, `ariaLabel` or `ariaLabelledBy`.',
           );
         }
       });

@@ -51,7 +51,7 @@ export class UiLink {
   /** Convenience for external links: sets target="_blank" + a safe rel. */
   external = input(false, { transform: booleanAttribute });
 
-  // --- Icons (presence-based, à la ui-button) --------------------------
+  // --- Icons (presence-based, same as ui-button) -----------------------
   /** FontAwesome icon name shown before the text. */
   iconLeft = input<string>();
   /** FontAwesome icon name shown after the text. */
@@ -78,7 +78,7 @@ export class UiLink {
       effect(() => {
         if (this.isIconOnly() && !this.accessibleLabel()) {
           console.warn(
-            '[ui-link] Lien icon-only sans nom accessible : renseignez `ariaLabel` (ou `label`).',
+            '[ui-link] Icon-only link has no accessible name: provide `ariaLabel` (or `label`).',
           );
         }
       });

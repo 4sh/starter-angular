@@ -359,7 +359,7 @@ export class UiModal {
       effect(() => {
         if (this.visible() && !this.labelledBy() && !this.resolvedAriaLabel()) {
           console.warn(
-            '[ui-modal] Boîte de dialogue sans nom accessible : renseignez `header`, `ariaLabel` ou `ariaLabelledBy`.',
+            '[ui-modal] Dialog has no accessible name: provide `header`, `ariaLabel` or `ariaLabelledBy`.',
           );
         }
       });

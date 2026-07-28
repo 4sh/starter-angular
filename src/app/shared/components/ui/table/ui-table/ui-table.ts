@@ -336,10 +336,10 @@ export class UiTable<T = unknown> {
     if (isDevMode()) {
       effect(() => {
         if (Object.keys(this.expandedRowKeys()).length && !this.dataKey()) {
-          console.warn('[ui-table] `expandedRowKeys` nécessite `dataKey` pour identifier les lignes.');
+          console.warn('[ui-table] `expandedRowKeys` requires `dataKey` to identify rows.');
         }
         if (this.virtualScroll() && (!this.scrollable() || !this.scrollHeight() || this.scrollHeight() === 'flex')) {
-          console.warn('[ui-table] `virtualScroll` nécessite `scrollable` et un `scrollHeight` fixe.');
+          console.warn('[ui-table] `virtualScroll` requires `scrollable` and a fixed `scrollHeight`.');
         }
       });
     }
@@ -678,7 +678,7 @@ export class UiTable<T = unknown> {
   rowKey(data: T): string | undefined {
     const key = this.dataKey();
     if (!key) {
-      if (isDevMode()) console.warn('[ui-table] L’expansion de ligne nécessite `dataKey`.');
+      if (isDevMode()) console.warn('[ui-table] Row expansion requires `dataKey`.');
       return undefined;
     }
     return String(resolveFieldData(data, key));

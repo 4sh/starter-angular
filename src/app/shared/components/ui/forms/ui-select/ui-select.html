@@ -9,8 +9,8 @@
       }
     </li>
   } @else {
-    <!-- Pattern combobox/listbox ARIA : le clavier et le focus sont gérés par
-         le trigger role="combobox" (roving via aria-activedescendant). -->
+    <!-- ARIA combobox/listbox pattern: keyboard and focus are handled by
+         the trigger role="combobox" (roving via aria-activedescendant). -->
     <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -->
     <li
       class="ui-select-option"
@@ -146,8 +146,8 @@
 </ng-template>
 
 <!-- Trigger: composed field. Clicking the box opens the panel (backdrop closes it). -->
-<!-- Click de confort sur le wrapper : le focus et le clavier sont portés par
-     le trigger role="combobox" interne. -->
+<!-- Convenience click on the wrapper: focus and keyboard are carried by
+     the inner trigger role="combobox". -->
 <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -->
 <div #container class="ui-select" [class._editable]="isEditable()" (click)="onContainerClick($event)">
   <ui-field

@@ -73,8 +73,8 @@
 
       <!-- DATE view (one or several month panels) -->
       @else {
-        <!-- Grille calendrier : clavier délégué au conteneur, le focus vit sur
-             les boutons gridcell (roving tabindex). -->
+        <!-- Calendar grid: keyboard delegated to the container, focus lives on
+             the gridcell buttons (roving tabindex). -->
         <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
         <div class="ui-datepicker-months" (keydown)="onGridKeydown($event)">
           @for (mp of monthPanels(); track mp.monthDate.getTime()) {
@@ -241,7 +241,7 @@
   <ng-container [ngTemplateOutlet]="calendarTpl" />
 } @else {
   <!-- Trigger: readonly composed field. Clicking the field or the icon opens the panel. -->
-  <!-- Wrapper de confort : le focus et le clavier sont portés par le ui-input interne. -->
+  <!-- Convenience wrapper: focus and keyboard are carried by the inner ui-input. -->
   <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
   <div class="ui-datepicker-trigger" (click)="open()" (keydown)="onTriggerKeydown($event)">
     <ui-input

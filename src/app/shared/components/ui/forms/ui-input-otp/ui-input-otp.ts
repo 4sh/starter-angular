@@ -58,7 +58,7 @@ let nextUid = 0;
  *
  * Each cell is a real native `<input maxlength="1">`; the group carries
  * `role="group"` and a **roving tabindex** so `Tab` enters/leaves the field as a
- * whole while `←`/`→` move between cells (`Retour arrière` clears and steps
+ * whole while `←`/`→` move between cells (`Backspace` clears and steps
  * back). Typing auto-advances, and pasting a code distributes it across the
  * cells. Interactive states (hover/focus/disabled) are pure CSS driven by the
  * `form.*` design tokens.
@@ -152,7 +152,7 @@ export class UiInputOtp extends BaseControlValueAccessor<string> {
       effect(() => {
         if (!this.ariaLabel() && !this.ariaLabelledBy()) {
           console.warn(
-            '[ui-input-otp] Groupe sans nom accessible : renseignez `ariaLabel` (ou `ariaLabelledBy`).',
+            '[ui-input-otp] Group has no accessible name: provide `ariaLabel` (or `ariaLabelledBy`).',
           );
         }
       });

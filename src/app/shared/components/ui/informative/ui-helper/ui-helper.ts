@@ -5,7 +5,7 @@ import { UiFeedbackLevel } from '@app/shared/types/ui-level';
 export type HelperSize = 'default' | 'small';
 export type HelperAriaLive = 'off' | 'polite' | 'assertive';
 
-/** Icône FontAwesome par défaut associée à chaque niveau. */
+/** Default FontAwesome icon associated with each level. */
 const LEVEL_ICONS: Record<UiFeedbackLevel, string> = {
   default: 'question-circle',
   highlight: 'info-circle',
