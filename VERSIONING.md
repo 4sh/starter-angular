@@ -1,41 +1,41 @@
 # Versioning
 
-Ce projet suit [Semantic Versioning](https://semver.org/) adapté à un Design System.
+This project follows [Semantic Versioning](https://semver.org/) adapted to a Design System.
 
-Format : `MAJOR.MINOR.PATCH`
+Format: `MAJOR.MINOR.PATCH`
 
-## Quand bumper
+## When to bump
 
-| Bump | Quand |
+| Bump | When |
 |---|---|
-| **MAJOR** | Breaking change : rename/suppression d'un token, suppression d'un composant, changement d'API d'un input |
-| **MINOR** | Nouveau composant, nouveau token, nouvelle variante non-breaking |
-| **PATCH** | Fix visuel, fix bug, ajustement de valeur d'un token existant sans rename |
+| **MAJOR** | Breaking change: rename/removal of a token, removal of a component, API change of an input |
+| **MINOR** | New component, new token, new non-breaking variant |
+| **PATCH** | Visual fix, bug fix, adjustment of an existing token value without rename |
 
-Tant que la version commence par `0.x.y`, l'API est considérée comme instable : les évolutions `MINOR` peuvent contenir des breaking changes documentés dans le CHANGELOG. Le passage à `1.0.0` fige l'API publique.
+As long as the version starts with `0.x.y`, the API is considered unstable: `MINOR` releases may contain breaking changes documented in the CHANGELOG. Moving to `1.0.0` freezes the public API.
 
-## Workflow de release
+## Release workflow
 
-1. Travail sur une branche `feat/*`, `fix/*`, `chore/*` ou `breaking/*`
-2. Ajouter une ligne dans `CHANGELOG.md` sous `## [Unreleased]` dans la bonne section (`Added` / `Changed` / `Deprecated` / `Removed` / `Fixed`)
-3. PR → merge sur `main`
-4. Au moment de release :
-   - Déplacer le contenu de `[Unreleased]` vers une nouvelle section `[X.Y.Z] - YYYY-MM-DD`
-   - `npm version major|minor|patch` (bump `package.json` + commit + tag)
+1. Work on a `feat/*`, `fix/*`, `chore/*` or `breaking/*` branch
+2. Add a line in `CHANGELOG.md` under `## [Unreleased]` in the right section (`Added` / `Changed` / `Deprecated` / `Removed` / `Fixed`)
+3. PR → merge into `main`
+4. At release time:
+   - Move the `[Unreleased]` content to a new `[X.Y.Z] - YYYY-MM-DD` section
+   - `npm version major|minor|patch` (bumps `package.json` + commit + tag)
    - `git push --follow-tags`
 
-## Convention de branches
+## Branch convention
 
-| Préfixe | Usage | SemVer attendu |
+| Prefix | Usage | Expected SemVer |
 |---|---|---|
-| `feat/<nom>` | Nouvelle fonctionnalité | MINOR |
-| `fix/<nom>` | Correction de bug | PATCH |
-| `chore/<nom>` | Tooling, refacto interne | hors release |
-| `breaking/<nom>` | Rupture d'API/tokens | MAJOR |
+| `feat/<name>` | New feature | MINOR |
+| `fix/<name>` | Bug fix | PATCH |
+| `chore/<name>` | Tooling, internal refactoring | no release |
+| `breaking/<name>` | API/tokens breakage | MAJOR |
 
-## Convention de commits (optionnel)
+## Commit convention (optional)
 
-Format [Conventional Commits](https://www.conventionalcommits.org/) :
+[Conventional Commits](https://www.conventionalcommits.org/) format:
 
 ```
 feat(button): add outlined variant
@@ -43,4 +43,4 @@ fix(tokens): correct dark mode contrast on form.error
 feat(tokens)!: rename actions.primary to actions.high
 ```
 
-Le `!` ou `BREAKING CHANGE:` dans le body indique un MAJOR.
+The `!` or `BREAKING CHANGE:` in the body indicates a MAJOR.
