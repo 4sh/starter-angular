@@ -33,8 +33,6 @@ const browser = await chromium.launch({ channel: 'chrome', headless: true });
 - Some stories have **hidden** buttons first in the DOM → use `button:visible`.
 - Console noise in **every** story: `NG04002: 'iframe.html'` (the app's Router does not match
   Storybook's iframe URL) — pre-existing, filter it out of captures.
-- `rtk grep` (hook) rejects isolated short flags and sometimes ignores `.md` files → use
-  `/usr/bin/grep` for sweeps.
 
 ## What to drive depending on the change
 

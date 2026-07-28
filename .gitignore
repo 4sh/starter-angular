@@ -40,11 +40,15 @@ yarn-error.log*
 .vscode
 .idea
 # Ignore local Claude config everywhere (incl. nested settings.local.json),
-# but track the shared project skills at the repo root.
+# but track the shared project assets at the repo root.
 .claude
 !/.claude
 /.claude/*
 !/.claude/skills/
+!/.claude/hooks/
+!/.claude/rules/
+!/.claude/agents/
+!/.claude/settings.json
 
 # OS files
 .DS_Store
