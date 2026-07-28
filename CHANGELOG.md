@@ -10,6 +10,7 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 ## [Unreleased]
 
 ### Added
+- `ui-image` : **prod-ready** — nouvel input `src` (URL distante/absolue via NgOptimizedImage, prioritaire sur `name`, sans loader custom), input `fallback` (asset local de repli) + placeholder tokenisé en état dégradé (`(error)` img + statut `httpResource` ; un `name` inconnu affiche le placeholder au lieu d'un rendu vide), output `loadFailed` (URL en échec), SVG inline réservé aux assets locaux (un `.svg` distant passe par `<img>` — pas de surface XSS), migration du fetch SVG `HttpClient.subscribe` → `httpResource` (cache module conservé, retry auto au changement de thème/marque/source) ; `name` devient optionnel ; `provideHttpClient(withFetch())` ajouté à `app.config.ts` (le composant ne fonctionnait qu'en Storybook)
 - `ui-table` : **mode lazy serveur** — nouvel input `totalRecords` (total serveur pilotant le paginator) et nouvel output `sortChange` (état du tri après interaction d'en-tête) ; en mode `lazy`, la table n'applique plus ni tri ni découpe client : `value` est la page courante et le consommateur refetch sur `pageChange`/`sortChange` ; story `PaginationServer` (faux backend) + doc MDX « Lazy / serveur ». Note : `lazy` + `virtualScroll` conserve l'hydratation fenêtrée existante, mais le tri client y est désormais aussi désactivé (le consommateur possède l'ordre)
 
 ### Changed

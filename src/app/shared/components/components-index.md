@@ -70,4 +70,4 @@
 
 ## root
 - ✅ `ui-icon` — Icône FontAwesome (size sm|md|default|lg|xl, type solid|outline, accessible)
-- ✅ `ui-image` — Image
+- ✅ `ui-image` — Image (deux sources : `name` asset local résolu thème/marque via assets-map, ou `src` URL distante prioritaire via `NgOptimizedImage` ; SVG local inliné (`httpResource` + cache partagé), SVG distant jamais inliné ; `fallback` local sur erreur + placeholder tokenisé + output `loadFailed` ; `fill`/`width`/`height`, `priority` LCP)
