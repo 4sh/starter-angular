@@ -84,7 +84,7 @@
 
   @if (paginator()) {
     <ui-paginator
-      [totalRecords]="totalRecords()"
+      [totalRecords]="effectiveTotalRecords()"
       [rows]="rowsState()"
       (rowsChange)="onPaginatorRows($event)"
       [first]="first()"

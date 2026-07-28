@@ -142,7 +142,9 @@ restent interactifs (`multiSortMeta` pour le mode multiple).
 Le cycle simple retire déjà le tri au troisième clic. Pour un ordre
 entièrement personnalisé, `customSort` désactive le tri interne : la table
 émet `sortFunction` avec `{ data, mode, field, order, multiSortMeta }` et
-c'est au consommateur d'ordonner `value`.
+c'est au consommateur d'ordonner `value`. Pour un tri exécuté côté serveur,
+utiliser plutôt le mode `lazy` et l'output `sortChange` (voir
+[Lazy / serveur](#lazy--serveur)) — ne pas combiner avec `customSort`.
 
 ## Pagination
 
@@ -161,6 +163,41 @@ Le modèle two-way `first` pilote la pagination depuis l'extérieur, tout
 changement déclenche la re-pagination et `pageChange`.
 
 <Canvas of={TableStories.PaginationProgrammatic} />
+
+### Lazy / serveur
+
+En mode `lazy`, la table ne trie ni ne découpe plus : le consommateur possède
+le pipeline de données. `value` est la **page courante** renvoyée par le
+serveur et `totalRecords` (total serveur) pilote le paginator. Réagir à
+`pageChange` et `sortChange` pour relancer la requête, et activer `loading`
+pendant l'aller-retour.
+
+```html
+<ui-table
+  [value]="pageRows"
+  lazy
+  paginator
+  [rows]="10"
+  [totalRecords]="total"
+  [loading]="loading"
+  dataKey="id"
+  (pageChange)="fetch($event.first, $event.rows)"
+  (sortChange)="onSort($event)"
+>
+```
+
+À savoir :
+
+- un changement de tri remet `first` à `0` (la table le fait elle-même) —
+  refetch depuis la première page ;
+- la case « tout sélectionner » de l'en-tête porte sur la **page courante**
+  uniquement ; la sélection persiste entre les pages via `dataKey` ;
+- sans `totalRecords`, le paginator croit que la page courante est tout le
+  jeu de données (warning en mode dev) ;
+- combiné à `virtualScroll`, `lazy` conserve le comportement existant
+  d'hydratation fenêtrée via `lazyLoad`.
+
+<Canvas of={TableStories.PaginationServer} />
 
 ## Scroll
 
