@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
+import { signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import type { UiTablePageEvent, UiTableSortChangeEvent } from '@app/shared/components/ui/table/ui-table/ui-table';
 import {
@@ -568,46 +569,47 @@ function serverFetch(sort: { field?: string; order?: number }, first: number, ro
  * pour que le consommateur refasse la requête (ici un faux backend à 300 ms).
  */
 export const PaginationServer: Story = {
-  render: () => ({
-    props: {
-      pageRows: serverFetch({}, 0, 10),
-      total: serverProducts.length,
-      loading: false,
-      sortMeta: {} as { field?: string; order?: number },
-      fetch(this: { pageRows: Product[]; loading: boolean; sortMeta: { field?: string; order?: number } }, first: number, rows: number) {
-        this.loading = true;
-        setTimeout(() => {
-          this.pageRows = serverFetch(this.sortMeta, first, rows);
-          this.loading = false;
-        }, 300);
+  render: () => {
+    // Signals : indispensables en zoneless pour que la réponse asynchrone
+    // du « serveur » (setTimeout) déclenche bien la change detection.
+    const pageRows = signal<Product[]>(serverFetch({}, 0, 10));
+    const loading = signal(false);
+    let sortMeta: { field?: string; order?: number } = {};
+    const fetchPage = (first: number, rows: number): void => {
+      loading.set(true);
+      setTimeout(() => {
+        pageRows.set(serverFetch(sortMeta, first, rows));
+        loading.set(false);
+      }, 300);
+    };
+    return {
+      props: {
+        pageRows,
+        loading,
+        total: serverProducts.length,
+        onPage: (e: UiTablePageEvent) => fetchPage(e.first, e.rows),
+        onSort: (e: UiTableSortChangeEvent) => {
+          sortMeta = { field: e.field, order: e.order };
+          fetchPage(0, 10);
+        },
       },
-      onPage(this: { fetch(first: number, rows: number): void }, e: UiTablePageEvent) {
-        this.fetch(e.first, e.rows);
-      },
-      onSort(
-        this: { sortMeta: { field?: string; order?: number }; fetch(first: number, rows: number): void },
-        e: UiTableSortChangeEvent,
-      ) {
-        this.sortMeta = { field: e.field, order: e.order };
-        this.fetch(0, 10);
-      },
-    },
-    template: `
-      <ui-table
-        [value]="pageRows"
-        lazy
-        paginator
-        [rows]="10"
-        [totalRecords]="total"
-        [loading]="loading"
-        dataKey="id"
-        (pageChange)="onPage($event)"
-        (sortChange)="onSort($event)"
-      >
-        ${sortableColumns}
-      </ui-table>
-    `,
-  }),
+      template: `
+        <ui-table
+          [value]="pageRows()"
+          lazy
+          paginator
+          [rows]="10"
+          [totalRecords]="total"
+          [loading]="loading()"
+          dataKey="id"
+          (pageChange)="onPage($event)"
+          (sortChange)="onSort($event)"
+        >
+          ${sortableColumns}
+        </ui-table>
+      `,
+    };
+  },
 };
 
 /** Scroll vertical : `scrollHeight` fixe + en-tête sticky. */
