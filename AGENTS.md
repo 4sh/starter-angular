@@ -279,6 +279,14 @@ Like a `ui-*`, but: project prefix, `domain/` folder, and **composition of `ui-*
 
 ---
 
+## Versioning & releases
+
+- SemVer adapted to a Design System + branch prefixes (`feat/`, `fix/`, `chore/`, `breaking/`) + release workflow → **`docs/VERSIONING.md`**
+- Every user-visible change adds an entry to root **`CHANGELOG.md`** under `## [Unreleased]` (Keep a Changelog)
+- Commit format (Conventional Commits) and git restrictions → `.claude/rules/git-conventions.md`; commit via the `/git-commit` skill
+
+---
+
 ## Commands
 
 ```bash

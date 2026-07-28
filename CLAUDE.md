@@ -12,6 +12,10 @@ to the Angular component) and consumes these tokens.
 
 Before generating anything in Figma, you **must** audit the source Angular component.
 
+> **Repo-wide agent conventions live in `AGENTS.md`** — read it first for any code task
+> (Claude Code only auto-loads this file). Release/versioning conventions:
+> `docs/VERSIONING.md` + `CHANGELOG.md`.
+
 ---
 
 ## Tech stack
