@@ -25,6 +25,7 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ### Changed
 - `ui-rating`! : **« non noté » devient `null`** (type `number | null`) — le `cancel` (re-clic sur la note courante) et la remise à zéro au clavier émettent `null` (ex-sentinelle `0`), `writeValue(null)` est préservé au lieu d'être converti en `0` ; `required` rejette désormais naturellement l'absence de note (le workaround `Validators.min(1)` devient inutile). Un `0` explicitement écrit reste `0` (affiché 0 étoile). **Breaking** pour les consommateurs typés `number`
+- `ui-input-number` : typé honnêtement `BaseFormField<number | null>` — suppression du cast `as number` qui masquait le `null` émis au vidage du champ (aucun changement runtime, le composant émettait déjà `null`)
 
 ### Fixed
 - `ui-select` : **mode `editable` — deux « vides » différents** — vider le champ au clavier commitait `''` alors que la croix commitait `null` ; la saisie vidée commite désormais `null` (même normalisation que `ui-autocomplete` et `clear()`)

@@ -36,7 +36,7 @@ import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
     { provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => UiInputNumber), multi: true },
   ],
 })
-export class UiInputNumber extends BaseFormField<number> {
+export class UiInputNumber extends BaseFormField<number | null> {
   /** Native placeholder. */
   placeholder = input<string>();
   /** Minimum value (clamp on blur + disables "−" at the bound). */
@@ -164,7 +164,7 @@ export class UiInputNumber extends BaseFormField<number> {
   private commit(value: number | null, opts: { reformat: boolean }): void {
     this.modelValue.set(value ?? undefined);
     if (opts.reformat) this.text.set(value === null ? '' : this.format(value));
-    this.emitChange(value as number);
+    this.emitChange(value);
     this.valueChange.emit(value);
   }
 
