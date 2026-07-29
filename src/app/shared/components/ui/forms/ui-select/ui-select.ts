@@ -579,7 +579,8 @@ export class UiSelect<T = unknown> extends BaseFormField<SelectValue<T>> {
   protected onEditableInput(event: Event): void {
     const value = (event.target as HTMLInputElement).value;
     this.editableQuery.set(value);
-    this.commit(value as SelectValue<T>);
+    // An emptied input commits `null` (same normalization as `clear()`).
+    this.commit(value === '' ? null : (value as SelectValue<T>));
     if (!this.panelOpen()) this.open();
     // Re-anchor the visual focus on the first matching option.
     this.focusedIndex.set(this.visibleOptions().findIndex((o) => !o.entry.disabled));
