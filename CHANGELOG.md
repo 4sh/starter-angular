@@ -25,6 +25,7 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 - `ui-rating`! : **« non noté » devient `null`** (type `number | null`) — le `cancel` (re-clic sur la note courante) et la remise à zéro au clavier émettent `null` (ex-sentinelle `0`), `writeValue(null)` est préservé au lieu d'être converti en `0` ; `required` rejette désormais naturellement l'absence de note (le workaround `Validators.min(1)` devient inutile). Un `0` explicitement écrit reste `0` (affiché 0 étoile). **Breaking** pour les consommateurs typés `number`
 
 ### Fixed
+- `ui-rating` : **`readonly` non appliqué au clavier** — `onNativeChange` (flèches sur le range natif) modifiait la valeur d'un rating `readonly`/`disabled` (le guard n'existait que sur le clic) ; le handler ignore désormais l'événement (et les valeurs `NaN`) et resynchronise le range natif sur le modèle
 - `BaseControlValueAccessor` : **miroir d'état figé sous Signal Forms** — l'interop fournit un `NgControl` sans flux `events`, l'état (`invalid`/`touched`/`dirty`/`errors`) n'était donc capturé qu'une fois au premier rendu : un champ requis restait par exemple en style erreur (`aria-invalid="true"`) même une fois valide. Les getters de l'`InteropNgControl` lisant les signals du champ, le miroir est désormais rafraîchi dans un `effect()` (chemin classique inchangé : seed + flux `events`)
 
 ### Fixed

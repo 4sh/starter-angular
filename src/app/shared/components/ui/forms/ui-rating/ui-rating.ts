@@ -102,6 +102,11 @@ export class UiRating extends BaseFieldControl<number | null> {
   protected onNativeChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     const value = parseInt(input.value, 10);
+    if (this.isDisabled() || this.readonly() || Number.isNaN(value)) {
+      // Revert the native range so its value stays in sync with the model.
+      input.value = String(this.currentValue());
+      return;
+    }
     // The range's 0 means "not rated" → null at the public boundary.
     this.updateValue(value === 0 ? null : value);
   }
