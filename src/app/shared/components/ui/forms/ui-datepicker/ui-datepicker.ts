@@ -19,7 +19,8 @@ import {
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { ConnectedPosition, OverlayModule } from '@angular/cdk/overlay';
+import { OverlayModule } from '@angular/cdk/overlay';
+import { dropdownOverlayPositions } from '@app/shared/components/ui/forms/overlay-positions';
 import { BaseFormField } from '@app/shared/components/ui/forms/base-form-field';
 import { UiInput } from '@app/shared/components/ui/forms/ui-input/ui-input';
 import { UiButton } from '@app/shared/components/ui/actions/ui-button/ui-button';
@@ -246,11 +247,7 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   protected readonly typedValue = signal<string | null>(null);
 
   /** @ignore Below the trigger, flipping above when `autoFlip` and space is lacking. */
-  protected readonly overlayPositions = computed<ConnectedPosition[]>(() => {
-    const below: ConnectedPosition = { originX: 'start', originY: 'bottom', overlayX: 'start', overlayY: 'top', offsetY: 8 };
-    const above: ConnectedPosition = { originX: 'start', originY: 'top', overlayX: 'start', overlayY: 'bottom', offsetY: -8 };
-    return this.autoFlip() ? [below, above] : [below];
-  });
+  protected readonly overlayPositions = computed(() => dropdownOverlayPositions(this.autoFlip()));
 
   /** @ignore Bound (stable) callbacks exposed to the `#buttonbar` template. */
   protected readonly todayCallback = (event?: Event): void => {

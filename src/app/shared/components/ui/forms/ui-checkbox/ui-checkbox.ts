@@ -7,14 +7,11 @@ import {
   forwardRef,
   input,
   output,
-  signal,
   viewChild,
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { BaseControlValueAccessor } from '@app/core/controlValueAccessor/BaseControlValueAccessor';
+import { BaseFieldControl } from '@app/shared/components/ui/forms/base-form-field';
 import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
-
-let nextUid = 0;
 
 /**
  * ui-checkbox — headless checkbox built on a real native <input type="checkbox">.
@@ -37,33 +34,15 @@ let nextUid = 0;
     { provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => UiCheckbox), multi: true },
   ],
 })
-export class UiCheckbox<T = boolean> extends BaseControlValueAccessor<T> {
+export class UiCheckbox<T = boolean> extends BaseFieldControl<T> {
   /** Label displayed next to the box (clicking it toggles the checkbox). */
   label = input<string>();
-  /** Accessible name when no visible label is provided. */
-  ariaLabel = input<string>();
-  /** id of an external element that labels this checkbox. */
-  ariaLabelledBy = input<string>();
-  /** id forwarded to the native input (auto-generated when omitted). */
-  inputId = input<string>();
-  /** name forwarded to the native input. */
-  name = input<string>();
   /** Model value emitted when checked. */
   trueValue = input<T>(true as T);
   /** Model value emitted when unchecked. */
   falseValue = input<T>(false as T);
   /** Visual indeterminate state ("some but not all selected"). Purely visual: the model keeps its value. */
   indeterminate = input(false, { transform: booleanAttribute });
-  /** Required marker on the label + native required attribute. */
-  required = input(false, { transform: booleanAttribute });
-  /** Disables the checkbox (native attribute). */
-  disabled = input(false, { transform: booleanAttribute });
-  /** Focusable but not editable. */
-  readonly = input(false, { transform: booleanAttribute });
-  /** Forces the error styling (automatic when the attached control is invalid and touched/dirty). */
-  invalid = input(false, { transform: booleanAttribute });
-  /** tabindex forwarded to the native input. */
-  tabindex = input<number>();
   /** Icon shown when checked. */
   checkIcon = input<string>('check');
   /** Icon shown when indeterminate. */
@@ -78,10 +57,6 @@ export class UiCheckbox<T = boolean> extends BaseControlValueAccessor<T> {
 
   /** @ignore */
   private readonly inputEl = viewChild.required<ElementRef<HTMLInputElement>>('inputEl');
-  /** @ignore Current model value (written by the form or by user toggles). */
-  private readonly modelValue = signal<T | undefined>(undefined);
-  /** @ignore */
-  private readonly uid = `ui-checkbox-${nextUid++}`;
 
   constructor() {
     super();
@@ -93,12 +68,6 @@ export class UiCheckbox<T = boolean> extends BaseControlValueAccessor<T> {
 
   /** @ignore */
   protected readonly checked = computed(() => this.modelValue() === this.trueValue());
-  /** @ignore Input disabled OR control disabled (form API). */
-  protected readonly isDisabled = computed(() => this.disabled() || this.controlDisabled());
-  /** @ignore Explicit `invalid` input OR invalid control worth surfacing. */
-  protected readonly isInvalid = computed(() => this.invalid() || this.showError());
-  /** @ignore */
-  protected readonly resolvedId = computed(() => this.inputId() ?? this.uid);
 
   /** @ignore */
   protected readonly classes = computed(() => {
@@ -111,8 +80,9 @@ export class UiCheckbox<T = boolean> extends BaseControlValueAccessor<T> {
     return c.join(' ');
   });
 
-  writeValue(value: T): void {
-    this.modelValue.set(value);
+  /** @ignore */
+  protected override uidPrefix(): string {
+    return 'ui-checkbox';
   }
 
   /** Focus the native input programmatically. */

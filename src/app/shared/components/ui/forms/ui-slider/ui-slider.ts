@@ -14,7 +14,7 @@ import {
   viewChildren,
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { BaseControlValueAccessor } from '@app/core/controlValueAccessor/BaseControlValueAccessor';
+import { BaseFieldControl } from '@app/shared/components/ui/forms/base-form-field';
 
 export type SliderOrientation = 'horizontal' | 'vertical';
 /** Model value: a single number, or a `[start, end]` tuple in `range` mode. */
@@ -33,8 +33,6 @@ interface SliderMark {
   percent: number;
   active: boolean;
 }
-
-let nextUid = 0;
 
 /**
  * ui-slider — headless slider to pick a numeric value (or a range) by dragging
@@ -65,7 +63,7 @@ let nextUid = 0;
     { provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => UiSlider), multi: true },
   ],
 })
-export class UiSlider extends BaseControlValueAccessor<SliderValue> {
+export class UiSlider extends BaseFieldControl<SliderValue> {
   /** Minimum boundary value. */
   min = input(0, { transform: numberAttribute });
   /** Maximum boundary value. */
@@ -80,24 +78,6 @@ export class UiSlider extends BaseControlValueAccessor<SliderValue> {
   marks = input(false, { transform: booleanAttribute });
   /** Orientation of the slider (drives the arrow keys and layout). */
   orientation = input<SliderOrientation>('horizontal');
-  /** Disables the control (no pointer nor keyboard interaction). */
-  disabled = input(false, { transform: booleanAttribute });
-  /** Focusable but not modifiable. */
-  readonly = input(false, { transform: booleanAttribute });
-  /** Required marker for the attached form control (native validation). */
-  required = input(false, { transform: booleanAttribute });
-  /** Forces the error styling (automatic when the attached control is invalid and touched/dirty). */
-  invalid = input(false, { transform: booleanAttribute });
-  /** name forwarded for form semantics. */
-  name = input<string>();
-  /** Accessible name applied to the handle(s). */
-  ariaLabel = input<string>();
-  /** id of an external element that labels the handle(s). */
-  ariaLabelledBy = input<string>();
-  /** id applied to the first handle (auto-generated when omitted). */
-  inputId = input<string>();
-  /** tabindex forwarded to the handle(s). */
-  tabindex = input<number>();
 
   /** Emitted continuously while the value changes (drag, keyboard, track click). */
   sliderChange = output<SliderValue>();
@@ -113,12 +93,11 @@ export class UiSlider extends BaseControlValueAccessor<SliderValue> {
   /** @ignore The handle elements (one, or two in range mode). */
   private readonly handleEls = viewChildren<ElementRef<HTMLElement>>('handle');
 
-  /** @ignore Current model value (written by the form or by user interaction). */
-  private readonly modelValue = signal<SliderValue>(0);
+  /** @ignore Current model value (written by the form or by user interaction).
+   * Redeclared over the base signal: a slider always has a numeric value (never `undefined`). */
+  protected override readonly modelValue = signal<SliderValue>(0);
   /** @ignore Index of the handle currently being dragged (null when idle). */
   private readonly activeHandle = signal<number | null>(null);
-  /** @ignore */
-  private readonly uid = `ui-slider-${nextUid++}`;
 
   constructor() {
     super();
@@ -133,13 +112,6 @@ export class UiSlider extends BaseControlValueAccessor<SliderValue> {
       });
     }
   }
-
-  /** @ignore Input disabled OR control disabled (form API). */
-  protected readonly isDisabled = computed(() => this.disabled() || this.controlDisabled());
-  /** @ignore Explicit `invalid` input OR invalid control worth surfacing. */
-  protected readonly isInvalid = computed(() => this.invalid() || this.showError());
-  /** @ignore */
-  protected readonly resolvedId = computed(() => this.inputId() ?? this.uid);
 
   /** @ignore Normalized `[start, end]` values (range mode). */
   private readonly rangeValues = computed<[number, number]>(() => {
@@ -203,12 +175,17 @@ export class UiSlider extends BaseControlValueAccessor<SliderValue> {
     return c.join(' ');
   });
 
-  writeValue(value: SliderValue): void {
+  override writeValue(value: SliderValue): void {
     if (this.range()) {
       this.modelValue.set(Array.isArray(value) ? value : [this.min(), this.max()]);
     } else {
       this.modelValue.set(typeof value === 'number' ? value : this.min());
     }
+  }
+
+  /** @ignore */
+  protected override uidPrefix(): string {
+    return 'ui-slider';
   }
 
   /** Focus the first handle programmatically. */
