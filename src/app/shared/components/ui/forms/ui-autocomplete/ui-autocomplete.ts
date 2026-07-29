@@ -12,6 +12,7 @@ import {
   output,
   signal,
   TemplateRef,
+  untracked,
   viewChild,
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
@@ -257,9 +258,23 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
   private queryDirty = false;
   /** @ignore Debounce handle for `completeMethod`. */
   private searchTimeout: ReturnType<typeof setTimeout> | undefined;
+  /** @ignore A written value whose label could not be resolved yet (see `writeValue`). */
+  private readonly pendingLabelSync = signal(false);
 
   constructor() {
     super();
+
+    // Late label resolution: a value written before suggestions exist (e.g. a
+    // pre-filled form using `optionValue`) displays the raw value; swap in the
+    // real label once a matching suggestion arrives.
+    effect(() => {
+      const entry = this.pendingLabelSync() ? this.entryOfValue(untracked(this.modelValue) ?? null) : undefined;
+      if (!entry) return;
+      untracked(() => {
+        this.pendingLabelSync.set(false);
+        this.inputText.set(entry.label);
+      });
+    });
 
     // Forward the rendered range of the virtual viewport (lazy loading).
     effect((onCleanup) => {
@@ -401,6 +416,11 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
   override writeValue(value: AutocompleteValue<T>): void {
     this.modelValue.set(value);
     this.inputText.set(this.labelOfValue(value));
+    // With `optionValue`, the label may be unresolvable until the parent
+    // provides suggestions — remember to re-resolve it later.
+    this.pendingLabelSync.set(
+      value !== null && value !== undefined && this.entryOfValue(value) === undefined,
+    );
   }
 
   /** Moves focus to the input. */
@@ -447,9 +467,12 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
   protected onInput(event: Event): void {
     const query = (event.target as HTMLInputElement).value;
     this.inputText.set(query);
+    // The user took over the text: stop any pending label re-resolution.
+    this.pendingLabelSync.set(false);
 
     // Free-text value while typing; `forceSelection` waits for a real suggestion.
-    if (!this.forceSelection()) this.commit(query as AutocompleteValue<T>);
+    // An emptied input commits `null` (same normalization as `clear()`).
+    if (!this.forceSelection()) this.commit(query === '' ? null : (query as AutocompleteValue<T>));
 
     if (this.searchTimeout) clearTimeout(this.searchTimeout);
 
@@ -626,6 +649,7 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
 
   /** @ignore Propagate a user-driven value change (view → form). */
   private commit(value: AutocompleteValue<T>): void {
+    this.pendingLabelSync.set(false);
     this.modelValue.set(value);
     this.emitChange(value);
     this.valueChange.emit(value);
@@ -689,9 +713,15 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
   /** @ignore Label displayed for a model value (best-effort against the suggestions). */
   private labelOfValue(value: AutocompleteValue<T>): string {
     if (value === null || value === undefined) return '';
-    const entry = this.flatEntries().find((e) => this.equals(e.value, value));
+    const entry = this.entryOfValue(value);
     if (entry) return entry.label;
     return this.resolveLabel(value) ?? this.asText(value) ?? '';
+  }
+
+  /** @ignore Suggestion entry matching a model value, if currently known. */
+  private entryOfValue(value: AutocompleteValue<T>) {
+    if (value === null || value === undefined) return undefined;
+    return this.flatEntries().find((e) => this.equals(e.value, value));
   }
 
   /** @ignore Shared option resolution (see `option-resolver.ts`). */
