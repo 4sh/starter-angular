@@ -7,9 +7,9 @@
 // its own text inset here.
 // =====================================================================
 
-$pad-x: utils.$form-field-padding-x;
-$pad-y: utils.$form-textarea-padding-y;
-$pad-y-small: utils.$form-textarea-padding-y-small;
+$pad-x: utils.$form-field-padding-x;                /// Padding horizontal du contrôle multiligne.
+$pad-y: utils.$form-textarea-padding-y;             /// Padding vertical du contrôle multiligne.
+$pad-y-small: utils.$form-textarea-padding-y-small; /// Padding vertical du contrôle multiligne, variante `small`.
 
 .ui-textarea {
   &-native {

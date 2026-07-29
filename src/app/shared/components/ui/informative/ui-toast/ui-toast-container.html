@@ -1,7 +1,7 @@
 <div
   [class]="regionClass()"
   [style.z-index]="zIndex()"
-  [style.gap]="stackGap() != null ? stackGap() + 'px' : null"
+  [style.gap.px]="stackGap() ?? null"
 >
   @for (item of items(); track item.id) {
     <div
@@ -28,7 +28,7 @@
         [closable]="item.closable ?? true"
         [expanded]="expanded()"
         [styleClass]="item.styleClass"
-        (close)="dismiss(item)"
+        (closed)="dismiss(item)"
       >
         @if (template(); as tpl) {
           <ng-container *ngTemplateOutlet="tpl; context: { $implicit: item, closeFn: closeFn(item) }" />

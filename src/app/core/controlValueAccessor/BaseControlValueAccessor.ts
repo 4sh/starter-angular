@@ -1,4 +1,4 @@
-import { afterNextRender, computed, DestroyRef, inject, Injector, signal } from '@angular/core';
+import { afterNextRender, computed, DestroyRef, effect, inject, Injector, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
     ControlValueAccessor,
@@ -94,17 +94,25 @@ export abstract class BaseControlValueAccessor<T> implements ControlValueAccesso
         const control = this.injector.get(NgControl, null, { optional: true, self: true })?.control;
         if (!control) return;
 
-        // Seed with the current state (events only fire on transitions).
-        this.pristine.set(control.pristine);
-        this.dirty.set(control.dirty);
-        this.touched.set(control.touched);
-        this.untouched.set(control.untouched);
-        this.controlInvalid.set(control.invalid);
-        this.controlErrors.set(control.errors);
+        const mirror = () => {
+            this.pristine.set(control.pristine);
+            this.dirty.set(control.dirty);
+            this.touched.set(control.touched);
+            this.untouched.set(control.untouched);
+            this.controlInvalid.set(control.invalid);
+            this.controlErrors.set(control.errors);
+        };
 
         // Signal-forms interop provides a fake NgControl without an `events`
-        // stream: keep the seeded state, just skip the live subscription.
-        if (!control.events) return;
+        // stream, but its getters read the field's signals: mirroring inside
+        // an effect tracks them and keeps the state live.
+        if (!control.events) {
+            effect(mirror, { injector: this.injector });
+            return;
+        }
+
+        // Seed with the current state (events only fire on transitions).
+        mirror();
 
         control.events.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(event => {
             if (event instanceof PristineChangeEvent) {

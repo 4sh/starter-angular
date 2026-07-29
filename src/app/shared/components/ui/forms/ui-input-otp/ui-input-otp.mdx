@@ -1,5 +1,6 @@
 import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
 import * as InputOtpStories from './ui-input-otp.stories';
+import { ConfigTable } from '../../../../../../../storybook/blocks/config-table';
 
 <Meta of={InputOtpStories} />
 
@@ -146,20 +147,23 @@ lorsque toutes les cellules sont remplies) sert ici à activer le bouton d'envoi
 
 ## Formulaires
 
-`ui-input-otp` est un `ControlValueAccessor` : il fonctionne en `[(ngModel)]`, avec les
-**Reactive Forms** (`[formControl]`/`[formControlName]`) et est prêt pour les **Signal Forms**
-(`[field]`, Angular 22) sans réécriture — l'interop est gérée par `BaseControlValueAccessor`
+`ui-input-otp` est un `ControlValueAccessor` : il se branche sans code additionnel aux
+**Signal Forms** (`@angular/forms/signals`, directive `[formField]`, stables depuis Angular 22)
+via l'interop CVA native, ainsi qu'en `[(ngModel)]` et avec les **Reactive Forms**
+(`[formControl]`/`[formControlName]`) — l'interop est gérée par `BaseControlValueAccessor`
 (contrôle sans flux `events`). La valeur du modèle est la **chaîne jointe** des cellules.
 
+<Canvas of={InputOtpStories.SignalForms} />
+
 ```html
+<!-- Signal Forms -->
+<ui-input-otp [formField]="field" ariaLabel="Code" />
+
 <!-- Template-driven -->
 <ui-input-otp [(ngModel)]="code" ariaLabel="Code" />
 
 <!-- Reactive -->
 <ui-input-otp [formControl]="codeCtrl" ariaLabel="Code" />
-
-<!-- Signal Forms (Angular 22) -->
-<ui-input-otp [field]="form.code" ariaLabel="Code" />
 ```
 
 ## Theming
@@ -169,15 +173,4 @@ structurelles (rayon, épaisseur de bordure, anneau de focus) sont **réutilisé
 configuration partagée `ui-config` (voir [Configuration](?path=/docs/design-system-configuration--docs)
 et la page [Forms](?path=/docs/design-system-configuration-forms--docs)).
 
-<table className="doc-table">
-  <thead>
-    <tr><th>Variable locale</th><th>Source</th><th>Rôle</th></tr>
-  </thead>
-  <tbody>
-    <tr><td><code>$sizes</code></td><td>local</td><td>Map avec clés <code>size</code> (dimension) et <code>font-size</code> (typographie) pour chaque variante (<code>small</code>/<code>default</code>/<code>large</code>).</td></tr>
-    <tr><td><code>$radius</code></td><td><code>utils.$form-field-radius</code></td><td>Rayon des cellules (aligné sur <code>ui-field</code>).</td></tr>
-    <tr><td><code>$stroke-width</code></td><td><code>utils.$form-field-stroke-width</code></td><td>Épaisseur de la bordure.</td></tr>
-    <tr><td><code>$focus-ring-width</code></td><td><code>utils.$form-field-focus-ring-width</code></td><td>Largeur de l'anneau de focus.</td></tr>
-    <tr><td><code>$gap</code></td><td>local</td><td>Espace entre les cellules (<code>--units-sm</code>).</td></tr>
-  </tbody>
-</table>
+<ConfigTable of="ui-input-otp" />

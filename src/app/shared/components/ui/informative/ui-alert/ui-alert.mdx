@@ -1,5 +1,6 @@
 import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
 import * as AlertStories from './ui-alert.stories';
+import { ConfigTable } from '../../../../../../../storybook/blocks/config-table';
 
 <Meta of={AlertStories} />
 
@@ -58,12 +59,12 @@ Plusieurs messages s'affichent via un bloc `@for` ; chacun se retire à la ferme
 ## Life
 
 Renseigner `life` (ms) fait disparaître l'alerte automatiquement (elle se masque et
-émet `close`).
+émet `closed`).
 
 <Canvas of={AlertStories.Life} />
 
 ```html
-<ui-alert level="success" text="Enregistré." [life]="4000" (close)="onClose()" />
+<ui-alert level="success" text="Enregistré." [life]="4000" (closed)="onClose()" />
 ```
 
 ## Forms
@@ -125,3 +126,7 @@ Les erreurs de validation d'un formulaire s'affichent en sévérité `error`.
     </tr>
   </tbody>
 </table>
+
+## Theming
+
+<ConfigTable of="ui-alert" />

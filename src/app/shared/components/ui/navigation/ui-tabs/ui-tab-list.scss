@@ -11,14 +11,14 @@
 // =====================================================================
 
 // --- Config ---------------------------------------------------
-$bar-thickness: var(--stroke-default);
-$track-thickness: var(--stroke-sm);
-$nav-size: utils.rem-calc(40);
-$focus-ring-width: utils.$action-focus-ring-width;
+$bar-thickness: var(--stroke-default);             /// Épaisseur de la barre d'onglet actif.
+$track-thickness: var(--stroke-sm);                /// Épaisseur de la piste sous les onglets.
+$nav-size: utils.rem-calc(40);                     /// Taille des boutons de défilement.
+$focus-ring-width: utils.$action-focus-ring-width; /// Épaisseur de l'anneau de focus.
 
 // Themable indicator.
-$bar-color: var(--ui-tabs-active-bar-color, var(--navigation-high-stroke-active));
-$bar-size: var(--ui-tabs-active-bar-size, #{$bar-thickness});
+$bar-color: var(--ui-tabs-active-bar-color, var(--navigation-high-stroke-active)); /// Couleur de la barre active, surchargeable par instance.
+$bar-size: var(--ui-tabs-active-bar-size, #{$bar-thickness});                      /// Épaisseur de la barre active, surchargeable par instance.
 
 :host {
   display: flex;

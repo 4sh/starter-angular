@@ -9,14 +9,16 @@
 // =====================================================================
 
 // --- Config ----------------------------------------------------------
-$stroke: utils.$form-field-stroke-width;
-$radius: utils.$form-field-radius;
-$focus-ring: utils.$form-focus-ring-width;
+$stroke: utils.$form-field-stroke-width;   /// Épaisseur de bordure de la zone de dépôt.
+$radius: utils.$form-field-radius;         /// Rayon de la zone de dépôt.
+$focus-ring: utils.$form-focus-ring-width; /// Épaisseur de l'anneau de focus.
 
+/// Hauteur de la zone en présentation compacte, par taille.
 $field-height: (
   'default': utils.$form-field-height,
   'small': utils.$form-field-height-small,
 );
+/// Hauteur minimale de la zone de dépôt, par taille.
 $zone-min: (
   'default': 112px,
   'small': 94px,

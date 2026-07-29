@@ -12,6 +12,7 @@
 // =====================================================================
 
 // `default` = base styles; other keys become `._<name>` modifiers.
+/// Typo de la valeur et largeur minimale stabilisant le rendu, par taille.
 $sizes: (
   'default': (
     font-size: var(--size-typography-title-xl),
@@ -22,7 +23,7 @@ $sizes: (
     min-width: 32px,
   ),
 );
-$size-default: map.get($sizes, 'default');
+$size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default` de `$sizes`.
 
 .ui-nudger {
   display: inline-flex;

@@ -9,6 +9,9 @@
       }
     </li>
   } @else {
+    <!-- Pattern combobox/listbox ARIA : le clavier et le focus sont gérés par
+         l'input role="combobox" (roving via aria-activedescendant). -->
+    <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -->
     <li
       class="ui-autocomplete-option"
       role="option"

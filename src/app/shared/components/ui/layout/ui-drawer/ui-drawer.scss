@@ -13,15 +13,15 @@
 // =====================================================================
 
 // --- Config (local) ---------------------------------------------------
-$drawer-z-index: 1100;
-$stroke-width: var(--stroke-sm);
-$panel-padding: var(--units-lg);
-$header-gap: var(--units-sm);
-$action-size: 32px;
-$focus-ring-width: utils.$focus-ring-width;
-$mask-background: var(--primitives-black-50);
-$size-side: utils.rem-calc(320); // width of a left/right drawer
-$size-edge: utils.rem-calc(160); // height of a top/bottom drawer
+$drawer-z-index: 1100;                        /// Palier d'empilement de base (au-dessus des overlays CDK à 1000)
+$stroke-width: var(--stroke-sm);              /// Épaisseur de bordure du panneau.
+$panel-padding: var(--units-lg);              /// Inset du panneau.
+$header-gap: var(--units-sm);                 /// Espacement entre les éléments de l'en-tête.
+$action-size: 32px;                           /// Taille de la cible tactile du bouton de fermeture.
+$focus-ring-width: utils.$focus-ring-width;   /// Épaisseur de l'anneau de focus du bouton de fermeture
+$mask-background: var(--primitives-black-50); /// Assombrissement du masque — exposé via `--ui-drawer-mask-background`.
+$size-side: utils.rem-calc(320);              /// Largeur d'un tiroir gauche / droite.
+$size-edge: utils.rem-calc(160);              /// Hauteur d'un tiroir haut / bas.
 
 .ui-drawer-scrim {
   position: fixed;

@@ -8,7 +8,7 @@
 // =====================================================================
 
 // Shared default (ui-config) — the overlap must equal the button border width.
-$stroke-width: utils.$control-stroke-width;
+$stroke-width: utils.$control-stroke-width; /// Chevauchement des deux boutons (= largeur de bordure, évite le doublement du trait partagé)
 
 .ui-button-split {
   display: inline-flex;

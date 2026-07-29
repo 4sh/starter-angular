@@ -14,18 +14,18 @@
 // =====================================================================
 
 // --- Config (local) ---------------------------------------------------
-$z-index: 1000;
-$stroke-width: var(--stroke-sm);
-$region-padding: var(--units-md);
-$close-size: 32px;
-$focus-ring-width: utils.$focus-ring-width;
-$backdrop-background: var(--primitives-black-50);
-$width-default: utils.rem-calc(280); // expanded width
-$rail-width-default: utils.rem-calc(72); // collapsed icon rail
+$z-index: 1000;                                   /// Plan d'empilement du panneau.
+$stroke-width: var(--stroke-sm);                  /// Épaisseur de bordure du panneau.
+$region-padding: var(--units-md);                 /// Inset des régions (en-tête, corps, pied).
+$close-size: 32px;                                /// Taille de la cible tactile du bouton de fermeture.
+$focus-ring-width: utils.$focus-ring-width;       /// Épaisseur de l'anneau de focus.
+$backdrop-background: var(--primitives-black-50); /// Fond du voile en mode superposé.
+$width-default: utils.rem-calc(280);              /// Largeur du panneau déployé.
+$rail-width-default: utils.rem-calc(72);          /// Largeur du rail d'icônes replié.
 
 :host {
-  --ui-sidebar-width: #{$width-default};
-  --ui-sidebar-rail-width: #{$rail-width-default};
+  --ui-sidebar-width: #{$width-default};                                            /// Largeur du panneau déployé.
+  --ui-sidebar-rail-width: #{$rail-width-default};                                  /// Largeur du rail d’icônes replié.
   display: contents;
 }
 
@@ -34,7 +34,7 @@ $rail-width-default: utils.rem-calc(72); // collapsed icon rail
   position: fixed;
   inset: 0;
   z-index: $z-index;
-  background-color: var(--ui-sidebar-backdrop-background, #{$backdrop-background});
+  background-color: var(--ui-sidebar-backdrop-background, #{$backdrop-background}); /// Fond du voile en présentation superposée.
 
   &._contained {
     position: absolute;

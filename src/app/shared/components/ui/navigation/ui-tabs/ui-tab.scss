@@ -10,8 +10,8 @@
 // =====================================================================
 
 // --- Config ---------------------------------------------------
-$tab-min-height: utils.rem-calc(44);
-$focus-ring-width: utils.$action-focus-ring-width;
+$tab-min-height: utils.rem-calc(44);               /// Hauteur minimale d'un onglet (cible tactile).
+$focus-ring-width: utils.$action-focus-ring-width; /// Épaisseur de l'anneau de focus.
 
 :host {
   display: contents;

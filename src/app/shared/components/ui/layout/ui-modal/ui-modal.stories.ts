@@ -124,11 +124,11 @@ const meta: Meta<UiModal> = {
       description: 'Largeurs par palier, clé = `max-width` (ex : `{ "960px": "75vw" }`).',
       table: { type: { summary: 'Record<string, string>' }, defaultValue: { summary: 'undefined' } },
     },
-    onShow: { action: 'onShow', description: 'Émis après ouverture.' },
-    onHide: { action: 'onHide', description: 'Émis après fermeture.' },
-    onMaximize: { action: 'onMaximize', description: 'Émis au basculement agrandi / restauré.' },
-    onDragEnd: { action: 'onDragEnd', description: "Émis à la fin d'un déplacement." },
-    onResizeEnd: { action: 'onResizeEnd', description: "Émis à la fin d'un redimensionnement." },
+    shown: { action: 'shown', description: 'Émis après ouverture.' },
+    hidden: { action: 'hidden', description: 'Émis après fermeture.' },
+    maximizedChange: { action: 'maximizedChange', description: 'Émis au basculement agrandi / restauré.' },
+    dragEnd: { action: 'dragEnd', description: "Émis à la fin d'un déplacement." },
+    resizeEnd: { action: 'resizeEnd', description: "Émis à la fin d'un redimensionnement." },
   },
 };
 

@@ -1,13 +1,12 @@
-import {Component, Input, signal, inject, computed, effect} from '@angular/core';
+import { Component, input, signal, inject, computed, effect} from '@angular/core';
 import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {HttpClient} from '@angular/common/http';
 import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
-import {subdomain} from '@app/app.config';
 import assetsMapRaw from '../../../../../assets/assets-map.json';
 import {ThemeService} from "@app/core/service/theme.service";
 import {BrandService} from "@app/core/service/brand.service";
 
-type ModeMap = { base?: string; light?: string; dark?: string };
+interface ModeMap { base?: string; light?: string; dark?: string }
 type ThemeMap = Record<string, ModeMap>;
 const assetsMap = assetsMapRaw as Record<string, ThemeMap>;
 
@@ -26,24 +25,19 @@ export class UiImage {
     private themeService = inject(ThemeService);
     private brandService = inject(BrandService);
 
-    @Input({required: true}) set name(val: string) {
-        this._name.set(val);
-    }
+    name = input.required<string>();
+    priority = input(false);
+    fill = input(false);
+    width = input<string | number>();
+    widthUnit = input<string>();
+    height = input<string | number>();
+    heightUnit = input<string>();
+    alt = input<string>();
 
-    @Input() priority = false;
-    @Input() fill = false;
-    @Input() width?: string | number;
-    @Input() widthUnit?: string;
-    @Input() height?: string | number;
-    @Input() heightUnit?: string;
-    @Input() alt?: string;
-
-    private _name = signal('');
-
-    isSvg = computed(() => this._name().toLowerCase().endsWith('.svg'));
+    isSvg = computed(() => this.name().toLowerCase().endsWith('.svg'));
 
     finalSrc = computed(() => {
-        const filename = this._name();
+        const filename = this.name();
         const mode = this.themeService.currentMode();
 
         const brand = this.brandService.currentBrand();

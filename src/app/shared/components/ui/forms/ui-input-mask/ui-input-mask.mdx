@@ -51,6 +51,15 @@ Valeur modèle = string masquée (`12/09/2024`) par défaut, ou brute (`12092024
 <Canvas of={MaskStories.Unmask} />
 <Canvas of={MaskStories.Error} />
 
+## Formulaires
+
+Le composant est un `ControlValueAccessor` : il se branche sans code additionnel aux
+**Signal Forms** (`@angular/forms/signals`, directive `[formField]`, stables depuis Angular 22)
+via l'interop CVA native, ainsi qu'aux formulaires template-driven (`[(ngModel)]`) et réactifs
+(`[formControl]`).
+
+<Canvas of={MaskStories.SignalForms} />
+
 ## Accessibilité & notes
 
 <table className="doc-table">
@@ -70,6 +79,9 @@ Valeur modèle = string masquée (`12/09/2024`) par défaut, ou brute (`12092024
 </table>
 
 ```html
+<!-- Signal Forms -->
+<ui-input-mask [formField]="field" label="Date" mask="99/99/9999" placeholder="jj/mm/aaaa" />
+
 <ui-input-mask formControlName="birthDate" label="Date" mask="99/99/9999" placeholder="jj/mm/aaaa" iconLeft="calendar" />
 <ui-input-mask [(ngModel)]="phone" label="Téléphone" mask="(999) 999-9999" />
 <ui-input-mask [(ngModel)]="iban" label="IBAN" mask="FR99 9999 9999 9999" [unmask]="true" />

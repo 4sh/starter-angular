@@ -11,9 +11,10 @@
 // =====================================================================
 
 // --- Config (extension points) ---------------------------------------
-$levels: high, low, success, warning, error;
+$levels: high, low, success, warning, error; /// Familles de couleur générées (spécifique bouton)
 
 // `default` = base styles; other keys become `._<name>` modifiers.
+/// Dimensions par taille (spécifique bouton)
 $sizes: (
   'default': (
     height: var(--size-components-default),
@@ -26,8 +27,8 @@ $sizes: (
     font-size: var(--size-typography-text-md),
   ),
 );
-$size-default: map.get($sizes, 'default');
-$focus-ring-width: utils.$action-focus-ring-width;
+$size-default: map.get($sizes, 'default');         /// Raccourci vers l'entrée `default` de `$sizes`.
+$focus-ring-width: utils.$action-focus-ring-width; /// Épaisseur de l'anneau de focus
 
 // Height/padding/font-size for a $sizes entry.
 @mixin button-size($size) {
@@ -46,7 +47,7 @@ $focus-ring-width: utils.$action-focus-ring-width;
   border: utils.$control-stroke-width solid transparent;
   // Radius hook: a host can reshape the corners (e.g. glued buttons in
   // ui-button-split) by setting `--ui-button-radius` on the <ui-button> host.
-  border-radius: var(--ui-button-radius, var(--radius-sm));
+  border-radius: var(--ui-button-radius, var(--radius-sm)); /// Rayon exposé pour reformer les coins (utilisé par `ui-button-split`).
   font-family: var(--fontfamily-base);
   font-weight: var(--weight-bold);
   line-height: 1.2;

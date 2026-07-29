@@ -9,6 +9,7 @@
 
 // --- Config (extension points) ---------------------------------------
 // `default` = base styles; other keys become `._<name>` modifiers.
+/// Dimensions par taille (spécifique lien)
 $sizes: (
   'default': (
     font-size: var(--size-typography-text-default),
@@ -17,8 +18,8 @@ $sizes: (
     font-size: var(--size-typography-text-md),
   ),
 );
-$size-default: map.get($sizes, 'default');
-$focus-ring-width: utils.$action-focus-ring-width;
+$size-default: map.get($sizes, 'default');         /// Raccourci vers l'entrée `default` de `$sizes`.
+$focus-ring-width: utils.$action-focus-ring-width; /// Épaisseur de l'anneau de focus
 
 .ui-link {
   // --- Base ----------------------------------------------------------

@@ -1,5 +1,6 @@
 import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
 import * as SkeletonStories from './ui-skeleton.stories';
+import { ConfigTable } from '../../../../../../../storybook/blocks/config-table';
 
 <Meta of={SkeletonStories} />
 
@@ -133,24 +134,4 @@ s'arrêtent sous `prefers-reduced-motion` ou `data-motion="off"`.
 Toutes les valeurs proviennent des design tokens. Point de réglage exposé (par
 instance, via custom property CSS) :
 
-<table className="doc-table">
-  <thead>
-    <tr>
-      <th>Variable</th>
-      <th>Défaut</th>
-      <th>Rôle</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>--ui-skeleton-background</code></td>
-      <td><code>--global-low-surface-default</code></td>
-      <td>Couleur de fond de la boîte du placeholder.</td>
-    </tr>
-    <tr>
-      <td><code>--ui-skeleton-shine</code></td>
-      <td><code>rgba(255,255,255,.6)</code> (clair) / <code>rgba(255,255,255,.09)</code> (sombre)</td>
-      <td>Teinte du reflet glissant de l'animation <code>wave</code>.</td>
-    </tr>
-  </tbody>
-</table>
+<ConfigTable of="ui-skeleton" />

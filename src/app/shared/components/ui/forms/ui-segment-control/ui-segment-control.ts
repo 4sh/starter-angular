@@ -107,7 +107,7 @@ let nextUid = 0;
  * the shared motion system (honours reduced-motion and the `motion` opt-out).
  *
  * Works standalone, with `[(ngModel)]`, reactive forms, or signal forms
- * (`[field]`) — it is a `ControlValueAccessor`.
+ * (`[formField]`) — it is a `ControlValueAccessor`.
  *
  * @example
  * ```html

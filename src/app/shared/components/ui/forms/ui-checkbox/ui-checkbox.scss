@@ -8,9 +8,9 @@
 // =====================================================================
 
 // Shared defaults (ui-config) — replace a value here to detune ONLY this component.
-$box-size: utils.$form-control-size;
-$focus-ring-width: utils.$form-focus-ring-width;
-$gap: utils.$form-control-gap;
+$box-size: utils.$form-control-size;             /// Taille de la boîte à cocher
+$focus-ring-width: utils.$form-focus-ring-width; /// Épaisseur de l'anneau de focus
+$gap: utils.$form-control-gap;                   /// Espace entre la boîte et le label
 
 .ui-checkbox {
   display: inline-flex;

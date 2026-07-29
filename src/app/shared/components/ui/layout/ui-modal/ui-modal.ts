@@ -18,7 +18,7 @@ import {
   untracked,
   viewChild,
 } from '@angular/core';
-import { DOCUMENT, isPlatformBrowser, NgStyle, NgTemplateOutlet } from '@angular/common';
+import { DOCUMENT, isPlatformBrowser, NgTemplateOutlet } from '@angular/common';
 import { A11yModule } from '@angular/cdk/a11y';
 import { UiMotion, UiMotionPreset } from '@app/shared/motion/ui-motion';
 import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
@@ -97,7 +97,7 @@ function unlockBodyScroll(doc: Document): void {
  */
 @Component({
   selector: 'ui-modal',
-  imports: [NgTemplateOutlet, NgStyle, A11yModule, UiMotion, UiIcon],
+  imports: [NgTemplateOutlet, A11yModule, UiMotion, UiIcon],
   templateUrl: './ui-modal.html',
   styleUrl: './ui-modal.scss',
 })
@@ -196,15 +196,15 @@ export class UiModal {
   protected readonly closeIconTemplate = contentChild<TemplateRef<unknown>>('closeicon');
 
   /** Emitted after the dialog becomes visible. */
-  onShow = output<void>();
+  shown = output<void>();
   /** Emitted after the dialog is hidden. */
-  onHide = output<void>();
+  hidden = output<void>();
   /** Emitted when the maximize state is toggled. */
-  onMaximize = output<{ maximized: boolean }>();
+  maximizedChange = output<{ maximized: boolean }>();
   /** Emitted when a drag gesture ends. */
-  onDragEnd = output<void>();
+  dragEnd = output<void>();
   /** Emitted when a resize gesture ends. */
-  onResizeEnd = output<{ width: number; height: number }>();
+  resizeEnd = output<{ width: number; height: number }>();
 
   /** @ignore */
   private readonly dialogRef = viewChild<ElementRef<HTMLElement>>('dialog');
@@ -325,14 +325,14 @@ export class UiModal {
             lockBodyScroll(this.document);
             this.locked = true;
           }
-          this.onShow.emit();
+          this.shown.emit();
         } else if (!v && wasVisible) {
           wasVisible = false;
           this.releaseLock();
           this.maximized.set(false);
           this.dragOffset.set(null);
           this.resizeSize.set(null);
-          this.onHide.emit();
+          this.hidden.emit();
         }
       });
     });
@@ -399,7 +399,7 @@ export class UiModal {
         this.releaseLock();
       }
     }
-    this.onMaximize.emit({ maximized: next });
+    this.maximizedChange.emit({ maximized: next });
   }
 
   /** @ignore Escape-to-close (bubbles from any focused control inside the dialog). */
@@ -473,7 +473,7 @@ export class UiModal {
     this.dragging = false;
     this.removeDragListeners();
     this.document.body.style.userSelect = '';
-    this.onDragEnd.emit();
+    this.dragEnd.emit();
   }
 
   /** @ignore */
@@ -528,7 +528,7 @@ export class UiModal {
     this.removeResizeListeners();
     this.document.body.style.userSelect = '';
     const size = this.resizeSize();
-    if (size) this.onResizeEnd.emit({ width: size.w, height: size.h });
+    if (size) this.resizeEnd.emit({ width: size.w, height: size.h });
   }
 
   /** @ignore */

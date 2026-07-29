@@ -8,16 +8,16 @@
 // =====================================================================
 
 // --- Config (local) ---------------------------------------------------
-$modal-z-index: 1100;
-$mask-padding: var(--units-lg);
-$dialog-radius: var(--radius-md);
-$dialog-padding: var(--units-lg);
-$header-gap: var(--units-sm);
-$stroke-width: var(--stroke-sm);
-$action-size: 32px;
-$resize-handle-size: 16px;
-$focus-ring-width: utils.$focus-ring-width;
-$mask-background: var(--primitives-black-50);
+$modal-z-index: 1100;                         /// Palier d'empilement de base (au-dessus des overlays CDK à 1000)
+$mask-padding: var(--units-lg);               /// Inset entre le masque et le dialogue.
+$dialog-radius: var(--radius-md);             /// Rayon du dialogue.
+$dialog-padding: var(--units-lg);             /// Inset du dialogue.
+$header-gap: var(--units-sm);                 /// Espacement entre les éléments de l'en-tête.
+$stroke-width: var(--stroke-sm);              /// Épaisseur de bordure du dialogue.
+$action-size: 32px;                           /// Taille de la cible tactile du bouton de fermeture.
+$resize-handle-size: 16px;                    /// Taille de la poignée de redimensionnement.
+$focus-ring-width: utils.$focus-ring-width;   /// Épaisseur de l'anneau de focus des boutons d'en-tête
+$mask-background: var(--primitives-black-50); /// Assombrissement du masque — exposé via `--ui-modal-mask-background`.
 
 .ui-modal-scrim {
   position: fixed;

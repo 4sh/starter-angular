@@ -1,5 +1,6 @@
 import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
 import * as DatepickerStories from './ui-datepicker.stories';
+import { ConfigTable } from '../../../../../../../storybook/blocks/config-table';
 
 <Meta of={DatepickerStories} />
 
@@ -13,7 +14,8 @@ modes `MonthPicker` / `YearPicker`, plusieurs mois côte à côte, navigation me
 roving et support clavier complet (motif WAI-ARIA date picker).
 `p-datepicker`.
 
-Valeur `Date | null` câblée via `ControlValueAccessor` (`[(ngModel)]` ou reactive forms) sur
+Valeur `Date | Date[] | null` câblée via `ControlValueAccessor` (Signal Forms `[formField]`,
+`[(ngModel)]` ou `[formControl]`) sur
 [`BaseFormField`](?path=/docs/components-ui-forms-ui-input--docs) : `label`, `helperText`/`errorText`,
 `level`, la validation et les états `disabled`/`readonly` sont partagés avec les autres champs.
 
@@ -142,6 +144,29 @@ Deux points d'extension via `<ng-template>` projetés, résolus par `contentChil
 </ui-datepicker>
 ```
 
+## Formulaires
+
+Le composant est un `ControlValueAccessor` : il se branche sans code additionnel aux
+**Signal Forms** (`@angular/forms/signals`, directive `[formField]`, stables depuis Angular 22)
+via l'interop CVA native, ainsi qu'aux formulaires template-driven (`[(ngModel)]`) et réactifs
+(`[formControl]`).
+
+<Canvas of={DatepickerStories.SignalForms} />
+
+```html
+<!-- Signal Forms -->
+<ui-datepicker [formField]="birth" label="Date de naissance" />
+
+<!-- Reactive forms -->
+<ui-datepicker formControlName="birth" label="Date de naissance" [maxDate]="today" required />
+
+<!-- Date + heure, ngModel -->
+<ui-datepicker [(ngModel)]="appointment" label="Rendez-vous" showTime hourFormat="12" showButtonBar />
+
+<!-- Inline (pas d'overlay) -->
+<ui-datepicker [(ngModel)]="date" inline />
+```
+
 ## Accessibilité
 
 <table className="doc-table">
@@ -175,17 +200,6 @@ Deux points d'extension via `<ng-template>` projetés, résolus par `contentChil
   </tbody>
 </table>
 
-```html
-<!-- Reactive forms -->
-<ui-datepicker formControlName="birth" label="Date de naissance" [maxDate]="today" required />
-
-<!-- Date + heure, ngModel -->
-<ui-datepicker [(ngModel)]="appointment" label="Rendez-vous" showTime hourFormat="12" showButtonBar />
-
-<!-- Inline (pas d'overlay) -->
-<ui-datepicker [(ngModel)]="date" inline />
-```
-
 > **Périmètre / choix** : le champ déclencheur est en **lecture seule** (choix par le calendrier ;
 > pas de saisie/parsing texte libre). Le tiroir de vues (jour → mois → année) et le focus roving
 > clavier sont actifs en **mono-mois** ; en multi-mois les entêtes sont fixes avec flèches aux
@@ -199,64 +213,4 @@ Le champ déclencheur réutilise le shell `ui-field` (voir groupe
 variables locales (structurelles, propres au composant) — à retarger dans `ui-datepicker.scss` ou à
 surcharger via `panelStyleClass`. Voir le [fonctionnement de la configuration](?path=/docs/components-configuration--docs).
 
-<table className="doc-table">
-  <thead>
-    <tr>
-      <th>Variable locale</th>
-      <th>Source</th>
-      <th>Rôle</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>$panel-width</code></td>
-      <td><code>utils.rem-calc(360)</code></td>
-      <td>Largeur du panneau calendrier</td>
-    </tr>
-    <tr>
-      <td><code>$panel-radius</code></td>
-      <td><code>var(--radius-default)</code></td>
-      <td>Rayon de bordure du panneau</td>
-    </tr>
-    <tr>
-      <td><code>$panel-padding</code></td>
-      <td><code>var(--units-sm)</code></td>
-      <td>Padding interne du panneau</td>
-    </tr>
-    <tr>
-      <td><code>$panel-gap</code></td>
-      <td><code>var(--units-sm)</code></td>
-      <td>Espace entre sections (header / grille / heure)</td>
-    </tr>
-    <tr>
-      <td><code>$panel-shadow</code></td>
-      <td><code>var(--shadow-default-md)</code></td>
-      <td>Ombre du panneau en overlay (retirée en inline)</td>
-    </tr>
-    <tr>
-      <td><code>$day-size</code></td>
-      <td><code>var(--size-components-default)</code></td>
-      <td>Diamètre d'une cellule jour</td>
-    </tr>
-    <tr>
-      <td><code>$day-radius</code></td>
-      <td><code>var(--radius-full)</code></td>
-      <td>Rayon des cellules jour (cercle)</td>
-    </tr>
-    <tr>
-      <td><code>$nav-size</code></td>
-      <td><code>var(--size-components-default)</code></td>
-      <td>Taille des boutons de navigation mensuelle</td>
-    </tr>
-    <tr>
-      <td><code>$focus-ring-width</code></td>
-      <td><code>utils.$focus-ring-width</code></td>
-      <td>Anneau de focus (jours, navigation)</td>
-    </tr>
-    <tr>
-      <td><code>$stroke-width</code></td>
-      <td><code>utils.$control-stroke-width</code></td>
-      <td>Épaisseur des bordures (panneau, cellule « today »)</td>
-    </tr>
-  </tbody>
-</table>
+<ConfigTable of="ui-datepicker" />

@@ -17,6 +17,9 @@
     ></div>
   }
 
+  <!-- Dialog : Escape/Tab gérés sur le conteneur, le focus vit dans le
+       contenu (focus-trap CDK). -->
+  <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
   <div
     class="ui-drawer-positioner"
     [class._left]="position() === 'left'"
@@ -42,7 +45,7 @@
       [attr.aria-label]="resolvedAriaLabel()"
       [attr.aria-labelledby]="labelledBy()"
       tabindex="-1"
-      [ngStyle]="drawerStyle()"
+      [style]="drawerStyle()"
       [cdkTrapFocus]="focusTrap()"
       [cdkTrapFocusAutoCapture]="focusOnShow()"
     >

@@ -1,6 +1,9 @@
+import { Component, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
 import { FormsModule } from '@angular/forms';
+import { FormField, form, required } from '@angular/forms/signals';
 import { UiDatepicker } from './ui-datepicker';
 import { UiButton } from '@app/shared/components/ui/actions/ui-button/ui-button';
 
@@ -241,6 +244,31 @@ export const SmartPosition: Story = {
     </div>`,
   }),
   args: { autoFlip: true },
+};
+
+// --- Signal Forms (@angular/forms/signals) ------------------------------
+@Component({
+  selector: 'demo-datepicker-signal-forms',
+  standalone: true,
+  imports: [UiDatepicker, FormField, CommonModule],
+  template: `
+    <div style="width:260px; display:grid; gap:12px; justify-items:start;">
+      <ui-datepicker [formField]="birth" label="Date de naissance" placeholder="jj/mm/aaaa" />
+      <code>value = {{ (birth().value() | date: 'dd/MM/yyyy') ?? 'null' }} · valid = {{ birth().valid() }}</code>
+    </div>
+  `,
+})
+class SignalFormsDemo {
+  protected readonly model = signal<Date | null>(null);
+  protected readonly birth = form(this.model, (path) => {
+    required(path);
+  });
+}
+
+export const SignalForms: Story = {
+  name: 'Signal Forms',
+  render: () => ({ template: `<demo-datepicker-signal-forms />` }),
+  decorators: [moduleMetadata({ imports: [SignalFormsDemo] })],
 };
 
 // Cellule de jour personnalisée via le template #date (pastilles d'évènements).

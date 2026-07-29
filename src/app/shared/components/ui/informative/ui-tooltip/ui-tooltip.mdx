@@ -1,5 +1,6 @@
 import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
 import * as TooltipStories from './ui-tooltip.stories';
+import { ConfigTable } from '../../../../../../../storybook/blocks/config-table';
 
 <Meta of={TooltipStories} />
 
@@ -121,27 +122,7 @@ spécifique au composant : basculer un thème/mode suffit à re-teinter l'infobu
 
 Deux constantes structurelles restent **locales** (`ui-tooltip.scss`), propres à ce composant :
 
-<table className="doc-table">
-  <thead>
-    <tr>
-      <th>Variable locale</th>
-      <th>Valeur</th>
-      <th>Rôle</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>`$tooltip-max-width`</td>
-      <td>`256px`</td>
-      <td>Largeur max avant retour à la ligne.</td>
-    </tr>
-    <tr>
-      <td>`$tooltip-arrow-size`</td>
-      <td>`8px`</td>
-      <td>Taille de la flèche, tenue en phase avec la constante `ARROW_GAP` du `.ts`.</td>
-    </tr>
-  </tbody>
-</table>
+<ConfigTable of="ui-tooltip" />
 
 **Rendu ponctuel** : `tooltipStyleClass` ajoute une classe sur le panneau ; ciblez-la depuis une
 feuille de style **globale**. Le panneau utilisant des styles scopés, le plus fiable est de

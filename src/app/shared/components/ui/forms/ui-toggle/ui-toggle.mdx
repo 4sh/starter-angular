@@ -1,5 +1,6 @@
 import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
 import * as ToggleStories from './ui-toggle.stories';
+import { ConfigTable } from '../../../../../../../storybook/blocks/config-table';
 
 <Meta of={ToggleStories} />
 
@@ -45,9 +46,12 @@ icône `check` / `xmark` selon l'état.
 ## Formulaires
 
 Branché au système de formulaires du starter via `ControlValueAccessor`
-(`BaseControlValueAccessor`) : fonctionne avec `[(ngModel)]`, les reactive forms
-(`formControlName`) ou en autonome. L'état d'erreur se peint automatiquement quand le contrôle
-attaché est invalide **et** touché/modifié.
+(`BaseControlValueAccessor`) : fonctionne avec les **Signal Forms** (`@angular/forms/signals`,
+directive `[formField]`, stables depuis Angular 22) via l'interop CVA native, avec
+`[(ngModel)]`, les reactive forms (`formControlName`) ou en autonome. L'état d'erreur se peint
+automatiquement quand le contrôle attaché est invalide **et** touché/modifié.
+
+<Canvas of={ToggleStories.SignalForms} />
 
 ## Accessibilité
 
@@ -85,6 +89,9 @@ attaché est invalide **et** touché/modifié.
 <Canvas of={ToggleStories.NoLabel} />
 
 ```html
+<!-- Signal Forms -->
+<ui-toggle [formField]="notifications" label="Notifications" />
+
 <!-- Reactive forms -->
 <ui-toggle formControlName="darkMode" label="Mode sombre" />
 
@@ -101,29 +108,4 @@ Variables locales en tête de `ui-toggle.scss`. Voir le groupe partagé
 [Forms](?path=/docs/components-configuration-forms--docs) et le
 [fonctionnement de la configuration](?path=/docs/components-configuration--docs).
 
-<table className="doc-table">
-  <thead>
-    <tr>
-      <th>Variable locale</th>
-      <th>Source</th>
-      <th>Rôle</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>$focus-ring-width</code></td>
-      <td><code>utils.$form-focus-ring-width</code></td>
-      <td>Épaisseur de l'anneau de focus</td>
-    </tr>
-    <tr>
-      <td><code>$gap</code></td>
-      <td><code>utils.$form-control-gap</code></td>
-      <td>Espace entre l'interrupteur et le label</td>
-    </tr>
-    <tr>
-      <td><code>$sizes</code></td>
-      <td>local (map : track-w, track-h, thumb, pad)</td>
-      <td>Dimensions de la piste et de la pastille par taille (spécifique toggle)</td>
-    </tr>
-  </tbody>
-</table>
+<ConfigTable of="ui-toggle" />

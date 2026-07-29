@@ -5,7 +5,6 @@ import { ThemeService } from '@app/core/service/theme.service';
 
 // Actions
 import { UiButton } from '@app/shared/components/ui/actions/ui-button/ui-button';
-import { UiButtonSplit } from '@app/shared/components/ui/actions/ui-button-split/ui-button-split';
 import { UiLink } from '@app/shared/components/ui/actions/ui-link/ui-link';
 
 // Forms
@@ -55,7 +54,7 @@ import {
 
 // Root
 import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
-import { UiMenuItem } from '@app/shared/components/ui/navigation/ui-menu/ui-menu';
+import { UiFeedbackLevel } from '@app/shared/types/ui-level';
 
 // ---- Types ----------------------------------------------------------------
 
@@ -138,9 +137,7 @@ const ALL_ORDERS: Order[] = [
 
 // ---- Status helpers -------------------------------------------------------
 
-type TagLevel = 'default' | 'highlight' | 'success' | 'warning' | 'error';
-
-const STATUS_CONFIG: Record<OrderStatus, { label: string; level: TagLevel; icon: string }> = {
+const STATUS_CONFIG: Record<OrderStatus, { label: string; level: UiFeedbackLevel; icon: string }> = {
   pending:   { label: 'En attente',  level: 'warning',   icon: 'clock' },
   confirmed: { label: 'Confirmée',   level: 'highlight', icon: 'check-circle' },
   shipped:   { label: 'Expédiée',    level: 'default',   icon: 'truck' },
@@ -151,7 +148,7 @@ const STATUS_CONFIG: Record<OrderStatus, { label: string; level: TagLevel; icon:
 // ---- Component ------------------------------------------------------------
 
 @Component({
-  selector: 'demo-orders',
+  selector: 'sp-demo-orders',
   templateUrl: './demo-orders.html',
   styleUrl: './demo-orders.scss',
   imports: [
@@ -214,11 +211,11 @@ export class DemoOrders {
   readonly activeTab = signal<string | number | undefined>('orders');
 
   // ---- KPI data
-  readonly kpis = [
-    { id: 'revenue',  label: 'Chiffre d\'affaires', value: '42 850 €', trend: '+12%', trendColor: 'high' as any, progress: 72, icon: 'euro-sign' },
-    { id: 'today',    label: 'Commandes aujourd\'hui', value: '18', trend: '+3 vs hier', trendColor: 'success' as any, progress: 60, icon: 'bag-shopping' },
-    { id: 'pending',  label: 'En attente', value: '3', trend: 'À traiter', trendColor: 'warning' as any, progress: 30, icon: 'clock' },
-    { id: 'delivery', label: 'Taux de livraison', value: '96%', trend: 'Ce mois', trendColor: 'success' as any, progress: 96, icon: 'truck' },
+  readonly kpis: { id: string; label: string; value: string; trend: string; trendColor: UiFeedbackLevel; progress: number; icon: string }[] = [
+    { id: 'revenue',  label: 'Chiffre d\'affaires', value: '42 850 €', trend: '+12%', trendColor: 'highlight', progress: 72, icon: 'euro-sign' },
+    { id: 'today',    label: 'Commandes aujourd\'hui', value: '18', trend: '+3 vs hier', trendColor: 'success', progress: 60, icon: 'bag-shopping' },
+    { id: 'pending',  label: 'En attente', value: '3', trend: 'À traiter', trendColor: 'warning', progress: 30, icon: 'clock' },
+    { id: 'delivery', label: 'Taux de livraison', value: '96%', trend: 'Ce mois', trendColor: 'success', progress: 96, icon: 'truck' },
   ];
 
   // ---- Toolbar
@@ -232,13 +229,6 @@ export class DemoOrders {
     { label: 'Expédiée',    value: 'shipped' },
     { label: 'Livrée',      value: 'delivered' },
     { label: 'Annulée',     value: 'cancelled' },
-  ];
-
-  readonly splitModel: UiMenuItem[] = [
-    { label: 'Importer (CSV)', icon: 'file-import' },
-    { label: 'Dupliquer', icon: 'copy' },
-    { separator: true },
-    { label: 'Archiver tout', icon: 'box-archive' },
   ];
 
   // ---- Filtered orders
@@ -322,7 +312,7 @@ export class DemoOrders {
 
   // ---- Helpers
   statusLabel(status: OrderStatus): string { return STATUS_CONFIG[status].label; }
-  statusLevel(status: OrderStatus): TagLevel { return STATUS_CONFIG[status].level; }
+  statusLevel(status: OrderStatus): UiFeedbackLevel { return STATUS_CONFIG[status].level; }
   statusIcon(status: OrderStatus):  string { return STATUS_CONFIG[status].icon; }
 
   orderTotal(order: Order): number {

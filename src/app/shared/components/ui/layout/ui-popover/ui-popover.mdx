@@ -1,5 +1,6 @@
 import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
 import * as PopoverStories from './ui-popover.stories';
+import { ConfigTable } from '../../../../../../../storybook/blocks/config-table';
 
 <Meta of={PopoverStories} />
 
@@ -134,39 +135,4 @@ Variables locales en tête de `ui-popover.scss`. La coque du panneau (rayon, ép
 bordure, ombre) provient des constantes partagées `$overlay-panel-*` de `ui-config` — voir le
 [fonctionnement de la configuration](?path=/docs/components-configuration--docs).
 
-<table className="doc-table">
-  <thead>
-    <tr>
-      <th>Variable locale</th>
-      <th>Source</th>
-      <th>Rôle</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>$popover-padding</code></td>
-      <td>local (<code>--units-md</code>)</td>
-      <td>Espacement interne du contenu projeté</td>
-    </tr>
-    <tr>
-      <td><code>$popover-max-width</code></td>
-      <td>local (320px)</td>
-      <td>Largeur maximale avant retour à la ligne (le CDK garde le panneau dans le viewport)</td>
-    </tr>
-    <tr>
-      <td><code>--ui-popover-max-height</code></td>
-      <td>hook par instance</td>
-      <td>Hauteur maximale du contenu avant scroll interne (non définie par défaut ; ex. <code>60vh</code>)</td>
-    </tr>
-    <tr>
-      <td><code>$popover-arrow-size</code></td>
-      <td>local (8px)</td>
-      <td>Diamètre de la flèche — synchronisé avec <code>ARROW_GAP</code> dans le <code>.ts</code></td>
-    </tr>
-    <tr>
-      <td><code>utils.overlay-panel(...)</code></td>
-      <td><code>ui-config.$overlay-panel-&#42;</code></td>
-      <td>Coque partagée : rayon, épaisseur de bordure, ombre (surchargeables par instance via <code>--ui-overlay-&#42;</code>)</td>
-    </tr>
-  </tbody>
-</table>
+<ConfigTable of="ui-popover" />

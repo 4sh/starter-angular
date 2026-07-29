@@ -1,5 +1,6 @@
 import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
 import * as FileUploadStories from './ui-file-upload.stories';
+import { ConfigTable } from '../../../../../../../storybook/blocks/config-table';
 
 <Meta of={FileUploadStories} />
 
@@ -132,8 +133,8 @@ contenu personnalisé dans la barre d'actions.
   [maxFileSize]="5 * 1024 * 1024"
   url="/api/upload"
   ariaLabel="Téléverser des documents"
-  (onUpload)="onUploaded($event)"
-  (onError)="onError($event)"
+  (uploaded)="onUploaded($event)"
+  (uploadError)="uploadError($event)"
 />
 ```
 
@@ -142,3 +143,11 @@ contenu personnalisé dans la barre d'actions.
 La liste des fichiers est composée de lignes **`ui-file-upload-list`** (une par
 fichier) — la même unité que dans Figma. Chaque ligne bascule sur `ui-spinner`
 pendant le téléversement. Voir [ui-file-upload-list](?path=/docs/components-ui-forms-ui-file-upload-list--docs).
+
+## Theming
+
+La zone de dépôt et la liste de fichiers ont chacune leur configuration.
+
+<ConfigTable of="ui-file-upload" label="ui-file-upload" />
+
+<ConfigTable of="ui-file-upload-list" label="ui-file-upload-list" />

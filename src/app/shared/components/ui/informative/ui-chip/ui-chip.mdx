@@ -1,5 +1,6 @@
 import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
 import * as ChipStories from './ui-chip.stories';
+import { ConfigTable } from '../../../../../../../storybook/blocks/config-table';
 
 <Meta of={ChipStories} />
 
@@ -154,3 +155,7 @@ Cas d'usage typique : les valeurs sélectionnées d'un multi-select, chacune sup
 <!-- Sélectionnable (bascule) -->
 <ui-chip selectable [(selected)]="interested" label="Photography" icon="camera" />
 ```
+
+## Theming
+
+<ConfigTable of="ui-chip" />

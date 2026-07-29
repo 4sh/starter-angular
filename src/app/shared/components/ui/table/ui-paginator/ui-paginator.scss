@@ -4,12 +4,12 @@
 // ui-paginator : co-located styles. All values come from design tokens.
 // =====================================================================
 
-$focus-ring-width: utils.$action-focus-ring-width;
-$button-size: 40px;
-$button-radius: var(--radius-default);
-$bar-gap: var(--units-2xl);
-$blocks-gap: var(--units-default);
-$numbers-gap: var(--units-sm);
+$focus-ring-width: utils.$action-focus-ring-width; /// Anneau de focus des boutons.
+$button-size: 40px;                                /// Taille des contrôles / min-width des numéros.
+$button-radius: var(--radius-default);             /// Rayon des boutons (carré arrondi).
+$bar-gap: var(--units-2xl);                        /// Espacement entre les blocs de la barre.
+$blocks-gap: var(--units-default);                 /// Espacement interne d'un bloc.
+$numbers-gap: var(--units-sm);                     /// Espacement entre les numéros de page.
 
 // Base
 @mixin paginator-button($family) {
@@ -67,7 +67,7 @@ $numbers-gap: var(--units-sm);
     gap: $blocks-gap;
   }
 
-  // First / previous / next / last (Figma _paginator-button-controls).
+  // First / previous / next / last.
   &-control {
     @include paginator-button('low');
     width: utils.rem-calc($button-size);
@@ -80,7 +80,7 @@ $numbers-gap: var(--units-sm);
     gap: $numbers-gap;
   }
 
-  // Page numbers (Figma _paginator-button-numbers, State=Default).
+  // Page numbers (default state).
   &-page {
     @include paginator-button('low');
     padding: 0 var(--units-md);

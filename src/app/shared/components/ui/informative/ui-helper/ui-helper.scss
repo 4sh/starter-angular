@@ -11,6 +11,7 @@
 // =====================================================================
 
 // --- Config ---------------------------------------
+/// Couleur du texte par niveau sémantique.
 $levels: (
   'default': var(--form-low-content-default),
   'highlight': var(--informative-highlightlow-content-default),
@@ -19,6 +20,7 @@ $levels: (
   'error': var(--informative-errorlow-content-default),
 );
 
+/// Taille de texte, par taille.
 $sizes: (
   'default': var(--size-typography-text-default),
   'small': var(--size-typography-text-md),

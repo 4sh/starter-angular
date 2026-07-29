@@ -1,5 +1,6 @@
 import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
 import * as MenuStories from './ui-menu.stories';
+import { ConfigTable } from '../../../../../../../storybook/blocks/config-table';
 
 <Meta of={MenuStories} />
 
@@ -141,17 +142,4 @@ Variables **locales** de `ui-menu.scss` (voir aussi la
 [configuration Global UI](?path=/docs/components-configuration-global-ui--docs) et le
 [fonctionnement général](?path=/docs/components-configuration--docs)) :
 
-<table className="doc-table">
-  <thead>
-    <tr><th>Variable locale</th><th>Source</th><th>Rôle</th></tr>
-  </thead>
-  <tbody>
-    <tr><td>`$sizes`</td><td>map `default` / `small`</td><td>Densités : min-width du panneau, hauteur / padding / typo des items et en-têtes (ajouter une entrée = nouvelle densité + le type `MenuSize`).</td></tr>
-    <tr><td>`$panel-surface`</td><td>`var(--global-high-surface-default)`</td><td>Fond opaque du panneau (le token surface `navigation` est transparent par design).</td></tr>
-    <tr><td>`$item-radius`</td><td>`var(--radius-sm)`</td><td>Rayon des menuitems.</td></tr>
-    <tr><td>`$group-indent`</td><td>`var(--units-default)`</td><td>Indentation des groupes imbriqués.</td></tr>
-    <tr><td>`$panel-padding`</td><td>`utils.$overlay-panel-padding`</td><td>Gouttière interne du panneau (**partagée** avec les autres panneaux flottants).</td></tr>
-    <tr><td>`$separator-width`</td><td>`var(--stroke-sm)`</td><td>Épaisseur des séparateurs.</td></tr>
-    <tr><td>`$focus-ring-width`</td><td>`utils.$focus-ring-width`</td><td>Épaisseur de l'anneau de focus.</td></tr>
-  </tbody>
-</table>
+<ConfigTable of="ui-menu" />

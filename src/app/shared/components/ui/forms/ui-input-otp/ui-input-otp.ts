@@ -69,7 +69,7 @@ let nextUid = 0;
  *   receives the value, index, roving tabindex and the event handlers to bind).
  *
  * Works standalone, with `[(ngModel)]`, reactive forms, or signal forms
- * (`[field]`, Angular 22) — it is a `ControlValueAccessor` (interop handled by
+ * (`[formField]`, Angular 22) — it is a `ControlValueAccessor` (interop handled by
  * `BaseControlValueAccessor`).
  *
  * @example

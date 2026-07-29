@@ -5,6 +5,9 @@
   [cdkConnectedOverlayPositions]="overlayPositions"
   (detach)="hide()"
 >
+  <!-- Menu contextuel : Escape géré sur le conteneur, le focus vit sur les
+       items du menu (roving). -->
+  <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
   <div
     class="ui-context-menu"
     [uiMotion]="'zoom'"

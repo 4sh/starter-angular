@@ -6,8 +6,9 @@
 // =====================================================================
 
 // --- Config (extension points) ----------------------------------------
-$levels: high, low;
+$levels: high, low; /// Niveaux générant les modifiers `._<niveau>`.
 
+/// Largeur minimale du panneau, géométrie et typo des items, par taille.
 $sizes: (
   'default': (
     min-width: utils.rem-calc(210),
@@ -26,14 +27,14 @@ $sizes: (
     header-font-size: var(--size-typography-text-sm),
   ),
 );
-$size-default: map.get($sizes, 'default');
+$size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default` de `$sizes`.
 
-$panel-surface: var(--global-high-surface-default);
-$item-radius: var(--radius-sm);
-$group-indent: var(--units-default);
-$panel-padding: utils.$overlay-panel-padding;
-$separator-width: var(--stroke-sm);
-$focus-ring-width: utils.$focus-ring-width;
+$panel-surface: var(--global-high-surface-default); /// Fond opaque du panneau (le token surface `navigation` est transparent par design).
+$item-radius: var(--radius-sm);                     /// Rayon des menuitems.
+$group-indent: var(--units-default);                /// Indentation des groupes imbriqués.
+$panel-padding: utils.$overlay-panel-padding;       /// Gouttière interne du panneau (**partagée** avec les autres panneaux flottants).
+$separator-width: var(--stroke-sm);                 /// Épaisseur des séparateurs.
+$focus-ring-width: utils.$focus-ring-width;         /// Épaisseur de l'anneau de focus.
 
 @mixin menu-size($size) {
   min-width: map.get($size, min-width);

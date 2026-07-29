@@ -5,13 +5,13 @@
 // =====================================================================
 
 // --- Config (local, component-scoped) ---------------------------------
-$popover-arrow-size: utils.rem-calc(8);
-$popover-arrow-half: utils.rem-calc(4);
-$popover-padding: var(--units-md);
-$popover-max-width: utils.rem-calc(320);
+$popover-arrow-size: utils.rem-calc(8);  /// Diamètre de la flèche — synchronisé avec `ARROW_GAP` dans le `.ts`
+$popover-arrow-half: utils.rem-calc(4);  /// Demi-largeur de la flèche, pour son positionnement.
+$popover-padding: var(--units-md);       /// Espacement interne du contenu projeté
+$popover-max-width: utils.rem-calc(320); /// Largeur maximale avant retour à la ligne (le CDK garde le panneau dans le viewport)
 
-$popover-surface: var(--global-high-surface-default);
-$popover-stroke: var(--global-high-stroke-default);
+$popover-surface: var(--global-high-surface-default); /// Fond du panneau.
+$popover-stroke: var(--global-high-stroke-default);   /// Couleur de bordure du panneau.
 
 .ui-popover {
   position: relative;
@@ -31,7 +31,7 @@ $popover-stroke: var(--global-high-stroke-default);
   &-content {
     box-sizing: border-box;
     padding: $popover-padding;
-    max-height: var(--ui-popover-max-height);
+    max-height: var(--ui-popover-max-height); /// Hauteur maximale du contenu avant scroll interne — non définie par défaut (ex. `60vh`).
     overflow: auto;
     border-radius: inherit;
   }

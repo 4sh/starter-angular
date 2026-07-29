@@ -1,6 +1,8 @@
+import { Component, signal } from '@angular/core';
 import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
 import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormField, form, minLength, required } from '@angular/forms/signals';
 import { UiTextarea } from './ui-textarea';
 
 const meta: Meta<UiTextarea> = {
@@ -91,4 +93,31 @@ export const Validation: Story = {
       helperText="Entre 20 et 160 caractères."
       errorText="Minimum 20 caractères." /></div>`,
   }),
+};
+
+// --- Signal Forms (@angular/forms/signals) ------------------------------
+@Component({
+  selector: 'demo-textarea-signal-forms',
+  standalone: true,
+  imports: [UiTextarea, FormField],
+  template: `
+    <div style="width:280px; display:grid; gap:12px; justify-items:start;">
+      <ui-textarea [formField]="field" label="Message" placeholder="Votre message…"
+                   helperText="3 caractères minimum." errorText="3 caractères minimum." />
+      <code>value = {{ field().value() }} · valid = {{ field().valid() }}</code>
+    </div>
+  `,
+})
+class SignalFormsDemo {
+  protected readonly model = signal('');
+  protected readonly field = form(this.model, (path) => {
+    required(path);
+    minLength(path, 3);
+  });
+}
+
+export const SignalForms: Story = {
+  name: 'Signal Forms',
+  render: () => ({ template: `<demo-textarea-signal-forms />` }),
+  decorators: [moduleMetadata({ imports: [SignalFormsDemo] })],
 };

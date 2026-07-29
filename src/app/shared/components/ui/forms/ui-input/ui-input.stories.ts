@@ -1,6 +1,8 @@
+import { Component, signal } from '@angular/core';
 import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
 import { FormsModule } from '@angular/forms';
+import { FormField, form, minLength, required } from '@angular/forms/signals';
 import { UiInput } from './ui-input';
 
 const meta: Meta<UiInput> = {
@@ -93,4 +95,31 @@ export const Password: Story = {
       [iconRightAriaLabel]="revealed ? 'Masquer le mot de passe' : 'Afficher le mot de passe'"
       (iconRightClick)="revealed = !revealed" /></div>`,
   }),
+};
+
+// --- Signal Forms (@angular/forms/signals) ------------------------------
+@Component({
+  selector: 'demo-input-signal-forms',
+  standalone: true,
+  imports: [UiInput, FormField],
+  template: `
+    <div style="width:260px; display:grid; gap:12px; justify-items:start;">
+      <ui-input [formField]="field" label="Nom" placeholder="Votre nom"
+                helperText="3 caractères minimum." errorText="3 caractères minimum." />
+      <code>value = {{ field().value() }} · valid = {{ field().valid() }}</code>
+    </div>
+  `,
+})
+class SignalFormsDemo {
+  protected readonly model = signal('');
+  protected readonly field = form(this.model, (path) => {
+    required(path);
+    minLength(path, 3);
+  });
+}
+
+export const SignalForms: Story = {
+  name: 'Signal Forms',
+  render: () => ({ template: `<demo-input-signal-forms />` }),
+  decorators: [moduleMetadata({ imports: [SignalFormsDemo] })],
 };

@@ -11,7 +11,6 @@ import {
   inject,
   Injector,
   input,
-  NgZone,
   numberAttribute,
   output,
   PLATFORM_ID,
@@ -106,8 +105,6 @@ export class UiTooltip {
   /** @ignore */
   private readonly injector = inject(Injector);
   /** @ignore */
-  private readonly zone = inject(NgZone);
-  /** @ignore */
   private readonly renderer = inject(Renderer2);
   /** @ignore */
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
@@ -127,7 +124,7 @@ export class UiTooltip {
   private lifeTimer: ReturnType<typeof setTimeout> | null = null;
 
   /** @ignore Teardown handles for host / document listeners. */
-  private readonly disposers: Array<() => void> = [];
+  private readonly disposers: (() => void)[] = [];
 
   /** @ignore Content is a template (vs a string). */
   private readonly hasTemplate = computed(() => this.content() instanceof TemplateRef);
@@ -175,24 +172,22 @@ export class UiTooltip {
   /** @ignore */
   private bindTriggerEvents(): void {
     const host = this.el.nativeElement;
-    this.zone.runOutsideAngular(() => {
-      const evt = this.tooltipEvent();
-      if (evt === 'hover' || evt === 'both') {
-        this.disposers.push(
-          this.renderer.listen(host, 'mouseenter', () => this.activate()),
-          this.renderer.listen(host, 'mouseleave', () => this.deactivate()),
-          this.renderer.listen(host, 'click', () => this.deactivate()),
-          this.renderer.listen(host, 'touchstart', () => this.activate()),
-        );
-      }
-      if (evt === 'focus' || evt === 'both') {
-        // focusin/focusout bubble → also works when the host wraps the focusable element.
-        this.disposers.push(
-          this.renderer.listen(host, 'focusin', () => this.activate()),
-          this.renderer.listen(host, 'focusout', () => this.deactivate()),
-        );
-      }
-    });
+    const evt = this.tooltipEvent();
+    if (evt === 'hover' || evt === 'both') {
+      this.disposers.push(
+        this.renderer.listen(host, 'mouseenter', () => this.activate()),
+        this.renderer.listen(host, 'mouseleave', () => this.deactivate()),
+        this.renderer.listen(host, 'click', () => this.deactivate()),
+        this.renderer.listen(host, 'touchstart', () => this.activate()),
+      );
+    }
+    if (evt === 'focus' || evt === 'both') {
+      // focusin/focusout bubble → also works when the host wraps the focusable element.
+      this.disposers.push(
+        this.renderer.listen(host, 'focusin', () => this.activate()),
+        this.renderer.listen(host, 'focusout', () => this.deactivate()),
+      );
+    }
   }
 
   // --- Activation lifecycle -------------------------------------------
@@ -208,9 +203,9 @@ export class UiTooltip {
     const delay = this.showDelay();
     this.clearShowTimer();
     if (delay > 0) {
-      this.showTimer = setTimeout(() => this.zone.run(() => this.render()), delay);
+      this.showTimer = setTimeout(() => this.render(), delay);
     } else {
-      this.zone.run(() => this.render());
+      this.render();
     }
   }
 
@@ -220,9 +215,9 @@ export class UiTooltip {
     const delay = this.hideDelay();
     if (delay > 0) {
       this.clearHideTimer();
-      this.hideTimer = setTimeout(() => this.zone.run(() => this.remove()), delay);
+      this.hideTimer = setTimeout(() => this.remove(), delay);
     } else {
-      this.zone.run(() => this.remove());
+      this.remove();
     }
   }
 
@@ -387,7 +382,7 @@ export class UiTooltip {
   private armLifeTimer(): void {
     this.clearLifeTimer();
     const life = this.life();
-    if (life > 0) this.lifeTimer = setTimeout(() => this.zone.run(() => this.remove()), life);
+    if (life > 0) this.lifeTimer = setTimeout(() => this.remove(), life);
   }
 
   /** @ignore */

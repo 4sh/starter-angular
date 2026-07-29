@@ -10,6 +10,7 @@
 
 // --- Config (extension points) ---------------------------------------
 // `default` = base styles; other keys become `._<name>` modifiers.
+/// Gouttières, taille du média et typo, par taille.
 $sizes: (
   'default': (
     gap: var(--units-lg),
@@ -24,13 +25,13 @@ $sizes: (
     desc-font: var(--size-typography-text-md),
   ),
 );
-$size-default: map.get($sizes, 'default');
-$text-gap: var(--units-xs);
-$actions-gap: var(--units-sm);
-$max-width: 40ch;
+$size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default` de `$sizes`.
+$text-gap: var(--units-xs);                /// Espacement titre ↔ description.
+$actions-gap: var(--units-sm);             /// Espacement entre les actions.
+$max-width: 40ch;                          /// Largeur maximale du bloc de texte.
 
 @mixin empty-state-size($size) {
-  --ui-empty-state-media-size: #{map.get($size, media-size)};
+  --ui-empty-state-media-size: #{map.get($size, media-size)};      /// Côté de l’icône raccourci (le visuel hero).
   gap: map.get($size, gap);
 
   .ui-empty-state-title {
@@ -47,7 +48,7 @@ $max-width: 40ch;
 
 .ui-empty-state {
   // --- Base ----------------------------------------------------------
-  --ui-empty-state-media-color: var(--global-low-content-default);
+  --ui-empty-state-media-color: var(--global-low-content-default); /// Couleur de la zone visuelle (l’icône utilise `currentColor`).
   display: flex;
   flex-direction: column;
   align-items: center;

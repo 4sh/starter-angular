@@ -1,7 +1,9 @@
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
 import { FormsModule, ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
+import { FormField, form, required } from '@angular/forms/signals';
 import { UiAutocomplete, AutocompleteCompleteEvent } from './ui-autocomplete';
 import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
 
@@ -520,6 +522,44 @@ export const Invalid: Story = {
       />
     `,
   }),
+};
+
+// --- Signal Forms (@angular/forms/signals) ------------------------------
+@Component({
+  selector: 'demo-autocomplete-signal-forms',
+  standalone: true,
+  imports: [UiAutocomplete, FormField],
+  template: `
+    <div style="width: 18rem; display: grid; gap: 12px; justify-items: start;">
+      <ui-autocomplete
+        label="Pays"
+        placeholder="Tapez un pays…"
+        [dropdown]="true"
+        [formField]="country"
+        [suggestions]="results()"
+        (completeMethod)="complete($event)"
+      />
+      <code>value = {{ country().value() ?? 'null' }} · valid = {{ country().valid() }}</code>
+    </div>
+  `,
+})
+class SignalFormsDemo {
+  protected readonly results = signal<string[]>([]);
+  protected readonly model = signal<string | null>(null);
+  protected readonly country = form(this.model, (path) => {
+    required(path);
+  });
+
+  protected complete(event: AutocompleteCompleteEvent): void {
+    const q = norm(event.query);
+    this.results.set(COUNTRY_NAMES.filter((name) => norm(name).includes(q)));
+  }
+}
+
+export const SignalForms: Story = {
+  name: 'Signal Forms',
+  render: () => ({ template: `<demo-autocomplete-signal-forms />` }),
+  decorators: [moduleMetadata({ imports: [SignalFormsDemo] })],
 };
 
 /**

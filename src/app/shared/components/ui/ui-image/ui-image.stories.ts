@@ -1,6 +1,6 @@
 import { Meta, StoryObj, applicationConfig, componentWrapperDecorator } from '@storybook/angular';
 import { provideHttpClient } from '@angular/common/http';
-import { Component, Input, OnChanges, inject, signal, Injectable, OnDestroy } from '@angular/core';
+import { Component, effect, inject, input, signal, Injectable, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 // Imports de votre app
@@ -48,33 +48,35 @@ class MockBrandService {
     imports: [UiImage, CommonModule],
     template: `
     <ui-image 
-        [name]="name" 
-        [width]="width" 
-        [widthUnit]="widthUnit" 
-        [height]="height" 
-        [heightUnit]="heightUnit"
-        [alt]="alt"
-        [priority]="priority"
-        [fill]="fill"
+        [name]="name()" 
+        [width]="width()" 
+        [widthUnit]="widthUnit()" 
+        [height]="height()" 
+        [heightUnit]="heightUnit()"
+        [alt]="alt()"
+        [priority]="priority()"
+        [fill]="fill()"
     ></ui-image>
   `
 })
-class StorybookWrapper implements OnChanges {
+class StorybookWrapper {
     themeService = inject(ThemeService) as unknown as MockThemeService;
     brandService = inject(BrandService) as unknown as MockBrandService;
 
-    @Input() name!: string;
-    @Input() width?: number;
-    @Input() widthUnit: string = 'px';
-    @Input() height?: number;
-    @Input() heightUnit: string = 'px';
-    @Input() alt?: string;
-    @Input() priority = false;
-    @Input() fill = false;
-    @Input() brandName: string = 'common';
+    name = input.required<string>();
+    width = input<number>();
+    widthUnit = input('px');
+    height = input<number>();
+    heightUnit = input('px');
+    alt = input<string>();
+    priority = input(false);
+    fill = input(false);
+    brandName = input('common');
 
-    ngOnChanges() {
-        this.brandService.setBrand(this.brandName);
+    constructor() {
+        effect(() => {
+            this.brandService.setBrand(this.brandName());
+        });
     }
 }
 
@@ -99,7 +101,7 @@ const meta: Meta<StorybookWrapper> = {
         },
         width: {
             control: 'number',
-            description: "Largeur de l\'image",
+            description: "Largeur de l'image",
             table: { defaultValue: { summary: 'undefined' } },
         },
         widthUnit: {
@@ -109,7 +111,7 @@ const meta: Meta<StorybookWrapper> = {
         },
         height: {
             control: 'number',
-            description: "Hauteur de l\'image",
+            description: "Hauteur de l'image",
             table: { defaultValue: { summary: 'undefined' } },
         },
         heightUnit: {
@@ -119,7 +121,7 @@ const meta: Meta<StorybookWrapper> = {
         },
         alt: {
             control: 'text',
-            description: "Texte alternatif pour l\'accessibilité",
+            description: "Texte alternatif pour l'accessibilité",
             table: { defaultValue: { summary: 'undefined' } },
         },
         priority: {
@@ -129,7 +131,7 @@ const meta: Meta<StorybookWrapper> = {
         },
         fill: {
             control: 'boolean',
-            description: "L\'image remplit son conteneur parent (position: relative requis)",
+            description: "L'image remplit son conteneur parent (position: relative requis)",
             table: { defaultValue: { summary: 'false' } },
         },
         brandName: {

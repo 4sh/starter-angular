@@ -1,4 +1,6 @@
 <div [class]="classes()" (mouseleave)="clearHover()">
+  <!-- autofocus est un input opt-in délibéré du composant (défaut false). -->
+  <!-- eslint-disable @angular-eslint/template/no-autofocus -->
   <input #inputEl
          type="range"
          class="ui-rating-input"
@@ -16,9 +18,13 @@
          (input)="onNativeChange($event)"
          (focus)="onFocus($event)"
          (blur)="onBlur($event)">
+  <!-- eslint-enable @angular-eslint/template/no-autofocus -->
 
   <div class="ui-rating-stars">
     @for (star of starsArray(); track $index) {
+      <!-- Étoiles purement visuelles : focus et clavier sont portés par
+           l'<input type="range"> natif ci-dessus. -->
+      <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -->
       <div class="ui-rating-icon"
            [class._active]="star <= modelValue()"
            [class._hover]="star <= hoverValue()"

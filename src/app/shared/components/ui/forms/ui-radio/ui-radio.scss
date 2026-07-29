@@ -8,12 +8,12 @@
 // =====================================================================
 
 // Shared defaults (ui-config) — replace a value here to detune ONLY this component.
-$box-size: utils.$form-control-size;
-$focus-ring-width: utils.$form-focus-ring-width;
-$gap: utils.$form-control-gap;
+$box-size: utils.$form-control-size;             /// Diamètre du cercle radio
+$focus-ring-width: utils.$form-focus-ring-width; /// Épaisseur de l'anneau de focus
+$gap: utils.$form-control-gap;                   /// Espace entre le cercle et le label
 
 // Component-specific (radio only).
-$dot-size: var(--units-md);
+$dot-size: var(--units-md); /// Diamètre du point sélectionné (spécifique radio)
 
 .ui-radio {
   display: inline-flex;

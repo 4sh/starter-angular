@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
 import { FormsModule, ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
-import { Field, form, required } from '@angular/forms/signals';
+import { FormField, form, required } from '@angular/forms/signals';
 import { UiSegmentControl, SegmentControlOption } from './ui-segment-control';
 
 const VIEW_OPTIONS = ['Liste', 'Grille', 'Tableau'];
@@ -25,7 +25,7 @@ const meta: Meta<UiSegmentControl> = {
   title: 'Components/ui/forms/ui-segment-control',
   component: UiSegmentControl,
   decorators: [
-    moduleMetadata({ imports: [UiSegmentControl, CommonModule, FormsModule, ReactiveFormsModule, Field] }),
+    moduleMetadata({ imports: [UiSegmentControl, CommonModule, FormsModule, ReactiveFormsModule, FormField] }),
   ],
   parameters: {
     layout: 'centered',
@@ -289,10 +289,10 @@ export const Invalid: Story = {
 @Component({
   selector: 'demo-segment-signal-forms',
   standalone: true,
-  imports: [UiSegmentControl, Field, CommonModule],
+  imports: [UiSegmentControl, FormField, CommonModule],
   template: `
     <div style="display:grid; gap:12px; justify-items:start;">
-      <ui-segment-control [field]="color" [options]="options" ariaLabel="Couleur" />
+      <ui-segment-control [formField]="color" [options]="options" ariaLabel="Couleur" />
       <code>value = {{ color().value() | json }} · valid = {{ color().valid() }}</code>
     </div>
   `,

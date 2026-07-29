@@ -15,6 +15,9 @@
       </div>
     }
 
+    <!-- Pattern menu ARIA : clavier délégué au conteneur role="menu", le focus
+         vit sur les items (roving tabindex). -->
+    <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
     <ul
       class="ui-menu-list"
       role="menu"
@@ -133,6 +136,8 @@
             [cdkConnectedOverlayOpen]="openFlyoutKey() === node.key"
             [cdkConnectedOverlayPositions]="flyoutPositions"
           >
+            <!-- Flyout : clavier délégué au panneau, le focus vit sur les items. -->
+            <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
             <div
               class="ui-menu-flyout"
               [uiMotion]="'fade'"
@@ -172,7 +177,7 @@
             }
           </ng-template>
 
-          @if (node.item.routerLink != null && !node.item.disabled) {
+          @if (node.item.routerLink !== undefined && !node.item.disabled) {
             <a
               class="ui-menu-action"
               role="menuitem"

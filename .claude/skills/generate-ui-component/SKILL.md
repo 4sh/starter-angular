@@ -1,7 +1,7 @@
 ---
 name: generate-ui-component
 description: >-
-  Génère un composant headless `ui-*` (Angular 21 signals + CDK) et sa doc
+  Génère un composant headless `ui-*` (Angular 22 signals + CDK) et sa doc
   Storybook (stories + MDX) à partir d'un YAML de composant Figma, en respectant
   les conventions de ce starter (design tokens, types partagés, a11y, SCSS
   co-localisé). À utiliser dès que l'utilisateur fournit un YAML de specs Figma
@@ -52,8 +52,8 @@ correspondante dans `src/styles/src/generated/`. **Vérifier qu'elle existe**
 - Tailles : type local `type {Name}Size = 'default' | 'small' | ...` (le starter utilise `default` comme base, pas `undefined`).
 
 ### 5. Écrire le composant (voir « Conventions Angular »)
-### 6. Écrire le SCSS (voir « Conventions SCSS »)
-### 7. Écrire stories + MDX (voir « Storybook »)
+### 6. Écrire le SCSS, commentaires `///` de theming compris (voir « Conventions SCSS »)
+### 7. Écrire stories + MDX, `## Theming` en dernière section (voir « Storybook »)
 ### 8. Intégrer : cocher `components-index.md` (⬜→✅), ajouter la carte dans `Overview.mdx` (bonne section de catégorie), **ajouter l'entrée dans `CHANGELOG.md`** (section `[Unreleased]`), et — si une variable partagée a été ajoutée — mettre à jour la doc `config/` (voir « Variables partagées »).
 ### 9. Vérifier (voir « Vérification »).
 
@@ -98,6 +98,42 @@ Règles :
 - Config d'extension en tête : `$sizes` (map), `$levels`/`$sublevels` (listes) + boucles `@each` pour générer variantes/couleurs (cf. `ui-button`, `ui-badge`).
 - **100% tokens** : aucune couleur hex, aucun px d'espacement/radius/typo hors tokens. Dimensions issues du YAML → `utils.rem-calc(<px>)`.
 - États interactifs = `:hover`, `:focus-visible`, `:active`, `:disabled` (jamais des classes modifier).
+- **Jamais de référence à Figma** dans les commentaires : le `.scss` doit se lire sans la maquette.
+  Garder l'intention (« agrandi pour la lisibilité »), pas la provenance (« Figma 3px »).
+
+### Commentaires `///` = la doc de theming (obligatoire)
+
+La table « Theming » de la doc est **générée** depuis le `.scss` par `npm run docs:config`
+(`scripts/docs.config.mjs` → `storybook/generated/ui-config.json`). Ce sont donc les commentaires
+du SCSS qui écrivent la doc : rien à recopier ailleurs.
+
+| Marqueur | Sens |
+|---|---|
+| `///` | **contrat public**, en **français** → apparaît dans la doc |
+| `//` | note interne (implémentation), en anglais comme le reste du fichier → invisible |
+
+- Le `///` se met **en fin de déclaration**, aligné verticalement sur son **groupe visuel**
+  (les lignes vides séparent les groupes ; une ligne longue n'étire pas ses voisines) :
+
+  ```scss
+  // --- Config ---------------------------------------------------
+  $card-padding: var(--units-lg);       /// Inset du corps.
+  $card-radius: var(--radius-md);       /// Rayon des coins.
+  ```
+
+- Seule exception : une **map multi-lignes** porte son `///` sur la ligne au-dessus.
+- **Jamais de valeur résolue dans un rôle** (« Rayon des coins (12px) ») : la doc mesure la valeur
+  au runtime, dans le thème / la marque / le viewport actifs. Un `12px` écrit à la main devient faux
+  dès qu'un projet rebinde la variable.
+- Décrire le **rôle**, pas le binding : la colonne « Défaut (starter) » et la chaîne vers `ui-config`
+  sont déduites automatiquement.
+- **Toute** variable de la config doit avoir son `///` — `npm run docs:config` compte celles qui
+  manquent (elles n'apparaissent pas dans la table).
+- Les **custom properties exposées** (points d'override) se documentent avec un `///` là où le hook
+  vit : sur sa déclaration, ou sur la ligne qui le lit avec son fallback
+  (`color: var(--ui-x, var(--token));  /// Rôle.`) — jamais sur une déclaration interne
+  (override de mode sombre, etc.), sinon la doc affiche la mauvaise valeur par défaut.
+  Sans `///`, une custom property reste privée.
 
 ## Variables partagées (`ui-config`)
 
@@ -109,12 +145,14 @@ structurelle existante (focus ring, épaisseur de bordure, taille de contrôle, 
 - **Valeur potentiellement commune à ≥ 2 composants** d'une même famille et absente de `ui-config` →
   **l'ajouter** dans `_ui-config.scss` (niveau **catégorie** `$form-*`/`$action-*`/`$avatar-*`… si propre
   à une famille, **global** sinon ; jamais de couleur — elle reste un design token runtime), puis
-  **documenter** systématiquement :
-  1. la page de groupe dans `storybook/docs/config/` (`config-{catégorie}.mdx` — ex. `config-informative.mdx` ;
-     créer la page + l'ajouter au sommaire de `component-config.mdx` si la catégorie n'existe pas encore) ;
-  2. la section **« Configuration (SCSS) »** de la doc du composant (table variable locale → source → rôle).
-- **Valeur propre à un seul composant** → elle reste **locale** (documentée seulement dans la section
-  « Configuration (SCSS) » du composant).
+  **documenter** la page de groupe dans `storybook/docs/config/` (`config-{catégorie}.mdx` — ex.
+  `config-informative.mdx` ; créer la page + l'ajouter au sommaire de `component-config.mdx` si la
+  catégorie n'existe pas encore).
+- **Valeur propre à un seul composant** → elle reste **locale**.
+
+Côté doc du composant, il n'y a **rien à écrire à la main** : le `///` de la variable locale suffit,
+la table `## Theming` affiche seule le passage par `ui-config` (badge « partagé » + lien vers la page
+de groupe) et la valeur résolue.
 
 ## Contrôles de formulaire (catégorie `forms/`)
 
@@ -126,6 +164,7 @@ Si le composant tient une valeur (checked, sélection, saisie) :
 - `writeValue` → set d'un signal `modelValue`. `onNativeChange` → source unique des toggles user (respecte `readonly`), `emitChange` + output `{name}Change`. `onBlur` → `emitTouch()`.
 - `isDisabled = disabled() || controlDisabled()`, `isInvalid = invalid() || showError()`.
 - Label inline (span + marqueur requis) — **pas** d'instance `ui-label` (label imbriqué invalide). `--ui-label-color` pour piloter la couleur via états.
+- Le CVA suffit pour l'interop **Signal Forms** (`@angular/forms/signals`, directive `[formField]`, stable depuis Angular 22) — aucun code additionnel dans le composant.
 
 ## Accessibilité (obligatoire)
 
@@ -141,8 +180,28 @@ Si le composant tient une valeur (checked, sélection, saisie) :
 - `parameters.design.url` Figma (fichier `XgSemnGLFrAq75CxcjPVf1`) — pointer le `node-id` du ComponentSet si connu.
 - `argTypes` documentés (control, description FR, `table.type`/`defaultValue`).
 - Une story par état visuel distinct du YAML (levels, sizes, states…). Contrôles de formulaire : piloter avec `[(ngModel)]` via un `render` factory pour une interactivité réelle.
+- Contrôles de formulaire : ajouter une story **`SignalForms`** (`form()` + `required()` + `[formField]` depuis `@angular/forms/signals`, démo dans une classe `@Component` co-localisée) sur le modèle de `ui-slider.stories.ts`, en plus des démos Template-driven/Reactive ; la section « Formulaires » du mdx montre les trois APIs.
 
-**mdx** (co-localisée, importe sa story sœur en relatif `./ui-{name}.stories`) : `import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks'` ; sections `# ui-{name}` (intro FR + tokens), `## API` (`<ArgTypes>`), `## États`, `## Accessibilité` (table `className="doc-table"`), exemples `html`, et — dès que le composant a des variables locales configurables — `## Configuration (SCSS)` (table variable locale → source → rôle, avec lien vers la page de groupe `config/` et vers `Components/Configuration`).
+**mdx** (co-localisée, importe sa story sœur en relatif `./ui-{name}.stories`) : `import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks'` ; sections `# ui-{name}` (intro FR + tokens), `## API` (`<ArgTypes>`), `## États`, `## Accessibilité` (table `className="doc-table"`), exemples `html`.
+
+**`## Theming`** — dès que le composant a une config SCSS, **toujours en dernière section de la page** :
+
+```mdx
+import { ConfigTable } from '<…>/storybook/blocks/config-table';
+
+## Theming
+
+<ConfigTable of="ui-{name}" />
+```
+
+- **Ne jamais écrire la table à la main** : elle est générée depuis le `.scss` (cf. « Commentaires `///` »).
+- Prose facultative avant la table, pour ce que la table ne dit pas (architecture, renvoi vers un
+  shell comme `ui-field`). Pas de paragraphe expliquant le fonctionnement de la table : c'est déjà
+  dans l'infobulle du bloc.
+- Une page qui documente **plusieurs** composants (sous-composants : `ui-tab` + `ui-tab-list`…) passe
+  un `label` sur chaque table : `<ConfigTable of="ui-tab" label="ui-tab" />`.
+- Autres props : `only={[...]}` (liste blanche de variables), `hooks={false}` (masque la table des
+  custom properties).
 
 ## Intégration
 
@@ -155,6 +214,9 @@ Si le composant tient une valeur (checked, sélection, saisie) :
 
 1. `npx tsc --noEmit -p tsconfig.json` → doit passer.
 2. Compiler le SCSS : `node_modules/.bin/sass --load-path=src/styles --no-source-map --quiet <fichier.scss>` et vérifier les sélecteurs/valeurs générés.
+2bis. `npm run docs:config` → le composant doit apparaître, avec **0 variable sans commentaire `///`**
+   (le script affiche le compte), et chaque ligne résolue vers un token, une map, une liste ou une
+   valeur littérale assumée.
 3. **Live Storybook** (déjà lancé sur `:6006`, HMR) : via les outils navigateur, ouvrir `iframe.html?id=components-ui-{cat}-ui-{name}--<story>&viewMode=story`, mesurer (getBoundingClientRect, getComputedStyle), tester l'interaction (click/clavier), et prendre une capture. Attendre le settle des transitions avant de mesurer.
 4. Ne jamais demander à l'utilisateur de vérifier manuellement : fournir la preuve (mesures + capture).
 

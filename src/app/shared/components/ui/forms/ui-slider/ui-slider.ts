@@ -47,7 +47,7 @@ let nextUid = 0;
  * pure CSS driven by `actions.*` / `form.*` design tokens.
  *
  * Works standalone, with `[(ngModel)]`, Reactive Forms or Signal Forms
- * (`[field]`) — it is a `ControlValueAccessor`. In `range` mode the model is a
+ * (`[formField]`) — it is a `ControlValueAccessor`. In `range` mode the model is a
  * two-item array, otherwise a single number.
  */
 @Component({

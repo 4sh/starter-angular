@@ -9,6 +9,7 @@
 // =====================================================================
 
 // --- Config ----------------------------------------------------------
+/// Géométrie, typo et vignette d'une ligne de fichier, par taille.
 $sizes: (
   'default': (
     radius: var(--radius-lg),
@@ -29,8 +30,8 @@ $sizes: (
     meta-size: var(--size-typography-text-sm),
   ),
 );
-$size-default: map.get($sizes, 'default');
-$stroke-width: utils.$form-field-stroke-width;
+$size-default: map.get($sizes, 'default');     /// Raccourci vers l'entrée `default` de `$sizes`.
+$stroke-width: utils.$form-field-stroke-width; /// Épaisseur de bordure d'une ligne.
 
 @mixin row-size($s) {
   border-radius: map.get($s, radius);

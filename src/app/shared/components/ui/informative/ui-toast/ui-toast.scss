@@ -12,11 +12,11 @@
 // =====================================================================
 
 // --- Config -----------------------------------------------------------
-$levels: default, highlight, success, warning, error;
-$sublevels: high, low;
+$levels: default, highlight, success, warning, error; /// Niveaux sémantiques générant les modifiers `._<niveau>`.
+$sublevels: high, low;                                /// Intensités générant les modifiers `._<intensité>`.
 
 // Reused structural constant (kit-wide focus ring). Local alias, never copied.
-$focus-ring-width: utils.$focus-ring-width;
+$focus-ring-width: utils.$focus-ring-width; /// Épaisseur de l'anneau de focus.
 
 .ui-toast {
   // --- Base ----------------------------------------------------------
@@ -45,7 +45,7 @@ $focus-ring-width: utils.$focus-ring-width;
     flex: 0 0 auto;
     display: flex;
     align-items: center;
-    // Nudge the icon down so it lines up with the title cap-height (Figma).
+    // Nudge the icon down so it lines up with the title cap-height.
     padding-top: var(--units-2xs);
     line-height: 0;
   }

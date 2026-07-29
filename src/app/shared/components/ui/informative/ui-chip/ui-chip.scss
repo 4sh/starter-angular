@@ -12,9 +12,10 @@
 // =====================================================================
 
 // --- Config ---------------------------------------
-$levels: default, highlight, success, warning, error;
-$sublevels: high, low;
+$levels: default, highlight, success, warning, error; /// Niveaux sémantiques générant les modifiers `._<niveau>`.
+$sublevels: high, low;                                /// Intensités générant les modifiers `._<intensité>`.
 
+/// Hauteur, gouttières, typo et taille du visuel, par taille.
 $sizes: (
   'default': (
     height: 32px,
@@ -31,8 +32,8 @@ $sizes: (
     visual: 18px,
   ),
 );
-$size-default: map.get($sizes, 'default');
-$focus-ring-width: utils.$focus-ring-width;
+$size-default: map.get($sizes, 'default');  /// Raccourci vers l'entrée `default` de `$sizes`.
+$focus-ring-width: utils.$focus-ring-width; /// Épaisseur de l'anneau de focus.
 
 @mixin chip-size($size) {
   height: utils.rem-calc(map.get($size, height));

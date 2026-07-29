@@ -5,10 +5,10 @@
 // =====================================================================
 
 // --- Config ---------------------------------------------------
-$marker-size: utils.rem-calc(44);
-$marker-stroke: var(--stroke-sm);
-$separator-stroke: var(--stroke-default);
-$focus-ring-width: utils.$action-focus-ring-width;
+$marker-size: utils.rem-calc(44);                  /// Diamètre du marqueur d'étape.
+$marker-stroke: var(--stroke-sm);                  /// Épaisseur de bordure du marqueur.
+$separator-stroke: var(--stroke-default);          /// Épaisseur du séparateur entre étapes.
+$focus-ring-width: utils.$action-focus-ring-width; /// Épaisseur de l'anneau de focus.
 
 :host {
   display: flex;

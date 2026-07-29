@@ -8,7 +8,7 @@
 
 | Technologie | Rôle |
 |---|---|
-| Angular 21 | Framework — standalone, Signals API obligatoire |
+| Angular 22 | Framework — standalone, Signals API obligatoire, zoneless |
 | Composants headless | Aucune librairie UI propriétaire ; Angular CDK au besoin (overlay, a11y, focus-trap) |
 | Design Tokens JSON | `src/design-tokens/*.json` (DTCG) → Style Dictionary → variables CSS générées |
 | Gridaflex 1.0.0 | Grille flexbox (24 col) + breakpoints, configurée par les tokens |
@@ -172,8 +172,34 @@ piège, point d'extension). Pas de paraphrase de ce que fait la ligne suivante.
   Composants : `<nom> : co-located styles. All values come from design tokens.`
 - **En-ligne** — pour flaguer un choix non-évident, en fin de ligne (`// …`) ; jamais pour décrire l'évident.
 - **Sections** — séparateurs courts `// --- <Titre> ---` pour découper un fichier long.
-- **Mixins/fonctions** — 1 à 2 lignes `///` : rôle + exemple d'appel. Pas de tartine.
-- **Langue** : commentaires en **anglais**.
+- **Mixins/fonctions** (partials `src/styles/src/utils/`) — 1 à 2 lignes `///` : rôle + exemple d'appel. Pas de tartine.
+- **Langue** : commentaires en **anglais**… **sauf** les `///` de config d'un composant (ci-dessous), qui sont publiés dans la doc et donc en français.
+- **Jamais de référence à Figma** : garder l'intention (« agrandi pour la lisibilité »), pas la provenance (« Figma 3px »). Le `.scss` doit se lire sans la maquette.
+
+#### `///` sur une variable de config = la doc publiée
+
+Dans un `.scss` **de composant**, un `///` sur une déclaration (`$var` ou custom property) est le
+**contrat public** : `npm run docs:config` le lit et la section « Theming » de la doc l'affiche.
+`//` reste la note interne, invisible dans la doc. (Le `///` des mixins/fonctions dans
+`src/styles/src/utils/` n'est jamais publié : le générateur ne scanne que les composants.)
+
+Le `///` se met **en fin de déclaration**, aligné verticalement sur son groupe visuel (les lignes
+vides séparent les groupes) :
+
+```scss
+$card-padding: var(--units-lg);       /// Inset du corps.
+$card-radius: var(--radius-md);       /// Rayon des coins.
+```
+
+- **Aucune valeur résolue dans un rôle** (`(12px)`) : la doc la mesure au runtime, dans le thème, la
+  marque et le viewport actifs — une valeur écrite à la main devient fausse dès qu'un projet rebinde
+  la variable.
+- Décrire le **rôle** seulement : le binding et le passage par `ui-config` sont déduits.
+- Une **map multi-lignes** est la seule exception : son `///` va sur la ligne au-dessus.
+- Une **custom property** n'est publique que si elle porte un `///`, posé là où le hook vit
+  (déclaration, ou lecture avec fallback `var(--ui-x, <défaut>)`) — jamais sur un override interne
+  de mode sombre, sinon la doc affiche la mauvaise valeur par défaut.
+- Toute variable de config doit avoir son `///` : `npm run docs:config` compte les manquantes.
 
 ### Constantes structurelles partagées — `ui-config`
 
@@ -215,6 +241,12 @@ $focus-ring-width: utils.$form-focus-ring-width; // ← remplacer la valeur ici 
 ### Documentation (MDX)
 
 - **Tableaux** : toujours en balises HTML (`<table>`, `<tr>`, `<td>`) plutôt qu'en Markdown natif dans les `.mdx`, pour garantir rendu et contrôle CSS.
+- **Section « Theming »** : jamais écrite à la main. `<ConfigTable of="ui-<nom>" />`
+  (`storybook/blocks/config-table.js`), alimenté par `npm run docs:config` depuis les `///` du
+  `.scss`. Elle est **toujours la dernière section** de la page. Prose facultative avant la table
+  pour ce qu'elle ne dit pas (architecture, renvoi vers un shell type `ui-field`) ; pas de
+  paragraphe expliquant comment lire la table — c'est dans l'infobulle du bloc. Plusieurs
+  composants sur une page → un `label` par table.
 
 ---
 
@@ -224,8 +256,8 @@ $focus-ring-width: utils.$form-focus-ring-width; // ← remplacer la valeur ici 
 
 1. Lire `src/app/shared/components/ui/<cat>/ui-<nom>/ui-<nom>.stories.ts` → identifier `argTypes`
 2. Lire `src/app/shared/components/ui/<cat>/ui-<nom>/` → vérifier types et structure
-3. Modifier `.ts`, `.html`, `.scss` (tokens uniquement)
-4. Mettre à jour la story + le `.mdx` si l'API change
+3. Modifier `.ts`, `.html`, `.scss` (tokens uniquement) — toute variable de config ajoutée porte son `///`
+4. Mettre à jour la story + le `.mdx` si l'API change ; `npm run docs:config` si la config SCSS a bougé
 5. Vérifier light + dark + les 3 marques (Storybook → `Foundations / Colors` pour les tokens)
 
 ### Créer un composant ui-* (générique)

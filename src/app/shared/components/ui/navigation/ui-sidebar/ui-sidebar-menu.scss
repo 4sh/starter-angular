@@ -10,8 +10,9 @@
 // =====================================================================
 
 // --- Config (extension points) ---------------------------------------
-$levels: high, low;
+$levels: high, low; /// Niveaux générant les modifiers `._<niveau>`.
 
+/// Hauteur, padding et typo d'un item, par taille.
 $sizes: (
   'default': (
     item-height: utils.rem-calc(40),
@@ -26,12 +27,12 @@ $sizes: (
     header-font-size: var(--size-typography-text-sm),
   ),
 );
-$size-default: map.get($sizes, 'default');
-$item-radius: var(--radius-sm);
-$group-indent: var(--units-lg);
-$separator-width: var(--stroke-sm);
-$focus-ring-width: utils.$focus-ring-width;
-$icon-slot: utils.rem-calc(20);
+$size-default: map.get($sizes, 'default');  /// Raccourci vers l'entrée `default` de `$sizes`.
+$item-radius: var(--radius-sm);             /// Rayon d'un item.
+$group-indent: var(--units-lg);             /// Retrait des items d'un sous-groupe.
+$separator-width: var(--stroke-sm);         /// Épaisseur d'un séparateur.
+$focus-ring-width: utils.$focus-ring-width; /// Épaisseur de l'anneau de focus.
+$icon-slot: utils.rem-calc(20);             /// Largeur réservée à l'icône d'un item.
 
 @mixin menu-size($size) {
   // Exposed so the collapsed rail can size square icon buttons from the same value.

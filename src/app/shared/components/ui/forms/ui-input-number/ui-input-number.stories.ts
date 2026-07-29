@@ -1,6 +1,8 @@
+import { Component, signal } from '@angular/core';
 import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
 import { FormsModule } from '@angular/forms';
+import { FormField, form, max, min, required } from '@angular/forms/signals';
 import { UiInputNumber } from './ui-input-number';
 
 const meta: Meta<UiInputNumber> = {
@@ -67,3 +69,30 @@ export const Disabled: Story = { render: story(3), args: { label: 'Quantité', d
 // Formatage Intl (appliqué au blur ; forme éditable au focus)
 export const Currency: Story = { render: story(1234.5), args: { label: 'Prix', locale: 'fr-FR', currency: 'EUR', step: 0.5, helperText: 'Focus pour éditer, blur pour formater.' } };
 export const Grouped: Story = { render: story(1234567), args: { label: 'Population', locale: 'fr-FR', useGrouping: true } };
+
+// --- Signal Forms (@angular/forms/signals) ------------------------------
+@Component({
+  selector: 'demo-input-number-signal-forms',
+  standalone: true,
+  imports: [UiInputNumber, FormField],
+  template: `
+    <div style="width:220px; display:grid; gap:12px; justify-items:start;">
+      <ui-input-number [formField]="quantity" label="Note (0–10)" [min]="0" [max]="10" />
+      <code>value = {{ quantity().value() }} · valid = {{ quantity().valid() }}</code>
+    </div>
+  `,
+})
+class SignalFormsDemo {
+  protected readonly model = signal(5);
+  protected readonly quantity = form(this.model, (path) => {
+    required(path);
+    min(path, 0);
+    max(path, 10);
+  });
+}
+
+export const SignalForms: Story = {
+  name: 'Signal Forms',
+  render: () => ({ template: `<demo-input-number-signal-forms />` }),
+  decorators: [moduleMetadata({ imports: [SignalFormsDemo] })],
+};

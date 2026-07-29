@@ -98,8 +98,8 @@ const meta: Meta<UiDrawer> = {
       description: 'Styles inline appliqués au panneau (ex : `{ width: "30rem" }`).',
       table: { type: { summary: 'Record<string, string>' }, defaultValue: { summary: 'undefined' } },
     },
-    onShow: { action: 'onShow', description: 'Émis après ouverture.' },
-    onHide: { action: 'onHide', description: 'Émis après fermeture.' },
+    shown: { action: 'shown', description: 'Émis après ouverture.' },
+    hidden: { action: 'hidden', description: 'Émis après fermeture.' },
   },
 };
 

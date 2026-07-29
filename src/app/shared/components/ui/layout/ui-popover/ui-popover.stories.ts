@@ -67,8 +67,8 @@ const meta: Meta<UiPopover> = {
       description: 'Classe(s) additionnelle(s) appliquée(s) au panneau.',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
-    onShow: { action: 'onShow', table: { category: 'Events' } },
-    onHide: { action: 'onHide', table: { category: 'Events' } },
+    shown: { action: 'shown', table: { category: 'Events' } },
+    hidden: { action: 'hidden', table: { category: 'Events' } },
   },
   // Explicit defaults: bound inputs (`[showArrow]="showArrow"`…) would otherwise
   // be clobbered to `undefined` when a story provides no args.
@@ -102,8 +102,8 @@ export const Basic: Story = {
         [closeOnEscape]="closeOnEscape"
         [motion]="motion"
         ariaLabel="Détails du produit"
-        (onShow)="onShow()"
-        (onHide)="onHide()"
+        (shown)="shown()"
+        (hidden)="hidden()"
       >
         <div style="display: flex; flex-direction: column; gap: 8px; max-width: 16rem;">
           <strong>Nom de code : Atlas</strong>
@@ -148,8 +148,8 @@ export const Controlled: Story = {
         [closeOnEscape]="closeOnEscape"
         [motion]="motion"
         ariaLabel="Panneau contrôlé"
-        (onShow)="onShow()"
-        (onHide)="onHide()"
+        (shown)="shown()"
+        (hidden)="hidden()"
       >
         <p style="margin: 0; max-width: 15rem; font-size: .875rem; line-height: 1.4;">
           Le panneau reste ancré à l'élément passé en second argument,

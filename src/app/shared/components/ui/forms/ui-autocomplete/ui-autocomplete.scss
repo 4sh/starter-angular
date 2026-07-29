@@ -6,6 +6,7 @@
 // =====================================================================
 
 // --- Config ----------------------------------------
+/// Géométrie et typo des options, des en-têtes de groupe et hauteur de défilement, par taille.
 $sizes: (
   'default': (
     option-height: utils.rem-calc(40),
@@ -24,13 +25,13 @@ $sizes: (
     scroll-height: utils.rem-calc(256),
   ),
 );
-$size-default: map.get($sizes, 'default');
-$size-small: map.get($sizes, 'small');
+$size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default` de `$sizes`.
+$size-small: map.get($sizes, 'small');     /// Raccourci vers l'entrée `small` de `$sizes`.
 
-$panel-padding: var(--units-xs);
-$panel-gap: var(--units-xs);
-$option-radius: var(--radius-sm);
-$option-gap: var(--units-sm);
+$panel-padding: var(--units-xs);  /// Inset du panneau de suggestions.
+$panel-gap: var(--units-xs);      /// Espacement entre les groupes du panneau.
+$option-radius: var(--radius-sm); /// Rayon d'une option.
+$option-gap: var(--units-sm);     /// Espacement entre l'icône et le libellé d'une option.
 
 .ui-autocomplete {
   display: block;

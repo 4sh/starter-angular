@@ -29,6 +29,27 @@ module.exports = tseslint.config(
           style: "kebab-case",
         },
       ],
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
+      // Le pattern `cond ? fnA() : fnB()` en statement est idiomatique dans ce repo.
+      "@typescript-eslint/no-unused-expressions": [
+        "error",
+        { allowShortCircuit: true, allowTernary: true },
+      ],
+    },
+  },
+  {
+    // Les composants de démo des stories ne font pas partie de l'API du design
+    // system : pas de contrainte de préfixe de sélecteur.
+    files: ["**/*.stories.ts"],
+    rules: {
+      "@angular-eslint/component-selector": "off",
     },
   },
   {

@@ -1,5 +1,6 @@
 import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
 import * as UiNudgerStories from './ui-nudger.stories';
+import { ConfigTable } from '../../../../../../../storybook/blocks/config-table';
 
 <Meta of={UiNudgerStories} />
 
@@ -55,6 +56,26 @@ L'input `formatValue` reçoit la valeur numérique et retourne la chaîne affich
 <ui-nudger [(ngModel)]="poids" [min]="0" [formatValue]="(v) => v + ' kg'" ariaLabel="Poids" />
 ```
 
+## Formulaires
+
+Le composant est un `ControlValueAccessor` : il se branche sans code additionnel aux
+**Signal Forms** (`@angular/forms/signals`, directive `[formField]`, stables depuis
+Angular 22) via l'interop CVA native, ainsi qu'aux formulaires template-driven
+(`[(ngModel)]`) et réactifs (`[formControl]`).
+
+<Canvas of={UiNudgerStories.SignalForms} />
+
+```html
+<!-- Signal Forms -->
+<ui-nudger [formField]="quantity" [min]="0" [max]="10" ariaLabel="Quantité" />
+
+<!-- Template-driven -->
+<ui-nudger [(ngModel)]="quantity" [min]="0" [max]="10" ariaLabel="Quantité" />
+
+<!-- Reactive -->
+<ui-nudger [formControl]="quantityCtrl" ariaLabel="Quantité" />
+```
+
 ## Accessibilité
 
 <table className="doc-table">
@@ -86,19 +107,4 @@ L'input `formatValue` reçoit la valeur numérique et retourne la chaîne affich
 
 ## Theming
 
-<table className="doc-table">
-  <thead>
-    <tr>
-      <th>Variable locale</th>
-      <th>Source</th>
-      <th>Rôle</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>$sizes</code></td>
-      <td>local</td>
-      <td>Map taille → <code>font-size</code> de la valeur (token <code>title</code>) + <code>min-width</code> stabilisant la largeur. La taille des boutons est transmise à <code>ui-button</code>.</td>
-    </tr>
-  </tbody>
-</table>
+<ConfigTable of="ui-nudger" />

@@ -1,5 +1,6 @@
 import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
 import * as UiRatingStories from './ui-rating.stories';
+import { ConfigTable } from '../../../../../../../storybook/blocks/config-table';
 
 <Meta of={UiRatingStories} />
 
@@ -50,6 +51,26 @@ Vous pouvez remplacer l'icône étoile par n'importe quelle autre icône ou SVG 
 
 <Canvas of={UiRatingStories.CustomTemplates} />
 
+## Formulaires
+
+Le composant est un `ControlValueAccessor` : il se branche sans code additionnel aux
+**Signal Forms** (`@angular/forms/signals`, directive `[formField]`, stables depuis
+Angular 22) via l'interop CVA native, ainsi qu'aux formulaires template-driven
+(`[(ngModel)]`) et réactifs (`[formControl]`).
+
+<Canvas of={UiRatingStories.SignalForms} />
+
+```html
+<!-- Signal Forms -->
+<ui-rating [formField]="rating" ariaLabel="Note" />
+
+<!-- Template-driven -->
+<ui-rating [(ngModel)]="note" ariaLabel="Note" />
+
+<!-- Reactive -->
+<ui-rating [formControl]="noteCtrl" ariaLabel="Note" />
+```
+
 ## Accessibilité
 
 <table className="doc-table">
@@ -73,3 +94,7 @@ Vous pouvez remplacer l'icône étoile par n'importe quelle autre icône ou SVG 
     </tr>
   </tbody>
 </table>
+
+## Theming
+
+<ConfigTable of="ui-rating" />

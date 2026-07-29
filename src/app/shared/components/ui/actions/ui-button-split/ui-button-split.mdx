@@ -1,5 +1,6 @@
 import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
 import * as ButtonSplitStories from './ui-button-split.stories';
+import { ConfigTable } from '../../../../../../../storybook/blocks/config-table';
 
 <Meta of={ButtonSplitStories} />
 
@@ -132,24 +133,4 @@ Variables locales en tête de `ui-button-split.scss`. Voir le groupe partagé
 [Actions](?path=/docs/components-configuration-actions--docs) et le
 [fonctionnement de la configuration](?path=/docs/components-configuration--docs).
 
-<table className="doc-table">
-  <thead>
-    <tr>
-      <th>Variable locale</th>
-      <th>Source</th>
-      <th>Rôle</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>$stroke-width</code></td>
-      <td><code>utils.$control-stroke-width</code></td>
-      <td>Chevauchement des deux boutons (= largeur de bordure, évite le doublement du trait partagé)</td>
-    </tr>
-    <tr>
-      <td><code>--ui-button-radius</code></td>
-      <td>hook exposé par <code>ui-button</code></td>
-      <td>Reforme les coins intérieurs des deux boutons</td>
-    </tr>
-  </tbody>
-</table>
+<ConfigTable of="ui-button-split" />

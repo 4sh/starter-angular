@@ -121,7 +121,7 @@ type TagRow =
  *
  * The model is an **array** driven through {@link BaseFormField}
  * (`ControlValueAccessor`) — compatible with `[(ngModel)]`, Reactive Forms and
- * the upcoming Signal Forms (`[field]`, Angular 22). Options: `max`,
+ * Signal Forms (`[formField]`, stable since Angular 22). Options: `max`,
  * `allowDuplicate`, `addOnBlur` / `addOnTab` / `addOnPaste`, and a `typeahead`
  * mode (a CDK-overlay suggestions panel fed by the parent via `completeMethod`).
  *

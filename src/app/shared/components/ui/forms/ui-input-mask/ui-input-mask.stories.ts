@@ -1,6 +1,8 @@
+import { Component, signal } from '@angular/core';
 import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
 import { FormsModule } from '@angular/forms';
+import { FormField, form, required } from '@angular/forms/signals';
 import { UiInputMask } from './ui-input-mask';
 
 const meta: Meta<UiInputMask> = {
@@ -56,3 +58,28 @@ export const Unmask: Story = { render: story(), args: { label: 'IBAN (brut)', ma
 export const Small: Story = { render: story(), args: { label: 'Date', mask: '99/99/9999', size: 'small' } };
 export const Error: Story = { render: story('12/'), args: { label: 'Date', mask: '99/99/9999', level: 'error', errorText: 'Date incomplète.' } };
 export const Disabled: Story = { render: story('12/09/2024'), args: { label: 'Date', mask: '99/99/9999', disabled: true } };
+
+// --- Signal Forms (@angular/forms/signals) ------------------------------
+@Component({
+  selector: 'demo-input-mask-signal-forms',
+  standalone: true,
+  imports: [UiInputMask, FormField],
+  template: `
+    <div style="width:240px; display:grid; gap:12px; justify-items:start;">
+      <ui-input-mask [formField]="field" label="Date" mask="99/99/9999" placeholder="jj/mm/aaaa" />
+      <code>value = {{ field().value() }} · valid = {{ field().valid() }}</code>
+    </div>
+  `,
+})
+class SignalFormsDemo {
+  protected readonly model = signal('');
+  protected readonly field = form(this.model, (path) => {
+    required(path);
+  });
+}
+
+export const SignalForms: Story = {
+  name: 'Signal Forms',
+  render: () => ({ template: `<demo-input-mask-signal-forms />` }),
+  decorators: [moduleMetadata({ imports: [SignalFormsDemo] })],
+};

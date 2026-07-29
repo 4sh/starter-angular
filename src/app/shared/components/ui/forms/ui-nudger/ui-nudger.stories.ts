@@ -1,6 +1,8 @@
+import { Component, signal } from '@angular/core';
 import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
 import { FormsModule } from '@angular/forms';
+import { FormField, form, max, min, required } from '@angular/forms/signals';
 import { UiNudger } from './ui-nudger';
 
 const meta: Meta<UiNudger> = {
@@ -129,4 +131,31 @@ export const Formatted: Story = {
     template: `<ui-nudger [(ngModel)]="model" [min]="0" [step]="1"
         [formatValue]="format" ariaLabel="Poids" />`,
   }),
+};
+
+// --- Signal Forms (@angular/forms/signals) ------------------------------
+@Component({
+  selector: 'demo-nudger-signal-forms',
+  standalone: true,
+  imports: [UiNudger, FormField],
+  template: `
+    <div style="display:grid; gap:12px; justify-items:start;">
+      <ui-nudger [formField]="quantity" [min]="0" [max]="10" ariaLabel="Quantité" />
+      <code>value = {{ quantity().value() }} · valid = {{ quantity().valid() }}</code>
+    </div>
+  `,
+})
+class SignalFormsDemo {
+  protected readonly model = signal(3);
+  protected readonly quantity = form(this.model, (path) => {
+    required(path);
+    min(path, 0);
+    max(path, 10);
+  });
+}
+
+export const SignalForms: Story = {
+  name: 'Signal Forms',
+  render: () => ({ template: `<demo-nudger-signal-forms />` }),
+  decorators: [moduleMetadata({ imports: [SignalFormsDemo] })],
 };

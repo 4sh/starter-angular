@@ -10,6 +10,7 @@
 
 // --- Config (extension points) ---------------------------------------
 // `default` = base styles; other keys become `._<name>` modifiers.
+/// Épaisseur et rayon de la piste, par taille.
 $sizes: (
   'default': (
     track-height: 8px,
@@ -20,10 +21,10 @@ $sizes: (
     radius: var(--radius-2xs),
   ),
 );
-$size-default: map.get($sizes, 'default');
+$size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default` de `$sizes`.
 
 // Component-specific (local): one indeterminate cycle duration.
-$indeterminate-duration: 1.6s;
+$indeterminate-duration: 1.6s; /// Durée d'un cycle en mode indéterminé.
 
 // --- Host: block, fills its container --------------------------------
 :host {
@@ -82,7 +83,7 @@ $indeterminate-duration: 1.6s;
   // --- Value position: label below the bar ---------------------------
   &._bottom {
     flex-direction: column;
-    align-items: flex-end; // Figma counterAxisAlignItems = MAX
+    align-items: flex-end; // bottom-aligned on the cross axis
     gap: var(--units-sm);
   }
 

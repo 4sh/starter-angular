@@ -2,7 +2,7 @@
 
 ## À lire avant toute action
 
-Ce repository est un Design System Angular 21 (standalone) **100% maison** : composants
+Ce repository est un Design System Angular 22 (standalone) **100% maison** : composants
 **headless** (Angular CDK + signals natifs) stylés exclusivement via des design tokens.
 
 C'est le volet « Starter Angular » de la stratégie **Double-Moteur** : la *logique* dépend
@@ -18,11 +18,11 @@ Avant de générer quoi que ce soit dans Figma, tu **dois** auditer le composant
 
 | Couche | Technologie |
 |---|---|
-| Framework | Angular 21, standalone, signals API |
+| Framework | Angular 22, standalone, signals API, zoneless |
 | Comportement (headless) | Composants + Angular CDK (overlay, a11y, focus-trap…) |
 | Style | Co-localisé par composant (`.scss` scopé) + CSS custom properties (`--var`) |
 | Design Tokens | JSON (Token Flow Manager) → `scripts/tokens.build.mjs` → SCSS (`src/styles/src/generated/`) |
-| Storybook | v10.1.11 + addon-designs (Figma panel) |
+| Storybook | v10.5.4 + addon-designs (Figma panel) |
 | Thèmes | themeOne (purple), themeTwo, themeThree × light/dark (via classes `._themeX` / `.dark-mode`) |
 | Icons | FontAwesome Free |
 | Grid | Gridaflex 1.0.0 |
@@ -111,6 +111,34 @@ ui-{name}/
 > Toutes les valeurs (couleur, espacement, radius…) proviennent des variables CSS de tokens.
 > Patron de référence : `ui-button` (+ `ui-icon`).
 
+### Doc de theming : générée depuis le SCSS
+
+La section `## Theming` de chaque doc composant n'est **jamais écrite à la main**. Elle est produite
+par `npm run docs:config` (`scripts/docs.config.mjs` → `storybook/generated/ui-config.json`) et
+rendue par `<ConfigTable of="ui-{name}" />` (`storybook/blocks/config-table.js`).
+
+**Ce sont les commentaires du `.scss` qui écrivent la doc** : `///` = contrat public documenté (en
+français), `//` = note interne (anglais, invisible dans la doc). Le `///` se place **en fin de
+déclaration**, aligné verticalement sur son groupe visuel :
+
+```scss
+$card-padding: var(--units-lg);       /// Inset du corps.
+$card-radius: var(--radius-md);       /// Rayon des coins.
+```
+
+Règles :
+
+- **Aucune valeur résolue dans un rôle** (`(12px)`) : la doc la mesure au runtime, dans le thème, la
+  marque et le viewport actifs. Une valeur écrite à la main devient fausse dès qu'un projet rebinde
+  la variable — c'est précisément ce que ce système supprime.
+- Décrire le **rôle** seulement : le binding, le passage par `ui-config` et la valeur sont déduits.
+- Une **map multi-lignes** est la seule exception : son `///` va sur la ligne au-dessus.
+- Une **custom property** exposée n'est publique que si elle porte un `///`, posé là où le hook vit
+  (déclaration, ou lecture avec fallback) — jamais sur un override interne de mode sombre.
+- `## Theming` est **toujours la dernière section** de la page MDX.
+- `npm run docs:config --check` (ou `npm run docs:config:check`) échoue si le manifeste est périmé ;
+  il est régénéré par `postinstall` et avant `storybook` / `build-storybook`.
+
 ### Catégories
 
 | Catégorie | Préfixe sélecteur | Emplacement |
@@ -118,7 +146,7 @@ ui-{name}/
 | UI générique | `ui-` | `src/app/shared/components/ui/` |
 | Domaine métier | `sp-` ou préfixe projet | `src/app/shared/components/domain/` |
 
-### Patterns signals (Angular 17+)
+### Patterns signals
 
 ```typescript
 // Inputs

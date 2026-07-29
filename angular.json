@@ -36,9 +36,7 @@
             "browser": "src/main.ts",
             "outputPath": "dist/demo",
             "inlineStyleLanguage": "scss",
-            "polyfills": [
-              "zone.js"
-            ],
+            "polyfills": [],
             "scripts": [],
             "styles": [
               "src/styles/main.scss",

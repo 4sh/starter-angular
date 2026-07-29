@@ -1,8 +1,9 @@
-import { applicationConfig, moduleMetadata, type Meta, type StoryObj } from '@storybook/angular';
+import { Component, signal } from '@angular/core';
+import { moduleMetadata, type Meta, type StoryObj } from '@storybook/angular';
 import { UiRating } from './ui-rating';
 import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
-import { provideUiIconFamilies } from '@app/shared/components/ui/ui-icon/ui-icon-families';
 import { FormsModule } from '@angular/forms';
+import { FormField, form, min, required } from '@angular/forms/signals';
 
 const meta: Meta<UiRating> = {
   title: 'Components/ui/forms/ui-rating',
@@ -129,6 +130,32 @@ export const SizeXL: Story = {
     props: { ...args, model: 4 },
     template: `<ui-rating [(ngModel)]="model" size="xl" ariaLabel="Note"></ui-rating>`,
   }),
+};
+
+// --- Signal Forms (@angular/forms/signals) ------------------------------
+@Component({
+  selector: 'demo-rating-signal-forms',
+  standalone: true,
+  imports: [UiRating, FormField],
+  template: `
+    <div style="display:grid; gap:12px; justify-items:start;">
+      <ui-rating [formField]="rating" ariaLabel="Note" />
+      <code>value = {{ rating().value() }} · valid = {{ rating().valid() }}</code>
+    </div>
+  `,
+})
+class SignalFormsDemo {
+  protected readonly model = signal(0);
+  protected readonly rating = form(this.model, (path) => {
+    required(path);
+    min(path, 1);
+  });
+}
+
+export const SignalForms: Story = {
+  name: 'Signal Forms',
+  render: () => ({ template: `<demo-rating-signal-forms />` }),
+  decorators: [moduleMetadata({ imports: [SignalFormsDemo] })],
 };
 
 export const CustomTemplates: Story = {

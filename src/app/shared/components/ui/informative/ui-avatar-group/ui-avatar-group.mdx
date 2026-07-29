@@ -1,5 +1,6 @@
 import { Meta, Canvas } from '@storybook/addon-docs/blocks';
 import * as GroupStories from './ui-avatar-group.stories';
+import { ConfigTable } from '../../../../../../../storybook/blocks/config-table';
 
 <Meta of={GroupStories} />
 
@@ -21,29 +22,6 @@ en mode Label (ex. `+5`).
 ## Contenu mixte
 
 <Canvas of={GroupStories.Mixed} />
-
-## Theming
-
-Le chevauchement vient du groupe partagé
-[Informative](?path=/docs/components-configuration-informative--docs) (partagé avec `ui-avatar`).
-Voir le [fonctionnement de la configuration](?path=/docs/components-configuration--docs).
-
-<table className="doc-table">
-  <thead>
-    <tr>
-      <th>Variable</th>
-      <th>Source</th>
-      <th>Rôle</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>--_overlap</code> (hook local)</td>
-      <td><code>utils.$avatar-group-overlap</code></td>
-      <td>Chevauchement horizontal entre avatars empilés (12px)</td>
-    </tr>
-  </tbody>
-</table>
 
 ## Accessibilité
 
@@ -73,3 +51,11 @@ Voir le [fonctionnement de la configuration](?path=/docs/components-configuratio
   <ui-avatar label="+5" ariaLabel="5 autres membres" />
 </ui-avatar-group>
 ```
+
+## Theming
+
+Le chevauchement vient du groupe partagé
+[Informative](?path=/docs/components-configuration-informative--docs) (partagé avec `ui-avatar`).
+Voir le [fonctionnement de la configuration](?path=/docs/components-configuration--docs).
+
+<ConfigTable of="ui-avatar-group" />

@@ -1,5 +1,6 @@
 import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
 import * as InputTagsStories from './ui-input-tags.stories';
+import { ConfigTable } from '../../../../../../../storybook/blocks/config-table';
 
 <Meta of={InputTagsStories} />
 
@@ -97,22 +98,25 @@ Tailles `default` et `small`.
 ## Formulaires (ngModel / Reactive / Signal Forms)
 
 `ui-input-tags` est un `ControlValueAccessor` standard : sa valeur est un `string[]` (ou `T[]`).
-Il fonctionne à l'identique avec les trois APIs de formulaires, ce qui **prépare la migration
-Angular 22** vers les Signal Forms sans réécriture du composant.
+Il se branche sans code additionnel aux **Signal Forms** (`@angular/forms/signals`, directive
+`[formField]`, stables depuis Angular 22) via l'interop CVA native, et fonctionne à l'identique
+avec les formulaires template-driven (`[(ngModel)]`) et réactifs (`[formControl]`).
+
+<Canvas of={InputTagsStories.SignalForms} />
 
 ```html
+<!-- Signal Forms -->
+<ui-input-tags label="Tags" [formField]="tags" />
+
 <!-- Template-driven -->
 <ui-input-tags label="Tags" [(ngModel)]="tags" />
 
 <!-- Reactive Forms -->
 <ui-input-tags label="Tags" [formControl]="tagsCtrl" />
-
-<!-- Signal Forms (Angular 22) -->
-<ui-input-tags label="Tags" [field]="form.tags" />
 ```
 
 L'état de validation (`touched`/`dirty`/`invalid`) est reflété dans des signaux internes
-(`BaseControlValueAccessor`), y compris l'interop Signal Forms (contrôle sans flux `events`). Le
+(`BaseControlValueAccessor`), y compris via l'interop Signal Forms (contrôle sans flux `events`). Le
 style d'erreur s'active donc automatiquement quand le contrôle est invalide **et** touché/modifié.
 
 ## API
@@ -171,3 +175,9 @@ marquée `form.high.content.checked`. Les états interactifs sont gérés en CSS
     </tr>
   </tbody>
 </table>
+
+## Theming
+
+La boîte du champ vient du shell `ui-field` ; les variables ci-dessous couvrent les tags et le panneau.
+
+<ConfigTable of="ui-input-tags" />

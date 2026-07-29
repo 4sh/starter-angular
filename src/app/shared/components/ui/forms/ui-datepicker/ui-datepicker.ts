@@ -292,7 +292,7 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   });
 
   /** @ignore Order of day/month/year for the resolved locale (drives numeric parsing). */
-  private readonly dateFieldOrder = computed<Array<'day' | 'month' | 'year'>>(() => {
+  private readonly dateFieldOrder = computed<('day' | 'month' | 'year')[]>(() => {
     const parts = new Intl.DateTimeFormat(this.resolvedLocale(), {
       day: '2-digit',
       month: '2-digit',
@@ -352,7 +352,10 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     // Typeable trigger → numeric format that round-trips with the default parser.
     if (this.allowInput()) {
       const opts: Intl.DateTimeFormatOptions = { day: '2-digit', month: '2-digit', year: 'numeric' };
-      if (this.showTime()) (opts.hour = '2-digit'), (opts.minute = '2-digit');
+      if (this.showTime()) {
+        opts.hour = '2-digit';
+        opts.minute = '2-digit';
+      }
       return new Intl.DateTimeFormat(this.resolvedLocale(), opts).format(date);
     }
     const options: Intl.DateTimeFormatOptions = this.showTime()
@@ -821,17 +824,30 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
 
   /** @ignore ARIA spinbutton keyboard: ↑/↓ step, PageUp/PageDown ±. */
   protected onHourKeydown(event: KeyboardEvent): void {
-    if (event.key === 'ArrowUp' || event.key === 'PageUp') (event.preventDefault(), this.stepHours(1));
-    else if (event.key === 'ArrowDown' || event.key === 'PageDown') (event.preventDefault(), this.stepHours(-1));
+    if (event.key === 'ArrowUp' || event.key === 'PageUp') {
+      event.preventDefault();
+      this.stepHours(1);
+    } else if (event.key === 'ArrowDown' || event.key === 'PageDown') {
+      event.preventDefault();
+      this.stepHours(-1);
+    }
   }
   /** @ignore */
   protected onMinuteKeydown(event: KeyboardEvent): void {
-    if (event.key === 'ArrowUp' || event.key === 'PageUp') (event.preventDefault(), this.stepMinutes(1));
-    else if (event.key === 'ArrowDown' || event.key === 'PageDown') (event.preventDefault(), this.stepMinutes(-1));
+    if (event.key === 'ArrowUp' || event.key === 'PageUp') {
+      event.preventDefault();
+      this.stepMinutes(1);
+    } else if (event.key === 'ArrowDown' || event.key === 'PageDown') {
+      event.preventDefault();
+      this.stepMinutes(-1);
+    }
   }
   /** @ignore */
   protected onMeridiemKeydown(event: KeyboardEvent): void {
-    if (event.key === 'ArrowUp' || event.key === 'ArrowDown') (event.preventDefault(), this.toggleMeridiem());
+    if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+      event.preventDefault();
+      this.toggleMeridiem();
+    }
   }
 
   /** @ignore */
@@ -934,8 +950,14 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     let inRange = false;
     if (mode === 'range') {
       const [s, e] = sel;
-      if (s && isSameDay(date, s)) (rangeStart = true), (selected = true);
-      if (e && isSameDay(date, e)) (rangeEnd = true), (selected = true);
+      if (s && isSameDay(date, s)) {
+        rangeStart = true;
+        selected = true;
+      }
+      if (e && isSameDay(date, e)) {
+        rangeEnd = true;
+        selected = true;
+      }
       if (s && e && date > startOfDay(s) && date < startOfDay(e)) inRange = true;
     } else {
       selected = sel.some((d) => isSameDay(d, date));

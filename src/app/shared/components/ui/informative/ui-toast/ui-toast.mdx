@@ -1,5 +1,6 @@
 import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
 import * as ToastStories from './ui-toast.stories';
+import { ConfigTable } from '../../../../../../../storybook/blocks/config-table';
 
 <Meta of={ToastStories} />
 
@@ -153,18 +154,9 @@ respectés automatiquement.
 Constantes locales à `ui-toast-container.scss` (structurelles, jamais de couleur : les couleurs
 restent des design tokens runtime). Voir aussi **[Components / Configuration](?path=/docs/components-configuration--docs)**.
 
-<table className="doc-table">
-  <thead>
-    <tr><th>Variable locale</th><th>Valeur</th><th>Rôle</th></tr>
-  </thead>
-  <tbody>
-    <tr><td><code>$toast-z-index</code></td><td><code>1100</code></td><td>Niveau d'empilement (au-dessus des overlays CDK, base 1000).</td></tr>
-    <tr><td><code>$toast-width</code></td><td><code>360px</code></td><td>Largeur de la pile (mode standard).</td></tr>
-    <tr><td><code>$toast-width-expanded</code></td><td><code>480px</code></td><td>Largeur en mode bannière (<code>expanded</code>).</td></tr>
-    <tr><td><code>$toast-edge-gap</code></td><td><code>var(--units-lg)</code></td><td>Marge avec les bords du viewport.</td></tr>
-    <tr><td><code>$toast-stack-gap</code></td><td><code>var(--units-sm)</code></td><td>Espace entre deux cartes empilées.</td></tr>
-  </tbody>
-</table>
+<ConfigTable of="ui-toast-container" label="ui-toast-container" />
+
+<ConfigTable of="ui-toast" label="ui-toast" />
 
 ```html
 <!-- 1. Une fois, près de la racine de l'app -->

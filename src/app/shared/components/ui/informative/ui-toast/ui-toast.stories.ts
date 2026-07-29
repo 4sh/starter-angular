@@ -252,7 +252,7 @@ class ToastDemoStacking {
 }
 
 /** Args of the presentational `ui-toast` card (drives the API table + playground). */
-type ToastArgs = {
+interface ToastArgs {
   title: string;
   text: string;
   level: 'default' | 'highlight' | 'success' | 'warning' | 'error';
@@ -260,7 +260,7 @@ type ToastArgs = {
   icon: string | boolean;
   closable: boolean;
   expanded: boolean;
-};
+}
 
 const meta: Meta<ToastArgs> = {
   title: 'Components/ui/informative/ui-toast',

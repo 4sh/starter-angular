@@ -8,15 +8,15 @@
 // Structural constants: `_ui-config.scss` (`$form-field-*`).
 // =====================================================================
 
-$height: utils.$form-field-height;
-$height-small: utils.$form-field-height-small;
-$radius: utils.$form-field-radius;
-$padding-x: utils.$form-field-padding-x;
-$gap: utils.$form-field-gap;
-$stroke-width: utils.$form-field-stroke-width;
-$focus-ring-width: utils.$form-field-focus-ring-width;
-$textarea-min-height: utils.$form-textarea-min-height;
-$textarea-min-height-small: utils.$form-textarea-min-height-small;
+$height: utils.$form-field-height;                                 /// Hauteur de la boîte de champ.
+$height-small: utils.$form-field-height-small;                     /// Hauteur de la boîte de champ, variante `small`.
+$radius: utils.$form-field-radius;                                 /// Rayon de bordure de la boîte.
+$padding-x: utils.$form-field-padding-x;                           /// Padding horizontal de la boîte.
+$gap: utils.$form-field-gap;                                       /// Espace entre le contrôle et ses affixes.
+$stroke-width: utils.$form-field-stroke-width;                     /// Épaisseur de bordure de la boîte.
+$focus-ring-width: utils.$form-field-focus-ring-width;             /// Épaisseur de l'anneau de focus.
+$textarea-min-height: utils.$form-textarea-min-height;             /// Hauteur minimale de la boîte multiligne (`ui-textarea`).
+$textarea-min-height-small: utils.$form-textarea-min-height-small; /// Hauteur minimale de la boîte multiligne, variante `small`.
 
 .ui-field {
   display: flex;

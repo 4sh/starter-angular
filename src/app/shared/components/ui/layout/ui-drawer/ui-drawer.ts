@@ -17,7 +17,7 @@ import {
   untracked,
   viewChild,
 } from '@angular/core';
-import { DOCUMENT, isPlatformBrowser, NgStyle, NgTemplateOutlet } from '@angular/common';
+import { DOCUMENT, isPlatformBrowser, NgTemplateOutlet } from '@angular/common';
 import { A11yModule } from '@angular/cdk/a11y';
 import { UiMotion, UiMotionPreset } from '@app/shared/motion/ui-motion';
 import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
@@ -88,7 +88,7 @@ function unlockBodyScroll(doc: Document): void {
  */
 @Component({
   selector: 'ui-drawer',
-  imports: [NgTemplateOutlet, NgStyle, A11yModule, UiMotion, UiIcon],
+  imports: [NgTemplateOutlet, A11yModule, UiMotion, UiIcon],
   templateUrl: './ui-drawer.html',
   styleUrl: './ui-drawer.scss',
 })
@@ -165,9 +165,9 @@ export class UiDrawer {
   protected readonly headlessTemplate = contentChild<TemplateRef<unknown>>('headless');
 
   /** Emitted after the drawer becomes visible. */
-  onShow = output<void>();
+  shown = output<void>();
   /** Emitted after the drawer is hidden. */
-  onHide = output<void>();
+  hidden = output<void>();
 
   /** @ignore */
   private readonly panelRef = viewChild<ElementRef<HTMLElement>>('panel');
@@ -249,11 +249,11 @@ export class UiDrawer {
             lockBodyScroll(this.document);
             this.locked = true;
           }
-          this.onShow.emit();
+          this.shown.emit();
         } else if (!v && wasVisible) {
           wasVisible = false;
           this.releaseLock();
-          this.onHide.emit();
+          this.hidden.emit();
         }
       });
     });
