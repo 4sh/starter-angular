@@ -894,7 +894,7 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     this.cleared.emit();
   }
 
-  // --- Grid keyboard navigation (roving focus, date view, single month) --
+  // --- Grid keyboard navigation (roving focus, date view) ---------------
 
   /** @ignore */
   protected onGridKeydown(event: KeyboardEvent): void {
@@ -939,15 +939,24 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     event.preventDefault();
     if (!next) return;
     this.focusedDate.set(startOfDay(next));
-    if (next.getMonth() !== current.getMonth() || next.getFullYear() !== current.getFullYear()) {
-      this.viewDate.set(firstOfMonth(next));
-    }
+    this.ensureMonthVisible(next);
     this.queueDayFocus();
   }
 
-  /** @ignore */
+  /** @ignore The roving-focus cell. `otherMonth` cells are excluded so a date
+   * shown twice across adjacent panels (multi-month) yields a single tab stop. */
   protected isFocusableDay(cell: DatepickerDay): boolean {
-    return isSameDay(cell.date, this.focusedDate());
+    return !cell.otherMonth && isSameDay(cell.date, this.focusedDate());
+  }
+
+  /** @ignore Shift the visible month window just enough to contain `date`. */
+  private ensureMonthVisible(date: Date): void {
+    const count = Math.max(1, this.numberOfMonths());
+    const start = firstOfMonth(this.viewDate());
+    const end = addMonths(start, count - 1);
+    const month = firstOfMonth(date);
+    if (month < start) this.viewDate.set(month);
+    else if (month > end) this.viewDate.set(addMonths(month, 1 - count));
   }
 
   // --- Internals -------------------------------------------------------
