@@ -609,6 +609,8 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   /** @ignore Parse the typed text on blur, then forward the blur. */
   protected onTriggerBlur(event: FocusEvent): void {
     this.commitTyped();
+    const next = event.relatedTarget as Node | null;
+    if (!next || !this.panelEl()?.nativeElement.contains(next)) this.emitTouch();
     this.inputBlur.emit(event);
   }
 
