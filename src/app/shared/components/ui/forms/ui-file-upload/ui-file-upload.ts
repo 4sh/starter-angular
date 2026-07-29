@@ -303,8 +303,8 @@ export class UiFileUpload {
     const maxSize = this.maxFileSize();
 
     for (const file of incoming) {
-      // Enforce single-file selection when `multiple` is off.
-      if (!this.multiple() && (this.selection().length + added.length) >= 1) break;
+      // Single-file mode: the new file replaces the current one, so only cap the incoming batch.
+      if (!this.multiple() && added.length >= 1) break;
 
       const item = this.toUploadFile(file);
 
@@ -316,7 +316,7 @@ export class UiFileUpload {
         this.fail(item, 'size', this.invalidSizeMessage().replace('{0}', file.name), newMessages);
         continue;
       }
-      if (limit != null && this.selection().length + added.length >= limit) {
+      if (limit != null && (this.multiple() ? this.selection().length : 0) + added.length >= limit) {
         this.fail(item, 'limit', this.limitReachedMessage().replace('{0}', String(limit)), newMessages);
         continue;
       }
@@ -326,6 +326,14 @@ export class UiFileUpload {
     this.messages.set(newMessages);
     if (!added.length) return;
 
+    if (!this.multiple()) {
+      // Replacement: release resources held by the previous selection.
+      for (const previous of this.selection()) {
+        this.requests.get(previous.id)?.abort();
+        this.requests.delete(previous.id);
+        this.revoke(previous);
+      }
+    }
     this.selection.update((files) => (this.multiple() ? [...files, ...added] : added));
     this.selected.emit(added);
     this.filesChange.emit(this.selection());
