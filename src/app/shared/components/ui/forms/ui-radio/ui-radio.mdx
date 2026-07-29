@@ -69,6 +69,14 @@ depuis Angular 22) via l'interop CVA native, ainsi qu'aux formulaires template-d
 </div>
 ```
 
+> ⚠️ **Limite template-driven dans un `<form>`** : chaque `ui-radio` est un CVA
+> *indépendant* (pas de registre partagé comme les `<input type=radio>` natifs).
+> À l'intérieur d'un `<form>` (NgForm), plusieurs `[(ngModel)]` portant le même
+> `name` déclenchent l'erreur Angular « more than one control with the same
+> name ». Dans ce cas, utilisez les formulaires réactifs / Signal Forms, ou
+> `[ngModelOptions]="{ standalone: true }"` sur chaque membre. Le `[(ngModel)]`
+> hors `<form>` (exemple ci-dessus) fonctionne sans restriction.
+
 - Le style **erreur s'applique automatiquement** quand le contrôle attaché est invalide **et**
   touché/modifié ; `invalid` permet de le forcer.
 - `disabled` par membre (option grisée) ou via `control.disable()` (tout le groupe).
