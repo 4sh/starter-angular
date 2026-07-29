@@ -86,15 +86,17 @@
     [message]="displayMessage()"
     [messageId]="messageId()"
   >
-    <div
-      class="ui-input-tags-control"
-      role="listbox"
-      aria-orientation="horizontal"
-      [attr.id]="listboxId()"
-      [attr.aria-label]="label() ? null : ariaLabel() || null"
-      [attr.aria-labelledby]="ariaLabelledBy() || null"
-      (mousedown)="onBoxMousedown($event)"
-    >
+    <div class="ui-input-tags-control" (mousedown)="onBoxMousedown($event)">
+      <!-- The listbox wraps ONLY the option tags (a listbox may not contain a textbox);
+           `display: contents` keeps tags and input flowing on the same wrapped lines. -->
+      <div
+        class="ui-input-tags-list"
+        role="listbox"
+        aria-orientation="horizontal"
+        [attr.id]="listboxId()"
+        [attr.aria-label]="label() ? null : ariaLabel() || null"
+        [attr.aria-labelledby]="ariaLabelledBy() || null"
+      >
       @for (tag of tagRows(); track $index) {
         @if (itemTemplate(); as tpl) {
           <!-- Template mode: a bare option wrapper hosts the custom tag content. -->
@@ -142,6 +144,7 @@
           />
         }
       }
+      </div>
 
       <input
         #inputEl
