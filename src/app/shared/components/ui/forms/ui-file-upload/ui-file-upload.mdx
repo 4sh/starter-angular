@@ -17,6 +17,15 @@ les vignettes d'images utilisent des object URLs révoqués à la suppression.
 
 <Canvas of={FileUploadStories.Basic} />
 
+> ℹ️ **Pas un contrôle de formulaire** : contrairement aux autres champs du kit,
+> `ui-file-upload` n'implémente **pas** `ControlValueAccessor` — il ne se branche
+> ni à `[(ngModel)]`, ni aux formulaires réactifs / Signal Forms, et ne participe
+> pas à leur validation. C'est un choix assumé : la valeur (`UiUploadFile[]`,
+> objets `File` + état d'upload) n'est pas sérialisable dans un modèle de
+> formulaire. Pilotez-le via l'API dédiée — `files` / `filesChange`, `selected`,
+> `uploaded`, `removed` — et reportez le résultat (ids, URLs) dans votre
+> formulaire si besoin.
+
 ## API
 
 <ArgTypes of={FileUploadStories} />
