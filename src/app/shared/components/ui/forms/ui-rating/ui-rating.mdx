@@ -58,6 +58,12 @@ Le composant est un `ControlValueAccessor` : il se branche sans code additionnel
 Angular 22) via l'interop CVA native, ainsi qu'aux formulaires template-driven
 (`[(ngModel)]`) et réactifs (`[formControl]`).
 
+> ℹ️ **Valeur « non notée » = `null`** (type `number | null`) : le `cancel`
+> (re-clic sur la note courante) et la remise à zéro au clavier émettent `null`,
+> et `writeValue(null)` est préservé — `Validators.required` (ou `required()` en
+> Signal Forms) rejette donc naturellement l'absence de note, sans workaround
+> `min(1)`. *(Breaking : les versions antérieures émettaient la sentinelle `0`.)*
+
 <Canvas of={UiRatingStories.SignalForms} />
 
 ```html

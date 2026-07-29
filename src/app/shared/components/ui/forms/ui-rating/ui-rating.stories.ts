@@ -3,7 +3,7 @@ import { moduleMetadata, type Meta, type StoryObj } from '@storybook/angular';
 import { UiRating } from './ui-rating';
 import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
 import { FormsModule } from '@angular/forms';
-import { FormField, form, min, required } from '@angular/forms/signals';
+import { FormField, form, required } from '@angular/forms/signals';
 
 const meta: Meta<UiRating> = {
   title: 'Components/ui/forms/ui-rating',
@@ -120,7 +120,7 @@ export const Disabled: Story = {
 
 export const Invalid: Story = {
   render: (args) => ({
-    props: { ...args, model: 0 },
+    props: { ...args, model: null },
     template: `<ui-rating [(ngModel)]="model" [invalid]="true" ariaLabel="Note"></ui-rating>`,
   }),
 };
@@ -145,10 +145,10 @@ export const SizeXL: Story = {
   `,
 })
 class SignalFormsDemo {
-  protected readonly model = signal(0);
+  // `null` = not rated — rejected natively by `required` (no `min(1)` workaround needed).
+  protected readonly model = signal<number | null>(null);
   protected readonly rating = form(this.model, (path) => {
     required(path);
-    min(path, 1);
   });
 }
 

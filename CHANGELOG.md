@@ -21,6 +21,9 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 - **Signal Forms stables (Angular 22)** : chaque composant de formulaire (16 champs CVA) dispose désormais d'une story « Signal Forms » (`@angular/forms/signals` : `form()` + `required()` + directive `[formField]`) et sa doc MDX présente les trois APIs (Signal Forms / Template-driven / Reactive) au présent — l'interop passe par la couche CVA existante, sans réécriture des composants. NB : le sélecteur stabilisé est `[formField]` (les entrées historiques ci-dessous mentionnent l'expérimental `[field]`)
 - `ui-image` : migration des derniers `@Input()` décorateurs vers les signal inputs (`input()`/`input.required()`) ; les deux `[ngStyle]` restants (`ui-drawer`, `ui-modal`) deviennent des bindings natifs `[style]`
 
+### Changed
+- `ui-rating`! : **« non noté » devient `null`** (type `number | null`) — le `cancel` (re-clic sur la note courante) et la remise à zéro au clavier émettent `null` (ex-sentinelle `0`), `writeValue(null)` est préservé au lieu d'être converti en `0` ; `required` rejette désormais naturellement l'absence de note (le workaround `Validators.min(1)` devient inutile). Un `0` explicitement écrit reste `0` (affiché 0 étoile). **Breaking** pour les consommateurs typés `number`
+
 ### Fixed
 - `BaseControlValueAccessor` : **miroir d'état figé sous Signal Forms** — l'interop fournit un `NgControl` sans flux `events`, l'état (`invalid`/`touched`/`dirty`/`errors`) n'était donc capturé qu'une fois au premier rendu : un champ requis restait par exemple en style erreur (`aria-invalid="true"`) même une fois valide. Les getters de l'`InteropNgControl` lisant les signals du champ, le miroir est désormais rafraîchi dans un `effect()` (chemin classique inchangé : seed + flux `events`)
 
