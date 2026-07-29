@@ -132,7 +132,7 @@
             [disabled]="isDisabled()"
             [removable]="canRemove()"
             [removeTabindex]="-1"
-            [removeAriaLabel]="'Supprimer ' + tag.label"
+            [removeAriaLabel]="removeTagLabel().replace('{0}', tag.label)"
             [attr.aria-setsize]="tagRows().length"
             [attr.aria-posinset]="tag.index + 1"
             [attr.tabindex]="isDisabled() ? null : (focusedTag() === tag.index ? 0 : -1)"

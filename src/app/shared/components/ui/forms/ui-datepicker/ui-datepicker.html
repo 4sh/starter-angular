@@ -8,14 +8,14 @@
     [attr.id]="panelId"
     role="dialog"
     [attr.aria-modal]="inline() ? null : 'true'"
-    [attr.aria-label]="label() || ariaLabel() || 'Calendrier'"
+    [attr.aria-label]="label() || ariaLabel() || panelAriaLabel()"
   >
     @if (showCalendar()) {
       <!-- Shared header (single-month): prev / title (drill-up) / next.
            Multi-month puts the arrows + titles in each panel's own header. -->
       @if (singleMonth()) {
         <div class="ui-datepicker-header">
-          <button type="button" class="ui-datepicker-nav" aria-label="Précédent" (click)="onPrev()">
+          <button type="button" class="ui-datepicker-nav" [attr.aria-label]="prevLabel()" (click)="onPrev()">
             <ui-icon name="chevron-left" size="sm" />
           </button>
           <button
@@ -27,7 +27,7 @@
           >
             {{ headerLabel() }}
           </button>
-          <button type="button" class="ui-datepicker-nav" aria-label="Suivant" (click)="onNext()">
+          <button type="button" class="ui-datepicker-nav" [attr.aria-label]="nextLabel()" (click)="onNext()">
             <ui-icon name="chevron-right" size="sm" />
           </button>
         </div>
@@ -83,7 +83,7 @@
                 <!-- Per-panel header: prev on the first panel, next on the last, title centered. -->
                 <div class="ui-datepicker-subheader">
                   @if (mp.showPrev) {
-                    <button type="button" class="ui-datepicker-nav" aria-label="Précédent" (click)="onPrev()">
+                    <button type="button" class="ui-datepicker-nav" [attr.aria-label]="prevLabel()" (click)="onPrev()">
                       <ui-icon name="chevron-left" size="sm" />
                     </button>
                   } @else {
@@ -91,7 +91,7 @@
                   }
                   <span class="ui-datepicker-title">{{ mp.label }}</span>
                   @if (mp.showNext) {
-                    <button type="button" class="ui-datepicker-nav" aria-label="Suivant" (click)="onNext()">
+                    <button type="button" class="ui-datepicker-nav" [attr.aria-label]="nextLabel()" (click)="onNext()">
                       <ui-icon name="chevron-right" size="sm" />
                     </button>
                   } @else {
@@ -148,14 +148,14 @@
       <div class="ui-datepicker-time">
         <!-- Hours -->
         <div class="ui-datepicker-time-unit">
-          <button type="button" class="ui-datepicker-time-btn" tabindex="-1" aria-label="Augmenter les heures" (click)="stepHours(1)">
+          <button type="button" class="ui-datepicker-time-btn" tabindex="-1" [attr.aria-label]="incrementHoursLabel()" (click)="stepHours(1)">
             <ui-icon name="chevron-up" size="sm" />
           </button>
           <span
             class="ui-datepicker-time-value"
             role="spinbutton"
             tabindex="0"
-            aria-label="Heures"
+            [attr.aria-label]="hoursAriaLabel()"
             [attr.aria-valuenow]="hourFormat() === '12' ? displayHours() : hours()"
             [attr.aria-valuemin]="hourFormat() === '12' ? 1 : 0"
             [attr.aria-valuemax]="hourFormat() === '12' ? 12 : 23"
@@ -164,7 +164,7 @@
           >
             {{ hoursLabel() }}
           </span>
-          <button type="button" class="ui-datepicker-time-btn" tabindex="-1" aria-label="Diminuer les heures" (click)="stepHours(-1)">
+          <button type="button" class="ui-datepicker-time-btn" tabindex="-1" [attr.aria-label]="decrementHoursLabel()" (click)="stepHours(-1)">
             <ui-icon name="chevron-down" size="sm" />
           </button>
         </div>
@@ -173,14 +173,14 @@
 
         <!-- Minutes -->
         <div class="ui-datepicker-time-unit">
-          <button type="button" class="ui-datepicker-time-btn" tabindex="-1" aria-label="Augmenter les minutes" (click)="stepMinutes(1)">
+          <button type="button" class="ui-datepicker-time-btn" tabindex="-1" [attr.aria-label]="incrementMinutesLabel()" (click)="stepMinutes(1)">
             <ui-icon name="chevron-up" size="sm" />
           </button>
           <span
             class="ui-datepicker-time-value"
             role="spinbutton"
             tabindex="0"
-            aria-label="Minutes"
+            [attr.aria-label]="minutesAriaLabel()"
             [attr.aria-valuenow]="minutes()"
             aria-valuemin="0"
             aria-valuemax="59"
@@ -189,7 +189,7 @@
           >
             {{ minutesLabel() }}
           </span>
-          <button type="button" class="ui-datepicker-time-btn" tabindex="-1" aria-label="Diminuer les minutes" (click)="stepMinutes(-1)">
+          <button type="button" class="ui-datepicker-time-btn" tabindex="-1" [attr.aria-label]="decrementMinutesLabel()" (click)="stepMinutes(-1)">
             <ui-icon name="chevron-down" size="sm" />
           </button>
         </div>
@@ -198,21 +198,21 @@
         @if (hourFormat() === '12') {
           <span class="ui-datepicker-time-colon" aria-hidden="true">:</span>
           <div class="ui-datepicker-time-unit">
-            <button type="button" class="ui-datepicker-time-btn" tabindex="-1" aria-label="Changer AM/PM" (click)="toggleMeridiem()">
+            <button type="button" class="ui-datepicker-time-btn" tabindex="-1" [attr.aria-label]="toggleMeridiemLabel()" (click)="toggleMeridiem()">
               <ui-icon name="chevron-up" size="sm" />
             </button>
             <span
               class="ui-datepicker-time-value"
               role="spinbutton"
               tabindex="0"
-              aria-label="AM/PM"
+              [attr.aria-label]="meridiemAriaLabel()"
               [attr.aria-valuetext]="meridiem()"
               (keydown)="onMeridiemKeydown($event)"
               (click)="toggleMeridiem()"
             >
               {{ meridiem() }}
             </span>
-            <button type="button" class="ui-datepicker-time-btn" tabindex="-1" aria-label="Changer AM/PM" (click)="toggleMeridiem()">
+            <button type="button" class="ui-datepicker-time-btn" tabindex="-1" [attr.aria-label]="toggleMeridiemLabel()" (click)="toggleMeridiem()">
               <ui-icon name="chevron-down" size="sm" />
             </button>
           </div>

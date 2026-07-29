@@ -23,7 +23,7 @@
       [attr.tabindex]="tabindexFor(cell.index)"
       [disabled]="isDisabled()"
       [readOnly]="readonly()"
-      [attr.aria-label]="(ariaLabel() || 'Caractère') + ' ' + (cell.index + 1)"
+      [attr.aria-label]="(ariaLabel() || charAriaLabel()) + ' ' + (cell.index + 1)"
       [attr.aria-invalid]="isInvalid() ? 'true' : null"
       (input)="onInput($event, cell.index)"
       (keydown)="onKeydown($event, cell.index)"

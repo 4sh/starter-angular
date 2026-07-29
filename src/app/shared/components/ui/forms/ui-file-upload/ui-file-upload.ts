@@ -91,18 +91,32 @@ export class UiFileUpload {
   showFileList = input(true, { transform: booleanAttribute });
   /** Show the Upload/Cancel toolbar buttons (drag mode). */
   showControls = input(true, { transform: booleanAttribute });
-  browseLabel = input<string>('Browse');
+  browseLabel = input<string>('Parcourir');
   /** Placeholder shown in field mode before any selection. */
-  chooseLabel = input<string>('Choose file...');
-  uploadLabel = input<string>('Upload');
-  cancelLabel = input<string>('Clear');
+  chooseLabel = input<string>('Choisir un fichier…');
+  uploadLabel = input<string>('Téléverser');
+  cancelLabel = input<string>('Effacer');
   /** Drag-zone link + prompt. */
-  dragLinkLabel = input<string>('Click to upload');
-  dragPromptLabel = input<string>('or drag and drop files here');
+  dragLinkLabel = input<string>('Cliquer pour téléverser');
+  dragPromptLabel = input<string>('ou glisser-déposer les fichiers ici');
   /** Small hint under the drag prompt (e.g. "JPG, PNG (max 5 MB)"). */
   hint = input<string>();
   /** Accessible name for the whole control. */
-  ariaLabel = input<string>('File upload');
+  ariaLabel = input<string>('Téléversement de fichiers');
+  /** Multi-file summary in field mode — `{0}` is replaced by the file count. */
+  filesSummaryLabel = input<string>('{0} fichiers');
+  /** Rejection message: file type not accepted — `{0}` is the file name. */
+  invalidTypeMessage = input<string>('Type de fichier non autorisé : {0}');
+  /** Rejection message: file too large — `{0}` is the file name. */
+  invalidSizeMessage = input<string>('Fichier trop volumineux : {0}');
+  /** Rejection message: `fileLimit` reached — `{0}` is the limit. */
+  limitReachedMessage = input<string>('Nombre maximum de fichiers atteint ({0}).');
+  /** Error shown when an upload fails without a server message. */
+  uploadErrorMessage = input<string>('Échec du téléversement');
+  /** Error shown when the upload request fails at the network level. */
+  networkErrorMessage = input<string>('Erreur réseau');
+  /** Error shown on a non-2xx response — `{0}` is the HTTP status. */
+  httpErrorMessage = input<string>('Erreur {0}');
 
   // --- Templates (drag/advanced) --------------------------------------
   /** Overrides a single file row (context: `{ $implicit: UiUploadFile, remove }`). */
@@ -174,7 +188,7 @@ export class UiFileUpload {
     const files = this.selection();
     if (!files.length) return this.chooseLabel();
     if (files.length === 1) return files[0].name;
-    return `${files.length} fichiers`;
+    return this.filesSummaryLabel().replace('{0}', String(files.length));
   });
   /** @ignore */
   protected readonly canUpload = computed(
@@ -295,15 +309,15 @@ export class UiFileUpload {
       const item = this.toUploadFile(file);
 
       if (!isFileTypeAccepted(file, this.accept())) {
-        this.fail(item, 'type', `Type de fichier non autorisé : ${file.name}`, newMessages);
+        this.fail(item, 'type', this.invalidTypeMessage().replace('{0}', file.name), newMessages);
         continue;
       }
       if (maxSize != null && file.size > maxSize) {
-        this.fail(item, 'size', `Fichier trop volumineux : ${file.name}`, newMessages);
+        this.fail(item, 'size', this.invalidSizeMessage().replace('{0}', file.name), newMessages);
         continue;
       }
       if (limit != null && this.selection().length + added.length >= limit) {
-        this.fail(item, 'limit', `Nombre maximum de fichiers atteint (${limit}).`, newMessages);
+        this.fail(item, 'limit', this.limitReachedMessage().replace('{0}', String(limit)), newMessages);
         continue;
       }
       added.push(item);
@@ -354,11 +368,11 @@ export class UiFileUpload {
         this.filesChange.emit(this.selection());
       },
       markError: (file, msg) => {
-        this.patch(file.id, { status: 'error', error: msg ?? 'Échec du téléversement' });
+        this.patch(file.id, { status: 'error', error: msg ?? this.uploadErrorMessage() });
         this.uploadError.emit({
           file,
           reason: 'upload',
-          message: msg ?? 'Échec du téléversement',
+          message: msg ?? this.uploadErrorMessage(),
         });
       },
     });
@@ -382,10 +396,10 @@ export class UiFileUpload {
         this.uploaded.emit({ files: [item], xhr });
         this.filesChange.emit(this.selection());
       } else {
-        this.uploadFailed(item, `Erreur ${xhr.status}`);
+        this.uploadFailed(item, this.httpErrorMessage().replace('{0}', String(xhr.status)));
       }
     });
-    xhr.addEventListener('error', () => this.uploadFailed(item, 'Erreur réseau'));
+    xhr.addEventListener('error', () => this.uploadFailed(item, this.networkErrorMessage()));
     xhr.addEventListener('abort', () => this.requests.delete(item.id));
 
     xhr.open(this.method().toUpperCase(), endpoint, true);

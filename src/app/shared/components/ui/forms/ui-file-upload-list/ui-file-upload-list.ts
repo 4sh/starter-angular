@@ -30,6 +30,12 @@ export class UiFileUploadList {
   removable = input(true, { transform: booleanAttribute });
   /** Accessible label for the remove button. */
   removeLabel = input<string>('Supprimer le fichier');
+  /** Fallback error text when the file carries no message. */
+  failedLabel = input<string>('Échec');
+  /** Accessible name of the upload spinner — `{0}` is the file name. */
+  uploadingLabel = input<string>('Téléversement de {0}');
+  /** Accessible name of the progress bar — `{0}` is the file name. */
+  progressLabel = input<string>('Progression du téléversement de {0}');
 
   /** Emitted when the remove button is activated. */
   remove = output<UiUploadFile>();
@@ -49,7 +55,7 @@ export class UiFileUploadList {
   /** @ignore Secondary line: error message, else size (+ status hint). */
   protected readonly infoLabel = computed(() => {
     const f = this.file();
-    if (f.status === 'error') return f.error ?? 'Échec';
+    if (f.status === 'error') return f.error ?? this.failedLabel();
     if (f.status === 'uploading') return `${this.sizeLabel()} · ${Math.round(f.progress)} %`;
     return this.sizeLabel();
   });

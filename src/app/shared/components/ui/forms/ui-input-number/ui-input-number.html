@@ -46,7 +46,7 @@
       <button
         type="button"
         tabindex="-1"
-        aria-label="Augmenter"
+        [attr.aria-label]="incrementLabel()"
         [disabled]="isDisabled() || readonly() || atMax()"
         (click)="stepBy(1)"
       >
@@ -55,7 +55,7 @@
       <button
         type="button"
         tabindex="-1"
-        aria-label="Diminuer"
+        [attr.aria-label]="decrementLabel()"
         [disabled]="isDisabled() || readonly() || atMin()"
         (click)="stepBy(-1)"
       >

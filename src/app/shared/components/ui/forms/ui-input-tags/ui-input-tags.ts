@@ -206,6 +206,8 @@ export class UiInputTags<T = unknown> extends BaseFormField<T[]> {
 
   /** Message shown when a query returns no suggestion. */
   emptyMessage = input<string>('Aucun résultat');
+  /** Accessible label of each tag's remove action — `{0}` is the tag label. */
+  removeTagLabel = input<string>('Supprimer {0}');
 
   /** Emitted when a tag is added. */
   tagAdd = output<InputTagsAddEvent>();

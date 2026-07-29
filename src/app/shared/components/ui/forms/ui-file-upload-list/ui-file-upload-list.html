@@ -2,7 +2,7 @@
   <div class="ui-file-upload-list-file">
     <span class="ui-file-upload-list-media">
       @if (isUploading()) {
-        <ui-spinner size="small" [ariaLabel]="'Téléversement de ' + file().name" />
+        <ui-spinner size="small" [ariaLabel]="uploadingLabel().replace('{0}', file().name)" />
       } @else if (thumbnail(); as src) {
         <img class="ui-file-upload-list-thumb" [src]="src" alt="" />
       } @else {
@@ -34,7 +34,7 @@
       [attr.aria-valuenow]="file().progress"
       aria-valuemin="0"
       aria-valuemax="100"
-      [attr.aria-label]="'Progression du téléversement de ' + file().name"
+      [attr.aria-label]="progressLabel().replace('{0}', file().name)"
     >
       <span class="ui-file-upload-list-progress-bar" [style.width.%]="file().progress"></span>
     </div>
