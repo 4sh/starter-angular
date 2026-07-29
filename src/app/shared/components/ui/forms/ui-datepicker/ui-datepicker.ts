@@ -18,9 +18,10 @@ import {
   viewChild,
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
-import { FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { dropdownOverlayPositions } from '@app/shared/components/ui/forms/overlay-positions';
+import { CdkTrapFocus } from '@angular/cdk/a11y';
 import { BaseFormField } from '@app/shared/components/ui/forms/base-form-field';
 import { UiInput } from '@app/shared/components/ui/forms/ui-input/ui-input';
 import { UiButton } from '@app/shared/components/ui/actions/ui-button/ui-button';
@@ -116,7 +117,7 @@ let nextPanelUid = 0;
  */
 @Component({
   selector: 'ui-datepicker',
-  imports: [NgTemplateOutlet, FormsModule, OverlayModule, UiInput, UiButton, UiIcon],
+  imports: [NgTemplateOutlet, OverlayModule, CdkTrapFocus, UiInput, UiButton, UiIcon],
   templateUrl: './ui-datepicker.html',
   styleUrl: './ui-datepicker.scss',
   providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => UiDatepicker), multi: true }],
