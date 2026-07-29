@@ -78,6 +78,10 @@ export class UiSlider extends BaseFieldControl<SliderValue> {
   marks = input(false, { transform: booleanAttribute });
   /** Orientation of the slider (drives the arrow keys and layout). */
   orientation = input<SliderOrientation>('horizontal');
+  /** Accessible name of the start (lower) handle in `range` mode — falls back to `ariaLabel`. */
+  ariaLabelStart = input<string>();
+  /** Accessible name of the end (upper) handle in `range` mode — falls back to `ariaLabel`. */
+  ariaLabelEnd = input<string>();
 
   /** Emitted continuously while the value changes (drag, keyboard, track click). */
   sliderChange = output<SliderValue>();
@@ -300,6 +304,12 @@ export class UiSlider extends BaseFieldControl<SliderValue> {
   private nearestHandle(value: number): number {
     const [a, b] = this.rangeValues();
     return Math.abs(value - a) <= Math.abs(value - b) ? 0 : 1;
+  }
+
+  /** @ignore Accessible name of a given handle (distinct per handle in range mode). */
+  protected handleAriaLabel(index: number): string | undefined {
+    if (!this.range()) return this.ariaLabel();
+    return (index === 0 ? this.ariaLabelStart() : this.ariaLabelEnd()) ?? this.ariaLabel();
   }
 
   /** @ignore Snap to the step grid, relative to `min`. */
