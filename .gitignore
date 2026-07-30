@@ -20,6 +20,9 @@ src/styles/generated
 # Compodoc (generated for Storybook)
 documentation.json
 
+# Storybook doc config manifest (npm run docs:config)
+storybook/generated
+
 # Storybook build output
 storybook-static
 
