@@ -6,6 +6,9 @@ import { UiSpinner } from '@app/shared/components/ui/informative/ui-spinner/ui-s
 import { UiLightbox } from '@app/shared/components/ui/layout/ui-lightbox/ui-lightbox';
 import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
 
+/** Process-wide cache so identical SVG sources (e.g. a repeated icon in a list) are fetched once. */
+const SVG_CACHE = new Map<string, string>();
+
 @Component({
     selector: 'ui-image',
     imports: [NgOptimizedImage, NgTemplateOutlet, UiSpinner, UiLightbox, UiIcon],
@@ -42,6 +45,7 @@ export class UiImage {
     svgContent = signal<SafeHtml | null>(null);
     blobSafeUrl = signal<SafeUrl | null>(null);
     loading = signal(false);
+    loadError = signal(false);
     previewOpen = signal(false);
     zoom = signal(1);
     rotation = signal(0);
@@ -51,9 +55,18 @@ export class UiImage {
         // SVG: loaded and injected inline so it stays stylable via CSS.
         effect((onCleanup) => {
             const url = this.src();
+            this.svgContent.set(null);
             if (!this.isSvg() || !url) return;
+            const cached = SVG_CACHE.get(url);
+            if (cached !== undefined) {
+                this.svgContent.set(this.sanitizer.bypassSecurityTrustHtml(cached));
+                return;
+            }
             const sub = this.http.get(url, { responseType: 'text' }).subscribe({
-                next: (html) => this.svgContent.set(this.sanitizer.bypassSecurityTrustHtml(html)),
+                next: (html) => {
+                    SVG_CACHE.set(url, html);
+                    this.svgContent.set(this.sanitizer.bypassSecurityTrustHtml(html));
+                },
                 error: (err) => console.error(`SVG Error: ${url}`, err),
             });
             onCleanup(() => sub.unsubscribe());
@@ -63,6 +76,7 @@ export class UiImage {
         effect((onCleanup) => {
             const url = this.src();
             this.blobSafeUrl.set(null);
+            this.loadError.set(false);
             if (!this.authenticated() || this.isSvg() || !url) {
                 this.loading.set(false);
                 return;
@@ -78,6 +92,7 @@ export class UiImage {
                 error: () => {
                     this.blobSafeUrl.set(null);
                     this.loading.set(false);
+                    this.loadError.set(true);
                 },
             });
             onCleanup(() => {

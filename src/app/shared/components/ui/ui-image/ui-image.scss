@@ -40,8 +40,20 @@ img {
     }
 }
 
-.ui-image-preview-img {
+.ui-image-preview-img,
+.ui-image-preview-svg {
     max-width: 100%;
     max-height: 100%;
     transition: transform var(--transition-fast) ease;
+}
+
+.ui-image-preview-svg {
+    display: flex;
+
+    ::ng-deep svg {
+        width: auto;
+        height: auto;
+        max-width: 90vw;
+        max-height: 90vh;
+    }
 }

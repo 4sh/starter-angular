@@ -19,6 +19,9 @@
                  [height]="!fill() ? (height() ? height() : width()) : null"
             />
         }
+        @else if (loadError()) {
+            <ui-icon name="triangle-exclamation" size="lg" [decorative]="false" [ariaLabel]="alt() || 'Image indisponible'" />
+        }
     }
     @else if (src()) {
         <img [ngSrc]="src()"
@@ -55,8 +58,13 @@
                 <ui-icon name="magnifying-glass-plus" size="sm" />
             </button>
         </ng-template>
-        <img class="ui-image-preview-img" [src]="src()" [alt]="alt() || ''"
-             [style.transform]="previewTransform()" />
+        @if (isSvg()) {
+            <div class="ui-image-preview-svg" [style.transform]="previewTransform()" [innerHTML]="svgContent()"></div>
+        }
+        @else {
+            <img class="ui-image-preview-img" [src]="authenticated() ? blobSafeUrl() : src()" [alt]="alt() || ''"
+                 [style.transform]="previewTransform()" />
+        }
     </ui-lightbox>
 }
 @else {
