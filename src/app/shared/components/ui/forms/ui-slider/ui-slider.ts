@@ -113,6 +113,11 @@ export class UiSlider extends BaseFieldControl<SliderValue> {
             '[ui-slider] No accessible name: provide `ariaLabel` (or `ariaLabelledBy`).',
           );
         }
+        if (this.range() && !this.ariaLabelStart() && !this.ariaLabelEnd() && !this.ariaLabelledBy()) {
+          console.warn(
+            '[ui-slider] Range mode: set `ariaLabelStart`/`ariaLabelEnd` so each handle has a distinct name.',
+          );
+        }
       });
     }
   }
