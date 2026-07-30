@@ -19,38 +19,12 @@ import { DOCUMENT, isPlatformBrowser, NgTemplateOutlet } from '@angular/common';
 import { A11yModule } from '@angular/cdk/a11y';
 import { UiMotion, UiMotionPreset } from '@app/shared/motion/ui-motion';
 import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
+import { lockBodyScroll, unlockBodyScroll } from '@app/shared/overlay/body-scroll-lock';
 
 /** Base stacking level — mirrors `$lightbox-z-index` in the SCSS. */
 const LIGHTBOX_BASE_Z_INDEX = 1100;
 /** Process-wide sequence so `autoZIndex` layers a later lightbox above earlier ones. */
 let zIndexSeq = 0;
-
-// --- Body scroll lock (ref-counted, shared across nested overlays) -------
-let scrollLockCount = 0;
-let savedOverflow = '';
-let savedPaddingRight = '';
-
-/** Freeze background scroll, compensating the scrollbar gutter to avoid a shift. */
-function lockBodyScroll(doc: Document): void {
-  if (scrollLockCount === 0) {
-    const body = doc.body;
-    const gap = (doc.defaultView?.innerWidth ?? 0) - doc.documentElement.clientWidth;
-    savedOverflow = body.style.overflow;
-    savedPaddingRight = body.style.paddingRight;
-    body.style.overflow = 'hidden';
-    if (gap > 0) body.style.paddingRight = `${gap}px`;
-  }
-  scrollLockCount++;
-}
-
-/** Release one scroll lock; restore the body when the last lightbox closes. */
-function unlockBodyScroll(doc: Document): void {
-  scrollLockCount = Math.max(0, scrollLockCount - 1);
-  if (scrollLockCount === 0) {
-    doc.body.style.overflow = savedOverflow;
-    doc.body.style.paddingRight = savedPaddingRight;
-  }
-}
 
 /**
  * ui-lightbox — bezel-less fullscreen overlay: dark scrim, centered content,
