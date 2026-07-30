@@ -21,6 +21,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { BaseFormField } from '@app/shared/components/ui/forms/base-form-field';
 import { createOptionResolver } from '@app/shared/components/ui/forms/option-resolver';
 import { dropdownOverlayPositions } from '@app/shared/components/ui/forms/overlay-positions';
+import { formatLabel } from '@app/shared/components/ui/forms/format-label';
 import { UiField } from '@app/shared/components/ui/forms/ui-field/ui-field';
 import { UiIcon, UiIconSize } from '@app/shared/components/ui/ui-icon/ui-icon';
 import { UiChip } from '@app/shared/components/ui/informative/ui-chip/ui-chip';
@@ -282,7 +283,10 @@ export class UiInputTags<T = unknown> extends BaseFormField<T[]> {
   protected readonly tagValues = computed<T[]>(() => this.modelValue() ?? []);
   /** @ignore Tags as display rows (value + resolved label). */
   protected readonly tagRows = computed(() =>
-    this.tagValues().map((value, index) => ({ value, index, label: this.labelOfValue(value) })),
+    this.tagValues().map((value, index) => {
+      const label = this.labelOfValue(value);
+      return { value, index, label, removeAriaLabel: formatLabel(this.removeTagLabel(), label) };
+    }),
   );
   /** @ignore */
   protected readonly listboxId = computed(() => `${this.resolvedId()}-tags`);

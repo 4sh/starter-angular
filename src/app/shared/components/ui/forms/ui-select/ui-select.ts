@@ -21,6 +21,7 @@ import { CdkVirtualScrollViewport, ScrollingModule } from '@angular/cdk/scrollin
 import { BaseFormField } from '@app/shared/components/ui/forms/base-form-field';
 import { createOptionResolver } from '@app/shared/components/ui/forms/option-resolver';
 import { dropdownOverlayPositions } from '@app/shared/components/ui/forms/overlay-positions';
+import { formatLabel } from '@app/shared/components/ui/forms/format-label';
 import { UiField } from '@app/shared/components/ui/forms/ui-field/ui-field';
 import { UiIcon, UiIconSize } from '@app/shared/components/ui/ui-icon/ui-icon';
 import { UiSpinner } from '@app/shared/components/ui/informative/ui-spinner/ui-spinner';
@@ -433,7 +434,7 @@ export class UiSelect<T = unknown> extends BaseFormField<SelectValue<T>> {
 
   /** @ignore Rendered overflow indicator (e.g. `(+2 autres)`). */
   protected readonly overflowText = computed(() =>
-    this.overflowLabel().replace('{0}', String(this.overflowCount())),
+    formatLabel(this.overflowLabel(), this.overflowCount()),
   );
 
   /** @ignore Contexts handed to the `#selectedItem` template (one per displayed selection). */

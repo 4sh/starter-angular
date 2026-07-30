@@ -19,6 +19,7 @@ import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
 import { UiButton } from '@app/shared/components/ui/actions/ui-button/ui-button';
 import { UiLink } from '@app/shared/components/ui/actions/ui-link/ui-link';
 import { UiFileUploadList } from '@app/shared/components/ui/forms/ui-file-upload-list/ui-file-upload-list';
+import { formatLabel } from '@app/shared/components/ui/forms/format-label';
 import {
   isFileTypeAccepted,
   isImageFile,
@@ -188,7 +189,7 @@ export class UiFileUpload {
     const files = this.selection();
     if (!files.length) return this.chooseLabel();
     if (files.length === 1) return files[0].name;
-    return this.filesSummaryLabel().replace('{0}', String(files.length));
+    return formatLabel(this.filesSummaryLabel(), files.length);
   });
   /** @ignore */
   protected readonly canUpload = computed(
@@ -309,15 +310,15 @@ export class UiFileUpload {
       const item = this.toUploadFile(file);
 
       if (!isFileTypeAccepted(file, this.accept())) {
-        this.fail(item, 'type', this.invalidTypeMessage().replace('{0}', file.name), newMessages);
+        this.fail(item, 'type', formatLabel(this.invalidTypeMessage(), file.name), newMessages);
         continue;
       }
       if (maxSize != null && file.size > maxSize) {
-        this.fail(item, 'size', this.invalidSizeMessage().replace('{0}', file.name), newMessages);
+        this.fail(item, 'size', formatLabel(this.invalidSizeMessage(), file.name), newMessages);
         continue;
       }
       if (limit != null && (this.multiple() ? this.selection().length : 0) + added.length >= limit) {
-        this.fail(item, 'limit', this.limitReachedMessage().replace('{0}', String(limit)), newMessages);
+        this.fail(item, 'limit', formatLabel(this.limitReachedMessage(), limit), newMessages);
         continue;
       }
       added.push(item);
@@ -404,7 +405,7 @@ export class UiFileUpload {
         this.uploaded.emit({ files: [item], xhr });
         this.filesChange.emit(this.selection());
       } else {
-        this.uploadFailed(item, this.httpErrorMessage().replace('{0}', String(xhr.status)));
+        this.uploadFailed(item, formatLabel(this.httpErrorMessage(), xhr.status));
       }
     });
     xhr.addEventListener('error', () => this.uploadFailed(item, this.networkErrorMessage()));
