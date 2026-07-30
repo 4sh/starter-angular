@@ -1,26 +1,22 @@
 import {
-  booleanAttribute,
   Component,
   computed,
   ElementRef,
   forwardRef,
   input,
   output,
-  signal,
   TemplateRef,
   viewChild,
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { BaseControlValueAccessor } from '@app/core/controlValueAccessor/BaseControlValueAccessor';
+import { BaseFieldControl } from '@app/shared/components/ui/forms/base-form-field';
 
 export type ToggleSize = 'default' | 'small';
 export type ToggleLabelPosition = 'before' | 'after';
 export interface ToggleHandleContext {
   checked: boolean;
 }
-
-let nextUid = 0;
 
 /**
  * ui-toggle — headless switch built on a real native `<input type="checkbox" role="switch">`.
@@ -41,35 +37,17 @@ let nextUid = 0;
   styleUrl: './ui-toggle.scss',
   providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => UiToggle), multi: true }],
 })
-export class UiToggle<T = boolean> extends BaseControlValueAccessor<T> {
+export class UiToggle<T = boolean> extends BaseFieldControl<T> {
   /** Label displayed next to the switch (clicking it toggles the switch). */
   label = input<string>();
   /** Side of the switch the label sits on (both sides are clickable). */
   labelPosition = input<ToggleLabelPosition>('after');
-  /** Accessible name when no visible label is provided. */
-  ariaLabel = input<string>();
-  /** id of an external element that labels this switch. */
-  ariaLabelledBy = input<string>();
-  /** id forwarded to the native input (auto-generated when omitted). */
-  inputId = input<string>();
-  /** name forwarded to the native input. */
-  name = input<string>();
   /** Size. */
   size = input<ToggleSize>('default');
   /** Model value emitted when on. */
   trueValue = input<T>(true as T);
   /** Model value emitted when off. */
   falseValue = input<T>(false as T);
-  /** Required marker on the label + native required attribute. */
-  required = input(false, { transform: booleanAttribute });
-  /** Disables the switch (native attribute). */
-  disabled = input(false, { transform: booleanAttribute });
-  /** Focusable but not editable. */
-  readonly = input(false, { transform: booleanAttribute });
-  /** Forces the error styling (automatic when the attached control is invalid and touched/dirty). */
-  invalid = input(false, { transform: booleanAttribute });
-  /** tabindex forwarded to the native input. */
-  tabindex = input<number>();
   /**
    * Custom handle (thumb) template. Receives a `{ checked }` context, so the
    * rendered content can react to the on/off state (e.g. a check / times icon).
@@ -85,14 +63,6 @@ export class UiToggle<T = boolean> extends BaseControlValueAccessor<T> {
 
   /** @ignore */
   private readonly inputEl = viewChild.required<ElementRef<HTMLInputElement>>('inputEl');
-  /** @ignore Current model value (written by the form or by user toggles). */
-  private readonly modelValue = signal<T | undefined>(undefined);
-  /** @ignore */
-  private readonly uid = `ui-toggle-${nextUid++}`;
-
-  constructor() {
-    super();
-  }
 
   /** @ignore */
   protected readonly checked = computed(() => this.modelValue() === this.trueValue());
@@ -100,12 +70,6 @@ export class UiToggle<T = boolean> extends BaseControlValueAccessor<T> {
   protected readonly hasLabel = computed(() => !!this.label());
   /** @ignore Context handed to the custom handle template. */
   protected readonly handleContext = computed<ToggleHandleContext>(() => ({ checked: this.checked() }));
-  /** @ignore Input disabled OR control disabled (form API). */
-  protected readonly isDisabled = computed(() => this.disabled() || this.controlDisabled());
-  /** @ignore Explicit `invalid` input OR invalid control worth surfacing. */
-  protected readonly isInvalid = computed(() => this.invalid() || this.showError());
-  /** @ignore */
-  protected readonly resolvedId = computed(() => this.inputId() ?? this.uid);
 
   /** @ignore */
   protected readonly classes = computed(() => {
@@ -118,8 +82,9 @@ export class UiToggle<T = boolean> extends BaseControlValueAccessor<T> {
     return c.join(' ');
   });
 
-  writeValue(value: T): void {
-    this.modelValue.set(value);
+  /** @ignore */
+  protected override uidPrefix(): string {
+    return 'ui-toggle';
   }
 
   /** Focus the native input programmatically. */

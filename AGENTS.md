@@ -1,38 +1,38 @@
 # AGENTS.md — Starter Angular Headless (Design System)
 
-> Point d'entrée unique pour tout agent IA. Lis ce fichier en premier, puis consulte les sources de vérité indiquées. Pour le volet Figma (génération/audit de composants), voir `CLAUDE.md`.
+> Single entry point for any AI agent. Read this file first, then consult the indicated sources of truth. For the Figma side (component generation/audit), see `CLAUDE.md`.
 
 ---
 
 ## Stack
 
-| Technologie | Rôle |
+| Technology | Role |
 |---|---|
-| Angular 22 | Framework — standalone, Signals API obligatoire, zoneless |
-| Composants headless | Aucune librairie UI propriétaire ; Angular CDK au besoin (overlay, a11y, focus-trap) |
-| Design Tokens JSON | `src/design-tokens/*.json` (DTCG) → Style Dictionary → variables CSS générées |
-| Gridaflex 1.0.0 | Grille flexbox (24 col) + breakpoints, configurée par les tokens |
-| FontAwesome Free | Icônes, via le composant `ui-icon` |
-| Storybook 10 | **Source de vérité** — composants, tokens, fondations |
+| Angular 22 | Framework — standalone, Signals API mandatory, zoneless |
+| Headless components | No proprietary UI library; Angular CDK where needed (overlay, a11y, focus-trap) |
+| Design Tokens JSON | `src/design-tokens/*.json` (DTCG) → Style Dictionary → generated CSS variables |
+| Gridaflex 1.0.0 | Flexbox grid (24 col) + breakpoints, configured by the tokens |
+| FontAwesome Free | Icons, via the `ui-icon` component |
+| Storybook 10 | **Source of truth** — components, tokens, foundations |
 
-Polices embarquées en local (DM Sans + Inter, variable fonts) : `src/styles/src/vendors/_fonts.scss`.
+Fonts embedded locally (DM Sans + Inter, variable fonts): `src/styles/src/vendors/_fonts.scss`.
 
 ---
 
-## ⚠️ Règle absolue — Lire avant de coder
+## ⚠️ Absolute rule — Read before coding
 
-**Storybook est la source de vérité.** Ne jamais deviner l'API d'un composant, ses variantes ou ses tokens.
+**Storybook is the source of truth.** Never guess a component's API, its variants or its tokens.
 
-| Question | Où chercher |
+| Question | Where to look |
 |---|---|
-| Composants existants / feuille de route | `src/app/shared/components/components-index.md` |
-| API d'un composant (`inputs`, `outputs`, types) | `src/app/shared/components/ui/**/ui-<nom>/ui-<nom>.stories.ts` → `argTypes` (co-localisée) |
-| Couleurs, tokens sémantiques | Storybook → `Foundations / Colors` (explorateur marque + mode) |
-| Typographie | Storybook → `Foundations / Typography` |
-| Ombres & effets | Storybook → `Foundations / Shadows` |
-| Pipeline tokens, thème, responsive | Storybook → `Spécifications / *` |
-| Composant Angular source | `src/app/shared/components/ui/<catégorie>/ui-<nom>/` |
-| **Patron de référence** | `src/app/shared/components/ui/actions/ui-button/` (+ `ui-icon`) |
+| Existing components / roadmap | `src/app/shared/components/components-index.md` |
+| A component's API (`inputs`, `outputs`, types) | `src/app/shared/components/ui/**/ui-<name>/ui-<name>.stories.ts` → `argTypes` (co-located) |
+| Colors, semantic tokens | Storybook → `Foundations / Colors` (brand + mode explorer) |
+| Typography | Storybook → `Foundations / Typography` |
+| Shadows & effects | Storybook → `Foundations / Shadows` |
+| Tokens pipeline, theme, responsive | Storybook → `Spécifications / *` |
+| Source Angular component | `src/app/shared/components/ui/<category>/ui-<name>/` |
+| **Reference pattern** | `src/app/shared/components/ui/actions/ui-button/` (+ `ui-icon`) |
 
 ---
 
@@ -42,68 +42,68 @@ Polices embarquées en local (DM Sans + Inter, variable fonts) : `src/styles/src
 src/
   app/
     core/
-      controlValueAccessor/  # BaseControlValueAccessor (composants de formulaire)
+      controlValueAccessor/  # BaseControlValueAccessor (form components)
       service/               # ThemeService ([data-theme]) · BrandService ([data-brand])
     shared/
       components/
-        components-index.md  # Sommaire : composants réalisés ✅ / à construire ⬜
-        ui/                  # Composants génériques headless — source de vérité du DS
-          actions/           # ui-button (patron de référence)
-          ui-icon/           # Icônes FontAwesome
-        domain/              # Composants métier (préfixe projet) — à créer par projet
-      types/                 # Types partagés (ui-level…)
-  design-tokens/             # JSON sources des tokens (export Figma / Token Flow)
+        components-index.md  # Index: components built ✅ / to build ⬜
+        ui/                  # Generic headless components — DS source of truth
+          actions/           # ui-button (reference pattern)
+          ui-icon/           # FontAwesome icons
+        domain/              # Business components (project prefix) — created per project
+      types/                 # Shared types (ui-level…)
+  design-tokens/             # Token JSON sources (Figma / Token Flow export)
   styles/
-    main.scss                # Point d'entrée global
+    main.scss                # Global entry point
     src/
-      generated/             # _tokens-*.scss — GÉNÉRÉ, ne pas éditer
+      generated/             # _tokens-*.scss — GENERATED, do not edit
       vendors/               # gridaflex-settings.scss, _fonts.scss
-      base/                  # base, typographie (classes utilitaires)
+      base/                  # base, typography (utility classes)
 
 storybook/
   stories/
     foundations/             # Colors.mdx, Typography.mdx, Shadows.mdx
     specifications/          # design-tokens.mdx, theme.mdx, responsive.mdx
-    components/ui/           # Stories + MDX par composant
-tokens.config.json           # Config du pipeline tokens (collections, modes, sorties)
-scripts/tokens.build.mjs     # Build Style Dictionary → src/styles/src/generated/
+    components/ui/           # Stories + MDX per component
+tokens.config.json           # Tokens pipeline config (collections, modes, outputs)
+scripts/tokens.build.mjs     # Style Dictionary build → src/styles/src/generated/
 ```
 
-Le style de chaque composant est **co-localisé** dans son `.scss` (scopé Angular) et ne
-consomme **que** des variables CSS de tokens. Le global (`src/styles/`) ne contient que les
-tokens générés, les vendors et des utilitaires.
+Each component's style is **co-located** in its `.scss` (Angular scoped) and consumes
+**only** token CSS variables. The global layer (`src/styles/`) contains only the
+generated tokens, vendors and utilities.
 
 ---
 
-## Conventions de nommage
+## Naming conventions
 
-### Composants UI (génériques)
+### UI components (generic)
 
-| Élément | Convention | Exemple |
+| Element | Convention | Example |
 |---|---|---|
-| Sélecteur Angular | `ui-<nom>` | `ui-button` |
-| Classe TypeScript | `Ui<Nom>` | `UiButton` |
-| Fichier | `ui-<nom>.ts` (sans `.component`) | `ui-button.ts` |
-| Story & doc | co-localisées : `src/app/shared/components/ui/<cat>/ui-<nom>/ui-<nom>.stories.ts` + `ui-<nom>.mdx` | `ui-button.stories.ts` |
-| Import alias | Toujours `@app/` | `@app/shared/components/ui/...` |
+| Angular selector | `ui-<name>` | `ui-button` |
+| TypeScript class | `Ui<Name>` | `UiButton` |
+| File | `ui-<name>.ts` (without `.component`) | `ui-button.ts` |
+| Story & doc | co-located: `src/app/shared/components/ui/<cat>/ui-<name>/ui-<name>.stories.ts` + `ui-<name>.mdx` | `ui-button.stories.ts` |
+| Import alias | Always `@app/` | `@app/shared/components/ui/...` |
 
-### Composants Métier (domain)
+### Business components (domain)
 
-| Élément | Convention | Exemple |
+| Element | Convention | Example |
 |---|---|---|
-| Sélecteur Angular | `<prefix>-<nom>` | `ds-button-critical` |
-| Classe TypeScript | `<Prefix><Nom>` | `DsButtonCritical` |
-| Fichier | `<prefix>-<nom>.ts` | `ds-button-critical.ts` |
+| Angular selector | `<prefix>-<name>` | `ds-button-critical` |
+| TypeScript class | `<Prefix><Name>` | `DsButtonCritical` |
+| File | `<prefix>-<name>.ts` | `ds-button-critical.ts` |
 
-> ⚠️ Le **prefix** est défini par le projet (ex: `ds`, `myapp`, `crm`). Il n'est pas fixé dans
-> le starter — demander au projet avant de créer un composant métier. Les composants `domain/`
-> **instancient** des composants `ui/`, ils ne recopient jamais leur style.
+> ⚠️ The **prefix** is defined by the project (e.g. `ds`, `myapp`, `crm`). It is not fixed in
+> the starter — ask the project before creating a business component. `domain/` components
+> **instantiate** `ui/` components, they never copy their style.
 
 ---
 
-## Règles de code non-négociables
+## Non-negotiable code rules
 
-### Angular Signals — toujours
+### Angular Signals — always
 
 ```typescript
 // ✅
@@ -112,12 +112,12 @@ name = input.required<string>();
 level = input<'high' | 'low'>('high');
 buttonClick = output<MouseEvent>();
 
-// ❌ interdit
+// ❌ forbidden
 @Input() label: string;
 @Output() click = new EventEmitter();
 ```
 
-### Templates — invoquer les inputs
+### Templates — invoke the inputs
 
 ```html
 <!-- ✅ -->
@@ -127,23 +127,23 @@ buttonClick = output<MouseEvent>();
 [label]="label"
 ```
 
-### CSS / SCSS — tokens & structure (pas de BEM)
+### CSS / SCSS — tokens & structure (no BEM)
 
-- **Tokens uniquement** : jamais de couleur/espacement/radius en dur. S'adapter au light/dark.
-- **Naming** : racine `.ui-<nom>` ; sous-élément `&-<part>` (→ `.ui-button-icon`) ; modificateur `&._<modifier>` (→ `._small`, `._high`).
-- **États interactifs** (`hover`/`focus`/`active`/`disabled`) : pseudo-classes CSS via les tokens d'état (ex. `--actions-high-surface-hover`), **jamais** des classes modifier ni des props Angular.
-- **Ordre des déclarations** : Layout → Metrics → Couleurs → Style → Interaction.
+- **Tokens only**: never hardcode a color/spacing/radius. Adapt to light/dark.
+- **Naming**: root `.ui-<name>`; sub-element `&-<part>` (→ `.ui-button-icon`); modifier `&._<modifier>` (→ `._small`, `._high`).
+- **Interactive states** (`hover`/`focus`/`active`/`disabled`): CSS pseudo-classes via the state tokens (e.g. `--actions-high-surface-hover`), **never** modifier classes or Angular props.
+- **Declaration order**: Layout → Metrics → Colors → Style → Interaction.
 
 ```scss
 /* ✅ */
 .ui-button {
   display: flex;                                 /* Layout */
   padding: var(--units-sm);                      /* Metrics */
-  color: var(--global-high-content-default);     /* Couleurs */
+  color: var(--global-high-content-default);     /* Colors */
   cursor: pointer;                               /* Interaction */
 
   &-icon { … }        // → .ui-button-icon
-  &._small { … }      // modificateur
+  &._small { … }      // modifier
 
   &:hover { background: var(--actions-high-surface-hover); }
 }
@@ -152,139 +152,147 @@ buttonClick = output<MouseEvent>();
 color: #333;
 ```
 
-> Nommage des variables générées : `--primitives-*`, `--units-*` / `--radius-*` / `--stroke-*` /
-> `--shadow-*` (metrics, **sans préfixe `metrics-`**), sémantiques sans préfixe
+> Generated variable naming: `--primitives-*`, `--units-*` / `--radius-*` / `--stroke-*` /
+> `--shadow-*` (metrics, **without the `metrics-` prefix**), semantics without prefix
 > (`--actions-high-surface-default`), `--fontfamily-*`, `--transition-*`.
 
-### Commentaires SASS (à respecter en génération IA)
+### SASS comments (to respect in AI generation)
 
-Rester **sobre** : le code se suffit à lui-même, on ne commente que le **non-évident** (recette,
-piège, point d'extension). Pas de paraphrase de ce que fait la ligne suivante.
+Stay **restrained**: the code speaks for itself, only comment the **non-obvious** (recipe,
+pitfall, extension point). No paraphrasing of what the next line does.
 
-- **En-tête de fichier** — bloc encadré, 1 ligne de titre + éventuellement 1 à 3 lignes de note :
+- **File header** — framed block, 1 title line + optionally 1 to 3 note lines:
   ```scss
   // =====================================================================
-  // <nom> : <rôle en une ligne>.
+  // <name> : <one-line role>.
   //
-  // <note optionnelle, terse — mécanisme / extension uniquement>
+  // <optional note, terse — mechanism / extension only>
   // =====================================================================
   ```
-  Composants : `<nom> : co-located styles. All values come from design tokens.`
-- **En-ligne** — pour flaguer un choix non-évident, en fin de ligne (`// …`) ; jamais pour décrire l'évident.
-- **Sections** — séparateurs courts `// --- <Titre> ---` pour découper un fichier long.
-- **Mixins/fonctions** (partials `src/styles/src/utils/`) — 1 à 2 lignes `///` : rôle + exemple d'appel. Pas de tartine.
-- **Langue** : commentaires en **anglais**… **sauf** les `///` de config d'un composant (ci-dessous), qui sont publiés dans la doc et donc en français.
-- **Jamais de référence à Figma** : garder l'intention (« agrandi pour la lisibilité »), pas la provenance (« Figma 3px »). Le `.scss` doit se lire sans la maquette.
+  Components: `<name> : co-located styles. All values come from design tokens.`
+- **Inline** — to flag a non-obvious choice, at end of line (`// …`); never to describe the obvious.
+- **Sections** — short separators `// --- <Title> ---` to break up a long file.
+- **Mixins/functions** (partials in `src/styles/src/utils/`) — 1 to 2 `///` lines: role + call example. No walls of text.
+- **Language**: comments in **English**… **except** a component's config `///` comments (below), which are published in the docs and therefore in French.
+- **Never reference Figma**: keep the intent ("enlarged for readability"), not the origin ("Figma 3px"). The `.scss` must read without the mockup.
 
-#### `///` sur une variable de config = la doc publiée
+#### A `///` on a config variable = the published doc
 
-Dans un `.scss` **de composant**, un `///` sur une déclaration (`$var` ou custom property) est le
-**contrat public** : `npm run docs:config` le lit et la section « Theming » de la doc l'affiche.
-`//` reste la note interne, invisible dans la doc. (Le `///` des mixins/fonctions dans
-`src/styles/src/utils/` n'est jamais publié : le générateur ne scanne que les composants.)
+In a **component** `.scss`, a `///` on a declaration (`$var` or custom property) is the
+**public contract**: `npm run docs:config` reads it and the doc's "Theming" section displays it.
+`//` remains the internal note, invisible in the doc. (The `///` on mixins/functions in
+`src/styles/src/utils/` is never published: the generator only scans components.)
 
-Le `///` se met **en fin de déclaration**, aligné verticalement sur son groupe visuel (les lignes
-vides séparent les groupes) :
+The `///` goes **at the end of the declaration**, vertically aligned with its visual group (blank
+lines separate groups):
 
 ```scss
 $card-padding: var(--units-lg);       /// Inset du corps.
 $card-radius: var(--radius-md);       /// Rayon des coins.
 ```
 
-- **Aucune valeur résolue dans un rôle** (`(12px)`) : la doc la mesure au runtime, dans le thème, la
-  marque et le viewport actifs — une valeur écrite à la main devient fausse dès qu'un projet rebinde
-  la variable.
-- Décrire le **rôle** seulement : le binding et le passage par `ui-config` sont déduits.
-- Une **map multi-lignes** est la seule exception : son `///` va sur la ligne au-dessus.
-- Une **custom property** n'est publique que si elle porte un `///`, posé là où le hook vit
-  (déclaration, ou lecture avec fallback `var(--ui-x, <défaut>)`) — jamais sur un override interne
-  de mode sombre, sinon la doc affiche la mauvaise valeur par défaut.
-- Toute variable de config doit avoir son `///` : `npm run docs:config` compte les manquantes.
+- **Never a resolved value in a role** (`(12px)`): the doc measures it at runtime, in the active
+  theme, brand and viewport — a hand-written value goes stale as soon as a project rebinds the
+  variable.
+- Describe the **role** only: the binding and the pass-through via `ui-config` are inferred.
+- A **multi-line map** is the only exception: its `///` goes on the line above.
+- A **custom property** is only public if it carries a `///`, placed where the hook lives
+  (declaration, or a fallback read `var(--ui-x, <default>)`) — never on an internal dark-mode
+  override, otherwise the doc shows the wrong default value.
+- Every config variable must have its `///`: `npm run docs:config` counts the missing ones.
 
-### Constantes structurelles partagées — `ui-config`
+### Shared structural constants — `ui-config`
 
-Les valeurs structurelles communes aux composants (largeur du focus ring, taille des contrôles
-de formulaire, recette de transition…) vivent dans **`src/styles/src/settings/_ui-config.scss`**
-(exposé par `@use 'utils'`), en 3 niveaux : global UI → catégorie (`$form-*` / `$action-*`) →
-composant.
+Structural values common to components (focus ring width, form control size,
+transition recipe…) live in **`src/styles/src/settings/_ui-config.scss`**
+(exposed via `@use 'utils'`), in 3 levels: global UI → category (`$form-*` / `$action-*`) →
+component.
 
 ```scss
-// Dans un composant : consommer la valeur de catégorie via une variable LOCALE.
-$focus-ring-width: utils.$form-focus-ring-width; // ← remplacer la valeur ici pour
-                                                 //    ajuster CE composant uniquement
+// In a component: consume the category value via a LOCAL variable.
+$focus-ring-width: utils.$form-focus-ring-width; // ← replace the value here to
+                                                 //    adjust THIS component only
 ```
 
-- Changer une valeur dans `_ui-config.scss` = tout le kit suit d'un coup.
-- Une nouvelle valeur partagée par ≥ 2 composants → la remonter dans `ui-config` (niveau
-  catégorie si propre à forms/actions, global sinon). Une valeur mono-composant reste locale.
-- Transitions d'état : `@include utils.control-transition(background-color, border-color, …)`.
-- `ui-config` porte des **choix de tokens** (structure) ; les couleurs thémables restent des
-  design tokens runtime — ne jamais y mettre une couleur.
+- Changing a value in `_ui-config.scss` = the whole kit follows at once.
+- A new value shared by ≥ 2 components → promote it into `ui-config` (category level
+  if specific to forms/actions, global otherwise). A single-component value stays local.
+- State transitions: `@include utils.control-transition(background-color, border-color, …)`.
+- `ui-config` carries **token choices** (structure); themeable colors remain runtime
+  design tokens — never put a color in it.
 
-### Thème, marque, modes (runtime)
+### Theme, brand, modes (runtime)
 
-| Dimension | Attribut sur `<html>` | Service |
+| Dimension | Attribute on `<html>` | Service |
 |---|---|---|
-| Clair / Sombre | `[data-theme='dark']` (light = défaut) | `ThemeService` (`src/app/core/service/theme.service.ts`) |
-| Marque | `[data-brand='brand2'\|'brand3']` (brand1 = défaut) | `BrandService` (dérivé du sous-domaine) |
-| Viewport | `@media (min-width: …)` | — (tokens responsive) |
+| Light / Dark | `[data-theme='dark']` (light = default) | `ThemeService` (`src/app/core/service/theme.service.ts`) |
+| Brand | `[data-brand='brand2'\|'brand3']` (brand1 = default) | `BrandService` (derived from the subdomain) |
+| Viewport | `@media (min-width: …)` | — (responsive tokens) |
 
-> ❌ Les classes `.light-mode` / `.dark-mode` n'existent plus. Voir Storybook →
-> `Spécifications / Thème & Système de Tokens` pour l'API des services.
+> ❌ The `.light-mode` / `.dark-mode` classes no longer exist. See Storybook →
+> `Spécifications / Thème & Système de Tokens` for the services API.
 
-### Accessibilité
+### Accessibility
 
-- `<button>` / `<a>` natifs — pas de `<div>` cliquable ; `disabled` natif.
-- `aria-label` obligatoire en icon-only ; icônes décoratives en `aria-hidden`.
-- `:focus-visible` toujours visible et distinct du hover.
+- Native `<button>` / `<a>` — no clickable `<div>`; native `disabled`.
+- `aria-label` mandatory for icon-only; decorative icons with `aria-hidden`.
+- `:focus-visible` always visible and distinct from hover.
 
 ### Documentation (MDX)
 
-- **Tableaux** : toujours en balises HTML (`<table>`, `<tr>`, `<td>`) plutôt qu'en Markdown natif dans les `.mdx`, pour garantir rendu et contrôle CSS.
-- **Section « Theming »** : jamais écrite à la main. `<ConfigTable of="ui-<nom>" />`
-  (`storybook/blocks/config-table.js`), alimenté par `npm run docs:config` depuis les `///` du
-  `.scss`. Elle est **toujours la dernière section** de la page. Prose facultative avant la table
-  pour ce qu'elle ne dit pas (architecture, renvoi vers un shell type `ui-field`) ; pas de
-  paragraphe expliquant comment lire la table — c'est dans l'infobulle du bloc. Plusieurs
-  composants sur une page → un `label` par table.
+- **Tables**: always in HTML tags (`<table>`, `<tr>`, `<td>`) rather than native Markdown in `.mdx` files, to guarantee rendering and CSS control.
+- **"Theming" section**: never written by hand. `<ConfigTable of="ui-<name>" />`
+  (`storybook/blocks/config-table.js`), fed by `npm run docs:config` from the `.scss`'s `///`
+  comments. It is **always the last section** of the page. Optional prose before the table
+  for whatever it doesn't say (architecture, pointer to a shell like `ui-field`); no
+  paragraph explaining how to read the table — that's in the block's tooltip. Several
+  components on one page → one `label` per table.
 
 ---
 
 ## Workflows
 
-### Modifier un composant ui-* existant
+### Modify an existing ui-* component
 
-1. Lire `src/app/shared/components/ui/<cat>/ui-<nom>/ui-<nom>.stories.ts` → identifier `argTypes`
-2. Lire `src/app/shared/components/ui/<cat>/ui-<nom>/` → vérifier types et structure
-3. Modifier `.ts`, `.html`, `.scss` (tokens uniquement) — toute variable de config ajoutée porte son `///`
-4. Mettre à jour la story + le `.mdx` si l'API change ; `npm run docs:config` si la config SCSS a bougé
-5. Vérifier light + dark + les 3 marques (Storybook → `Foundations / Colors` pour les tokens)
+1. Read `src/app/shared/components/ui/<cat>/ui-<name>/ui-<name>.stories.ts` → identify `argTypes`
+2. Read `src/app/shared/components/ui/<cat>/ui-<name>/` → check types and structure
+3. Modify `.ts`, `.html`, `.scss` (tokens only) — any added config variable carries its `///`
+4. Update the story + the `.mdx` if the API changes; `npm run docs:config` if the SCSS config moved
+5. Verify light + dark + the 3 brands (Storybook → `Foundations / Colors` for the tokens)
 
-### Créer un composant ui-* (générique)
+### Create a ui-* component (generic)
 
-1. Vérifier `components-index.md` (roadmap, nom prévu)
-2. Recopier le **patron `ui-button`** : structure fichiers, signals + `computed()` pour les classes, SCSS co-localisé
-3. Créer la story + le `.mdx` **co-localisés** dans le dossier du composant `src/app/shared/components/ui/<cat>/ui-<nom>/` (doc globale uniquement → `storybook/docs/`)
-4. Cocher le composant dans `components-index.md`
+1. Check `components-index.md` (roadmap, planned name)
+2. Replicate the **`ui-button` pattern**: file structure, signals + `computed()` for the classes, co-located SCSS
+3. Create the story + the `.mdx` **co-located** in the component folder `src/app/shared/components/ui/<cat>/ui-<name>/` (global doc only → `storybook/docs/`)
+4. Check off the component in `components-index.md`
 
-### Créer un composant métier (domain)
+### Create a business component (domain)
 
-Comme un `ui-*`, mais : préfixe projet, dossier `domain/`, et **composition d'instances `ui-*`** (jamais de copie de style).
+Like a `ui-*`, but: project prefix, `domain/` folder, and **composition of `ui-*` instances** (never style copying).
 
-### Ajouter / modifier un token
+### Add / modify a token
 
-1. Éditer `src/design-tokens/*.json` (les sémantiques référencent les primitives ; jamais de primitive directement dans un composant)
-2. `npm run tokens:build` (ajout de collection/mode → éditer `tokens.config.json`, pas le script)
-3. Vérifier dans Storybook `Foundations / Colors`
+1. Edit `src/design-tokens/*.json` (semantics reference primitives; never a primitive directly in a component)
+2. `npm run tokens:build` (adding a collection/mode → edit `tokens.config.json`, not the script)
+3. Verify in Storybook `Foundations / Colors`
 
 ---
 
-## Commandes
+## Versioning & releases
+
+- SemVer adapted to a Design System + branch prefixes (`feat/`, `fix/`, `chore/`, `breaking/`) + release workflow → **`docs/VERSIONING.md`**
+- Every user-visible change adds an entry to root **`CHANGELOG.md`** under `## [Unreleased]` (Keep a Changelog)
+- Commit format (Conventional Commits) and git restrictions → `.claude/rules/git-conventions.md`; commit via the `/git-commit` skill
+
+---
+
+## Commands
 
 ```bash
-npm start                # Lancer Storybook (source de vérité) — alias de npm run storybook
-npm run serve            # Lancer l'app Angular (démo minimale)
-npm run tokens:build     # Régénérer les variables CSS depuis les JSON
-npm run build-storybook  # Build statique de Storybook
+npm start                # Launch Storybook (source of truth) — alias of npm run storybook
+npm run serve            # Launch the Angular app (minimal demo)
+npm run tokens:build     # Regenerate the CSS variables from the JSON
+npm run build-storybook  # Static Storybook build
 npm run lint             # ESLint --fix
 ```

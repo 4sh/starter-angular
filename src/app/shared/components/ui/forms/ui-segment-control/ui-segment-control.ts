@@ -19,7 +19,7 @@ import {
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { BaseControlValueAccessor } from '@app/core/controlValueAccessor/BaseControlValueAccessor';
+import { BaseFieldControl } from '@app/shared/components/ui/forms/base-form-field';
 import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
 
 export type SegmentControlSize = 'default' | 'small';
@@ -91,8 +91,6 @@ interface ThumbMetrics {
   h: number;
 }
 
-let nextUid = 0;
-
 /**
  * ui-segment-control — headless segmented control for choosing one (or, with
  * `multiple`, several) value(s) from a short list of inline buttons.
@@ -140,7 +138,7 @@ let nextUid = 0;
     '(focusout)': 'onFocusOut($event)',
   },
 })
-export class UiSegmentControl<T = unknown> extends BaseControlValueAccessor<SegmentControlValue<T>> {
+export class UiSegmentControl<T = unknown> extends BaseFieldControl<SegmentControlValue<T>> {
   /** Options to display, one button each. Primitives, objects, or `SegmentControlOption`. */
   options = input<readonly (T | SegmentControlOption<T>)[]>([]);
   /** Field name to read a label from, when options are objects. */
@@ -165,16 +163,6 @@ export class UiSegmentControl<T = unknown> extends BaseControlValueAccessor<Segm
   fluid = input(false, { transform: booleanAttribute });
   /** Animate the sliding indicator (honours reduced-motion regardless). */
   motion = input(true, { transform: booleanAttribute });
-  /** Accessible name for the group (required when there is no visible label). */
-  ariaLabel = input<string>();
-  /** id of an external element that labels the group. */
-  ariaLabelledBy = input<string>();
-  /** Disables the whole control. */
-  disabled = input(false, { transform: booleanAttribute });
-  /** Focusable but not editable. */
-  readonly = input(false, { transform: booleanAttribute });
-  /** Forces the error styling (automatic when the attached control is invalid and touched/dirty). */
-  invalid = input(false, { transform: booleanAttribute });
   /** Custom template for a segment's content (receives `{ $implicit, option, selected, index }`). */
   itemTemplate = input<TemplateRef<SegmentControlItemContext<T>>>();
 
@@ -189,16 +177,15 @@ export class UiSegmentControl<T = unknown> extends BaseControlValueAccessor<Segm
   private readonly hostDestroyRef = inject(DestroyRef);
   /** @ignore Native segment buttons (for roving focus + indicator measurement). */
   private readonly optionEls = viewChildren<ElementRef<HTMLButtonElement>>('optionBtn');
-  /** @ignore Current model value (written by the form or by user selection). */
-  private readonly modelValue = signal<SegmentControlValue<T>>(null);
+  /** @ignore Current model value (written by the form or by user selection).
+   * Redeclared over the base signal to keep `null` (not `undefined`) as the empty value. */
+  protected override readonly modelValue = signal<SegmentControlValue<T>>(null);
   /** @ignore Index the roving focus last landed on. */
   private readonly focusedIndex = signal(0);
   /** @ignore Measured geometry of the sliding indicator (null until first measure). */
   protected readonly thumb = signal<ThumbMetrics | null>(null);
   /** @ignore Bumped by the ResizeObserver to re-measure the indicator. */
   private readonly resizeTick = signal(0);
-  /** @ignore */
-  private readonly uid = `ui-segment-control-${nextUid++}`;
 
   constructor() {
     super();
@@ -242,23 +229,19 @@ export class UiSegmentControl<T = unknown> extends BaseControlValueAccessor<Segm
       effect(() => {
         if (!this.ariaLabel() && !this.ariaLabelledBy()) {
           console.warn(
-            '[ui-segment-control] Groupe sans nom accessible : renseignez `ariaLabel` (ou `ariaLabelledBy`).',
+            '[ui-segment-control] Group has no accessible name: provide `ariaLabel` (or `ariaLabelledBy`).',
           );
         }
         const iconOnly = this.normalizedOptions().some((o) => o.icon && !o.label && !o.ariaLabel);
         if (iconOnly) {
           console.warn(
-            '[ui-segment-control] Segment icon-only sans nom accessible : ajoutez `ariaLabel` sur l’option.',
+            '[ui-segment-control] Icon-only segment has no accessible name: add `ariaLabel` on the option.',
           );
         }
       });
     }
   }
 
-  /** @ignore Input disabled OR control disabled (form API). */
-  protected readonly isDisabled = computed(() => this.disabled() || this.controlDisabled());
-  /** @ignore Explicit `invalid` input OR invalid control worth surfacing. */
-  protected readonly isInvalid = computed(() => this.invalid() || this.showError());
   /** @ignore Icon size derived from the control size. */
   protected readonly iconSize = computed(() => (this.size() === 'small' ? 'sm' : 'default'));
 
@@ -313,8 +296,9 @@ export class UiSegmentControl<T = unknown> extends BaseControlValueAccessor<Segm
     return opts.findIndex((o) => !o.disabled);
   });
 
-  writeValue(value: SegmentControlValue<T>): void {
-    this.modelValue.set(value);
+  /** @ignore */
+  protected override uidPrefix(): string {
+    return 'ui-segment-control';
   }
 
   /** Move focus to the group's current tab stop. */

@@ -15,8 +15,8 @@
       </div>
     }
 
-    <!-- Pattern menu ARIA : clavier délégué au conteneur role="menu", le focus
-         vit sur les items (roving tabindex). -->
+    <!-- ARIA menu pattern: keyboard delegated to the role="menu" container, focus
+         lives on the items (roving tabindex). -->
     <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
     <ul
       class="ui-menu-list"
@@ -136,7 +136,7 @@
             [cdkConnectedOverlayOpen]="openFlyoutKey() === node.key"
             [cdkConnectedOverlayPositions]="flyoutPositions"
           >
-            <!-- Flyout : clavier délégué au panneau, le focus vit sur les items. -->
+            <!-- Flyout: keyboard delegated to the panel, focus lives on the items. -->
             <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
             <div
               class="ui-menu-flyout"

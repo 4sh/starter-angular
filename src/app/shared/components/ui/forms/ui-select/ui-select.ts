@@ -16,9 +16,12 @@ import {
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { ConnectedPosition, OverlayModule } from '@angular/cdk/overlay';
+import { OverlayModule } from '@angular/cdk/overlay';
 import { CdkVirtualScrollViewport, ScrollingModule } from '@angular/cdk/scrolling';
 import { BaseFormField } from '@app/shared/components/ui/forms/base-form-field';
+import { createOptionResolver } from '@app/shared/components/ui/forms/option-resolver';
+import { dropdownOverlayPositions } from '@app/shared/components/ui/forms/overlay-positions';
+import { formatLabel } from '@app/shared/components/ui/forms/format-label';
 import { UiField } from '@app/shared/components/ui/forms/ui-field/ui-field';
 import { UiIcon, UiIconSize } from '@app/shared/components/ui/ui-icon/ui-icon';
 import { UiSpinner } from '@app/shared/components/ui/informative/ui-spinner/ui-spinner';
@@ -296,13 +299,13 @@ export class UiSelect<T = unknown> extends BaseFormField<SelectValue<T>> {
     if (isDevMode()) {
       effect(() => {
         if (!this.label() && !this.ariaLabel() && !this.ariaLabelledBy()) {
-          console.warn('[ui-select] Champ sans nom accessible : renseignez `label`, `ariaLabel` ou `ariaLabelledBy`.');
+          console.warn('[ui-select] Field has no accessible name: provide `label`, `ariaLabel` or `ariaLabelledBy`.');
         }
         if (this.editable() && this.multiple()) {
-          console.warn('[ui-select] `editable` est ignoré en mode `multiple` (saisie libre mono-valeur uniquement).');
+          console.warn('[ui-select] `editable` is ignored in `multiple` mode (free-text entry is single-value only).');
         }
         if (this.checkbox() && !this.multiple()) {
-          console.warn('[ui-select] `checkbox` est prévu pour le mode `multiple` (une case par option).');
+          console.warn('[ui-select] `checkbox` is meant for `multiple` mode (one checkbox per option).');
         }
       });
     }
@@ -431,7 +434,7 @@ export class UiSelect<T = unknown> extends BaseFormField<SelectValue<T>> {
 
   /** @ignore Rendered overflow indicator (e.g. `(+2 autres)`). */
   protected readonly overflowText = computed(() =>
-    this.overflowLabel().replace('{0}', String(this.overflowCount())),
+    formatLabel(this.overflowLabel(), this.overflowCount()),
   );
 
   /** @ignore Contexts handed to the `#selectedItem` template (one per displayed selection). */
@@ -462,11 +465,7 @@ export class UiSelect<T = unknown> extends BaseFormField<SelectValue<T>> {
   });
 
   /** @ignore Below the trigger, flipping above when `autoFlip` and space is lacking. */
-  protected readonly overlayPositions = computed<ConnectedPosition[]>(() => {
-    const below: ConnectedPosition = { originX: 'start', originY: 'bottom', overlayX: 'start', overlayY: 'top', offsetY: 8 };
-    const above: ConnectedPosition = { originX: 'start', originY: 'top', overlayX: 'start', overlayY: 'bottom', offsetY: -8 };
-    return this.autoFlip() ? [below, above] : [below];
-  });
+  protected readonly overlayPositions = computed(() => dropdownOverlayPositions(this.autoFlip()));
 
   /** @ignore Concrete viewport height (px) for the virtual scroller. */
   protected readonly viewportHeight = computed(() => {
@@ -581,7 +580,8 @@ export class UiSelect<T = unknown> extends BaseFormField<SelectValue<T>> {
   protected onEditableInput(event: Event): void {
     const value = (event.target as HTMLInputElement).value;
     this.editableQuery.set(value);
-    this.commit(value as SelectValue<T>);
+    // An emptied input commits `null` (same normalization as `clear()`).
+    this.commit(value === '' ? null : (value as SelectValue<T>));
     if (!this.panelOpen()) this.open();
     // Re-anchor the visual focus on the first matching option.
     this.focusedIndex.set(this.visibleOptions().findIndex((o) => !o.entry.disabled));
@@ -871,53 +871,37 @@ export class UiSelect<T = unknown> extends BaseFormField<SelectValue<T>> {
 
   // --- Option resolution ----------------------------------------------------------
 
-  /** @ignore */
-  private toEntry(option: unknown): SelectEntry {
-    return {
-      value: this.resolveValue(option),
-      label: this.resolveLabel(option) ?? '',
-      disabled: this.resolveDisabled(option),
-      original: option,
-    };
-  }
+  /** @ignore Shared option resolution (see `option-resolver.ts`). */
+  private readonly resolver = createOptionResolver({
+    optionValue: this.optionValue,
+    optionLabel: this.optionLabel,
+    optionDisabled: this.optionDisabled,
+    dataKey: this.dataKey,
+  });
 
   /** @ignore */
-  private isObject(option: unknown): option is Record<string, unknown> {
-    return typeof option === 'object' && option !== null;
+  private toEntry(option: unknown): SelectEntry {
+    return this.resolver.toEntry(option);
   }
 
   /** @ignore Read a (dot-path) field from an object. */
   private getField(target: unknown, path: string | undefined): unknown {
-    if (!path || !this.isObject(target)) return undefined;
-    return path.split('.').reduce<unknown>((acc, key) => (this.isObject(acc) ? acc[key] : undefined), target);
+    return this.resolver.getField(target, path);
   }
 
   /** @ignore */
   private resolveValue(option: unknown): unknown {
-    const field = this.optionValue();
-    if (field && this.isObject(option)) return this.getField(option, field);
-    return option;
+    return this.resolver.resolveValue(option);
   }
 
   /** @ignore */
   private resolveLabel(option: unknown): string | null {
-    const field = this.optionLabel();
-    if (field && this.isObject(option)) return this.asText(this.getField(option, field));
-    if (this.isObject(option) && 'label' in option) return this.asText(option['label']);
-    return this.asText(option);
-  }
-
-  /** @ignore */
-  private resolveDisabled(option: unknown): boolean {
-    const field = this.optionDisabled();
-    if (field && this.isObject(option)) return !!this.getField(option, field);
-    if (this.isObject(option) && 'disabled' in option) return !!option['disabled'];
-    return false;
+    return this.resolver.resolveLabel(option);
   }
 
   /** @ignore */
   private asText(value: unknown): string | null {
-    return value === null || value === undefined ? null : String(value);
+    return this.resolver.asText(value);
   }
 
   /** @ignore Whether a resolved value is part of the current model. */
@@ -927,8 +911,6 @@ export class UiSelect<T = unknown> extends BaseFormField<SelectValue<T>> {
 
   /** @ignore Value equality — by `dataKey` for objects, strict otherwise. */
   private equals(a: unknown, b: unknown): boolean {
-    const key = this.dataKey();
-    if (key && this.isObject(a) && this.isObject(b)) return a[key] === b[key];
-    return a === b;
+    return this.resolver.equals(a, b);
   }
 }

@@ -48,6 +48,12 @@ $input-min-width: utils.rem-calc(80); /// Largeur minimale de la zone de saisie 
     min-width: 0;
   }
 
+  // Accessibility wrapper only (role="listbox" around the tags): no box of its
+  // own so tags and input keep flowing together on the same wrapped lines.
+  &-list {
+    display: contents;
+  }
+
   // --- Tag (role=option, roving focus) --------------------------------
   // The tag IS the focusable option: a `ui-chip` host by default, or a bare
   // wrapper around a custom `#item` template. The visual (fill, padding,

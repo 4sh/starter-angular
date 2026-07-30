@@ -2,6 +2,7 @@ import { booleanAttribute, Component, computed, input, output } from '@angular/c
 import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
 import { UiSpinner } from '@app/shared/components/ui/informative/ui-spinner/ui-spinner';
 import { formatFileSize, UiUploadFile } from '@app/shared/components/ui/forms/ui-file-upload/ui-file-upload.model';
+import { formatLabel } from '@app/shared/components/ui/forms/format-label';
 
 export type UiFileUploadListSize = 'default' | 'small';
 
@@ -30,12 +31,24 @@ export class UiFileUploadList {
   removable = input(true, { transform: booleanAttribute });
   /** Accessible label for the remove button. */
   removeLabel = input<string>('Supprimer le fichier');
+  /** Fallback error text when the file carries no message. */
+  failedLabel = input<string>('Échec');
+  /** Accessible name of the upload spinner — `{0}` is the file name. */
+  uploadingLabel = input<string>('Téléversement de {0}');
+  /** Accessible name of the progress bar — `{0}` is the file name. */
+  progressLabel = input<string>('Progression du téléversement de {0}');
 
   /** Emitted when the remove button is activated. */
   remove = output<UiUploadFile>();
 
   /** @ignore Formatted size (e.g. "2.5 MB"). */
   protected readonly sizeLabel = computed(() => formatFileSize(this.file().size));
+
+  /** @ignore Accessible name of the upload spinner (`{0}` filled with the file name). */
+  protected readonly uploadingAriaLabel = computed(() => formatLabel(this.uploadingLabel(), this.file().name));
+
+  /** @ignore Accessible name of the progress bar (`{0}` filled with the file name). */
+  protected readonly progressAriaLabel = computed(() => formatLabel(this.progressLabel(), this.file().name));
 
   /** @ignore Uploading in progress → show the spinner + progress bar. */
   protected readonly isUploading = computed(() => this.file().status === 'uploading');
@@ -49,7 +62,7 @@ export class UiFileUploadList {
   /** @ignore Secondary line: error message, else size (+ status hint). */
   protected readonly infoLabel = computed(() => {
     const f = this.file();
-    if (f.status === 'error') return f.error ?? 'Échec';
+    if (f.status === 'error') return f.error ?? this.failedLabel();
     if (f.status === 'uploading') return `${this.sizeLabel()} · ${Math.round(f.progress)} %`;
     return this.sizeLabel();
   });

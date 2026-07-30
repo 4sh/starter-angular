@@ -25,7 +25,7 @@ export class UiBadge {
     if (isDevMode()) {
       effect(() => {
         if (this.isIconOnly() && !this.ariaLabel()) {
-          console.warn('[ui-badge] Badge icon-only sans nom accessible : renseignez `ariaLabel`.');
+          console.warn('[ui-badge] Icon-only badge has no accessible name: provide `ariaLabel`.');
         }
       });
     }
@@ -43,7 +43,7 @@ export class UiBadge {
   /** @ignore Icon only (no text). */
   protected readonly isIconOnly = computed(() => this.hasIcon() && !this.hasText());
 
-  /** @ignore Point : ni texte ni icône. */
+  /** @ignore Dot: no text and no icon. */
   protected readonly isDot = computed(() => !this.hasIcon() && !this.hasText());
 
   /** @ignore Bullet: Neither text nor icon. */

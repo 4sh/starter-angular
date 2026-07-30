@@ -1,45 +1,43 @@
 ---
 name: verify
-description: Vérifie les changements de ce design system en pilotant Storybook headless (build statique + Playwright/Chrome système) et en observant le rendu réel des stories.
+description: Verifies changes to this design system by driving headless Storybook (static build + Playwright/system Chrome) and observing the actual rendering of the stories.
 ---
 
-# Vérifier un changement (Storybook headless)
+# Verifying a change (headless Storybook)
 
-Surface du projet : **Storybook** (pas de page app significative ; `ng serve` ne montre presque rien).
+Project surface: **Storybook** (no meaningful app page; `ng serve` shows almost nothing).
 
-## Recette qui marche
+## Recipe that works
 
 ```bash
-npm run build-storybook          # AOT de toutes les stories → storybook-static/
+npm run build-storybook          # AOT of all stories → storybook-static/
 cd storybook-static && python3 -m http.server 6007 &
 ```
 
-Piloter avec Playwright + Chrome système (pas de download de browser) :
+Drive with Playwright + system Chrome (no browser download):
 
 ```js
-// npm i playwright dans un dossier temporaire (ex: /tmp/sb-verify) — pas dans le repo
+// npm i playwright in a temporary directory (e.g. /tmp/sb-verify) — not in the repo
 import { chromium } from 'playwright';
 const browser = await chromium.launch({ channel: 'chrome', headless: true });
 ```
 
-- URL d'une story seule : `http://localhost:6007/iframe.html?id=<story-id>`
-- IDs de stories : `curl -s localhost:6007/index.json` (`entries`), ex.
+- URL of a single story: `http://localhost:6007/iframe.html?id=<story-id>`
+- Story IDs: `curl -s localhost:6007/index.json` (`entries`), e.g.
   `components-ui-forms-ui-input--signal-forms` (title `Components/ui/forms/ui-input` → kebab).
 
-## Pièges connus
+## Known pitfalls
 
-- Lire le contenu d'une story via `#storybook-root …` : un `locator('code')` nu peut matcher
-  un élément vide hors story (template d'erreur SB).
-- Certaines stories ont des boutons **cachés** en premier dans le DOM → utiliser `button:visible`.
-- Bruit console dans **chaque** story : `NG04002: 'iframe.html'` (le Router de l'app ne matche
-  pas l'URL iframe de Storybook) — préexistant, à filtrer des captures.
-- `rtk grep` (hook) rejette les flags courts isolés et ignore parfois les `.md` → utiliser
-  `/usr/bin/grep` pour les balayages.
+- Reading a story's content via `#storybook-root …`: a bare `locator('code')` can match
+  an empty element outside the story (SB error template).
+- Some stories have **hidden** buttons first in the DOM → use `button:visible`.
+- Console noise in **every** story: `NG04002: 'iframe.html'` (the app's Router does not match
+  Storybook's iframe URL) — pre-existing, filter it out of captures.
 
-## Quoi piloter selon le changement
+## What to drive depending on the change
 
-- Composant de formulaire : story `--signal-forms` / `--basic`, taper/cliquer, lire la ligne
-  `value = … · valid = …` rendue par les démos, vérifier `aria-invalid` sur le champ.
-- Overlays (modal/drawer/select/datepicker) : ouvrir, vérifier `[role="dialog"]`/options,
-  fermer par `Escape` — sensible au zoneless.
-- Screenshot de la story en évidence (`page.screenshot`).
+- Form component: `--signal-forms` / `--basic` story, type/click, read the
+  `value = … · valid = …` line rendered by the demos, check `aria-invalid` on the field.
+- Overlays (modal/drawer/select/datepicker): open, check `[role="dialog"]`/options,
+  close with `Escape` — sensitive to zoneless.
+- Screenshot of the highlighted story (`page.screenshot`).

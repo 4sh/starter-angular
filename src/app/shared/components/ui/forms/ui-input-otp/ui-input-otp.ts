@@ -17,7 +17,7 @@ import {
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { BaseControlValueAccessor } from '@app/core/controlValueAccessor/BaseControlValueAccessor';
+import { BaseFieldControl } from '@app/shared/components/ui/forms/base-form-field';
 
 /** Size of the OTP cells. `default` is the base. */
 export type InputOtpSize = 'small' | 'default' | 'large';
@@ -50,15 +50,13 @@ export interface InputOtpCellContext {
   tabindex: number;
 }
 
-let nextUid = 0;
-
 /**
  * ui-input-otp — headless one-time-password field: a row of single-character
  * cells backing a single string value.
  *
  * Each cell is a real native `<input maxlength="1">`; the group carries
  * `role="group"` and a **roving tabindex** so `Tab` enters/leaves the field as a
- * whole while `←`/`→` move between cells (`Retour arrière` clears and steps
+ * whole while `←`/`→` move between cells (`Backspace` clears and steps
  * back). Typing auto-advances, and pasting a code distributes it across the
  * cells. Interactive states (hover/focus/disabled) are pure CSS driven by the
  * `form.*` design tokens.
@@ -98,7 +96,7 @@ let nextUid = 0;
     '(focusout)': 'onFocusOut($event)',
   },
 })
-export class UiInputOtp extends BaseControlValueAccessor<string> {
+export class UiInputOtp extends BaseFieldControl<string> {
   /** Number of cells (characters) to enter. */
   length = input(4, { transform: numberAttribute });
   /** Hide the characters (renders `type="password"`). */
@@ -107,20 +105,10 @@ export class UiInputOtp extends BaseControlValueAccessor<string> {
   integerOnly = input(false, { transform: booleanAttribute });
   /** Cell size. */
   size = input<InputOtpSize>('default');
-  /** Accessible name for the group (required — no visible label). */
-  ariaLabel = input<string>();
-  /** id of an external element that labels the group. */
-  ariaLabelledBy = input<string>();
-  /** name forwarded to the native inputs. */
-  name = input<string>();
+  /** Accessible-name prefix of each cell ("<prefix> N"). Falls back to `ariaLabel`. */
+  charAriaLabel = input<string>('Caractère');
   /** Focus the first cell on init. */
   autofocus = input(false, { transform: booleanAttribute });
-  /** Disables the whole control (native attribute on every cell). */
-  disabled = input(false, { transform: booleanAttribute });
-  /** Read-only cells (focusable, not editable). */
-  readonly = input(false, { transform: booleanAttribute });
-  /** Forces the error styling (automatic when the attached control is invalid and touched/dirty). */
-  invalid = input(false, { transform: booleanAttribute });
 
   /** Emitted with the joined value on every change. */
   valueChange = output<string>();
@@ -136,8 +124,6 @@ export class UiInputOtp extends BaseControlValueAccessor<string> {
   private readonly tokens = signal<string[]>([]);
   /** @ignore Cell that owns the group's single tab stop (roving tabindex). */
   private readonly focusedIndex = signal(0);
-  /** @ignore */
-  private readonly uid = `ui-input-otp-${nextUid++}`;
 
   constructor() {
     super();
@@ -152,17 +138,13 @@ export class UiInputOtp extends BaseControlValueAccessor<string> {
       effect(() => {
         if (!this.ariaLabel() && !this.ariaLabelledBy()) {
           console.warn(
-            '[ui-input-otp] Groupe sans nom accessible : renseignez `ariaLabel` (ou `ariaLabelledBy`).',
+            '[ui-input-otp] Group has no accessible name: provide `ariaLabel` (or `ariaLabelledBy`).',
           );
         }
       });
     }
   }
 
-  /** @ignore Input disabled OR control disabled (form API). */
-  protected readonly isDisabled = computed(() => this.disabled() || this.controlDisabled());
-  /** @ignore Explicit `invalid` input OR invalid control worth surfacing. */
-  protected readonly isInvalid = computed(() => this.invalid() || this.showError());
   /** @ignore Native input type (masked → password). */
   protected readonly inputType = computed(() => (this.mask() ? 'password' : 'text'));
   /** @ignore Hint for the on-screen keyboard. */
@@ -178,8 +160,13 @@ export class UiInputOtp extends BaseControlValueAccessor<string> {
     }));
   });
 
-  writeValue(value: string | number | null): void {
+  override writeValue(value: string | number | null): void {
     this.tokens.set(this.toTokens(value));
+  }
+
+  /** @ignore */
+  protected override uidPrefix(): string {
+    return 'ui-input-otp';
   }
 
   /** Move focus to the first cell. */

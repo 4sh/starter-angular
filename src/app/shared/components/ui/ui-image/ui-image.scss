@@ -1,12 +1,30 @@
 :host {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.inline-svg-wrapper {
-    display: flex;
+.ui-image {
+  object-fit: contain;
+}
+
+.ui-image-svg {
+  display: flex;
+  width: 100%;
+  // Lets the SVG take the size of the wrapper
+  ::ng-deep svg {
     width: 100%;
-    /* Permet au SVG de prendre la taille du wrapper */
-    ::ng-deep svg { width: 100%; height: 100%; }
+    height: 100%;
+  }
+}
+
+.ui-image-placeholder {
+  display: flex; /* Layout */
+  align-items: center;
+  justify-content: center;
+  min-width: var(--units-xl); /* Metrics — visible even when unsized */
+  min-height: var(--units-xl);
+  border-radius: var(--radius-default);
+  background: var(--global-low-surface-default); /* Colors — adapts light/dark via tokens */
+  color: var(--global-low-content-default);
 }

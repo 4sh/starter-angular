@@ -19,6 +19,7 @@ import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
 import { UiButton } from '@app/shared/components/ui/actions/ui-button/ui-button';
 import { UiLink } from '@app/shared/components/ui/actions/ui-link/ui-link';
 import { UiFileUploadList } from '@app/shared/components/ui/forms/ui-file-upload-list/ui-file-upload-list';
+import { formatLabel } from '@app/shared/components/ui/forms/format-label';
 import {
   isFileTypeAccepted,
   isImageFile,
@@ -91,18 +92,32 @@ export class UiFileUpload {
   showFileList = input(true, { transform: booleanAttribute });
   /** Show the Upload/Cancel toolbar buttons (drag mode). */
   showControls = input(true, { transform: booleanAttribute });
-  browseLabel = input<string>('Browse');
+  browseLabel = input<string>('Parcourir');
   /** Placeholder shown in field mode before any selection. */
-  chooseLabel = input<string>('Choose file...');
-  uploadLabel = input<string>('Upload');
-  cancelLabel = input<string>('Clear');
+  chooseLabel = input<string>('Choisir un fichier…');
+  uploadLabel = input<string>('Téléverser');
+  cancelLabel = input<string>('Effacer');
   /** Drag-zone link + prompt. */
-  dragLinkLabel = input<string>('Click to upload');
-  dragPromptLabel = input<string>('or drag and drop files here');
+  dragLinkLabel = input<string>('Cliquer pour téléverser');
+  dragPromptLabel = input<string>('ou glisser-déposer les fichiers ici');
   /** Small hint under the drag prompt (e.g. "JPG, PNG (max 5 MB)"). */
   hint = input<string>();
   /** Accessible name for the whole control. */
-  ariaLabel = input<string>('File upload');
+  ariaLabel = input<string>('Téléversement de fichiers');
+  /** Multi-file summary in field mode — `{0}` is replaced by the file count. */
+  filesSummaryLabel = input<string>('{0} fichiers');
+  /** Rejection message: file type not accepted — `{0}` is the file name. */
+  invalidTypeMessage = input<string>('Type de fichier non autorisé : {0}');
+  /** Rejection message: file too large — `{0}` is the file name. */
+  invalidSizeMessage = input<string>('Fichier trop volumineux : {0}');
+  /** Rejection message: `fileLimit` reached — `{0}` is the limit. */
+  limitReachedMessage = input<string>('Nombre maximum de fichiers atteint ({0}).');
+  /** Error shown when an upload fails without a server message. */
+  uploadErrorMessage = input<string>('Échec du téléversement');
+  /** Error shown when the upload request fails at the network level. */
+  networkErrorMessage = input<string>('Erreur réseau');
+  /** Error shown on a non-2xx response — `{0}` is the HTTP status. */
+  httpErrorMessage = input<string>('Erreur {0}');
 
   // --- Templates (drag/advanced) --------------------------------------
   /** Overrides a single file row (context: `{ $implicit: UiUploadFile, remove }`). */
@@ -159,7 +174,7 @@ export class UiFileUpload {
     if (isDevMode()) {
       effect(() => {
         if (!this.ariaLabel()) {
-          console.warn('[ui-file-upload] Renseignez `ariaLabel` pour nommer le contrôle.');
+          console.warn('[ui-file-upload] Provide `ariaLabel` to name the control.');
         }
       });
     }
@@ -174,7 +189,7 @@ export class UiFileUpload {
     const files = this.selection();
     if (!files.length) return this.chooseLabel();
     if (files.length === 1) return files[0].name;
-    return `${files.length} fichiers`;
+    return formatLabel(this.filesSummaryLabel(), files.length);
   });
   /** @ignore */
   protected readonly canUpload = computed(
@@ -289,21 +304,21 @@ export class UiFileUpload {
     const maxSize = this.maxFileSize();
 
     for (const file of incoming) {
-      // Enforce single-file selection when `multiple` is off.
-      if (!this.multiple() && (this.selection().length + added.length) >= 1) break;
+      // Single-file mode: the new file replaces the current one, so only cap the incoming batch.
+      if (!this.multiple() && added.length >= 1) break;
 
       const item = this.toUploadFile(file);
 
       if (!isFileTypeAccepted(file, this.accept())) {
-        this.fail(item, 'type', `Type de fichier non autorisé : ${file.name}`, newMessages);
+        this.fail(item, 'type', formatLabel(this.invalidTypeMessage(), file.name), newMessages);
         continue;
       }
       if (maxSize != null && file.size > maxSize) {
-        this.fail(item, 'size', `Fichier trop volumineux : ${file.name}`, newMessages);
+        this.fail(item, 'size', formatLabel(this.invalidSizeMessage(), file.name), newMessages);
         continue;
       }
-      if (limit != null && this.selection().length + added.length >= limit) {
-        this.fail(item, 'limit', `Nombre maximum de fichiers atteint (${limit}).`, newMessages);
+      if (limit != null && (this.multiple() ? this.selection().length : 0) + added.length >= limit) {
+        this.fail(item, 'limit', formatLabel(this.limitReachedMessage(), limit), newMessages);
         continue;
       }
       added.push(item);
@@ -312,6 +327,14 @@ export class UiFileUpload {
     this.messages.set(newMessages);
     if (!added.length) return;
 
+    if (!this.multiple()) {
+      // Replacement: release resources held by the previous selection.
+      for (const previous of this.selection()) {
+        this.requests.get(previous.id)?.abort();
+        this.requests.delete(previous.id);
+        this.revoke(previous);
+      }
+    }
     this.selection.update((files) => (this.multiple() ? [...files, ...added] : added));
     this.selected.emit(added);
     this.filesChange.emit(this.selection());
@@ -354,11 +377,11 @@ export class UiFileUpload {
         this.filesChange.emit(this.selection());
       },
       markError: (file, msg) => {
-        this.patch(file.id, { status: 'error', error: msg ?? 'Échec du téléversement' });
+        this.patch(file.id, { status: 'error', error: msg ?? this.uploadErrorMessage() });
         this.uploadError.emit({
           file,
           reason: 'upload',
-          message: msg ?? 'Échec du téléversement',
+          message: msg ?? this.uploadErrorMessage(),
         });
       },
     });
@@ -382,10 +405,10 @@ export class UiFileUpload {
         this.uploaded.emit({ files: [item], xhr });
         this.filesChange.emit(this.selection());
       } else {
-        this.uploadFailed(item, `Erreur ${xhr.status}`);
+        this.uploadFailed(item, formatLabel(this.httpErrorMessage(), xhr.status));
       }
     });
-    xhr.addEventListener('error', () => this.uploadFailed(item, 'Erreur réseau'));
+    xhr.addEventListener('error', () => this.uploadFailed(item, this.networkErrorMessage()));
     xhr.addEventListener('abort', () => this.requests.delete(item.id));
 
     xhr.open(this.method().toUpperCase(), endpoint, true);

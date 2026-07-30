@@ -57,6 +57,17 @@ export interface UiTableSortEvent<T = unknown> {
   multiSortMeta?: UiTableSortMeta[];
 }
 
+/** Payload of `sortChange` — the sort state after a header interaction (no data: lazy consumers refetch). */
+export interface UiTableSortChangeEvent {
+  mode: TableSortMode;
+  /** Single mode: sorted field (`undefined` when the sort was removed). */
+  field?: string;
+  /** Single mode: `1` asc, `-1` desc, `0` when unsorted. */
+  order?: number;
+  /** Multiple mode: composed sort metas. */
+  multiSortMeta?: UiTableSortMeta[];
+}
+
 /** Payload of `rowSelect` / `rowUnselect`. */
 export interface UiTableRowSelectEvent<T = unknown> {
   originalEvent?: Event;
@@ -151,8 +162,9 @@ let nextUid = 0;
  *
  * The consumer owns the markup of the rows (`#header` / `#body` / `#footer`
  * templates rendering real `<tr>/<th>/<td>`); the component owns the data
- * pipeline (sort → pagination), the selection / expansion state, the scroll
- * shell and the paginator. Column-level behaviors are opt-in via the
+ * pipeline (sort → pagination — unless `lazy`, where the consumer owns it and
+ * refetches on `pageChange`/`sortChange`), the selection / expansion state,
+ * the scroll shell and the paginator. Column-level behaviors are opt-in via the
  * companion directives (`uiSortableColumn`, `uiSelectableRow`,
  * `uiFrozenColumn`, `uiResizableColumn`, `uiRowToggler`) and sub-components
  * (`ui-table-sort-icon`, `ui-table-checkbox`, `ui-table-header-checkbox`,
@@ -218,6 +230,8 @@ export class UiTable<T = unknown> {
   rowsPerPageOptions = input<number[]>();
   /** Maximum number of page-number buttons. */
   pageLinks = input(5, { transform: numberAttribute });
+  /** Total row count on the server (lazy mode) — drives the paginator; ignored otherwise. */
+  totalRecords = input<number>();
 
   // --- Scroll -------------------------------------------------------------
   /** Enables the scroll shell (sticky header inside the scrollable viewport). */
@@ -254,7 +268,13 @@ export class UiTable<T = unknown> {
   virtualScroll = input(false, { transform: booleanAttribute });
   /** Fixed row height in px (also apply it to the `<tr>` of the body template). */
   virtualScrollItemSize = input(50, { transform: numberAttribute });
-  /** Lazy mode: rows are fetched on demand — `lazyLoad` emits the rendered range. */
+  /**
+   * Lazy/server mode: the consumer owns sorting and pagination — `value` is the
+   * currently loaded page (with `paginator` + `totalRecords`, listen to
+   * `pageChange`/`sortChange` to refetch) or the loaded window (with
+   * `virtualScroll`, `lazyLoad` emits the rendered range). No client-side
+   * sorting or page slicing is applied.
+   */
   lazy = input(false, { transform: booleanAttribute });
 
   /** Emitted when a row becomes selected. */
@@ -265,6 +285,8 @@ export class UiTable<T = unknown> {
   headerCheckboxToggle = output<UiTableHeaderCheckboxToggleEvent>();
   /** Emitted instead of sorting internally when `customSort` is enabled. */
   sortFunction = output<UiTableSortEvent<T>>();
+  /** Emitted whenever the sort state changes from a header interaction (lazy mode: refetch with it). */
+  sortChange = output<UiTableSortChangeEvent>();
   /** Emitted on any pagination change (navigation or rows-per-page). */
   pageChange = output<UiTablePageEvent>();
   /** Emitted when a row expands. */
@@ -336,10 +358,16 @@ export class UiTable<T = unknown> {
     if (isDevMode()) {
       effect(() => {
         if (Object.keys(this.expandedRowKeys()).length && !this.dataKey()) {
-          console.warn('[ui-table] `expandedRowKeys` nécessite `dataKey` pour identifier les lignes.');
+          console.warn('[ui-table] `expandedRowKeys` requires `dataKey` to identify rows.');
         }
         if (this.virtualScroll() && (!this.scrollable() || !this.scrollHeight() || this.scrollHeight() === 'flex')) {
-          console.warn('[ui-table] `virtualScroll` nécessite `scrollable` et un `scrollHeight` fixe.');
+          console.warn('[ui-table] `virtualScroll` requires `scrollable` and a fixed `scrollHeight`.');
+        }
+        if (this.totalRecords() !== undefined && !this.lazy()) {
+          console.warn('[ui-table] `totalRecords` is ignored without `lazy`.');
+        }
+        if (this.lazy() && this.paginator() && this.totalRecords() === undefined) {
+          console.warn('[ui-table] `lazy` + `paginator` requires `totalRecords` (server total) for the paginator.');
         }
       });
     }
@@ -409,7 +437,8 @@ export class UiTable<T = unknown> {
   /** @ignore Sorted dataset (identity when `customSort` delegates sorting). */
   readonly processedData = computed<T[]>(() => {
     const data = this.value() ?? [];
-    if (!data.length || this.customSort()) return data;
+    // Lazy mode: the consumer owns the ordering (sortChange → server round-trip).
+    if (!data.length || this.customSort() || this.lazy()) return data;
     if (this.sortMode() === 'single') {
       const sort = this.sortState();
       if (!sort) return data;
@@ -428,11 +457,13 @@ export class UiTable<T = unknown> {
     });
   });
 
-  /** @ignore Total row count after processing. */
-  protected readonly totalRecords = computed(() => this.processedData().length);
+  /** @ignore Paginator total: server-provided in lazy mode, client count otherwise. */
+  protected readonly effectiveTotalRecords = computed(() =>
+    this.lazy() ? (this.totalRecords() ?? this.processedData().length) : this.processedData().length,
+  );
   /** @ignore */
   protected readonly pageCount = computed(() =>
-    Math.max(1, Math.ceil(this.totalRecords() / Math.max(1, this.rowsState()))),
+    Math.max(1, Math.ceil(this.effectiveTotalRecords() / Math.max(1, this.rowsState()))),
   );
   /** @ignore `first` clamped to the dataset (data may shrink under the cursor). */
   protected readonly clampedFirst = computed(() => {
@@ -469,7 +500,8 @@ export class UiTable<T = unknown> {
       const { start, end } = this.virtualRange();
       return data.slice(start, end);
     }
-    if (!this.paginator()) return data;
+    // Lazy pagination: `value` IS the current server page — never slice it.
+    if (!this.paginator() || this.lazy()) return data;
     const start = this.clampedFirst();
     return data.slice(start, start + this.rowsState());
   });
@@ -545,8 +577,8 @@ export class UiTable<T = unknown> {
       }
     }
 
+    const single = this.sortState();
     if (this.customSort()) {
-      const single = this.sortState();
       this.sortFunction.emit({
         data: this.value() ?? [],
         mode: this.sortMode(),
@@ -555,6 +587,12 @@ export class UiTable<T = unknown> {
         multiSortMeta: this.sortMode() === 'multiple' ? this.multiSortState() : undefined,
       });
     }
+    this.sortChange.emit({
+      mode: this.sortMode(),
+      field: this.sortMode() === 'single' ? single?.field : undefined,
+      order: this.sortMode() === 'single' ? (single?.order ?? 0) : undefined,
+      multiSortMeta: this.sortMode() === 'multiple' ? this.multiSortState() : undefined,
+    });
     if (this.paginator()) this.first.set(0);
   }
 
@@ -627,12 +665,23 @@ export class UiTable<T = unknown> {
     this.anchorRowIndex = index;
   }
 
+  /** @ignore Maps an absolute row index onto `processedData` (page-local in lazy pagination). */
+  private dataIndex(index: number): number {
+    return this.lazy() && this.paginator() && !this.virtualScroll() ? index - this.clampedFirst() : index;
+  }
+
   /** @ignore Shift+click / Shift+Arrow range selection (replaces the selection). */
   selectRange(originalEvent: Event, index: number): void {
-    if (this.anchorRowIndex == null) this.anchorRowIndex = index;
-    const start = Math.min(this.anchorRowIndex, index);
-    const end = Math.max(this.anchorRowIndex, index);
-    const range = this.processedData().slice(start, end + 1);
+    const anchorLocal = this.anchorRowIndex == null ? null : this.dataIndex(this.anchorRowIndex);
+    // Lazy pagination: an anchor from a page no longer loaded can't seed a range — restart from this click.
+    const anchor =
+      anchorLocal == null || anchorLocal < 0 || anchorLocal >= this.processedData().length
+        ? index
+        : this.anchorRowIndex!;
+    this.anchorRowIndex = anchor;
+    const start = Math.min(anchor, index);
+    const end = Math.max(anchor, index);
+    const range = this.processedData().slice(this.dataIndex(start), this.dataIndex(end) + 1);
     this.selection.set([...range]);
     for (const [offset, data] of range.entries()) {
       this.rowSelect.emit({ originalEvent, data, index: start + offset, type: 'row' });
@@ -678,7 +727,7 @@ export class UiTable<T = unknown> {
   rowKey(data: T): string | undefined {
     const key = this.dataKey();
     if (!key) {
-      if (isDevMode()) console.warn('[ui-table] L’expansion de ligne nécessite `dataKey`.');
+      if (isDevMode()) console.warn('[ui-table] Row expansion requires `dataKey`.');
       return undefined;
     }
     return String(resolveFieldData(data, key));
@@ -758,7 +807,8 @@ export class UiTable<T = unknown> {
   selectRangeToEdge(index: number, edge: 'start' | 'end'): void {
     if (this.selectionMode() !== 'multiple') return;
     const data = this.processedData();
-    const range = edge === 'start' ? data.slice(0, index + 1) : data.slice(index);
+    const localIndex = this.dataIndex(index);
+    const range = edge === 'start' ? data.slice(0, localIndex + 1) : data.slice(localIndex);
     this.selection.set([...range]);
     this.anchorRowIndex = index;
   }

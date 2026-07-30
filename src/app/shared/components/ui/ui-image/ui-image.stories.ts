@@ -49,6 +49,8 @@ class MockBrandService {
     template: `
     <ui-image 
         [name]="name()" 
+        [src]="src()"
+        [fallback]="fallback()"
         [width]="width()" 
         [widthUnit]="widthUnit()" 
         [height]="height()" 
@@ -63,7 +65,9 @@ class StorybookWrapper {
     themeService = inject(ThemeService) as unknown as MockThemeService;
     brandService = inject(BrandService) as unknown as MockBrandService;
 
-    name = input.required<string>();
+    name = input<string>();
+    src = input<string>();
+    fallback = input<string>();
     width = input<number>();
     widthUnit = input('px');
     height = input<number>();
@@ -96,8 +100,18 @@ const meta: Meta<StorybookWrapper> = {
     argTypes: {
         name: {
             control: 'text',
-            description: 'Nom du fichier image à afficher (requis)',
-            table: { defaultValue: { summary: 'requis' } },
+            description: 'Nom du fichier image local (clé dans assets-map.json, résolution thème/marque)',
+            table: { defaultValue: { summary: 'undefined' } },
+        },
+        src: {
+            control: 'text',
+            description: 'URL distante/absolue (via NgOptimizedImage) — prioritaire sur `name`',
+            table: { defaultValue: { summary: 'undefined' } },
+        },
+        fallback: {
+            control: 'text',
+            description: "Nom d'asset local affiché si l'image principale échoue (placeholder tokenisé sinon)",
+            table: { defaultValue: { summary: 'undefined' } },
         },
         width: {
             control: 'number',
@@ -259,7 +273,91 @@ export const Theme_SVG_Mode: Story = {
 };
 
 // =========================================================
-// SECTION 3 : TEST FONCTIONNEL (FILL)
+// SECTION 3 : SOURCE DISTANTE (input `src`)
+// =========================================================
+
+/** URL distante rendue via NgOptimizedImage (dimensions requises hors `fill`). */
+export const Remote_Src: Story = {
+    args: {
+        src: 'https://picsum.photos/id/237/400/300',
+        width: 400,
+        height: 300,
+        alt: 'Image distante (picsum.photos)'
+    }
+};
+
+/** URL distante + `fill` : remplit le conteneur relatif parent. */
+export const Remote_Fill: Story = {
+    decorators: [
+        componentWrapperDecorator((story) =>
+            `<div style="width: 400px; height: 300px; border: 2px dashed red; position: relative;">${story}</div>`
+        )
+    ],
+    args: {
+        src: 'https://picsum.photos/id/1015/800/600',
+        fill: true,
+        alt: 'Image distante en mode fill'
+    }
+};
+
+/** Un `.svg` distant n'est jamais inliné : il passe par `<img [ngSrc]>` (pas de surface XSS). */
+export const Remote_SVG_As_Img: Story = {
+    args: {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/f/fd/Ghostscript_Tiger.svg',
+        width: 300,
+        height: 300,
+        alt: 'SVG distant rendu via <img>'
+    }
+};
+
+// =========================================================
+// SECTION 4 : ERREUR / FALLBACK / PLACEHOLDER
+// =========================================================
+
+/** URL en échec + `fallback` : l'asset local de repli s'affiche (et `loadFailed` émet l'URL). */
+export const Error_With_Fallback: Story = {
+    args: {
+        src: 'https://example.invalid/nope.jpg',
+        fallback: 'test-png.png',
+        width: 200,
+        height: 200,
+        alt: 'Erreur avec fallback local'
+    }
+};
+
+/** URL en échec sans fallback : état dégradé stylé tokens (adapté light/dark). */
+export const Error_Placeholder: Story = {
+    args: {
+        src: 'https://example.invalid/nope.jpg',
+        width: 200,
+        height: 200,
+        alt: 'Erreur sans fallback'
+    }
+};
+
+/** `name` inconnu de l'assets-map : placeholder immédiat (avant : rendu vide silencieux). */
+export const Unknown_Name_Placeholder: Story = {
+    args: {
+        name: 'does-not-exist.png',
+        width: 200,
+        height: 200,
+        alt: 'Asset local inconnu'
+    }
+};
+
+/** Fallback `.svg` : rendu via `<img>` (jamais inliné), même en repli. */
+export const Error_SVG_Fallback: Story = {
+    args: {
+        src: 'https://example.invalid/nope.jpg',
+        fallback: 'test-svg.svg',
+        width: 200,
+        height: 200,
+        alt: 'Erreur avec fallback SVG'
+    }
+};
+
+// =========================================================
+// SECTION 5 : TEST FONCTIONNEL (FILL)
 // =========================================================
 
 export const Test_Fill_Container: Story = {

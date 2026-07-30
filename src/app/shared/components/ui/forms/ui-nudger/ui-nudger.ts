@@ -1,5 +1,4 @@
 import {
-  booleanAttribute,
   Component,
   computed,
   effect,
@@ -8,16 +7,13 @@ import {
   isDevMode,
   numberAttribute,
   output,
-  signal,
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { BaseControlValueAccessor } from '@app/core/controlValueAccessor/BaseControlValueAccessor';
+import { BaseFieldControl } from '@app/shared/components/ui/forms/base-form-field';
 import { UiLevel } from '@app/shared/types/ui-level';
 import { UiButton } from '@app/shared/components/ui/actions/ui-button/ui-button';
 
 export type NudgerSize = 'default' | 'small';
-
-let nextUid = 0;
 
 /**
  * ui-nudger : headless numeric stepper (`[−] value [+]`).
@@ -38,7 +34,7 @@ let nextUid = 0;
   styleUrl: './ui-nudger.scss',
   providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => UiNudger), multi: true }],
 })
-export class UiNudger extends BaseControlValueAccessor<number> {
+export class UiNudger extends BaseFieldControl<number> {
   /** Minimum value (disables "−" at the bound). */
   min = input<number, unknown>(undefined, { transform: numberAttribute });
   /** Maximum value (disables "+" at the bound). */
@@ -52,26 +48,6 @@ export class UiNudger extends BaseControlValueAccessor<number> {
   size = input<NudgerSize>('default');
   /** Color family of the two buttons. */
   level = input<UiLevel>('high');
-
-  /** Disables the whole control (native on both buttons). */
-  disabled = input(false, { transform: booleanAttribute });
-  /** Read-only: value can't be changed, buttons are inert. */
-  readonly = input(false, { transform: booleanAttribute });
-  /** Required marker (used for the accessible name / forms). */
-  required = input(false, { transform: booleanAttribute });
-  /** Forces error styling (automatic when the attached control is invalid + touched/dirty). */
-  invalid = input(false, { transform: booleanAttribute });
-
-  /** name reflected on the hidden form value holder. */
-  name = input<string>();
-  /** id of the root group (auto-generated when omitted). */
-  inputId = input<string>();
-  /** Accessible name of the whole stepper. */
-  ariaLabel = input<string>();
-  /** id of an external element that labels this stepper. */
-  ariaLabelledBy = input<string>();
-  /** tabindex forwarded to the increment button (the group's primary control). */
-  tabindex = input<number>();
 
   /** Accessible label of the decrement button. */
   decrementLabel = input<string>('Diminuer');
@@ -87,18 +63,13 @@ export class UiNudger extends BaseControlValueAccessor<number> {
   /** Emitted on each value change. */
   valueChange = output<number>();
 
-  /** @ignore */
-  private readonly uid = `ui-nudger-${nextUid++}`;
-  /** @ignore Current value (written by the form or by user interaction). */
-  protected readonly modelValue = signal<number | undefined>(undefined);
-
   constructor() {
     super();
     // A11y safeguard: a stepper needs an accessible name.
     if (isDevMode()) {
       effect(() => {
         if (!this.ariaLabel() && !this.ariaLabelledBy()) {
-          console.warn('[ui-nudger] Sans nom accessible : renseignez `ariaLabel` (ou `ariaLabelledBy`).');
+          console.warn('[ui-nudger] No accessible name: provide `ariaLabel` (or `ariaLabelledBy`).');
         }
       });
     }
@@ -106,12 +77,6 @@ export class UiNudger extends BaseControlValueAccessor<number> {
 
   /** @ignore Effective numeric value (falls back to `defaultValue`). */
   protected readonly currentValue = computed(() => this.modelValue() ?? this.defaultValue());
-  /** @ignore */
-  protected readonly resolvedId = computed(() => this.inputId() ?? this.uid);
-  /** @ignore Input disabled OR control disabled (forms API). */
-  protected readonly isDisabled = computed(() => this.disabled() || this.controlDisabled());
-  /** @ignore Explicit error OR invalid control worth surfacing. */
-  protected readonly isInvalid = computed(() => this.invalid() || this.showError());
 
   /** @ignore Bounds reached. */
   protected readonly atMin = computed(() => {
@@ -148,6 +113,11 @@ export class UiNudger extends BaseControlValueAccessor<number> {
 
   override writeValue(value: number | null): void {
     this.modelValue.set(value ?? undefined);
+  }
+
+  /** @ignore */
+  protected override uidPrefix(): string {
+    return 'ui-nudger';
   }
 
   /** Increments the value by one `step` (clamped to `max`). */

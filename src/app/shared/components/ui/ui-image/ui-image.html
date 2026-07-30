@@ -1,17 +1,25 @@
-@if (isSvg()) {
-    <div class="inline-svg-wrapper"
-         [style.width]="width() + (widthUnit() || 'px')"
-         [style.height]="height() + (heightUnit() || 'px')"
-         [innerHTML]="svgContent()">
-    </div>
-}
-@else if (finalSrc()) {
-    <img [ngSrc]="finalSrc()"
-         [alt]="alt() || ''"
-         [width]="!fill() ? width() : null"
-         [height]="!fill() ? (height() ? height() : width()) : null"
-         [fill]="fill()"
-         [priority]="priority()"
-         style="object-fit: contain;"
-    />
+@if (showPlaceholder()) {
+  <div
+    class="ui-image-placeholder"
+    [style.width]="cssWidth()"
+    [style.height]="cssHeight()"
+    [attr.role]="alt() ? 'img' : null"
+    [attr.aria-label]="alt() || null"
+    [attr.aria-hidden]="alt() ? null : true"
+  >
+    <ui-icon name="image" />
+  </div>
+} @else if (isInlineSvg() && !primaryFailed()) {
+  <div class="ui-image-svg" [style.width]="cssWidth()" [style.height]="cssHeight()" [innerHTML]="svgContent()"></div>
+} @else {
+  <img
+    class="ui-image"
+    [ngSrc]="displayedSrc()!"
+    [alt]="alt() || ''"
+    [width]="!fill() ? width() : null"
+    [height]="!fill() ? (height() ? height() : width()) : null"
+    [fill]="fill()"
+    [priority]="priority()"
+    (error)="onImgError()"
+  />
 }

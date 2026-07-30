@@ -18,8 +18,10 @@ import {
   viewChild,
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
-import { FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { ConnectedPosition, OverlayModule } from '@angular/cdk/overlay';
+import { NG_VALUE_ACCESSOR } from '@angular/forms';
+import { OverlayModule } from '@angular/cdk/overlay';
+import { dropdownOverlayPositions } from '@app/shared/components/ui/forms/overlay-positions';
+import { CdkTrapFocus } from '@angular/cdk/a11y';
 import { BaseFormField } from '@app/shared/components/ui/forms/base-form-field';
 import { UiInput } from '@app/shared/components/ui/forms/ui-input/ui-input';
 import { UiButton } from '@app/shared/components/ui/actions/ui-button/ui-button';
@@ -115,7 +117,7 @@ let nextPanelUid = 0;
  */
 @Component({
   selector: 'ui-datepicker',
-  imports: [NgTemplateOutlet, FormsModule, OverlayModule, UiInput, UiButton, UiIcon],
+  imports: [NgTemplateOutlet, OverlayModule, CdkTrapFocus, UiInput, UiButton, UiIcon],
   templateUrl: './ui-datepicker.html',
   styleUrl: './ui-datepicker.scss',
   providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => UiDatepicker), multi: true }],
@@ -184,6 +186,29 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   /** Label of the default "Clear" button. */
   clearLabel = input<string>('Effacer');
 
+  /** Accessible name of the calendar panel (fallback when no `label`/`ariaLabel`). */
+  panelAriaLabel = input<string>('Calendrier');
+  /** Accessible label of the previous-month/year navigation arrow. */
+  prevLabel = input<string>('Précédent');
+  /** Accessible label of the next-month/year navigation arrow. */
+  nextLabel = input<string>('Suivant');
+  /** Accessible name of the hours spinbutton. */
+  hoursAriaLabel = input<string>('Heures');
+  /** Accessible name of the minutes spinbutton. */
+  minutesAriaLabel = input<string>('Minutes');
+  /** Accessible name of the AM/PM spinbutton. */
+  meridiemAriaLabel = input<string>('AM/PM');
+  /** Accessible label of the hours increment button. */
+  incrementHoursLabel = input<string>('Augmenter les heures');
+  /** Accessible label of the hours decrement button. */
+  decrementHoursLabel = input<string>('Diminuer les heures');
+  /** Accessible label of the minutes increment button. */
+  incrementMinutesLabel = input<string>('Augmenter les minutes');
+  /** Accessible label of the minutes decrement button. */
+  decrementMinutesLabel = input<string>('Diminuer les minutes');
+  /** Accessible label of the AM/PM toggle buttons. */
+  toggleMeridiemLabel = input<string>('Changer AM/PM');
+
   /** Render the panel inline (no trigger, no overlay). */
   inline = input(false, { transform: booleanAttribute });
   /**
@@ -246,11 +271,7 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   protected readonly typedValue = signal<string | null>(null);
 
   /** @ignore Below the trigger, flipping above when `autoFlip` and space is lacking. */
-  protected readonly overlayPositions = computed<ConnectedPosition[]>(() => {
-    const below: ConnectedPosition = { originX: 'start', originY: 'bottom', overlayX: 'start', overlayY: 'top', offsetY: 8 };
-    const above: ConnectedPosition = { originX: 'start', originY: 'top', overlayX: 'start', overlayY: 'bottom', offsetY: -8 };
-    return this.autoFlip() ? [below, above] : [below];
-  });
+  protected readonly overlayPositions = computed(() => dropdownOverlayPositions(this.autoFlip()));
 
   /** @ignore Bound (stable) callbacks exposed to the `#buttonbar` template. */
   protected readonly todayCallback = (event?: Event): void => {
@@ -588,6 +609,8 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   /** @ignore Parse the typed text on blur, then forward the blur. */
   protected onTriggerBlur(event: FocusEvent): void {
     this.commitTyped();
+    const next = event.relatedTarget as Node | null;
+    if (!next || !this.panelEl()?.nativeElement.contains(next)) this.emitTouch();
     this.inputBlur.emit(event);
   }
 
@@ -873,7 +896,7 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     this.cleared.emit();
   }
 
-  // --- Grid keyboard navigation (roving focus, date view, single month) --
+  // --- Grid keyboard navigation (roving focus, date view) ---------------
 
   /** @ignore */
   protected onGridKeydown(event: KeyboardEvent): void {
@@ -918,15 +941,24 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     event.preventDefault();
     if (!next) return;
     this.focusedDate.set(startOfDay(next));
-    if (next.getMonth() !== current.getMonth() || next.getFullYear() !== current.getFullYear()) {
-      this.viewDate.set(firstOfMonth(next));
-    }
+    this.ensureMonthVisible(next);
     this.queueDayFocus();
   }
 
-  /** @ignore */
+  /** @ignore The roving-focus cell. `otherMonth` cells are excluded so a date
+   * shown twice across adjacent panels (multi-month) yields a single tab stop. */
   protected isFocusableDay(cell: DatepickerDay): boolean {
-    return isSameDay(cell.date, this.focusedDate());
+    return !cell.otherMonth && isSameDay(cell.date, this.focusedDate());
+  }
+
+  /** @ignore Shift the visible month window just enough to contain `date`. */
+  private ensureMonthVisible(date: Date): void {
+    const count = Math.max(1, this.numberOfMonths());
+    const start = firstOfMonth(this.viewDate());
+    const end = addMonths(start, count - 1);
+    const month = firstOfMonth(date);
+    if (month < start) this.viewDate.set(month);
+    else if (month > end) this.viewDate.set(addMonths(month, 1 - count));
   }
 
   // --- Internals -------------------------------------------------------

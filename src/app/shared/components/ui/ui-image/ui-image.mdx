@@ -5,7 +5,9 @@ import * as UiImageStories from './ui-image.stories';
 
 # ui-image
 
-Composant d'image intelligent qui résout automatiquement le chemin d'un asset en fonction de la marque active (`BrandService`) et du mode clair/sombre (`ThemeService`). Il supporte les formats JPG, PNG et SVG (les SVG sont injectés inline pour permettre leur stylisation via CSS). Basé sur `NgOptimizedImage` pour les performances de chargement.
+Composant d'image intelligent avec deux sources : `name` (asset local résolu via l'assets-map en fonction de la marque active `BrandService` et du mode clair/sombre `ThemeService`) ou `src` (URL distante/absolue, prioritaire sur `name`). Basé sur `NgOptimizedImage` pour les performances de chargement.
+
+Les `.svg` **locaux** sont injectés inline (stylisation CSS possible, fetch via `httpResource` + cache partagé) ; un `.svg` **distant** passe toujours par `<img>` (jamais inliné — pas de surface XSS). En cas d'échec de chargement, l'asset local `fallback` prend le relais, puis un placeholder stylé tokens (adapté light/dark) si le fallback échoue aussi ou n'est pas fourni ; l'output `loadFailed` émet l'URL en échec.
 
 <br/>
 
@@ -39,6 +41,44 @@ Composant d'image intelligent qui résout automatiquement le chemin d'un asset e
         Ne pas fournir un chemin complet dans <code>name</code> — le composant construit lui-même le chemin via l'assets-map :
         <pre><code>{`<!-- INCORRECT -->
 <ui-image name="assets/img/common/base/logo.svg">
+</ui-image>`}</code></pre>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Utiliser <code>src</code> pour une URL distante, avec <code>width</code> + <code>height</code> (ou <code>fill</code>) — requis par NgOptimizedImage :
+        <pre><code>{`<ui-image
+  src="https://cdn.example.com/photo.jpg"
+  [width]="400"
+  [height]="300"
+  alt="Photo distante">
+</ui-image>`}</code></pre>
+      </td>
+      <td>
+        Ne pas fournir <code>src</code> ET <code>name</code> (précédence à <code>src</code>, warning en dev) ; ne pas utiliser d'URL <code>data:</code>/<code>blob:</code> (non supportées par NgOptimizedImage) :
+        <pre><code>{`<!-- INCORRECT -->
+<ui-image
+  src="data:image/png;base64,…"
+  name="logo.svg">
+</ui-image>`}</code></pre>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Fournir un <code>fallback</code> (nom d'asset <strong>local</strong> de l'assets-map) pour les sources incertaines — rendu via <code>&lt;img&gt;</code> même si c'est un <code>.svg</code> :
+        <pre><code>{`<ui-image
+  src="https://cdn.example.com/avatar.jpg"
+  fallback="avatar-default.png"
+  [width]="48" [height]="48"
+  alt="Avatar">
+</ui-image>`}</code></pre>
+      </td>
+      <td>
+        Ne pas passer une URL comme <code>fallback</code> — c'est une clé d'assets-map locale, pas une source distante :
+        <pre><code>{`<!-- INCORRECT -->
+<ui-image
+  src="https://cdn.example.com/a.jpg"
+  fallback="https://cdn.example.com/b.jpg">
 </ui-image>`}</code></pre>
       </td>
     </tr>
@@ -82,3 +122,17 @@ Composant d'image intelligent qui résout automatiquement le chemin d'un asset e
 <Canvas of={UiImageStories.Theme_SVG_Base} />
 
 <Canvas of={UiImageStories.Test_Fill_Container} />
+
+## Source distante
+
+<Canvas of={UiImageStories.Remote_Src} />
+
+<Canvas of={UiImageStories.Remote_SVG_As_Img} />
+
+## Erreur / fallback / placeholder
+
+<Canvas of={UiImageStories.Error_With_Fallback} />
+
+<Canvas of={UiImageStories.Error_Placeholder} />
+
+<Canvas of={UiImageStories.Unknown_Name_Placeholder} />

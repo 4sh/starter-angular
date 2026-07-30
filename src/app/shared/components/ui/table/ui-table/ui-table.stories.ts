@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
+import { signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import type { UiTablePageEvent, UiTableSortChangeEvent } from '@app/shared/components/ui/table/ui-table/ui-table';
 import {
   UiTable,
   UiTableCheckbox,
@@ -207,6 +209,11 @@ const meta: Meta<UiTable<Product>> = {
       description: 'Nombre maximal de boutons de page affichés.',
       table: { type: { summary: 'number' }, defaultValue: { summary: '5' } },
     },
+    totalRecords: {
+      control: false,
+      description: 'Total de lignes côté serveur (mode lazy) — pilote le paginator ; ignoré sinon.',
+      table: { type: { summary: 'number' }, defaultValue: { summary: 'undefined' } },
+    },
     scrollable: {
       control: { type: 'boolean' },
       description: 'Active la coque de scroll (en-tête sticky dans le viewport défilant).',
@@ -259,7 +266,8 @@ const meta: Meta<UiTable<Product>> = {
     },
     lazy: {
       control: false,
-      description: 'Mode lazy du virtual scroll : `lazyLoad` émet la plage rendue.',
+      description:
+        'Mode lazy/serveur : le consommateur possède tri et pagination — `value` est la page courante (avec `paginator` + `totalRecords`, réagir à `pageChange`/`sortChange`) ou la fenêtre chargée (avec `virtualScroll` + `lazyLoad`). Aucun tri ni découpage client.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     resizableColumns: {
@@ -277,6 +285,11 @@ const meta: Meta<UiTable<Product>> = {
     sortFunction: {
       control: false,
       description: 'Émis à la place du tri interne quand `customSort` est actif.',
+      table: { category: 'outputs' },
+    },
+    sortChange: {
+      control: false,
+      description: 'Émis à chaque changement d’état du tri (mode lazy : refetch avec cet état).',
       table: { category: 'outputs' },
     },
     pageChange: { control: false, description: 'Émis à chaque changement de pagination.', table: { category: 'outputs' } },
@@ -528,6 +541,75 @@ export const PaginationProgrammatic: Story = {
       </ui-table>
     `,
   }),
+};
+
+/** Dataset « base de données » du faux serveur de la démo lazy. */
+const serverProducts: Product[] = Array.from({ length: 200 }, (_, i) => ({
+  id: i + 1,
+  code: `srv-${String(i + 1).padStart(4, '0')}`,
+  name: `Produit ${i + 1}`,
+  category: ['Accessoires', 'Vêtements', 'Chaussures', 'Fitness'][i % 4],
+  quantity: (i * 7) % 90,
+  price: 10 + ((i * 13) % 120),
+}));
+
+/** Tri + découpe exécutés « côté serveur » par le faux backend. */
+function serverFetch(sort: { field?: string; order?: number }, first: number, rows: number): Product[] {
+  let data = serverProducts;
+  if (sort.field && sort.order) {
+    const field = sort.field as keyof Product;
+    data = [...data].sort((a, b) => (sort.order ?? 1) * (a[field] < b[field] ? -1 : a[field] > b[field] ? 1 : 0));
+  }
+  return data.slice(first, first + rows);
+}
+
+/**
+ * Pagination serveur : `lazy` + `totalRecords` — `value` est la page courante,
+ * la table n'applique ni tri ni découpe et émet `pageChange` / `sortChange`
+ * pour que le consommateur refasse la requête (ici un faux backend à 300 ms).
+ */
+export const PaginationServer: Story = {
+  render: () => {
+    // Signals : indispensables en zoneless pour que la réponse asynchrone
+    // du « serveur » (setTimeout) déclenche bien la change detection.
+    const pageRows = signal<Product[]>(serverFetch({}, 0, 10));
+    const loading = signal(false);
+    let sortMeta: { field?: string; order?: number } = {};
+    const fetchPage = (first: number, rows: number): void => {
+      loading.set(true);
+      setTimeout(() => {
+        pageRows.set(serverFetch(sortMeta, first, rows));
+        loading.set(false);
+      }, 300);
+    };
+    return {
+      props: {
+        pageRows,
+        loading,
+        total: serverProducts.length,
+        onPage: (e: UiTablePageEvent) => fetchPage(e.first, e.rows),
+        onSort: (e: UiTableSortChangeEvent) => {
+          sortMeta = { field: e.field, order: e.order };
+          fetchPage(0, 10);
+        },
+      },
+      template: `
+        <ui-table
+          [value]="pageRows()"
+          lazy
+          paginator
+          [rows]="10"
+          [totalRecords]="total"
+          [loading]="loading()"
+          dataKey="id"
+          (pageChange)="onPage($event)"
+          (sortChange)="onSort($event)"
+        >
+          ${sortableColumns}
+        </ui-table>
+      `,
+    };
+  },
 };
 
 /** Scroll vertical : `scrollHeight` fixe + en-tête sticky. */

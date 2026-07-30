@@ -1,55 +1,59 @@
 # Design System : Angular Headless → Figma
 
-## À lire avant toute action
+## Read before doing anything
 
-Ce repository est un Design System Angular 22 (standalone) **100% maison** : composants
-**headless** (Angular CDK + signals natifs) stylés exclusivement via des design tokens.
+This repository is a **fully in-house** Angular 22 (standalone) Design System: **headless**
+components (Angular CDK + native signals) styled exclusively through design tokens.
 
-C'est le volet « Starter Angular » de la stratégie **Double-Moteur** : la *logique* dépend
-de la stack (Angular CDK ici, Radix côté React). La couche réellement partagée entre stacks
-= les **design tokens** (variables CSS). Le style des composants est **co-localisé** (scopé
-au composant Angular) et consomme ces tokens.
+It is the "Starter Angular" side of the **Dual-Engine** strategy: the *logic* depends on
+the stack (Angular CDK here, Radix on the React side). The layer actually shared across stacks
+= the **design tokens** (CSS variables). Component styling is **co-located** (scoped
+to the Angular component) and consumes these tokens.
 
-Avant de générer quoi que ce soit dans Figma, tu **dois** auditer le composant Angular source.
+Before generating anything in Figma, you **must** audit the source Angular component.
+
+> **Repo-wide agent conventions live in `AGENTS.md`** — read it first for any code task
+> (Claude Code only auto-loads this file). Release/versioning conventions:
+> `docs/VERSIONING.md` + `CHANGELOG.md`.
 
 ---
 
-## Stack technique
+## Tech stack
 
-| Couche | Technologie |
+| Layer | Technology |
 |---|---|
 | Framework | Angular 22, standalone, signals API, zoneless |
-| Comportement (headless) | Composants + Angular CDK (overlay, a11y, focus-trap…) |
-| Style | Co-localisé par composant (`.scss` scopé) + CSS custom properties (`--var`) |
+| Behavior (headless) | Components + Angular CDK (overlay, a11y, focus-trap…) |
+| Style | Co-located per component (scoped `.scss`) + CSS custom properties (`--var`) |
 | Design Tokens | JSON (Token Flow Manager) → `scripts/tokens.build.mjs` → SCSS (`src/styles/src/generated/`) |
 | Storybook | v10.5.4 + addon-designs (Figma panel) |
-| Thèmes | themeOne (purple), themeTwo, themeThree × light/dark (via classes `._themeX` / `.dark-mode`) |
+| Themes | themeOne (purple), themeTwo, themeThree × light/dark (via `._themeX` / `.dark-mode` classes) |
 | Icons | FontAwesome Free |
 | Grid | Gridaflex 1.0.0 |
 
-> **Patron de référence** : `src/app/shared/components/ui/actions/ui-button/`. Tout nouveau
-> composant `ui-*` se construit sur ce modèle (signals + classes de l'ADN visuel SCSS).
+> **Reference pattern**: `src/app/shared/components/ui/actions/ui-button/`. Every new
+> `ui-*` component is built on this model (signals + SCSS visual-DNA classes).
 
 **Figma file** : `https://www.figma.com/design/GZww5hdUA49LB8XWeWP6tl/-Projet----UI-Kit?node-id=0-1&t=PXOwFotKvf72dn1c-1`
 
 ---
 
-## Architecture des tokens
+## Token architecture
 
-### Hiérarchie obligatoire
+### Mandatory hierarchy
 
 ```
-primitives/   → couleurs brutes (50-900 par palettes)
+primitives/   → raw colors (50-900 per palette)
     ↓
-semantics/    → tokens de sens (global.high.content.default)
+semantics/    → meaning tokens (global.high.content.default)
     ↓
-metrics/      → espacement, radius, stroke, shadow
-typography/   → familles, tailles, poids
-responsive/   → sizing par breakpoint
-transitions/  → durées, easing
+metrics/      → spacing, radius, stroke, shadow
+typography/   → families, sizes, weights
+responsive/   → sizing per breakpoint
+transitions/  → durations, easing
 ```
 
-### Catégories sémantiques (`semantics.json`)
+### Semantic categories (`semantics.json`)
 
 ```
 global.{modeLight|modeDark}.{high|low}.{content|surface|stroke}.{default|hover|focused|pressed|disabled}
@@ -61,9 +65,9 @@ token.{modeLight|modeDark}.table.{head|body|footer}.{content|surface|stroke}
 effects.{modeLight|modeDark}.{default|highlight|success|warning|error}
 ```
 
-### Métriques (`metrics.json`)
+### Metrics (`metrics.json`)
 
-| Catégorie | Valeurs disponibles |
+| Category | Available values |
 |---|---|
 | Spacing | 2xs (2px), xs (4px), sm (8px), md (12px), lg (16px), xl (24px), 2xl (32px), 3xl (40px), 4xl (56px) |
 | Radius | 2xs, xs, sm, md, lg, xl, 2xl, full |
@@ -72,93 +76,93 @@ effects.{modeLight|modeDark}.{default|highlight|success|warning|error}
 
 ---
 
-## Règles strictes : Tokens
+## Strict rules: Tokens
 
-**INTERDIT** :
-- Aucune couleur hexadécimale hardcodée dans Figma
-- Aucune valeur numérique d'espacement hors de `metrics`
-- Aucun `font-size` hors de `typography`
-- Aucun `border-radius` hors de `metrics.radius`
-- Aucun style dupliqué (toujours une variable Figma)
+**FORBIDDEN**:
+- No hardcoded hexadecimal color in Figma
+- No numeric spacing value outside `metrics`
+- No `font-size` outside `typography`
+- No `border-radius` outside `metrics.radius`
+- No duplicated style (always a Figma variable)
 
-**OBLIGATOIRE** :
-- Toujours lire `src/design-tokens/semantics.json` avant de choisir une couleur
-- Toujours utiliser les tokens sémantiques, jamais les primitifs directement dans les composants
-- Les tokens Figma doivent porter les mêmes noms que les tokens SCSS générés dans `src/styles/src/generated/`
-- Chaque couleur doit exister en mode light ET dark
+**MANDATORY**:
+- Always read `src/design-tokens/semantics.json` before choosing a color
+- Always use semantic tokens, never primitives directly in components
+- Figma tokens must carry the same names as the generated SCSS tokens in `src/styles/src/generated/`
+- Every color must exist in both light AND dark mode
 
 ---
 
-## Architecture des composants Angular
+## Angular component architecture
 
-### Structure de fichiers
+### File structure
 
 ```
 ui-{name}/
-├── ui-{name}.ts          ← logique + inputs (signals), classes calculées via computed()
-├── ui-{name}.html        ← template HTML natif headless (+ Angular CDK si besoin)
-├── ui-{name}.scss        ← STYLE CO-LOCALISÉ du composant (scopé au composant)
-├── ui-{name}.stories.ts  ← story Storybook CO-LOCALISÉE
-└── ui-{name}.mdx         ← doc Storybook CO-LOCALISÉE
+├── ui-{name}.ts          ← logic + inputs (signals), classes computed via computed()
+├── ui-{name}.html        ← headless native HTML template (+ Angular CDK if needed)
+├── ui-{name}.scss        ← CO-LOCATED component STYLE (scoped to the component)
+├── ui-{name}.stories.ts  ← CO-LOCATED Storybook story
+└── ui-{name}.mdx         ← CO-LOCATED Storybook doc
 ```
 
-> La **story et la doc MDX d'un composant sont co-localisées** dans son dossier. La doc
-> **globale** (fondations, guidelines, design system) vit dans `storybook/docs/`. Config :
+> A component's **story and MDX doc are co-located** in its folder. **Global** doc
+> (foundations, guidelines, design system) lives in `storybook/docs/`. Config:
 > `storybook/main.js`.
 
-> Le **style de chaque composant est co-localisé** dans son propre `.scss` (styles scopés
-> Angular). Le global (`src/styles/`) ne contient QUE les tokens générés + des utilitaires.
-> Toutes les valeurs (couleur, espacement, radius…) proviennent des variables CSS de tokens.
-> Patron de référence : `ui-button` (+ `ui-icon`).
+> Each component's **style is co-located** in its own `.scss` (Angular scoped
+> styles). The global layer (`src/styles/`) contains ONLY the generated tokens + utilities.
+> All values (color, spacing, radius…) come from token CSS variables.
+> Reference pattern: `ui-button` (+ `ui-icon`).
 
-### Doc de theming : générée depuis le SCSS
+### Theming doc: generated from SCSS
 
-La section `## Theming` de chaque doc composant n'est **jamais écrite à la main**. Elle est produite
-par `npm run docs:config` (`scripts/docs.config.mjs` → `storybook/generated/ui-config.json`) et
-rendue par `<ConfigTable of="ui-{name}" />` (`storybook/blocks/config-table.js`).
+The `## Theming` section of each component doc is **never written by hand**. It is produced
+by `npm run docs:config` (`scripts/docs.config.mjs` → `storybook/generated/ui-config.json`) and
+rendered by `<ConfigTable of="ui-{name}" />` (`storybook/blocks/config-table.js`).
 
-**Ce sont les commentaires du `.scss` qui écrivent la doc** : `///` = contrat public documenté (en
-français), `//` = note interne (anglais, invisible dans la doc). Le `///` se place **en fin de
-déclaration**, aligné verticalement sur son groupe visuel :
+**The `.scss` comments are what write the doc**: `///` = documented public contract (in
+French), `//` = internal note (English, invisible in the doc). The `///` goes **at the end of
+the declaration**, vertically aligned with its visual group:
 
 ```scss
 $card-padding: var(--units-lg);       /// Inset du corps.
 $card-radius: var(--radius-md);       /// Rayon des coins.
 ```
 
-Règles :
+Rules:
 
-- **Aucune valeur résolue dans un rôle** (`(12px)`) : la doc la mesure au runtime, dans le thème, la
-  marque et le viewport actifs. Une valeur écrite à la main devient fausse dès qu'un projet rebinde
-  la variable — c'est précisément ce que ce système supprime.
-- Décrire le **rôle** seulement : le binding, le passage par `ui-config` et la valeur sont déduits.
-- Une **map multi-lignes** est la seule exception : son `///` va sur la ligne au-dessus.
-- Une **custom property** exposée n'est publique que si elle porte un `///`, posé là où le hook vit
-  (déclaration, ou lecture avec fallback) — jamais sur un override interne de mode sombre.
-- `## Theming` est **toujours la dernière section** de la page MDX.
-- `npm run docs:config --check` (ou `npm run docs:config:check`) échoue si le manifeste est périmé ;
-  il est régénéré par `postinstall` et avant `storybook` / `build-storybook`.
+- **Never a resolved value in a role** (`(12px)`): the doc measures it at runtime, in the active
+  theme, brand and viewport. A hand-written value goes stale as soon as a project rebinds
+  the variable — that's exactly what this system removes.
+- Describe the **role** only: the binding, the pass-through via `ui-config` and the value are inferred.
+- A **multi-line map** is the only exception: its `///` goes on the line above.
+- An exposed **custom property** is only public if it carries a `///`, placed where the hook lives
+  (declaration, or a fallback read) — never on an internal dark-mode override.
+- `## Theming` is **always the last section** of the MDX page.
+- `npm run docs:config --check` (or `npm run docs:config:check`) fails if the manifest is stale;
+  it is regenerated by `postinstall` and before `storybook` / `build-storybook`.
 
-### Catégories
+### Categories
 
-| Catégorie | Préfixe sélecteur | Emplacement |
+| Category | Selector prefix | Location |
 |---|---|---|
-| UI générique | `ui-` | `src/app/shared/components/ui/` |
-| Domaine métier | `sp-` ou préfixe projet | `src/app/shared/components/domain/` |
+| Generic UI | `ui-` | `src/app/shared/components/ui/` |
+| Business domain | `sp-` or project prefix | `src/app/shared/components/domain/` |
 
-### Patterns signals
+### Signals patterns
 
 ```typescript
 // Inputs
-label = input<string>();                    // optionnel
-name = input.required<string>();            // requis
-level = input<'high' | 'low'>('high');      // avec défaut
+label = input<string>();                    // optional
+name = input.required<string>();            // required
+level = input<'high' | 'low'>('high');      // with default
 disabled = input<boolean>(false);
 
 // Outputs
 buttonClick = output<MouseEvent>();
 
-// Computed (classes CSS, état dérivé)
+// Computed (CSS classes, derived state)
 wrapperClass = computed(() => {
   const classes = ['component-root'];
   if (this.error()) classes.push('is-error');
@@ -170,37 +174,37 @@ wrapperClass = computed(() => {
 
 ## Mapping Angular inputs → Figma Properties
 
-| Angular (input) | Figma (component property) | Type Figma |
+| Angular (input) | Figma (component property) | Figma type |
 |---|---|---|
 | `level: 'high'\|'low'\|'success'\|'warning'\|'error'\|'info'\|'danger'` | `Level` | Variant |
 | `size: 'small'\|undefined\|'large'` | `Size` | Variant |
 | `outlined: boolean` | `Outlined` | Boolean |
-| `disabled: boolean` | `State = disabled` | Variant (dans State) |
+| `disabled: boolean` | `State = disabled` | Variant (within State) |
 | `iconLeft: string\|null` | `Icon Left` | Boolean |
 | `iconRight: string\|null` | `Icon Right` | Boolean |
 | `label: string` | `Label` | Text |
 | `state: 'default'\|'success'\|'error'\|'warning'\|'neutral'` | `State` | Variant |
 | `active: boolean` | `Active` | Boolean |
-| `readonly: boolean` | `State = readonly` | Variant (dans State) |
-| `error: string\|null` | inclus dans `State = error` | Variant |
+| `readonly: boolean` | `State = readonly` | Variant (within State) |
+| `error: string\|null` | included in `State = error` | Variant |
 
-### Règle états interactifs
+### Interactive states rule
 
-Les états interactifs (`hover`, `focused`, `pressed`, `disabled`) ne sont **jamais** des props Angular (gérés par CSS/tokens). Dans Figma, ce sont des **variants de State**, pas des Component Properties booléennes séparées.
+Interactive states (`hover`, `focused`, `pressed`, `disabled`) are **never** Angular props (they are handled by CSS/tokens). In Figma, they are **State variants**, not separate boolean Component Properties.
 
 ---
 
-## Architecture variants Figma
+## Figma variants architecture
 
-### Règle fondamentale
+### Fundamental rule
 
-**Préférer Component Properties aux explosions de variants.**
+**Prefer Component Properties over variant explosions.**
 
 ```
-MAUVAIS : 1 variant pour chaque combinaison (high+small+outlined+icon = 1 frame)
-→ explosion combinatoire
+BAD: 1 variant for every combination (high+small+outlined+icon = 1 frame)
+→ combinatorial explosion
 
-BON : Component Properties séparées qui se composent
+GOOD: separate Component Properties that compose
 → Level [high|low|success|warning|error]
 → Size [default|small|large]
 → Outlined [true|false]
@@ -208,11 +212,11 @@ BON : Component Properties séparées qui se composent
 → State [default|hover|focused|pressed|disabled]
 ```
 
-### Structure attendue pour chaque composant Figma
+### Expected structure for every Figma component
 
 ```
 ComponentSet "{ComponentName}"
-├── Variants primaires (les states visuels distincts)
+├── Primary variants (the distinct visual states)
 │   ├── Level=high, State=default
 │   ├── Level=high, State=hover
 │   ├── Level=high, State=focused
@@ -225,51 +229,51 @@ ComponentSet "{ComponentName}"
     └── Instance swap: "Icon"
 ```
 
-### Règle de nommage des variants
+### Variant naming rule
 
-- Noms en PascalCase pour les properties : `Level`, `State`, `Size`
-- Valeurs en lowercase : `high`, `low`, `default`, `hover`, `small`
-- Pas d'espace, pas de tiret dans les noms de properties
-- State toujours en dernier dans la liste des properties
+- PascalCase names for properties: `Level`, `State`, `Size`
+- Lowercase values: `high`, `low`, `default`, `hover`, `small`
+- No spaces, no hyphens in property names
+- State always last in the property list
 
 ---
 
-## Règles Auto Layout
+## Auto Layout rules
 
-**Toujours utiliser Auto Layout**, jamais de frames à position fixe pour les composants.
+**Always use Auto Layout**, never fixed-position frames for components.
 
-| Cas | Règle |
+| Case | Rule |
 |---|---|
-| Composant avec label | `direction: horizontal`, `align: center`, `gap: metrics.sm (8px)` |
-| Liste verticale | `direction: vertical`, `gap: metrics.md ou lg` |
-| Padding interne | Utiliser `metrics.sm/md/lg` pour padding horizontal et vertical |
-| Expand | `fill container` sur le child principal, jamais de width hardcodée |
-| Icon seul | `width/height: fixed` selon size token |
-| Composant full-width | Contrainte `fill` sur le parent |
+| Component with label | `direction: horizontal`, `align: center`, `gap: metrics.sm (8px)` |
+| Vertical list | `direction: vertical`, `gap: metrics.md or lg` |
+| Internal padding | Use `metrics.sm/md/lg` for horizontal and vertical padding |
+| Expand | `fill container` on the main child, never a hardcoded width |
+| Icon only | `width/height: fixed` per size token |
+| Full-width component | `fill` constraint on the parent |
 
-**INTERDIT** :
-- `position: absolute` sur les éléments dans un composant
-- Dimensions fixes hardcodées hors des tokens `metrics`
-- Padding asymétrique non justifié par le design token
-
----
-
-## Règles Accessibilité
-
-Chaque composant Figma **doit** avoir :
-- Un nom de layer descriptif (pas "Frame 42", mais "Button/High/Default")
-- La propriété Figma `aria-label` renseignée sur les éléments interactifs
-- Contraste de couleur conforme WCAG 2.1 AA minimum (vérifier avec les tokens sémantiques)
-- Les états `focused` visibles et distincts des états `hover`
-- Les états `disabled` avec opacité ou couleur token `disabled` (jamais seulement `opacity: 0.5` hardcodé)
+**FORBIDDEN**:
+- `position: absolute` on elements inside a component
+- Hardcoded fixed dimensions outside the `metrics` tokens
+- Asymmetric padding not justified by the design token
 
 ---
 
-## Règles Storybook → Figma
+## Accessibility rules
 
-Chaque story avec un `parameters.design.url` Figma **doit** correspondre à un composant Figma existant.
+Every Figma component **must** have:
+- A descriptive layer name (not "Frame 42", but "Button/High/Default")
+- The Figma `aria-label` property filled in on interactive elements
+- Color contrast compliant with WCAG 2.1 AA minimum (verify with the semantic tokens)
+- `focused` states visible and distinct from `hover` states
+- `disabled` states using the `disabled` token opacity or color (never just a hardcoded `opacity: 0.5`)
 
-Format URL attendu dans les stories :
+---
+
+## Storybook → Figma rules
+
+Every story with a Figma `parameters.design.url` **must** correspond to an existing Figma component.
+
+Expected URL format in stories:
 ```typescript
 parameters: {
   design: {
@@ -279,256 +283,256 @@ parameters: {
 }
 ```
 
-Règle : le `node-id` du paramètre Figma doit pointer sur le **ComponentSet** (ensemble de variants), pas sur une instance.
+Rule: the `node-id` in the Figma parameter must point to the **ComponentSet** (variant set), not to an instance.
 
 ---
 
-## Règles Naming
+## Naming rules
 
 ### Figma
 
-| Élément | Convention | Exemple |
+| Element | Convention | Example |
 |---|---|---|
 | ComponentSet | `ComponentName` | `Button` |
 | Variant frame | `Level=high, State=default` | - |
-| Layer racine | `{prefix}/{category}` | `ui/button` |
+| Root layer | `{prefix}/{category}` | `ui/button` |
 | Variable collection | `Semantics`, `Metrics`, `Typography` | - |
 | Variable token | `{category}/{subcategory}/{property}` | `actions/high/surface/default` |
 | Mode | `Light`, `Dark` | - |
 | Theme | `ThemeOne`, `ThemeTwo`, `ThemeThree` | - |
 
-### Angular (existant : ne pas changer)
+### Angular (existing: do not change)
 
-| Élément | Convention |
+| Element | Convention |
 |---|---|
-| Sélecteur UI | `ui-{kebab-case}` |
-| Sélecteur domaine | `sp-{kebab-case}` |
-| Classe TypeScript | `Ui{PascalCase}` |
-| Input type union | `type {Name}Variant = '...' \| '...'` |
+| UI selector | `ui-{kebab-case}` |
+| Domain selector | `sp-{kebab-case}` |
+| TypeScript class | `Ui{PascalCase}` |
+| Input union type | `type {Name}Variant = '...' \| '...'` |
 
-### Classes CSS/SCSS (OBLIGATOIRE : pas de BEM)
+### CSS/SCSS classes (MANDATORY: no BEM)
 
-> ⚠️ **Ne PAS utiliser la notation BEM** (`ui-button__icon`, `ui-button--active`).
+> ⚠️ **Do NOT use BEM notation** (`ui-button__icon`, `ui-button--active`).
 
-| Élément | Convention | SCSS | Exemple |
+| Element | Convention | SCSS | Example |
 |---|---|---|---|
-| Racine | `ui-{name}` | `.ui-{name}` | `.ui-button` |
-| Sous-élément | `ui-{name}-{part}` | `&-{part}` | `&-icon` → `.ui-button-icon` |
-| Modifier | `_{modifier}` (préfixe `_`) | `&._{modifier}` | `&._small`, `&._high`, `&._active` |
+| Root | `ui-{name}` | `.ui-{name}` | `.ui-button` |
+| Sub-element | `ui-{name}-{part}` | `&-{part}` | `&-icon` → `.ui-button-icon` |
+| Modifier | `_{modifier}` (`_` prefix) | `&._{modifier}` | `&._small`, `&._high`, `&._active` |
 
 ```scss
 .ui-button {
   &-icon { … }        // → .ui-button-icon
   &-label { … }       // → .ui-button-label
   &._small { … }      // modifier
-  &._high { … }       // modifier de niveau
+  &._high { … }       // level modifier
 }
 ```
 
-États interactifs (`hover`/`focus`/`active`/`disabled`) = **pseudo-classes CSS**, jamais des classes modifier.
+Interactive states (`hover`/`focus`/`active`/`disabled`) = **CSS pseudo-classes**, never modifier classes.
 
 ---
 
-## Règles de Composition
+## Composition rules
 
-- Un composant Figma ne doit **jamais** copier/coller les styles d'un autre : il doit l'**instancier**
-- Les composants `domain/` utilisent des instances de composants `ui/`
-- Pas de nesting de ComponentSets (un composant dans un composant = instance, pas inclusion de sets)
-- Les icônes sont des instances FontAwesome ou du système d'icônes, jamais des formes dessinées
-
----
-
-## Règles Scalabilité
-
-- Un composant ne doit pas avoir plus de **5 properties Figma** top-level (sinon décomposer)
-- Si un composant a plus de **30 variants**, revoir l'architecture properties vs variants
-- Les tokens de couleur doivent être dans des collections de variables Figma (pas des styles de couleur)
-- Les modes light/dark s'appliquent **toujours** via les modes de variables, jamais via duplication de composants
-- Les 3 thèmes s'appliquent via la sélection de collection, jamais via duplication
+- A Figma component must **never** copy/paste another one's styles: it must **instantiate** it
+- `domain/` components use instances of `ui/` components
+- No nesting of ComponentSets (a component inside a component = instance, not set inclusion)
+- Icons are FontAwesome or icon-system instances, never drawn shapes
 
 ---
 
-## Règles Anti-Duplication
+## Scalability rules
 
-- Une couleur n'apparaît **qu'une fois** : dans le token primitif. Toutes les références passent par les tokens sémantiques
-- Si deux composants partagent une apparence, créer un composant de base commun
-- Pas de frame de documentation dupliquée : utiliser les stories Storybook comme source unique de vérité
-- Si un style est répété 3 fois, créer une variable Figma
-
----
-
-## Workflow obligatoire avant génération Figma
-
-**Étape 1 : Analyse du composant Angular**
-```
-1. Lire le fichier .ts → identifier tous les inputs et leur type
-2. Lire le fichier .html → identifier la structure DOM
-3. Lire le fichier .scss → identifier les classes de state et les overrides
-4. Lire la story Storybook → identifier les argTypes et les states documentés
-5. Identifier le node-id Figma existant dans la story (si présent)
-```
-
-**Étape 2 : Mapping tokens**
-```
-1. Pour chaque couleur CSS utilisée → trouver le token sémantique correspondant
-2. Pour chaque espacement → trouver la valeur metrics correspondante
-3. Pour chaque état interactif → mapper sur les states sémantiques
-4. Vérifier que light ET dark sont couverts
-```
-
-**Étape 3 : Architecture Figma**
-```
-1. Définir les properties du ComponentSet (pas les variants individuels)
-2. Lister les states visuellement distincts (nécessitant des variants)
-3. Définir les Component Properties composables (booléens, text, instance swap)
-4. Définir les bindings de variables Figma
-```
-
-**Étape 4 : Génération**
-```
-1. Utiliser use_figma pour créer le composant
-2. Appliquer les variables Figma pour toutes les couleurs
-3. Configurer Auto Layout
-4. Créer les variants de states
-5. Configurer les Component Properties
-6. Vérifier la conformité avec la checklist
-```
+- A component must not have more than **5 top-level Figma properties** (otherwise decompose)
+- If a component has more than **30 variants**, rethink the properties-vs-variants architecture
+- Color tokens must live in Figma variable collections (not color styles)
+- Light/dark modes are **always** applied via variable modes, never via component duplication
+- The 3 themes are applied via collection selection, never via duplication
 
 ---
 
-## Checklist de conformité composant Figma
+## Anti-duplication rules
 
-Avant de valider un composant Figma :
-
-- [ ] Aucune couleur hexadécimale hardcodée (toutes bindées à des variables)
-- [ ] Aucun espacement hors des tokens metrics
-- [ ] Auto Layout sur tous les frames (pas de position absolue)
-- [ ] Nommage des layers descriptif et cohérent
-- [ ] States interactifs couverts (default, hover, focused, disabled minimum)
-- [ ] Mode light ET dark fonctionnels via modes de variables
-- [ ] ComponentSet avec Component Properties (pas explosion de variants)
-- [ ] node-id à jour dans la story Storybook
-- [ ] Accessibilité : contraste WCAG AA vérifié
+- A color appears **only once**: in the primitive token. All references go through the semantic tokens
+- If two components share an appearance, create a common base component
+- No duplicated documentation frame: use the Storybook stories as the single source of truth
+- If a style is repeated 3 times, create a Figma variable
 
 ---
 
-## Mode "Design System Reviewer"
+## Mandatory workflow before Figma generation
 
-Quand l'utilisateur demande un audit d'un composant Figma, appliquer cette grille :
+**Step 1: Angular component analysis**
+```
+1. Read the .ts file → identify all inputs and their types
+2. Read the .html file → identify the DOM structure
+3. Read the .scss file → identify state classes and overrides
+4. Read the Storybook story → identify argTypes and documented states
+5. Identify the existing Figma node-id in the story (if present)
+```
 
-### Détection mauvais variants
-- Variants redondants (même apparence visuelle)
-- Variants qui devraient être des Component Properties booléennes
-- Plus de 30 variants pour un seul composant → proposer restructuration
+**Step 2: Token mapping**
+```
+1. For each CSS color used → find the corresponding semantic token
+2. For each spacing → find the corresponding metrics value
+3. For each interactive state → map onto the semantic states
+4. Verify that both light AND dark are covered
+```
 
-### Détection hardcoded values
-- Couleurs hexadécimales non bindées à des variables Figma
-- Nombres de padding/gap/spacing qui ne correspondent à aucun token metric
-- Font-size/weight/family hardcodés hors des variables typography
+**Step 3: Figma architecture**
+```
+1. Define the ComponentSet properties (not the individual variants)
+2. List the visually distinct states (requiring variants)
+3. Define the composable Component Properties (booleans, text, instance swap)
+4. Define the Figma variable bindings
+```
 
-### Détection problèmes scalabilité
-- Duplication de composants au lieu d'instanciation
-- Styles de couleur au lieu de variables Figma
-- Modes light/dark implémentés par copie au lieu de modes de variables
-- Thèmes implémentés par duplication au lieu de collections
-
-### Détection mauvaises properties Figma
-- Property `Disabled` booléenne alors que c'est un State
-- Properties Angular `error`/`success`/`warning` séparées alors qu'elles devraient être un seul `State`
-- Absence de property pour les contenus variables (label, icon)
-
-### Détection problèmes Auto Layout
-- Frames sans Auto Layout dans un composant
-- Dimensions fixed sur des éléments qui devraient être `fill`
-- Padding/gap sans binding sur les tokens metrics
-
-### Détection violations tokens
-- Primitif utilisé directement dans un composant (ex: `primary.500` au lieu de `actions.high.surface.default`)
-- Token d'une catégorie utilisé dans une autre (ex: token `navigation` sur un bouton)
+**Step 4: Generation**
+```
+1. Use use_figma to create the component
+2. Apply Figma variables for all colors
+3. Configure Auto Layout
+4. Create the state variants
+5. Configure the Component Properties
+6. Verify compliance with the checklist
+```
 
 ---
 
-## Templates de prompts réutilisables
+## Figma component compliance checklist
 
-### 1. Analyse composant Angular
+Before validating a Figma component:
+
+- [ ] No hardcoded hexadecimal color (all bound to variables)
+- [ ] No spacing outside the metrics tokens
+- [ ] Auto Layout on all frames (no absolute positioning)
+- [ ] Descriptive and consistent layer naming
+- [ ] Interactive states covered (default, hover, focused, disabled minimum)
+- [ ] Light AND dark modes working via variable modes
+- [ ] ComponentSet with Component Properties (no variant explosion)
+- [ ] node-id up to date in the Storybook story
+- [ ] Accessibility: WCAG AA contrast verified
+
+---
+
+## "Design System Reviewer" mode
+
+When the user requests an audit of a Figma component, apply this grid:
+
+### Bad variants detection
+- Redundant variants (same visual appearance)
+- Variants that should be boolean Component Properties
+- More than 30 variants for a single component → propose restructuring
+
+### Hardcoded values detection
+- Hexadecimal colors not bound to Figma variables
+- Padding/gap/spacing numbers that match no metric token
+- Font-size/weight/family hardcoded outside the typography variables
+
+### Scalability issues detection
+- Component duplication instead of instantiation
+- Color styles instead of Figma variables
+- Light/dark modes implemented by copying instead of variable modes
+- Themes implemented by duplication instead of collections
+
+### Bad Figma properties detection
+- Boolean `Disabled` property when it is a State
+- Separate Angular `error`/`success`/`warning` properties when they should be a single `State`
+- Missing property for variable content (label, icon)
+
+### Auto Layout issues detection
+- Frames without Auto Layout inside a component
+- Fixed dimensions on elements that should be `fill`
+- Padding/gap without binding to the metrics tokens
+
+### Token violations detection
+- Primitive used directly in a component (e.g. `primary.500` instead of `actions.high.surface.default`)
+- Token from one category used in another (e.g. `navigation` token on a button)
+
+---
+
+## Reusable prompt templates
+
+### 1. Angular component analysis
 
 ```
-Analyse le composant Angular suivant pour préparer sa création dans Figma :
-- Lis `src/app/shared/components/{category}/{name}/{name}.ts`
-- Lis `src/app/shared/components/{category}/{name}/{name}.html`
-- Lis `src/app/shared/components/{category}/{name}/{name}.scss`
-- Lis `src/app/shared/components/{category}/{name}/{name}.stories.ts` (co-localisée)
-Produis :
-1. Liste des inputs avec types et valeurs par défaut
-2. États visuels distincts (variants Figma nécessaires)
-3. Component Properties composables suggérées
-4. Mapping vers les tokens sémantiques pour chaque couleur/espacement
-5. Problèmes potentiels d'architecture Figma
+Analyze the following Angular component to prepare its creation in Figma:
+- Read `src/app/shared/components/{category}/{name}/{name}.ts`
+- Read `src/app/shared/components/{category}/{name}/{name}.html`
+- Read `src/app/shared/components/{category}/{name}/{name}.scss`
+- Read `src/app/shared/components/{category}/{name}/{name}.stories.ts` (co-located)
+Produce:
+1. List of inputs with types and default values
+2. Distinct visual states (required Figma variants)
+3. Suggested composable Component Properties
+4. Mapping to semantic tokens for each color/spacing
+5. Potential Figma architecture issues
 ```
 
-### 2. Génération composant Figma depuis Angular
+### 2. Figma component generation from Angular
 
 ```
-Crée le composant Figma pour `{ComponentName}` en suivant le workflow obligatoire :
-1. Analyse le composant Angular source
-2. Mappe tous les tokens
-3. Définis l'architecture variants/properties
-4. Génère avec use_figma dans le fichier XgSemnGLFrAq75CxcjPVf1
-5. Applique les variables Figma (zéro hardcode)
+Create the Figma component for `{ComponentName}` following the mandatory workflow:
+1. Analyze the source Angular component
+2. Map all tokens
+3. Define the variants/properties architecture
+4. Generate with use_figma in file XgSemnGLFrAq75CxcjPVf1
+5. Apply Figma variables (zero hardcoding)
 6. Configure Auto Layout
-7. Retourne le node-id pour mise à jour de la story Storybook
+7. Return the node-id to update the Storybook story
 ```
 
-### 3. Audit composant Figma
+### 3. Figma component audit
 
 ```
-Audite le composant Figma node-id="{nodeId}" du fichier XgSemnGLFrAq75CxcjPVf1 en mode Design System Reviewer :
-- Détecte les hardcoded values
-- Détecte les mauvais variants
-- Détecte les violations de tokens
-- Détecte les problèmes Auto Layout
-- Détecte les problèmes de scalabilité
-Produis un rapport avec : problèmes critiques / améliorations / conformité globale (%)
+Audit the Figma component node-id="{nodeId}" of file XgSemnGLFrAq75CxcjPVf1 in Design System Reviewer mode:
+- Detect hardcoded values
+- Detect bad variants
+- Detect token violations
+- Detect Auto Layout issues
+- Detect scalability issues
+Produce a report with: critical issues / improvements / overall compliance (%)
 ```
 
-### 4. Migration Storybook → Figma
+### 4. Storybook → Figma migration
 
 ```
-Pour le composant dont la story est `src/app/shared/components/{path}/{name}/{name}.stories.ts` (co-localisée) :
-1. Extrait tous les argTypes et leurs valeurs possibles
-2. Identifie le node-id Figma actuel dans `parameters.design.url`
-3. Vérifie que le composant Figma couvre toutes les stories exportées
-4. Liste les stories manquantes dans Figma
-5. Propose le plan de mise à jour
+For the component whose story is `src/app/shared/components/{path}/{name}/{name}.stories.ts` (co-located):
+1. Extract all argTypes and their possible values
+2. Identify the current Figma node-id in `parameters.design.url`
+3. Verify that the Figma component covers all exported stories
+4. List the stories missing in Figma
+5. Propose the update plan
 ```
 
-### 5. Optimisation variants
+### 5. Variants optimization
 
 ```
-Audite l'architecture variants du ComponentSet Figma "{ComponentName}" :
-1. Liste toutes les properties actuelles
-2. Identifie les variants qui devraient être des Component Properties
-3. Identifie les Component Properties manquantes
-4. Calcule la réduction de variants possible
-5. Propose la nouvelle architecture avec justification
-6. Implémente la refactorisation si approuvée
+Audit the variants architecture of the Figma ComponentSet "{ComponentName}":
+1. List all current properties
+2. Identify variants that should be Component Properties
+3. Identify missing Component Properties
+4. Compute the possible variant reduction
+5. Propose the new architecture with justification
+6. Implement the refactoring if approved
 ```
 
 ---
 
-## Variables Figma : Structure attendue
+## Figma variables: Expected structure
 
-### Collections à créer dans Figma
+### Collections to create in Figma
 
 ```
 Collection: "Primitives" (modes: ThemeOne, ThemeTwo, ThemeThree)
 Collection: "Semantics" (modes: Light, Dark)
-  └── Référence les variables Primitives
-Collection: "Metrics" (mode unique)
-Collection: "Typography" (mode unique)
+  └── References the Primitives variables
+Collection: "Metrics" (single mode)
+Collection: "Typography" (single mode)
 ```
 
-### Nommage des variables Figma (aligne avec les tokens SCSS)
+### Figma variable naming (aligned with the SCSS tokens)
 
 ```
 Semantics/global/high/content/default
@@ -545,69 +549,69 @@ Typography/fontSize/md
 
 ---
 
-## Style des composants : Points d'attention Figma
+## Component styling: Figma points of attention
 
-Les composants sont **headless**. Le style est **co-localisé** dans le `.scss` du
-composant (scopé Angular) et consomme les variables CSS générées (`src/styles/src/generated/`).
+The components are **headless**. Styling is **co-located** in the component's `.scss`
+(Angular scoped) and consumes the generated CSS variables (`src/styles/src/generated/`).
 
-Les états `hover`/`focused`/`pressed`/`disabled` sont gérés en CSS via les tokens sémantiques
-(ex: `--actions-high-surface-hover`), jamais en props Angular. Dans Figma, ces états doivent
-se calquer sur ces mêmes valeurs de tokens.
+The `hover`/`focused`/`pressed`/`disabled` states are handled in CSS via the semantic tokens
+(e.g. `--actions-high-surface-hover`), never as Angular props. In Figma, these states must
+mirror these same token values.
 
-### Accessibilité (obligatoire)
+### Accessibility (mandatory)
 
-- `<button>`/`<a>` natifs ; pas de `<div>` cliquable.
-- `aria-label` obligatoire en mode **icon-only** (fallback sur le label sinon).
-- Icônes décoratives en `aria-hidden` (cf. `ui-icon` : `decorative` par défaut).
-- `:focus-visible` toujours visible et distinct du `hover`.
-- `disabled` natif (pas seulement visuel).
+- Native `<button>`/`<a>`; no clickable `<div>`.
+- `aria-label` mandatory in **icon-only** mode (falls back to the label otherwise).
+- Decorative icons with `aria-hidden` (see `ui-icon`: `decorative` by default).
+- `:focus-visible` always visible and distinct from `hover`.
+- Native `disabled` (not just visual).
 
 ---
 
-## Pipeline de design tokens
+## Design tokens pipeline
 
-Source : `src/design-tokens/*.json` (format DTCG + extensions Figma, exporté depuis Figma).
-Build : `npm run tokens:build` (`scripts/tokens.build.mjs`, moteur **Style Dictionary v5**) →
-partials SCSS dans `src/styles/src/generated/`.
+Source: `src/design-tokens/*.json` (DTCG format + Figma extensions, exported from Figma).
+Build: `npm run tokens:build` (`scripts/tokens.build.mjs`, **Style Dictionary v5** engine) →
+SCSS partials in `src/styles/src/generated/`.
 
-Configuration : **`tokens.config.json`** (racine du repo, documenté/validé par
-`scripts/tokens.config.schema.json`) : déclare les collections, les axes de modes
-(brand/theme/viewport → sélecteurs CSS ou media queries) et les sorties (`css-vars`,
-`scss-vars`). Ajouter une collection ou un mode = éditer ce JSON, pas le script.
+Configuration: **`tokens.config.json`** (repo root, documented/validated by
+`scripts/tokens.config.schema.json`): declares the collections, the mode axes
+(brand/theme/viewport → CSS selectors or media queries) and the outputs (`css-vars`,
+`scss-vars`). Adding a collection or a mode = edit this JSON, not the script.
 
-### Nommage des variables CSS
+### CSS variable naming
 
-| Collection | Préfixe var | Exemple |
+| Collection | Var prefix | Example |
 |---|---|---|
 | primitives | `--primitives-*` | `--primitives-primary-500` |
 | metrics | `--metrics-*` | `--metrics-units-sm`, `--metrics-radius-sm` |
-| semantics | *(aucun)* | `--actions-high-surface-default`, `--global-high-content-default` |
-| typography | *(aucun)* | `--fontfamily-base`, `--weight-bold` |
-| transitions | *(aucun)* | `--transition-fast` |
+| semantics | *(none)* | `--actions-high-surface-default`, `--global-high-content-default` |
+| typography | *(none)* | `--fontfamily-base`, `--weight-bold` |
+| transitions | *(none)* | `--transition-fast` |
 
-Les **semantics référencent les primitives** en `var(--primitives-*)` (outputReferences) → le
-switch de marque/mode se fait à l'exécution sans duplication.
+The **semantics reference the primitives** via `var(--primitives-*)` (outputReferences) → the
+brand/mode switch happens at runtime without duplication.
 
 ### Dimensions / modes
 
-| Dimension | Porté par | Application runtime |
+| Dimension | Carried by | Runtime application |
 |---|---|---|
-| Marque | primitives (modeBrand1/2/3) | `[data-brand='brand2'\|'brand3']` (brand1 = défaut) : `BrandService` |
-| Clair/Sombre | semantics (modeLight/modeDark) | `[data-theme='dark']` (light = défaut) : `ThemeService` |
+| Brand | primitives (modeBrand1/2/3) | `[data-brand='brand2'\|'brand3']` (brand1 = default): `BrandService` |
+| Light/Dark | semantics (modeLight/modeDark) | `[data-theme='dark']` (light = default): `ThemeService` |
 | Viewport | responsive (modeMobile/Tablet/Desktop) | `@media (min-width: …)` |
 
 ---
 
 ## Breakpoints
 
-| Token | Valeur | Usage |
+| Token | Value | Usage |
 |---|---|---|
 | `phone` | 0px | Mobile first |
-| `tabletPortrait` | 600px | Petit tablet |
-| `tabletLandscape` | 900px | Tablet paysage |
-| `desktop` | 1200px | Desktop standard |
-| `mediumDesktop` | 1440px | Desktop large |
-| `bigDesktop` | 1800px | Très grand écran |
+| `tabletPortrait` | 600px | Small tablet |
+| `tabletLandscape` | 900px | Tablet landscape |
+| `desktop` | 1200px | Standard desktop |
+| `mediumDesktop` | 1440px | Large desktop |
+| `bigDesktop` | 1800px | Very large screen |
 
-Dans Figma, utiliser les frames à 1440px (mediumDesktop) comme taille de référence desktop.
-Documenter les adaptations mobiles via des frames séparés, pas des duplication de composants.
+In Figma, use 1440px frames (mediumDesktop) as the desktop reference size.
+Document mobile adaptations via separate frames, not component duplication.

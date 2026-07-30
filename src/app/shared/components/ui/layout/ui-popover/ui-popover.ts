@@ -131,7 +131,7 @@ export class UiPopover {
       effect(() => {
         if (this._open() && !this.ariaLabel() && !this.ariaLabelledBy()) {
           console.warn(
-            '[ui-popover] Popover sans nom accessible : renseignez `ariaLabel` ou `ariaLabelledBy`.',
+            '[ui-popover] Popover has no accessible name: provide `ariaLabel` or `ariaLabelledBy`.',
           );
         }
       });

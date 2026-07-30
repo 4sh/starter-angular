@@ -28,6 +28,18 @@ export type InputType = 'text' | 'password' | 'email' | 'tel' | 'url' | 'search'
 export class UiInput extends BaseFormField<string> {
   /** Native input type. */
   type = input<InputType>('text');
+  /**
+   * Display-only value (bypasses the CVA model). For composite hosts
+   * (e.g. `ui-datepicker`) that own the visible text and read it back via
+   * `valueChange` — leave unset when using `[(ngModel)]`/reactive forms.
+   */
+  value = input<string>();
+  /** `aria-haspopup` forwarded to the native input (popup trigger hosts). */
+  ariaHasPopup = input<'menu' | 'listbox' | 'tree' | 'grid' | 'dialog'>();
+  /** `aria-expanded` forwarded to the native input (popup trigger hosts). */
+  ariaExpanded = input<boolean>();
+  /** `aria-controls` forwarded to the native input (popup trigger hosts). */
+  ariaControls = input<string>();
   /** Native placeholder. */
   placeholder = input<string>();
   /** Suffix unit (e.g. "%", "@domain"). Shown when provided. */

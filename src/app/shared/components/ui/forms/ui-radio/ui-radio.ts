@@ -1,18 +1,14 @@
 import {
-  booleanAttribute,
   Component,
   computed,
   ElementRef,
   forwardRef,
   input,
   output,
-  signal,
   viewChild,
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { BaseControlValueAccessor } from '@app/core/controlValueAccessor/BaseControlValueAccessor';
-
-let nextUid = 0;
+import { BaseFieldControl } from '@app/shared/components/ui/forms/base-form-field';
 
 /**
  * ui-radio — headless radio button built on a real native <input type="radio">.
@@ -33,27 +29,11 @@ let nextUid = 0;
     { provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => UiRadio), multi: true },
   ],
 })
-export class UiRadio<T = unknown> extends BaseControlValueAccessor<T> {
+export class UiRadio<T = unknown> extends BaseFieldControl<T> {
   /** Value carried by this radio (the model takes it when selected). */
   value = input.required<T>();
-  /** Native group name — same name for every radio of the group. */
-  name = input<string>();
   /** Label displayed next to the radio (clicking it selects it). */
   label = input<string>();
-  /** Accessible name when no visible label is provided. */
-  ariaLabel = input<string>();
-  /** id of an external element that labels this radio. */
-  ariaLabelledBy = input<string>();
-  /** id forwarded to the native input (auto-generated when omitted). */
-  inputId = input<string>();
-  /** Required marker on the label + native required attribute. */
-  required = input(false, { transform: booleanAttribute });
-  /** Disables this radio (native attribute). */
-  disabled = input(false, { transform: booleanAttribute });
-  /** Forces the error styling (automatic when the attached control is invalid and touched/dirty). */
-  invalid = input(false, { transform: booleanAttribute });
-  /** tabindex forwarded to the native input. */
-  tabindex = input<number>();
 
   /** Emitted when this radio becomes selected by user interaction, with its value. */
   radioChange = output<T>();
@@ -64,19 +44,9 @@ export class UiRadio<T = unknown> extends BaseControlValueAccessor<T> {
 
   /** @ignore */
   private readonly inputEl = viewChild.required<ElementRef<HTMLInputElement>>('inputEl');
-  /** @ignore Group model value (written by the form or by user selection). */
-  private readonly modelValue = signal<T | undefined>(undefined);
-  /** @ignore */
-  private readonly uid = `ui-radio-${nextUid++}`;
 
   /** @ignore */
   protected readonly checked = computed(() => this.modelValue() === this.value());
-  /** @ignore Input disabled OR control disabled (form API). */
-  protected readonly isDisabled = computed(() => this.disabled() || this.controlDisabled());
-  /** @ignore Explicit `invalid` input OR invalid control worth surfacing. */
-  protected readonly isInvalid = computed(() => this.invalid() || this.showError());
-  /** @ignore */
-  protected readonly resolvedId = computed(() => this.inputId() ?? this.uid);
 
   /** @ignore */
   protected readonly classes = computed(() => {
@@ -87,8 +57,9 @@ export class UiRadio<T = unknown> extends BaseControlValueAccessor<T> {
     return c.join(' ');
   });
 
-  writeValue(value: T): void {
-    this.modelValue.set(value);
+  /** @ignore */
+  protected override uidPrefix(): string {
+    return 'ui-radio';
   }
 
   /** Focus the native input programmatically. */

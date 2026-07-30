@@ -14,10 +14,8 @@ import {
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { NgTemplateOutlet } from '@angular/common';
-import { BaseControlValueAccessor } from '@app/core/controlValueAccessor/BaseControlValueAccessor';
+import { BaseFieldControl } from '@app/shared/components/ui/forms/base-form-field';
 import { UiIcon, UiIconSize } from '@app/shared/components/ui/ui-icon/ui-icon';
-
-let nextUid = 0;
 
 export interface UiRatingIconContext {
   /** The current star value (1-based index). */
@@ -39,44 +37,25 @@ export interface UiRatingIconContext {
     { provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => UiRating), multi: true },
   ],
 })
-export class UiRating extends BaseControlValueAccessor<number> {
+export class UiRating extends BaseFieldControl<number | null> {
   /** Size of the rating stars. */
   size = input<UiIconSize>('default');
   /** Number of stars to display. */
   stars = input(5, { transform: numberAttribute });
   /** Allows clearing the rating by clicking the current value. */
   cancel = input(true, { transform: booleanAttribute });
-  /** Disables the rating control. */
-  disabled = input(false, { transform: booleanAttribute });
-  /** Makes the rating read-only. */
-  readonly = input(false, { transform: booleanAttribute });
-  /** Required marker + native required attribute. */
-  required = input(false, { transform: booleanAttribute });
-  /** Forces error styling. */
-  invalid = input(false, { transform: booleanAttribute });
   /** Native autofocus attribute. */
   autofocus = input(false, { transform: booleanAttribute });
   /** Orientation of the rating control. */
   orientation = input<'horizontal' | 'vertical'>('horizontal');
-  
-  /** Native group name. */
-  name = input<string>();
-  /** Accessible name. */
-  ariaLabel = input<string>();
-  /** id of an external element that labels this rating. */
-  ariaLabelledBy = input<string>();
-  /** id forwarded to the native input. */
-  inputId = input<string>();
-  /** tabindex forwarded to the native input. */
-  tabindex = input<number>();
 
   /** Custom template for active stars. */
   onIconTemplate = contentChild('onIcon', { read: TemplateRef<UiRatingIconContext> });
   /** Custom template for inactive stars. */
   offIconTemplate = contentChild('offIcon', { read: TemplateRef<UiRatingIconContext> });
 
-  /** Emitted when rating changes. */
-  rateChange = output<number>();
+  /** Emitted when rating changes (`null` = cleared / not rated). */
+  rateChange = output<number | null>();
   /** Emitted when the native input receives focus. */
   ratingFocus = output<FocusEvent>();
   /** Emitted when the native input loses focus. */
@@ -84,20 +63,12 @@ export class UiRating extends BaseControlValueAccessor<number> {
 
   /** @ignore */
   private readonly inputEl = viewChild.required<ElementRef<HTMLInputElement>>('inputEl');
-  /** @ignore */
-  protected readonly modelValue = signal<number>(0);
+  /** @ignore Redeclared over the base signal: `null` = not rated (never `undefined`). */
+  protected override readonly modelValue = signal<number | null>(null);
   /** @ignore */
   protected readonly hoverValue = signal<number>(0);
-  
-  /** @ignore */
-  private readonly uid = `ui-rating-${nextUid++}`;
-
-  /** @ignore */
-  protected readonly isDisabled = computed(() => this.disabled() || this.controlDisabled());
-  /** @ignore */
-  protected readonly isInvalid = computed(() => this.invalid() || this.showError());
-  /** @ignore */
-  protected readonly resolvedId = computed(() => this.inputId() ?? this.uid);
+  /** @ignore Numeric value used for display comparisons (`null` renders as 0 stars). */
+  protected readonly currentValue = computed(() => this.modelValue() ?? 0);
 
   /** @ignore */
   protected readonly starsArray = computed(() => {
@@ -114,8 +85,13 @@ export class UiRating extends BaseControlValueAccessor<number> {
     return c.join(' ');
   });
 
-  writeValue(value: number): void {
-    this.modelValue.set(value || 0);
+  override writeValue(value: number | null): void {
+    this.modelValue.set(value ?? null);
+  }
+
+  /** @ignore */
+  protected override uidPrefix(): string {
+    return 'ui-rating';
   }
 
   focus(options?: FocusOptions): void {
@@ -126,23 +102,29 @@ export class UiRating extends BaseControlValueAccessor<number> {
   protected onNativeChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     const value = parseInt(input.value, 10);
-    this.updateValue(value);
+    if (this.isDisabled() || this.readonly() || Number.isNaN(value)) {
+      // Revert the native range so its value stays in sync with the model.
+      input.value = String(this.currentValue());
+      return;
+    }
+    // The range's 0 means "not rated" → null at the public boundary.
+    this.updateValue(value === 0 ? null : value);
   }
 
   /** @ignore */
   protected rate(value: number): void {
     if (this.isDisabled() || this.readonly()) return;
     
-    let newValue = value;
+    let newValue: number | null = value;
     if (this.cancel() && this.modelValue() === value) {
-      newValue = 0;
+      newValue = null;
     }
-    
+
     this.updateValue(newValue);
     this.focus();
   }
 
-  private updateValue(value: number): void {
+  private updateValue(value: number | null): void {
     if (this.modelValue() !== value) {
       this.modelValue.set(value);
       this.emitChange(value);

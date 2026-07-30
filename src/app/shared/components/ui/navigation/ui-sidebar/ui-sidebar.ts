@@ -300,7 +300,7 @@ export class UiSidebar {
           // resolvedAriaLabel falls back to "Navigation"; warn so consumers set an explicit name.
           untracked(() => {
             console.warn(
-              '[ui-sidebar] Aucune étiquette explicite : renseignez `ariaLabel` ou `ariaLabelledBy` pour nommer la zone de navigation.',
+              '[ui-sidebar] No explicit label: provide `ariaLabel` or `ariaLabelledBy` to name the navigation region.',
             );
           });
         }

@@ -1,22 +1,22 @@
 # Angular Starter
 
-Starter Angular 22 (standalone, signals, zoneless) pour construire un design system **100% maison**,
-sans dépendance à une librairie UI propriétaire. Composants **headless** (Angular CDK +
-signals natifs) stylés exclusivement via des **design tokens**.
+Angular 22 starter (standalone, signals, zoneless) for building a **fully in-house** design system,
+with no dependency on a proprietary UI library. **Headless** components (Angular CDK +
+native signals) styled exclusively through **design tokens**.
 
-C'est le volet **Starter Angular** de la stratégie *Double-Moteur* :
+This is the **Starter Angular** side of the *Dual-Engine* strategy:
 
-- La **logique** dépend de la stack : Angular CDK ici (Radix UI côté React).
-- La couche partagée entre stacks = les **design tokens** (variables CSS).
-- Le **style des composants est co-localisé** (`.scss` scopé Angular) et consomme ces tokens.
+- The **logic** depends on the stack: Angular CDK here (Radix UI on the React side).
+- The layer shared across stacks = the **design tokens** (CSS variables).
+- The **component styling is co-located** (Angular scoped `.scss`) and consumes these tokens.
 ---
 ## Stack
 
-| Couche       | Techno |
+| Layer        | Tech |
 |--------------|---|
 | Framework    | Angular 22 standalone, signals, zoneless |
-| Comportement | Composants + `@angular/cdk` |
-| Style        | Co-localisé par composant (`.scss` scopé) + CSS custom properties |
+| Behavior     | Components + `@angular/cdk` |
+| Style        | Co-located per component (scoped `.scss`) + CSS custom properties |
 | Tokens       | JSON (Token Flow Manager) → `scripts/tokens.build.mjs` → SCSS (`src/styles/src/generated/`) |
 | Storybook    | 10.x + addon-designs (Figma) |
 | Grid         | Gridaflex |
@@ -25,26 +25,26 @@ C'est le volet **Starter Angular** de la stratégie *Double-Moteur* :
 
 ---
 
-## Démarrage
+## Getting started
 
 ```bash
-npm install          # installe + génère les tokens (postinstall → tokens:build)
+npm install          # installs + generates the tokens (postinstall → tokens:build)
 npm start            # Storybook   → http://localhost:6006
 npm run storybook    # Storybook   → http://localhost:6006
-npm run tokens:build # régénère les variables CSS de tokens
+npm run tokens:build # regenerates the token CSS variables
 npm run build && npm run build-storybook
 npm run lint
 ```
 
-### Thèmes & modes (runtime, via attributs sur `<html>`)
+### Themes & modes (runtime, via attributes on `<html>`)
 
-| Dimension | Attribut | Service |
+| Dimension | Attribute | Service |
 |---|---|---|
-| Marque | `[data-brand='brand2'\|'brand3']` (brand1 = défaut) | `BrandService` (mappe le sous-domaine) |
-| Clair/Sombre | `[data-theme='dark']` (light = défaut) | `ThemeService` |
+| Brand | `[data-brand='brand2'\|'brand3']` (brand1 = default) | `BrandService` (maps the subdomain) |
+| Light/Dark | `[data-theme='dark']` (light = default) | `ThemeService` |
 
-Les semantics référencent les primitives (`var(--primitives-*)`) : changer marque ou mode
-recompose tout sans duplication.
+The semantics reference the primitives (`var(--primitives-*)`): switching brand or mode
+recomposes everything without duplication.
 
 ---
 
@@ -54,83 +54,83 @@ recompose tout sans duplication.
 src/
 ├── app/
 │   ├── core/service/             ← ThemeService ([data-theme]), BrandService ([data-brand])
-│   ├── core/controlValueAccessor/← BaseControlValueAccessor (formulaires)
+│   ├── core/controlValueAccessor/← BaseControlValueAccessor (forms)
 │   ├── shared/
-│   │   ├── components/ui/         ← composants ui-* (ui-button, ui-icon…)
-│   │   └── types/                ← types partagés (UiLevel, UiSize…)
-│   └── pages/                    ← démo (home, preview)
-├── design-tokens/                ← SOURCE des tokens (JSON, export Token Flow Manager)
+│   │   ├── components/ui/         ← ui-* components (ui-button, ui-icon…)
+│   │   └── types/                ← shared types (UiLevel, UiSize…)
+│   └── pages/                    ← demo (home, preview)
+├── design-tokens/                ← token SOURCE (JSON, Token Flow Manager export)
 └── styles/
-    └── src/generated/            ← variables CSS GÉNÉRÉES — ne pas éditer
-scripts/tokens.build.mjs          ← resolver tokens (DTCG → SCSS vars)
+    └── src/generated/            ← GENERATED CSS variables — do not edit
+scripts/tokens.build.mjs          ← token resolver (DTCG → SCSS vars)
 storybook/                        ← config + stories
 ```
 
-> `src/styles/src/generated/` est **généré** (gitignoré), reconstruit par `npm run tokens:build`.
+> `src/styles/src/generated/` is **generated** (gitignored), rebuilt by `npm run tokens:build`.
 
-### Nommage des variables CSS
+### CSS variable naming
 
-`--primitives-*` · `--metrics-*` · semantics sans préfixe (`--actions-high-surface-default`,
+`--primitives-*` · `--metrics-*` · semantics without prefix (`--actions-high-surface-default`,
 `--global-*`) · `--fontfamily-*` / `--weight-*` · `--transition-*`.
 
 ---
 
-## Conventions de classes CSS (pas de BEM)
+## CSS class conventions (no BEM)
 
-| Élément | Convention | SCSS |
+| Element | Convention | SCSS |
 |---|---|---|
-| Racine | `ui-{name}` | `.ui-{name}` |
-| Sous-élément | `ui-{name}-{part}` | `&-{part}` |
+| Root | `ui-{name}` | `.ui-{name}` |
+| Sub-element | `ui-{name}-{part}` | `&-{part}` |
 | Modifier | `_{modifier}` | `&._{modifier}` |
 
 ```scss
 .ui-button {
   &-icon { … }     // .ui-button-icon
   &._small { … }   // modifier
-  &._high { … }    // modifier de niveau
-  &:hover { … }    // états = pseudo-classes (jamais une classe modifier)
+  &._high { … }    // level modifier
+  &:hover { … }    // states = pseudo-classes (never a modifier class)
 }
 ```
 
 ---
 
-## Ajouter un nouveau composant (recette)
+## Adding a new component (recipe)
 
-On reproduit le patron `ui-button` (+ `ui-icon`). Exemple `ui-input` :
+Replicate the `ui-button` (+ `ui-icon`) pattern. Example `ui-input`:
 
-1. **Composant** — `src/app/shared/components/ui/forms/ui-input/`
-   - `ui-input.ts` : `input()` signals + `computed()` qui assemble la liste de classes.
-   - `ui-input.html` : HTML natif headless (+ CDK si overlay/a11y), accessible.
-   - `ui-input.scss` : **style co-localisé**, classes `.ui-input` / `&-…` / `&._…`,
-     valeurs uniquement via `var(--…)`.
-2. **Story & doc (co-localisées)** — dans le dossier du composant, à côté des `.ts/.html/.scss` :
+1. **Component** — `src/app/shared/components/ui/forms/ui-input/`
+   - `ui-input.ts`: `input()` signals + `computed()` that assembles the class list.
+   - `ui-input.html`: headless native HTML (+ CDK if overlay/a11y), accessible.
+   - `ui-input.scss`: **co-located style**, classes `.ui-input` / `&-…` / `&._…`,
+     values only via `var(--…)`.
+2. **Story & doc (co-located)** — in the component folder, next to the `.ts/.html/.scss`:
    `src/app/shared/components/ui/forms/ui-input/ui-input.stories.ts` + `ui-input.mdx`.
 
-Règles d'or : **aucune** valeur en dur (tout via token) · **accessibilité** (élément natif,
+Golden rules: **no** hardcoded values (everything via tokens) · **accessibility** (native element,
 `aria-label`, `:focus-visible`, `disabled`).
 
 ---
 
-## Storybook — organisation des fichiers
+## Storybook — file organization
 
-Deux emplacements, une règle simple :
+Two locations, one simple rule:
 
-- **Composant → co-localisation.** Chaque composant embarque ses fichiers `*.stories.ts` et
-  `*.mdx` **dans son propre dossier**, à côté des `.ts/.html/.scss` :
-  `src/app/shared/components/ui/<catégorie>/ui-x/ui-x.stories.ts` + `ui-x.mdx`.
-- **Documentation globale** (fondations, guidelines, design system, overview) → **`storybook/docs/`**
-  (sous-dossiers `foundations/`, `specifications/`). N'y jamais mettre de doc liée à un composant précis.
+- **Component → co-location.** Each component carries its `*.stories.ts` and
+  `*.mdx` files **in its own folder**, next to the `.ts/.html/.scss`:
+  `src/app/shared/components/ui/<category>/ui-x/ui-x.stories.ts` + `ui-x.mdx`.
+- **Global documentation** (foundations, guidelines, design system, overview) → **`storybook/docs/`**
+  (subfolders `foundations/`, `specifications/`). Never put component-specific doc there.
 
-La config `storybook/main.js` cible les deux sources :
+The `storybook/main.js` config targets both sources:
 
 ```js
 stories: [
-  './docs/**/*.mdx',                                 // doc globale
-  '../src/app/shared/components/**/*.mdx',           // doc composant co-localisée
+  './docs/**/*.mdx',                                 // global doc
+  '../src/app/shared/components/**/*.mdx',           // co-located component doc
   '../src/app/shared/components/**/*.stories.@(js|jsx|mjs|ts|tsx)',
 ]
 ```
 
-> Le **placement** des fichiers n'affecte pas l'arborescence du sidebar : elle est pilotée par le
-> `title` (`<Meta title="…">` ou `title:` de la story). Les `.stories.ts` co-localisés ne sont pas
-> compilés par `ng build` (`tsconfig.app.json` part de `main.ts`).
+> File **placement** does not affect the sidebar tree: it is driven by the
+> `title` (`<Meta title="…">` or the story's `title:`). Co-located `.stories.ts` files are not
+> compiled by `ng build` (`tsconfig.app.json` starts from `main.ts`).

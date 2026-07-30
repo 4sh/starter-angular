@@ -1,5 +1,5 @@
 <div [class]="classes()" (mouseleave)="clearHover()">
-  <!-- autofocus est un input opt-in délibéré du composant (défaut false). -->
+  <!-- autofocus is a deliberate opt-in input of the component (default false). -->
   <!-- eslint-disable @angular-eslint/template/no-autofocus -->
   <input #inputEl
          type="range"
@@ -14,7 +14,7 @@
          [attr.aria-label]="ariaLabel()"
          [attr.aria-labelledby]="ariaLabelledBy()"
          [tabindex]="tabindex() ?? 0"
-         [value]="modelValue()"
+         [value]="currentValue()"
          (input)="onNativeChange($event)"
          (focus)="onFocus($event)"
          (blur)="onBlur($event)">
@@ -22,18 +22,18 @@
 
   <div class="ui-rating-stars">
     @for (star of starsArray(); track $index) {
-      <!-- Étoiles purement visuelles : focus et clavier sont portés par
-           l'<input type="range"> natif ci-dessus. -->
+      <!-- Purely visual stars: focus and keyboard are carried by
+           the native <input type="range"> above. -->
       <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -->
       <div class="ui-rating-icon"
-           [class._active]="star <= modelValue()"
+           [class._active]="star <= currentValue()"
            [class._hover]="star <= hoverValue()"
            (click)="rate(star)"
            (mouseenter)="setHover(star)">
-        @if (star <= (hoverValue() || modelValue())) {
-          <ng-container *ngTemplateOutlet="onIconTemplate() || defaultOnIcon; context: { $implicit: star, active: star <= modelValue() }" />
+        @if (star <= (hoverValue() || currentValue())) {
+          <ng-container *ngTemplateOutlet="onIconTemplate() || defaultOnIcon; context: { $implicit: star, active: star <= currentValue() }" />
         } @else {
-          <ng-container *ngTemplateOutlet="offIconTemplate() || defaultOffIcon; context: { $implicit: star, active: star <= modelValue() }" />
+          <ng-container *ngTemplateOutlet="offIconTemplate() || defaultOffIcon; context: { $implicit: star, active: star <= currentValue() }" />
         }
       </div>
     }

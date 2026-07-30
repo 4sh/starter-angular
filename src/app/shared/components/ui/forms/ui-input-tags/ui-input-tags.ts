@@ -17,8 +17,11 @@ import {
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { ConnectedPosition, OverlayModule } from '@angular/cdk/overlay';
+import { OverlayModule } from '@angular/cdk/overlay';
 import { BaseFormField } from '@app/shared/components/ui/forms/base-form-field';
+import { createOptionResolver } from '@app/shared/components/ui/forms/option-resolver';
+import { dropdownOverlayPositions } from '@app/shared/components/ui/forms/overlay-positions';
+import { formatLabel } from '@app/shared/components/ui/forms/format-label';
 import { UiField } from '@app/shared/components/ui/forms/ui-field/ui-field';
 import { UiIcon, UiIconSize } from '@app/shared/components/ui/ui-icon/ui-icon';
 import { UiChip } from '@app/shared/components/ui/informative/ui-chip/ui-chip';
@@ -116,8 +119,8 @@ type TagRow =
 
 /**
  * ui-input-tags — headless multi-value tag entry built on the `ui-field` shell
- * (label + box + helper). Tags are entered by typing and pressing `Entrée`
- * (and/or a `delimiter`), and removed with `Retour arrière` / the × action.
+ * (label + box + helper). Tags are entered by typing and pressing `Enter`
+ * (and/or a `delimiter`), and removed with `Backspace` / the × action.
  *
  * The model is an **array** driven through {@link BaseFormField}
  * (`ControlValueAccessor`) — compatible with `[(ngModel)]`, Reactive Forms and
@@ -127,7 +130,7 @@ type TagRow =
  *
  * A11y: the tag list is a `role="listbox"` (`aria-orientation="horizontal"`);
  * each tag is a `role="option"` with roving focus (`←` / `→` between tags,
- * `Retour arrière` / `Suppr` to delete). The editable input follows the combobox
+ * `Backspace` / `Delete` to delete). The editable input follows the combobox
  * pattern in `typeahead` mode.
  *
  * @example
@@ -147,7 +150,7 @@ export class UiInputTags<T = unknown> extends BaseFormField<T[]> {
   placeholder = input<string>();
   /** Maximum number of tags allowed (`undefined` = unlimited). */
   max = input<number, unknown>(undefined, { transform: numberAttribute });
-  /** Delimiter that splits typed/pasted text into several tags (in addition to `Entrée`). */
+  /** Delimiter that splits typed/pasted text into several tags (in addition to `Enter`). */
   delimiter = input<TagDelimiter>();
   /** Allow the same value to be added several times. */
   allowDuplicate = input(false, { transform: booleanAttribute });
@@ -204,6 +207,8 @@ export class UiInputTags<T = unknown> extends BaseFormField<T[]> {
 
   /** Message shown when a query returns no suggestion. */
   emptyMessage = input<string>('Aucun résultat');
+  /** Accessible label of each tag's remove action — `{0}` is the tag label. */
+  removeTagLabel = input<string>('Supprimer {0}');
 
   /** Emitted when a tag is added. */
   tagAdd = output<InputTagsAddEvent>();
@@ -265,7 +270,7 @@ export class UiInputTags<T = unknown> extends BaseFormField<T[]> {
       effect(() => {
         if (!this.label() && !this.ariaLabel() && !this.ariaLabelledBy()) {
           console.warn(
-            '[ui-input-tags] Champ sans nom accessible : renseignez `label`, `ariaLabel` ou `ariaLabelledBy`.',
+            '[ui-input-tags] Field has no accessible name: provide `label`, `ariaLabel` or `ariaLabelledBy`.',
           );
         }
       });
@@ -278,7 +283,10 @@ export class UiInputTags<T = unknown> extends BaseFormField<T[]> {
   protected readonly tagValues = computed<T[]>(() => this.modelValue() ?? []);
   /** @ignore Tags as display rows (value + resolved label). */
   protected readonly tagRows = computed(() =>
-    this.tagValues().map((value, index) => ({ value, index, label: this.labelOfValue(value) })),
+    this.tagValues().map((value, index) => {
+      const label = this.labelOfValue(value);
+      return { value, index, label, removeAriaLabel: formatLabel(this.removeTagLabel(), label) };
+    }),
   );
   /** @ignore */
   protected readonly listboxId = computed(() => `${this.resolvedId()}-tags`);
@@ -363,11 +371,7 @@ export class UiInputTags<T = unknown> extends BaseFormField<T[]> {
   });
 
   /** @ignore */
-  protected readonly overlayPositions = computed<ConnectedPosition[]>(() => {
-    const below: ConnectedPosition = { originX: 'start', originY: 'bottom', overlayX: 'start', overlayY: 'top', offsetY: 8 };
-    const above: ConnectedPosition = { originX: 'start', originY: 'top', overlayX: 'start', overlayY: 'bottom', offsetY: -8 };
-    return this.autoFlip() ? [below, above] : [below];
-  });
+  protected readonly overlayPositions = computed(() => dropdownOverlayPositions(this.autoFlip()));
 
   // --- CVA -----------------------------------------------------------------
 
@@ -702,53 +706,37 @@ export class UiInputTags<T = unknown> extends BaseFormField<T[]> {
     return this.resolveLabel(value) ?? this.asText(value) ?? '';
   }
 
+  /** @ignore Shared option resolution (see `option-resolver.ts`). */
+  private readonly resolver = createOptionResolver({
+    optionValue: this.optionValue,
+    optionLabel: this.optionLabel,
+    optionDisabled: this.optionDisabled,
+    dataKey: this.dataKey,
+  });
+
   /** @ignore */
   private toEntry(option: unknown): TagEntry {
-    return {
-      value: this.resolveValue(option),
-      label: this.resolveLabel(option) ?? '',
-      disabled: this.resolveDisabled(option),
-      original: option,
-    };
+    return this.resolver.toEntry(option);
   }
 
-  /** @ignore */
-  private isObject(option: unknown): option is Record<string, unknown> {
-    return typeof option === 'object' && option !== null;
-  }
-
-  /** @ignore */
+  /** @ignore Read a (dot-path) field from an object. */
   private getField(target: unknown, path: string | undefined): unknown {
-    if (!path || !this.isObject(target)) return undefined;
-    return path.split('.').reduce<unknown>((acc, key) => (this.isObject(acc) ? acc[key] : undefined), target);
+    return this.resolver.getField(target, path);
   }
 
   /** @ignore */
   private resolveValue(option: unknown): unknown {
-    const field = this.optionValue();
-    if (field && this.isObject(option)) return this.getField(option, field);
-    return option;
+    return this.resolver.resolveValue(option);
   }
 
   /** @ignore */
   private resolveLabel(option: unknown): string | null {
-    const field = this.optionLabel();
-    if (field && this.isObject(option)) return this.asText(this.getField(option, field));
-    if (this.isObject(option) && 'label' in option) return this.asText(option['label']);
-    return this.asText(option);
-  }
-
-  /** @ignore */
-  private resolveDisabled(option: unknown): boolean {
-    const field = this.optionDisabled();
-    if (field && this.isObject(option)) return !!this.getField(option, field);
-    if (this.isObject(option) && 'disabled' in option) return !!option['disabled'];
-    return false;
+    return this.resolver.resolveLabel(option);
   }
 
   /** @ignore */
   private asText(value: unknown): string | null {
-    return value === null || value === undefined ? null : String(value);
+    return this.resolver.asText(value);
   }
 
   /** @ignore Whether a value is already a tag. */
@@ -758,9 +746,7 @@ export class UiInputTags<T = unknown> extends BaseFormField<T[]> {
 
   /** @ignore Value equality — by `dataKey` for objects, strict otherwise. */
   private equals(a: unknown, b: unknown): boolean {
-    const key = this.dataKey();
-    if (key && this.isObject(a) && this.isObject(b)) return a[key] === b[key];
-    return a === b;
+    return this.resolver.equals(a, b);
   }
 
   /** @ignore Split text by the delimiter (string or regex); whole text when none. */
