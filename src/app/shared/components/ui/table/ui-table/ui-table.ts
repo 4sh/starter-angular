@@ -457,7 +457,6 @@ export class UiTable<T = unknown> {
     });
   });
 
-  /** @ignore Total row count after processing. */
   /** @ignore Paginator total: server-provided in lazy mode, client count otherwise. */
   protected readonly effectiveTotalRecords = computed(() =>
     this.lazy() ? (this.totalRecords() ?? this.processedData().length) : this.processedData().length,
@@ -666,16 +665,22 @@ export class UiTable<T = unknown> {
     this.anchorRowIndex = index;
   }
 
-  /** @ignore Shift+click / Shift+Arrow range selection (replaces the selection). */
   /** @ignore Maps an absolute row index onto `processedData` (page-local in lazy pagination). */
   private dataIndex(index: number): number {
     return this.lazy() && this.paginator() && !this.virtualScroll() ? index - this.clampedFirst() : index;
   }
 
+  /** @ignore Shift+click / Shift+Arrow range selection (replaces the selection). */
   selectRange(originalEvent: Event, index: number): void {
-    if (this.anchorRowIndex == null) this.anchorRowIndex = index;
-    const start = Math.min(this.anchorRowIndex, index);
-    const end = Math.max(this.anchorRowIndex, index);
+    const anchorLocal = this.anchorRowIndex == null ? null : this.dataIndex(this.anchorRowIndex);
+    // Lazy pagination: an anchor from a page no longer loaded can't seed a range — restart from this click.
+    const anchor =
+      anchorLocal == null || anchorLocal < 0 || anchorLocal >= this.processedData().length
+        ? index
+        : this.anchorRowIndex!;
+    this.anchorRowIndex = anchor;
+    const start = Math.min(anchor, index);
+    const end = Math.max(anchor, index);
     const range = this.processedData().slice(this.dataIndex(start), this.dataIndex(end) + 1);
     this.selection.set([...range]);
     for (const [offset, data] of range.entries()) {
