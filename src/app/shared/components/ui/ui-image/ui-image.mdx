@@ -1,11 +1,12 @@
 import { Meta, ArgTypes, Canvas } from '@storybook/addon-docs/blocks';
+import { ConfigTable } from '../../../../../../storybook/blocks/config-table';
 import * as UiImageStories from './ui-image.stories';
 
 <Meta of={UiImageStories} />
 
 # ui-image
 
-Composant d'image intelligent qui résout automatiquement le chemin d'un asset en fonction de la marque active (`BrandService`) et du mode clair/sombre (`ThemeService`). Il supporte les formats JPG, PNG et SVG (les SVG sont injectés inline pour permettre leur stylisation via CSS). Basé sur `NgOptimizedImage` pour les performances de chargement.
+Composant d'image générique piloté par une source (`src`) fournie directement par le consommateur. Il supporte les formats bitmap (JPG, PNG…) via `NgOptimizedImage` (lazy-loading, priorité LCP) et les SVG, injectés inline pour permettre leur stylisation via CSS. Deux options activables : `authenticated` pour récupérer une image protégée (requête HTTP en blob), et `preview` pour ouvrir une lightbox plein écran (`ui-lightbox`) avec zoom et rotation.
 
 <br/>
 
@@ -27,18 +28,18 @@ Composant d'image intelligent qui résout automatiquement le chemin d'un asset e
   <tbody>
     <tr>
       <td>
-        Toujours fournir l'attribut <code>name</code> avec le nom de fichier complet (extension incluse) :
+        Toujours fournir l'attribut <code>src</code> avec le chemin ou l'URL complète de l'image :
         <pre><code>{`<ui-image
-  name="logo.svg"
+  src="assets/img/common/svg/logo.svg"
   [width]="200"
   widthUnit="px"
   alt="Logo de l'application">
 </ui-image>`}</code></pre>
       </td>
       <td>
-        Ne pas fournir un chemin complet dans <code>name</code> — le composant construit lui-même le chemin via l'assets-map :
+        Ne pas activer <code>[authenticated]="true"</code> pour une image publique classique — cela déclenche une requête HTTP en blob inutile et empêche le lazy-loading de <code>NgOptimizedImage</code> :
         <pre><code>{`<!-- INCORRECT -->
-<ui-image name="assets/img/common/base/logo.svg">
+<ui-image src="assets/img/common/jpg/photo.jpg" [authenticated]="true">
 </ui-image>`}</code></pre>
       </td>
     </tr>
@@ -47,14 +48,14 @@ Composant d'image intelligent qui résout automatiquement le chemin d'un asset e
         Utiliser <code>[fill]="true"</code> avec un conteneur parent en <code>position: relative</code> pour les images en mode remplissage :
         <pre><code>{`<!-- Conteneur parent -->
 <div style="width: 400px; height: 300px; position: relative;">
-  <ui-image name="hero.jpg" [fill]="true" alt="Hero"></ui-image>
+  <ui-image src="assets/img/common/jpg/hero.jpg" [fill]="true" alt="Hero"></ui-image>
 </div>`}</code></pre>
       </td>
       <td>
         Ne pas utiliser <code>[fill]="true"</code> en même temps que <code>[width]</code> ou <code>[height]</code> — ces propriétés sont mutuellement exclusives avec <code>fill</code> :
         <pre><code>{`<!-- INCORRECT -->
 <ui-image
-  name="hero.jpg"
+  src="assets/img/common/jpg/hero.jpg"
   [fill]="true"
   [width]="400">
 </ui-image>`}</code></pre>
@@ -67,18 +68,23 @@ Composant d'image intelligent qui résout automatiquement le chemin d'un asset e
 
 ## Exemples d'implémentation
 
-<Canvas of={UiImageStories.Common_JPG_Base} />
+<Canvas of={UiImageStories.Jpg} />
 
-<Canvas of={UiImageStories.Common_PNG_Base} />
+<Canvas of={UiImageStories.Png} />
 
-<Canvas of={UiImageStories.Common_SVG_Base} />
+<Canvas of={UiImageStories.Svg} />
 
-<Canvas of={UiImageStories.Common_JPG_Mode} />
+<Canvas of={UiImageStories.Fill} />
 
-<Canvas of={UiImageStories.Common_SVG_Mode} />
+<Canvas of={UiImageStories.ObjectFit} />
 
-<Canvas of={UiImageStories.Theme_JPG_Base} />
+<Canvas of={UiImageStories.Preview} />
 
-<Canvas of={UiImageStories.Theme_SVG_Base} />
+<Canvas of={UiImageStories.Authenticated} />
 
-<Canvas of={UiImageStories.Test_Fill_Container} />
+## Theming
+
+Variable locale exposée en tête de `ui-image.scss`. Voir le
+[fonctionnement de la configuration](?path=/docs/components-configuration--docs).
+
+<ConfigTable of="ui-image" />

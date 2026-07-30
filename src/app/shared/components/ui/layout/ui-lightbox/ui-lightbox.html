@@ -1,0 +1,53 @@
+@if (visible()) {
+  <div
+    class="ui-lightbox-scrim"
+    [style.z-index]="zIndex()"
+    [uiMotion]="'fade'"
+    [motionDisabled]="motionDisabled()"
+    #scrimMotion="uiMotion"
+    [animate.enter]="scrimMotion.enter()"
+    [animate.leave]="scrimMotion.leave()"
+  ></div>
+
+  <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
+  <div
+    class="ui-lightbox-frame"
+    [style.z-index]="zIndex()"
+    (pointerdown)="onMaskPointerdown($event)"
+    (keydown)="onKeydown($event)"
+  >
+    <div
+      class="ui-lightbox-panel"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="ariaLabel()"
+      tabindex="-1"
+      [cdkTrapFocus]="true"
+      [cdkTrapFocusAutoCapture]="true"
+      [uiMotion]="motion()"
+      [motionDisabled]="motionDisabled()"
+      #panelMotion="uiMotion"
+      [animate.enter]="panelMotion.enter()"
+      [animate.leave]="panelMotion.leave()"
+    >
+      <div class="ui-lightbox-toolbar">
+        @if (toolbarTemplate(); as tpl) {
+          <ng-container [ngTemplateOutlet]="tpl" />
+        }
+        @if (closable()) {
+          <button
+            type="button"
+            class="ui-lightbox-action"
+            (click)="close()"
+            [attr.aria-label]="closeAriaLabel()"
+          >
+            <ui-icon [name]="closeIcon()" size="sm" />
+          </button>
+        }
+      </div>
+      <div class="ui-lightbox-content">
+        <ng-content />
+      </div>
+    </div>
+  </div>
+}

@@ -1,0 +1,91 @@
+@use 'utils';
+
+// =====================================================================
+// ui-lightbox : co-located styles. All values come from design tokens.
+// Bezel-less overlay: no card surface — content sits directly on the scrim.
+// =====================================================================
+
+// --- Config (local) ---------------------------------------------------
+$lightbox-z-index: 1100;                       /// Palier d'empilement de base (au-dessus des overlays CDK à 1000)
+$mask-background: var(--primitives-black-80);  /// Assombrissement du masque — exposé via `--ui-lightbox-mask-background`.
+$action-size: 40px;                            /// Taille de la cible tactile des boutons de la toolbar.
+$toolbar-inset: var(--units-md);                /// Décalage de la toolbar depuis les bords du panneau.
+$focus-ring-width: utils.$focus-ring-width;    /// Épaisseur de l'anneau de focus des boutons de la toolbar.
+
+.ui-lightbox-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: $lightbox-z-index;
+  pointer-events: none;
+  background-color: var(--ui-lightbox-mask-background, #{$mask-background});
+}
+
+// Full-screen positioner: centers the panel, captures backdrop clicks
+// (dismissableMask) — mirrors ui-modal's frame/scrim split.
+.ui-lightbox-frame {
+  position: fixed;
+  inset: 0;
+  z-index: $lightbox-z-index;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+}
+
+.ui-lightbox-panel {
+  // Bezel-less: no background/border/shadow — the content floats on the scrim.
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  max-width: 100vw;
+  max-height: 100vh;
+  outline: none;
+}
+
+.ui-lightbox-toolbar {
+  position: absolute;
+  top: $toolbar-inset;
+  right: $toolbar-inset;
+  z-index: 1;
+  display: flex;
+  gap: var(--units-sm);
+}
+
+// Icon-only actions living directly on the dark scrim: fixed (non-theme)
+// white-on-transparent chrome, since the mask ignores the active light/dark mode.
+.ui-lightbox-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: utils.rem-calc($action-size);
+  height: utils.rem-calc($action-size);
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-full);
+  background: var(--primitives-white-10);
+  color: var(--primitives-white-base);
+  cursor: pointer;
+  @include utils.control-transition(background-color);
+
+  &:hover {
+    background: var(--primitives-white-20);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 $focus-ring-width var(--primitives-white-base);
+  }
+
+  @include utils.motion-reduce {
+    transition-duration: 0.01ms;
+  }
+}
+
+.ui-lightbox-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden; // a zoomed-in child must never visually bleed onto the toolbar
+  max-width: 90vw;
+  max-height: 90vh;
+}

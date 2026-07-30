@@ -1,17 +1,64 @@
-@if (isSvg()) {
-    <div class="inline-svg-wrapper"
-         [style.width]="width() + (widthUnit() || 'px')"
-         [style.height]="height() + (heightUnit() || 'px')"
-         [innerHTML]="svgContent()">
-    </div>
+<ng-template #visual>
+    @if (isSvg()) {
+        <div class="ui-image-svg"
+             [style.width]="width() + (widthUnit() || 'px')"
+             [style.height]="height() + (heightUnit() || 'px')"
+             [innerHTML]="svgContent()">
+        </div>
+    }
+    @else if (authenticated()) {
+        @if (loading()) {
+            <ui-spinner />
+        }
+        @else if (blobSafeUrl()) {
+            <!-- NgOptimizedImage's ngSrc rejects blob:/SafeUrl values, so an authenticated
+                 (blob-fetched) image is rendered through a plain [src] binding instead. -->
+            <img [src]="blobSafeUrl()"
+                 [alt]="alt() || ''"
+                 [width]="!fill() ? width() : null"
+                 [height]="!fill() ? (height() ? height() : width()) : null"
+            />
+        }
+    }
+    @else if (src()) {
+        <img [ngSrc]="src()"
+             [alt]="alt() || ''"
+             [width]="!fill() ? width() : null"
+             [height]="!fill() ? (height() ? height() : width()) : null"
+             [fill]="fill()"
+             [priority]="priority()"
+        />
+    }
+</ng-template>
+
+<!-- A clickable zoom trigger must be a real <button>, not a click handler on the img/div
+     (a11y: no clickable non-interactive elements) — trigger + lightbox only exist together,
+     both gated by the same `preview` condition. -->
+@if (preview()) {
+    <button type="button" class="ui-image-trigger" (click)="openPreview()"
+            [attr.aria-label]="alt() ? 'Agrandir : ' + alt() : 'Agrandir l\'image'">
+        <ng-container [ngTemplateOutlet]="visual" />
+    </button>
+
+    <ui-lightbox [(visible)]="previewOpen" [ariaLabel]="alt() ? 'Aperçu : ' + alt() : 'Aperçu de l\'image'">
+        <ng-template #toolbar>
+            <button type="button" class="ui-lightbox-action" (click)="rotateLeft()" aria-label="Rotation à gauche">
+                <ui-icon name="arrow-rotate-left" size="sm" />
+            </button>
+            <button type="button" class="ui-lightbox-action" (click)="rotateRight()" aria-label="Rotation à droite">
+                <ui-icon name="arrow-rotate-right" size="sm" />
+            </button>
+            <button type="button" class="ui-lightbox-action" (click)="zoomOut()" aria-label="Dézoomer">
+                <ui-icon name="magnifying-glass-minus" size="sm" />
+            </button>
+            <button type="button" class="ui-lightbox-action" (click)="zoomIn()" aria-label="Zoomer">
+                <ui-icon name="magnifying-glass-plus" size="sm" />
+            </button>
+        </ng-template>
+        <img class="ui-image-preview-img" [src]="src()" [alt]="alt() || ''"
+             [style.transform]="previewTransform()" />
+    </ui-lightbox>
 }
-@else if (finalSrc()) {
-    <img [ngSrc]="finalSrc()"
-         [alt]="alt() || ''"
-         [width]="!fill() ? width() : null"
-         [height]="!fill() ? (height() ? height() : width()) : null"
-         [fill]="fill()"
-         [priority]="priority()"
-         style="object-fit: contain;"
-    />
+@else {
+    <ng-container [ngTemplateOutlet]="visual" />
 }

@@ -1,0 +1,103 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as LightboxStories from './ui-lightbox.stories';
+import { ConfigTable } from '../../../../../../../storybook/blocks/config-table';
+
+<Meta of={LightboxStories} />
+
+# ui-lightbox
+
+Overlay **headless** plein viewport, **sans carte** : un masque sombre plein écran et un
+contenu projeté qui flotte directement dessus (`role="dialog"`, piège de focus, fermeture au
+clavier). Contrairement à `ui-modal`, `ui-lightbox` n'a ni en-tête, ni pied, ni carte visuelle
+— c'est le composant à utiliser pour un aperçu média plein écran (image, galerie…), pas pour
+un dialogue applicatif classique (formulaire, confirmation) : dans ce cas, utiliser `ui-modal`.
+
+<Canvas of={LightboxStories.Default} />
+
+## API
+
+<ArgTypes of={LightboxStories} />
+
+## Anatomie
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Élément</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Masque</strong></td>
+      <td><code>.ui-lightbox-scrim</code> — couche <code>fixed</code> plein viewport, assombrit toujours l'arrière-plan (une lightbox est toujours modale).</td>
+    </tr>
+    <tr>
+      <td><strong>Panneau</strong></td>
+      <td><code>.ui-lightbox-panel</code> — <code>role="dialog"</code> + <code>aria-modal</code>, centré, sans fond ni bordure ni ombre.</td>
+    </tr>
+    <tr>
+      <td><strong>Toolbar</strong></td>
+      <td><code>.ui-lightbox-toolbar</code> — flottante en haut à droite du panneau : contenu projeté via <code>#toolbar</code> puis le bouton de fermeture.</td>
+    </tr>
+    <tr>
+      <td><strong>Contenu</strong></td>
+      <td><code>&lt;ng-content&gt;</code> — centré, jamais de débordement visuel au-delà du panneau même si le contenu projeté est zoomé (<code>overflow: hidden</code>).</td>
+    </tr>
+  </tbody>
+</table>
+
+## Toolbar projetée
+
+Projeter les actions (zoom, rotation, téléchargement…) via un `<ng-template #toolbar>` ; leur
+appliquer la classe `.ui-lightbox-action` pour hériter du même bouton rond que le bouton de
+fermeture, sans dupliquer de CSS.
+
+<Canvas of={LightboxStories.WithToolbar} />
+
+## Fermeture au clic extérieur
+
+`dismissableMask` (activé par défaut, contrairement à `ui-modal`) ferme la lightbox au clic
+sur le masque. Le désactiver quand une action explicite doit être requise pour fermer.
+
+<Canvas of={LightboxStories.NonDismissable} />
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Règle</th>
+      <th>Détail</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Rôle & nom</strong></td>
+      <td><code>role="dialog"</code> + <code>aria-modal="true"</code>. Nom accessible via <code>ariaLabel</code> (pas de titre visible) ; un warning dev signale une lightbox sans nom accessible.</td>
+    </tr>
+    <tr>
+      <td><strong>Focus</strong></td>
+      <td>Piège de focus (<code>cdkTrapFocus</code>) tant que la lightbox est ouverte, capture automatique à l'ouverture.</td>
+    </tr>
+    <tr>
+      <td><strong>Clavier</strong></td>
+      <td><code>Échap</code> ferme (<code>closeOnEscape</code> + <code>closable</code>). Bouton de fermeture <code>&lt;button&gt;</code> natif avec <code>aria-label</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Scroll de fond</strong></td>
+      <td>Toujours bloqué à l'ouverture, avec compensation de la gouttière de scrollbar. Compteur partagé : rétabli à la fermeture de la dernière lightbox ouverte.</td>
+    </tr>
+    <tr>
+      <td><strong>Motion</strong></td>
+      <td>Respecte <code>prefers-reduced-motion</code> et l'interrupteur global <code>data-motion="off"</code> ; désactivable via <code>motionDisabled</code>.</td>
+    </tr>
+  </tbody>
+</table>
+
+## Theming
+
+Variables locales en tête de `ui-lightbox.scss`. Voir le
+[fonctionnement de la configuration](?path=/docs/components-configuration--docs).
+
+<ConfigTable of="ui-lightbox" />
