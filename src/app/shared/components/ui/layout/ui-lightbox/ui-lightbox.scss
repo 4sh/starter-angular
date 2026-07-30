@@ -49,35 +49,40 @@ $focus-ring-width: utils.$focus-ring-width;    /// Épaisseur de l'anneau de foc
   z-index: 1;
   display: flex;
   gap: var(--units-sm);
-}
 
-// Icon-only actions living directly on the dark scrim: fixed (non-theme)
-// white-on-transparent chrome, since the mask ignores the active light/dark mode.
-.ui-lightbox-action {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: utils.rem-calc($action-size);
-  height: utils.rem-calc($action-size);
-  padding: 0;
-  border: none;
-  border-radius: var(--radius-full);
-  background: var(--primitives-white-10);
-  color: var(--primitives-white-base);
-  cursor: pointer;
-  @include utils.control-transition(background-color);
+  // `::ng-deep`, not a plain class, because the toolbar's content is *projected*
+  // (`contentChild('toolbar')`, e.g. from ui-image's zoom/rotate buttons): those
+  // buttons carry the consumer's own emulated-encapsulation attribute, so a
+  // scoped `.ui-lightbox-action` rule here would never match them — only the
+  // built-in close button lives in this template.
+  // Icon-only actions living directly on the dark scrim: fixed (non-theme)
+  // white-on-transparent chrome, since the mask ignores the active light/dark mode.
+  ::ng-deep .ui-lightbox-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: utils.rem-calc($action-size);
+    height: utils.rem-calc($action-size);
+    padding: 0;
+    border: none;
+    border-radius: var(--radius-full);
+    background: var(--primitives-white-10);
+    color: var(--primitives-white-base);
+    cursor: pointer;
+    @include utils.control-transition(background-color);
 
-  &:hover {
-    background: var(--primitives-white-20);
-  }
+    &:hover {
+      background: var(--primitives-white-20);
+    }
 
-  &:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 $focus-ring-width var(--primitives-white-base);
-  }
+    &:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 $focus-ring-width var(--primitives-white-base);
+    }
 
-  @include utils.motion-reduce {
-    transition-duration: 0.01ms;
+    @include utils.motion-reduce {
+      transition-duration: 0.01ms;
+    }
   }
 }
 
