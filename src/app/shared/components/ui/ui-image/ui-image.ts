@@ -15,7 +15,7 @@ const SVG_CACHE = new Map<string, string>();
     templateUrl: './ui-image.html',
     styleUrl: './ui-image.scss',
     host: {
-        '[class.ui-image-fill]': 'fill()',
+        '[class._fill]': 'fill()',
         '[style.--ui-image-object-fit]': 'objectFit()',
     },
 })
