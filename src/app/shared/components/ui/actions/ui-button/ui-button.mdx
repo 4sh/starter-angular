@@ -123,6 +123,13 @@ permet de le forcer.
 
 <Canvas of={ButtonStories.Expanded} />
 
+`rounded` donne une forme pilule (coins entièrement arrondis) ; combiné à `iconOnly`, le bouton
+devient un cercle parfait. Dans un `ui-button-split`, le hook `--ui-button-radius` posé par
+l'hôte reste prioritaire : les coins collés du split ne sont pas cassés par `rounded`.
+
+<Canvas of={ButtonStories.Rounded} />
+<Canvas of={ButtonStories.RoundedIconOnly} />
+
 ## Contenu projeté
 
 Au-delà de `label`, on peut projeter du contenu riche via `<ng-content>`.
