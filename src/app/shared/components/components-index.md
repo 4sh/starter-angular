@@ -25,7 +25,7 @@
 - ⬜ `ui-toggle-button` — Choix exclusif stylisé
 - ✅ `ui-segment-control` — Sélection segmentée (CVA ; simple/`multiple`, options primitives/objets + mapping de champs, indicateur glissant motion, tailles, `fluid`, `orientation` horizontal/vertical, template de segment, clavier roving radiogroup/group, erreur auto)
 - ✅ `ui-datepicker` — Sélecteur de date/heure (CVA, overlay CDK ou inline, min/max, jours désactivés, showTime 12/24h, inline, focus roving clavier)
-- ✅ `ui-nudger` — Incrémenteur numérique `[−] valeur [+]` (CVA ; deux `ui-button` icon-only, min/max/step, bornes dérivées désactivant le bouton, tailles, niveaux, `formatValue`, valeur en région live)
+- ✅ `ui-nudger` — Incrémenteur numérique `[−] valeur [+]` (CVA ; deux `ui-button` icon-only, min/max/step, bornes dérivées désactivant le bouton, tailles, niveaux, **variants** filled/outlined/ghost/contrast, `formatValue`, valeur en région live)
 - ✅ `ui-rating` — Notation étoiles (CVA, clavier natif range, focus)
 - ✅ `ui-file-upload` — Téléversement de fichiers (headless ; modes `field`/`drag` + glisser-déposer, `multiple`, validation `accept`/`maxFileSize`/`fileLimit`, `auto`, `customUpload` + `uploadHandler`, upload XHR avec suivi de progression, templates `file`/`content`/`toolbar`, région d'erreurs live, aperçus image révoqués ; compose `ui-file-upload-list`)
 - ✅ `ui-file-upload-list` — Ligne de fichier (unité répétée : vignette/icône, nom + taille/état, suppression ; bascule sur `ui-spinner` pendant le téléversement + barre de progression)

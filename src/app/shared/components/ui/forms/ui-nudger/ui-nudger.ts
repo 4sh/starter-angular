@@ -11,7 +11,7 @@ import {
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { BaseFieldControl } from '@app/shared/components/ui/forms/base-form-field';
 import { UiLevel } from '@app/shared/types/ui-level';
-import { UiButton } from '@app/shared/components/ui/actions/ui-button/ui-button';
+import { ButtonVariant, UiButton } from '@app/shared/components/ui/actions/ui-button/ui-button';
 
 export type NudgerSize = 'default' | 'small';
 
@@ -48,6 +48,8 @@ export class UiNudger extends BaseFieldControl<number> {
   size = input<NudgerSize>('default');
   /** Color family of the two buttons. */
   level = input<UiLevel>('high');
+  /** Appearance applied to the two buttons. */
+  variant = input<ButtonVariant>('filled');
 
   /** Accessible label of the decrement button. */
   decrementLabel = input<string>('Diminuer');
