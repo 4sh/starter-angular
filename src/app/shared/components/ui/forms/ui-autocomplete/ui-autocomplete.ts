@@ -23,6 +23,7 @@ import { CdkVirtualScrollViewport, ScrollingModule } from '@angular/cdk/scrollin
 import { BaseFormField } from '@app/shared/components/ui/forms/base-form-field';
 import { createOptionResolver } from '@app/shared/components/ui/forms/option-resolver';
 import { dropdownOverlayPositions } from '@app/shared/components/ui/forms/overlay-positions';
+import { formatLabel } from '@app/shared/components/ui/forms/format-label';
 import { UiField } from '@app/shared/components/ui/forms/ui-field/ui-field';
 import { UiIcon, UiIconSize } from '@app/shared/components/ui/ui-icon/ui-icon';
 import { UiSpinner } from '@app/shared/components/ui/informative/ui-spinner/ui-spinner';
@@ -185,6 +186,8 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
   chipSubLevel = input<UiSubLevel>('low');
   /** With `multiple`: pill chips (default) or rounded-rectangle chips. */
   chipRounded = input(true, { transform: booleanAttribute });
+  /** With `multiple`: accessible label of each chip's remove action — `{0}` is the chip label. */
+  removeTagLabel = input<string>('Supprimer {0}');
 
   /** Show a clear (×) action when the input holds text. */
   showClear = input(false, { transform: booleanAttribute });
@@ -424,7 +427,10 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
 
   /** @ignore One row per selected value (label resolved from the pick-time cache first). */
   protected readonly tagRows = computed(() =>
-    this.selectedValues().map((value, index) => ({ value, index, label: this.labelOfSelected(value) })),
+    this.selectedValues().map((value, index) => {
+      const label = this.labelOfSelected(value);
+      return { value, index, label, removeAriaLabel: formatLabel(this.removeTagLabel(), label) };
+    }),
   );
 
   /** @ignore Rows actually rendered as chips (`maxSelectedLabels` cap). */
@@ -438,7 +444,7 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
   protected readonly overflowCount = computed(() => this.tagRows().length - this.visibleTagRows().length);
 
   /** @ignore Rendered overflow chip label (e.g. `(+2 autres)`). */
-  protected readonly overflowText = computed(() => this.overflowLabel().replace('{0}', String(this.overflowCount())));
+  protected readonly overflowText = computed(() => formatLabel(this.overflowLabel(), this.overflowCount()));
 
   /** @ignore Placeholder hidden as soon as values are selected (`multiple`). */
   protected readonly effectivePlaceholder = computed(() =>
