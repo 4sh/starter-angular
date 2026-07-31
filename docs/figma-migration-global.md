@@ -8,6 +8,27 @@
 > — source unique pour le code **et** pour Figma. Toutes les valeurs ci-dessous
 > en sont issues ou ont été relevées en lecture seule sur les fichiers Figma.
 
+## Statut d'exécution
+
+**Cocher et commiter après chaque étape.** C'est le seul état qui survit entre
+sessions : sans lui, impossible de savoir si une exécution a été interrompue. Or
+l'ordre est contraint et **l'étape 3 est irréversible**.
+
+- [ ] **Étape 0** — pré-vol : re-scan des bindings, vérification des consommateurs de la bibliothèque, version du fichier notée
+- [ ] **Étape 1** — 14 renommages dans `[Projet] - Composants metiers`, puis publication
+- [ ] **Étape 2a** — 14 rebinds dans `[Projet] - Composants metiers`
+- [ ] **Étape 2b** — 20 rebinds dans `[Projet] - UI Kit`
+- [ ] **Étape 3** — ⚠️ **IRRÉVERSIBLE** — 7 suppressions, puis republication *(ne lancer qu'après vérification des compteurs de l'étape 2)*
+- [ ] **Étape 4** — vérification finale (re-scan, captures light/dark, comparaison Storybook)
+
+| | |
+|---|---|
+| Version du fichier propriétaire avant l'étape 1 | `à renseigner à l'étape 0` |
+| Exécuté par / le | `—` |
+
+> Si toutes les cases sont cochées, la migration est terminée : ce document devient
+> un historique et n'a plus d'action à déclencher.
+
 ---
 
 ## 1. Périmètre

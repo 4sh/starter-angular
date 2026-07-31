@@ -52,6 +52,12 @@ UI Kit URL: `https://www.figma.com/design/GZww5hdUA49LB8XWeWP6tl/-Projet----UI-K
 > `BeCLM`, `[ARKHE] OKWEB`, `[Celebrads]`, `Mode 2 - Projet B`): they carry the same
 > token structure, inherited from this starter, but their own variable keys.
 
+> 📌 **Pending Figma work.** The `global` tokens were renamed in code but **not yet in
+> Figma**. Before touching a variable, read
+> [`docs/figma-migration-global.md`](./docs/figma-migration-global.md) and check its
+> "Statut d'exécution" block — the step order is constrained and step 3 is
+> irreversible. Remove this note once every box is ticked.
+
 ---
 
 ## Token architecture
