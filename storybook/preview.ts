@@ -5,6 +5,7 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { lightTheme, darkTheme } from './myTheme';
 import { addons } from 'storybook/preview-api';
 import docJson from '../documentation.json';
+import { brandGlobalTypes, withBrand, DEFAULT_BRAND } from './brand-toolbar';
 
 setCompodocJson(docJson);
 
@@ -26,7 +27,10 @@ channel.on('DARK_MODE', (isDark) => {
 });
 
 const preview: Preview = {
+  initialGlobals: { brand: DEFAULT_BRAND },
+  globalTypes: brandGlobalTypes,
   decorators: [
+    withBrand,
     (Story, context) => {
       syncTheme(context.globals['darkMode']);
       return Story();
