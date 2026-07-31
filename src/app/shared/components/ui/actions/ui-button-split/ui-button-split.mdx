@@ -65,6 +65,12 @@ d'action est désactivé via `buttonDisabled`, le déclencheur du menu via
 
 <Canvas of={ButtonSplitStories.Sizes} />
 
+## Variant
+
+La propriété `variant` est forwardée aux deux boutons internes (action + déclencheur).
+
+<Canvas of={ButtonSplitStories.Outlined} />
+
 ## Anatomie
 
 <table>
@@ -82,6 +88,10 @@ d'action est désactivé via `buttonDisabled`, le déclencheur du menu via
     <tr>
       <td><strong>Level</strong></td>
       <td><code>high</code> · <code>low</code> · <code>success</code> · <code>warning</code> · <code>error</code> (appliqué aux deux boutons)</td>
+    </tr>
+    <tr>
+      <td><strong>Variant</strong></td>
+      <td><code>filled</code> (défaut, plein) · <code>outlined</code> · <code>ghost</code> · <code>contrast</code> (appliqué aux deux boutons)</td>
     </tr>
     <tr>
       <td><strong>Size</strong></td>

@@ -4,6 +4,7 @@ import {
   ButtonIconPos,
   ButtonNativeProps,
   ButtonSize,
+  ButtonVariant,
   UiButton,
 } from '@app/shared/components/ui/actions/ui-button/ui-button';
 import {
@@ -51,6 +52,8 @@ export class UiButtonSplit {
   level = input<UiLevel>('high');
   /** Size of the whole control (buttons + menu density). */
   size = input<ButtonSplitSize>('default');
+  /** Apparence appliquée aux deux boutons (action + trigger). */
+  variant = input<ButtonVariant>('filled');
 
   /** Disable both the action and the dropdown trigger. */
   disabled = input(false, { transform: booleanAttribute });
