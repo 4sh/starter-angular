@@ -45,6 +45,7 @@ export class UiButton {
   loading = input(false, { transform: booleanAttribute });
   loadingIcon = input<string>('circle-notch');
   expanded = input(false, { transform: booleanAttribute });
+  rounded = input(false, { transform: booleanAttribute });
   disabled = input(false, { transform: booleanAttribute });
   tabindex = input<number>();
   buttonProps = input<ButtonNativeProps>();
@@ -168,6 +169,7 @@ export class UiButton {
     const c = ['ui-button', `_${this.level()}`];
     if (this.size() !== 'default') c.push(`_${this.size()}`);
     if (this.expanded()) c.push('_expanded');
+    if (this.rounded()) c.push('_rounded');
     if (this.isIconOnly()) c.push('_icon-only');
     if (this.loading()) c.push('_loading');
     if (this.isLink() && this.disabled()) c.push('_disabled');

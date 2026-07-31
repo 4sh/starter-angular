@@ -37,8 +37,8 @@ const meta: Meta<UiNudger> = {
     required: { control: 'boolean', table: { defaultValue: { summary: 'false' } } },
     invalid: { control: 'boolean', table: { defaultValue: { summary: 'false' } } },
     ariaLabel: { control: 'text', table: { type: { summary: 'string' } } },
-    decrementLabel: { control: 'text', table: { defaultValue: { summary: '"Diminuer"' } } },
-    incrementLabel: { control: 'text', table: { defaultValue: { summary: '"Augmenter"' } } },
+    decrementAriaLabel: { control: 'text', table: { defaultValue: { summary: '"Diminuer"' } } },
+    incrementAriaLabel: { control: 'text', table: { defaultValue: { summary: '"Augmenter"' } } },
     decrementIcon: { control: 'text', table: { defaultValue: { summary: '"minus"' } } },
     incrementIcon: { control: 'text', table: { defaultValue: { summary: '"plus"' } } },
     valueChange: { action: 'valueChange', table: { disable: true } },
@@ -53,8 +53,8 @@ const meta: Meta<UiNudger> = {
     readonly: false,
     required: false,
     invalid: false,
-    decrementLabel: 'Diminuer',
-    incrementLabel: 'Augmenter',
+    decrementAriaLabel: 'Diminuer',
+    incrementAriaLabel: 'Augmenter',
     decrementIcon: 'minus',
     incrementIcon: 'plus',
   },
@@ -69,7 +69,7 @@ const TEMPLATE = `<ui-nudger
     [min]="min" [max]="max" [step]="step" [defaultValue]="defaultValue"
     [disabled]="disabled" [readonly]="readonly" [required]="required" [invalid]="invalid"
     [ariaLabel]="ariaLabel"
-    [decrementLabel]="decrementLabel" [incrementLabel]="incrementLabel"
+    [decrementAriaLabel]="decrementAriaLabel" [incrementAriaLabel]="incrementAriaLabel"
     [decrementIcon]="decrementIcon" [incrementIcon]="incrementIcon"
     (valueChange)="valueChange($event)" />`;
 

@@ -29,8 +29,8 @@ export class UiFileUploadList {
   icon = input<string>('file');
   /** Whether the remove button is shown. */
   removable = input(true, { transform: booleanAttribute });
-  /** Accessible label for the remove button. */
-  removeLabel = input<string>('Supprimer le fichier');
+  /** Accessible name of the remove button (raw text — the file name is appended in the template). */
+  removeAriaLabel = input<string>('Supprimer le fichier');
   /** Fallback error text when the file carries no message. */
   failedLabel = input<string>('Échec');
   /** Accessible name of the upload spinner — `{0}` is the file name. */

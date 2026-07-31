@@ -14,6 +14,7 @@ import {
   TemplateRef,
   untracked,
   viewChild,
+  viewChildren,
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
@@ -22,13 +23,15 @@ import { CdkVirtualScrollViewport, ScrollingModule } from '@angular/cdk/scrollin
 import { BaseFormField } from '@app/shared/components/ui/forms/base-form-field';
 import { createOptionResolver } from '@app/shared/components/ui/forms/option-resolver';
 import { dropdownOverlayPositions } from '@app/shared/components/ui/forms/overlay-positions';
+import { formatLabel } from '@app/shared/components/ui/forms/format-label';
 import { UiField } from '@app/shared/components/ui/forms/ui-field/ui-field';
 import { UiIcon, UiIconSize } from '@app/shared/components/ui/ui-icon/ui-icon';
 import { UiSpinner } from '@app/shared/components/ui/informative/ui-spinner/ui-spinner';
+import { UiChip } from '@app/shared/components/ui/informative/ui-chip/ui-chip';
 import { UiMotion } from '@app/shared/motion/ui-motion';
 
-/** Model value: the selected suggestion (or its `optionValue`), free text, or `null`. */
-export type AutocompleteValue<T = unknown> = T | string | null;
+/** Model value: the selected suggestion (or its `optionValue`), free text, an array (`multiple`), or `null`. */
+export type AutocompleteValue<T = unknown> = T | string | T[] | null;
 
 /** How the dropdown trigger builds its query. */
 export type AutocompleteDropdownMode = 'blank' | 'current';
@@ -51,6 +54,18 @@ export interface AutocompleteItemContext<T = unknown> {
   selected: boolean;
   /** Index of the suggestion in the visible list. */
   index: number;
+}
+
+/** Context handed to the `#selectedItem` template (once per selected value, `multiple`). */
+export interface AutocompleteSelectedItemContext<T = unknown> {
+  /** The original selected suggestion (default `$implicit`). */
+  $implicit: T;
+  /** Same as `$implicit`, named for readability. */
+  option: T;
+  /** Index among the selected values. */
+  index: number;
+  /** Removes this value (e.g. wire it to a removable chip). */
+  remove: () => void;
 }
 
 /** Context handed to the `#group` template. */
@@ -98,7 +113,9 @@ type AcRow =
  * gated by `minLength`); the parent answers by updating `suggestions`. Supports
  * primitive or object suggestions (`optionLabel` / `optionValue` /
  * `optionDisabled`), grouped suggestions, a `dropdown` trigger
- * (`dropdownMode`), `forceSelection`, `showClear`, `loading`, configurable
+ * (`dropdownMode`), a `multiple` mode (array model, removable chips in the
+ * field, `unique`, `maxSelectedLabels`), `forceSelection`, `showClear`,
+ * `loading`, configurable
  * focus behaviour (`autoOptionFocus` / `selectOnFocus` / `focusOnHover`) and
  * CDK virtual scrolling (plus lazy loading).
  *
@@ -106,8 +123,8 @@ type AcRow =
  * (`role="combobox"` + `aria-activedescendant`: focus never leaves the input,
  * suggestions are only visually focused).
  *
- * Customisation: the `#item`, `#group`, `#header`, `#footer` and `#empty`
- * templates, `panelStyleClass`, and the local SCSS variables.
+ * Customisation: the `#item`, `#selectedItem`, `#group`, `#header`, `#footer`
+ * and `#empty` templates, `panelStyleClass`, and the local SCSS variables.
  *
  * @example
  * ```html
@@ -118,7 +135,7 @@ type AcRow =
  */
 @Component({
   selector: 'ui-autocomplete',
-  imports: [NgTemplateOutlet, OverlayModule, ScrollingModule, UiField, UiIcon, UiSpinner, UiMotion],
+  imports: [NgTemplateOutlet, OverlayModule, ScrollingModule, UiField, UiIcon, UiSpinner, UiChip, UiMotion],
   templateUrl: './ui-autocomplete.html',
   styleUrl: './ui-autocomplete.scss',
   providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => UiAutocomplete), multi: true }],
@@ -166,6 +183,17 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
    */
   forceSelection = input(false, { transform: booleanAttribute });
 
+  /** Multi-selection: the model is an array, each pick renders as a removable chip in the field. */
+  multiple = input(false, { transform: booleanAttribute });
+  /** With `multiple`: ignore picks whose value is already selected (no duplicates). */
+  unique = input(true, { transform: booleanAttribute });
+  /** With `multiple`: max number of chips rendered; the rest collapses behind `overflowLabel`. */
+  maxSelectedLabels = input<number>();
+  /** With `multiple`: format of the collapsed-count chip (`{0}` = hidden count). */
+  overflowLabel = input<string>('(+{0} autres)');
+  /** With `multiple`: accessible label of each chip's remove action — `{0}` is the chip label. */
+  removeTagLabel = input<string>('Supprimer {0}');
+
   /** Show a clear (×) action when the input holds text. */
   showClear = input(false, { transform: booleanAttribute });
   /** Accessible name of the clear action. */
@@ -209,6 +237,8 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
   valueChange = output<AutocompleteValue<T>>();
   /** Emitted when a suggestion is picked (payload is the original suggestion). */
   optionSelect = output<T>();
+  /** With `multiple`: emitted when a selected value is removed (payload is the removed suggestion). */
+  optionUnselect = output<T>();
   /** Emitted when the panel opens. */
   opened = output<void>();
   /** Emitted when the panel closes. */
@@ -226,6 +256,8 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
 
   /** Custom suggestion template: `<ng-template #item let-option let-selected="selected">`. */
   protected readonly itemTemplate = contentChild<TemplateRef<AutocompleteItemContext<T>>>('item');
+  /** Custom selected-value template (per selected value, `multiple`): `<ng-template #selectedItem let-option let-remove="remove">`. */
+  protected readonly selectedItemTemplate = contentChild<TemplateRef<AutocompleteSelectedItemContext<T>>>('selectedItem');
   /** Custom group-header template: `<ng-template #group let-group>`. */
   protected readonly groupTemplate = contentChild<TemplateRef<AutocompleteGroupContext>>('group');
   /** Free content pinned above the list. */
@@ -243,6 +275,8 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
   private readonly panelEl = viewChild<ElementRef<HTMLElement>>('panel');
   /** @ignore Virtual-scroll viewport (lazy range + scrollToIndex). */
   private readonly viewport = viewChild(CdkVirtualScrollViewport);
+  /** @ignore Rendered chips (`multiple` mode, roving focus). */
+  private readonly tagEls = viewChildren('tagEl', { read: ElementRef });
 
   /** @ignore */
   protected readonly panelOpen = signal(false);
@@ -254,6 +288,10 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
   protected readonly inputText = signal('');
   /** @ignore Index of the visually focused option among the visible options (-1 = none). */
   protected readonly focusedIndex = signal(-1);
+  /** @ignore Index of the chip holding the roving focus (-1 = the input, `multiple` mode). */
+  protected readonly focusedTag = signal(-1);
+  /** @ignore Entries recorded at pick time so chip labels survive suggestion churn (`multiple`). */
+  private readonly selectionCache = signal<AcEntry[]>([]);
   /** @ignore A query has been emitted and is awaiting fresh suggestions (feeds `completeOnFocus`). */
   private queryDirty = false;
   /** @ignore Debounce handle for `completeMethod`. */
@@ -380,8 +418,58 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
 
   /** @ignore The clear action is shown. */
   protected readonly showClearButton = computed(
-    () => this.showClear() && this.hasText() && !this.isDisabled() && !this.readonly(),
+    () =>
+      this.showClear() &&
+      (this.hasText() || (this.multiple() && this.selectedValues().length > 0)) &&
+      !this.isDisabled() &&
+      !this.readonly(),
   );
+
+  /** @ignore Selected values in `multiple` mode (always an array). */
+  protected readonly selectedValues = computed<unknown[]>(() => {
+    if (!this.multiple()) return [];
+    const v = this.modelValue();
+    return Array.isArray(v) ? v : [];
+  });
+
+  /** @ignore One row per selected value (label resolved from the pick-time cache first). */
+  protected readonly tagRows = computed(() =>
+    this.selectedValues().map((value, index) => {
+      const label = this.labelOfSelected(value);
+      return { value, index, label, removeAriaLabel: formatLabel(this.removeTagLabel(), label) };
+    }),
+  );
+
+  /** @ignore Rows actually rendered as chips (`maxSelectedLabels` cap). */
+  protected readonly visibleTagRows = computed(() => {
+    const all = this.tagRows();
+    const max = this.maxSelectedLabels();
+    return max != null && max > 0 && all.length > max ? all.slice(0, max) : all;
+  });
+
+  /** @ignore Number of selected values collapsed behind the overflow chip. */
+  protected readonly overflowCount = computed(() => this.tagRows().length - this.visibleTagRows().length);
+
+  /** @ignore Rendered overflow chip label (e.g. `(+2 autres)`). */
+  protected readonly overflowText = computed(() => formatLabel(this.overflowLabel(), this.overflowCount()));
+
+  /** @ignore Contexts handed to the `#selectedItem` template (one per displayed value). */
+  protected readonly selectedItemContexts = computed<AutocompleteSelectedItemContext<T>[]>(() =>
+    this.visibleTagRows().map((tag) => ({
+      $implicit: this.originalOfSelected(tag.value) as T,
+      option: this.originalOfSelected(tag.value) as T,
+      index: tag.index,
+      remove: () => this.removeAt(tag.index),
+    })),
+  );
+
+  /** @ignore Placeholder hidden as soon as values are selected (`multiple`). */
+  protected readonly effectivePlaceholder = computed(() =>
+    this.multiple() && this.selectedValues().length ? '' : (this.placeholder() ?? ''),
+  );
+
+  /** @ignore Chips are removable unless the field is disabled/readonly. */
+  protected readonly canRemove = computed(() => !this.isDisabled() && !this.readonly());
 
   /** @ignore The empty-state row is rendered. */
   protected readonly showEmpty = computed(
@@ -414,6 +502,13 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
   // --- CVA -----------------------------------------------------------------
 
   override writeValue(value: AutocompleteValue<T>): void {
+    if (this.multiple()) {
+      const values = Array.isArray(value) ? value : [];
+      this.modelValue.set(values as T[]);
+      this.inputText.set('');
+      this.seedSelectionCache(values);
+      return;
+    }
     this.modelValue.set(value);
     this.inputText.set(this.labelOfValue(value));
     // With `optionValue`, the label may be unresolvable until the parent
@@ -421,6 +516,17 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
     this.pendingLabelSync.set(
       value !== null && value !== undefined && this.entryOfValue(value) === undefined,
     );
+  }
+
+  /** @ignore Best-effort label seed for values written from the form, from the current suggestions. */
+  private seedSelectionCache(values: unknown[]): void {
+    const cache = this.selectionCache();
+    const entries = this.flatEntries();
+    const found = values
+      .filter((v) => !cache.some((e) => this.equals(e.value, v)))
+      .map((v) => entries.find((e) => this.equals(e.value, v)))
+      .filter((e): e is AcEntry => !!e);
+    if (found.length) this.selectionCache.set([...cache, ...found]);
   }
 
   /** Moves focus to the input. */
@@ -470,14 +576,16 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
     // The user took over the text: stop any pending label re-resolution.
     this.pendingLabelSync.set(false);
 
-    // Free-text value while typing; `forceSelection` waits for a real suggestion.
-    // An emptied input commits `null` (same normalization as `clear()`).
-    if (!this.forceSelection()) this.commit(query === '' ? null : (query as AutocompleteValue<T>));
+    // Free-text value while typing; `forceSelection` waits for a real suggestion,
+    // `multiple` never lets the query mutate the selection, and an emptied input
+    // commits `null` (same normalization as `clear()`).
+    if (!this.forceSelection() && !this.multiple())
+      this.commit(query === '' ? null : (query as AutocompleteValue<T>));
 
     if (this.searchTimeout) clearTimeout(this.searchTimeout);
 
     if (query.length === 0) {
-      this.cleared.emit();
+      if (!this.multiple()) this.cleared.emit();
       this.close(false);
       return;
     }
@@ -521,7 +629,9 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
   /** @ignore Mark touched + `forceSelection` validation when focus leaves the component. */
   protected onInputBlur(event: FocusEvent): void {
     const next = event.relatedTarget as Node | null;
-    if (!next || !this.panelEl()?.nativeElement.contains(next)) {
+    const insideComponent = !!next && this.containerEl().nativeElement.contains(next);
+    const insidePanel = !!next && this.panelEl()?.nativeElement.contains(next);
+    if (!insideComponent && !insidePanel) {
       this.emitTouch();
       if (this.forceSelection()) this.validateForceSelection(event);
     }
@@ -539,6 +649,9 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
     const match = this.flatEntries().find((e) => !e.disabled && this.normalize(e.label) === this.normalize(text));
     if (match) {
       this.selectEntry(match, event, false);
+    } else if (this.multiple()) {
+      // Never commit over the selection: just drop the invalid query.
+      this.inputText.set('');
     } else {
       this.commit(null);
       this.inputText.set('');
@@ -554,7 +667,12 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
 
   /** Clears the value. */
   clear(): void {
-    this.commit(null);
+    if (this.multiple()) {
+      this.commit([]);
+      this.selectionCache.set([]);
+    } else {
+      this.commit(null);
+    }
     this.inputText.set('');
     this.cleared.emit();
     this.close(false);
@@ -566,6 +684,23 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
   /** @ignore Keyboard on the input (combobox pattern). */
   protected onInputKeydown(event: KeyboardEvent): void {
     if (this.isDisabled() || this.readonly()) return;
+    if (this.multiple() && this.selectedValues().length) {
+      const input = event.target as HTMLInputElement;
+      if (event.key === 'Backspace' && !this.inputText()) {
+        this.removeAt(this.selectedValues().length - 1);
+        return;
+      }
+      if (
+        event.key === 'ArrowLeft' &&
+        !this.selectedItemTemplate() &&
+        input.selectionStart === 0 &&
+        input.selectionEnd === 0
+      ) {
+        event.preventDefault();
+        this.focusTag(this.visibleTagRows().length - 1);
+        return;
+      }
+    }
     switch (event.key) {
       case 'ArrowDown':
         event.preventDefault();
@@ -634,6 +769,19 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
   /** @ignore Pick a suggestion: set the value + display its label. */
   private selectEntry(entry: AcEntry, event: Event, closePanel = true): void {
     if (entry.disabled || this.readonly()) return;
+    if (this.multiple()) {
+      const alreadySelected = this.selectedValues().some((v) => this.equals(v, entry.value));
+      if (!(this.unique() && alreadySelected)) {
+        this.selectionCache.update((cache) => [...cache, entry]);
+        this.commit([...this.selectedValues(), entry.value] as T[]);
+        this.optionSelect.emit(entry.original as T);
+      }
+      // The query was just consumed: an open panel would show results for a
+      // text the input no longer displays.
+      this.inputText.set('');
+      if (closePanel) this.close();
+      return;
+    }
     this.commit(entry.value as AutocompleteValue<T>);
     this.inputText.set(entry.label);
     this.optionSelect.emit(entry.original as T);
@@ -711,6 +859,84 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
   // --- Option resolution ----------------------------------------------------------
 
   /** @ignore Label displayed for a model value (best-effort against the suggestions). */
+  /** Remove the selected value at `index` (`multiple` mode). */
+  removeAt(index: number): void {
+    if (this.isDisabled() || this.readonly()) return;
+    const values = this.selectedValues();
+    if (index < 0 || index >= values.length) return;
+    const value = values[index];
+    const cached = this.selectionCache().find((e) => this.equals(e.value, value));
+    this.commit(values.filter((_, i) => i !== index) as T[]);
+    this.selectionCache.update((cache) => cache.filter((e) => !this.equals(e.value, value)));
+    this.optionUnselect.emit((cached?.original ?? value) as T);
+    // Keep the roving focus coherent after removal.
+    const remaining = this.visibleTagRows().length;
+    if (remaining === 0) this.focusInput();
+    else this.focusTag(Math.min(index, remaining - 1));
+  }
+
+  /** @ignore Roving keyboard on a chip (`multiple` mode). */
+  protected onTagKeydown(event: KeyboardEvent, index: number): void {
+    if (this.isDisabled() || this.readonly()) return;
+    switch (event.key) {
+      case 'ArrowLeft':
+        event.preventDefault();
+        if (index > 0) this.focusTag(index - 1);
+        return;
+      case 'ArrowRight':
+        event.preventDefault();
+        if (index < this.visibleTagRows().length - 1) this.focusTag(index + 1);
+        else this.focusInput();
+        return;
+      case 'Backspace':
+      case 'Delete':
+        event.preventDefault();
+        this.removeAt(index);
+        return;
+      case 'Home':
+        event.preventDefault();
+        this.focusTag(0);
+        return;
+      case 'End':
+        event.preventDefault();
+        this.focusTag(this.visibleTagRows().length - 1);
+        return;
+      default:
+        return;
+    }
+  }
+
+  /** @ignore Clicking the box's empty area focuses the input. */
+  protected onBoxMousedown(event: MouseEvent): void {
+    const target = event.target as HTMLElement;
+    if (target.closest('button') || target.closest('.ui-autocomplete-tag') || target.closest('input')) return;
+    event.preventDefault();
+    this.focusInput();
+  }
+
+  /** @ignore Move the roving focus onto a chip. */
+  private focusTag(index: number): void {
+    this.focusedTag.set(index);
+    setTimeout(() => this.tagEls()[index]?.nativeElement.focus());
+  }
+
+  /** @ignore Return the roving focus to the input. */
+  private focusInput(): void {
+    this.focusedTag.set(-1);
+    this.focus();
+  }
+
+  /** @ignore Label of a selected value: pick-time cache first, then the current suggestions. */
+  private labelOfSelected(value: unknown): string {
+    const cached = this.selectionCache().find((e) => this.equals(e.value, value));
+    return cached ? cached.label : this.labelOfValue(value as AutocompleteValue<T>);
+  }
+
+  /** @ignore Original suggestion of a selected value (pick-time cache first, else the raw value). */
+  private originalOfSelected(value: unknown): unknown {
+    return this.selectionCache().find((e) => this.equals(e.value, value))?.original ?? value;
+  }
+
   private labelOfValue(value: AutocompleteValue<T>): string {
     if (value === null || value === undefined) return '';
     const entry = this.entryOfValue(value);
@@ -759,6 +985,7 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
 
   /** @ignore Whether a resolved value is the current model value. */
   private isValueSelected(value: unknown): boolean {
+    if (this.multiple()) return this.selectedValues().some((v) => this.equals(v, value));
     const current = this.modelValue();
     return current !== null && current !== undefined && this.equals(current, value);
   }

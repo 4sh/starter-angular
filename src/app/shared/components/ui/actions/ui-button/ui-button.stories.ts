@@ -74,6 +74,11 @@ const meta: Meta<UiButton> = {
       description: 'Pleine largeur (100%).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
+    rounded: {
+      control: { type: 'boolean' },
+      description: 'Forme pilule (coins entièrement arrondis).',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
     disabled: {
       control: { type: 'boolean' },
       description: 'Désactive le bouton (attribut natif).',
@@ -171,6 +176,8 @@ export const Expanded: Story = {
   args: { label: 'Pleine largeur', level: 'high', expanded: true },
   parameters: { layout: 'padded' },
 };
+export const Rounded: Story = { args: { label: 'Rounded', level: 'high', rounded: true } };
+export const RoundedIconOnly: Story = { args: { level: 'high', icon: 'plus', ariaLabel: 'Ajouter', rounded: true } };
 
 // États
 export const Disabled: Story = { args: { label: 'Disabled', level: 'high', disabled: true } };

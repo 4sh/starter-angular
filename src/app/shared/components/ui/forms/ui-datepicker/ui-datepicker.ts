@@ -189,9 +189,9 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   /** Accessible name of the calendar panel (fallback when no `label`/`ariaLabel`). */
   panelAriaLabel = input<string>('Calendrier');
   /** Accessible label of the previous-month/year navigation arrow. */
-  prevLabel = input<string>('Précédent');
+  prevAriaLabel = input<string>('Précédent');
   /** Accessible label of the next-month/year navigation arrow. */
-  nextLabel = input<string>('Suivant');
+  nextAriaLabel = input<string>('Suivant');
   /** Accessible name of the hours spinbutton. */
   hoursAriaLabel = input<string>('Heures');
   /** Accessible name of the minutes spinbutton. */
@@ -199,15 +199,15 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   /** Accessible name of the AM/PM spinbutton. */
   meridiemAriaLabel = input<string>('AM/PM');
   /** Accessible label of the hours increment button. */
-  incrementHoursLabel = input<string>('Augmenter les heures');
+  incrementHoursAriaLabel = input<string>('Augmenter les heures');
   /** Accessible label of the hours decrement button. */
-  decrementHoursLabel = input<string>('Diminuer les heures');
+  decrementHoursAriaLabel = input<string>('Diminuer les heures');
   /** Accessible label of the minutes increment button. */
-  incrementMinutesLabel = input<string>('Augmenter les minutes');
+  incrementMinutesAriaLabel = input<string>('Augmenter les minutes');
   /** Accessible label of the minutes decrement button. */
-  decrementMinutesLabel = input<string>('Diminuer les minutes');
+  decrementMinutesAriaLabel = input<string>('Diminuer les minutes');
   /** Accessible label of the AM/PM toggle buttons. */
-  toggleMeridiemLabel = input<string>('Changer AM/PM');
+  toggleMeridiemAriaLabel = input<string>('Changer AM/PM');
 
   /** Render the panel inline (no trigger, no overlay). */
   inline = input(false, { transform: booleanAttribute });

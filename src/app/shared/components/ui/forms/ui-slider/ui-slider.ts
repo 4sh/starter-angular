@@ -15,6 +15,7 @@ import {
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { BaseFieldControl } from '@app/shared/components/ui/forms/base-form-field';
+import { warnMissingAccessibleName } from '@app/shared/components/ui/forms/warn-missing-accessible-name';
 
 export type SliderOrientation = 'horizontal' | 'vertical';
 /** Model value: a single number, or a `[start, end]` tuple in `range` mode. */
@@ -109,13 +110,15 @@ export class UiSlider extends BaseFieldControl<SliderValue> {
     if (isDevMode()) {
       effect(() => {
         if (!this.ariaLabel() && !this.ariaLabelledBy()) {
-          console.warn(
-            '[ui-slider] No accessible name: provide `ariaLabel` (or `ariaLabelledBy`).',
+          warnMissingAccessibleName(
+            'ui-slider',
+            'No accessible name: provide `ariaLabel` (or `ariaLabelledBy`).',
           );
         }
         if (this.range() && !this.ariaLabelStart() && !this.ariaLabelEnd() && !this.ariaLabelledBy()) {
-          console.warn(
-            '[ui-slider] Range mode: set `ariaLabelStart`/`ariaLabelEnd` so each handle has a distinct name.',
+          warnMissingAccessibleName(
+            'ui-slider',
+            'Range mode: set `ariaLabelStart`/`ariaLabelEnd` so each handle has a distinct name.',
           );
         }
       });

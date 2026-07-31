@@ -37,7 +37,7 @@
          [attr.aria-valuenow]="handle.value"
          [attr.aria-orientation]="orientation()"
          [attr.aria-label]="handleAriaLabel(handle.index)"
-         [attr.aria-labelledby]="ariaLabelledBy()"
+         [attr.aria-labelledby]="ariaLabelledBy() || null"
          [attr.aria-disabled]="isDisabled() ? true : null"
          [attr.aria-readonly]="readonly() ? true : null"
          [style.inset-inline-start]="orientation() === 'horizontal' ? handle.percent + '%' : null"

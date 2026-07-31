@@ -50,9 +50,9 @@ export class UiNudger extends BaseFieldControl<number> {
   level = input<UiLevel>('high');
 
   /** Accessible label of the decrement button. */
-  decrementLabel = input<string>('Diminuer');
+  decrementAriaLabel = input<string>('Diminuer');
   /** Accessible label of the increment button. */
-  incrementLabel = input<string>('Augmenter');
+  incrementAriaLabel = input<string>('Augmenter');
   /** FontAwesome icon name of the decrement button. */
   decrementIcon = input<string>('minus');
   /** FontAwesome icon name of the increment button. */

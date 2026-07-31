@@ -79,6 +79,10 @@ $focus-ring-width: utils.$action-focus-ring-width; /// Épaisseur de l'anneau de
   // --- Layout --------------------------------------------------------
   &._expanded { width: 100%; }
 
+  // Pill shape. Keeps the `--ui-button-radius` hook so a host (ui-button-split)
+  // can still reshape glued corners.
+  &._rounded { border-radius: var(--ui-button-radius, var(--radius-full)); }
+
   // iconPos top | bottom
   &._icon-top,
   &._icon-bottom {
