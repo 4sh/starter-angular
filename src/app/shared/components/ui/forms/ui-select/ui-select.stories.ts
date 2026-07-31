@@ -297,11 +297,12 @@ export const Multiple: Story = {
           label="Villes" placeholder="Sélectionner des villes"
           [(ngModel)]="model" [options]="cities" optionLabel="name" optionValue="code"
           [multiple]="true" [checkmark]="true" />
+        <code>model = {{ model | json }}</code>
         <ui-select
           label="Repli au-delà de 2 (maxSelectedLabels)" placeholder="Sélectionner des villes"
           [(ngModel)]="limited" [options]="cities" optionLabel="name" optionValue="code"
           [multiple]="true" [checkmark]="true" [maxSelectedLabels]="2" />
-        <code>model = {{ model | json }} · limited = {{ limited | json }}</code>
+        <code>limited = {{ limited | json }}</code>
       </div>
     `,
   }),
