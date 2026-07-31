@@ -177,7 +177,7 @@ If the component holds a value (checked, selection, input):
 
 **stories.ts**:
 - `title: 'Components/ui/{cat}/ui-{name}'`, `component`, `decorators: [moduleMetadata({ imports: [...] })]` (+ `FormsModule` if `ngModel`).
-- `parameters.design.url` Figma (file `XgSemnGLFrAq75CxcjPVf1`) — point to the ComponentSet's `node-id` if known.
+- `parameters.design.url` Figma (UI Kit file `GZww5hdUA49LB8XWeWP6tl`) — point to the ComponentSet's `node-id` if known.
 - `argTypes` documented (control, description in French, `table.type`/`defaultValue`).
 - One story per distinct visual state from the YAML (levels, sizes, states…). Form controls: drive with `[(ngModel)]` via a `render` factory for real interactivity.
 - Form controls: add a **`SignalForms`** story (`form()` + `required()` + `[formField]` from `@angular/forms/signals`, demo in a co-located `@Component` class) modeled on `ui-slider.stories.ts`, in addition to the Template-driven/Reactive demos; the "Formulaires" section of the mdx shows all three APIs.

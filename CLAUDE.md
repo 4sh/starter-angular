@@ -34,7 +34,23 @@ Before generating anything in Figma, you **must** audit the source Angular compo
 > **Reference pattern**: `src/app/shared/components/ui/actions/ui-button/`. Every new
 > `ui-*` component is built on this model (signals + SCSS visual-DNA classes).
 
-**Figma file** : `https://www.figma.com/design/GZww5hdUA49LB8XWeWP6tl/-Projet----UI-Kit?node-id=0-1&t=PXOwFotKvf72dn1c-1`
+### Figma files (two, with distinct roles)
+
+| File | `fileKey` | Role |
+|---|---|---|
+| **[Projet] - UI Kit** | `GZww5hdUA49LB8XWeWP6tl` | The **components**. Target every component generation/audit here. Consumes the variables as `remote`. |
+| **[Projet] - Composants metiers** | `lH4jhyZFkIeJ1Ob1tlY7Wm` | **Owns the variable collections** (`semantics`, `primitives`, `metrics`, `typography`, `responsive`, `transitions`, `breakpoint`, `utils`). |
+
+UI Kit URL: `https://www.figma.com/design/GZww5hdUA49LB8XWeWP6tl/-Projet----UI-Kit?node-id=0-1&t=PXOwFotKvf72dn1c-1`
+
+> ⚠️ **Any write to a variable — create, rename, retarget, delete — must happen in
+> `lH4jhyZFkIeJ1Ob1tlY7Wm`.** In the UI Kit the variables are `remote`, therefore
+> read-only: the Plugin API can only mutate *local* variables. From the UI Kit you can
+> only rebind a node to another variable (`importVariableByKeyAsync`).
+>
+> Never write to another project's library (`[TEST]`, `[NAXOS] VUP`, `[EasyFret]`,
+> `BeCLM`, `[ARKHE] OKWEB`, `[Celebrads]`, `Mode 2 - Projet B`): they carry the same
+> token structure, inherited from this starter, but their own variable keys.
 
 ---
 
@@ -477,7 +493,7 @@ Create the Figma component for `{ComponentName}` following the mandatory workflo
 1. Analyze the source Angular component
 2. Map all tokens
 3. Define the variants/properties architecture
-4. Generate with use_figma in file XgSemnGLFrAq75CxcjPVf1
+4. Generate with use_figma in the UI Kit file GZww5hdUA49LB8XWeWP6tl
 5. Apply Figma variables (zero hardcoding)
 6. Configure Auto Layout
 7. Return the node-id to update the Storybook story
@@ -486,7 +502,7 @@ Create the Figma component for `{ComponentName}` following the mandatory workflo
 ### 3. Figma component audit
 
 ```
-Audit the Figma component node-id="{nodeId}" of file XgSemnGLFrAq75CxcjPVf1 in Design System Reviewer mode:
+Audit the Figma component node-id="{nodeId}" of the UI Kit file GZww5hdUA49LB8XWeWP6tl in Design System Reviewer mode:
 - Detect hardcoded values
 - Detect bad variants
 - Detect token violations
@@ -522,30 +538,48 @@ Audit the variants architecture of the Figma ComponentSet "{ComponentName}":
 
 ## Figma variables: Expected structure
 
-### Collections to create in Figma
+### Existing collections (do NOT recreate them)
 
-```
-Collection: "Primitives" (modes: ThemeOne, ThemeTwo, ThemeThree)
-Collection: "Semantics" (modes: Light, Dark)
-  └── References the Primitives variables
-Collection: "Metrics" (single mode)
-Collection: "Typography" (single mode)
-```
+All of them already live in `lH4jhyZFkIeJ1Ob1tlY7Wm`. Names are **lowercase**, and the
+mode names are not the ones the SCSS uses. Read before writing.
+
+| Collection | Modes | Vars |
+|---|---|---|
+| `primitives` | `Brand 1`, `Brand 2`, `Brand 3` | 85 |
+| `semantics` | `Light`, `Dark` | 421 |
+| `metrics` | `Mode 1` | 33 |
+| `typography` | `Mode 1` | 10 |
+| `responsive` | `Desktop`, `Tablet`, `Mobile` | 32 |
+| `utils` | `Mode 1` | 31 |
+| `breakpoint` | `Mode 1` | 6 |
+| `transitions` | `Mode 1` | 7 |
+
+`semantics` references `primitives` through variable aliases — that is what makes the
+brand/mode switch work without duplication.
 
 ### Figma variable naming (aligned with the SCSS tokens)
 
+The collection is **not** part of the variable name (no `Semantics/` prefix), and
+neither is the `token` segment:
+
 ```
-Semantics/global/high/content/default
-Semantics/global/high/surface/default
-Semantics/token/actions/high/surface/default
-Semantics/token/actions/high/surface/hover
-Semantics/token/form/error/stroke/default
-Metrics/spacing/sm
-Metrics/spacing/md
-Metrics/radius/sm
-Typography/fontFamily/base
-Typography/fontSize/md
+global/text/default                 → --global-text-default
+global/background/default           → --global-background-default
+global/border/focus                 → --global-border-focus
+actions/high/surface/default        → --actions-high-surface-default
+actions/high/surface/hover          → --actions-high-surface-hover
+form/error/stroke/default           → --form-error-stroke-default
+radius/md                           → --radius-md
+units/sm                            → --units-sm
+stroke/default                      → --stroke-default
+font Family/Base                    → --fontfamily-base
+weight/bold                         → --weight-bold
+size/typography/text/md             → --size-typography-text-md
 ```
+
+> The `global/*` names above are the **post-migration** ones (see
+> `docs/figma-migration-global.md`). Until that runbook is executed, the Figma file
+> still carries `global/{default|high|low}/{content|surface|stroke}/{state}`.
 
 ---
 
