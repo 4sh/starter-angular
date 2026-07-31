@@ -67,6 +67,7 @@
         <ul
           class="ui-autocomplete-list"
           role="listbox"
+          [attr.aria-multiselectable]="multiple() ? 'true' : null"
           [attr.id]="listboxId()"
           [attr.aria-label]="label() || ariaLabel() || null"
         >
@@ -83,6 +84,7 @@
         <ul
           class="ui-autocomplete-list"
           role="listbox"
+          [attr.aria-multiselectable]="multiple() ? 'true' : null"
           [attr.id]="listboxId()"
           [attr.aria-label]="label() || ariaLabel() || null"
         >
@@ -127,37 +129,87 @@
     [readonly]="readonly()"
     [message]="displayMessage()"
     [messageId]="messageId()"
+    [autoHeight]="multiple()"
   >
-    <input
-      #inputEl
-      type="text"
-      class="ui-autocomplete-input"
-      [class._small]="size() === 'small'"
-      role="combobox"
-      autocomplete="off"
-      aria-haspopup="listbox"
-      aria-autocomplete="list"
-      [id]="resolvedId()"
-      [value]="inputText()"
-      [placeholder]="placeholder() ?? ''"
-      [disabled]="isDisabled()"
-      [readOnly]="readonly()"
-      [required]="required()"
-      [attr.name]="name() || null"
-      [attr.tabindex]="tabindex()"
-      [attr.aria-expanded]="panelOpen()"
-      [attr.aria-controls]="panelOpen() ? listboxId() : null"
-      [attr.aria-activedescendant]="activeDescendant()"
-      [attr.aria-label]="label() ? null : ariaLabel() || null"
-      [attr.aria-labelledby]="ariaLabelledBy() || null"
-      [attr.aria-describedby]="displayMessage() ? messageId() : null"
-      [attr.aria-required]="required() ? 'true' : null"
-      [attr.aria-invalid]="effectiveLevel() === 'error' ? 'true' : null"
-      (input)="onInput($event)"
-      (keydown)="onInputKeydown($event)"
-      (focus)="onInputFocus($event)"
-      (blur)="onInputBlur($event)"
-    />
+    <div
+      class="ui-autocomplete-control"
+      [attr.role]="multiple() ? 'listbox' : null"
+      [attr.aria-orientation]="multiple() ? 'horizontal' : null"
+      [attr.aria-label]="multiple() && !label() ? ariaLabel() || null : null"
+      [attr.aria-labelledby]="multiple() ? ariaLabelledBy() || null : null"
+      (mousedown)="onBoxMousedown($event)"
+    >
+      @if (multiple()) {
+        @for (tag of visibleTagRows(); track $index) {
+          <ui-chip
+            #tagEl
+            class="ui-autocomplete-tag"
+            role="option"
+            aria-selected="true"
+            [attr.aria-label]="tag.label"
+            [label]="tag.label"
+            [level]="chipLevel()"
+            [subLevel]="chipSubLevel()"
+            size="small"
+            [rounded]="chipRounded()"
+            [disabled]="isDisabled()"
+            [removable]="canRemove()"
+            [removeTabindex]="-1"
+            [removeAriaLabel]="'Supprimer ' + tag.label"
+            [attr.aria-setsize]="tagRows().length"
+            [attr.aria-posinset]="tag.index + 1"
+            [attr.tabindex]="isDisabled() ? null : (focusedTag() === tag.index ? 0 : -1)"
+            (keydown)="onTagKeydown($event, tag.index)"
+            (focus)="focusedTag.set(tag.index)"
+            (remove)="removeAt(tag.index)"
+          />
+        }
+        @if (overflowCount() > 0) {
+          <!-- Collapsed remainder (`maxSelectedLabels`): informative only, not removable. -->
+          <ui-chip
+            class="ui-autocomplete-tag _overflow"
+            role="presentation"
+            [label]="overflowText()"
+            [level]="chipLevel()"
+            [subLevel]="chipSubLevel()"
+            size="small"
+            [rounded]="chipRounded()"
+            [disabled]="isDisabled()"
+          />
+        }
+      }
+
+      <input
+        #inputEl
+        type="text"
+        class="ui-autocomplete-input"
+        [class._small]="size() === 'small'"
+        role="combobox"
+        autocomplete="off"
+        aria-haspopup="listbox"
+        aria-autocomplete="list"
+        [id]="resolvedId()"
+        [value]="inputText()"
+        [placeholder]="effectivePlaceholder()"
+        [disabled]="isDisabled()"
+        [readOnly]="readonly()"
+        [required]="required()"
+        [attr.name]="name() || null"
+        [attr.tabindex]="tabindex()"
+        [attr.aria-expanded]="panelOpen()"
+        [attr.aria-controls]="panelOpen() ? listboxId() : null"
+        [attr.aria-activedescendant]="activeDescendant()"
+        [attr.aria-label]="label() ? null : ariaLabel() || null"
+        [attr.aria-labelledby]="ariaLabelledBy() || null"
+        [attr.aria-describedby]="displayMessage() ? messageId() : null"
+        [attr.aria-required]="required() ? 'true' : null"
+        [attr.aria-invalid]="effectiveLevel() === 'error' ? 'true' : null"
+        (input)="onInput($event)"
+        (keydown)="onInputKeydown($event)"
+        (focus)="onInputFocus($event)"
+        (blur)="onInputBlur($event)"
+      />
+    </div>
 
     @if (showClearButton()) {
       <button

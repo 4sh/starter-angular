@@ -194,6 +194,43 @@ const meta: Meta<UiAutocomplete> = {
       description: 'Vide la saisie au blur si elle ne correspond à aucune suggestion.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
+    multiple: {
+      control: 'boolean',
+      description: 'Sélection multiple : le modèle est un tableau, chaque choix devient une chip supprimable.',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    unique: {
+      control: 'boolean',
+      description: 'Avec `multiple` : ignore les choix déjà sélectionnés (pas de doublons).',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
+    },
+    maxSelectedLabels: {
+      control: 'number',
+      description: 'Avec `multiple` : nombre maximal de chips affichées, le reste replié derrière `overflowLabel`.',
+      table: { type: { summary: 'number' }, defaultValue: { summary: 'undefined' } },
+    },
+    overflowLabel: {
+      control: 'text',
+      description: 'Avec `multiple` : format de la chip de repli (`{0}` = nombre masqué).',
+      table: { type: { summary: 'string' }, defaultValue: { summary: "'(+{0} autres)'" } },
+    },
+    chipLevel: {
+      control: 'select',
+      options: ['default', 'highlight', 'success', 'warning', 'error'],
+      description: 'Avec `multiple` : niveau de couleur des chips.',
+      table: { type: { summary: 'UiFeedbackLevel' }, defaultValue: { summary: "'default'" } },
+    },
+    chipSubLevel: {
+      control: 'inline-radio',
+      options: ['high', 'low'],
+      description: 'Avec `multiple` : sous-niveau de couleur des chips.',
+      table: { type: { summary: 'UiSubLevel' }, defaultValue: { summary: "'low'" } },
+    },
+    chipRounded: {
+      control: 'boolean',
+      description: 'Avec `multiple` : chips pilule (défaut) ou rectangle arrondi.',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
+    },
     showClear: {
       control: 'boolean',
       description: 'Affiche une action d’effacement quand le champ contient du texte.',
@@ -254,6 +291,7 @@ const meta: Meta<UiAutocomplete> = {
     helperText: { control: 'text', description: 'Texte d’aide sous le champ.', table: { type: { summary: 'string' } } },
     completeMethod: { action: 'completeMethod', table: { category: 'Outputs' } },
     optionSelect: { action: 'optionSelect', table: { category: 'Outputs' } },
+    optionUnselect: { action: 'optionUnselect', table: { category: 'Outputs' } },
     valueChange: { action: 'valueChange', table: { category: 'Outputs' } },
     cleared: { action: 'cleared', table: { category: 'Outputs' } },
   },
@@ -392,6 +430,68 @@ export const Group: Story = {
             </span>
           </ng-template>
         </ui-autocomplete>
+      </div>
+    `,
+  }),
+};
+
+/**
+ * `multiple` : le modèle est un tableau, chaque choix devient une chip supprimable
+ * (× ou Backspace input vide) ; `unique` (défaut) ignore les doublons.
+ * `maxSelectedLabels` replie le surplus derrière une chip `overflowLabel`, et
+ * `forceSelection` efface au blur toute saisie non reconnue sans toucher à la sélection.
+ */
+export const Multiple: Story = {
+  render: () => ({
+    props: {
+      a: completer(COUNTRIES, (c) => c.name),
+      b: completer(COUNTRIES, (c) => c.name),
+      c: completer(COUNTRIES, (c) => c.name),
+      model: [COUNTRIES[0]],
+      limited: [COUNTRIES[0], COUNTRIES[1], COUNTRIES[2]],
+      forced: [],
+    },
+    template: `
+      <div style="display: grid; gap: 1rem; width: 20rem">
+        <ui-autocomplete
+          label="Pays"
+          placeholder="Tapez un pays…"
+          [multiple]="true"
+          optionLabel="name"
+          dataKey="code"
+          [dropdown]="true"
+          [(ngModel)]="model"
+          [suggestions]="a.results"
+          (completeMethod)="a.complete($event)"
+        />
+        <code>model = {{ model | json }}</code>
+        <ui-autocomplete
+          label="Repli au-delà de 2 (maxSelectedLabels)"
+          placeholder="Tapez un pays…"
+          [multiple]="true"
+          [maxSelectedLabels]="2"
+          optionLabel="name"
+          dataKey="code"
+          [dropdown]="true"
+          [(ngModel)]="limited"
+          [suggestions]="b.results"
+          (completeMethod)="b.complete($event)"
+        />
+        <code>limited = {{ limited | json }}</code>
+        <ui-autocomplete
+          label="Sélection forcée"
+          placeholder="Tapez puis quittez le champ…"
+          helperText="Une saisie non reconnue est effacée, la sélection reste."
+          [multiple]="true"
+          [forceSelection]="true"
+          optionLabel="name"
+          dataKey="code"
+          [dropdown]="true"
+          [(ngModel)]="forced"
+          [suggestions]="c.results"
+          (completeMethod)="c.complete($event)"
+        />
+        <code>forced = {{ forced | json }}</code>
       </div>
     `,
   }),

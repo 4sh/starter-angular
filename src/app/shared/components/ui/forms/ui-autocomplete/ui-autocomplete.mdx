@@ -62,6 +62,22 @@ Avec `group`, les suggestions sont regroupées par catégorie via `optionGroupLa
 
 <Canvas of={AutocompleteStories.Group} />
 
+## Multiple
+
+`multiple` bascule le modèle en **tableau** : chaque suggestion choisie s'affiche comme une
+chip supprimable (`ui-chip`) dans le champ, la saisie repart à vide après chaque choix et le
+panneau se referme. `Backspace` sur une saisie vide retire la dernière valeur ; `←` depuis le
+début de la saisie déplace le focus sur les chips (navigation `←`/`→`, suppression `Backspace`/
+`Suppr`). `unique` (défaut) ignore les choix déjà sélectionnés — l'égalité s'appuie sur
+`dataKey` pour les objets (sans `dataKey`, deux instances distinctes sont considérées
+différentes). En mode `multiple`, la saisie libre ne modifie jamais la sélection et `showClear`
+vide le tableau entier. `maxSelectedLabels` limite le nombre de chips affichées : le reste est
+replié derrière une chip informative dont le libellé vient d'`overflowLabel` (`{0}` = nombre
+masqué). Avec `forceSelection`, une saisie non reconnue est simplement effacée au blur, sans
+toucher à la sélection.
+
+<Canvas of={AutocompleteStories.Multiple} />
+
 ## Force Selection
 
 `forceSelection` valide la saisie manuelle au blur : si le texte ne correspond à aucune
@@ -211,6 +227,10 @@ validation `required`.
     <tr>
       <td>`Tab`</td>
       <td>Ferme le panneau et déplace le focus vers l'élément suivant.</td>
+    </tr>
+    <tr>
+      <td>Mode `multiple`</td>
+      <td>Double listbox : les chips vivent dans une `role="listbox"` horizontale (focus roving `←`/`→`, `aria-setsize`/`aria-posinset`) et le panneau porte `aria-multiselectable="true"` avec `aria-selected` reflétant l'appartenance au tableau. La suppression d'une chip est annoncée via `removeAriaLabel` (« Supprimer » suivi du label de la chip).</td>
     </tr>
     <tr>
       <td>États</td>
