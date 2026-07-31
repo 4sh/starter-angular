@@ -6,6 +6,7 @@ import { FormsModule, ReactiveFormsModule, FormControl, Validators } from '@angu
 import { FormField, form, required } from '@angular/forms/signals';
 import { UiAutocomplete, AutocompleteCompleteEvent } from './ui-autocomplete';
 import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
+import { UiChip } from '@app/shared/components/ui/informative/ui-chip/ui-chip';
 
 interface Country {
   name: string;
@@ -114,7 +115,9 @@ function groupCompleter(groups: readonly CountryGroup[]) {
 const meta: Meta<UiAutocomplete> = {
   title: 'Components/ui/forms/ui-autocomplete',
   component: UiAutocomplete,
-  decorators: [moduleMetadata({ imports: [UiAutocomplete, UiIcon, CommonModule, FormsModule, ReactiveFormsModule] })],
+  decorators: [
+    moduleMetadata({ imports: [UiAutocomplete, UiIcon, UiChip, CommonModule, FormsModule, ReactiveFormsModule] }),
+  ],
   parameters: {
     layout: 'centered',
     design: {
@@ -213,23 +216,6 @@ const meta: Meta<UiAutocomplete> = {
       control: 'text',
       description: 'Avec `multiple` : format de la chip de repli (`{0}` = nombre masqué).',
       table: { type: { summary: 'string' }, defaultValue: { summary: "'(+{0} autres)'" } },
-    },
-    chipLevel: {
-      control: 'select',
-      options: ['default', 'highlight', 'success', 'warning', 'error'],
-      description: 'Avec `multiple` : niveau de couleur des chips.',
-      table: { type: { summary: 'UiFeedbackLevel' }, defaultValue: { summary: "'default'" } },
-    },
-    chipSubLevel: {
-      control: 'inline-radio',
-      options: ['high', 'low'],
-      description: 'Avec `multiple` : sous-niveau de couleur des chips.',
-      table: { type: { summary: 'UiSubLevel' }, defaultValue: { summary: "'low'" } },
-    },
-    chipRounded: {
-      control: 'boolean',
-      description: 'Avec `multiple` : chips pilule (défaut) ou rectangle arrondi.',
-      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
     showClear: {
       control: 'boolean',
@@ -492,6 +478,37 @@ export const Multiple: Story = {
           (completeMethod)="c.complete($event)"
         />
         <code>forced = {{ forced | json }}</code>
+      </div>
+    `,
+  }),
+};
+
+/**
+ * En mode `multiple`, le template `#selectedItem` remplace entièrement le rendu par défaut
+ * des valeurs sélectionnées : ici des `ui-chip` personnalisées, retirables via le callback
+ * `remove` du contexte.
+ */
+export const CustomSelectedItem: Story = {
+  render: () => ({
+    props: { ...completer(COUNTRIES, (c) => c.name), model: [COUNTRIES[0], COUNTRIES[1]] },
+    template: `
+      <div style="display: grid; gap: 1rem; width: 20rem">
+        <ui-autocomplete
+          label="Pays"
+          placeholder="Tapez un pays…"
+          [multiple]="true"
+          optionLabel="name"
+          dataKey="code"
+          [dropdown]="true"
+          [(ngModel)]="model"
+          [suggestions]="results"
+          (completeMethod)="complete($event)"
+        >
+          <ng-template #selectedItem let-country let-remove="remove">
+            <ui-chip [label]="country.name" level="highlight" size="small" [removable]="true" (remove)="remove()" />
+          </ng-template>
+        </ui-autocomplete>
+        <code>model = {{ model | json }}</code>
       </div>
     `,
   }),

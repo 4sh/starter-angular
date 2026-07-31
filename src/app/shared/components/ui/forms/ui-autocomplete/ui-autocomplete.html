@@ -133,36 +133,39 @@
   >
     <div
       class="ui-autocomplete-control"
-      [attr.role]="multiple() ? 'listbox' : null"
-      [attr.aria-orientation]="multiple() ? 'horizontal' : null"
-      [attr.aria-label]="multiple() && !label() ? ariaLabel() || null : null"
-      [attr.aria-labelledby]="multiple() ? ariaLabelledBy() || null : null"
+      [attr.role]="multiple() && !selectedItemTemplate() ? 'listbox' : null"
+      [attr.aria-orientation]="multiple() && !selectedItemTemplate() ? 'horizontal' : null"
+      [attr.aria-label]="multiple() && !selectedItemTemplate() && !label() ? ariaLabel() || null : null"
+      [attr.aria-labelledby]="multiple() && !selectedItemTemplate() ? ariaLabelledBy() || null : null"
       (mousedown)="onBoxMousedown($event)"
     >
       @if (multiple()) {
-        @for (tag of visibleTagRows(); track $index) {
-          <ui-chip
-            #tagEl
-            class="ui-autocomplete-tag"
-            role="option"
-            aria-selected="true"
-            [attr.aria-label]="tag.label"
-            [label]="tag.label"
-            [level]="chipLevel()"
-            [subLevel]="chipSubLevel()"
-            size="small"
-            [rounded]="chipRounded()"
-            [disabled]="isDisabled()"
-            [removable]="canRemove()"
-            [removeTabindex]="-1"
-            [removeAriaLabel]="tag.removeAriaLabel"
-            [attr.aria-setsize]="tagRows().length"
-            [attr.aria-posinset]="tag.index + 1"
-            [attr.tabindex]="isDisabled() ? null : (focusedTag() === tag.index ? 0 : -1)"
-            (keydown)="onTagKeydown($event, tag.index)"
-            (focus)="focusedTag.set(tag.index)"
-            (remove)="removeAt(tag.index)"
-          />
+        @if (selectedItemTemplate(); as tpl) {
+          @for (ctx of selectedItemContexts(); track $index) {
+            <ng-container [ngTemplateOutlet]="tpl" [ngTemplateOutletContext]="ctx" />
+          }
+        } @else {
+          @for (tag of visibleTagRows(); track $index) {
+            <ui-chip
+              #tagEl
+              class="ui-autocomplete-tag"
+              role="option"
+              aria-selected="true"
+              [attr.aria-label]="tag.label"
+              [label]="tag.label"
+              size="small"
+              [disabled]="isDisabled()"
+              [removable]="canRemove()"
+              [removeTabindex]="-1"
+              [removeAriaLabel]="tag.removeAriaLabel"
+              [attr.aria-setsize]="tagRows().length"
+              [attr.aria-posinset]="tag.index + 1"
+              [attr.tabindex]="isDisabled() ? null : (focusedTag() === tag.index ? 0 : -1)"
+              (keydown)="onTagKeydown($event, tag.index)"
+              (focus)="focusedTag.set(tag.index)"
+              (remove)="removeAt(tag.index)"
+            />
+          }
         }
         @if (overflowCount() > 0) {
           <!-- Collapsed remainder (`maxSelectedLabels`): informative only, not removable. -->
@@ -170,10 +173,7 @@
             class="ui-autocomplete-tag _overflow"
             role="presentation"
             [label]="overflowText()"
-            [level]="chipLevel()"
-            [subLevel]="chipSubLevel()"
             size="small"
-            [rounded]="chipRounded()"
             [disabled]="isDisabled()"
           />
         }

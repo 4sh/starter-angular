@@ -74,9 +74,32 @@ différentes). En mode `multiple`, la saisie libre ne modifie jamais la sélecti
 vide le tableau entier. `maxSelectedLabels` limite le nombre de chips affichées : le reste est
 replié derrière une chip informative dont le libellé vient d'`overflowLabel` (`{0}` = nombre
 masqué). Avec `forceSelection`, une saisie non reconnue est simplement effacée au blur, sans
-toucher à la sélection.
+toucher à la sélection. Le rendu par défaut des valeurs est une `ui-chip` retirable ; le
+template `#selectedItem` le remplace entièrement (voir
+[Custom Selected Item](#custom-selected-item)).
 
 <Canvas of={AutocompleteStories.Multiple} />
+
+## Custom Selected Item
+
+En mode `multiple`, le template `#selectedItem` est rendu **une fois par valeur
+sélectionnée** — idéal pour afficher la sélection en
+[`ui-chip`](?path=/docs/components-ui-informative-ui-chip--docs) personnalisée. Le contexte
+expose `$implicit`/`option` (la suggestion d'origine), `index` et un callback **`remove`** :
+branchez-le sur l'action de suppression de la chip (`removable` + `(remove)="remove()"`) pour
+retirer une valeur **directement depuis le champ**. Quand le template est fourni, l'a11y des
+valeurs (rôles, focus) est **déléguée au template consommateur** — le composant retire sa
+listbox de chips par défaut ; au clavier, `Retour arrière` sur une saisie vide retire toujours
+la dernière valeur. `maxSelectedLabels` et `overflowLabel` restent actifs : le surplus est
+replié derrière la chip informative de repli.
+
+```html
+<ng-template #selectedItem let-country let-remove="remove">
+  <ui-chip [label]="country.name" level="highlight" size="small" [removable]="true" (remove)="remove()" />
+</ng-template>
+```
+
+<Canvas of={AutocompleteStories.CustomSelectedItem} />
 
 ## Force Selection
 
@@ -137,7 +160,9 @@ portée par le modèle reste l'**instance** de la suggestion (ex. `{ name: 'Fran
 
 ## Template
 
-Le composant offre plusieurs templates de personnalisation : `#item` (une suggestion), `#group`
+Le composant offre plusieurs templates de personnalisation : `#item` (une suggestion),
+`#selectedItem` (une valeur sélectionnée, mode `multiple` — voir
+[Custom Selected Item](#custom-selected-item)), `#group`
 (en-tête de groupe), `#header` / `#footer` (contenu épinglé au-dessus/en-dessous de la liste) et
 `#empty` (état vide).
 
@@ -230,7 +255,7 @@ validation `required`.
     </tr>
     <tr>
       <td>Mode `multiple`</td>
-      <td>Double listbox : les chips vivent dans une `role="listbox"` horizontale (focus roving `←`/`→`, `aria-setsize`/`aria-posinset`) et le panneau porte `aria-multiselectable="true"` avec `aria-selected` reflétant l'appartenance au tableau. La suppression d'une chip est annoncée via `removeAriaLabel` (« Supprimer » suivi du label de la chip).</td>
+      <td>Double listbox : les chips par défaut vivent dans une `role="listbox"` horizontale (focus roving `←`/`→`, `aria-setsize`/`aria-posinset`) et le panneau porte `aria-multiselectable="true"` avec `aria-selected` reflétant l'appartenance au tableau. La suppression d'une chip est annoncée via `removeAriaLabel` (« Supprimer » suivi du label de la chip). Avec le template `#selectedItem`, la listbox de chips et son roving sont retirés : l'a11y des valeurs est déléguée au template consommateur (`Retour arrière` sur saisie vide reste géré).</td>
     </tr>
     <tr>
       <td>États</td>

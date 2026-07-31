@@ -29,7 +29,6 @@ import { UiIcon, UiIconSize } from '@app/shared/components/ui/ui-icon/ui-icon';
 import { UiSpinner } from '@app/shared/components/ui/informative/ui-spinner/ui-spinner';
 import { UiChip } from '@app/shared/components/ui/informative/ui-chip/ui-chip';
 import { UiMotion } from '@app/shared/motion/ui-motion';
-import { UiFeedbackLevel, UiSubLevel } from '@app/shared/types/ui-level';
 
 /** Model value: the selected suggestion (or its `optionValue`), free text, an array (`multiple`), or `null`. */
 export type AutocompleteValue<T = unknown> = T | string | T[] | null;
@@ -55,6 +54,18 @@ export interface AutocompleteItemContext<T = unknown> {
   selected: boolean;
   /** Index of the suggestion in the visible list. */
   index: number;
+}
+
+/** Context handed to the `#selectedItem` template (once per selected value, `multiple`). */
+export interface AutocompleteSelectedItemContext<T = unknown> {
+  /** The original selected suggestion (default `$implicit`). */
+  $implicit: T;
+  /** Same as `$implicit`, named for readability. */
+  option: T;
+  /** Index among the selected values. */
+  index: number;
+  /** Removes this value (e.g. wire it to a removable chip). */
+  remove: () => void;
 }
 
 /** Context handed to the `#group` template. */
@@ -112,8 +123,8 @@ type AcRow =
  * (`role="combobox"` + `aria-activedescendant`: focus never leaves the input,
  * suggestions are only visually focused).
  *
- * Customisation: the `#item`, `#group`, `#header`, `#footer` and `#empty`
- * templates, `panelStyleClass`, and the local SCSS variables.
+ * Customisation: the `#item`, `#selectedItem`, `#group`, `#header`, `#footer`
+ * and `#empty` templates, `panelStyleClass`, and the local SCSS variables.
  *
  * @example
  * ```html
@@ -180,12 +191,6 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
   maxSelectedLabels = input<number>();
   /** With `multiple`: format of the collapsed-count chip (`{0}` = hidden count). */
   overflowLabel = input<string>('(+{0} autres)');
-  /** With `multiple`: color level of the chips. */
-  chipLevel = input<UiFeedbackLevel>('default');
-  /** With `multiple`: color sub-level of the chips. */
-  chipSubLevel = input<UiSubLevel>('low');
-  /** With `multiple`: pill chips (default) or rounded-rectangle chips. */
-  chipRounded = input(true, { transform: booleanAttribute });
   /** With `multiple`: accessible label of each chip's remove action — `{0}` is the chip label. */
   removeTagLabel = input<string>('Supprimer {0}');
 
@@ -251,6 +256,8 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
 
   /** Custom suggestion template: `<ng-template #item let-option let-selected="selected">`. */
   protected readonly itemTemplate = contentChild<TemplateRef<AutocompleteItemContext<T>>>('item');
+  /** Custom selected-value template (per selected value, `multiple`): `<ng-template #selectedItem let-option let-remove="remove">`. */
+  protected readonly selectedItemTemplate = contentChild<TemplateRef<AutocompleteSelectedItemContext<T>>>('selectedItem');
   /** Custom group-header template: `<ng-template #group let-group>`. */
   protected readonly groupTemplate = contentChild<TemplateRef<AutocompleteGroupContext>>('group');
   /** Free content pinned above the list. */
@@ -445,6 +452,16 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
 
   /** @ignore Rendered overflow chip label (e.g. `(+2 autres)`). */
   protected readonly overflowText = computed(() => formatLabel(this.overflowLabel(), this.overflowCount()));
+
+  /** @ignore Contexts handed to the `#selectedItem` template (one per displayed value). */
+  protected readonly selectedItemContexts = computed<AutocompleteSelectedItemContext<T>[]>(() =>
+    this.visibleTagRows().map((tag) => ({
+      $implicit: this.originalOfSelected(tag.value) as T,
+      option: this.originalOfSelected(tag.value) as T,
+      index: tag.index,
+      remove: () => this.removeAt(tag.index),
+    })),
+  );
 
   /** @ignore Placeholder hidden as soon as values are selected (`multiple`). */
   protected readonly effectivePlaceholder = computed(() =>
@@ -673,7 +690,12 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
         this.removeAt(this.selectedValues().length - 1);
         return;
       }
-      if (event.key === 'ArrowLeft' && input.selectionStart === 0 && input.selectionEnd === 0) {
+      if (
+        event.key === 'ArrowLeft' &&
+        !this.selectedItemTemplate() &&
+        input.selectionStart === 0 &&
+        input.selectionEnd === 0
+      ) {
         event.preventDefault();
         this.focusTag(this.visibleTagRows().length - 1);
         return;
@@ -908,6 +930,11 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
   private labelOfSelected(value: unknown): string {
     const cached = this.selectionCache().find((e) => this.equals(e.value, value));
     return cached ? cached.label : this.labelOfValue(value as AutocompleteValue<T>);
+  }
+
+  /** @ignore Original suggestion of a selected value (pick-time cache first, else the raw value). */
+  private originalOfSelected(value: unknown): unknown {
+    return this.selectionCache().find((e) => this.equals(e.value, value))?.original ?? value;
   }
 
   private labelOfValue(value: AutocompleteValue<T>): string {
