@@ -43,8 +43,9 @@ Utilisez ces tokens pour garantir la cohérence visuelle et le support automatiq
 
 ### Structure des Noms (Anatomie)
 
-La nomenclature suit une logique de construction stricte : `[domaine]-[famille]-[niveau]-[propriété]-[état]`.
-*(Note : le domaine `global` n'utilise pas de famille, sa structure est `global-[niveau]-[propriété]-[état]`)*.
+La nomenclature suit une logique de construction stricte : `[famille]-[niveau]-[propriété]-[état]`.
+Les tokens sémantiques sont générés **sans préfixe** : la famille ouvre directement le nom
+(`--actions-high-surface-default`), il n'y a pas de segment `token-` ou `semantics-`.
 
 <table className="doc-table">
     <thead>
@@ -56,41 +57,98 @@ La nomenclature suit une logique de construction stricte : `[domaine]-[famille]-
     </thead>
     <tbody>
     <tr>
-        <td><strong>1. Domaine</strong></td>
-        <td><code>token</code>, <code>global</code></td>
-        <td>Définit si la couleur est liée à un composant (token) ou structurelle (global).</td>
+        <td><strong>1. Famille</strong></td>
+        <td><code>global</code>, <code>actions</code>, <code>form</code>, <code>informative</code>, <code>navigation</code>, <code>table</code></td>
+        <td>L'intention fonctionnelle. <code>global</code> = structurel (fondations), les autres = liées à un type de composant.</td>
     </tr>
     <tr>
-        <td><strong>2. Famille</strong></td>
-        <td><code>actions</code>, <code>form</code>, <code>informative</code>, <code>navigation</code>, <code>table</code></td>
-        <td>L'intention fonctionnelle du composant. <em>(Ignoré si le domaine est global)</em>.</td>
-    </tr>
-    <tr>
-        <td><strong>3. Niveau</strong></td>
+        <td><strong>2. Niveau</strong></td>
         <td><code>high</code>, <code>low</code>, <code>success</code>, <code>error</code>, <code>warning</code>...</td>
         <td>La hiérarchie visuelle ou la variante sémantique.</td>
     </tr>
     <tr>
-        <td><strong>4. Propriété</strong></td>
+        <td><strong>3. Propriété</strong></td>
         <td><code>surface</code>, <code>content</code>, <code>stroke</code></td>
         <td>La cible CSS : <em>surface</em> (fond), <em>content</em> (texte/icône), <em>stroke</em> (bordure).</td>
     </tr>
     <tr>
-        <td><strong>5. État</strong></td>
-        <td><code>default</code>, <code>hover</code>, <code>focused</code>, <code>pressed</code>, <code>disabled</code>, <code>active</code>, <code>checked</code></td>
+        <td><strong>4. État</strong></td>
+        <td><code>default</code>, <code>hover</code>, <code>focused</code>, <code>pressed</code>, <code>disabled</code>, <code>active</code>, <code>checked</code>, <code>odd</code>, <code>even</code></td>
         <td>L'état d'interaction de l'élément (pseudo-classes CSS).</td>
     </tr>
     </tbody>
 </table>
 
-### Référentiel des Familles Fonctionnelles
+> **Casse** : le JSON est en camelCase, le générateur met en minuscules **sans séparateur**.
+> `informative.defaultHigh` donne donc `--informative-defaulthigh-*`, et non
+> `--informative-default-high-*`. En cas de doute, la source est
+> `src/styles/src/generated/_tokens-semantics.scss`.
 
-Utilisez ce tableau pour déterminer quel `[domaine]` et quelle `[famille]` utiliser en se basant strictement sur **l'intention fonctionnelle** du composant (les listes de composants ne sont données qu'à titre d'exemple non exhaustif).
+> **Hors anatomie** : la famille `effects` est **plate** (`--effects-default`,
+> `--effects-highlight`, `--effects-success`, `--effects-warning`, `--effects-error`) — pas de
+> niveau, ni de propriété, ni d'état. Ce sont les couleurs de diffusion qui alimentent les
+> ombres composites (voir §5).
+
+### Le segment `[niveau]` est souvent composé
+
+C'est la principale source de tâtonnement quand on cherche un token : `[niveau]` n'est pas
+toujours un simple `high`/`low`. Il **fusionne** régulièrement le niveau avec un second axe, et
+la casse disparaissant à la génération (voir ci-dessus), le nom final peut surprendre.
 
 <table className="doc-table">
     <thead>
     <tr>
-        <th>Domaine / Famille</th>
+        <th>Second axe fusionné</th>
+        <th>Familles</th>
+        <th>Exemple</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><strong>Emphase</strong> (<code>High</code> / <code>Low</code>)</td>
+        <td><code>informative</code></td>
+        <td><code>--informative-errorhigh-surface-default</code><br/>(<code>informative.errorHigh</code>)</td>
+    </tr>
+    <tr>
+        <td><strong>Variante d'apparence</strong> (<code>Outlined</code> / <code>Ghost</code>)</td>
+        <td><code>actions</code></td>
+        <td><code>--actions-successoutlined-content-hover</code><br/>(<code>actions.successOutlined</code>)</td>
+    </tr>
+    <tr>
+        <td><strong>Polarité de fond</strong> — le niveau est <em>remplacé</em> par <code>on[Polarité]</code>, suivi de la variante, puis du niveau seulement là où il reste porteur de sens</td>
+        <td><code>actions</code></td>
+        <td><code>--actions-ondark-outlined-stroke-hover</code><br/><code>--actions-ondark-filled-error-content-default</code></td>
+    </tr>
+    </tbody>
+</table>
+
+<div className="ai-instruction-block">
+    <div className="ai-instruction-block-title">
+        EXCEPTION À CONNAÎTRE : LES JEUX <code>onDark</code> / <code>onLight</code>
+    </div>
+    <p>
+        C'est la <strong>seule famille du DS dont les valeurs <code>modeLight</code> et
+        <code>modeDark</code> sont volontairement identiques</strong>. Elle sert à un composant
+        posé sur un fond de couleur (bandeau, carte teintée, image) : ce fond ne change pas avec
+        le thème, donc la polarité du composant ne doit pas basculer non plus. Ce n'est pas un
+        oubli de mode sombre, ne « corrigez » pas ces tokens pour les faire diverger.
+    </p>
+    <p>
+        N'utilisez ces jeux <strong>que</strong> par-dessus une surface de couleur
+        maîtrisée. Sur le fond de page, ce sont les jeux normaux qui s'appliquent, eux bien
+        réactifs au thème. Choix de la polarité et domaine de validité :
+        <a href="?path=/docs/components-ui-actions-ui-button--docs"><code>ui-button</code> → onColor</a>.
+    </p>
+</div>
+
+### Référentiel des Familles Fonctionnelles
+
+Utilisez ce tableau pour déterminer quelle `[famille]` utiliser en se basant strictement sur **l'intention fonctionnelle** du composant (les listes de composants ne sont données qu'à titre d'exemple non exhaustif).
+
+<table className="doc-table">
+    <thead>
+    <tr>
+        <th>Famille</th>
         <th>Usage Intentionnel (Heuristique)</th>
         <th>Exemple de construction</th>
     </tr>
@@ -105,44 +163,44 @@ Utilisez ce tableau pour déterminer quel `[domaine]` et quelle `[famille]` util
         <td><code>--global-high-surface-default</code></td>
     </tr>
     <tr>
-        <td><strong><code>token-actions</code></strong></td>
+        <td><strong><code>actions</code></strong></td>
         <td>
             <strong>Règle :</strong> TOUT élément interactif qui déclenche un événement, une soumission ou une action.<br/>
             <em>Exemples non exhaustifs : Boutons, liens, déclencheurs d'accordéon, pagination, etc.</em>
         </td>
-        <td><code>--token-actions-high-surface-hover</code></td>
+        <td><code>--actions-high-surface-hover</code></td>
     </tr>
     <tr>
-        <td><strong><code>token-form</code></strong></td>
+        <td><strong><code>form</code></strong></td>
         <td>
             <strong>Règle :</strong> TOUT élément permettant à l'utilisateur de saisir, modifier ou sélectionner une donnée.<br/>
             <em>Exemples non exhaustifs : Inputs texte, checkbox, radio, select, sliders, toggles, color pickers, etc.</em>
         </td>
-        <td><code>--token-form-high-stroke-focused</code></td>
+        <td><code>--form-high-stroke-focused</code></td>
     </tr>
     <tr>
-        <td><strong><code>token-informative</code></strong></td>
+        <td><strong><code>informative</code></strong></td>
         <td>
             <strong>Règle :</strong> Retours visuels non interactifs affichant un statut, un feedback ou mettant en valeur une donnée.<br/>
             <em>Exemples non exhaustifs : Alertes, badges, tags, toasts, tooltips, barres de progression, etc.</em>
         </td>
-        <td><code>--token-informative-error-surface-default</code></td>
+        <td><code>--informative-errorhigh-surface-default</code></td>
     </tr>
     <tr>
-        <td><strong><code>token-navigation</code></strong></td>
+        <td><strong><code>navigation</code></strong></td>
         <td>
             <strong>Règle :</strong> Éléments d'architecture servant exclusivement à guider l'utilisateur dans les vues de l'application.<br/>
             <em>Exemples non exhaustifs : Menus, onglets, sidebars, fil d'Ariane, steppers, etc.</em>
         </td>
-        <td><code>--token-navigation-high-content-active</code></td>
+        <td><code>--navigation-high-content-active</code></td>
     </tr>
     <tr>
-        <td><strong><code>token-table</code></strong></td>
+        <td><strong><code>table</code></strong></td>
         <td>
             <strong>Règle :</strong> Strictement réservé à l'affichage de données tabulaires complexes.<br/>
             <em>Exemples : DataTables, grilles, en-têtes, lignes paires/impaires, cellules.</em>
         </td>
-        <td><code>--token-table-body-surface-odd</code></td>
+        <td><code>--table-body-surface-odd</code></td>
     </tr>
     </tbody>
 </table>
