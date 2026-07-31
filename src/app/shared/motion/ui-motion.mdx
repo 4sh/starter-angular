@@ -110,11 +110,37 @@ directive : `motionDuration`, `motionEasing`, `motionDelay`, `motionDistance`,
 
 ## Intégration aux composants
 
-| Composant | Mécanisme |
-|---|---|
-| `ui-accordion` | Transition `grid-template-rows` via `utils.motion-transition` (préréglage `collapse` en esprit). |
-| `ui-tooltip` | Transition opacité/translate via `utils.motion-transition` (durée `fast`, ease-out). |
-| Dropdown / Select (à venir) | `[uiMotion]="'slide-down'"` sur le panneau CDK. |
-| Modale / Dialog (à venir) | `[uiMotion]="'zoom'"` sur la boîte, `fade` sur le fond. |
-| Toast (à venir) | `[uiMotion]="'slide-up'"` par toast. |
-| Helper (à venir) | `[uiMotion]="'fade'"` ou `slide-down` sous le champ. |
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Composant</th>
+      <th>Mécanisme</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>ui-accordion</code></td>
+      <td>Transition <code>grid-template-rows</code> via <code>utils.motion-transition</code> (préréglage <code>collapse</code> en esprit).</td>
+    </tr>
+    <tr>
+      <td><code>ui-tooltip</code></td>
+      <td>Transition opacité/translate via <code>utils.motion-transition</code> (durée <code>fast</code>, ease-out).</td>
+    </tr>
+    <tr>
+      <td>Dropdown / Select (à venir)</td>
+      <td><code>[uiMotion]="'slide-down'"</code> sur le panneau CDK.</td>
+    </tr>
+    <tr>
+      <td>Modale / Dialog (à venir)</td>
+      <td><code>[uiMotion]="'zoom'"</code> sur la boîte, <code>fade</code> sur le fond.</td>
+    </tr>
+    <tr>
+      <td>Toast (à venir)</td>
+      <td><code>[uiMotion]="'slide-up'"</code> par toast.</td>
+    </tr>
+    <tr>
+      <td>Helper (à venir)</td>
+      <td><code>[uiMotion]="'fade'"</code> ou <code>slide-down</code> sous le champ.</td>
+    </tr>
+  </tbody>
+</table>

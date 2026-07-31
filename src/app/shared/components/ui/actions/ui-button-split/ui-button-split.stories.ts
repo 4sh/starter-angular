@@ -99,6 +99,19 @@ const meta: Meta<UiButtonSplit> = {
       description: 'Taille du contrôle (boutons + densité du menu).',
       table: { type: { summary: 'ButtonSplitSize' }, defaultValue: { summary: '"default"' } },
     },
+    variant: {
+      control: { type: 'select' },
+      options: ['filled', 'outlined', 'ghost'],
+      description: 'Apparence : filled (défaut, plein) · outlined (bordure) · ghost (texte seul), appliquée aux deux boutons.',
+      table: { type: { summary: 'ButtonVariant' }, defaultValue: { summary: '"filled"' } },
+    },
+    onColor: {
+      control: { type: 'inline-radio' },
+      options: [null, 'dark', 'light'],
+      description:
+        'Luminosité du fond de couleur sur lequel le contrôle est posé, forwardée aux deux boutons (voir ui-button.onColor).',
+      table: { type: { summary: "'dark' | 'light' | null" }, defaultValue: { summary: 'null' } },
+    },
     disabled: {
       control: { type: 'boolean' },
       description: 'Désactive les deux boutons.',
@@ -269,4 +282,10 @@ export const Sizes: Story = {
     `,
   }),
   args: { model: BASIC_MODEL },
+};
+
+// --- Outlined ----------------------------------------------------------------
+// `variant` is forwarded to both the action button and the dropdown trigger.
+export const Outlined: Story = {
+  args: { label: 'Enregistrer', level: 'high', variant: 'outlined', model: BASIC_MODEL },
 };

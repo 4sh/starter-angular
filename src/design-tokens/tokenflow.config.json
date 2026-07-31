@@ -5,5 +5,40 @@
   },
   "writeDebounceMs": 200,
   "strictTypes": false,
-  "inferTypes": true
+  "inferTypes": true,
+  "palettes": [
+    {
+      "collection": "primitives",
+      "groupPath": [
+        "primary"
+      ],
+      "steps": [
+        "50",
+        "100",
+        "200",
+        "300",
+        "400",
+        "500",
+        "600",
+        "700",
+        "800",
+        "900"
+      ],
+      "baseStep": "500",
+      "bases": {
+        "modeBrand1": "#e61cac",
+        "modeBrand2": "#107caa",
+        "modeBrand3": "#303be0"
+      },
+      "curve": {
+        "lightMax": 0.93,
+        "lightMin": 0.24,
+        "chromaFalloff": 0.8290221347738533,
+        "easing": "ease",
+        "hueShiftLight": 0,
+        "hueShiftDark": 0
+      },
+      "detached": []
+    }
+  ]
 }

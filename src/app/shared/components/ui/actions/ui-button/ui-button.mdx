@@ -14,7 +14,7 @@ import { ConfigTable } from '../../../../../../../storybook/blocks/config-table'
 
 ## Anatomie
 
-<table>
+<table className="doc-table">
   <thead>
     <tr>
       <th>Élément</th>
@@ -29,6 +29,14 @@ import { ConfigTable } from '../../../../../../../storybook/blocks/config-table'
     <tr>
       <td><strong>Level</strong></td>
       <td><code>high</code> · <code>low</code> · <code>success</code> · <code>warning</code> · <code>error</code></td>
+    </tr>
+    <tr>
+      <td><strong>Variant</strong></td>
+      <td><code>filled</code> (défaut, plein) · <code>outlined</code> (bordure) · <code>ghost</code> (texte seul) — chacun compose avec <code>level</code> via son propre jeu de tokens.</td>
+    </tr>
+    <tr>
+      <td><strong>onColor</strong></td>
+      <td><code>dark</code> · <code>light</code> · absent (défaut). Luminosité du <strong>fond de couleur</strong> sur lequel le bouton est posé. Orthogonal à <code>level</code> et <code>variant</code>.</td>
     </tr>
     <tr>
       <td><strong>Size</strong></td>
@@ -59,7 +67,7 @@ import { ConfigTable } from '../../../../../../../storybook/blocks/config-table'
 
 ## Accessibilité
 
-<table>
+<table className="doc-table">
   <thead>
     <tr>
       <th>Règle</th>
@@ -96,6 +104,150 @@ import { ConfigTable } from '../../../../../../../storybook/blocks/config-table'
 <Canvas of={ButtonStories.Success} />
 <Canvas of={ButtonStories.Warning} />
 <Canvas of={ButtonStories.Error} />
+
+## Variants
+
+Au-delà du `level` (couleur), `variant` pilote l'apparence. `outlined` et `ghost`
+composent avec le `level` choisi : chaque couple a **son propre jeu de tokens**
+(`--actions-<level><variant>-*`, ex. `--actions-successoutlined-surface-hover`),
+au même contrat que le jeu `filled` — 5 états × `content` / `surface` / `stroke`.
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Variant</th>
+      <th>Repos</th>
+      <th>Survol / focus / pression</th>
+      <th>Bordure</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>filled</code></td>
+      <td>fond plein</td>
+      <td>fond plein qui fonce</td>
+      <td>teintée</td>
+    </tr>
+    <tr>
+      <td><code>outlined</code></td>
+      <td>fond transparent</td>
+      <td>fond <strong>légèrement teinté</strong> (<code>{'*.50'}</code> → <code>{'*.100'}</code> en clair, <code>{'*.800'}</code> → <code>{'*.700'}</code> en sombre)</td>
+      <td>teintée à tous les états</td>
+    </tr>
+    <tr>
+      <td><code>ghost</code></td>
+      <td>fond transparent</td>
+      <td>même fond teinté que <code>outlined</code></td>
+      <td>aucune — <strong>sauf au focus</strong>, où elle porte l'anneau</td>
+    </tr>
+  </tbody>
+</table>
+
+`outlined` et `ghost` ne diffèrent donc que par la bordure : c'est le token qui
+porte la transparence (`stroke-default` de `ghost` = `transparent`), pas le CSS.
+Le niveau `low` est volontairement un cran plus discret que les autres (texte et
+bordure une graduation plus claire).
+
+<Canvas of={ButtonStories.Outlined} />
+<Canvas of={ButtonStories.Ghost} />
+
+Les 5 niveaux, par variante :
+
+<Canvas of={ButtonStories.OutlinedLevels} />
+<Canvas of={ButtonStories.GhostLevels} />
+
+## Bouton posé sur un fond de couleur (`onColor`)
+
+Les jeux ci-dessus sont calculés pour le **fond de page**. Posé sur un bandeau, une
+carte teintée ou une image, le bouton n'a plus assez de contraste — et `level` ne
+peut pas le savoir :
+
+<Canvas of={ButtonStories.OnColorOmitted} />
+
+`onColor` déclare la **luminosité du fond** — la seule chose que l'appelant
+connaisse de façon fiable — et le bouton épingle son chrome en conséquence. C'est
+un **troisième axe**, orthogonal : il se combine avec n'importe quel `level` et
+n'importe quel `variant`.
+
+```html
+<ui-button label="Découvrir" variant="outlined" onColor="dark" />   <!-- bandeau sombre/saturé -->
+<ui-button label="Découvrir" variant="outlined" onColor="light" />  <!-- bandeau clair -->
+```
+
+Un principe unique suffit à tout déduire : **`onColor` épingle la polarité de la
+surface, et le contenu suit sa propre surface.**
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Polarité</th>
+      <th><code>outlined</code> / <code>ghost</code></th>
+      <th><code>filled</code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>onColor="dark"</code></td>
+      <td>fond transparent, bordure et texte <strong>blancs</strong>, teinte assombrissante au survol</td>
+      <td>pastille <strong>blanche</strong> opaque, label au ton clair du <code>level</code></td>
+    </tr>
+    <tr>
+      <td><code>onColor="light"</code></td>
+      <td>fond transparent, bordure et texte <strong>sombres</strong>, teinte éclaircissante au survol</td>
+      <td>pastille <strong>sombre</strong> opaque, label au ton sombre du <code>level</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<Canvas of={ButtonStories.OnColorDark} />
+<Canvas of={ButtonStories.OnColorLight} />
+
+Deux propriétés à connaître :
+
+- Le `level` **survit** en `filled` : une pastille blanche « Supprimer » reste rouge,
+  « Valider » reste verte. En `outlined`/`ghost` le fond porte déjà la couleur, les
+  jeux y sont donc niveau-indépendants.
+- Ces jeux sont **insensibles au thème** : un bandeau violet est violet en clair
+  comme en sombre, donc `onColor` ne doit pas basculer avec `data-theme`. C'est la
+  seule famille de tokens du DS dont les valeurs `modeLight` et `modeDark` sont
+  volontairement identiques.
+
+### Quelle polarité choisir
+
+Le critère est la luminosité du fond, pas sa teinte. Les deux polarités
+**partitionnent la palette** : chaque graduation relève de l'une ou de l'autre.
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Fond sur lequel le bouton est posé</th>
+      <th>Polarité</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>primary.500</code>+, <code>red.600</code>+, <code>green.700</code>+, <code>orange.700</code>+, <code>grey.500</code>+</td>
+      <td><code>onColor="dark"</code></td>
+    </tr>
+    <tr>
+      <td>tout ce qui est plus clair (dont <code>success</code> / <code>warning</code> par défaut, en <code>{'*.500'}</code>)</td>
+      <td><code>onColor="light"</code></td>
+    </tr>
+    <tr>
+      <td><code>{'*.50'}</code> → <code>{'*.200'}</code></td>
+      <td>rien : le rendu par défaut passe déjà</td>
+    </tr>
+  </tbody>
+</table>
+
+> Piège à connaître : les surfaces par défaut de `success` (`green.500`) et
+> `warning` (`orange.500`) sont **claires** — un bandeau success attend
+> `onColor="light"`, pas `dark`. Le blanc n'y atteint que 2,5:1.
+
+> Un seul fond de la palette échappe aux deux polarités : `secondary.900` de la
+> marque 3 (olive, 4,18:1 en blanc et 4,24:1 en sombre). Sur un fond de
+> mi-luminance de ce genre, il faut un voile (scrim) ou un autre fond — aucun
+> token ne peut le rattraper.
 
 ## Tailles
 
