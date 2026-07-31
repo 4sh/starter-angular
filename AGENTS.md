@@ -237,6 +237,23 @@ $focus-ring-width: utils.$form-focus-ring-width; // ← replace the value here t
 - Native `<button>` / `<a>` — no clickable `<div>`; native `disabled`.
 - `aria-label` mandatory for icon-only; decorative icons with `aria-hidden`.
 - `:focus-visible` always visible and distinct from hover.
+- **Naming**: an input that feeds a raw accessible name (bound to `[attr.aria-label]`)
+  is named `*AriaLabel` (e.g. `clearAriaLabel`, `prevAriaLabel`). An input that holds a
+  `{0}` template interpolated via the shared `formatLabel` helper
+  (`forms/format-label.ts`) keeps a descriptive `*Label`/`*Message` name (e.g.
+  `removeTagLabel`, `overflowLabel`) — it is not itself an aria value. Visible button
+  text (e.g. `todayLabel`, `clearLabel` on `ui-datepicker`) is never renamed to
+  `*AriaLabel` even if it happens to also be reused as the accessible name.
+- Every `[attr.aria-label]`/`[attr.aria-labelledby]` binding guards against an empty
+  string: `ariaLabel() || null` (never bind the signal raw), so an unset input omits
+  the attribute instead of emitting `aria-label=""`.
+- **No i18n catalog in the kit.** `*AriaLabel`/`*Label` inputs only carry a French
+  default; translating them (and handling singular/plural, e.g. `filesSummaryLabel`
+  rendering "1 fichiers") is the consuming app's responsibility via its own i18n
+  tooling — the design system does not ship a translation layer.
+- Dev-mode "missing accessible name" warnings go through the shared
+  `warnMissingAccessibleName` helper (`forms/warn-missing-accessible-name.ts`), not an
+  ad hoc `console.warn` per component.
 
 ### Documentation (MDX)
 

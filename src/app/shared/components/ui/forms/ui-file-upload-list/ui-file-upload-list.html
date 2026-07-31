@@ -20,7 +20,7 @@
     <button
       type="button"
       class="ui-file-upload-list-remove"
-      [attr.aria-label]="removeLabel() + ' : ' + file().name"
+      [attr.aria-label]="removeAriaLabel() + ' : ' + file().name"
       (click)="onRemove()"
     >
       <ui-icon name="trash" [size]="iconSize()" />
