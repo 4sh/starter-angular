@@ -37,6 +37,12 @@ const meta: Meta<UiButton> = {
       description: "Niveau sémantique : high/low pour l'importance, success/warning/error pour un retour contextuel.",
       table: { type: { summary: 'UiLevel' }, defaultValue: { summary: '"high"' } },
     },
+    variant: {
+      control: { type: 'select' },
+      options: ['filled', 'outlined', 'ghost', 'contrast'],
+      description: "Apparence : filled (défaut, plein) · outlined/ghost (composent avec level) · contrast (inverse la polarité, indépendant du level, pour rester visible sur un fond de même couleur).",
+      table: { type: { summary: 'ButtonVariant' }, defaultValue: { summary: '"filled"' } },
+    },
     size: {
       control: { type: 'inline-radio' },
       options: ['default', 'small'],
@@ -146,6 +152,11 @@ export const Low: Story = { args: { label: 'Low', level: 'low' } };
 export const Success: Story = { args: { label: 'Success', level: 'success' } };
 export const Warning: Story = { args: { label: 'Warning', level: 'warning' } };
 export const Error: Story = { args: { label: 'Error', level: 'error' } };
+
+// Variantes
+export const Outlined: Story = { args: { label: 'Outlined', level: 'high', variant: 'outlined' } };
+export const Ghost: Story = { args: { label: 'Ghost', level: 'high', variant: 'ghost' } };
+export const Contrast: Story = { args: { label: 'Contrast', level: 'high', variant: 'contrast' } };
 
 // Tailles
 export const Small: Story = { args: { label: 'Small', level: 'high', size: 'small' } };

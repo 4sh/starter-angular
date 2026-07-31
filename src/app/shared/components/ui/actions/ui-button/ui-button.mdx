@@ -31,6 +31,10 @@ import { ConfigTable } from '../../../../../../../storybook/blocks/config-table'
       <td><code>high</code> · <code>low</code> · <code>success</code> · <code>warning</code> · <code>error</code></td>
     </tr>
     <tr>
+      <td><strong>Variant</strong></td>
+      <td><code>filled</code> (défaut, plein) · <code>outlined</code> · <code>ghost</code> (les deux composent avec <code>level</code>) · <code>contrast</code> (inverse la polarité, indépendant du <code>level</code> — reste visible posé sur un fond de sa propre couleur).</td>
+    </tr>
+    <tr>
       <td><strong>Size</strong></td>
       <td><code>default</code> · <code>small</code></td>
     </tr>
@@ -96,6 +100,18 @@ import { ConfigTable } from '../../../../../../../storybook/blocks/config-table'
 <Canvas of={ButtonStories.Success} />
 <Canvas of={ButtonStories.Warning} />
 <Canvas of={ButtonStories.Error} />
+
+## Variants
+
+Au-delà du `level` (couleur), `variant` pilote l'apparence. `outlined` et
+`ghost` composent avec le `level` choisi (transparent au repos, se remplit
+au survol/pression). `contrast` inverse la polarité, indépendamment du
+`level` : il sert à garder un bouton lisible posé sur un fond de sa propre
+couleur (ex. un bouton `high` sur un bandeau `high`).
+
+<Canvas of={ButtonStories.Outlined} />
+<Canvas of={ButtonStories.Ghost} />
+<Canvas of={ButtonStories.Contrast} />
 
 ## Tailles
 

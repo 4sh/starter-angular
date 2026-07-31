@@ -20,6 +20,7 @@ import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
 
 export type ButtonType = 'button' | 'submit' | 'reset';
 export type ButtonSize = 'default' | 'small';
+export type ButtonVariant = 'filled' | 'outlined' | 'ghost' | 'contrast';
 export type ButtonIconPos = 'left' | 'right' | 'top' | 'bottom';
 export type ButtonNativeProps = Record<string, string | number | boolean | null | undefined>;
 
@@ -38,6 +39,7 @@ export class UiButton {
   ariaLabel = input<string>();
   type = input<ButtonType>('button');
   level = input<UiLevel>('high');
+  variant = input<ButtonVariant>('filled');
   size = input<ButtonSize>('default');
   icon = input<string>();
   iconPos = input<ButtonIconPos>('left');
@@ -167,6 +169,7 @@ export class UiButton {
   protected readonly classes = computed(() => {
     const c = ['ui-button', `_${this.level()}`];
     if (this.size() !== 'default') c.push(`_${this.size()}`);
+    if (this.variant() !== 'filled') c.push(`_${this.variant()}`);
     if (this.expanded()) c.push('_expanded');
     if (this.isIconOnly()) c.push('_icon-only');
     if (this.loading()) c.push('_loading');
