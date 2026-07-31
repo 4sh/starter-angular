@@ -52,9 +52,9 @@ export class UiInputNumber extends BaseFormField<number | null> {
   /** Show the ± spinner. */
   showButtons = input(true, { transform: booleanAttribute });
   /** Accessible label of the increment spinner button. */
-  incrementLabel = input<string>('Augmenter');
+  incrementAriaLabel = input<string>('Augmenter');
   /** Accessible label of the decrement spinner button. */
-  decrementLabel = input<string>('Diminuer');
+  decrementAriaLabel = input<string>('Diminuer');
 
   // --- Formatting (Intl.NumberFormat) --------------------------------
   /** BCP-47 locale (e.g. `fr-FR`). Defaults to the browser locale. */

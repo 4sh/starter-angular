@@ -22,6 +22,7 @@ import { BaseFormField } from '@app/shared/components/ui/forms/base-form-field';
 import { createOptionResolver } from '@app/shared/components/ui/forms/option-resolver';
 import { dropdownOverlayPositions } from '@app/shared/components/ui/forms/overlay-positions';
 import { formatLabel } from '@app/shared/components/ui/forms/format-label';
+import { warnMissingAccessibleName } from '@app/shared/components/ui/forms/warn-missing-accessible-name';
 import { UiField } from '@app/shared/components/ui/forms/ui-field/ui-field';
 import { UiIcon, UiIconSize } from '@app/shared/components/ui/ui-icon/ui-icon';
 import { UiChip } from '@app/shared/components/ui/informative/ui-chip/ui-chip';
@@ -269,8 +270,9 @@ export class UiInputTags<T = unknown> extends BaseFormField<T[]> {
     if (isDevMode()) {
       effect(() => {
         if (!this.label() && !this.ariaLabel() && !this.ariaLabelledBy()) {
-          console.warn(
-            '[ui-input-tags] Field has no accessible name: provide `label`, `ariaLabel` or `ariaLabelledBy`.',
+          warnMissingAccessibleName(
+            'ui-input-tags',
+            'Field has no accessible name: provide `label`, `ariaLabel` or `ariaLabelledBy`.',
           );
         }
       });

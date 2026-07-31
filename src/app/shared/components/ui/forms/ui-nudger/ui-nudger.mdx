@@ -39,6 +39,15 @@ La famille de couleur des deux boutons suit l'input `level` (tokens `actions.*`)
 
 <Canvas of={UiNudgerStories.LevelLow} />
 
+## Variant
+
+L'input `variant` (`filled` par défaut, `outlined` · `ghost`) est forwardé aux deux
+boutons internes, ainsi que `onColor` (`dark` · `light`) quand le nudger est posé
+sur un fond de couleur — voir
+[`ui-button`](?path=/docs/components-ui-actions-ui-button--docs).
+
+<Canvas of={UiNudgerStories.Outlined} />
+
 ## États
 
 <Canvas of={UiNudgerStories.Disabled} />
@@ -95,7 +104,7 @@ Angular 22) via l'interop CVA native, ainsi qu'aux formulaires template-driven
     <tr>
       <td>Boutons <code>−</code> / <code>+</code></td>
       <td><code>&lt;button&gt;</code> natif + <code>aria-label</code></td>
-      <td>Opérables au clavier (Tab, Entrée/Espace). Libellés via <code>decrementLabel</code> / <code>incrementLabel</code>. <code>disabled</code> natif aux bornes.</td>
+      <td>Opérables au clavier (Tab, Entrée/Espace). Libellés via <code>decrementAriaLabel</code> / <code>incrementAriaLabel</code>. <code>disabled</code> natif aux bornes.</td>
     </tr>
     <tr>
       <td>Valeur</td>

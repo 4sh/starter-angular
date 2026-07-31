@@ -103,6 +103,9 @@ export class UiFileUpload {
   /** Small hint under the drag prompt (e.g. "JPG, PNG (max 5 MB)"). */
   hint = input<string>();
   /** Accessible name for the whole control. */
+  // Composite widget (dropzone + file list), not a single-value CVA control: unlike the other
+  // form components it doesn't extend BaseFieldControl, so it redeclares its own `ariaLabel`
+  // here — with a non-undefined default, since the dropzone always needs an accessible name.
   ariaLabel = input<string>('Téléversement de fichiers');
   /** Multi-file summary in field mode — `{0}` is replaced by the file count. */
   filesSummaryLabel = input<string>('{0} fichiers');

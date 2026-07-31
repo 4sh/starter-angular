@@ -20,6 +20,9 @@ import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
 
 export type ButtonType = 'button' | 'submit' | 'reset';
 export type ButtonSize = 'default' | 'small';
+export type ButtonVariant = 'filled' | 'outlined' | 'ghost';
+/** Luminosité du fond sur lequel le bouton est posé (voir l'input `onColor`). */
+export type ButtonOnColor = 'dark' | 'light';
 export type ButtonIconPos = 'left' | 'right' | 'top' | 'bottom';
 export type ButtonNativeProps = Record<string, string | number | boolean | null | undefined>;
 
@@ -38,6 +41,15 @@ export class UiButton {
   ariaLabel = input<string>();
   type = input<ButtonType>('button');
   level = input<UiLevel>('high');
+  variant = input<ButtonVariant>('filled');
+  /**
+   * À renseigner **uniquement** quand le bouton est posé sur un fond de couleur
+   * (bandeau, carte teintée, image) : indique la luminosité de ce fond, et le
+   * bouton épingle son chrome en conséquence — `'dark'` ⇒ blanc, `'light'` ⇒
+   * sombre. Orthogonal à `level` et `variant`. Volontairement **insensible au
+   * thème** : un bandeau violet reste violet en clair comme en sombre.
+   */
+  onColor = input<ButtonOnColor | null>(null);
   size = input<ButtonSize>('default');
   icon = input<string>();
   iconPos = input<ButtonIconPos>('left');
@@ -45,6 +57,7 @@ export class UiButton {
   loading = input(false, { transform: booleanAttribute });
   loadingIcon = input<string>('circle-notch');
   expanded = input(false, { transform: booleanAttribute });
+  rounded = input(false, { transform: booleanAttribute });
   disabled = input(false, { transform: booleanAttribute });
   tabindex = input<number>();
   buttonProps = input<ButtonNativeProps>();
@@ -167,7 +180,10 @@ export class UiButton {
   protected readonly classes = computed(() => {
     const c = ['ui-button', `_${this.level()}`];
     if (this.size() !== 'default') c.push(`_${this.size()}`);
+    if (this.variant() !== 'filled') c.push(`_${this.variant()}`);
+    if (this.onColor()) c.push(`_on-${this.onColor()}`);
     if (this.expanded()) c.push('_expanded');
+    if (this.rounded()) c.push('_rounded');
     if (this.isIconOnly()) c.push('_icon-only');
     if (this.loading()) c.push('_loading');
     if (this.isLink() && this.disabled()) c.push('_disabled');

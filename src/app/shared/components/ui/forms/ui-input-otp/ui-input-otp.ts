@@ -18,6 +18,7 @@ import {
 import { NgTemplateOutlet } from '@angular/common';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { BaseFieldControl } from '@app/shared/components/ui/forms/base-form-field';
+import { warnMissingAccessibleName } from '@app/shared/components/ui/forms/warn-missing-accessible-name';
 
 /** Size of the OTP cells. `default` is the base. */
 export type InputOtpSize = 'small' | 'default' | 'large';
@@ -137,8 +138,9 @@ export class UiInputOtp extends BaseFieldControl<string> {
     if (isDevMode()) {
       effect(() => {
         if (!this.ariaLabel() && !this.ariaLabelledBy()) {
-          console.warn(
-            '[ui-input-otp] Group has no accessible name: provide `ariaLabel` (or `ariaLabelledBy`).',
+          warnMissingAccessibleName(
+            'ui-input-otp',
+            'Group has no accessible name: provide `ariaLabel` (or `ariaLabelledBy`).',
           );
         }
       });

@@ -4,9 +4,9 @@
 > ✅ = implémenté · ⬜ = à construire (recopier le patron `ui-button`)
 
 ## actions
-- ✅ `ui-button` — Bouton (niveaux high/low/success/warning/error, outlined, tailles, icône, **mode lien** `href`/`routerLink` → rend un `<a>`)
+- ✅ `ui-button` — Bouton (niveaux high/low/success/warning/error, **variants** filled/outlined/ghost/contrast, tailles, icône, **mode lien** `href`/`routerLink` → rend un `<a>`)
 - ⬜ `ui-button-group` — Groupe de boutons
-- ✅ `ui-button-split` — Bouton d'action accolé à un déclencheur déroulant (composition `ui-button` × 2 + `ui-menu` popup ; modèle `UiMenuItem[]` : commandes, `routerLink`/`url`, sous-menus, séparateurs, icônes ; niveaux high/low/success/warning/error, tailles default/small, désactivation indépendante `buttonDisabled`/`menuButtonDisabled`, `aria-haspopup`/`aria-expanded`, clavier hérité du menu)
+- ✅ `ui-button-split` — Bouton d'action accolé à un déclencheur déroulant (composition `ui-button` × 2 + `ui-menu` popup ; modèle `UiMenuItem[]` : commandes, `routerLink`/`url`, sous-menus, séparateurs, icônes ; niveaux high/low/success/warning/error, **variants** filled/outlined/ghost/contrast (forwardés aux deux boutons), tailles default/small, désactivation indépendante `buttonDisabled`/`menuButtonDisabled`, `aria-haspopup`/`aria-expanded`, clavier hérité du menu)
 - ✅ `ui-link` — Lien textuel inline (vrai `<a>`, `href`/`routerLink`/`external`, icônes gauche/droite, tailles, icon-only, souligné a11y)
 
 ## forms
@@ -25,7 +25,7 @@
 - ⬜ `ui-toggle-button` — Choix exclusif stylisé
 - ✅ `ui-segment-control` — Sélection segmentée (CVA ; simple/`multiple`, options primitives/objets + mapping de champs, indicateur glissant motion, tailles, `fluid`, `orientation` horizontal/vertical, template de segment, clavier roving radiogroup/group, erreur auto)
 - ✅ `ui-datepicker` — Sélecteur de date/heure (CVA, overlay CDK ou inline, min/max, jours désactivés, showTime 12/24h, inline, focus roving clavier)
-- ✅ `ui-nudger` — Incrémenteur numérique `[−] valeur [+]` (CVA ; deux `ui-button` icon-only, min/max/step, bornes dérivées désactivant le bouton, tailles, niveaux, `formatValue`, valeur en région live)
+- ✅ `ui-nudger` — Incrémenteur numérique `[−] valeur [+]` (CVA ; deux `ui-button` icon-only, min/max/step, bornes dérivées désactivant le bouton, tailles, niveaux, **variants** filled/outlined/ghost/contrast, `formatValue`, valeur en région live)
 - ✅ `ui-rating` — Notation étoiles (CVA, clavier natif range, focus)
 - ✅ `ui-file-upload` — Téléversement de fichiers (headless ; modes `field`/`drag` + glisser-déposer, `multiple`, validation `accept`/`maxFileSize`/`fileLimit`, `auto`, `customUpload` + `uploadHandler`, upload XHR avec suivi de progression, templates `file`/`content`/`toolbar`, région d'erreurs live, aperçus image révoqués ; compose `ui-file-upload-list`)
 - ✅ `ui-file-upload-list` — Ligne de fichier (unité répétée : vignette/icône, nom + taille/état, suppression ; bascule sur `ui-spinner` pendant le téléversement + barre de progression)

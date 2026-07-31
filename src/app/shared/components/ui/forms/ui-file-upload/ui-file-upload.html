@@ -14,7 +14,7 @@
     [attr.accept]="accept() || null"
     [multiple]="multiple()"
     [disabled]="disabled()"
-    [attr.aria-label]="ariaLabel()"
+    [attr.aria-label]="ariaLabel() || null"
     (change)="onInputChange($event)"
   />
 

@@ -28,6 +28,19 @@ const meta: Meta<UiNudger> = {
       description: 'Famille de couleur des deux boutons.',
       table: { defaultValue: { summary: '"high"' } },
     },
+    variant: {
+      control: 'select',
+      options: ['filled', 'outlined', 'ghost'],
+      description: 'Apparence appliquée aux deux boutons.',
+      table: { type: { summary: 'ButtonVariant' }, defaultValue: { summary: '"filled"' } },
+    },
+    onColor: {
+      control: { type: 'inline-radio' },
+      options: [null, 'dark', 'light'],
+      description:
+        'Luminosité du fond de couleur sur lequel le nudger est posé, forwardée aux deux boutons (voir ui-button.onColor).',
+      table: { type: { summary: "'dark' | 'light' | null" }, defaultValue: { summary: 'null' } },
+    },
     min: { control: 'number', table: { type: { summary: 'number' } } },
     max: { control: 'number', table: { type: { summary: 'number' } } },
     step: { control: 'number', table: { type: { summary: 'number' }, defaultValue: { summary: '1' } } },
@@ -37,8 +50,8 @@ const meta: Meta<UiNudger> = {
     required: { control: 'boolean', table: { defaultValue: { summary: 'false' } } },
     invalid: { control: 'boolean', table: { defaultValue: { summary: 'false' } } },
     ariaLabel: { control: 'text', table: { type: { summary: 'string' } } },
-    decrementLabel: { control: 'text', table: { defaultValue: { summary: '"Diminuer"' } } },
-    incrementLabel: { control: 'text', table: { defaultValue: { summary: '"Augmenter"' } } },
+    decrementAriaLabel: { control: 'text', table: { defaultValue: { summary: '"Diminuer"' } } },
+    incrementAriaLabel: { control: 'text', table: { defaultValue: { summary: '"Augmenter"' } } },
     decrementIcon: { control: 'text', table: { defaultValue: { summary: '"minus"' } } },
     incrementIcon: { control: 'text', table: { defaultValue: { summary: '"plus"' } } },
     valueChange: { action: 'valueChange', table: { disable: true } },
@@ -46,6 +59,7 @@ const meta: Meta<UiNudger> = {
   args: {
     size: 'default',
     level: 'high',
+    variant: 'filled',
     step: 1,
     defaultValue: 0,
     ariaLabel: 'Quantité',
@@ -53,8 +67,8 @@ const meta: Meta<UiNudger> = {
     readonly: false,
     required: false,
     invalid: false,
-    decrementLabel: 'Diminuer',
-    incrementLabel: 'Augmenter',
+    decrementAriaLabel: 'Diminuer',
+    incrementAriaLabel: 'Augmenter',
     decrementIcon: 'minus',
     incrementIcon: 'plus',
   },
@@ -65,11 +79,11 @@ type Story = StoryObj<UiNudger>;
 
 const TEMPLATE = `<ui-nudger
     [(ngModel)]="model"
-    [size]="size" [level]="level"
+    [size]="size" [level]="level" [variant]="variant"
     [min]="min" [max]="max" [step]="step" [defaultValue]="defaultValue"
     [disabled]="disabled" [readonly]="readonly" [required]="required" [invalid]="invalid"
     [ariaLabel]="ariaLabel"
-    [decrementLabel]="decrementLabel" [incrementLabel]="incrementLabel"
+    [decrementAriaLabel]="decrementAriaLabel" [incrementAriaLabel]="incrementAriaLabel"
     [decrementIcon]="decrementIcon" [incrementIcon]="incrementIcon"
     (valueChange)="valueChange($event)" />`;
 
@@ -107,6 +121,11 @@ export const Small: Story = {
 export const LevelLow: Story = {
   render: story(3),
   args: { level: 'low', ariaLabel: 'Niveau low' },
+};
+
+export const Outlined: Story = {
+  render: story(3),
+  args: { variant: 'outlined', ariaLabel: 'Variante outlined' },
 };
 
 export const Disabled: Story = {

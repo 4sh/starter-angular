@@ -32,14 +32,46 @@ $panel-padding: var(--units-xs);  /// Inset du panneau de suggestions.
 $panel-gap: var(--units-xs);      /// Espacement entre les groupes du panneau.
 $option-radius: var(--radius-sm); /// Rayon d'une option.
 $option-gap: var(--units-sm);     /// Espacement entre l'icône et le libellé d'une option.
+$tag-gap: var(--units-xs);            /// Espacement entre les valeurs sélectionnées (mode `multiple`).
+$input-min-width: utils.rem-calc(80); /// Largeur minimale de la zone de saisie restante (mode `multiple`).
 
 .ui-autocomplete {
   display: block;
   --ui-field-box-cursor: text;
 
+  // --- Control : wrapping chip listbox + inline combobox input --------
+  &-control {
+    display: flex;
+    align-items: center;
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+    gap: $tag-gap;
+    min-width: 0;
+  }
+
+  // --- Selected value chip (role=option, roving focus, `multiple`) ----
+  // The chip IS the focusable option; fill/padding/remove come from
+  // `ui-chip` — this rule only handles layout + the roving focus ring.
+  &-tag {
+    display: inline-flex;
+    align-items: center;
+    max-width: 100%;
+    border-radius: var(--radius-full);
+    @include utils.control-transition(box-shadow);
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 utils.$form-focus-ring-width rgb(from var(--form-high-stroke-focused) r g b / 50%);
+    }
+  }
+
   // --- Native combobox input (fills the field box) --------------------
   &-input {
     @include utils.field-native-input;
+    flex: 1 1 $input-min-width;
+    min-width: $input-min-width;
+    width: auto;
+
     &._small { font-size: map.get($size-small, font-size); }
   }
 
