@@ -30,9 +30,16 @@ const meta: Meta<UiNudger> = {
     },
     variant: {
       control: 'select',
-      options: ['filled', 'outlined', 'ghost', 'contrast'],
+      options: ['filled', 'outlined', 'ghost'],
       description: 'Apparence appliquée aux deux boutons.',
       table: { type: { summary: 'ButtonVariant' }, defaultValue: { summary: '"filled"' } },
+    },
+    onColor: {
+      control: { type: 'inline-radio' },
+      options: [null, 'dark', 'light'],
+      description:
+        'Luminosité du fond de couleur sur lequel le nudger est posé, forwardée aux deux boutons (voir ui-button.onColor).',
+      table: { type: { summary: "'dark' | 'light' | null" }, defaultValue: { summary: 'null' } },
     },
     min: { control: 'number', table: { type: { summary: 'number' } } },
     max: { control: 'number', table: { type: { summary: 'number' } } },

@@ -39,9 +39,16 @@ const meta: Meta<UiButton> = {
     },
     variant: {
       control: { type: 'select' },
-      options: ['filled', 'outlined', 'ghost', 'contrast'],
-      description: "Apparence : filled (défaut, plein) · outlined/ghost (composent avec level) · contrast (inverse la polarité, indépendant du level, pour rester visible sur un fond de même couleur).",
+      options: ['filled', 'outlined', 'ghost'],
+      description: 'Apparence : filled (défaut, plein) · outlined (bordure) · ghost (texte seul). Compose avec level et onColor.',
       table: { type: { summary: 'ButtonVariant' }, defaultValue: { summary: '"filled"' } },
+    },
+    onColor: {
+      control: { type: 'inline-radio' },
+      options: [null, 'dark', 'light'],
+      description:
+        "À renseigner uniquement quand le bouton est posé sur un fond de couleur : luminosité de ce fond. 'dark' ⇒ chrome blanc, 'light' ⇒ chrome sombre. Insensible au thème. Orthogonal à level et variant.",
+      table: { type: { summary: "'dark' | 'light' | null" }, defaultValue: { summary: 'null' } },
     },
     size: {
       control: { type: 'inline-radio' },
@@ -156,7 +163,66 @@ export const Error: Story = { args: { label: 'Error', level: 'error' } };
 // Variantes
 export const Outlined: Story = { args: { label: 'Outlined', level: 'high', variant: 'outlined' } };
 export const Ghost: Story = { args: { label: 'Ghost', level: 'high', variant: 'ghost' } };
-export const Contrast: Story = { args: { label: 'Contrast', level: 'high', variant: 'contrast' } };
+
+// Une variante = un jeu de tokens par niveau (`--actions-<level><variant>-*`) :
+// ces deux planches donnent à voir les 10 jeux d'un coup, `disabled` compris.
+const variantRow = (variant: 'outlined' | 'ghost'): Story => ({
+  render: () => ({
+    template: `
+      <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center">
+        <ui-button label="High" level="high" variant="${variant}" />
+        <ui-button label="Low" level="low" variant="${variant}" />
+        <ui-button label="Success" level="success" variant="${variant}" />
+        <ui-button label="Warning" level="warning" variant="${variant}" />
+        <ui-button label="Error" level="error" variant="${variant}" />
+        <ui-button label="Disabled" level="high" variant="${variant}" disabled />
+      </div>
+    `,
+  }),
+  parameters: { layout: 'padded' },
+});
+
+export const OutlinedLevels: Story = variantRow('outlined');
+export const GhostLevels: Story = variantRow('ghost');
+
+// `onColor` n'a de sens que POSÉ sur un fond de couleur : ces planches
+// reproduisent le bandeau, sinon il n'y a rien à démontrer. Fonds pris sur des
+// tokens (jamais une couleur en dur) et choisis dans le domaine de validité de
+// chaque polarité : primary.500 pour `dark`, warning/orange.500 pour `light`.
+const onColorBanner = (polarity: 'dark' | 'light', surface: string): Story => ({
+  render: () => ({
+    template: `
+      <div style="background: var(${surface}); padding: 24px; border-radius: 8px;
+                  display:flex; gap:12px; flex-wrap:wrap; align-items:center">
+        <ui-button label="Filled" level="high" onColor="${polarity}" />
+        <ui-button label="Outlined" level="high" variant="outlined" onColor="${polarity}" />
+        <ui-button label="Ghost" level="high" variant="ghost" onColor="${polarity}" />
+        <ui-button label="Error" level="error" onColor="${polarity}" />
+        <ui-button label="Disabled" level="high" variant="outlined" onColor="${polarity}" disabled />
+      </div>
+    `,
+  }),
+  parameters: { layout: 'padded' },
+});
+
+export const OnColorDark: Story = onColorBanner('dark', '--actions-high-surface-default');
+export const OnColorLight: Story = onColorBanner('light', '--actions-warning-surface-default');
+
+// Sans `onColor`, le même bandeau met le bouton en échec : c'est le problème
+// que l'axe résout, et la comparaison vaut mieux qu'un paragraphe.
+export const OnColorOmitted: Story = {
+  render: () => ({
+    template: `
+      <div style="background: var(--actions-high-surface-default); padding: 24px; border-radius: 8px;
+                  display:flex; gap:12px; flex-wrap:wrap; align-items:center">
+        <ui-button label="Filled" level="high" />
+        <ui-button label="Outlined" level="high" variant="outlined" />
+        <ui-button label="Ghost" level="high" variant="ghost" />
+      </div>
+    `,
+  }),
+  parameters: { layout: 'padded' },
+};
 
 // Tailles
 export const Small: Story = { args: { label: 'Small', level: 'high', size: 'small' } };

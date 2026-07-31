@@ -41,8 +41,10 @@ La famille de couleur des deux boutons suit l'input `level` (tokens `actions.*`)
 
 ## Variant
 
-L'input `variant` (`filled` par défaut, `outlined` · `ghost` · `contrast`) est
-forwardé aux deux boutons internes.
+L'input `variant` (`filled` par défaut, `outlined` · `ghost`) est forwardé aux deux
+boutons internes, ainsi que `onColor` (`dark` · `light`) quand le nudger est posé
+sur un fond de couleur — voir
+[`ui-button`](?path=/docs/components-ui-actions-ui-button--docs).
 
 <Canvas of={UiNudgerStories.Outlined} />
 

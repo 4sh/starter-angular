@@ -8,14 +8,21 @@
 //   • Level (color)  → add a name to $levels (tokens --actions-<name>-*
 //                      must exist + add it to the `UiLevel` type).
 //   • Size           → add an entry to $sizes (+ the `ButtonSize` type).
-//   • Variant        → `filled` (default, no class — the base $levels look),
-//                      `outlined`/`ghost` (composed with $levels, nested
-//                      under `@each $lvl`) or `contrast` (level-independent,
-//                      inverted appearance) — add to the `ButtonVariant` type.
+//   • Variant        → add a name to $variants + the matching token set
+//                      (--actions-<level><variant>-*, `<level><variant>` in
+//                      semantics.json) + the `ButtonVariant` type. `filled`
+//                      emits no class (it IS the bare $levels set).
+//   • onColor        → add a name to $polarities + the token sets
+//                      --actions-on<name>-{outlined,ghost,filled-<level>}-*
+//                      + the `ButtonOnColor` type.
+//
+// The three axes compose: level x variant x onColor, one token set each.
 // =====================================================================
 
 // --- Config (extension points) ---------------------------------------
 $levels: high, low, success, warning, error; /// Familles de couleur générées (spécifique bouton)
+$variants: outlined, ghost;                  /// Variantes composées avec `$levels` (`filled` = jeu nu, sans classe)
+$polarities: dark, light;                    /// Luminosités de fond gérées par `onColor` (jeux épinglés, insensibles au thème)
 
 // `default` = base styles; other keys become `._<name>` modifiers.
 /// Dimensions par taille (spécifique bouton)
@@ -40,6 +47,42 @@ $focus-ring-width: utils.$action-focus-ring-width; /// Épaisseur de l'anneau de
   height: if(str-index($height, 'var('), $height, utils.rem-calc($height));
   padding: 0 map.get($size, padding-x);
   font-size: map.get($size, font-size);
+}
+
+// Full color set of an `--actions-<set>-*` token set (5 states x
+// content/surface/stroke). Every set honours the same contract, so a variant
+// needs no CSS of its own: transparency is carried by the token (an outlined
+// `surface-default` resolves to `transparent`, a ghost `stroke-hover` too),
+// never hardcoded here.
+@mixin action-colors($set) {
+  background-color: var(--actions-#{$set}-surface-default);
+  color: var(--actions-#{$set}-content-default);
+  border-color: var(--actions-#{$set}-stroke-default);
+
+  &:hover:not(:disabled):not(._disabled) {
+    background-color: var(--actions-#{$set}-surface-hover);
+    color: var(--actions-#{$set}-content-hover);
+    border-color: var(--actions-#{$set}-stroke-hover);
+  }
+
+  &:focus-visible {
+    outline: none;
+    border-color: var(--actions-#{$set}-stroke-focused);
+    box-shadow: 0 0 0 $focus-ring-width var(--actions-#{$set}-stroke-focused);
+  }
+
+  &:active:not(:disabled):not(._disabled) {
+    background-color: var(--actions-#{$set}-surface-pressed);
+    color: var(--actions-#{$set}-content-pressed);
+    border-color: var(--actions-#{$set}-stroke-pressed);
+  }
+
+  &:disabled,
+  &._disabled {
+    background-color: var(--actions-#{$set}-surface-disabled);
+    color: var(--actions-#{$set}-content-disabled);
+    border-color: var(--actions-#{$set}-stroke-disabled);
+  }
 }
 
 .ui-button {
@@ -109,148 +152,28 @@ $focus-ring-width: utils.$action-focus-ring-width; /// Épaisseur de l'anneau de
   // Disabled: native (<button>) or via class (<a>, no native disabled).
   &:disabled,
   &._disabled { cursor: not-allowed; }
-
-  // --- Colors (one set per level) ------------------------------------
-  // Interactive states are CSS pseudo-classes, never Angular props.
-  // `._disabled` mirrors `:disabled` for the link-mode anchor.
+  
   @each $lvl in $levels {
     &._#{$lvl} {
-      background-color: var(--actions-#{$lvl}-surface-default);
-      color: var(--actions-#{$lvl}-content-default);
-      border-color: var(--actions-#{$lvl}-stroke-default);
+      @include action-colors($lvl); // filled (no variant class)
 
-      &:hover:not(:disabled):not(._disabled) {
-        background-color: var(--actions-#{$lvl}-surface-hover);
-        color: var(--actions-#{$lvl}-content-hover);
-        border-color: var(--actions-#{$lvl}-stroke-hover);
+      // onColor + filled: opaque pill, level-independent chrome, but the label
+      // keeps the level's hue — hence a per-level token set.
+      @each $pol in $polarities {
+        &._on-#{$pol} { @include action-colors('on#{$pol}-filled-#{$lvl}'); }
       }
 
-      &:focus-visible {
-        outline: none;
-        border-color: var(--actions-#{$lvl}-stroke-focused);
-        box-shadow: 0 0 0 $focus-ring-width var(--actions-#{$lvl}-stroke-focused);
-      }
+      @each $variant in $variants {
+        &._#{$variant} {
+          @include action-colors('#{$lvl}#{$variant}');
 
-      &:active:not(:disabled):not(._disabled) {
-        background-color: var(--actions-#{$lvl}-surface-pressed);
-        color: var(--actions-#{$lvl}-content-pressed);
-        border-color: var(--actions-#{$lvl}-stroke-pressed);
-      }
-
-      &:disabled,
-      &._disabled {
-        background-color: var(--actions-#{$lvl}-surface-disabled);
-        color: var(--actions-#{$lvl}-content-disabled);
-        border-color: var(--actions-#{$lvl}-stroke-disabled);
-      }
-
-      // Accent used at rest (and, for ghost, at every state) by `outlined`/
-      // `ghost`: `low`'s `surface` is transparent by default, so it borrows
-      // its own (already tinted) `content` instead; the other 4 levels use
-      // their `surface` tone, since their `content` is white/light — built
-      // for a filled background, not as a standalone accent.
-      $accent: if($lvl == 'low', 'content', 'surface');
-
-      // Outlined: transparent fill, accented at rest by the level's own
-      // tone (border + text) — falls back to the plain filled look on
-      // hover/active. Provisional: WCAG contrast per level (notably `high`)
-      // will be refined once dedicated outlined/ghost tokens exist; this
-      // composes with the existing surface/content/stroke set meanwhile.
-      &._outlined {
-        background-color: transparent;
-        color: var(--actions-#{$lvl}-#{$accent}-default);
-        border-color: var(--actions-#{$lvl}-#{$accent}-default);
-
-        &:hover:not(:disabled):not(._disabled) {
-          background-color: var(--actions-#{$lvl}-surface-hover);
-          color: var(--actions-#{$lvl}-content-hover);
-          border-color: var(--actions-#{$lvl}-stroke-hover);
-        }
-
-        &:active:not(:disabled):not(._disabled) {
-          background-color: var(--actions-#{$lvl}-surface-pressed);
-          color: var(--actions-#{$lvl}-content-pressed);
-          border-color: var(--actions-#{$lvl}-stroke-pressed);
-        }
-
-        &:disabled,
-        &._disabled {
-          background-color: transparent;
-          color: var(--actions-#{$lvl}-#{$accent}-disabled);
-          border-color: var(--actions-#{$lvl}-#{$accent}-disabled);
+          // onColor + outlined/ghost: the backdrop carries the colour, so the
+          // chrome is level-independent (white on dark, dark on light).
+          @each $pol in $polarities {
+            &._on-#{$pol} { @include action-colors('on#{$pol}-#{$variant}'); }
+          }
         }
       }
-
-      // Ghost: unlike outlined, it never fills — background stays
-      // transparent at every state; only the text reacts, darkening on
-      // hover/pressed (same $accent as outlined). No colored border at any
-      // state either (focus ring stays box-shadow only, no border-color
-      // change).
-      &._ghost {
-        background-color: transparent;
-        color: var(--actions-#{$lvl}-#{$accent}-default);
-        border-color: transparent;
-
-        &:hover:not(:disabled):not(._disabled) {
-          background-color: transparent;
-          color: var(--actions-#{$lvl}-#{$accent}-hover);
-          border-color: transparent;
-        }
-
-        &:focus-visible { border-color: transparent; }
-
-        &:active:not(:disabled):not(._disabled) {
-          background-color: transparent;
-          color: var(--actions-#{$lvl}-#{$accent}-pressed);
-          border-color: transparent;
-        }
-
-        &:disabled,
-        &._disabled {
-          background-color: transparent;
-          color: var(--actions-#{$lvl}-#{$accent}-disabled);
-          border-color: transparent;
-        }
-      }
-    }
-  }
-
-  // --- Contrast (inverted appearance, level-independent) -------------
-  // Not a color level: inverts polarity so the button stays visible on a
-  // background of its own level color (e.g. a `high` primary button on a
-  // `high`-colored backdrop). Provisional: reuses the neutral
-  // `--global-high-*` tokens pending dedicated `contrast` tokens. That set
-  // has no `pressed` value (approximated here with `hover`) and no
-  // `disabled` value (falls back to `default`, relying on the native
-  // `disabled` state + the `cursor: not-allowed` above to signal it).
-  &._contrast {
-    background-color: var(--global-high-surface-default);
-    color: var(--global-high-content-default);
-    border-color: var(--global-high-stroke-default);
-
-    &:hover:not(:disabled):not(._disabled) {
-      background-color: var(--global-high-surface-hover);
-      color: var(--global-high-content-hover);
-      border-color: var(--global-high-stroke-hover);
-    }
-
-    &:focus-visible {
-      outline: none;
-      border-color: var(--global-high-stroke-focused);
-      box-shadow: 0 0 0 $focus-ring-width var(--global-high-stroke-focused);
-    }
-
-    &:active:not(:disabled):not(._disabled) {
-      background-color: var(--global-high-surface-hover);
-      color: var(--global-high-content-hover);
-      border-color: var(--global-high-stroke-hover);
-    }
-
-    &:disabled,
-    &._disabled {
-      background-color: var(--global-high-surface-default);
-      color: var(--global-high-content-default);
-      border-color: var(--global-high-stroke-default);
     }
   }
 }

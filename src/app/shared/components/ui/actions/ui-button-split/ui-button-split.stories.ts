@@ -101,9 +101,16 @@ const meta: Meta<UiButtonSplit> = {
     },
     variant: {
       control: { type: 'select' },
-      options: ['filled', 'outlined', 'ghost', 'contrast'],
-      description: "Apparence : filled (défaut, plein) · outlined/ghost (composent avec level) · contrast (inverse la polarité, indépendant du level, pour rester visible sur un fond de même couleur).",
+      options: ['filled', 'outlined', 'ghost'],
+      description: 'Apparence : filled (défaut, plein) · outlined (bordure) · ghost (texte seul), appliquée aux deux boutons.',
       table: { type: { summary: 'ButtonVariant' }, defaultValue: { summary: '"filled"' } },
+    },
+    onColor: {
+      control: { type: 'inline-radio' },
+      options: [null, 'dark', 'light'],
+      description:
+        'Luminosité du fond de couleur sur lequel le contrôle est posé, forwardée aux deux boutons (voir ui-button.onColor).',
+      table: { type: { summary: "'dark' | 'light' | null" }, defaultValue: { summary: 'null' } },
     },
     disabled: {
       control: { type: 'boolean' },

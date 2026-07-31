@@ -3,6 +3,7 @@ import { UiLevel } from '@app/shared/types/ui-level';
 import {
   ButtonIconPos,
   ButtonNativeProps,
+  ButtonOnColor,
   ButtonSize,
   ButtonVariant,
   UiButton,
@@ -54,6 +55,8 @@ export class UiButtonSplit {
   size = input<ButtonSplitSize>('default');
   /** Apparence appliquée aux deux boutons (action + trigger). */
   variant = input<ButtonVariant>('filled');
+  /** Luminosité du fond de couleur sur lequel le contrôle est posé (voir `ui-button.onColor`). */
+  onColor = input<ButtonOnColor | null>(null);
 
   /** Disable both the action and the dropdown trigger. */
   disabled = input(false, { transform: booleanAttribute });
