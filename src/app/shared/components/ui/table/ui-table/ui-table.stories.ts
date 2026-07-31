@@ -658,7 +658,7 @@ export const ScrollFlexible: Story = {
   render: () => ({
     props: { products: manyProducts },
     template: `
-      <div style="display: flex; flex-direction: column; height: 360px; resize: vertical; overflow: auto; border: 1px dashed var(--global-low-stroke-default); padding: 8px">
+      <div style="display: flex; flex-direction: column; height: 360px; resize: vertical; overflow: auto; border: 1px dashed var(--global-border-default); padding: 8px">
         <ui-table [value]="products" scrollable scrollHeight="flex">
           ${basicColumns}
         </ui-table>

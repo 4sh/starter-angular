@@ -52,7 +52,7 @@ $gutter-size: 4px;                                 /// Miroir numérique de la g
   border-radius: var(--radius-md);
   // Border as an inset shadow → no layout box, so the thumb offset math
   // (offsetLeft/offsetTop) stays exact regardless of border width.
-  box-shadow: inset 0 0 0 $stroke-width var(--global-high-stroke-default);
+  box-shadow: inset 0 0 0 $stroke-width var(--global-border-default);
   font-family: var(--fontfamily-base);
   user-select: none;
   vertical-align: middle;

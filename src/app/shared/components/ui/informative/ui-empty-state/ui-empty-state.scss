@@ -48,7 +48,7 @@ $max-width: 40ch;                          /// Largeur maximale du bloc de texte
 
 .ui-empty-state {
   // --- Base ----------------------------------------------------------
-  --ui-empty-state-media-color: var(--global-low-content-default); /// Couleur de la zone visuelle (l’icône utilise `currentColor`).
+  --ui-empty-state-media-color: var(--global-text-muted); /// Couleur de la zone visuelle (l’icône utilise `currentColor`).
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -86,14 +86,14 @@ $max-width: 40ch;                          /// Largeur maximale du bloc de texte
     font-family: var(--fontfamily-title);
     font-weight: var(--weight-bold);
     line-height: 1.2;
-    color: var(--global-high-content-default);
+    color: var(--global-text-default);
   }
 
   &-description {
     margin: 0;
     font-weight: var(--weight-regular);
     line-height: 1.5;
-    color: var(--global-low-content-default);
+    color: var(--global-text-muted);
   }
 
   &-body._empty {

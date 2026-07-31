@@ -160,7 +160,7 @@ $zone-min: (
   &-zone-prompt { color: var(--form-high-content-default); }
 
   &-zone-hint {
-    color: var(--global-low-content-default);
+    color: var(--global-text-muted);
     font-size: var(--size-typography-text-md);
   }
   &._small &-zone-hint { font-size: var(--size-typography-text-sm); }

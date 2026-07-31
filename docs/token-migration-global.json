@@ -1,0 +1,714 @@
+{
+  "$description": "Table de migration du groupe sémantique `global` (phase 1 : renommage iso-valeur). Source unique pour le patch des tokens JSON et pour le renommage des variables Figma. `figma[mode]` porte le variableId à renommer ; les bindings Figma étant par ID, un rename ne casse aucun composant. Les entrées `merged` doivent être rebindées vers le survivant AVANT suppression.",
+  "phase": 1,
+  "generatedFrom": "src/design-tokens/semantics.json",
+  "modes": [
+    "modeLight",
+    "modeDark"
+  ],
+  "tokens": [
+    {
+      "newCssVar": "--global-background-default",
+      "newTokenPath": "global.<mode>.background.default",
+      "newFigmaName": "global/background/default",
+      "survivor": {
+        "tokenPath": "global.<mode>.high.surface.default",
+        "cssVar": "--global-high-surface-default"
+      },
+      "merged": [
+        {
+          "tokenPath": "global.<mode>.default.surface.default",
+          "cssVar": "--global-default-surface-default",
+          "figmaAction": "rebind-then-delete",
+          "valuesByMode": {
+            "modeLight": "{primitives.grey.50}",
+            "modeDark": "{primitives.grey.900}"
+          },
+          "figma": {
+            "modeLight": "VariableID:5:103",
+            "modeDark": "VariableID:5:103"
+          },
+          "valueDeviation": false
+        }
+      ],
+      "valuesByMode": {
+        "modeLight": "{primitives.grey.50}",
+        "modeDark": "{primitives.grey.900}"
+      },
+      "figmaAction": "rename",
+      "figma": {
+        "newName": "global/background/default",
+        "survivor": {
+          "figmaName": "global/default/surface/default",
+          "localId": "VariableID:5:103",
+          "key": "f7f095c7265df1d331d191ec59d3f57c8dbdbb22",
+          "scopes": [
+            "ALL_FILLS"
+          ],
+          "bindings": {
+            "owner": 475,
+            "uiKit": 79
+          },
+          "action": "rename"
+        },
+        "rebindThenDelete": [
+          {
+            "figmaName": "global/high/surface/default",
+            "localId": "VariableID:5:107",
+            "key": "dbdd1740f2b95c121a51a0ee9e4b011721ded1e2",
+            "scopes": [
+              "FRAME_FILL"
+            ],
+            "bindings": {
+              "owner": 8,
+              "uiKit": 6
+            },
+            "action": "rebind-then-delete"
+          }
+        ],
+        "survivorDiffersFromCode": {
+          "codeSurvivor": "global/high/surface/default",
+          "reason": "554 bindings contre 14 — survivant choisi pour minimiser les rebinds ; valeurs identiques dans les deux modes, donc neutre."
+        }
+      }
+    },
+    {
+      "newCssVar": "--global-background-default-hover",
+      "newTokenPath": "global.<mode>.background.default-hover",
+      "newFigmaName": "global/background/default-hover",
+      "survivor": {
+        "tokenPath": "global.<mode>.high.surface.hover",
+        "cssVar": "--global-high-surface-hover"
+      },
+      "merged": [],
+      "valuesByMode": {
+        "modeLight": "{primitives.grey.200}",
+        "modeDark": "{primitives.grey.700}"
+      },
+      "figmaAction": "rename",
+      "figma": {
+        "newName": "global/background/default-hover",
+        "survivor": {
+          "figmaName": "global/high/surface/hover",
+          "localId": "VariableID:5:108",
+          "key": "0807f673fe85daee93bfc20677be559b59b66e80",
+          "scopes": [
+            "FRAME_FILL"
+          ],
+          "bindings": {
+            "owner": 0,
+            "uiKit": 4
+          },
+          "action": "rename"
+        },
+        "rebindThenDelete": []
+      }
+    },
+    {
+      "newCssVar": "--global-background-muted",
+      "newTokenPath": "global.<mode>.background.muted",
+      "newFigmaName": "global/background/muted",
+      "survivor": {
+        "tokenPath": "global.<mode>.low.surface.default",
+        "cssVar": "--global-low-surface-default"
+      },
+      "merged": [],
+      "valuesByMode": {
+        "modeLight": "{primitives.grey.200}",
+        "modeDark": "{primitives.grey.700}"
+      },
+      "figmaAction": "rename",
+      "figma": {
+        "newName": "global/background/muted",
+        "survivor": {
+          "figmaName": "global/low/surface/default",
+          "localId": "VariableID:5:116",
+          "key": "cf65dfee978699ea9e4d2dc7dd96a39125c7a76a",
+          "scopes": [
+            "FRAME_FILL"
+          ],
+          "bindings": {
+            "owner": 6,
+            "uiKit": 27
+          },
+          "action": "rename"
+        },
+        "rebindThenDelete": []
+      }
+    },
+    {
+      "newCssVar": "--global-background-muted-hover",
+      "newTokenPath": "global.<mode>.background.muted-hover",
+      "newFigmaName": "global/background/muted-hover",
+      "survivor": {
+        "tokenPath": "global.<mode>.low.surface.hover",
+        "cssVar": "--global-low-surface-hover"
+      },
+      "merged": [],
+      "valuesByMode": {
+        "modeLight": "{primitives.grey.300}",
+        "modeDark": "{primitives.grey.800}"
+      },
+      "figmaAction": "rename",
+      "figma": {
+        "newName": "global/background/muted-hover",
+        "survivor": {
+          "figmaName": "global/low/surface/hover",
+          "localId": "VariableID:5:117",
+          "key": "79c92d3b74e9da14d4e9655e94779c98f2c5460e",
+          "scopes": [
+            "FRAME_FILL"
+          ],
+          "bindings": {
+            "owner": 0,
+            "uiKit": 12
+          },
+          "action": "rename"
+        },
+        "rebindThenDelete": []
+      }
+    },
+    {
+      "newCssVar": "--global-background-brand",
+      "newTokenPath": "global.<mode>.background.brand",
+      "newFigmaName": "global/background/brand",
+      "survivor": {
+        "tokenPath": "global.<mode>.high.surface.focused",
+        "cssVar": "--global-high-surface-focused"
+      },
+      "merged": [],
+      "valuesByMode": {
+        "modeLight": "{primitives.primary.500}",
+        "modeDark": "{primitives.primary.200}"
+      },
+      "figmaAction": "rename",
+      "figma": {
+        "newName": "global/background/brand",
+        "survivor": {
+          "figmaName": "global/high/surface/focused",
+          "localId": "VariableID:5:109",
+          "key": "6d69e97e8374148390c4d80a3825a7d02ebf3711",
+          "scopes": [
+            "FRAME_FILL"
+          ],
+          "bindings": {
+            "owner": 0,
+            "uiKit": 0
+          },
+          "action": "rename"
+        },
+        "rebindThenDelete": []
+      }
+    },
+    {
+      "newCssVar": "--global-text-default",
+      "newTokenPath": "global.<mode>.text.default",
+      "newFigmaName": "global/text/default",
+      "survivor": {
+        "tokenPath": "global.<mode>.high.content.default",
+        "cssVar": "--global-high-content-default"
+      },
+      "merged": [
+        {
+          "tokenPath": "global.<mode>.default.content.default",
+          "cssVar": "--global-default-content-default",
+          "figmaAction": "rebind-then-delete",
+          "valuesByMode": {
+            "modeLight": "{primitives.grey.900}",
+            "modeDark": "{primitives.white.base}"
+          },
+          "figma": {
+            "modeLight": "VariableID:1003:112",
+            "modeDark": "VariableID:1003:112"
+          },
+          "valueDeviation": true
+        }
+      ],
+      "valuesByMode": {
+        "modeLight": "{primitives.grey.900}",
+        "modeDark": "{primitives.grey.50}"
+      },
+      "figmaAction": "rename",
+      "figma": {
+        "newName": "global/text/default",
+        "survivor": {
+          "figmaName": "global/high/content/default",
+          "localId": "VariableID:5:104",
+          "key": "0c98a229d2f11a73ff2cebe8b0b842ff4f65d213",
+          "scopes": [
+            "SHAPE_FILL",
+            "TEXT_FILL"
+          ],
+          "bindings": {
+            "owner": 318,
+            "uiKit": 103
+          },
+          "action": "rename"
+        },
+        "rebindThenDelete": [
+          {
+            "figmaName": "global/default/content/default",
+            "localId": "VariableID:1003:112",
+            "key": "9ae5d9a691c26557e6406b23c7e9e1f2dece0d4d",
+            "scopes": [
+              "SHAPE_FILL",
+              "TEXT_FILL"
+            ],
+            "bindings": {
+              "owner": 0,
+              "uiKit": 13
+            },
+            "action": "rebind-then-delete"
+          }
+        ]
+      }
+    },
+    {
+      "newCssVar": "--global-text-default-hover",
+      "newTokenPath": "global.<mode>.text.default-hover",
+      "newFigmaName": "global/text/default-hover",
+      "survivor": {
+        "tokenPath": "global.<mode>.high.content.hover",
+        "cssVar": "--global-high-content-hover"
+      },
+      "merged": [],
+      "valuesByMode": {
+        "modeLight": "{primitives.grey.700}",
+        "modeDark": "{primitives.grey.200}"
+      },
+      "figmaAction": "rename",
+      "figma": {
+        "newName": "global/text/default-hover",
+        "survivor": {
+          "figmaName": "global/high/content/hover",
+          "localId": "VariableID:5:105",
+          "key": "4edbb32de3e6f5bde4ff387bcbadf6b6146a64b5",
+          "scopes": [
+            "SHAPE_FILL",
+            "TEXT_FILL"
+          ],
+          "bindings": {
+            "owner": 0,
+            "uiKit": 0
+          },
+          "action": "rename"
+        },
+        "rebindThenDelete": []
+      }
+    },
+    {
+      "newCssVar": "--global-text-muted",
+      "newTokenPath": "global.<mode>.text.muted",
+      "newFigmaName": "global/text/muted",
+      "survivor": {
+        "tokenPath": "global.<mode>.low.content.default",
+        "cssVar": "--global-low-content-default"
+      },
+      "merged": [],
+      "valuesByMode": {
+        "modeLight": "{primitives.grey.700}",
+        "modeDark": "{primitives.grey.200}"
+      },
+      "figmaAction": "rename",
+      "figma": {
+        "newName": "global/text/muted",
+        "survivor": {
+          "figmaName": "global/low/content/default",
+          "localId": "VariableID:5:113",
+          "key": "52e52db89a70671eb374ae21ab49e1ce3c9d4862",
+          "scopes": [
+            "SHAPE_FILL",
+            "TEXT_FILL"
+          ],
+          "bindings": {
+            "owner": 6,
+            "uiKit": 14
+          },
+          "action": "rename"
+        },
+        "rebindThenDelete": []
+      }
+    },
+    {
+      "newCssVar": "--global-text-muted-hover",
+      "newTokenPath": "global.<mode>.text.muted-hover",
+      "newFigmaName": "global/text/muted-hover",
+      "survivor": {
+        "tokenPath": "global.<mode>.low.content.hover",
+        "cssVar": "--global-low-content-hover"
+      },
+      "merged": [],
+      "valuesByMode": {
+        "modeLight": "{primitives.grey.700}",
+        "modeDark": "{primitives.grey.200}"
+      },
+      "figmaAction": "rename",
+      "figma": {
+        "newName": "global/text/muted-hover",
+        "survivor": {
+          "figmaName": "global/low/content/hover",
+          "localId": "VariableID:5:114",
+          "key": "2e3e6e524648dbe11dad301f53c07ffe80feaf81",
+          "scopes": [
+            "SHAPE_FILL",
+            "TEXT_FILL"
+          ],
+          "bindings": {
+            "owner": 0,
+            "uiKit": 0
+          },
+          "action": "rename"
+        },
+        "rebindThenDelete": []
+      }
+    },
+    {
+      "newCssVar": "--global-text-brand",
+      "newTokenPath": "global.<mode>.text.brand",
+      "newFigmaName": "global/text/brand",
+      "survivor": {
+        "tokenPath": "global.<mode>.high.content.focused",
+        "cssVar": "--global-high-content-focused"
+      },
+      "merged": [],
+      "valuesByMode": {
+        "modeLight": "{primitives.primary.500}",
+        "modeDark": "{primitives.primary.200}"
+      },
+      "figmaAction": "rename",
+      "figma": {
+        "newName": "global/text/brand",
+        "survivor": {
+          "figmaName": "global/high/content/focused",
+          "localId": "VariableID:5:106",
+          "key": "ff0cb6714a2652c05187961fee792e7df388474b",
+          "scopes": [
+            "SHAPE_FILL",
+            "TEXT_FILL"
+          ],
+          "bindings": {
+            "owner": 0,
+            "uiKit": 0
+          },
+          "action": "rename"
+        },
+        "rebindThenDelete": []
+      }
+    },
+    {
+      "newCssVar": "--global-border-default",
+      "newTokenPath": "global.<mode>.border.default",
+      "newFigmaName": "global/border/default",
+      "survivor": {
+        "tokenPath": "global.<mode>.high.stroke.default",
+        "cssVar": "--global-high-stroke-default"
+      },
+      "merged": [
+        {
+          "tokenPath": "global.<mode>.low.stroke.default",
+          "cssVar": "--global-low-stroke-default",
+          "figmaAction": "rebind-then-delete",
+          "valuesByMode": {
+            "modeLight": "{primitives.grey.200}",
+            "modeDark": "{primitives.grey.700}"
+          },
+          "figma": {
+            "modeLight": "VariableID:5:119",
+            "modeDark": "VariableID:5:119"
+          },
+          "valueDeviation": false
+        }
+      ],
+      "valuesByMode": {
+        "modeLight": "{primitives.grey.200}",
+        "modeDark": "{primitives.grey.700}"
+      },
+      "figmaAction": "rename",
+      "figma": {
+        "newName": "global/border/default",
+        "survivor": {
+          "figmaName": "global/high/stroke/default",
+          "localId": "VariableID:5:110",
+          "key": "02d064b7a69fb86b1b6dacee642a5e33561b7e9e",
+          "scopes": [
+            "STROKE_COLOR"
+          ],
+          "bindings": {
+            "owner": 257,
+            "uiKit": 144
+          },
+          "action": "rename"
+        },
+        "rebindThenDelete": [
+          {
+            "figmaName": "global/low/stroke/default",
+            "localId": "VariableID:5:119",
+            "key": "c8ccca49f183cd3ecd2df6c20104b98c450ad6b4",
+            "scopes": [
+              "STROKE_COLOR"
+            ],
+            "bindings": {
+              "owner": 6,
+              "uiKit": 1
+            },
+            "action": "rebind-then-delete"
+          }
+        ]
+      }
+    },
+    {
+      "newCssVar": "--global-border-default-hover",
+      "newTokenPath": "global.<mode>.border.default-hover",
+      "newFigmaName": "global/border/default-hover",
+      "survivor": {
+        "tokenPath": "global.<mode>.high.stroke.hover",
+        "cssVar": "--global-high-stroke-hover"
+      },
+      "merged": [],
+      "valuesByMode": {
+        "modeLight": "{primitives.primary.500}",
+        "modeDark": "{primitives.primary.200}"
+      },
+      "figmaAction": "rename",
+      "figma": {
+        "newName": "global/border/default-hover",
+        "survivor": {
+          "figmaName": "global/high/stroke/hover",
+          "localId": "VariableID:5:111",
+          "key": "b2c1f3641d3aa41af9306ebe30b4d153eb3c82ee",
+          "scopes": [
+            "STROKE_COLOR"
+          ],
+          "bindings": {
+            "owner": 0,
+            "uiKit": 0
+          },
+          "action": "rename"
+        },
+        "rebindThenDelete": []
+      }
+    },
+    {
+      "newCssVar": "--global-border-subtle",
+      "newTokenPath": "global.<mode>.border.subtle",
+      "newFigmaName": "global/border/subtle",
+      "survivor": {
+        "tokenPath": "global.<mode>.default.stroke.default",
+        "cssVar": "--global-default-stroke-default"
+      },
+      "merged": [],
+      "valuesByMode": {
+        "modeLight": "{primitives.grey.100}",
+        "modeDark": "{primitives.grey.700}"
+      },
+      "figmaAction": "rename",
+      "figma": {
+        "newName": "global/border/subtle",
+        "survivor": {
+          "figmaName": "global/default/stroke/default",
+          "localId": "VariableID:1003:113",
+          "key": "14c07da134dbe5939a1df58987f9618d78da22a7",
+          "scopes": [
+            "STROKE_COLOR"
+          ],
+          "bindings": {
+            "owner": 0,
+            "uiKit": 0
+          },
+          "action": "rename"
+        },
+        "rebindThenDelete": []
+      }
+    },
+    {
+      "newCssVar": "--global-border-focus",
+      "newTokenPath": "global.<mode>.border.focus",
+      "newFigmaName": "global/border/focus",
+      "survivor": {
+        "tokenPath": "global.<mode>.high.stroke.focused",
+        "cssVar": "--global-high-stroke-focused"
+      },
+      "merged": [],
+      "valuesByMode": {
+        "modeLight": "{primitives.primary.500}",
+        "modeDark": "{primitives.primary.200}"
+      },
+      "figmaAction": "rename",
+      "figma": {
+        "newName": "global/border/focus",
+        "survivor": {
+          "figmaName": "global/high/stroke/focused",
+          "localId": "VariableID:5:112",
+          "key": "89c5dc9952f6e743c345d1f315015024dfba145f",
+          "scopes": [
+            "STROKE_COLOR"
+          ],
+          "bindings": {
+            "owner": 0,
+            "uiKit": 0
+          },
+          "action": "rename"
+        },
+        "rebindThenDelete": []
+      }
+    }
+  ],
+  "dropped": [
+    {
+      "tokenPath": "global.<mode>.low.content.focused",
+      "cssVar": "--global-low-content-focused",
+      "figmaAction": "delete",
+      "valuesByMode": {
+        "modeLight": "{primitives.secondary.500}",
+        "modeDark": "{primitives.secondary.200}"
+      },
+      "figma": {
+        "figmaName": "global/low/content/focused",
+        "localId": "VariableID:5:115",
+        "key": "36ffe869950bc8878224aa44f9db3eb68ff85ad0",
+        "bindings": {
+          "owner": 0,
+          "uiKit": 0
+        },
+        "action": "delete",
+        "safe": true
+      }
+    },
+    {
+      "tokenPath": "global.<mode>.low.surface.focused",
+      "cssVar": "--global-low-surface-focused",
+      "figmaAction": "delete",
+      "valuesByMode": {
+        "modeLight": "{primitives.secondary.500}",
+        "modeDark": "{primitives.secondary.200}"
+      },
+      "figma": {
+        "figmaName": "global/low/surface/focused",
+        "localId": "VariableID:5:118",
+        "key": "24b713b45209d7772dd14664e6ddde6626b2c5db",
+        "bindings": {
+          "owner": 0,
+          "uiKit": 0
+        },
+        "action": "delete",
+        "safe": true
+      }
+    },
+    {
+      "tokenPath": "global.<mode>.low.stroke.focused",
+      "cssVar": "--global-low-stroke-focused",
+      "figmaAction": "delete",
+      "valuesByMode": {
+        "modeLight": "{primitives.secondary.500}",
+        "modeDark": "{primitives.secondary.200}"
+      },
+      "figma": {
+        "figmaName": "global/low/stroke/focused",
+        "localId": "VariableID:5:121",
+        "key": "a5ae00a25860290ea6370f5b62f911970d40c9f8",
+        "bindings": {
+          "owner": 0,
+          "uiKit": 0
+        },
+        "action": "delete",
+        "safe": true
+      }
+    },
+    {
+      "tokenPath": "global.<mode>.low.stroke.hover",
+      "cssVar": "--global-low-stroke-hover",
+      "figmaAction": "delete",
+      "valuesByMode": {
+        "modeLight": "{primitives.secondary.500}",
+        "modeDark": "{primitives.secondary.200}"
+      },
+      "figma": {
+        "figmaName": "global/low/stroke/hover",
+        "localId": "VariableID:5:120",
+        "key": "ea2efdbf13034159e9519fecd206da42090b1432",
+        "bindings": {
+          "owner": 0,
+          "uiKit": 0
+        },
+        "action": "delete",
+        "safe": true
+      }
+    }
+  ],
+  "cssRenames": {
+    "--global-high-surface-default": "--global-background-default",
+    "--global-default-surface-default": "--global-background-default",
+    "--global-high-surface-hover": "--global-background-default-hover",
+    "--global-low-surface-default": "--global-background-muted",
+    "--global-low-surface-hover": "--global-background-muted-hover",
+    "--global-high-surface-focused": "--global-background-brand",
+    "--global-high-content-default": "--global-text-default",
+    "--global-default-content-default": "--global-text-default",
+    "--global-high-content-hover": "--global-text-default-hover",
+    "--global-low-content-default": "--global-text-muted",
+    "--global-low-content-hover": "--global-text-muted-hover",
+    "--global-high-content-focused": "--global-text-brand",
+    "--global-high-stroke-default": "--global-border-default",
+    "--global-low-stroke-default": "--global-border-default",
+    "--global-high-stroke-hover": "--global-border-default-hover",
+    "--global-default-stroke-default": "--global-border-subtle",
+    "--global-high-stroke-focused": "--global-border-focus"
+  },
+  "counts": {
+    "before": 21,
+    "after": 14,
+    "dropped": 4
+  },
+  "figmaTargets": {
+    "owner": {
+      "name": "[Projet] - Composants metiers",
+      "fileKey": "lH4jhyZFkIeJ1Ob1tlY7Wm",
+      "role": "propriétaire de la collection semantics — c'est le seul fichier où les variables sont locales et donc renommables",
+      "collection": {
+        "name": "semantics",
+        "id": "VariableCollectionId:4:763",
+        "key": "c7d5fad4d47bf024137cc272036425e244406096",
+        "varCount": 421
+      },
+      "modes": {
+        "Light": "4:3",
+        "Dark": "5:0"
+      },
+      "scan": {
+        "pages": 45,
+        "nodes": 5353,
+        "globalBindings": 1076
+      }
+    },
+    "consumers": [
+      {
+        "name": "[Projet] - UI Kit",
+        "fileKey": "GZww5hdUA49LB8XWeWP6tl",
+        "role": "consomme les variables en remote — rebind possible via importVariableByKeyAsync, renommage impossible",
+        "scan": {
+          "pages": 50,
+          "nodes": 6386,
+          "globalBindings": 403
+        }
+      }
+    ],
+    "doNotTouch": [
+      "[TEST] - Composants metiers",
+      "[NAXOS] VUP - Composants metiers",
+      "[EasyFret] WMS (AARG) - Composants metiers",
+      "BeCLM UI 2.0 - Composants metiers",
+      "[ARKHE] OKWEB - Composants metiers",
+      "[Celebrads] - Composants metiers",
+      "✅ Mode 2 - Composants metiers - Projet B"
+    ],
+    "noSemanticAliasesGlobal": true,
+    "plan": {
+      "renames": 14,
+      "rebinds": 34,
+      "deletions": 7,
+      "flips": [
+        "--global-background-default: global/high/surface/default -> global/default/surface/default"
+      ]
+    }
+  }
+}

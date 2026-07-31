@@ -127,7 +127,7 @@ $icon-slot: utils.rem-calc(20);             /// Largeur réservée à l'icône d
 
     &:focus-visible {
       outline: none;
-      box-shadow: inset 0 0 0 $focus-ring-width var(--global-high-stroke-focused);
+      box-shadow: inset 0 0 0 $focus-ring-width var(--global-border-focus);
     }
 
     &:disabled {

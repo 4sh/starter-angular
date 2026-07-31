@@ -25,7 +25,7 @@ $rail-stroke: var(--stroke-default); /// Épaisseur du rail reliant les étapes.
   top: calc(#{$marker-size} + var(--units-xs));
   bottom: 0;
   width: $rail-stroke;
-  background-color: var(--global-high-stroke-default);
+  background-color: var(--global-border-default);
 }
 
 :host._completed:not(._last)::before {

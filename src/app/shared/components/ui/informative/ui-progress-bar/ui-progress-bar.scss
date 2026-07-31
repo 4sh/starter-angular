@@ -46,7 +46,7 @@ $indeterminate-duration: 1.6s; /// Durée d'un cycle en mode indéterminé.
     overflow: hidden;
     height: utils.rem-calc(map.get($size-default, track-height));
     border-radius: map.get($size-default, radius);
-    background-color: var(--global-high-stroke-default);
+    background-color: var(--global-border-default);
   }
 
   // --- Determinate fill ----------------------------------------------
@@ -62,7 +62,7 @@ $indeterminate-duration: 1.6s; /// Durée d'un cycle en mode indéterminé.
     flex: 1 1 0;
     height: 100%;
     border-radius: var(--radius-2xs);
-    background-color: var(--global-high-stroke-default);
+    background-color: var(--global-border-default);
 
     &._active {
       background-color: var(--ui-progress-bar-color, var(--informative-highlighthigh-surface-default));
@@ -72,7 +72,7 @@ $indeterminate-duration: 1.6s; /// Durée d'un cycle en mode indéterminé.
   // --- Label ---------------------------------------------------------
   &-label {
     flex: 0 0 auto;
-    color: var(--global-high-content-default);
+    color: var(--global-text-default);
     font-family: var(--fontfamily-base);
     font-weight: var(--weight-regular);
     font-size: var(--size-typography-text-default);

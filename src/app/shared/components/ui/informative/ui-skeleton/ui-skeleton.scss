@@ -55,7 +55,7 @@ $small: (
   flex: none;
   position: relative;
   overflow: hidden;
-  background-color: var(--ui-skeleton-background, var(--global-low-surface-default)); /// Couleur de fond de la boîte du placeholder.
+  background-color: var(--ui-skeleton-background, var(--global-background-muted)); /// Couleur de fond de la boîte du placeholder.
 
   // --- Reflection sweep (base animation) -----------------------------
   &::after {

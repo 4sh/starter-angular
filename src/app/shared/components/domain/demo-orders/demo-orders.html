@@ -469,7 +469,7 @@
         <ui-select label="Statut initial" [options]="statusOptions" [(ngModel)]="newOrderStatus" optionLabel="label" optionValue="value" />
         <ui-datepicker label="Date d'expédition prévue" [(ngModel)]="newOrderDate" />
         <div style="display: flex; flex-direction: column; gap: var(--units-xs);">
-          <span style="font-size: var(--size-typography-text-sm); font-weight: 500; color: var(--global-high-content-default);">Priorité</span>
+          <span style="font-size: var(--size-typography-text-sm); font-weight: 500; color: var(--global-text-default);">Priorité</span>
           <ui-segment-control [options]="priorityOptions" [(ngModel)]="newOrderPriority" optionLabel="label" optionValue="value" fluid />
         </div>
       </div>
@@ -486,8 +486,8 @@
         
         <div style="display: flex; flex-direction: column; gap: var(--units-xs); margin-top: var(--units-xs);">
           <div class="flex-x" style="justify-content: space-between;">
-            <span style="font-size: var(--size-typography-text-sm); font-weight: 500; color: var(--global-high-content-default);">Remise globale</span>
-            <span style="font-size: var(--size-typography-text-sm); color: var(--global-low-content-default);">{{ newOrderDiscount() }}%</span>
+            <span style="font-size: var(--size-typography-text-sm); font-weight: 500; color: var(--global-text-default);">Remise globale</span>
+            <span style="font-size: var(--size-typography-text-sm); color: var(--global-text-muted);">{{ newOrderDiscount() }}%</span>
           </div>
           <ui-slider [min]="0" [max]="30" [step]="5" [(ngModel)]="newOrderDiscount" />
         </div>

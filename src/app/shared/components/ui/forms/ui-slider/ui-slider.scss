@@ -27,7 +27,7 @@ $focus-ring-width: utils.$form-focus-ring-width; /// Épaisseur de l'anneau de f
     width: 100%;
     height: var(--ui-slider-thickness, #{$track-thickness});
     border-radius: var(--radius-full);
-    background-color: var(--global-low-surface-default);
+    background-color: var(--global-background-muted);
   }
 
   // --- Filled portion ------------------------------------------------

@@ -96,7 +96,7 @@ $numbers-gap: var(--units-sm);                     /// Espacement entre les num√
   &-report {
     display: inline-flex;
     align-items: center;
-    color: var(--global-low-content-default);
+    color: var(--global-text-muted);
     font-size: var(--size-typography-text-md);
     white-space: nowrap;
   }
@@ -106,7 +106,7 @@ $numbers-gap: var(--units-sm);                     /// Espacement entre les num√
     display: inline-flex;
     align-items: center;
     gap: var(--units-sm);
-    color: var(--global-low-content-default);
+    color: var(--global-text-muted);
     font-size: var(--size-typography-text-md);
   }
 

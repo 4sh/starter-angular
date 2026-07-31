@@ -87,7 +87,7 @@ $size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default
 
   // --- Label ---------------------------------------------------------
   &-label {
-    color: var(--global-default-content-default);
+    color: var(--global-text-default);
     font-family: var(--fontfamily-base);
     font-weight: var(--weight-bold);
     font-size: map.get($size-default, font-size);

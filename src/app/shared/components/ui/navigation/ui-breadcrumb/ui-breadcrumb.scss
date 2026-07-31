@@ -57,7 +57,7 @@ $focus-ring-width: utils.$action-focus-ring-width; /// Épaisseur de l'anneau de
   &-separator {
     display: inline-flex;
     align-items: center;
-    color: var(--global-high-content-default);
+    color: var(--global-text-default);
     user-select: none;
   }
 
@@ -70,7 +70,7 @@ $focus-ring-width: utils.$action-focus-ring-width; /// Épaisseur de l'anneau de
     border: none;
     background: none;
     line-height: 0;
-    color: var(--global-high-content-default);
+    color: var(--global-text-default);
     border-radius: var(--radius-2xs);
     cursor: pointer;
     @include utils.control-transition(color, box-shadow);

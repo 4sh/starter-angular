@@ -208,9 +208,9 @@ export const SelectableList: Story = {
       ],
     },
     template: `
-      <div style="max-width:22rem;padding:1.5rem 2rem;border:1px solid var(--global-default-stroke-default);border-radius:var(--radius-lg);background:var(--global-high-surface-default);">
-        <h3 style="margin:0 0 .25rem;font-family:var(--fontfamily-title);font-weight:var(--weight-bold);color:var(--global-high-content-default);">What are you interested in?</h3>
-        <p style="margin:0 0 1.25rem;color:var(--global-low-content-default);">You can select multiple answers.</p>
+      <div style="max-width:22rem;padding:1.5rem 2rem;border:1px solid var(--global-border-subtle);border-radius:var(--radius-lg);background:var(--global-background-default);">
+        <h3 style="margin:0 0 .25rem;font-family:var(--fontfamily-title);font-weight:var(--weight-bold);color:var(--global-text-default);">What are you interested in?</h3>
+        <p style="margin:0 0 1.25rem;color:var(--global-text-muted);">You can select multiple answers.</p>
         <div style="display:flex;flex-wrap:wrap;gap:.5rem;">
           @for (item of interests; track item.label) {
             <ui-chip

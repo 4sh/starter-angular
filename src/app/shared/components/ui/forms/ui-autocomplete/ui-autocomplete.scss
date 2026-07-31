@@ -186,7 +186,7 @@ $input-min-width: utils.rem-calc(80); /// Largeur minimale de la zone de saisie 
 
     // Visual focus (aria-activedescendant) and pointer hover share the look.
     &._focused,
-    &:hover:not(._disabled) { background-color: var(--global-high-surface-hover); }
+    &:hover:not(._disabled) { background-color: var(--global-background-default-hover); }
 
     &._selected {
       background-color: var(--form-high-surface-hover);

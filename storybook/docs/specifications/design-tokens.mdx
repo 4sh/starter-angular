@@ -47,6 +47,9 @@ La nomenclature suit une logique de construction stricte : `[famille]-[niveau]-[
 Les tokens sémantiques sont générés **sans préfixe** : la famille ouvre directement le nom
 (`--actions-high-surface-default`), il n'y a pas de segment `token-` ou `semantics-`.
 
+*(Le domaine `global` suit une anatomie volontairement plus courte, en trois segments —
+voir [Anatomie du domaine `global`](#anatomie-du-domaine-global) ci-dessous.)*
+
 <table className="doc-table">
     <thead>
     <tr>
@@ -140,6 +143,63 @@ la casse disparaissant à la génération (voir ci-dessus), le nom final peut su
         <a href="?path=/docs/components-ui-actions-ui-button--docs"><code>ui-button</code> → onColor</a>.
     </p>
 </div>
+
+### Anatomie du domaine `global`
+
+Le domaine `global` porte les couleurs **structurelles** de l'application (fonds de page,
+textes courants, séparateurs). Il n'a ni famille ni niveau : sa nomenclature est
+`global-[axe]-[occurrence]`, en trois segments.
+
+Ce choix est délibéré. Les mots `high`/`low` des familles fonctionnelles désignent une
+**hiérarchie d'intention** (bouton primaire vs secondaire) ; appliqués à des neutres ils
+désignaient un **niveau de contraste**. Deux sens pour un même mot : l'axe a donc été
+remplacé par un vocabulaire d'emphase explicite, et l'axe `[propriété]` par les trois
+propriétés CSS qu'il cible réellement.
+
+<table className="doc-table">
+    <thead>
+    <tr>
+        <th>Segment</th>
+        <th>Valeurs possibles</th>
+        <th>Rôle</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><strong>1. Axe</strong></td>
+        <td><code>background</code>, <code>text</code>, <code>border</code></td>
+        <td>La cible CSS, nommée d'après la propriété : <code>background-color</code>, <code>color</code>, <code>border-color</code>.</td>
+    </tr>
+    <tr>
+        <td><strong>2. Occurrence</strong></td>
+        <td>
+            <em>emphase</em> : <code>default</code>, <code>muted</code>, <code>subtle</code><br/>
+            <em>rôle</em> : <code>brand</code>, <code>focus</code>, <code>inverse</code>, <code>disabled</code>
+        </td>
+        <td>Soit le degré d'emphase du neutre, soit un rôle particulier. Deux familles de mots, au même niveau.</td>
+    </tr>
+    <tr>
+        <td><strong>3. État</strong> <em>(optionnel)</em></td>
+        <td><code>hover</code></td>
+        <td>Suffixé à l'occurrence (<code>default-hover</code>) et <strong>omis à l'état de repos</strong> — d'où les trois segments du cas courant.</td>
+    </tr>
+    </tbody>
+</table>
+
+```scss
+.ui-card {
+  background-color: var(--global-background-default);  // fond de la surface
+  color: var(--global-text-default);                   // texte principal
+  border-color: var(--global-border-subtle);           // bordure discrète
+
+  .ui-card-subtitle { color: var(--global-text-muted); }        // texte atténué
+  &:focus-visible { box-shadow: 0 0 0 2px var(--global-border-focus); }
+}
+```
+
+> L'inventaire exhaustif et les valeurs résolues (par thème, marque et mode) sont dans
+> [Foundations / Colors](?path=/docs/foundations-colors--docs), généré depuis
+> `tokens.manifest.json`.
 
 ### Référentiel des Familles Fonctionnelles
 

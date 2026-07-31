@@ -71,8 +71,8 @@ $size-edge: utils.rem-calc(160);              /// Hauteur d'un tiroir haut / bas
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  background-color: var(--global-default-surface-default);
-  color: var(--global-high-content-default);
+  background-color: var(--global-background-default);
+  color: var(--global-text-default);
   box-shadow: var(--shadow-default-lg); // floats above the page → strong elevation
   font-family: var(--fontfamily-base);
   outline: none;
@@ -97,16 +97,16 @@ $size-edge: utils.rem-calc(160);              /// Hauteur d'un tiroir haut / bas
 
   // Border faces the content area (opposite the docked edge).
   .ui-drawer-positioner._left & {
-    border-inline-end: $stroke-width solid var(--global-default-stroke-default);
+    border-inline-end: $stroke-width solid var(--global-border-subtle);
   }
   .ui-drawer-positioner._right & {
-    border-inline-start: $stroke-width solid var(--global-default-stroke-default);
+    border-inline-start: $stroke-width solid var(--global-border-subtle);
   }
   .ui-drawer-positioner._top & {
-    border-block-end: $stroke-width solid var(--global-default-stroke-default);
+    border-block-end: $stroke-width solid var(--global-border-subtle);
   }
   .ui-drawer-positioner._bottom & {
-    border-block-start: $stroke-width solid var(--global-default-stroke-default);
+    border-block-start: $stroke-width solid var(--global-border-subtle);
   }
   .ui-drawer-positioner._full-screen & {
     border: none;
@@ -149,13 +149,13 @@ $size-edge: utils.rem-calc(160);              /// Hauteur d'un tiroir haut / bas
     @include utils.control-transition(background-color, color);
 
     &:hover {
-      background-color: var(--global-low-surface-hover);
-      color: var(--global-low-content-hover);
+      background-color: var(--global-background-muted-hover);
+      color: var(--global-text-muted-hover);
     }
 
     &:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 $focus-ring-width var(--global-high-stroke-focused);
+      box-shadow: 0 0 0 $focus-ring-width var(--global-border-focus);
     }
 
     @include utils.motion-reduce {
@@ -187,6 +187,6 @@ $size-edge: utils.rem-calc(160);              /// Hauteur d'un tiroir haut / bas
     justify-content: flex-end;
     gap: var(--units-sm);
     padding: var(--units-md) $panel-padding $panel-padding;
-    border-top: $stroke-width solid var(--global-default-stroke-default);
+    border-top: $stroke-width solid var(--global-border-subtle);
   }
 }

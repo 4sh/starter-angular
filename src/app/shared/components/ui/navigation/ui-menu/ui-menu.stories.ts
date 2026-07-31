@@ -239,7 +239,7 @@ export const Compact: Story = {
     return {
       props: { ...args, items },
       template: `
-        <div style="display:flex; justify-content:space-between; align-items:center; max-width:320px; padding:8px 12px; border:1px solid var(--global-high-stroke-default); border-radius:8px">
+        <div style="display:flex; justify-content:space-between; align-items:center; max-width:320px; padding:8px 12px; border:1px solid var(--global-border-default); border-radius:8px">
           <span>rapport-2026.pdf</span>
           <ui-button level="low" size="small" icon="ellipsis" ariaLabel="Actions du fichier"
             (buttonClick)="menu.toggle($event)"

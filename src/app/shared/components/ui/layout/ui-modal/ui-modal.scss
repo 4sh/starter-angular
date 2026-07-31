@@ -60,10 +60,10 @@ $mask-background: var(--primitives-black-50); /// Assombrissement du masque — 
   flex-direction: column;
   max-width: min(90vw, utils.rem-calc(560));
   max-height: 90vh;
-  border: $stroke-width solid var(--global-default-stroke-default);
+  border: $stroke-width solid var(--global-border-subtle);
   border-radius: $dialog-radius;
-  background-color: var(--global-default-surface-default);
-  color: var(--global-high-content-default);
+  background-color: var(--global-background-default);
+  color: var(--global-text-default);
   box-shadow: var(--shadow-default-lg); // floats above the page → strong elevation
   font-family: var(--fontfamily-base);
   outline: none;
@@ -138,13 +138,13 @@ $mask-background: var(--primitives-black-50); /// Assombrissement du masque — 
     @include utils.control-transition(background-color, color);
 
     &:hover {
-      background-color: var(--global-low-surface-hover);
-      color: var(--global-low-content-hover);
+      background-color: var(--global-background-muted-hover);
+      color: var(--global-text-muted-hover);
     }
 
     &:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 $focus-ring-width var(--global-high-stroke-focused);
+      box-shadow: 0 0 0 $focus-ring-width var(--global-border-focus);
     }
 
     @include utils.motion-reduce {
@@ -176,7 +176,7 @@ $mask-background: var(--primitives-black-50); /// Assombrissement du masque — 
     justify-content: flex-end;
     gap: var(--units-sm);
     padding: var(--units-md) $dialog-padding $dialog-padding;
-    border-top: $stroke-width solid var(--global-default-stroke-default);
+    border-top: $stroke-width solid var(--global-border-subtle);
   }
 
   // --- Resize grip (bottom-right corner) -----------------------------
@@ -188,7 +188,7 @@ $mask-background: var(--primitives-black-50); /// Assombrissement du masque — 
     height: $resize-handle-size;
     cursor: nwse-resize;
     touch-action: none;
-    color: var(--global-low-content-default);
+    color: var(--global-text-muted);
     background-image: repeating-linear-gradient(
       -45deg,
       currentColor 0 1px,

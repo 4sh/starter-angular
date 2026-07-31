@@ -320,7 +320,7 @@ export const TabMenu: Story = {
       </ui-tabs>
 
       <!-- Emplacement d'un <router-outlet /> , simulé ici. -->
-      <div style="margin-top:16px; padding:16px; border:1px dashed var(--global-high-stroke-default); border-radius:8px; font-size:14px">
+      <div style="margin-top:16px; padding:16px; border:1px dashed var(--global-border-default); border-radius:8px; font-size:14px">
         Route active : <strong>/{{ route }}</strong>
       </div>`),
   }),
