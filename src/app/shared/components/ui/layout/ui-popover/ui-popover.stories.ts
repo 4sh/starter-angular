@@ -129,7 +129,7 @@ export const Controlled: Story = {
         <span
           #anchor
           style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px;
-                 border: 1px solid var(--global-high-stroke-default); border-radius: var(--radius-sm);">
+                 border: 1px solid var(--global-border-default); border-radius: var(--radius-sm);">
           <ui-icon name="location-dot" size="sm" />
           Ancre
         </span>
@@ -200,7 +200,7 @@ export const RichContent: Story = {
             <ui-icon name="circle-user" size="lg" />
             <div>
               <strong style="display: block;">Amelia Stone</strong>
-              <span style="font-size: .8125rem; color: var(--global-high-content-hover);">Product designer</span>
+              <span style="font-size: .8125rem; color: var(--global-text-default-hover);">Product designer</span>
             </div>
           </div>
           <p style="margin: 0; font-size: .875rem; line-height: 1.4;">

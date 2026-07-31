@@ -33,10 +33,10 @@ $card-stroke-width: var(--stroke-sm); /// Épaisseur de bordure.
   display: flex;
   flex-direction: column;
   overflow: hidden; // clips full-bleed media to the rounded corners
-  background-color: var(--global-default-surface-default);
+  background-color: var(--global-background-default);
   border: $card-stroke-width solid transparent;
   border-radius: $card-radius;
-  color: var(--global-high-content-default);
+  color: var(--global-text-default);
   font-family: var(--fontfamily-base);
 
   // --- Sub-elements --------------------------------------------------
@@ -84,20 +84,20 @@ $card-stroke-width: var(--stroke-sm); /// Épaisseur de bordure.
     font-size: var(--size-typography-title-default);
     font-weight: var(--weight-bold);
     line-height: 1.2;
-    color: var(--global-high-content-default);
+    color: var(--global-text-default);
   }
 
   &-subtitle {
     font-size: var(--size-typography-text-md);
     line-height: 1.4;
-    color: var(--global-low-content-default);
+    color: var(--global-text-muted);
   }
 
   &-content {
     padding-inline: $card-padding;
     font-size: var(--size-typography-text-md);
     line-height: 1.5;
-    color: var(--global-high-content-default);
+    color: var(--global-text-default);
 
     // Full-bleed content: consumer owns the inner gutters.
     &._flush {
@@ -124,7 +124,7 @@ $card-stroke-width: var(--stroke-sm); /// Épaisseur de bordure.
 
   // --- Variants (surface treatment) ----------------------------------
   &._outlined {
-    border-color: var(--global-default-stroke-default);
+    border-color: var(--global-border-subtle);
   }
 
   &._elevated {

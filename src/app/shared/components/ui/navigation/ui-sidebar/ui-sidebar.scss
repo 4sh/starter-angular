@@ -85,8 +85,8 @@ $rail-width-default: utils.rem-calc(72);          /// Largeur du rail d'icônes 
   min-height: 0;
   inline-size: var(--ui-sidebar-width);
   overflow: hidden; // collapsed rail clips over-wide header/footer content
-  background-color: var(--global-high-surface-default);
-  color: var(--global-high-content-default);
+  background-color: var(--global-background-default);
+  color: var(--global-text-default);
   font-family: var(--fontfamily-base);
   outline: none;
   @include utils.motion-transition(inline-size, box-shadow);
@@ -97,10 +97,10 @@ $rail-width-default: utils.rem-calc(72);          /// Largeur du rail d'icônes 
 
   // Border faces the content area (opposite the docked edge).
   &._left {
-    border-inline-end: $stroke-width solid var(--global-default-stroke-default);
+    border-inline-end: $stroke-width solid var(--global-border-subtle);
   }
   &._right {
-    border-inline-start: $stroke-width solid var(--global-default-stroke-default);
+    border-inline-start: $stroke-width solid var(--global-border-subtle);
   }
 
   // --- Static panel: fills the in-flow rail, floats when hover-expanded ---
@@ -154,13 +154,13 @@ $rail-width-default: utils.rem-calc(72);          /// Largeur du rail d'icônes 
     @include utils.control-transition(background-color, color);
 
     &:hover {
-      background-color: var(--global-low-surface-hover);
-      color: var(--global-low-content-hover);
+      background-color: var(--global-background-muted-hover);
+      color: var(--global-text-muted-hover);
     }
 
     &:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 $focus-ring-width var(--global-high-stroke-focused);
+      box-shadow: 0 0 0 $focus-ring-width var(--global-border-focus);
     }
 
     @include utils.motion-reduce {
@@ -175,7 +175,7 @@ $rail-width-default: utils.rem-calc(72);          /// Largeur du rail d'icônes 
     align-items: center;
     gap: var(--units-sm);
     padding: $region-padding;
-    border-block-end: $stroke-width solid var(--global-default-stroke-default);
+    border-block-end: $stroke-width solid var(--global-border-subtle);
   }
 
   &-body {
@@ -192,7 +192,7 @@ $rail-width-default: utils.rem-calc(72);          /// Largeur du rail d'icônes 
     align-items: center;
     gap: var(--units-sm);
     padding: $region-padding;
-    border-block-start: $stroke-width solid var(--global-default-stroke-default);
+    border-block-start: $stroke-width solid var(--global-border-subtle);
   }
 
   // Collapsed rail: tighten region padding so icons stay centered in the rail.

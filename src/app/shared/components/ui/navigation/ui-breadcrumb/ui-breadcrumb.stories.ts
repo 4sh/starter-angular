@@ -128,7 +128,7 @@ export const CustomItem: Story = {
           @if (!last) {
             <ui-link [label]="item.label" [ariaLabel]="item.ariaLabel" [iconLeft]="item.icon" [href]="item.url" size="small" />
           } @else {
-            <span style="font-weight: var(--weight-bold); color: var(--global-high-content-default);">
+            <span style="font-weight: var(--weight-bold); color: var(--global-text-default);">
               {{ item.label }}
             </span>
           }

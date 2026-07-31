@@ -130,7 +130,7 @@ $stroke-width: utils.$form-field-stroke-width; /// Épaisseur de bordure d'une l
     line-height: 0;
     @include utils.control-transition(background-color, color);
 
-    &:hover { color: var(--global-high-content-default); }
+    &:hover { color: var(--global-text-default); }
     &:focus-visible {
       outline: none;
       box-shadow: 0 0 0 utils.$form-focus-ring-width var(--form-high-stroke-focused);
@@ -149,7 +149,7 @@ $stroke-width: utils.$form-field-stroke-width; /// Épaisseur de bordure d'une l
   &-progress-bar {
     display: block;
     height: 100%;
-    background-color: var(--global-high-content-default);
+    background-color: var(--global-text-default);
     @include utils.control-transition(width);
   }
 

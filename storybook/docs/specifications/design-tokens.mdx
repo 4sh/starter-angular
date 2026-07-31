@@ -44,7 +44,9 @@ Utilisez ces tokens pour garantir la cohérence visuelle et le support automatiq
 ### Structure des Noms (Anatomie)
 
 La nomenclature suit une logique de construction stricte : `[domaine]-[famille]-[niveau]-[propriété]-[état]`.
-*(Note : le domaine `global` n'utilise pas de famille, sa structure est `global-[niveau]-[propriété]-[état]`)*.
+
+*(Note : le domaine `global` suit une anatomie volontairement distincte et plus courte —
+voir [Anatomie du domaine `global`](#anatomie-du-domaine-global) ci-dessous.)*
 
 <table className="doc-table">
     <thead>
@@ -83,6 +85,63 @@ La nomenclature suit une logique de construction stricte : `[domaine]-[famille]-
     </tbody>
 </table>
 
+### Anatomie du domaine `global`
+
+Le domaine `global` porte les couleurs **structurelles** de l'application (fonds de page,
+textes courants, séparateurs). Il n'a ni famille ni niveau : sa nomenclature est
+`global-[axe]-[occurrence]`, en trois segments.
+
+Ce choix est délibéré. Les mots `high`/`low` des familles fonctionnelles désignent une
+**hiérarchie d'intention** (bouton primaire vs secondaire) ; appliqués à des neutres ils
+désignaient un **niveau de contraste**. Deux sens pour un même mot : l'axe a donc été
+remplacé par un vocabulaire d'emphase explicite, et l'axe `[propriété]` par les trois
+propriétés CSS qu'il cible réellement.
+
+<table className="doc-table">
+    <thead>
+    <tr>
+        <th>Segment</th>
+        <th>Valeurs possibles</th>
+        <th>Rôle</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><strong>1. Axe</strong></td>
+        <td><code>background</code>, <code>text</code>, <code>border</code></td>
+        <td>La cible CSS, nommée d'après la propriété : <code>background-color</code>, <code>color</code>, <code>border-color</code>.</td>
+    </tr>
+    <tr>
+        <td><strong>2. Occurrence</strong></td>
+        <td>
+            <em>emphase</em> : <code>default</code>, <code>muted</code>, <code>subtle</code><br/>
+            <em>rôle</em> : <code>brand</code>, <code>focus</code>, <code>inverse</code>, <code>disabled</code>
+        </td>
+        <td>Soit le degré d'emphase du neutre, soit un rôle particulier. Deux familles de mots, au même niveau.</td>
+    </tr>
+    <tr>
+        <td><strong>3. État</strong> <em>(optionnel)</em></td>
+        <td><code>hover</code></td>
+        <td>Suffixé à l'occurrence (<code>default-hover</code>) et <strong>omis à l'état de repos</strong> — d'où les trois segments du cas courant.</td>
+    </tr>
+    </tbody>
+</table>
+
+```scss
+.ui-card {
+  background-color: var(--global-background-default);  // fond de la surface
+  color: var(--global-text-default);                   // texte principal
+  border-color: var(--global-border-subtle);           // bordure discrète
+
+  .ui-card-subtitle { color: var(--global-text-muted); }        // texte atténué
+  &:focus-visible { box-shadow: 0 0 0 2px var(--global-border-focus); }
+}
+```
+
+> L'inventaire exhaustif et les valeurs résolues (par thème, marque et mode) sont dans
+> [Foundations / Colors](?path=/docs/foundations-colors--docs), généré depuis
+> `tokens.manifest.json`.
+
 ### Référentiel des Familles Fonctionnelles
 
 Utilisez ce tableau pour déterminer quel `[domaine]` et quelle `[famille]` utiliser en se basant strictement sur **l'intention fonctionnelle** du composant (les listes de composants ne sont données qu'à titre d'exemple non exhaustif).
@@ -102,7 +161,7 @@ Utilisez ce tableau pour déterminer quel `[domaine]` et quelle `[famille]` util
             <strong>Règle :</strong> Couleurs de fondation de l'application.<br/>
             <em>Exemples : Fonds d'écran, surfaces générales, textes par défaut, séparateurs structurels.</em>
         </td>
-        <td><code>--global-high-surface-default</code></td>
+        <td><code>--global-background-default</code></td>
     </tr>
     <tr>
         <td><strong><code>token-actions</code></strong></td>
@@ -197,7 +256,7 @@ utilitaire : pour un usage aussi bien en SCSS qu'en HTML.
 ```scss
 // ✅ BON USAGE
 .mon-composant {
-  background-color: var(--global-high-surface-default);
+  background-color: var(--global-background-default);
   padding: var(--units-md);
   border-radius: var(--radius-default);
 }

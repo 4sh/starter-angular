@@ -44,7 +44,7 @@ $focus-ring-width: utils.$action-focus-ring-width; /// Épaisseur de l'anneau de
 
   &:focus-visible {
     outline: none;
-    box-shadow: inset 0 0 0 $focus-ring-width var(--global-high-stroke-focused);
+    box-shadow: inset 0 0 0 $focus-ring-width var(--global-border-focus);
   }
 
   &:disabled {

@@ -10,8 +10,8 @@ Conteneur **flexible** qui compose des régions optionnelles : média, en-tête
 (titre + sous-titre), contenu et pied. Chaque région n'est rendue que si elle
 porte du contenu — aucun wrapper vide, donc aucun espacement fantôme.
 
-Surface neutre (tokens `global`) : fond `--global-default-surface-default`, texte
-`--global-high-content-default`, bordure `--global-default-stroke-default`, ombre
+Surface neutre (tokens `global`) : fond `--global-background-default`, texte
+`--global-text-default`, bordure `--global-border-subtle`, ombre
 `--shadow-default-md` (variante `elevated`), rayon `--radius-lg`. Light **et** dark
 via les modes de variables.
 
@@ -71,7 +71,7 @@ importer dans le composant hôte.
       <td><strong>Sous-titre</strong></td>
       <td><code>[uiCardSubtitle]</code> · <code>ui-card-subtitle</code></td>
       <td><code>subheader</code></td>
-      <td>Sous-titre atténué (<code>--global-low-content-default</code>).</td>
+      <td>Sous-titre atténué (<code>--global-text-muted</code>).</td>
     </tr>
     <tr>
       <td><strong>Contenu</strong></td>

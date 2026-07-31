@@ -247,7 +247,7 @@ export const Contained: Story = {
   render: (args) => ({
     props: { ...args },
     template: `
-      <div style="position: relative; width: 360px; height: 240px; border-radius: 12px; overflow: hidden; border: 1px solid var(--global-default-stroke-default);">
+      <div style="position: relative; width: 360px; height: 240px; border-radius: 12px; overflow: hidden; border: 1px solid var(--global-border-subtle);">
         <ui-drawer
           [visible]="true"
           [contained]="true"

@@ -15,7 +15,7 @@ import { UI_TOAST_POSITIONS, UiToastPosition } from './ui-toast.types';
 
 /** Shared style for the boxed demo area (a positioned ancestor for `contained`). */
 const DEMO_BOX =
-  'position:relative; min-height:240px; padding:16px; border:1px dashed var(--global-low-stroke-default, #ccc); border-radius:12px; overflow:hidden;';
+  'position:relative; min-height:240px; padding:16px; border:1px dashed var(--global-border-default, #ccc); border-radius:12px; overflow:hidden;';
 
 @Component({
   selector: 'toast-demo-basic',

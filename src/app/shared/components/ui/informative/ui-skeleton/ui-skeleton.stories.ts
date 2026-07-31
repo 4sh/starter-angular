@@ -108,7 +108,7 @@ export const Card: Story = {
   render: (args) => ({
     props: args,
     template: `
-      <div style="width:280px;padding:16px;border:1px solid var(--global-low-stroke-default);border-radius:16px">
+      <div style="width:280px;padding:16px;border:1px solid var(--global-border-default);border-radius:16px">
         <ui-skeleton [animation]="animation" width="100%" height="120px" borderRadius="12px" />
         <div style="display:flex;align-items:center;gap:12px;margin-top:16px">
           <ui-skeleton [animation]="animation" shape="circle" width="48px" height="48px" />
@@ -171,7 +171,7 @@ export const DataTable: Story = {
     props: args,
     template: `
       <div style="width:520px;display:flex;flex-direction:column;gap:8px">
-        <div style="display:flex;gap:12px;padding-bottom:8px;border-bottom:1px solid var(--global-low-stroke-default)">
+        <div style="display:flex;gap:12px;padding-bottom:8px;border-bottom:1px solid var(--global-border-default)">
           <ui-skeleton [animation]="animation" width="25%" size="small" />
           <ui-skeleton [animation]="animation" width="25%" size="small" />
           <ui-skeleton [animation]="animation" width="25%" size="small" />

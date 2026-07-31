@@ -154,7 +154,7 @@ $option-gap: var(--units-sm);     /// Espacement entre l'icône et le libellé d
 
     // Visual focus (aria-activedescendant) and pointer hover share the look.
     &._focused,
-    &:hover:not(._disabled) { background-color: var(--global-high-surface-hover); }
+    &:hover:not(._disabled) { background-color: var(--global-background-default-hover); }
 
     &._selected {
       background-color: var(--form-high-surface-hover);

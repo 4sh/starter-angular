@@ -153,10 +153,10 @@ export const WithIllustration: Story = {
       >
         <svg uiEmptyStateMedia width="160" height="120" viewBox="0 0 160 120" role="img" aria-label="Boîte vide">
           <rect x="20" y="40" width="120" height="70" rx="8"
-                fill="var(--global-low-surface-default)"
-                stroke="var(--global-high-stroke-default)" stroke-width="2" />
+                fill="var(--global-background-muted)"
+                stroke="var(--global-border-default)" stroke-width="2" />
           <path d="M20 48 L80 84 L140 48" fill="none"
-                stroke="var(--global-high-stroke-default)" stroke-width="2" />
+                stroke="var(--global-border-default)" stroke-width="2" />
         </svg>
         <div uiEmptyStateActions>
           <ui-button label="Nouveau message" level="high" icon="pen" />

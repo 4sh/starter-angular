@@ -139,7 +139,7 @@ ui-table {
     cursor: pointer;
 
     &:focus-visible {
-      outline: $focus-ring-width solid var(--global-high-stroke-focused);
+      outline: $focus-ring-width solid var(--global-border-focus);
       outline-offset: calc(-1 * #{$focus-ring-width});
     }
   }
@@ -149,10 +149,10 @@ ui-table {
     cursor: grab;
   }
   &-reorderable-row._drop-above td {
-    box-shadow: inset 0 $drop-indicator-width 0 0 var(--global-high-stroke-focused);
+    box-shadow: inset 0 $drop-indicator-width 0 0 var(--global-border-focus);
   }
   &-reorderable-row._drop-below td {
-    box-shadow: inset 0 calc(-1 * #{$drop-indicator-width}) 0 0 var(--global-high-stroke-focused);
+    box-shadow: inset 0 calc(-1 * #{$drop-indicator-width}) 0 0 var(--global-border-focus);
   }
 
   &-empty-cell {
@@ -226,7 +226,7 @@ ui-table {
 
     &:focus-visible {
       outline: none;
-      box-shadow: inset 0 0 0 $focus-ring-width var(--global-high-stroke-focused);
+      box-shadow: inset 0 0 0 $focus-ring-width var(--global-border-focus);
     }
 
     .ui-table-sort-icon {
@@ -329,7 +329,7 @@ ui-table {
     touch-action: none;
 
     &:hover {
-      border-right: var(--stroke-default) solid var(--global-high-stroke-hover);
+      border-right: var(--stroke-default) solid var(--global-border-default-hover);
     }
   }
 

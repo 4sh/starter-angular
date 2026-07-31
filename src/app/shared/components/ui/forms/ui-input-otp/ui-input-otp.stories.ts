@@ -266,7 +266,7 @@ export const Sample: Story = {
     template: `
       <div style="display: flex; flex-direction: column; gap: 1.5rem; align-items: center; text-align: center; max-width: 26rem">
         <div>
-          <h2 style="margin: 0 0 .25rem; font-family: var(--fontfamily-base); color: var(--global-high-content-default)">
+          <h2 style="margin: 0 0 .25rem; font-family: var(--fontfamily-base); color: var(--global-text-default)">
             Authenticate Your Account
           </h2>
           <p style="margin: 0; color: var(--form-low-content-default)">

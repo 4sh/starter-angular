@@ -29,7 +29,7 @@ $sizes: (
 );
 $size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default` de `$sizes`.
 
-$panel-surface: var(--global-high-surface-default); /// Fond opaque du panneau (le token surface `navigation` est transparent par design).
+$panel-surface: var(--global-background-default);   /// Fond opaque du panneau (le token surface `navigation` est transparent par design).
 $item-radius: var(--radius-sm);                     /// Rayon des menuitems.
 $group-indent: var(--units-default);                /// Indentation des groupes imbriqués.
 $panel-padding: utils.$overlay-panel-padding;       /// Gouttière interne du panneau (**partagée** avec les autres panneaux flottants).
@@ -132,7 +132,7 @@ $focus-ring-width: utils.$focus-ring-width;         /// Épaisseur de l'anneau d
 
     &:focus-visible {
       outline: none;
-      box-shadow: inset 0 0 0 $focus-ring-width var(--global-high-stroke-focused);
+      box-shadow: inset 0 0 0 $focus-ring-width var(--global-border-focus);
     }
 
     &:disabled {

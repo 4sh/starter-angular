@@ -85,7 +85,7 @@ type Story = StoryObj<UiContextMenu>;
 // Shared demo target: a card-like zone inviting the right-click.
 const zone = (label = 'Clic droit dans cette zone') => `
   <div #zone tabindex="0" style="display:flex; align-items:center; justify-content:center; max-width:420px; height:160px;
-    border:2px dashed var(--global-high-stroke-default); border-radius:12px; color:var(--global-high-content-default);
+    border:2px dashed var(--global-border-default); border-radius:12px; color:var(--global-text-default);
     font-family:var(--fontfamily-base); user-select:none">
     ${label}
   </div>`;

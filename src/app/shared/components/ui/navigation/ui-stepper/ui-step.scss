@@ -83,7 +83,7 @@ $focus-ring-width: utils.$action-focus-ring-width; /// Épaisseur de l'anneau de
 
 // --- Focus ring (drawn around the marker) -----------------------------
 .ui-step-header:focus-visible .ui-step-marker {
-  box-shadow: 0 0 0 $focus-ring-width var(--global-high-stroke-focused);
+  box-shadow: 0 0 0 $focus-ring-width var(--global-border-focus);
 }
 
 // --- Connector (horizontal strip) -------------------------------------
@@ -93,7 +93,7 @@ $focus-ring-width: utils.$action-focus-ring-width; /// Épaisseur de l'anneau de
   height: 0;
   // Symmetric horizontal breathing room on both sides of the line.
   margin: calc(#{$marker-size} / 2 - #{$separator-stroke} / 2) var(--units-sm) 0;
-  border-top: $separator-stroke solid var(--global-high-stroke-default);
+  border-top: $separator-stroke solid var(--global-border-default);
   @include utils.control-transition(border-color);
 
   &._completed {
@@ -113,7 +113,7 @@ $focus-ring-width: utils.$action-focus-ring-width; /// Épaisseur de l'anneau de
     color: var(--informative-defaulthigh-content-default);
   }
   .ui-step-title {
-    color: var(--global-high-content-default);
+    color: var(--global-text-default);
     font-weight: var(--weight-bold);
   }
 }

@@ -10,9 +10,9 @@
   width: 100vw;
   box-sizing: border-box;
   overflow: hidden;
-  background: var(--global-high-surface-hover);
+  background: var(--global-background-default-hover);
   font-family: var(--fontfamily-base);
-  color: var(--global-high-content-default);
+  color: var(--global-text-default);
 }
 
 // ---- Main content area ---
@@ -42,7 +42,7 @@
   overflow: hidden;
 
   > strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  > small  { color: var(--global-low-content-default); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  > small  { color: var(--global-text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 }
 
 // ---- Topbar ---
@@ -55,8 +55,8 @@
   justify-content: space-between;
   max-height: utils.rem-calc(38px);
   padding: var(--units-sm) var(--units-lg);
-  border-bottom: 1px solid var(--global-default-stroke-default);
-  background: var(--global-default-surface-default);
+  border-bottom: 1px solid var(--global-border-subtle);
+  background: var(--global-background-default);
   flex: 0 0 auto;
   gap: var(--units-md);
   z-index: 10;
@@ -122,7 +122,7 @@
 
 .demo-page-subtitle {
   margin: 0;
-  color: var(--global-low-content-default);
+  color: var(--global-text-muted);
   font-size: var(--size-typography-body-default);
 }
 
@@ -141,7 +141,7 @@
   width: 100%;
   background: var(--primitives-white-base);
   border-radius: var(--radius-lg);
-  border: 1px solid var(--global-default-stroke-default);
+  border: 1px solid var(--global-border-subtle);
 
   ui-progress-bar {
     display: block;
@@ -180,7 +180,7 @@
 
 .demo-kpi-label {
   font-size: var(--size-typography-body-small);
-  color: var(--global-low-content-default);
+  color: var(--global-text-muted);
 }
 
 .demo-kpi-value {
@@ -247,7 +247,7 @@ ui-tab-panel {
   margin-top: 0;
   background: var(--primitives-white-base);
   border-radius: var(--radius-lg);
-  border: 1px solid var(--global-default-stroke-default);
+  border: 1px solid var(--global-border-subtle);
   min-width: 0;
   box-sizing: border-box;
 }
@@ -287,7 +287,7 @@ ui-tab-panel {
 }
 
 .demo-customer-email {
-  color: var(--global-low-content-default);
+  color: var(--global-text-muted);
   font-size: var(--size-typography-body-small);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -302,7 +302,7 @@ ui-tab-panel {
   align-items: center;
   gap: var(--units-md);
   padding: var(--units-2xl);
-  color: var(--global-low-content-default);
+  color: var(--global-text-muted);
 }
 
 // ---- Placeholder panels (skeleton) ---
@@ -325,13 +325,13 @@ ui-tab-panel {
 .demo-filter-label {
   font-size: var(--size-typography-text-sm);
   font-weight: 600;
-  color: var(--global-high-content-default);
+  color: var(--global-text-default);
 }
 
 .demo-filter-line {
   flex: 1;
   height: 1px;
-  background: var(--global-default-stroke-default);
+  background: var(--global-border-subtle);
 }
 
 // ---- Modal ---
@@ -368,7 +368,7 @@ ui-tab-panel {
   margin: 0;
   font-size: var(--size-typography-text-xs);
   font-weight: 700;
-  color: var(--global-low-content-default);
+  color: var(--global-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-top: var(--units-xl);
@@ -388,7 +388,7 @@ ui-tab-panel {
 }
 .demo-client-label {
   font-size: var(--size-typography-text-sm);
-  color: var(--global-low-content-default);
+  color: var(--global-text-muted);
 }
 .demo-client-val {
   font-size: var(--size-typography-text-base);
@@ -402,12 +402,12 @@ ui-tab-panel {
   
   th, td {
     padding: var(--units-sm) var(--units-md);
-    border-bottom: 1px solid var(--global-default-stroke-default);
+    border-bottom: 1px solid var(--global-border-subtle);
     font-size: var(--size-typography-text-sm);
   }
   
   th {
-    color: var(--global-high-content-default);
+    color: var(--global-text-default);
     font-weight: 600;
     text-align: left;
     &.text-right { text-align: right; }
@@ -416,7 +416,7 @@ ui-tab-panel {
   .text-right { text-align: right; }
   
   .demo-articles-total {
-    background: var(--global-default-surface-default);
+    background: var(--global-background-default);
     td {
       border-bottom: none;
       padding-block: var(--units-md);

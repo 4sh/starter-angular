@@ -9,7 +9,7 @@ $marker-size: utils.rem-calc(44); /// Diamètre du marqueur d'étape, pour align
 
 :host {
   display: block;
-  color: var(--global-high-content-default);
+  color: var(--global-text-default);
   font-family: var(--fontfamily-base);
   font-size: var(--size-typography-text-default);
   line-height: 1.5;

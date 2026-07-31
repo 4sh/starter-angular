@@ -45,7 +45,7 @@ $size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default
   justify-content: center;
   flex-shrink: 0;
   box-sizing: border-box;
-  border: var(--stroke-default) solid var(--global-high-stroke-default);
+  border: var(--stroke-default) solid var(--global-border-default);
   border-radius: var(--_radius);
   background-color: var(--informative-defaultlow-surface-default);
   color: var(--informative-defaultlow-content-default);

@@ -130,7 +130,7 @@ dès que vous contrôlez l'état de l'extérieur.
     <tr><td>Rôles</td><td>`role="menu"` → `role="menuitem"` sur de **vrais** `<a>` / `<button>` (jamais de `div` cliquable) ; sections `role="group"` + `aria-labelledby`, séparateurs `role="separator"`.</td></tr>
     <tr><td>Clavier</td><td>Motif menu WAI-ARIA : **tab stop unique** (roving tabindex), `↑`/`↓` en boucle, `Début`/`Fin`, `Entrée`/`Espace` activent, `→`/`←` ouvrent/ferment un groupe repliable, `Échap` ferme le popup.</td></tr>
     <tr><td>Sous-menus</td><td>Toggle `aria-expanded` + `aria-controls` ; contenu replié `inert` (invisible au clavier et aux lecteurs d'écran).</td></tr>
-    <tr><td>Focus</td><td>`:focus-visible` distinct du hover (anneau `--global-high-stroke-focused`, la famille `navigation` n'ayant pas d'état `focused`). Ouverture popup → focus sur le premier item ; fermeture → retour au déclencheur.</td></tr>
+    <tr><td>Focus</td><td>`:focus-visible` distinct du hover (anneau `--global-border-focus`, la famille `navigation` n'ayant pas d'état `focused`). Ouverture popup → focus sur le premier item ; fermeture → retour au déclencheur.</td></tr>
     <tr><td>Désactivé</td><td>`disabled` natif sur `<button>` (une entrée lien désactivée retombe sur un `<button>` désactivé), tokens `-disabled`, sautée par la navigation clavier.</td></tr>
     <tr><td>Nom accessible</td><td>`ariaLabel` / `ariaLabelledBy` sur la liste ; `ariaLabel` par item si besoin.</td></tr>
   </tbody>
