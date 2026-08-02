@@ -3,18 +3,20 @@ import {
   Component,
   computed,
   contentChild,
+  effect,
   ElementRef,
   inject,
   Injector,
   input,
+  isDevMode,
   linkedSignal,
   output,
   TemplateRef,
   viewChild,
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
+import { Params, RouterLink } from '@angular/router';
 import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
-import { UiLink } from '@app/shared/components/ui/actions/ui-link/ui-link';
 
 /** Breadcrumb density: `small` = compact rendering. */
 export type BreadcrumbSize = 'default' | 'small';
@@ -40,8 +42,14 @@ export interface UiBreadcrumbItem {
   url?: string;
   /** Anchor target (e.g. `_blank`). */
   target?: string;
+  /** Anchor rel. Defaults to `noopener noreferrer` when `target="_blank"`. */
+  rel?: string;
   /** Angular router target — the crumb renders a RouterLink anchor. */
   routerLink?: string | unknown[];
+  /** Query params passed to `routerLink`. */
+  queryParams?: Params;
+  /** URL fragment passed to `routerLink`. */
+  fragment?: string;
   /** Callback invoked when the crumb is clicked. */
   command?: (event: UiBreadcrumbItemCommandEvent) => void;
   /** Disable the crumb (no navigation, out of the tab sequence). */
@@ -60,14 +68,24 @@ interface UiBreadcrumbEntry {
   last: boolean;
 }
 
+/** @ignore Focusable descendants of a crumb (native or projected via `#item`). */
+const FOCUSABLE_SELECTOR = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
 /**
  * ui-breadcrumb — headless breadcrumb trail: shows the current location
  * within a navigational hierarchy.
  *
- * Driven by a declarative `items` model ({@link UiBreadcrumbItem}): each crumb
- * is a `ui-link` instance (external `url` or internal `routerLink`, plus an
- * optional `command`). The last crumb represents the current page and carries
- * `aria-current="page"`.
+ * Driven by a declarative `items` model ({@link UiBreadcrumbItem}). Each crumb
+ * renders the **native element matching its semantics**, never a wrapper
+ * component — so the anchor stays fully controllable (`rel`, `target`,
+ * `queryParams`, `fragment`…):
+ *
+ *   • `routerLink` → `<a>` + `RouterLink` (internal navigation)
+ *   • `url`        → `<a href>` (external / plain navigation)
+ *   • `command` only → `<button type="button">` (action, not navigation)
+ *   • no destination / `disabled` → plain text (never a fake link)
+ *
+ * The last crumb represents the current page and carries `aria-current="page"`.
  *
  * Long trails collapse behind an accessible ellipsis **button** when `maxItems`
  * is set (first crumb + "…" + trailing crumbs); activating it reveals the
@@ -78,7 +96,7 @@ interface UiBreadcrumbEntry {
  */
 @Component({
   selector: 'ui-breadcrumb',
-  imports: [NgTemplateOutlet, UiIcon, UiLink],
+  imports: [NgTemplateOutlet, RouterLink, UiIcon],
   templateUrl: './ui-breadcrumb.html',
   styleUrl: './ui-breadcrumb.scss',
   host: { '[style.display]': "'block'" },
@@ -117,16 +135,30 @@ export class UiBreadcrumb {
   /** @ignore */
   private readonly injector = inject(Injector);
 
+  constructor() {
+    // A11y safeguard: an icon-only crumb must have an accessible name.
+    if (isDevMode()) {
+      effect(() => {
+        const unnamed = this.items().filter(
+          (item) => item.visible !== false && item.icon && !item.label && !item.ariaLabel,
+        );
+        if (unnamed.length) {
+          console.warn(
+            '[ui-breadcrumb] Icon-only crumb has no accessible name: provide `ariaLabel`.',
+            unnamed,
+          );
+        }
+      });
+    }
+  }
+
   /** @ignore Overflow revealed by the ellipsis button; resets when items change. */
   protected readonly overflowExpanded = linkedSignal<UiBreadcrumbItem[], boolean>({
     source: this.items,
     computation: () => false,
   });
 
-  /** @ignore Crumb link size follows the breadcrumb density. */
-  protected readonly linkSize = computed(() => (this.size() === 'small' ? 'small' : 'default'));
-
-  /** @ignore Ellipsis icon size follows the breadcrumb density. */
+  /** @ignore Crumb / ellipsis icon size follows the breadcrumb density. */
   protected readonly iconSize = computed(() => (this.size() === 'small' ? 'sm' : 'default'));
 
   /** @ignore */
@@ -168,15 +200,44 @@ export class UiBreadcrumb {
     return item.styleClass ? `ui-breadcrumb-item ${item.styleClass}` : 'ui-breadcrumb-item';
   }
 
+  /** @ignore Internal navigation: `routerLink` wins over `url`. */
+  protected isRouterCrumb(item: UiBreadcrumbItem): boolean {
+    return !item.disabled && item.routerLink != null;
+  }
+
+  /** @ignore Plain navigation: an `url` and no `routerLink`. */
+  protected isHrefCrumb(item: UiBreadcrumbItem): boolean {
+    return !item.disabled && item.routerLink == null && !!item.url;
+  }
+
+  /** @ignore Action-only crumb (a `command` with no destination) → real `<button>`. */
+  protected isActionCrumb(item: UiBreadcrumbItem): boolean {
+    return !item.disabled && item.routerLink == null && !item.url && !!item.command;
+  }
+
+  /** @ignore Anchor `rel`: explicit, or a safe default for `target="_blank"`. */
+  protected relFor(item: UiBreadcrumbItem): string | null {
+    if (item.rel) return item.rel;
+    return item.target === '_blank' ? 'noopener noreferrer' : null;
+  }
+
   /** @ignore Reveal the hidden crumbs, moving focus to the first revealed one. */
   protected expandOverflow(): void {
     this.overflowExpanded.set(true);
     // After the next render the full list is in the DOM: focus the first
-    // crumb revealed by the expansion (right after the leading crumb).
+    // focusable crumb revealed by the expansion (skipping the leading one).
     afterNextRender(
       () => {
-        const anchors = this.listEl()?.nativeElement.querySelectorAll<HTMLElement>('.ui-breadcrumb-item a');
-        anchors?.[1]?.focus();
+        const list = this.listEl()?.nativeElement;
+        if (!list) return;
+        const crumbs = Array.from(list.querySelectorAll<HTMLElement>('.ui-breadcrumb-item'));
+        for (const crumb of crumbs.slice(1)) {
+          const focusable = crumb.querySelector<HTMLElement>(FOCUSABLE_SELECTOR);
+          if (focusable) {
+            focusable.focus();
+            return;
+          }
+        }
       },
       { injector: this.injector },
     );

@@ -14,25 +14,59 @@
           </button>
         </li>
       } @else {
-        <li [class]="itemClasses(entry.item!)">
+        @let item = entry.item!;
+        <li [class]="itemClasses(item)">
           @if (itemTemplate()) {
             <ng-container
               [ngTemplateOutlet]="itemTemplate()!"
-              [ngTemplateOutletContext]="{ $implicit: entry.item, last: entry.last }"
+              [ngTemplateOutletContext]="{ $implicit: item, last: entry.last }"
             />
+          } @else if (isRouterCrumb(item)) {
+            <a
+              class="ui-breadcrumb-link"
+              [routerLink]="item.routerLink!"
+              [queryParams]="item.queryParams"
+              [fragment]="item.fragment"
+              [target]="item.target"
+              [attr.rel]="relFor(item)"
+              [attr.aria-label]="item.ariaLabel"
+              [attr.aria-current]="entry.last ? 'page' : null"
+              (click)="onItemClick($event, item)"
+            >
+              <ng-container [ngTemplateOutlet]="crumb" [ngTemplateOutletContext]="{ $implicit: item }" />
+            </a>
+          } @else if (isHrefCrumb(item)) {
+            <a
+              class="ui-breadcrumb-link"
+              [href]="item.url!"
+              [attr.target]="item.target"
+              [attr.rel]="relFor(item)"
+              [attr.aria-label]="item.ariaLabel"
+              [attr.aria-current]="entry.last ? 'page' : null"
+              (click)="onItemClick($event, item)"
+            >
+              <ng-container [ngTemplateOutlet]="crumb" [ngTemplateOutletContext]="{ $implicit: item }" />
+            </a>
+          } @else if (isActionCrumb(item)) {
+            <button
+              type="button"
+              class="ui-breadcrumb-link"
+              [attr.aria-label]="item.ariaLabel"
+              [attr.aria-current]="entry.last ? 'page' : null"
+              (click)="onItemClick($event, item)"
+            >
+              <ng-container [ngTemplateOutlet]="crumb" [ngTemplateOutletContext]="{ $implicit: item }" />
+            </button>
           } @else {
-            <ui-link
-              [label]="entry.item!.label"
-              [ariaLabel]="entry.item!.ariaLabel"
-              [iconLeft]="entry.item!.icon"
-              [size]="linkSize()"
-              [href]="entry.item!.url"
-              [routerLink]="entry.item!.routerLink"
-              [target]="entry.item!.target"
-              [disabled]="entry.item!.disabled ?? false"
-              [ariaCurrent]="entry.last ? 'page' : undefined"
-              (linkClick)="onItemClick($event, entry.item!)"
-            />
+            <span
+              class="ui-breadcrumb-text"
+              [class._current]="entry.last"
+              [class._disabled]="item.disabled ?? false"
+              [attr.aria-label]="item.ariaLabel"
+              [attr.aria-current]="entry.last ? 'page' : null"
+            >
+              <ng-container [ngTemplateOutlet]="crumb" [ngTemplateOutletContext]="{ $implicit: item }" />
+            </span>
           }
         </li>
       }
@@ -49,3 +83,12 @@
     }
   </ol>
 </nav>
+
+<ng-template #crumb let-item>
+  @if (item.icon) {
+    <ui-icon class="ui-breadcrumb-icon" [name]="item.icon" [size]="iconSize()" />
+  }
+  @if (item.label) {
+    <span class="ui-breadcrumb-label">{{ item.label }}</span>
+  }
+</ng-template>

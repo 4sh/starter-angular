@@ -7,8 +7,6 @@ import { ConfigTable } from '../../../../../../../storybook/blocks/config-table'
 # ui-breadcrumb
 
 Fil d'Ariane **headless** : indique la position courante dans une hiérarchie de navigation.
-Chaque élément est une **instance `ui-link`** (composition , pas de styles dupliqués), le
-séparateur et le bouton ellipsis consomment les tokens `global` / `actions` (light **et** dark).
 
 <Canvas of={BreadcrumbStories.Basic} />
 
@@ -32,7 +30,14 @@ séparateur et le bouton ellipsis consomment les tokens `global` / `actions` (li
     </tr>
     <tr>
       <td><strong>Élément</strong></td>
-      <td>instance <code>ui-link</code> (label + icône optionnelle), ou contenu libre via le template <code>#item</code>.</td>
+      <td>
+        élément natif choisi d'après la sémantique de l'item (label + icône optionnelle), ou contenu
+        libre via le template <code>#item</code> :
+        <br />• <code>routerLink</code> → <code>&lt;a&gt;</code> + directive <code>RouterLink</code> (navigation interne)
+        <br />• <code>url</code> → <code>&lt;a href&gt;</code> (navigation externe / classique)
+        <br />• <code>command</code> seul → <code>&lt;button type="button"&gt;</code> (action, pas navigation)
+        <br />• ni destination ni commande, ou <code>disabled</code> → texte simple (<code>&lt;span&gt;</code>)
+      </td>
     </tr>
     <tr>
       <td><strong>Séparateur</strong></td>
@@ -64,7 +69,8 @@ La position courante dans la hiérarchie : le dernier élément représente la p
 
 Le fil s'utilise avec le routeur Angular pour naviguer entre les pages : `routerLink`
 (chaîne ou tableau de segments) bascule chaque élément sur la directive `RouterLink`
-(navigation SPA, comportement natif de l'ancre préservé).
+(navigation SPA, comportement natif de l'ancre préservé). `queryParams` et `fragment`
+sont transmis à la directive.
 
 <Canvas of={BreadcrumbStories.Route} />
 
@@ -72,8 +78,54 @@ Le fil s'utilise avec le routeur Angular pour naviguer entre les pages : `router
 <ui-breadcrumb
   [items]="[
     { icon: 'house', ariaLabel: 'Accueil', routerLink: '/' },
-    { label: 'Catalogue', routerLink: '/catalogue' },
+    { label: 'Catalogue', routerLink: '/catalogue', queryParams: { tri: 'prix' } },
     { label: 'Clavier sans fil' },
+  ]"
+/>
+```
+
+## Liens
+
+Chaque élément rend directement son ancre — pas de composant intermédiaire — donc les
+attributs d'un lien restent accessibles item par item :
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Cas</th>
+      <th>Rendu</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>url</code> (+ <code>target</code>, <code>rel</code>)</td>
+      <td><code>&lt;a href&gt;</code>. <code>rel</code> vaut <code>noopener noreferrer</code> par défaut dès que <code>target="_blank"</code>.</td>
+    </tr>
+    <tr>
+      <td><code>routerLink</code> (+ <code>queryParams</code>, <code>fragment</code>, <code>target</code>)</td>
+      <td><code>&lt;a&gt;</code> piloté par <code>RouterLink</code> — prioritaire sur <code>url</code>.</td>
+    </tr>
+    <tr>
+      <td><code>command</code> sans destination</td>
+      <td><code>&lt;button type="button"&gt;</code> : une action n'est pas un lien (clavier + rôle corrects).</td>
+    </tr>
+    <tr>
+      <td>aucune destination, ou <code>disabled</code></td>
+      <td><code>&lt;span&gt;</code> : jamais d'ancre sans <code>href</code> (ni focusable ni annoncée comme lien).</td>
+    </tr>
+  </tbody>
+</table>
+
+<Canvas of={BreadcrumbStories.Links} />
+
+```html
+<ui-breadcrumb
+  [items]="[
+    { icon: 'house', ariaLabel: 'Accueil', routerLink: '/' },
+    { label: 'Documentation', url: 'https://exemple.fr/docs', target: '_blank' },
+    { label: 'Retour', command: onBack },
+    { label: 'Archivé', url: '/archive', disabled: true },
+    { label: 'Page courante' },
   ]"
 />
 ```
@@ -153,7 +205,19 @@ item, `last`) , par exemple pour rendre la page courante en texte simple :
     </tr>
     <tr>
       <td><strong>Page courante</strong></td>
-      <td>Le dernier élément porte <code>aria-current="page"</code>.</td>
+      <td>Le dernier élément porte <code>aria-current="page"</code>. Sans destination, il est rendu en texte simple (<code>._current</code>) plutôt qu'en lien inerte.</td>
+    </tr>
+    <tr>
+      <td><strong>Élément natif</strong></td>
+      <td>Une destination donne une ancre avec <code>href</code>, une <code>command</code> seule un <code>&lt;button&gt;</code> : jamais d'ancre sans <code>href</code> ni de <code>&lt;span&gt;</code> cliquable.</td>
+    </tr>
+    <tr>
+      <td><strong>Liens externes</strong></td>
+      <td><code>target="_blank"</code> pose automatiquement <code>rel="noopener noreferrer"</code> (surchargeable via <code>rel</code>).</td>
+    </tr>
+    <tr>
+      <td><strong>Désactivé</strong></td>
+      <td>Un élément <code>disabled</code> perd son ancre : hors séquence de tabulation, non cliquable, aucun <code>itemClick</code>.</td>
     </tr>
     <tr>
       <td><strong>Clavier</strong></td>
@@ -165,7 +229,7 @@ item, `last`) , par exemple pour rendre la page courante en texte simple :
     </tr>
     <tr>
       <td><strong>Icon-only</strong></td>
-      <td>Un élément icône sans label (accueil) doit fournir <code>ariaLabel</code> , garde-fou dev hérité de <code>ui-link</code>.</td>
+      <td>Un élément icône sans label (accueil) doit fournir <code>ariaLabel</code> , un garde-fou avertit en console en mode dev.</td>
     </tr>
   </tbody>
 </table>

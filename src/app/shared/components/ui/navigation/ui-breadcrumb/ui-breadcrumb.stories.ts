@@ -36,7 +36,7 @@ const meta: Meta<UiBreadcrumb> = {
     items: {
       control: { type: 'object' },
       description:
-        "Entrées du fil d'Ariane (UiBreadcrumbItem[]) : label, icon, ariaLabel, url, routerLink, target, command, disabled, visible, styleClass.",
+        "Entrées du fil d'Ariane (UiBreadcrumbItem[]) : label, icon, ariaLabel, url, target, rel, routerLink, queryParams, fragment, command, disabled, visible, styleClass.",
       table: { type: { summary: 'UiBreadcrumbItem[]' }, defaultValue: { summary: '[]' } },
     },
     size: {
@@ -117,6 +117,19 @@ export const CustomSeparator: Story = {
 
 // Repli du milieu derrière un bouton ellipsis (maxItems).
 export const Ellipsis: Story = { args: { maxItems: 3 } };
+
+// Chaque item rend l'élément natif correspondant à sa sémantique.
+export const Links: Story = {
+  args: {
+    items: [
+      { icon: 'house', ariaLabel: 'Accueil', url: '#' },
+      { label: 'Documentation', url: 'https://angular.dev', target: '_blank' },
+      { label: 'Retour', command: () => console.log('[ui-breadcrumb] command') },
+      { label: 'Archivé', url: '#', disabled: true },
+      { label: 'Page courante' },
+    ],
+  },
+};
 
 // Contenu d'élément personnalisé via le template #item.
 export const CustomItem: Story = {

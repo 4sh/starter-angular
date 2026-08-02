@@ -9,7 +9,7 @@
 
 // --- Config (extension points) ---------------------------------------
 // `default` = base styles; other keys become `._<name>` modifiers.
-/// Dimensions par densité (séparateur ; les liens suivent la taille `ui-link`)
+/// Dimensions par densité (héritées par les éléments : liens, texte et séparateur)
 $sizes: (
   'default': (
     font-size: var(--size-typography-text-default),
@@ -20,7 +20,11 @@ $sizes: (
 );
 $size-default: map.get($sizes, 'default');         /// Raccourci vers l'entrée `default` de `$sizes`.
 $item-gap: var(--spacing-default);                 /// Espacement entre éléments et séparateurs
-$focus-ring-width: utils.$action-focus-ring-width; /// Épaisseur de l'anneau de focus du bouton ellipsis
+$content-gap: var(--units-sm);                     /// Espacement entre l'icône et le libellé d'un élément
+$weight: var(--weight-bold);                       /// Graisse des éléments (liens et page courante)
+$line-height: 1.4;                                 /// Interlignage des éléments
+$radius: var(--radius-2xs);                        /// Rayon des éléments interactifs (anneau de focus)
+$focus-ring-width: utils.$action-focus-ring-width; /// Épaisseur de l'anneau de focus des éléments interactifs
 
 .ui-breadcrumb {
   // --- Base (nav landmark) --------------------------------------------
@@ -54,6 +58,60 @@ $focus-ring-width: utils.$action-focus-ring-width; /// Épaisseur de l'anneau de
     min-width: 0;
   }
 
+  &-link {
+    display: inline-flex;
+    align-items: center;
+    gap: $content-gap;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: none;
+    font: inherit; // <button> does not inherit the list typography
+    font-weight: $weight;
+    line-height: $line-height;
+    color: var(--global-text-muted);
+    text-align: inherit;
+    text-decoration: none;
+    text-decoration-thickness: from-font;
+    text-underline-offset: 0.15em;
+    border-radius: $radius;
+    cursor: pointer;
+    @include utils.control-transition(color, text-decoration-color, box-shadow);
+
+    &:hover {
+      color: var(--actions-low-content-hover);
+      text-decoration: underline;
+    }
+
+    &:focus-visible {
+      outline: none;
+      color: var(--actions-low-content-focused);
+      text-decoration: underline;
+      box-shadow: 0 0 0 $focus-ring-width var(--actions-low-content-focused);
+    }
+
+    &:active { color: var(--actions-low-content-pressed); }
+  }
+
+  // Non-navigable crumb: current page (`._current`) or disabled item.
+  &-text {
+    display: inline-flex;
+    align-items: center;
+    gap: $content-gap;
+    min-width: 0;
+    font-weight: $weight;
+    line-height: $line-height;
+    color: var(--global-text-default);
+
+    &._disabled {
+      color: var(--actions-low-content-disabled);
+      cursor: not-allowed;
+    }
+  }
+
+  &-icon { line-height: 0; }
+
   &-separator {
     display: inline-flex;
     align-items: center;
@@ -71,7 +129,7 @@ $focus-ring-width: utils.$action-focus-ring-width; /// Épaisseur de l'anneau de
     background: none;
     line-height: 0;
     color: var(--global-text-default);
-    border-radius: var(--radius-2xs);
+    border-radius: $radius;
     cursor: pointer;
     @include utils.control-transition(color, box-shadow);
 
