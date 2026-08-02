@@ -17,6 +17,7 @@ $panel-shadow: utils.$overlay-panel-shadow;   /// Ombre du panneau en overlay (r
 $day-size: var(--size-components-default);  /// Diamètre d'une cellule jour
 $day-radius: var(--radius-full);            /// Rayon des cellules jour (cercle)
 $nav-size: var(--size-components-default);  /// Taille des boutons de navigation mensuelle
+$time-field-width: utils.rem-calc(48);      /// Largeur des champs heures / minutes / AM-PM
 $focus-ring-width: utils.$focus-ring-width; /// Anneau de focus (jours, navigation)
 $stroke-width: utils.$control-stroke-width; /// Épaisseur des bordures (panneau, cellule « today »)
 
@@ -283,23 +284,29 @@ $stroke-width: utils.$control-stroke-width; /// Épaisseur des bordures (panneau
 
   &-time-value {
     box-sizing: border-box;
-    min-width: utils.rem-calc(48);
+    display: inline-block;
+    width: $time-field-width;
     padding: var(--units-2xs) var(--units-sm);
+    border: none;
     border-radius: var(--radius-sm);
+    background: none;
     font-family: var(--fontfamily-base);
     font-size: var(--size-typography-title-md);
     font-weight: var(--weight-bold);
     font-variant-numeric: tabular-nums;
     color: var(--form-high-content-default);
     text-align: center;
-    cursor: pointer;
+    cursor: text;
+    appearance: none;
     @include utils.control-transition(background-color, box-shadow);
 
+    &:read-only { cursor: pointer; }
     &:hover { background-color: var(--informative-highlightlow-surface-hover); }
     &:focus-visible {
       outline: none;
       box-shadow: 0 0 0 $focus-ring-width rgb(from var(--form-high-stroke-focused) r g b / 50%);
     }
+    &:disabled { color: var(--form-high-content-disabled); cursor: not-allowed; }
   }
 
   &-time-btn {

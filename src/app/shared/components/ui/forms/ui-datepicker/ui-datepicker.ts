@@ -176,8 +176,12 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   timeOnly = input(false, { transform: booleanAttribute });
   /** 12h (AM/PM) or 24h clock. */
   hourFormat = input<DatepickerHourFormat>('24');
-  /** Minute increment of the time stepper. */
+  /** Minute increment of the time stepper (buttons / arrow keys — typing stays exact). */
   stepMinute = input<number, unknown>(1, { transform: numberAttribute });
+  /**
+   * Let the hours and minutes be typed directly in the time row (default).
+   */
+  editableTime = input(true, { transform: booleanAttribute });
 
   /** Show the bottom button bar (Today / Clear) — or the `#buttonbar` template. */
   showButtonBar = input(false, { transform: booleanAttribute });
@@ -511,6 +515,8 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
 
   override writeValue(value: DatepickerValue): void {
     this.typedValue.set(null);
+    this.hoursDraft.set(null);
+    this.minutesDraft.set(null);
     this.modelValue.set(value ?? undefined);
     const first = this.firstSelectedFrom(value);
     if (first) {
@@ -828,24 +834,103 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   );
   protected readonly minutesLabel = computed(() => this.pad(this.minutes()));
 
+  /** @ignore Raw digits while a time field is being typed in; `null` when not editing. */
+  private readonly hoursDraft = signal<string | null>(null);
+  private readonly minutesDraft = signal<string | null>(null);
+  /** @ignore Text rendered in a time field: the draft while typing, the padded label otherwise. */
+  protected readonly hoursValue = computed(() => this.hoursDraft() ?? this.hoursLabel());
+  protected readonly minutesValue = computed(() => this.minutesDraft() ?? this.minutesLabel());
+  /** @ignore Accepted hours range (the 12h clock shows 1–12). */
+  protected readonly hourBounds = computed(() =>
+    this.hourFormat() === '12' ? { min: 1, max: 12 } : { min: 0, max: 23 },
+  );
+  /** @ignore The hours/minutes fields accept typing. */
+  protected readonly timeEditable = computed(() => this.editableTime() && !this.isDisabled() && !this.readonly());
+
   /** @ignore Step hours (wraps 0↔23; also flips meridiem across the 12h boundary). */
   protected stepHours(dir: 1 | -1): void {
+    this.hoursDraft.set(null);
     this.hours.set((((this.hours() + dir) % 24) + 24) % 24);
     this.applyTime();
   }
   /** @ignore Step minutes by `stepMinute` (wraps 0↔59). */
   protected stepMinutes(dir: 1 | -1): void {
+    this.minutesDraft.set(null);
     const step = Math.max(1, this.stepMinute());
     this.minutes.set((((this.minutes() + dir * step) % 60) + 60) % 60);
     this.applyTime();
   }
   /** @ignore */
   protected toggleMeridiem(): void {
+    this.hoursDraft.set(null);
     this.hours.set((this.hours() + 12) % 24);
     this.applyTime();
   }
 
-  /** @ignore ARIA spinbutton keyboard: ↑/↓ step, PageUp/PageDown ±. */
+  /**
+   * @ignore Typing in the hours field. The digits are held as a draft (so `0` can
+   * be the start of `09`) and committed as soon as they form a valid hour.
+   */
+  protected onHoursInput(event: Event): void {
+    if (!this.timeEditable()) return; // read-only fields never emit natively — belt and braces
+    const { min, max } = this.hourBounds();
+    const digits = this.acceptTimeDigits(event, this.hoursValue(), max);
+    if (digits === null) return;
+    this.hoursDraft.set(digits);
+    const n = Number(digits);
+    if (!digits || n < min || n > max) return; // not an hour yet (e.g. `0` on a 12h clock)
+    this.hours.set(this.hourFormat() === '12' ? this.to24(n) : n);
+    this.applyTime();
+  }
+
+  /** @ignore Typing in the minutes field — exact value (`stepMinute` only drives the steppers). */
+  protected onMinutesInput(event: Event): void {
+    if (!this.timeEditable()) return;
+    const digits = this.acceptTimeDigits(event, this.minutesValue(), 59);
+    if (digits === null || !digits) return;
+    this.minutesDraft.set(digits);
+    this.minutes.set(Number(digits));
+    this.applyTime();
+  }
+
+  /**
+   * @ignore Keep a time field to at most 2 digits and reject what can never be in
+   * range (`33`, or `13` on a 12h clock) — the field reverts to `current`, so the
+   * keystroke is simply refused. Returns the accepted digits, or `null` if rejected.
+   */
+  private acceptTimeDigits(event: Event, current: string, max: number): string | null {
+    const el = event.target as HTMLInputElement;
+    const digits = el.value.replace(/\D/g, '').slice(0, 2);
+    const accepted = !digits || Number(digits) <= max;
+    const text = accepted ? digits : current;
+    // `[value]` is a no-op whenever the bound text is unchanged → write the DOM here.
+    if (el.value !== text) {
+      el.value = text;
+      el.setSelectionRange(text.length, text.length);
+    }
+    return accepted ? digits : null;
+  }
+
+  /** @ignore 12h display hour (1–12) + the current meridiem → 24h hour. */
+  private to24(displayed: number): number {
+    return (displayed % 12) + (this.meridiem() === 'PM' ? 12 : 0);
+  }
+
+  /** @ignore Focusing a time field selects it, so typing replaces the value. */
+  protected onTimeFocus(event: FocusEvent): void {
+    (event.target as HTMLInputElement).select();
+  }
+
+  /** @ignore Leaving a time field drops the draft: the zero-padded label comes back. */
+  protected onHoursBlur(): void {
+    this.hoursDraft.set(null);
+  }
+  /** @ignore */
+  protected onMinutesBlur(): void {
+    this.minutesDraft.set(null);
+  }
+
+  /** @ignore ARIA spinbutton keyboard: ↑/↓ step, PageUp/PageDown ±, Enter commits. */
   protected onHourKeydown(event: KeyboardEvent): void {
     if (event.key === 'ArrowUp' || event.key === 'PageUp') {
       event.preventDefault();
@@ -853,6 +938,9 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     } else if (event.key === 'ArrowDown' || event.key === 'PageDown') {
       event.preventDefault();
       this.stepHours(-1);
+    } else if (event.key === 'Enter') {
+      event.preventDefault(); // commit in place, never submit the surrounding form
+      this.hoursDraft.set(null);
     }
   }
   /** @ignore */
@@ -863,6 +951,9 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     } else if (event.key === 'ArrowDown' || event.key === 'PageDown') {
       event.preventDefault();
       this.stepMinutes(-1);
+    } else if (event.key === 'Enter') {
+      event.preventDefault();
+      this.minutesDraft.set(null);
     }
   }
   /** @ignore */

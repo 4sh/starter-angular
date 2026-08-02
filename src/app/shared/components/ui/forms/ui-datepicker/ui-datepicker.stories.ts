@@ -34,6 +34,7 @@ const meta: Meta<UiDatepicker> = {
     showTime: { control: 'boolean', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
     timeOnly: { control: 'boolean', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
     hourFormat: { control: 'inline-radio', options: ['24', '12'], table: { type: { summary: "'12' | '24'" }, defaultValue: { summary: '"24"' } } },
+    editableTime: { control: 'boolean', description: 'Autorise la frappe des heures / minutes (AM/PM reste une bascule).', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } } },
     showButtonBar: { control: 'boolean', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
     inline: { control: 'boolean', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
     showClear: { control: 'boolean', description: 'Affiche une croix pour effacer la valeur quand elle est renseignée.', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
@@ -66,6 +67,7 @@ const meta: Meta<UiDatepicker> = {
     numberOfMonths: 1,
     showTime: false,
     timeOnly: false,
+    editableTime: true,
     showButtonBar: false,
     inline: false,
     showClear: false,
@@ -88,7 +90,7 @@ const TEMPLATE = `<div style="width:260px"><ui-datepicker
     [label]="label" [placeholder]="placeholder" [helperText]="helperText" [errorText]="errorText"
     [size]="size" [level]="level" [icon]="icon" [firstDayOfWeek]="firstDayOfWeek" [locale]="locale"
     [selectionMode]="selectionMode" [view]="view" [numberOfMonths]="numberOfMonths"
-    [showTime]="showTime" [timeOnly]="timeOnly" [hourFormat]="hourFormat"
+    [showTime]="showTime" [timeOnly]="timeOnly" [hourFormat]="hourFormat" [editableTime]="editableTime"
     [showButtonBar]="showButtonBar" [inline]="inline" [showClear]="showClear" [autoFlip]="autoFlip" [closeOnSelect]="closeOnSelect" [allowInput]="allowInput"
     [minDate]="minDate" [maxDate]="maxDate" [disabledDays]="disabledDays"
     [required]="required" [disabled]="disabled" [readonly]="readonly" [invalid]="invalid"
@@ -113,7 +115,12 @@ export const Error: Story = {
 
 export const WithTime: Story = {
   render: story(new Date(2026, 6, 8, 14, 30)),
-  args: { showTime: true, label: 'Rendez-vous', helperText: 'Date et heure.' },
+  args: { showTime: true, label: 'Rendez-vous', helperText: 'Heures et minutes saisissables au clavier.' },
+};
+
+export const StepperOnlyTime: Story = {
+  render: story(new Date(2026, 6, 8, 14, 30)),
+  args: { showTime: true, editableTime: false, label: 'Rendez-vous', helperText: 'Réglage aux chevrons / flèches uniquement.' },
 };
 
 export const Time12h: Story = {

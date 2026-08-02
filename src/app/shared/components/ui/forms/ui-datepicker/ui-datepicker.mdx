@@ -68,6 +68,7 @@ actif, le panneau **reste ouvert** après le choix d'un jour (pour régler l'heu
 
 <Canvas of={DatepickerStories.WithTime} />
 <Canvas of={DatepickerStories.Time12h} />
+<Canvas of={DatepickerStories.StepperOnlyTime} />
 
 ## Contraintes de sélection
 
@@ -192,6 +193,10 @@ via l'interop CVA native, ainsi qu'aux formulaires template-driven (`[(ngModel)]
     <tr>
       <td><strong>Sémantique</strong></td>
       <td>Panneau <code>role="dialog"</code> ; grille <code>role="grid"</code> / <code>gridcell</code> avec <code>aria-selected</code> et <code>aria-current="date"</code> pour aujourd'hui.</td>
+    </tr>
+    <tr>
+      <td><strong>Heure</strong></td>
+      <td>Unités en <code>role="spinbutton"</code> (<code>aria-valuenow</code>/<code>-valuemin</code>/<code>-valuemax</code>/<code>-valuetext</code>) : <code>&lt;input&gt;</code> natifs saisissables pour HH/MM (<kbd>↑</kbd>/<kbd>↓</kbd> et <kbd>Page↑</kbd>/<kbd>Page↓</kbd> incrémentent, <kbd>Entrée</kbd> valide), bascule pour AM/PM. Chevrons <code>tabindex="-1"</code> : une seule tabulation par unité.</td>
     </tr>
     <tr>
       <td><strong>Désactivé</strong></td>

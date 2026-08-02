@@ -152,19 +152,26 @@
           <button type="button" class="ui-datepicker-time-btn" tabindex="-1" [attr.aria-label]="incrementHoursAriaLabel()" (click)="stepHours(1)">
             <ui-icon name="chevron-up" size="sm" />
           </button>
-          <span
+          <input
             class="ui-datepicker-time-value"
+            type="text"
+            inputmode="numeric"
+            autocomplete="off"
+            maxlength="2"
             role="spinbutton"
-            tabindex="0"
             [attr.aria-label]="hoursAriaLabel()"
             [attr.aria-valuenow]="hourFormat() === '12' ? displayHours() : hours()"
-            [attr.aria-valuemin]="hourFormat() === '12' ? 1 : 0"
-            [attr.aria-valuemax]="hourFormat() === '12' ? 12 : 23"
+            [attr.aria-valuemin]="hourBounds().min"
+            [attr.aria-valuemax]="hourBounds().max"
             [attr.aria-valuetext]="hoursLabel()"
+            [value]="hoursValue()"
+            [disabled]="isDisabled()"
+            [readOnly]="!timeEditable()"
+            (input)="onHoursInput($event)"
+            (focus)="onTimeFocus($event)"
+            (blur)="onHoursBlur()"
             (keydown)="onHourKeydown($event)"
-          >
-            {{ hoursLabel() }}
-          </span>
+          />
           <button type="button" class="ui-datepicker-time-btn" tabindex="-1" [attr.aria-label]="decrementHoursAriaLabel()" (click)="stepHours(-1)">
             <ui-icon name="chevron-down" size="sm" />
           </button>
@@ -177,19 +184,26 @@
           <button type="button" class="ui-datepicker-time-btn" tabindex="-1" [attr.aria-label]="incrementMinutesAriaLabel()" (click)="stepMinutes(1)">
             <ui-icon name="chevron-up" size="sm" />
           </button>
-          <span
+          <input
             class="ui-datepicker-time-value"
+            type="text"
+            inputmode="numeric"
+            autocomplete="off"
+            maxlength="2"
             role="spinbutton"
-            tabindex="0"
             [attr.aria-label]="minutesAriaLabel()"
             [attr.aria-valuenow]="minutes()"
             aria-valuemin="0"
             aria-valuemax="59"
             [attr.aria-valuetext]="minutesLabel()"
+            [value]="minutesValue()"
+            [disabled]="isDisabled()"
+            [readOnly]="!timeEditable()"
+            (input)="onMinutesInput($event)"
+            (focus)="onTimeFocus($event)"
+            (blur)="onMinutesBlur()"
             (keydown)="onMinuteKeydown($event)"
-          >
-            {{ minutesLabel() }}
-          </span>
+          />
           <button type="button" class="ui-datepicker-time-btn" tabindex="-1" [attr.aria-label]="decrementMinutesAriaLabel()" (click)="stepMinutes(-1)">
             <ui-icon name="chevron-down" size="sm" />
           </button>
