@@ -19,19 +19,19 @@ $sublevels: high, low;                                /// Intensités générant
 $sizes: (
   'default': (
     height: 28px,
-    padding-x: var(--units-sm),
+    padding-x: var(--units-md),
     font-size: var(--size-typography-text-default),
     dot: 10px,
   ),
   'small': (
     height: 22px,
-    padding-x: var(--units-sm),
+    padding-x: var(--units-md),
     font-size: var(--size-typography-text-md),
     dot: 8px,
   ),
   'large': (
     height: 32px,
-    padding-x: var(--units-md),
+    padding-x: var(--units-lg),
     font-size: var(--size-typography-text-lg),
     dot: 12px,
   ),
@@ -71,6 +71,9 @@ $size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default
       &._#{$name} { @include badge-size($size); }
     }
   }
+
+  // --- Single glyph (1:1) ------------------------
+  &._single { padding: 0; }
 
   // --- Dot ---------------------------
   @each $name, $size in $sizes {

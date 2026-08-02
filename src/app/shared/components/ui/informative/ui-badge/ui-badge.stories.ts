@@ -79,8 +79,10 @@ export const LongValue: Story = { args: { level: 'error', value: '99+' } };
 // Avec icône
 export const WithIcon: Story = { args: { level: 'success', value: 'OK', icon: 'circle-check' } };
 
-// Icône seule (nom accessible requis)
-export const IconOnly: Story = { args: { level: 'warning', icon: 'circle-exclamation', ariaLabel: 'Attention' } };
+// Icône seule (nom accessible requis) — `value` neutralisé, sinon les args du meta le réinjectent
+export const IconOnly: Story = {
+  args: { level: 'warning', value: undefined, icon: 'circle-exclamation', ariaLabel: 'Attention' },
+};
 
 // Point (ni texte ni icône) — indicateur de notification
 export const Dot: Story = { args: { level: 'error', value: undefined } };

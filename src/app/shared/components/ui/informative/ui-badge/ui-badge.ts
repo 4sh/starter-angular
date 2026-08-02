@@ -46,6 +46,14 @@ export class UiBadge {
   /** @ignore Dot: no text and no icon. */
   protected readonly isDot = computed(() => !this.hasIcon() && !this.hasText());
 
+  /**
+   * @ignore Single glyph: a lone icon, or a single character (counter "1", symbol "★").
+   */
+  protected readonly isSingle = computed(() => {
+    if (this.hasIcon()) return !this.hasText();
+    return Array.from(String(this.value() ?? '').trim()).length === 1;
+  });
+
   /** @ignore Bullet: Neither text nor icon. */
   protected readonly iconSize = computed<UiIconSize>(() => {
     switch (this.size()) {
@@ -63,6 +71,7 @@ export class UiBadge {
     const c = ['ui-badge', `_${this.level()}`, `_${this.subLevel()}`];
     if (this.size() !== 'default') c.push(`_${this.size()}`);
     if (this.isDot()) c.push('_dot');
+    else if (this.isSingle()) c.push('_single');
     return c.join(' ');
   });
 }
