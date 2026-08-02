@@ -43,6 +43,49 @@ Valeur modèle = string masquée (`12/09/2024`) par défaut, ou brute (`12092024
 
 <ArgTypes of={MaskStories} />
 
+## Valeurs bornées (`ranges`)
+
+Le masque décrit la **forme**. L'input `ranges` borne
+chaque **segment numérique** — une suite de tokens `9` consécutifs — dans l'**ordre du masque**,
+sous forme de `min-max` séparés par des espaces (`*` laisse un segment libre) :
+
+<table className="doc-table">
+  <thead>
+    <tr><th>Masque</th><th><code>ranges</code></th><th>Effet</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>99:99</code></td>
+      <td><code>0-23 0-59</code></td>
+      <td>heure 24 h — <code>33:33</code> devient impossible à saisir</td>
+    </tr>
+    <tr>
+      <td><code>99/99/9999</code></td>
+      <td><code>1-31 1-12 1900-2100</code></td>
+      <td>jour / mois / année</td>
+    </tr>
+    <tr>
+      <td><code>99:99:99</code></td>
+      <td><code>* 0-59 0-59</code></td>
+      <td>seuls les 2ᵉ et 3ᵉ segments sont bornés</td>
+    </tr>
+  </tbody>
+</table>
+
+Le contrôle se fait **à la frappe**, par anticipation : un caractère n'est accepté que s'il reste
+au moins une façon de compléter le segment dans la plage. Sur `0-23`, `3` est refusé d'emblée
+(`30`-`39` sortent tous de la plage) ; `2` passe, puis `4` est refusé et `3` accepté. Un segment
+**entièrement rempli** est donc toujours dans sa plage — la borne inférieure reste, elle,
+atteignable par préfixe (`0` est accepté sur `1-31`, en attente du `1`-`9` suivant).
+
+<Canvas of={MaskStories.Time} />
+
+> `ranges` ne borne que les segments **numériques** (`9`) ; les tokens `a`/`*` sont ignorés dans la
+> numérotation. Les bornes s'appliquent aussi aux valeurs **écrites par le formulaire**
+> (`writeValue`), comme le filtrage de caractères déjà en place. Un segment **incomplet**
+> (`9_:__`) reste possible : la complétude relève de la validation du formulaire (`required`, ou un
+> validateur dédié), pas du masque.
+
 ## Exemples
 
 <Canvas of={MaskStories.Date} />
@@ -73,7 +116,7 @@ via l'interop CVA native, ainsi qu'aux formulaires template-driven (`[(ngModel)]
     </tr>
     <tr>
       <td><strong>Saisie</strong></td>
-      <td>Les littéraux (`/`, `-`…) sont insérés automatiquement ; les caractères non conformes au token sont ignorés.</td>
+      <td>Les littéraux (`/`, `-`…) sont insérés automatiquement ; les caractères non conformes au token — ou hors des bornes <code>ranges</code> — sont ignorés.</td>
     </tr>
   </tbody>
 </table>
@@ -85,6 +128,10 @@ via l'interop CVA native, ainsi qu'aux formulaires template-driven (`[(ngModel)]
 <ui-input-mask formControlName="birthDate" label="Date" mask="99/99/9999" placeholder="jj/mm/aaaa" iconLeft="calendar" />
 <ui-input-mask [(ngModel)]="phone" label="Téléphone" mask="(999) 999-9999" />
 <ui-input-mask [(ngModel)]="iban" label="IBAN" mask="FR99 9999 9999 9999" [unmask]="true" />
+
+<!-- Valeurs bornées -->
+<ui-input-mask [(ngModel)]="time" label="Heure" mask="99:99" ranges="0-23 0-59" />
+<ui-input-mask [(ngModel)]="birth" label="Date" mask="99/99/9999" ranges="1-31 1-12 1900-2100" />
 ```
 
 > Caret : après masquage, le curseur est repositionné d'après le nombre de caractères de donnée
