@@ -2,26 +2,22 @@
 
 // =====================================================================
 // ui-textarea : projected parts only. The box/label/helper/states live in
-// `ui-field` (multiline mode). In multiline mode the box has no padding, so
-// the <textarea> fills it edge-to-edge (resize grip in the corner) and owns
-// its own text inset here.
 // =====================================================================
 
-$pad-x: utils.$form-field-padding-x;                /// Padding horizontal du contrôle multiligne.
+$pad-x: utils.$form-field-padding-x;                /// Inset horizontal du contrôle multiligne.
 $pad-y: utils.$form-textarea-padding-y;             /// Padding vertical du contrôle multiligne.
 $pad-y-small: utils.$form-textarea-padding-y-small; /// Padding vertical du contrôle multiligne, variante `small`.
 
 .ui-textarea {
   &-native {
-    @include utils.field-native-input;
+    @include utils.field-native-input($pad-x);
     box-sizing: border-box;
-    align-self: stretch;
     width: 100%;
-    padding: $pad-y $pad-x;
+    padding-block: $pad-y;
     max-width: 100%;
 
     &._small {
-      padding: $pad-y-small $pad-x;
+      padding-block: $pad-y-small;
       font-size: var(--size-typography-text-md);
     }
 

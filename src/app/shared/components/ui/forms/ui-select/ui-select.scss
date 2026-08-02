@@ -54,6 +54,7 @@ $stroke-width: utils.$control-stroke-width; /// Épaisseur de bordure (case visu
     margin: 0;
     padding: 0;
     border: none;
+    border-radius: inherit;
     background: transparent;
     outline: none;
     text-align: left;
@@ -61,6 +62,7 @@ $stroke-width: utils.$control-stroke-width; /// Épaisseur de bordure (case visu
     font-size: map.get($size-default, font-size);
     color: var(--form-high-content-default);
     cursor: pointer;
+    @include utils.field-inset-edges;
 
     &._small { font-size: map.get($size-small, font-size); }
     &:disabled { cursor: not-allowed; color: var(--form-high-content-disabled); }
@@ -137,6 +139,7 @@ $stroke-width: utils.$control-stroke-width; /// Épaisseur de bordure (case visu
     color: var(--form-low-content-default);
     cursor: pointer;
     @include utils.control-transition(color, box-shadow);
+    @include utils.field-inset-edges('margin');
 
     &:hover:not(:disabled) { color: var(--form-high-content-hover); }
     &:focus-visible {
@@ -155,7 +158,10 @@ $stroke-width: utils.$control-stroke-width; /// Épaisseur de bordure (case visu
     &._open { rotate: 180deg; }
   }
 
-  &-loading { flex-shrink: 0; }
+  &-loading {
+    flex-shrink: 0;
+    @include utils.field-inset-edges('margin');
+  }
 }
 
 // --- Panel----------
@@ -185,7 +191,7 @@ $stroke-width: utils.$control-stroke-width; /// Épaisseur de bordure (case visu
     box-sizing: border-box;
     height: map.get($size-default, filter-height);
     flex-shrink: 0;
-    padding: 0 var(--units-sm);
+    padding: 0;
     border: var(--stroke-sm) solid var(--form-high-stroke-default);
     border-radius: $option-radius;
     background-color: var(--form-high-surface-default);
@@ -199,10 +205,11 @@ $stroke-width: utils.$control-stroke-width; /// Épaisseur de bordure (case visu
   .ui-select-filter-icon {
     flex-shrink: 0;
     color: var(--form-low-content-default);
+    @include utils.field-inset-edges('margin', var(--units-sm));
   }
 
   .ui-select-filter-input {
-    @include utils.field-native-input;
+    @include utils.field-native-input(var(--units-sm));
     font-size: map.get($size-default, group-font-size);
   }
 

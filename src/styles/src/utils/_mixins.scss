@@ -54,20 +54,46 @@
 // Field parts — shared by ui-input / ui-input-number / ui-input-mask.
 // The field shell (`ui-field`) owns the box; these style the projected
 // input + affixes (which live in the concrete component's view).
+//
+// Inset contract: the box has NO padding — each direct child owns the field
+// inset on the side where it touches the border. The interactive control
+// therefore spans the box edge to edge, so its hit area, caret zone, autofill
+// background and focus outline all match the visible field.
 // ---------------------------------------------------------------------
 
+/// Field inset carried by a direct child of the box on the edges it touches.
+/// `$mode: 'padding'` grows the control's own box (interactive surfaces:
+/// native input, trigger, wrapping control) — `'margin'` keeps the box tight
+/// and only offsets it (fixed-size affixes: icons, units, round buttons).
+@mixin field-inset-edges($mode: 'padding', $inset: ui-config.$form-field-padding-x) {
+  @if $mode == 'padding' {
+    &:first-child { padding-inline-start: $inset; }
+    &:last-child { padding-inline-end: $inset; }
+  } @else {
+    &:first-child { margin-inline-start: $inset; }
+    &:last-child { margin-inline-end: $inset; }
+  }
+}
+
 /// Bare native <input>/<textarea> filling the field box (no border/bg).
-@mixin field-native-input {
+/// `$inset` = horizontal field inset owned by the control (see
+/// `field-inset-edges`); pass `false` when the control is nested in a wrapper
+/// that already carries the inset, or lives in a box with its own padding.
+@mixin field-native-input($inset: ui-config.$form-field-padding-x) {
   flex: 1 1 auto;
+  align-self: stretch;
   min-width: 0;
   margin: 0;
   padding: 0;
   border: none;
+  border-radius: inherit;
   background: transparent;
   outline: none;
   font-family: var(--fontfamily-base);
   font-size: var(--size-typography-text-default);
   color: var(--form-high-content-default);
+
+  @if $inset { @include field-inset-edges('padding', $inset); }
 
   &::placeholder {
     color: var(--form-low-content-default);
@@ -81,6 +107,7 @@
 @mixin field-affix {
   flex-shrink: 0;
   color: var(--form-low-content-default);
+  @include field-inset-edges('margin');
 
   &._disabled { color: var(--form-high-content-disabled); }
 }
@@ -96,21 +123,25 @@
   padding: 0;
   border: none;
   background: none;
-  border-radius: 0 ui-config.$form-field-radius ui-config.$form-field-radius 0;
+  border-radius:  0 calc(#{ui-config.$form-field-radius} - #{ui-config.$form-field-stroke-width})
+  calc(#{ui-config.$form-field-radius} - #{ui-config.$form-field-stroke-width}) 0;
   color: var(--form-low-content-default);
   cursor: pointer;
-  @include control-transition(color, background-color, box-shadow);
+  @include control-transition(color, background-color);
 
-  &:last-child { margin-right: calc(-1 * #{ui-config.$form-field-padding-x}); }
+  // Flush by design: no inset, the box has no padding to cancel.
 
   &:hover:not(:disabled) {
     color: var(--form-high-content-hover);
     background-color: var(--form-high-surface-hover);
   }
+  // Focus is a surface, never a border: the box already draws the field ring on
+  // `:focus-within`, so an inset stroke here would nest a second outline inside
+  // the field. The fill + `content-focused` say which control holds the focus.
   &:focus-visible {
     outline: none;
     color: var(--form-high-content-focused);
-    box-shadow: inset 0 0 0 ui-config.$form-field-stroke-width var(--form-high-stroke-focused);
+    background-color: var(--form-high-surface-focused);
   }
   &:disabled { cursor: not-allowed; color: var(--form-high-content-disabled); }
 }
@@ -122,7 +153,7 @@
   align-self: stretch;
   flex-shrink: 0;
   width: $width;
-  margin-right: calc(-1 * #{ui-config.$form-field-padding-x});
+  // Flush by design: no inset, the box has no padding to cancel.
   border-left: ui-config.$form-field-stroke-width solid var(--form-high-stroke-default);
   border-radius: 0 ui-config.$form-field-radius ui-config.$form-field-radius 0;
   overflow: hidden;

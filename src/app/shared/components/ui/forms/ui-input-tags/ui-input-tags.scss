@@ -42,10 +42,12 @@ $input-min-width: utils.rem-calc(80); /// Largeur minimale de la zone de saisie 
   &-control {
     display: flex;
     align-items: center;
+    align-self: stretch;
     flex: 1 1 auto;
     flex-wrap: wrap;
     gap: $tag-gap;
     min-width: 0;
+    @include utils.field-inset-edges;
   }
 
   // Accessibility wrapper only (role="listbox" around the tags): no box of its
@@ -83,7 +85,7 @@ $input-min-width: utils.rem-calc(80); /// Largeur minimale de la zone de saisie 
 
   // --- Inline editable input ------------------------------------------
   &-input {
-    @include utils.field-native-input;
+    @include utils.field-native-input(false);
     flex: 1 1 $input-min-width;
     min-width: $input-min-width;
     width: auto;

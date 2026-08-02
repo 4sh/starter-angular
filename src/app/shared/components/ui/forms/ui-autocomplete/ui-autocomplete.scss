@@ -43,10 +43,12 @@ $input-min-width: utils.rem-calc(80); /// Largeur minimale de la zone de saisie 
   &-control {
     display: flex;
     align-items: center;
+    align-self: stretch;
     flex: 1 1 auto;
     flex-wrap: wrap;
     gap: $tag-gap;
     min-width: 0;
+    @include utils.field-inset-edges;
   }
 
   // --- Selected value chip (role=option, roving focus, `multiple`) ----
@@ -65,9 +67,9 @@ $input-min-width: utils.rem-calc(80); /// Largeur minimale de la zone de saisie 
     }
   }
 
-  // --- Native combobox input (fills the field box) --------------------
+  // --- Native combobox input (fills the control wrapper) --------------
   &-input {
-    @include utils.field-native-input;
+    @include utils.field-native-input(false);
     flex: 1 1 $input-min-width;
     min-width: $input-min-width;
     width: auto;
@@ -92,6 +94,7 @@ $input-min-width: utils.rem-calc(80); /// Largeur minimale de la zone de saisie 
     color: var(--form-low-content-default);
     cursor: pointer;
     @include utils.control-transition(color, box-shadow);
+    @include utils.field-inset-edges('margin');
 
     &:hover:not(:disabled) { color: var(--form-high-content-hover); }
     &:focus-visible {
@@ -117,7 +120,10 @@ $input-min-width: utils.rem-calc(80); /// Largeur minimale de la zone de saisie 
     &:disabled { cursor: not-allowed; color: var(--form-high-content-disabled); }
   }
 
-  &-loading { flex-shrink: 0; }
+  &-loading {
+    flex-shrink: 0;
+    @include utils.field-inset-edges('margin');
+  }
 }
 
 // --- Panel -------------------------------------------------------------

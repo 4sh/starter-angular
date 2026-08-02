@@ -6,12 +6,18 @@
 // The box carries the border/background/states; the content (input + affixes)
 // is projected and styled by the concrete component (`utils.field-*` mixins).
 // Structural constants: `_ui-config.scss` (`$form-field-*`).
+//
+// The box has NO padding: the horizontal inset is owned by the projected
+// children (`utils.field-inset-edges`), so the control spans the box edge to
+// edge — hit area, caret zone, autofill background and focus outline all line
+// up with the visible field instead of a text-sized rect floating in it.
+// Do not re-add `padding` here: it would shrink every control back inside.
 // =====================================================================
 
 $height: utils.$form-field-height;                                 /// Hauteur de la boîte de champ.
 $height-small: utils.$form-field-height-small;                     /// Hauteur de la boîte de champ, variante `small`.
 $radius: utils.$form-field-radius;                                 /// Rayon de bordure de la boîte.
-$padding-x: utils.$form-field-padding-x;                           /// Padding horizontal de la boîte.
+$padding-x: utils.$form-field-padding-x;                           /// Inset horizontal du champ, porté par le contrôle projeté.
 $gap: utils.$form-field-gap;                                       /// Espace entre le contrôle et ses affixes.
 $stroke-width: utils.$form-field-stroke-width;                     /// Épaisseur de bordure de la boîte.
 $focus-ring-width: utils.$form-field-focus-ring-width;             /// Épaisseur de l'anneau de focus.
@@ -30,14 +36,14 @@ $textarea-min-height-small: utils.$form-textarea-min-height-small; /// Hauteur m
   &-box {
     --_stroke: var(--form-high-stroke-default);
     --_stroke-hover: var(--form-high-stroke-hover);
-    --_stroke-focus: var(--form-high-stroke-hover);
+    --_stroke-focus: var(--form-high-stroke-focused);
 
     display: flex;
     align-items: center;
     gap: $gap;
     box-sizing: border-box;
     height: $height;
-    padding: 0 $padding-x;
+    padding: 0;
     border: $stroke-width solid var(--_stroke);
     border-radius: $radius;
     background-color: var(--form-high-surface-default);
@@ -81,15 +87,10 @@ $textarea-min-height-small: utils.$form-textarea-min-height-small; /// Hauteur m
   &._auto-height._small &-box { min-height: $height-small; }
 
   // --- Multiline (textarea) ------------------------------------------
-  // Box grows with content: top-aligned, auto height with a min-height.
-  // Padding is dropped here and owned by the projected control instead, so a
-  // native <textarea> fills the box edge-to-edge and its resize grip sits in
-  // the corner (the projected control provides its own text inset).
   &._multiline &-box {
     align-items: stretch;
     height: auto;
     min-height: $textarea-min-height;
-    padding: 0;
   }
   &._multiline._small &-box { min-height: $textarea-min-height-small; }
 

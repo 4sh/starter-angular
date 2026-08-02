@@ -10,7 +10,10 @@ body {
   font-family: var(--fontfamily-base), serif;
   font-optical-sizing: auto;
 
-  *:focus-visible {
-    outline: var(--global-background-default) dashed utils.rem-calc(1px) !important;
-  }
+}
+
+// Default focus indicator — safety net for focusable elements that do not ship
+:where(:focus-visible) {
+  outline: var(--global-border-focus) dashed utils.rem-calc(1px);
+  outline-offset: utils.rem-calc(2px);
 }
