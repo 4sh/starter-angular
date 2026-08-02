@@ -43,15 +43,32 @@ $focus-ring-width: utils.$form-focus-ring-width; /// Épaisseur de l'anneau de f
     align-items: center;
     justify-content: center;
     padding: var(--units-2xs); // hit area
-    color: var(--form-low-content-default);
     cursor: pointer;
     border-radius: var(--radius-full);
-    @include utils.control-transition(color);
     pointer-events: auto;
 
-    &._active,
-    &._hover {
+    &-stack {
+      position: relative;
+      display: flex;
+      line-height: 1;
+      color: var(--form-low-content-default);
+      @include utils.control-transition(color);
+    }
+
+    &-base,
+    &-fill {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    // Overlay clipped to the filled portion: 1 = whole star, .5 = leading half.
+    &-fill {
+      position: absolute;
+      inset: 0;
       color: var(--form-high-content-checked);
+      clip-path: inset(0 calc((1 - var(--ui-rating-fill, 1)) * 100%) 0 0);
+      @include utils.control-transition(color);
     }
   }
 
@@ -60,11 +77,9 @@ $focus-ring-width: utils.$form-focus-ring-width; /// Épaisseur de l'anneau de f
 
     .ui-rating-icon {
       cursor: not-allowed;
-      color: var(--form-low-content-disabled);
 
-      &._active {
-        color: var(--form-high-content-disabled);
-      }
+      &-stack { color: var(--form-low-content-disabled); }
+      &-fill { color: var(--form-high-content-disabled); }
     }
   }
 
@@ -76,12 +91,15 @@ $focus-ring-width: utils.$form-focus-ring-width; /// Épaisseur de l'anneau de f
 
   &._invalid {
     .ui-rating-icon {
-      color: var(--form-error-content-default);
-
-      &._active,
-      &._hover {
-        color: var(--form-error-content-checked);
-      }
+      &-stack { color: var(--form-error-content-default); }
+      &-fill { color: var(--form-error-content-checked); }
     }
   }
+}
+
+// `clip-path: inset()` is physical: mirror it so the filled portion stays on the
+// leading side. `:host-context` — a plain ancestor selector is dropped by the
+// emulated encapsulation.
+:host-context([dir='rtl']) .ui-rating-icon-fill {
+  clip-path: inset(0 0 0 calc((1 - var(--ui-rating-fill, 1)) * 100%));
 }

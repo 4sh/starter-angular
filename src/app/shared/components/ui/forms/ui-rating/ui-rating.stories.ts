@@ -21,6 +21,7 @@ const meta: Meta<UiRating> = {
   },
   args: {
     stars: 5,
+    allowHalf: false,
     cancel: true,
     disabled: false,
     readonly: false,
@@ -35,6 +36,12 @@ const meta: Meta<UiRating> = {
       control: 'number',
       description: 'Nombre de valeurs possibles (étoiles).',
       table: { type: { summary: 'number' }, defaultValue: { summary: '5' } },
+    },
+    allowHalf: {
+      control: 'boolean',
+      description:
+        'Active la demi-notation : la valeur avance par pas de 0,5 (clic sur une moitié d’étoile, flèches du clavier).',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     cancel: {
       control: 'boolean',
@@ -107,7 +114,31 @@ type Story = StoryObj<UiRating>;
 export const Default: Story = {
   render: (args) => ({
     props: { ...args, model: 3 },
-    template: `<ui-rating [(ngModel)]="model" [stars]="stars" [cancel]="cancel" [disabled]="disabled" [readonly]="readonly" [required]="required" [invalid]="invalid" [autofocus]="autofocus" [orientation]="orientation" [size]="size" ariaLabel="Note"></ui-rating>`,
+    template: `<ui-rating [(ngModel)]="model" [stars]="stars" [allowHalf]="allowHalf" [cancel]="cancel" [disabled]="disabled" [readonly]="readonly" [required]="required" [invalid]="invalid" [autofocus]="autofocus" [orientation]="orientation" [size]="size" ariaLabel="Note"></ui-rating>`,
+  }),
+};
+
+export const AllowHalf: Story = {
+  name: 'Demi-étoiles',
+  args: { allowHalf: true },
+  render: (args) => ({
+    props: { ...args, model: 3.5 },
+    template: `
+      <div style="display:grid; gap:12px; justify-items:start;">
+        <ui-rating [(ngModel)]="model" [allowHalf]="allowHalf" [stars]="stars" [size]="size" ariaLabel="Note"></ui-rating>
+        <code>value = {{ model === null ? 'null' : model }}</code>
+      </div>
+    `,
+  }),
+};
+
+// Read-only display of an average: no interaction, the value carries the halves.
+export const HalfReadonly: Story = {
+  name: 'Demi-étoiles (lecture seule)',
+  args: { allowHalf: true, readonly: true },
+  render: (args) => ({
+    props: { ...args, model: 4.5 },
+    template: `<ui-rating [(ngModel)]="model" [allowHalf]="allowHalf" [readonly]="readonly" size="lg" ariaLabel="Note moyenne"></ui-rating>`,
   }),
 };
 
@@ -162,12 +193,13 @@ export const CustomTemplates: Story = {
   render: (args) => ({
     props: { ...args, model: 3 },
     template: `
-      <ui-rating [(ngModel)]="model" ariaLabel="Note de satisfaction">
+      <!-- Intrinsic size only: the component centers the projected content itself. -->
+      <ui-rating [(ngModel)]="model" [allowHalf]="allowHalf" ariaLabel="Note de satisfaction">
         <ng-template #onIcon let-star let-active="active">
-          <span style="font-size: 24px; display: inline-block; width: 24px; height: 24px; text-align: center;">😊</span>
+          <span style="font-size: 22px;">😊</span>
         </ng-template>
         <ng-template #offIcon let-star let-active="active">
-          <span style="font-size: 24px; display: inline-block; width: 24px; height: 24px; text-align: center; opacity: 0.3;">😊</span>
+          <span style="font-size: 22px; opacity: 0.3;">😊</span>
         </ng-template>
       </ui-rating>
     `,

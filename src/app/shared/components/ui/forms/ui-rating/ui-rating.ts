@@ -22,6 +22,8 @@ export interface UiRatingIconContext {
   $implicit: number;
   /** Whether this star is active (value <= current rating). */
   active: boolean;
+  /** Filled portion of this star, `0` to `1` (hover preview included). */
+  fill: number;
 }
 
 /**
@@ -42,6 +44,8 @@ export class UiRating extends BaseFieldControl<number | null> {
   size = input<UiIconSize>('default');
   /** Number of stars to display. */
   stars = input(5, { transform: numberAttribute });
+  /** Enables half-star notation: the value moves by 0.5 (click on a half, arrow keys). */
+  allowHalf = input(false, { transform: booleanAttribute });
   /** Allows clearing the rating by clicking the current value. */
   cancel = input(true, { transform: booleanAttribute });
   /** Native autofocus attribute. */
@@ -67,12 +71,27 @@ export class UiRating extends BaseFieldControl<number | null> {
   protected override readonly modelValue = signal<number | null>(null);
   /** @ignore */
   protected readonly hoverValue = signal<number>(0);
-  /** @ignore Numeric value used for display comparisons (`null` renders as 0 stars). */
-  protected readonly currentValue = computed(() => this.modelValue() ?? 0);
+  /** @ignore Selection granularity: one star, or a half when `allowHalf`. */
+  protected readonly step = computed(() => (this.allowHalf() ? 0.5 : 1));
+  /**
+   * @ignore Numeric value used for display comparisons (`null` renders as 0 stars).
+   * Floored to the granularity so an out-of-step value (an average pushed by the
+   * host, e.g. 4.3) never renders a fill the user could not have selected.
+   */
+  protected readonly currentValue = computed(() => {
+    const step = this.step();
+    return Math.floor(Math.max(0, this.modelValue() ?? 0) / step) * step;
+  });
 
-  /** @ignore */
-  protected readonly starsArray = computed(() => {
-    return Array.from({ length: this.stars() }, (_, i) => i + 1);
+  /** @ignore Per-star render model; `fill` (0 → 1) drives the clipped overlay. */
+  protected readonly starList = computed(() => {
+    const value = this.currentValue();
+    const preview = this.hoverValue() || value;
+    return Array.from({ length: this.stars() }, (_, i) => ({
+      index: i + 1,
+      fill: Math.min(1, Math.max(0, preview - i)),
+      active: i + 1 <= value,
+    }));
   });
 
   /** @ignore */
@@ -101,7 +120,7 @@ export class UiRating extends BaseFieldControl<number | null> {
   /** @ignore Native change is triggered by keyboard or programmatic native actions */
   protected onNativeChange(event: Event): void {
     const input = event.target as HTMLInputElement;
-    const value = parseInt(input.value, 10);
+    const value = parseFloat(input.value);
     if (this.isDisabled() || this.readonly() || Number.isNaN(value)) {
       // Revert the native range so its value stays in sync with the model.
       input.value = String(this.currentValue());
@@ -112,9 +131,10 @@ export class UiRating extends BaseFieldControl<number | null> {
   }
 
   /** @ignore */
-  protected rate(value: number): void {
+  protected rate(star: number, event: MouseEvent): void {
     if (this.isDisabled() || this.readonly()) return;
-    
+
+    const value = this.pointedValue(star, event);
     let newValue: number | null = value;
     if (this.cancel() && this.modelValue() === value) {
       newValue = null;
@@ -122,6 +142,21 @@ export class UiRating extends BaseFieldControl<number | null> {
 
     this.updateValue(newValue);
     this.focus();
+  }
+
+  /**
+   * @ignore Value pointed at by the cursor: the star itself, or its first half
+   * when `allowHalf`. Reads the writing direction so the "first half" stays the
+   * leading one in RTL, like the clip applied by the stylesheet.
+   */
+  private pointedValue(star: number, event: MouseEvent): number {
+    if (!this.allowHalf()) return star;
+    const el = event.currentTarget as HTMLElement;
+    const { left, width } = el.getBoundingClientRect();
+    if (!width) return star;
+    const ratio = (event.clientX - left) / width;
+    const leadingHalf = getComputedStyle(el).direction === 'rtl' ? ratio > 0.5 : ratio < 0.5;
+    return leadingHalf ? star - 0.5 : star;
   }
 
   private updateValue(value: number | null): void {
@@ -132,10 +167,10 @@ export class UiRating extends BaseFieldControl<number | null> {
     }
   }
 
-  /** @ignore */
-  protected setHover(value: number): void {
+  /** @ignore Bound to `mousemove`: the preview must follow the cursor across the two halves. */
+  protected setHover(star: number, event: MouseEvent): void {
     if (this.isDisabled() || this.readonly()) return;
-    this.hoverValue.set(value);
+    this.hoverValue.set(this.pointedValue(star, event));
   }
 
   /** @ignore */
