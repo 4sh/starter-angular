@@ -27,7 +27,7 @@ $textarea-min-height-small: utils.$form-textarea-min-height-small; /// Hauteur m
 .ui-field {
   display: flex;
   flex-direction: column;
-  gap: var(--units-sm);
+  gap: var(--units-xs);
 
   &._small { gap: var(--units-xs); }
 

@@ -11,7 +11,7 @@
   gap: var(--units-xs);
   font-family: var(--fontfamily-base);
   font-weight: var(--weight-regular);
-  font-size: var(--size-typography-text-default);
+  font-size: var(--size-typography-text-md);
   color: var(--ui-label-color, var(--form-high-content-default));
   cursor: inherit;
 
@@ -20,7 +20,7 @@
   }
 
   &._small {
-    font-size: var(--size-typography-text-md);
+    font-size: var(--size-typography-text-sm);
   }
 
   &._disabled {
