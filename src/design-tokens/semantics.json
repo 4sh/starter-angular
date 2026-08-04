@@ -13,12 +13,13 @@
               "modeId": "4:3",
               "resolvedType": "COLOR",
               "scopes": [
-                "FRAME_FILL"
+                "FRAME_FILL",
+                "SHAPE_FILL"
               ]
             }
           }
         },
-        "defaultHover": {
+        "default-hover": {
           "$value": "{primitives.grey.200}",
           "$type": "color",
           "$extensions": {
@@ -28,7 +29,8 @@
               "modeId": "4:3",
               "resolvedType": "COLOR",
               "scopes": [
-                "FRAME_FILL"
+                "FRAME_FILL",
+                "SHAPE_FILL"
               ]
             }
           }
@@ -43,12 +45,13 @@
               "modeId": "4:3",
               "resolvedType": "COLOR",
               "scopes": [
-                "FRAME_FILL"
+                "FRAME_FILL",
+                "SHAPE_FILL"
               ]
             }
           }
         },
-        "mutedHover": {
+        "muted-hover": {
           "$value": "{primitives.grey.300}",
           "$type": "color",
           "$extensions": {
@@ -58,7 +61,8 @@
               "modeId": "4:3",
               "resolvedType": "COLOR",
               "scopes": [
-                "FRAME_FILL"
+                "FRAME_FILL",
+                "SHAPE_FILL"
               ]
             }
           }
@@ -73,7 +77,8 @@
               "modeId": "4:3",
               "resolvedType": "COLOR",
               "scopes": [
-                "FRAME_FILL"
+                "FRAME_FILL",
+                "SHAPE_FILL"
               ]
             }
           }
@@ -96,7 +101,7 @@
             }
           }
         },
-        "defaultHover": {
+        "default-hover": {
           "$value": "{primitives.grey.700}",
           "$type": "color",
           "$extensions": {
@@ -128,7 +133,7 @@
             }
           }
         },
-        "mutedHover": {
+        "muted-hover": {
           "$value": "{primitives.grey.700}",
           "$type": "color",
           "$extensions": {
@@ -179,7 +184,7 @@
             }
           }
         },
-        "defaultHover": {
+        "default-hover": {
           "$value": "{primitives.primary.500}",
           "$type": "color",
           "$extensions": {
@@ -238,12 +243,13 @@
               "modeId": "5:0",
               "resolvedType": "COLOR",
               "scopes": [
-                "FRAME_FILL"
+                "FRAME_FILL",
+                "SHAPE_FILL"
               ]
             }
           }
         },
-        "defaultHover": {
+        "default-hover": {
           "$value": "{primitives.grey.700}",
           "$type": "color",
           "$extensions": {
@@ -253,7 +259,8 @@
               "modeId": "5:0",
               "resolvedType": "COLOR",
               "scopes": [
-                "FRAME_FILL"
+                "FRAME_FILL",
+                "SHAPE_FILL"
               ]
             }
           }
@@ -268,12 +275,13 @@
               "modeId": "5:0",
               "resolvedType": "COLOR",
               "scopes": [
-                "FRAME_FILL"
+                "FRAME_FILL",
+                "SHAPE_FILL"
               ]
             }
           }
         },
-        "mutedHover": {
+        "muted-hover": {
           "$value": "{primitives.grey.800}",
           "$type": "color",
           "$extensions": {
@@ -283,7 +291,8 @@
               "modeId": "5:0",
               "resolvedType": "COLOR",
               "scopes": [
-                "FRAME_FILL"
+                "FRAME_FILL",
+                "SHAPE_FILL"
               ]
             }
           }
@@ -298,7 +307,8 @@
               "modeId": "5:0",
               "resolvedType": "COLOR",
               "scopes": [
-                "FRAME_FILL"
+                "FRAME_FILL",
+                "SHAPE_FILL"
               ]
             }
           }
@@ -321,7 +331,7 @@
             }
           }
         },
-        "defaultHover": {
+        "default-hover": {
           "$value": "{primitives.grey.200}",
           "$type": "color",
           "$extensions": {
@@ -353,7 +363,7 @@
             }
           }
         },
-        "mutedHover": {
+        "muted-hover": {
           "$value": "{primitives.grey.200}",
           "$type": "color",
           "$extensions": {
@@ -404,7 +414,7 @@
             }
           }
         },
-        "defaultHover": {
+        "default-hover": {
           "$value": "{primitives.primary.200}",
           "$type": "color",
           "$extensions": {
@@ -692,7 +702,7 @@
           }
         }
       },
-      "highoutlined": {
+      "highOutlined": {
         "content": {
           "default": {
             "$value": "{primitives.primary.700}",
@@ -960,7 +970,7 @@
           }
         }
       },
-      "highghost": {
+      "highGhost": {
         "content": {
           "default": {
             "$value": "{primitives.primary.700}",
@@ -1466,7 +1476,7 @@
           }
         }
       },
-      "lowoutlined": {
+      "lowOutlined": {
         "content": {
           "default": {
             "$value": "{primitives.primary.600}",
@@ -1734,7 +1744,7 @@
           }
         }
       },
-      "lowghost": {
+      "lowGhost": {
         "content": {
           "default": {
             "$value": "{primitives.primary.600}",
@@ -2240,7 +2250,7 @@
           }
         }
       },
-      "successoutlined": {
+      "successOutlined": {
         "content": {
           "default": {
             "$value": "{primitives.green.700}",
@@ -2508,7 +2518,7 @@
           }
         }
       },
-      "successghost": {
+      "successGhost": {
         "content": {
           "default": {
             "$value": "{primitives.green.700}",
@@ -3014,7 +3024,7 @@
           }
         }
       },
-      "warningoutlined": {
+      "warningOutlined": {
         "content": {
           "default": {
             "$value": "{primitives.orange.700}",
@@ -3282,7 +3292,7 @@
           }
         }
       },
-      "warningghost": {
+      "warningGhost": {
         "content": {
           "default": {
             "$value": "{primitives.orange.700}",
@@ -3788,7 +3798,7 @@
           }
         }
       },
-      "erroroutlined": {
+      "errorOutlined": {
         "content": {
           "default": {
             "$value": "{primitives.red.700}",
@@ -4056,7 +4066,7 @@
           }
         }
       },
-      "errorghost": {
+      "errorGhost": {
         "content": {
           "default": {
             "$value": "{primitives.red.700}",
@@ -4324,7 +4334,7 @@
           }
         }
       },
-      "ondark": {
+      "onDark": {
         "outlined": {
           "content": {
             "default": {
@@ -6204,7 +6214,7 @@
           }
         }
       },
-      "onlight": {
+      "onLight": {
         "outlined": {
           "content": {
             "default": {
@@ -8324,7 +8334,7 @@
           }
         }
       },
-      "highoutlined": {
+      "highOutlined": {
         "content": {
           "default": {
             "$value": "{primitives.primary.200}",
@@ -8592,7 +8602,7 @@
           }
         }
       },
-      "highghost": {
+      "highGhost": {
         "content": {
           "default": {
             "$value": "{primitives.primary.200}",
@@ -9098,7 +9108,7 @@
           }
         }
       },
-      "lowoutlined": {
+      "lowOutlined": {
         "content": {
           "default": {
             "$value": "{primitives.primary.300}",
@@ -9366,7 +9376,7 @@
           }
         }
       },
-      "lowghost": {
+      "lowGhost": {
         "content": {
           "default": {
             "$value": "{primitives.primary.300}",
@@ -9872,7 +9882,7 @@
           }
         }
       },
-      "successoutlined": {
+      "successOutlined": {
         "content": {
           "default": {
             "$value": "{primitives.green.200}",
@@ -10140,7 +10150,7 @@
           }
         }
       },
-      "successghost": {
+      "successGhost": {
         "content": {
           "default": {
             "$value": "{primitives.green.200}",
@@ -10646,7 +10656,7 @@
           }
         }
       },
-      "warningoutlined": {
+      "warningOutlined": {
         "content": {
           "default": {
             "$value": "{primitives.orange.200}",
@@ -10914,7 +10924,7 @@
           }
         }
       },
-      "warningghost": {
+      "warningGhost": {
         "content": {
           "default": {
             "$value": "{primitives.orange.200}",
@@ -11420,7 +11430,7 @@
           }
         }
       },
-      "erroroutlined": {
+      "errorOutlined": {
         "content": {
           "default": {
             "$value": "{primitives.red.200}",
@@ -11688,7 +11698,7 @@
           }
         }
       },
-      "errorghost": {
+      "errorGhost": {
         "content": {
           "default": {
             "$value": "{primitives.red.200}",
@@ -11956,7 +11966,7 @@
           }
         }
       },
-      "ondark": {
+      "onDark": {
         "outlined": {
           "content": {
             "default": {
@@ -13836,7 +13846,7 @@
           }
         }
       },
-      "onlight": {
+      "onLight": {
         "outlined": {
           "content": {
             "default": {
@@ -17835,7 +17845,7 @@
         }
       },
       "highlightHigh": {
-        "content": {
+        "Content": {
           "default": {
             "$value": "{primitives.white.base}",
             "$type": "color",
@@ -17869,7 +17879,7 @@
             }
           }
         },
-        "surface": {
+        "Surface": {
           "default": {
             "$value": "{primitives.primary.500}",
             "$type": "color",
@@ -17903,7 +17913,7 @@
             }
           }
         },
-        "stroke": {
+        "Stroke": {
           "default": {
             "$value": "{primitives.primary.500}",
             "$type": "color",
@@ -18857,7 +18867,7 @@
         }
       },
       "highlightHigh": {
-        "content": {
+        "Content": {
           "default": {
             "$value": "{primitives.white.base}",
             "$type": "color",
@@ -18891,7 +18901,7 @@
             }
           }
         },
-        "surface": {
+        "Surface": {
           "default": {
             "$value": "{primitives.primary.500}",
             "$type": "color",
@@ -18925,7 +18935,7 @@
             }
           }
         },
-        "stroke": {
+        "Stroke": {
           "default": {
             "$value": "{primitives.primary.500}",
             "$type": "color",

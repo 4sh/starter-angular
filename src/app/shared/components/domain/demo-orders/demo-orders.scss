@@ -10,7 +10,7 @@
   width: 100vw;
   box-sizing: border-box;
   overflow: hidden;
-  background: var(--global-background-default-hover);
+  background: var(--global-background-muted);
   font-family: var(--fontfamily-base);
   color: var(--global-text-default);
 }
@@ -115,7 +115,7 @@
 
 .demo-page-title {
   margin: 0 0 var(--units-xs);
-  font-size: var(--size-typography-display-small);
+  font-size: var(--size-typography-title-sm);
   font-weight: 700;
   line-height: 1.2;
 }
@@ -123,7 +123,7 @@
 .demo-page-subtitle {
   margin: 0;
   color: var(--global-text-muted);
-  font-size: var(--size-typography-body-default);
+  font-size: var(--size-typography-text-default);
 }
 
 // ---- KPI Row ---
@@ -179,7 +179,7 @@
 }
 
 .demo-kpi-label {
-  font-size: var(--size-typography-body-small);
+  font-size: var(--size-typography-text-sm);
   color: var(--global-text-muted);
 }
 
@@ -236,9 +236,9 @@ ui-tab-panel {
   padding: var(--units-xs) var(--units-md);
   margin-bottom: var(--units-sm);
   border-radius: var(--radius-md);
-  background: var(--informative-highlight-low-surface-default);
-  color: var(--informative-highlight-high-content-default);
-  font-size: var(--size-typography-body-small);
+  background: var(--global-background-default);
+  color: var(--global-text-default);
+  font-size: var(--size-typography-text-md);
 }
 
 // ---- Table ---
@@ -288,7 +288,7 @@ ui-tab-panel {
 
 .demo-customer-email {
   color: var(--global-text-muted);
-  font-size: var(--size-typography-body-small);
+  font-size: var(--size-typography-text-default);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -342,7 +342,7 @@ ui-tab-panel {
   gap: var(--units-sm);
   h3 {
     margin: 0;
-    font-size: var(--size-typography-heading-medium);
+    font-size: var(--size-typography-title-default);
   }
 }
 
@@ -366,7 +366,7 @@ ui-tab-panel {
 
 .demo-modal-section-title {
   margin: 0;
-  font-size: var(--size-typography-text-xs);
+  font-size: var(--size-typography-text-sm);
   font-weight: 700;
   color: var(--global-text-muted);
   text-transform: uppercase;
@@ -384,14 +384,14 @@ ui-tab-panel {
 .demo-client-item {
   display: flex;
   flex-direction: column;
-  gap: var(--units-xxs);
+  gap: var(--units-xs);
 }
 .demo-client-label {
   font-size: var(--size-typography-text-sm);
   color: var(--global-text-muted);
 }
 .demo-client-val {
-  font-size: var(--size-typography-text-base);
+  font-size: var(--size-typography-text-default);
   font-weight: 500;
 }
 
