@@ -1,0 +1,23 @@
+@use 'utils';
+
+// =====================================================================
+// ui-input-group : co-located styles. All values come from design tokens.
+//
+// The row only publishes the shaping hooks; assigning them per item lives
+// in the .ts — the items are projected, so a scoped selector cannot reach
+// them.
+// =====================================================================
+
+$radius: utils.$form-field-radius;            /// Rayon des coins extérieurs du groupe.
+$overlap: utils.$form-field-stroke-width;     /// Recouvrement de deux items voisins (= largeur de bordure, évite le doublement du trait partagé).
+
+:host { display: block; }
+
+.ui-input-group {
+  --ui-input-group-radius: #{$radius}; /// Rayon exposé pour reformer les coins extérieurs.
+  --ui-input-group-overlap: calc(-1 * #{$overlap});
+
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+}

@@ -21,6 +21,14 @@ const CITIES: City[] = [
   { name: 'Lille', code: 'LIL' },
 ];
 
+// Libellés volontairement longs : ils ne tiennent pas dans un champ étroit.
+const LONG_CITIES: City[] = [
+  { name: 'Saint-Étienne-du-Rouvray', code: 'SER' },
+  { name: 'Villeneuve-d’Ascq', code: 'VDA' },
+  { name: 'Boulogne-Billancourt', code: 'BLB' },
+  { name: 'Clermont-Ferrand', code: 'CFE' },
+];
+
 const GROUPED_CITIES = [
   {
     label: 'France',
@@ -213,6 +221,12 @@ const meta: Meta<UiSelect> = {
       control: 'text',
       description: 'Hauteur max de la liste d’options (taille CSS, ex. `320px`).',
       table: { type: { summary: 'string' } },
+    },
+    panelWidth: {
+      control: 'text',
+      description:
+        'Largeur du panneau. Par défaut il reprend celle du champ ; `auto` le dimensionne sur son contenu (sans jamais passer sous la largeur du champ) ; une taille CSS (ex. `260px`) la fixe.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'largeur du champ' } },
     },
     label: { control: 'text', description: 'Label du champ (rendu via `ui-label`).', table: { type: { summary: 'string' } } },
     helperText: { control: 'text', description: 'Texte d’aide sous le champ.', table: { type: { summary: 'string' } } },
@@ -492,6 +506,21 @@ export const Sizes: Story = {
       <div style="display:grid; gap:16px; width:280px;">
         <ui-select label="Default" [(ngModel)]="a" [options]="cities" optionLabel="name" optionValue="code" />
         <ui-select label="Small" size="small" [(ngModel)]="b" [options]="cities" optionLabel="name" optionValue="code" />
+      </div>
+    `,
+  }),
+};
+
+// --- Panel Width : liste décorrélée de la largeur du champ ----------------------
+export const PanelWidth: Story = {
+  name: 'Panel Width',
+  render: () => ({
+    props: { cities: LONG_CITIES, a: undefined, b: undefined, c: undefined },
+    template: `
+      <div style="display:grid; gap:16px; width:180px;">
+        <ui-select label="Défaut" placeholder="Ville" [(ngModel)]="a" [options]="cities" optionLabel="name" optionValue="code" />
+        <ui-select label="auto" placeholder="Ville" panelWidth="auto" [(ngModel)]="b" [options]="cities" optionLabel="name" optionValue="code" />
+        <ui-select label="320px" placeholder="Ville" panelWidth="320px" [(ngModel)]="c" [options]="cities" optionLabel="name" optionValue="code" />
       </div>
     `,
   }),

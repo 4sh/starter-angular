@@ -138,6 +138,15 @@ du kit (le design system ne définit pas de taille `large`).
 
 <Canvas of={SelectStories.Sizes} />
 
+## Panel Width
+
+Par défaut le panneau reprend la largeur du champ. Quand le champ est volontairement
+compact, un indicatif téléphonique dans un `ui-input-group`, par exemple, mais que les
+options ne le sont pas, `panelWidth` décorrèle les deux : `auto` dimensionne le panneau sur
+son contenu **sans jamais passer sous la largeur du champ**, une taille CSS (`320px`) la fixe.
+
+<Canvas of={SelectStories.PanelWidth} />
+
 ## Disabled
 
 `disabled` désactive le champ (attribut **natif** sur le déclencheur : ni éditable, ni

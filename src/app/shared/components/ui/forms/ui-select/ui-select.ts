@@ -211,6 +211,13 @@ export class UiSelect<T = unknown> extends BaseFormField<SelectValue<T>> {
   autoFlip = input(true, { transform: booleanAttribute });
   /** Extra class(es) applied to the panel (scoped custom styling). */
   panelStyleClass = input<string>();
+  /**
+   * Panel width. By default it matches the field, which is too narrow when the
+   * field is compact (a phone dialling code in a `ui-input-group`, say) but the
+   * options are not. `'auto'` sizes the panel to its content while keeping the
+   * field width as a floor; any CSS size (`'260px'`) pins it.
+   */
+  panelWidth = input<string>();
 
   /** Emitted whenever the value changes (selection, typing, clear). */
   valueChange = output<SelectValue<T>>();
@@ -257,7 +264,7 @@ export class UiSelect<T = unknown> extends BaseFormField<SelectValue<T>> {
   protected readonly panelOpen = signal(false);
   /** @ignore Element the overlay is anchored to (the field box). */
   protected readonly overlayOrigin = signal<Element | null>(null);
-  /** @ignore Panel width, locked to the field box width on open. */
+  /** @ignore Field box width, measured on open. */
   protected readonly overlayWidth = signal<number | null>(null);
   /** @ignore Current filter text. */
   protected readonly filterValue = signal('');
@@ -466,6 +473,21 @@ export class UiSelect<T = unknown> extends BaseFormField<SelectValue<T>> {
 
   /** @ignore Below the trigger, flipping above when `autoFlip` and space is lacking. */
   protected readonly overlayPositions = computed(() => dropdownOverlayPositions(this.autoFlip()));
+
+  /** @ignore Panel width: `panelWidth` when set, the field width otherwise. */
+  protected readonly panelStyleWidth = computed(() => {
+    const width = this.panelWidth();
+    if (width) return width === 'auto' ? null : width;
+    const measured = this.overlayWidth();
+    return measured === null ? null : `${measured}px`;
+  });
+
+  /** @ignore `panelWidth="auto"`: the field width becomes a floor, the content sets the rest. */
+  protected readonly panelStyleMinWidth = computed(() => {
+    if (this.panelWidth() !== 'auto') return null;
+    const measured = this.overlayWidth();
+    return measured === null ? null : `${measured}px`;
+  });
 
   /** @ignore Concrete viewport height (px) for the virtual scroller. */
   protected readonly viewportHeight = computed(() => {

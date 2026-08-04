@@ -45,7 +45,9 @@ $textarea-min-height-small: utils.$form-textarea-min-height-small; /// Hauteur m
     height: $height;
     padding: 0;
     border: $stroke-width solid var(--_stroke);
-    border-radius: $radius;
+    // Radius hook: a host can reshape the corners (e.g. fields glued in a
+    // ui-input-group) by setting `--ui-field-radius` on the component host.
+    border-radius: var(--ui-field-radius, #{$radius}); /// Rayon exposé pour reformer les coins (utilisé par `ui-input-group`).
     background-color: var(--form-high-surface-default);
     cursor: var(--ui-field-box-cursor, text);
     @include utils.control-transition(background-color, box-shadow);
