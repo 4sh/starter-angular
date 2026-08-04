@@ -59,6 +59,103 @@ import * as PaginatorStories from "../../src/app/shared/components/ui/table/ui-p
 Bibliothèque de composants Angular, accessibles, stylés via design tokens.
 Vue d'ensemble par catégorie.
 
+export const CATEGORIES = [
+  {
+    title: 'Actions',
+    anchor: 'actions',
+    components: [
+      { name: 'ui-button', description: 'Bouton (niveaux, tailles, icônes, icon-only, mode lien href/routerLink) : accessible.', link: '?path=/docs/components-ui-actions-ui-button--docs', story: ButtonStories.High },
+      { name: 'ui-button-split', description: "Bouton d'action accolé à un déclencheur déroulant (modèle UiMenuItem[], sous-menus, désactivation indépendante, popup accessible).", link: '?path=/docs/components-ui-actions-ui-button-split--docs', story: ButtonSplitStories.Icons },
+      { name: 'ui-link', description: 'Lien textuel inline (vrai <a>, href/routerLink, icônes, externe) : accessible.', link: '?path=/docs/components-ui-actions-ui-link--docs', story: LinkStories.Default },
+    ],
+  },
+  {
+    title: 'Forms',
+    anchor: 'forms',
+    components: [
+      { name: 'ui-checkbox', description: 'Case à cocher (CVA, indeterminate, erreur auto).', link: '?path=/docs/components-ui-forms-ui-checkbox--docs', story: CheckboxStories.Checked },
+      { name: 'ui-radio', description: 'Bouton radio (groupe natif par name, CVA).', link: '?path=/docs/components-ui-forms-ui-radio--docs', story: RadioStories.Checked },
+      { name: 'ui-label', description: 'Libellé de champ (marqueur requis, tailles).', link: '?path=/docs/components-ui-forms-ui-label--docs', story: LabelStories.Required },
+      { name: 'ui-input', description: "Champ texte composé (label + helper, icônes, zone d'action, niveaux).", link: '?path=/docs/components-ui-forms-ui-input--docs', story: InputStories.WithHelper },
+      { name: 'ui-input-number', description: 'Champ numérique (min/max/step, spinner ±, clamp).', link: '?path=/docs/components-ui-forms-ui-input-number--docs', story: InputNumberStories.WithUnit },
+      { name: 'ui-input-mask', description: 'Champ masqué (téléphone, date… littéraux auto).', link: '?path=/docs/components-ui-forms-ui-input-mask--docs', story: InputMaskStories.Phone },
+      { name: 'ui-input-otp', description: 'Code à usage unique / OTP (cellules maxlength=1, mask, integerOnly, tailles, avance auto + collage, roving Tab/←/→, template #input).', link: '?path=/docs/components-ui-forms-ui-input-otp--docs', story: InputOtpStories.Basic },
+      { name: 'ui-input-group', description: "Groupe champ + compléments (add-ons texte/icône, bouton, case à cocher, liste déroulante) collés en un seul champ.", link: '?path=/docs/components-ui-forms-ui-input-group--docs', story: InputGroupStories.Basic },
+      { name: 'ui-toggle', description: 'Interrupteur on/off (role=switch, CVA, tailles).', link: '?path=/docs/components-ui-forms-ui-toggle--docs', story: ToggleStories.Default },
+      { name: 'ui-datepicker', description: 'Sélecteur de date/heure (calendrier overlay/inline, CVA, min/max, showTime 12/24h, clavier).', link: '?path=/docs/components-ui-forms-ui-datepicker--docs', story: DatepickerStories.Default },
+      { name: 'ui-rating', description: 'Notation étoiles (CVA, clavier natif via range caché).', link: '?path=/docs/components-ui-forms-ui-rating--docs', story: RatingStories.Default },
+      { name: 'ui-slider', description: 'Curseur de valeur (CVA, simple/range, step, marks, écart min., drag pointeur + clavier WAI-ARIA).', link: '?path=/docs/components-ui-forms-ui-slider--docs', story: SliderStories.Basic },
+      { name: 'ui-nudger', description: 'Incrémenteur numérique [−] valeur [+] (CVA, min/max/step, tailles, formatValue).', link: '?path=/docs/components-ui-forms-ui-nudger--docs', story: NudgerStories.MinMax },
+      { name: 'ui-textarea', description: 'Zone de texte multiligne (CVA, rows, autoResize, poignée native, niveaux).', link: '?path=/docs/components-ui-forms-ui-textarea--docs', story: TextareaStories.WithHelper },
+      { name: 'ui-segment-control', description: 'Sélection segmentée (CVA, simple/multiple, indicateur glissant motion, fluid, template).', link: '?path=/docs/components-ui-forms-ui-segment-control--docs', story: SegmentControlStories.Sizes },
+      { name: 'ui-select', description: 'Liste déroulante (combobox WAI-ARIA, options/groupes, multiple, filtre, editable, virtual scroll + lazy).', link: '?path=/docs/components-ui-forms-ui-select--docs', story: SelectStories.Checkmark },
+      { name: 'ui-autocomplete', description: 'Champ de suggestions (combobox WAI-ARIA, completeMethod anti-rebondi, dropdown, groupes, forceSelection, virtual scroll).', link: '?path=/docs/components-ui-forms-ui-autocomplete--docs', story: AutocompleteStories.Basic },
+      { name: 'ui-input-tags', description: 'Saisie multi-valeurs / tags (listbox WAI-ARIA + focus roving, delimiter, max, allowDuplicate, typeahead ; Signal Forms).', link: '?path=/docs/components-ui-forms-ui-input-tags--docs', story: InputTagsStories.Basic },
+      { name: 'ui-file-upload', description: 'Téléversement de fichiers (field/drag + glisser-déposer, validation, auto/customUpload, progression, templates, aperçus image).', link: '?path=/docs/components-ui-forms-ui-file-upload--docs', story: FileUploadStories.Basic },
+    ],
+  },
+  {
+    title: 'Informative',
+    anchor: 'informative',
+    components: [
+      { name: 'ui-badge', description: 'Pastille compteur / statut (level × sub-level, tailles, icône, point).', link: '?path=/docs/components-ui-informative-ui-badge--docs', story: BadgeStories.WithIcon },
+      { name: 'ui-helper', description: "Texte d'aide / feedback contextuel (icône déduite du niveau, ariaLive).", link: '?path=/docs/components-ui-informative-ui-helper--docs', story: HelperStories.Error },
+      { name: 'ui-read-only', description: 'Affichage lecture seule label/valeur (rendu <dl>/<dt>/<dd>, dispositions vertical/horizontal, colonne labelWidth/labelAlign, fallback, multiline, valeur riche projetée).', link: '?path=/docs/components-ui-informative-ui-read-only--docs', story: ReadOnlyStories.Vertical },
+      { name: 'ui-avatar', description: 'Avatar utilisateur (image / initiales / icône, tailles, forme, badge projeté).', link: '?path=/docs/components-ui-informative-ui-avatar--docs', story: AvatarStories.Label },
+      { name: 'ui-avatar-group', description: "Empilement d'avatars avec chevauchement (débordement « +N »).", link: '?path=/docs/components-ui-informative-ui-avatar-group--docs', story: AvatarGroupStories.Mixed },
+      { name: 'ui-separator', description: 'Séparateur (horizontal/vertical, solid/dashed, libellé start/center/end).', link: '?path=/docs/components-ui-informative-ui-separator--docs', story: SeparatorStories.LabelCenter },
+      { name: 'ui-tooltip', description: 'Infobulle (directive [uiTooltip] + CDK Overlay, 4 côtés avec retournement auto, hover/focus, tooltipStyleClass).', link: '?path=/docs/components-ui-informative-ui-tooltip--docs', story: TooltipStories.Default },
+      { name: 'ui-tag', description: 'Étiquette / pilule (level × sub-level × size, icônes gauche/droite, forme pill/rounded).', link: '?path=/docs/components-ui-informative-ui-tag--docs', story: TagStories.WithIconLeft },
+      { name: 'ui-chip', description: 'Jeton compact interactif (icône/image de tête, suppression removable au clavier, contenu projeté, level × sub-level × size).', link: '?path=/docs/components-ui-informative-ui-chip--docs', story: ChipStories.Removable },
+      { name: 'ui-toast', description: 'Notification éphémère (service add/clear + conteneur, 7 positions, niveaux, auto-fermeture pausable, sticky, bannière, actions, motion).', link: '?path=/docs/components-ui-informative-ui-toast--docs', story: ToastStories.Default },
+      { name: 'ui-alert', description: 'Message inline (niveaux × sous-niveau, tailles default/large, icône, fermeture clavier, auto-disparition life, role=alert ; usages Dynamic @for + Forms).', link: '?path=/docs/components-ui-informative-ui-alert--docs', story: AlertStories.Error },
+      { name: 'ui-accordion', description: 'Accordéon repliable (composition, single/multiple, clavier roving, motion, tokens).', link: '?path=/docs/components-ui-informative-ui-accordion--docs', story: AccordionStories.Default, previewHeight: 300, previewScale: 0.85 },
+      { name: 'ui-spinner', description: 'Indicateur de chargement indéterminé (cercle SVG token-coloré, marqueur remplaçable image/icône/template, tailles, delay anti-flash, role=status, reduced-motion).', link: '?path=/docs/components-ui-informative-ui-spinner--docs', story: SpinnerStories.WithLabel },
+      { name: 'ui-empty-state', description: "État vide (visuel optionnel illustration/icône, titre + description, corps libre, slot d'actions, tailles default/small, région nommée).", link: '?path=/docs/components-ui-informative-ui-empty-state--docs', story: EmptyStateStories.Default, previewHeight: 300, previewScale: 0.85 },
+      { name: 'ui-skeleton', description: 'Placeholder de chargement (formes text/circle/rectangle, dimensions surchargeables width/height/borderRadius, couleur --ui-skeleton-background, animation pulse/wave/none, aria-hidden, reduced-motion).', link: '?path=/docs/components-ui-informative-ui-skeleton--docs', story: SkeletonStories.Basic, previewHeight: 200, previewScale: 0.85 },
+      { name: 'ui-progress-bar', description: 'Barre de progression (modes determinate/indeterminate, value 0–100, libellé right/bottom, formateur libre valueTemplate, mode steps, couleur surchargeable, role=progressbar + aria-value*, motion réductible).', link: '?path=/docs/components-ui-informative-ui-progress-bar--docs', story: ProgressBarStories.Basic },
+    ],
+  },
+  {
+    title: 'Layout',
+    anchor: 'layout',
+    components: [
+      { name: 'ui-card', description: 'Conteneur flexible (slots média/titre/sous-titre/contenu/pied, variantes outlined/elevated/flat).', link: '?path=/docs/components-ui-layout-ui-card--docs', story: CardStories.Complete, previewHeight: 300, previewScale: 0.65 },
+      { name: 'ui-modal', description: 'Fenêtre modale (two-way visible, masque modal/non-modal, dismissableMask, blocage du scroll, piège de focus, déplaçable, agrandissable, redimensionnable, 9 positions, breakpoints, motion).', link: '?path=/docs/components-ui-layout-ui-modal--docs', story: ModalStories.Contained, previewHeight: 300, previewScale: 1 },
+      { name: 'ui-drawer', description: 'Panneau glissant (two-way visible, 4 bords + fullScreen, glissement directionnel motion, masque modal/non-modal, dismissableMask, piège de focus, contained, templates +).', link: '?path=/docs/components-ui-layout-ui-drawer--docs', story: DrawerStories.Contained, previewHeight: 300, previewScale: 1 },
+      { name: 'ui-popover', description: 'Panneau flottant ancré à un déclencheur (overlay CDK, show/hide/toggle, contenu projeté, 4 côtés + flèche, role=dialog + aria-modal, piège de focus, Échap, dismissable).', link: '?path=/docs/components-ui-layout-ui-popover--docs', story: PopoverStories.Basic },
+    ],
+  },
+  {
+    title: 'Navigation',
+    anchor: 'navigation',
+    components: [
+      { name: 'ui-tabs', description: 'Onglets (composition, two-way value, horizontal/vertical, scrollable + navigateurs, lazy, selectOnFocus, clavier roving WAI-ARIA, indicateur glissant motion, mode menu).', link: '?path=/docs/components-ui-navigation-ui-tabs--docs', story: TabsStories.Basic, previewHeight: 300, previewScale: 0.85 },
+      { name: 'ui-stepper', description: 'Assistant de progression / wizard (composition, two-way value, horizontal/vertical, linear, lazy, completedIcon ; état dérivé à venir/actif/terminé, en-têtes role=tab natifs Tab/Entrée/Espace, panneaux role=tabpanel en fondu, mode étapes seules).', link: '?path=/docs/components-ui-navigation-ui-stepper--docs', story: StepperStories.Basic, previewHeight: 220, previewScale: 0.85 },
+      { name: 'ui-menu', description: 'Menu navigation / commandes (groupes + séparateurs, sous-menus repliables expandedKeys, command, routerLink/url, popup overlay, clavier roving, templates).', link: '?path=/docs/components-ui-navigation-ui-menu--docs', story: MenuStories.Basic, previewHeight: 300, previewScale: 0.85 },
+      { name: 'ui-sidebar', description: 'Barre latérale applicative.', link: '?path=/docs/components-ui-navigation-ui-sidebar--docs', story: SidebarStories.WithMenu, previewHeight: 340, previewScale: 0.6 },
+      { name: 'ui-context-menu', description: 'Menu contextuel (clic droit sur target ou global, positionné au pointeur, ui-menu embarqué : sous-menus, command, routerLink/url, clavier, densité small).', link: '?path=/docs/components-ui-navigation-ui-context-menu--docs', story: ContextMenuStories.Basic, previewHeight: 200 },
+      { name: 'ui-breadcrumb', description: "Fil d'Ariane (items url/routerLink/command rendus en ui-link, aria-current=page, séparateur custom, repli maxItems via bouton ellipsis, template #item).", link: '?path=/docs/components-ui-navigation-ui-breadcrumb--docs', story: BreadcrumbStories.Basic, previewHeight: 120 },
+    ],
+  },
+  {
+    title: 'Table',
+    anchor: 'table',
+    components: [
+      { name: 'ui-table', description: 'Tableau de données (templates header/body/footer, tri simple/multiple, sélection ligne/checkbox/radio + clavier complet, pagination ui-paginator, scroll sticky, virtual scroll, colonnes/lignes figées, expansion, resize fit, row reorder, loading).', link: '?path=/docs/components-ui-table-ui-table--docs', story: TableStories.StripedRows, previewHeight: 320, previewScale: 0.5 },
+      { name: 'ui-paginator', description: 'Pagination autonome (composition ui-button cercles + ui-select lignes/page, two-way first/rows, fenêtre pageLinks, aria-current, pageChange). Consommée par ui-table.', link: '?path=/docs/components-ui-table-ui-paginator--docs', story: PaginatorStories.Basic, previewHeight: 140 },
+    ],
+  },
+  {
+    title: 'Base',
+    anchor: 'base',
+    components: [
+      { name: 'ui-icon', description: 'Icône FontAwesome (sm→xl, solid/outline), décorative par défaut.', link: '?path=/docs/components-ui-ui-icon--docs', story: IconStories.Solid },
+      { name: 'ui-image', description: 'Image responsive multi-format (jpg/png/svg), light/dark par marque.', link: '?path=/docs/components-ui-ui-image--docs', story: ImageStories.Common_PNG_Base },
+    ],
+  },
+];
+
 export const ComponentCard = ({ name, description, link, story, previewHeight = 154, previewScale = 0.9 }) => {
   const handleCardClick = (e) => {
     const previewArea = e.currentTarget.querySelector('[data-preview-area]');
@@ -91,8 +188,8 @@ export const ComponentCard = ({ name, description, link, story, previewHeight = 
   );
 };
 
-export const CategorySection = ({ title, components }) => (
-  <div style={{ display: "block", marginTop: 48, marginBottom: 48 }}>
+export const CategorySection = ({ title, anchor, components }) => (
+  <div id={anchor} style={{ display: "block", marginTop: 48, marginBottom: 48 }}>
     <h2 style={{ fontSize: 20, marginBottom: 24, paddingBottom: 12, borderBottom: '2px solid var(--sb-border)', textTransform: 'capitalize' }}>{title}</h2>
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: 24 }}>
       {components.map((c) => <ComponentCard key={c.name} {...c} />)}
@@ -100,96 +197,127 @@ export const CategorySection = ({ title, components }) => (
   </div>
 );
 
-<CategorySection
-  title="Actions"
-  components={[
-    { name: 'ui-button', description: 'Bouton (niveaux, tailles, icônes, icon-only, mode lien href/routerLink) : accessible.', link: '?path=/docs/components-ui-actions-ui-button--docs', story: ButtonStories.High },
-    { name: 'ui-button-split', description: "Bouton d'action accolé à un déclencheur déroulant (modèle UiMenuItem[], sous-menus, désactivation indépendante, popup accessible).", link: '?path=/docs/components-ui-actions-ui-button-split--docs', story: ButtonSplitStories.Icons },
-    { name: 'ui-link', description: 'Lien textuel inline (vrai <a>, href/routerLink, icônes, externe) : accessible.', link: '?path=/docs/components-ui-actions-ui-link--docs', story: LinkStories.Default },
-  ]}
-/>
+export const StatsCards = ({ categories }) => {
+  const totalComponents = categories.reduce((acc, cat) => acc + cat.components.length, 0);
 
-<CategorySection
-  title="Forms"
-  components={[
-    { name: 'ui-checkbox', description: 'Case à cocher (CVA, indeterminate, erreur auto).', link: '?path=/docs/components-ui-forms-ui-checkbox--docs', story: CheckboxStories.Checked },
-    { name: 'ui-radio', description: 'Bouton radio (groupe natif par name, CVA).', link: '?path=/docs/components-ui-forms-ui-radio--docs', story: RadioStories.Checked },
-    { name: 'ui-label', description: 'Libellé de champ (marqueur requis, tailles).', link: '?path=/docs/components-ui-forms-ui-label--docs', story: LabelStories.Required },
-    { name: 'ui-input', description: 'Champ texte composé (label + helper, icônes, zone d’action, niveaux).', link: '?path=/docs/components-ui-forms-ui-input--docs', story: InputStories.WithHelper },
-    { name: 'ui-input-number', description: 'Champ numérique (min/max/step, spinner ±, clamp).', link: '?path=/docs/components-ui-forms-ui-input-number--docs', story: InputNumberStories.WithUnit },
-    { name: 'ui-input-mask', description: 'Champ masqué (téléphone, date… littéraux auto).', link: '?path=/docs/components-ui-forms-ui-input-mask--docs', story: InputMaskStories.Phone },
-    { name: 'ui-input-otp', description: 'Code à usage unique / OTP (cellules maxlength=1, mask, integerOnly, tailles, avance auto + collage, roving Tab/←/→, template #input).', link: '?path=/docs/components-ui-forms-ui-input-otp--docs', story: InputOtpStories.Basic },
-    { name: 'ui-input-group', description: "Groupe champ + compléments (add-ons texte/icône, bouton, case à cocher, liste déroulante) collés en un seul champ.", link: '?path=/docs/components-ui-forms-ui-input-group--docs', story: InputGroupStories.Basic },
-    { name: 'ui-toggle', description: 'Interrupteur on/off (role=switch, CVA, tailles).', link: '?path=/docs/components-ui-forms-ui-toggle--docs', story: ToggleStories.Default },
-    { name: 'ui-datepicker', description: 'Sélecteur de date/heure (calendrier overlay/inline, CVA, min/max, showTime 12/24h, clavier).', link: '?path=/docs/components-ui-forms-ui-datepicker--docs', story: DatepickerStories.Default },
-    { name: 'ui-rating', description: 'Notation étoiles (CVA, clavier natif via range caché).', link: '?path=/docs/components-ui-forms-ui-rating--docs', story: RatingStories.Default },
-    { name: 'ui-slider', description: 'Curseur de valeur (CVA, simple/range, step, marks, écart min., drag pointeur + clavier WAI-ARIA).', link: '?path=/docs/components-ui-forms-ui-slider--docs', story: SliderStories.Basic },
-    { name: 'ui-nudger', description: 'Incrémenteur numérique [−] valeur [+] (CVA, min/max/step, tailles, formatValue).', link: '?path=/docs/components-ui-forms-ui-nudger--docs', story: NudgerStories.MinMax },
-    { name: 'ui-textarea', description: 'Zone de texte multiligne (CVA, rows, autoResize, poignée native, niveaux).', link: '?path=/docs/components-ui-forms-ui-textarea--docs', story: TextareaStories.WithHelper },
-    { name: 'ui-segment-control', description: 'Sélection segmentée (CVA, simple/multiple, indicateur glissant motion, fluid, template).', link: '?path=/docs/components-ui-forms-ui-segment-control--docs', story: SegmentControlStories.Sizes },
-    { name: 'ui-select', description: 'Liste déroulante (combobox WAI-ARIA, options/groupes, multiple, filtre, editable, virtual scroll + lazy).', link: '?path=/docs/components-ui-forms-ui-select--docs', story: SelectStories.Checkmark },
-    { name: 'ui-autocomplete', description: 'Champ de suggestions (combobox WAI-ARIA, completeMethod anti-rebondi, dropdown, groupes, forceSelection, virtual scroll).', link: '?path=/docs/components-ui-forms-ui-autocomplete--docs', story: AutocompleteStories.Basic },
-    { name: 'ui-input-tags', description: 'Saisie multi-valeurs / tags (listbox WAI-ARIA + focus roving, delimiter, max, allowDuplicate, typeahead ; Signal Forms).', link: '?path=/docs/components-ui-forms-ui-input-tags--docs', story: InputTagsStories.Basic },
-    { name: 'ui-file-upload', description: 'Téléversement de fichiers (field/drag + glisser-déposer, validation, auto/customUpload, progression, templates, aperçus image).', link: '?path=/docs/components-ui-forms-ui-file-upload--docs', story: FileUploadStories.Basic },
-  ]}
-/>
+  const card1 = (
+    <div style={{
+      flex: '1 1 260px',
+      minWidth: 0,
+      padding: '28px 32px',
+      borderRadius: 16,
+      background: 'linear-gradient(135deg, var(--sb-code-color, #0070f3) 0%, #7c3aed 100%)',
+      color: '#fff',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 8,
+      boxShadow: '0 8px 32px rgba(0,112,243,.22)',
+      position: 'relative',
+      overflow: 'hidden',
+    }}>
+      <div style={{
+        position: 'absolute', top: -40, right: -40,
+        width: 140, height: 140, borderRadius: '50%',
+        background: 'rgba(255,255,255,.08)',
+        pointerEvents: 'none',
+      }} />
+      <div style={{
+        position: 'absolute', bottom: -24, left: -16,
+        width: 90, height: 90, borderRadius: '50%',
+        background: 'rgba(255,255,255,.05)',
+        pointerEvents: 'none',
+      }} />
+      <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', opacity: .78 }}>
+        Composants
+      </div>
+      <div style={{ fontSize: 72, fontWeight: 900, lineHeight: 1, letterSpacing: '-3px', margin: '4px 0' }}>
+        {totalComponents}
+      </div>
+      <div style={{ fontSize: 13, opacity: .72, fontWeight: 500 }}>
+        dans {categories.length} catégorie{categories.length > 1 ? 's' : ''}
+      </div>
+    </div>
+  );
 
-<CategorySection
-  title="Informative"
-  components={[
-    { name: 'ui-badge', description: 'Pastille compteur / statut (level × sub-level, tailles, icône, point).', link: '?path=/docs/components-ui-informative-ui-badge--docs', story: BadgeStories.WithIcon },
-    { name: 'ui-helper', description: 'Texte d’aide / feedback contextuel (icône déduite du niveau, ariaLive).', link: '?path=/docs/components-ui-informative-ui-helper--docs', story: HelperStories.Error },
-    { name: 'ui-read-only', description: 'Affichage lecture seule label/valeur (rendu <dl>/<dt>/<dd>, dispositions vertical/horizontal, colonne labelWidth/labelAlign, fallback, multiline, valeur riche projetée).', link: '?path=/docs/components-ui-informative-ui-read-only--docs', story: ReadOnlyStories.Vertical },
-    { name: 'ui-avatar', description: 'Avatar utilisateur (image / initiales / icône, tailles, forme, badge projeté).', link: '?path=/docs/components-ui-informative-ui-avatar--docs', story: AvatarStories.Label },
-    { name: 'ui-avatar-group', description: 'Empilement d’avatars avec chevauchement (débordement « +N »).', link: '?path=/docs/components-ui-informative-ui-avatar-group--docs', story: AvatarGroupStories.Mixed },
-    { name: 'ui-separator', description: 'Séparateur (horizontal/vertical, solid/dashed, libellé start/center/end).', link: '?path=/docs/components-ui-informative-ui-separator--docs', story: SeparatorStories.LabelCenter },
-    { name: 'ui-tooltip', description: 'Infobulle (directive [uiTooltip] + CDK Overlay, 4 côtés avec retournement auto, hover/focus, tooltipStyleClass).', link: '?path=/docs/components-ui-informative-ui-tooltip--docs', story: TooltipStories.Default },
-    { name: 'ui-tag', description: 'Étiquette / pilule (level × sub-level × size, icônes gauche/droite, forme pill/rounded).', link: '?path=/docs/components-ui-informative-ui-tag--docs', story: TagStories.WithIconLeft },
-    { name: 'ui-chip', description: 'Jeton compact interactif (icône/image de tête, suppression removable au clavier, contenu projeté, level × sub-level × size).', link: '?path=/docs/components-ui-informative-ui-chip--docs', story: ChipStories.Removable },
-    { name: 'ui-toast', description: 'Notification éphémère (service add/clear + conteneur, 7 positions, niveaux, auto-fermeture pausable, sticky, bannière, actions, motion).', link: '?path=/docs/components-ui-informative-ui-toast--docs', story: ToastStories.Default },
-    { name: 'ui-alert', description: 'Message inline (niveaux × sous-niveau, tailles default/large, icône, fermeture clavier, auto-disparition life, role=alert ; usages Dynamic @for + Forms).', link: '?path=/docs/components-ui-informative-ui-alert--docs', story: AlertStories.Error },
-      { name: 'ui-accordion', description: 'Accordéon repliable (composition, single/multiple, clavier roving, motion, tokens).', link: '?path=/docs/components-ui-informative-ui-accordion--docs', story: AccordionStories.Default, previewHeight: 300, previewScale: 0.85 },
-    { name: 'ui-spinner', description: 'Indicateur de chargement indéterminé (cercle SVG token-coloré, marqueur remplaçable image/icône/template, tailles, delay anti-flash, role=status, reduced-motion).', link: '?path=/docs/components-ui-informative-ui-spinner--docs', story: SpinnerStories.WithLabel },
-    { name: 'ui-empty-state', description: 'État vide (visuel optionnel illustration/icône, titre + description, corps libre, slot d’actions, tailles default/small, région nommée).', link: '?path=/docs/components-ui-informative-ui-empty-state--docs', story: EmptyStateStories.Default, previewHeight: 300, previewScale: 0.85 },
-    { name: 'ui-skeleton', description: 'Placeholder de chargement (formes text/circle/rectangle, dimensions surchargeables width/height/borderRadius, couleur --ui-skeleton-background, animation pulse/wave/none, aria-hidden, reduced-motion).', link: '?path=/docs/components-ui-informative-ui-skeleton--docs', story: SkeletonStories.Basic, previewHeight: 200, previewScale: 0.85 },
-    { name: 'ui-progress-bar', description: 'Barre de progression (modes determinate/indeterminate, value 0–100, libellé right/bottom, formateur libre valueTemplate, mode steps, couleur surchargeable, role=progressbar + aria-value*, motion réductible).', link: '?path=/docs/components-ui-informative-ui-progress-bar--docs', story: ProgressBarStories.Basic },
-  ]}
-/>
+  const card2 = (
+    <div style={{
+      flex: '2 1 340px',
+      minWidth: 0,
+      padding: '24px 28px',
+      borderRadius: 16,
+      background: 'var(--sb-bg-subtle)',
+      border: '1px solid var(--sb-border)',
+      display: 'flex',
+      flexDirection: 'column',
+      boxShadow: '0 4px 16px rgba(0,0,0,.06)',
+    }}>
+      <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--sb-text-subtle)', marginBottom: 16 }}>
+        Catégories
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        {categories.map((cat, index) => (
+          <div key={cat.anchor} style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '9px 0',
+            borderBottom: index < categories.length - 1 ? '1px solid var(--sb-border)' : 'none',
+            gap: 12,
+          }}>
+            <a
+              href={'#' + cat.anchor}
+              onClick={(e) => { e.preventDefault(); const el = document.getElementById(cat.anchor); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }}
+              style={{
+                fontSize: 14,
+                fontWeight: 500,
+                color: 'var(--sb-code-color)',
+                textDecoration: 'none',
+                cursor: 'pointer',
+              }}
+              onMouseOver={(e) => { e.currentTarget.style.textDecoration = 'underline'; }}
+              onMouseOut={(e) => { e.currentTarget.style.textDecoration = 'none'; }}
+            >
+              {cat.title}
+            </a>
+            <span style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              minWidth: 24,
+              height: 20,
+              padding: '0 7px',
+              borderRadius: 999,
+              background: 'var(--sb-code-color, #0070f3)',
+              color: '#fff',
+              fontSize: 11,
+              fontWeight: 700,
+              letterSpacing: '.02em',
+              flexShrink: 0,
+            }}>
+              {cat.components.length}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 
-<CategorySection
-  title="Layout"
-  components={[
-    { name: 'ui-card', description: 'Conteneur flexible (slots média/titre/sous-titre/contenu/pied, variantes outlined/elevated/flat).', link: '?path=/docs/components-ui-layout-ui-card--docs', story: CardStories.Complete, previewHeight: 300, previewScale: 0.65 },
-    { name: 'ui-modal', description: 'Fenêtre modale (two-way visible, masque modal/non-modal, dismissableMask, blocage du scroll, piège de focus, déplaçable, agrandissable, redimensionnable, 9 positions, breakpoints, motion).', link: '?path=/docs/components-ui-layout-ui-modal--docs', story: ModalStories.Contained, previewHeight: 300, previewScale: 1 },
-    { name: 'ui-drawer', description: 'Panneau glissant (two-way visible, 4 bords + fullScreen, glissement directionnel motion, masque modal/non-modal, dismissableMask, piège de focus, contained, templates +).', link: '?path=/docs/components-ui-layout-ui-drawer--docs', story: DrawerStories.Contained, previewHeight: 300, previewScale: 1 },
-    { name: 'ui-popover', description: 'Panneau flottant ancré à un déclencheur (overlay CDK, show/hide/toggle, contenu projeté, 4 côtés + flèche, role=dialog + aria-modal, piège de focus, Échap, dismissable).', link: '?path=/docs/components-ui-layout-ui-popover--docs', story: PopoverStories.Basic },
-  ]}
-/>
+  return (
+    <div style={{
+      display: 'flex',
+      flexWrap: 'wrap',
+      gap: 20,
+      marginTop: 32,
+      marginBottom: 8,
+    }}>
+      {card1}
+      {card2}
+    </div>
+  );
+};
 
-<CategorySection
-  title="Navigation"
-  components={[
-    { name: 'ui-tabs', description: 'Onglets (composition, two-way value, horizontal/vertical, scrollable + navigateurs, lazy, selectOnFocus, clavier roving WAI-ARIA, indicateur glissant motion, mode menu).', link: '?path=/docs/components-ui-navigation-ui-tabs--docs', story: TabsStories.Basic, previewHeight: 300, previewScale: 0.85 },
-    { name: 'ui-stepper', description: 'Assistant de progression / wizard (composition, two-way value, horizontal/vertical, linear, lazy, completedIcon ; état dérivé à venir/actif/terminé, en-têtes role=tab natifs Tab/Entrée/Espace, panneaux role=tabpanel en fondu, mode étapes seules).', link: '?path=/docs/components-ui-navigation-ui-stepper--docs', story: StepperStories.Basic, previewHeight: 220, previewScale: 0.85 },
-    { name: 'ui-menu', description: 'Menu navigation / commandes (groupes + séparateurs, sous-menus repliables expandedKeys, command, routerLink/url, popup overlay, clavier roving, templates).', link: '?path=/docs/components-ui-navigation-ui-menu--docs', story: MenuStories.Basic, previewHeight: 300, previewScale: 0.85 },
-    { name: 'ui-sidebar', description: 'Barre latérale applicative.', link: '?path=/docs/components-ui-navigation-ui-sidebar--docs', story: SidebarStories.WithMenu, previewHeight: 340, previewScale: 0.6 },
-    { name: 'ui-context-menu', description: 'Menu contextuel (clic droit sur target ou global, positionné au pointeur, ui-menu embarqué : sous-menus, command, routerLink/url, clavier, densité small).', link: '?path=/docs/components-ui-navigation-ui-context-menu--docs', story: ContextMenuStories.Basic, previewHeight: 200 },
-    { name: 'ui-breadcrumb', description: "Fil d'Ariane (items url/routerLink/command rendus en ui-link, aria-current=page, séparateur custom, repli maxItems via bouton ellipsis, template #item).", link: '?path=/docs/components-ui-navigation-ui-breadcrumb--docs', story: BreadcrumbStories.Basic, previewHeight: 120 },
-  ]}
-/>
+<StatsCards categories={CATEGORIES} />
 
-<CategorySection
-  title="Table"
-  components={[
-    { name: 'ui-table', description: 'Tableau de données (templates header/body/footer, tri simple/multiple, sélection ligne/checkbox/radio + clavier complet, pagination ui-paginator, scroll sticky, virtual scroll, colonnes/lignes figées, expansion, resize fit, row reorder, loading).', link: '?path=/docs/components-ui-table-ui-table--docs', story: TableStories.StripedRows, previewHeight: 320, previewScale: 0.5 },
-    { name: 'ui-paginator', description: 'Pagination autonome (composition ui-button cercles + ui-select lignes/page, two-way first/rows, fenêtre pageLinks, aria-current, pageChange). Consommée par ui-table.', link: '?path=/docs/components-ui-table-ui-paginator--docs', story: PaginatorStories.Basic, previewHeight: 140 },
-  ]}
-/>
-
-<CategorySection
-  title="Base"
-  components={[
-    { name: 'ui-icon', description: 'Icône FontAwesome (sm→xl, solid/outline), décorative par défaut.', link: '?path=/docs/components-ui-ui-icon--docs', story: IconStories.Solid },
-    { name: 'ui-image', description: 'Image responsive multi-format (jpg/png/svg), light/dark par marque.', link: '?path=/docs/components-ui-ui-image--docs', story: ImageStories.Common_PNG_Base },
-  ]}
-/>
+{CATEGORIES.map((cat) => (
+  <CategorySection key={cat.anchor} title={cat.title} anchor={cat.anchor} components={cat.components} />
+))}
