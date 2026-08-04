@@ -40,8 +40,8 @@ const meta: Meta<UiAvatar> = {
     },
     size: {
       control: { type: 'inline-radio' },
-      options: ['small', 'default', 'large'],
-      description: 'Taille (42 / 56 / 64 px).',
+      options: ['tiny', 'small', 'default', 'large'],
+      description: 'Taille.',
       table: { type: { summary: 'AvatarSize' }, defaultValue: { summary: '"default"' } },
     },
     shape: {

@@ -14,6 +14,10 @@
 // --- Config ---------------------------------------
 /// Diamètre et typo des initiales, par taille.
 $sizes: (
+  'tiny': (
+    diameter: utils.$avatar-size-tiny,
+    font: var(--size-typography-title-sm),
+  ),
   'small': (
     diameter: utils.$avatar-size-small,
     font: var(--size-typography-title-md),
@@ -24,7 +28,7 @@ $sizes: (
   ),
   'large': (
     diameter: utils.$avatar-size-large,
-    font: var(--size-typography-title-2xl),
+    font: var(--size-typography-title-xl),
   ),
 );
 $size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default` de `$sizes`.

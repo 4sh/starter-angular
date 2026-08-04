@@ -1,7 +1,7 @@
 import { Component, computed, effect, input, isDevMode, output, signal } from '@angular/core';
 import { UiIcon, UiIconSize } from '@app/shared/components/ui/ui-icon/ui-icon';
 
-export type AvatarSize = 'small' | 'default' | 'large';
+export type AvatarSize = 'tiny' | 'small' | 'default' | 'large';
 export type AvatarShape = 'circle' | 'square';
 
 /** Rendering mode resolved from the provided inputs. */
