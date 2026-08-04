@@ -1,5 +1,6 @@
 @use 'utils';
 @use 'sass:map';
+@use 'sass:meta';
 
 // =====================================================================
 // ui-button : co-located styles. All values come from design tokens.
@@ -41,10 +42,19 @@ $sizes: (
 $size-default: map.get($sizes, 'default');         /// Raccourci vers l'entrée `default` de `$sizes`.
 $focus-ring-width: utils.$action-focus-ring-width; /// Épaisseur de l'anneau de focus
 
+// A $sizes height is either a token reference (`var(...)`, passed through as-is)
+// or a raw px number, which goes through rem-calc.
+@function size-length($value) {
+  @if meta.type-of($value) == 'number' {
+    @return utils.rem-calc($value);
+  }
+
+  @return $value;
+}
+
 // Height/padding/font-size for a $sizes entry.
 @mixin button-size($size) {
-  $height: map.get($size, height);
-  height: if(str-index($height, 'var('), $height, utils.rem-calc($height));
+  height: size-length(map.get($size, height));
   padding: 0 map.get($size, padding-x);
   font-size: map.get($size, font-size);
 }
@@ -141,14 +151,12 @@ $focus-ring-width: utils.$action-focus-ring-width; /// Épaisseur de l'anneau de
 
   // Icon-only: square (width = size height), no horizontal padding.
   &._icon-only {
-    $default-height: map.get($size-default, height);
-    width: if(str-index($default-height, 'var('), $default-height, utils.rem-calc($default-height));
+    width: size-length(map.get($size-default, height));
     padding: 0;
 
     @each $name, $size in $sizes {
       @if $name != 'default' {
-        $height: map.get($size, height);
-        &._#{$name} { width: if(str-index($height, 'var('), $height, utils.rem-calc($height)); }
+        &._#{$name} { width: size-length(map.get($size, height)); }
       }
     }
   }

@@ -77,7 +77,12 @@ $size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default
 
   // --- Dot ---------------------------
   @each $name, $size in $sizes {
-    $sel: if($name == 'default', '&._dot', '&._#{$name}._dot');
+    $sel: '&._#{$name}._dot';
+
+    @if $name == 'default' {
+      $sel: '&._dot';
+    }
+
     #{$sel} {
       width: utils.rem-calc(map.get($size, dot));
       height: utils.rem-calc(map.get($size, dot));

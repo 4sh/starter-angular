@@ -21,16 +21,21 @@
  * font-weight: light | regular | bold | italic (optionnel, utilisé pour text)
  */
 @mixin ds-typography-class($type, $size, $font-weight: null) {
-  $class-name: if($type =="text" and $font-weight !=null,
-      ".#{$type}-#{$font-weight}-#{$size}",
-      ".#{$type}-#{$size}"
-    );
+  $class-name: ".#{$type}-#{$size}";
+
+  @if $type =="text" and $font-weight !=null {
+    $class-name: ".#{$type}-#{$font-weight}-#{$size}";
+  }
+
+  $font-family: var(--fontfamily-base);
+
+  @if $type =="title" {
+    $font-family: var(--fontfamily-title);
+  }
 
   #{$class-name} {
     // Font family basée sur le type
-    font-family: if($type =="title",
-        var(--fontfamily-title),
-        var(--fontfamily-base));
+    font-family: $font-family;
 
     // Font size responsive automatique via les tokens générés
     font-size: var(--size-typography-#{$type}-#{$size});

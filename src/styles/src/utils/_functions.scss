@@ -1,4 +1,7 @@
 @use "sass:color";
+@use "sass:list";
+@use "sass:map";
+@use "sass:math";
 
 /** map-deep-get
  * Fetch nested keys
@@ -9,7 +12,7 @@
  */
 @function map-deep-get($map, $keys...) {
   @each $key in $keys {
-    $map: map-get($map, $key);
+    $map: map.get($map, $key);
   }
 
   @return $map;
@@ -20,11 +23,11 @@
 $rem-base: 16px;
 
 @function strip-unit($num) {
-  @return $num / ($num * 0 + 1);
+  @return math.div($num, $num * 0 + 1);
 }
 
 @function convert-to-rem($value, $base-value: $rem-base) {
-  $value: strip-unit($value) / strip-unit($base-value) * 1rem;
+  $value: math.div(strip-unit($value), strip-unit($base-value)) * 1rem;
   @if ($value == 0rem) {
     $value: 0;
   } // Turn 0rem into 0
@@ -32,15 +35,15 @@ $rem-base: 16px;
 }
 
 @function rem-calc($values, $base-value: $rem-base) {
-  $max: length($values);
+  $max: list.length($values);
   @if $max == 1 {
-    @return convert-to-rem(nth($values, 1), $base-value);
+    @return convert-to-rem(list.nth($values, 1), $base-value);
   }
   $remValues: ();
   @for $i from 1 through $max {
-    $remValues: append(
+    $remValues: list.append(
       $remValues,
-      convert-to-rem(nth($values, $i), $base-value)
+      convert-to-rem(list.nth($values, $i), $base-value)
     );
   }
   @return $remValues;
