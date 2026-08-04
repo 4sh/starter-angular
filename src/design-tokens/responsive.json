@@ -208,7 +208,7 @@
     "modeDesktop": {
       "components": {
         "2xs": {
-          "$value": "22px",
+          "$value": "24px",
           "$type": "dimension",
           "$extensions": {
             "com.figma": {
@@ -223,7 +223,7 @@
           }
         },
         "xs": {
-          "$value": "32px",
+          "$value": "28px",
           "$type": "dimension",
           "$extensions": {
             "com.figma": {
@@ -238,7 +238,7 @@
           }
         },
         "sm": {
-          "$value": "40px",
+          "$value": "32px",
           "$type": "dimension",
           "$extensions": {
             "com.figma": {
@@ -253,7 +253,7 @@
           }
         },
         "default": {
-          "$value": "44px",
+          "$value": "36px",
           "$type": "dimension",
           "$extensions": {
             "com.figma": {
@@ -268,7 +268,7 @@
           }
         },
         "lg": {
-          "$value": "48px",
+          "$value": "44px",
           "$type": "dimension",
           "$extensions": {
             "com.figma": {
@@ -283,7 +283,7 @@
           }
         },
         "xl": {
-          "$value": "54px",
+          "$value": "48px",
           "$type": "dimension",
           "$extensions": {
             "com.figma": {
@@ -597,7 +597,7 @@
     "modeTablet": {
       "components": {
         "2xs": {
-          "$value": "22px",
+          "$value": "24px",
           "$type": "dimension",
           "$extensions": {
             "com.figma": {
@@ -627,7 +627,7 @@
           }
         },
         "sm": {
-          "$value": "38px",
+          "$value": "36px",
           "$type": "dimension",
           "$extensions": {
             "com.figma": {
@@ -642,7 +642,7 @@
           }
         },
         "default": {
-          "$value": "44px",
+          "$value": "40px",
           "$type": "dimension",
           "$extensions": {
             "com.figma": {
@@ -657,7 +657,7 @@
           }
         },
         "lg": {
-          "$value": "48px",
+          "$value": "44px",
           "$type": "dimension",
           "$extensions": {
             "com.figma": {
@@ -672,7 +672,7 @@
           }
         },
         "xl": {
-          "$value": "54px",
+          "$value": "48px",
           "$type": "dimension",
           "$extensions": {
             "com.figma": {
@@ -986,7 +986,7 @@
     "modeMobile": {
       "components": {
         "2xs": {
-          "$value": "24px",
+          "$value": "28px",
           "$type": "dimension",
           "$extensions": {
             "com.figma": {
@@ -1001,7 +1001,7 @@
           }
         },
         "xs": {
-          "$value": "28px",
+          "$value": "32px",
           "$type": "dimension",
           "$extensions": {
             "com.figma": {
@@ -1016,7 +1016,7 @@
           }
         },
         "sm": {
-          "$value": "36px",
+          "$value": "40px",
           "$type": "dimension",
           "$extensions": {
             "com.figma": {
@@ -1061,7 +1061,7 @@
           }
         },
         "xl": {
-          "$value": "54px",
+          "$value": "56px",
           "$type": "dimension",
           "$extensions": {
             "com.figma": {
