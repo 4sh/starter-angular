@@ -5,14 +5,14 @@
 // =====================================================================
 
 $focus-ring-width: utils.$action-focus-ring-width; /// Anneau de focus des boutons.
-$button-size: 40px;                                /// Taille des contr√¥les / min-width des num√©ros.
+$button-size: 32px;                                /// Taille des contr√¥les / min-width des num√©ros.
 $button-radius: var(--radius-default);             /// Rayon des boutons (carr√© arrondi).
 $bar-gap: var(--units-2xl);                        /// Espacement entre les blocs de la barre.
 $blocks-gap: var(--units-default);                 /// Espacement interne d'un bloc.
 $numbers-gap: var(--units-sm);                     /// Espacement entre les num√©ros de page.
 
 // Base
-@mixin paginator-button($family) {
+@mixin paginator-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -20,8 +20,8 @@ $numbers-gap: var(--units-sm);                     /// Espacement entre les num√
   min-width: utils.rem-calc($button-size);
   border: none;
   border-radius: $button-radius;
-  background-color: var(--actions-#{$family}-surface-default);
-  color: var(--actions-#{$family}-content-default);
+  background-color: var(--navigation-high-surface-default);
+  color: var(--navigation-high-content-default);
   font-family: var(--fontfamily-base);
   font-size: var(--size-typography-text-md);
   font-weight: var(--weight-bold);
@@ -31,24 +31,23 @@ $numbers-gap: var(--units-sm);                     /// Espacement entre les num√
   @include utils.control-transition(background-color, color, box-shadow);
 
   &:hover:not(:disabled) {
-    background-color: var(--actions-#{$family}-surface-hover);
-    color: var(--actions-#{$family}-content-hover);
+    background-color: var(--navigation-high-surface-hover);
+    color: var(--navigation-high-content-hover);
   }
 
   &:focus-visible {
     outline: none;
-    background-color: var(--actions-#{$family}-surface-focused);
-    box-shadow: 0 0 0 $focus-ring-width var(--actions-#{$family}-stroke-focused);
+    background-color: var(--navigation-high-surface-focused);
+    color: var(--navigation-high-content-focused);
+    box-shadow: 0 0 0 $focus-ring-width var(--navigation-high-stroke-focused);
   }
 
   &:active:not(:disabled) {
-    background-color: var(--actions-#{$family}-surface-pressed);
-    color: var(--actions-#{$family}-content-pressed);
+    background-color: var(--navigation-high-surface-pressed);
+    color: var(--navigation-high-content-pressed);
   }
 
   &:disabled {
-    background-color: var(--actions-#{$family}-surface-disabled);
-    color: var(--actions-#{$family}-content-disabled);
     cursor: not-allowed;
   }
 }
@@ -69,9 +68,14 @@ $numbers-gap: var(--units-sm);                     /// Espacement entre les num√
 
   // First / previous / next / last.
   &-control {
-    @include paginator-button('low');
+    @include paginator-button;
     width: utils.rem-calc($button-size);
     padding: 0 var(--units-sm);
+
+    &:disabled {
+      background-color: var(--navigation-high-surface-disabled);
+      color: var(--navigation-high-content-disabled);
+    }
   }
 
   &-pages {
@@ -80,15 +84,26 @@ $numbers-gap: var(--units-sm);                     /// Espacement entre les num√
     gap: $numbers-gap;
   }
 
-  // Page numbers (default state).
+  // Page numbers (State=Default).
   &-page {
-    @include paginator-button('low');
+    @include paginator-button;
     padding: 0 var(--units-md);
 
-    // Current page (State=Current) switches to the high family.
+    &:disabled {
+      background-color: var(--actions-low-surface-disabled);
+      color: var(--actions-low-content-disabled);
+    }
+
+    // Current page (State=Current): filled surface, held across every interaction.
     &._current {
-      @include paginator-button('high');
-      padding: 0 var(--units-md);
+      &,
+      &:hover:not(:disabled),
+      &:focus-visible,
+      &:active:not(:disabled),
+      &:disabled {
+        background-color: var(--navigation-high-surface-active);
+        color: var(--navigation-high-content-active);
+      }
     }
   }
 
@@ -116,7 +131,7 @@ $numbers-gap: var(--units-sm);                     /// Espacement entre les num√
     justify-content: center;
     height: utils.rem-calc($button-size);
     min-width: utils.rem-calc($button-size);
-    color: var(--actions-low-content-default);
+    color: var(--navigation-high-content-default);
     font-size: var(--size-typography-text-md);
     font-weight: var(--weight-bold);
     user-select: none;

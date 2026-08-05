@@ -38,7 +38,8 @@
         "hueShiftLight": 0,
         "hueShiftDark": 0
       },
-      "detached": []
+      "detached": [],
+      "format": "hex"
     },
     {
       "collection": "primitives",
@@ -71,7 +72,8 @@
         "hueShiftLight": 0,
         "hueShiftDark": 0
       },
-      "detached": []
+      "detached": [],
+      "format": "hex"
     }
   ]
 }

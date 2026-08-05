@@ -27,7 +27,7 @@
         @if (firstIconTemplate(); as tpl) {
           <ng-container [ngTemplateOutlet]="tpl" />
         } @else {
-          <ui-icon name="angles-left" size="default" />
+          <ui-icon name="angles-left" size="sm" />
         }
       </button>
     }
@@ -41,7 +41,7 @@
       @if (prevIconTemplate(); as tpl) {
         <ng-container [ngTemplateOutlet]="tpl" />
       } @else {
-        <ui-icon name="chevron-left" size="default" />
+        <ui-icon name="chevron-left" size="sm" />
       }
     </button>
 
@@ -81,7 +81,7 @@
       @if (nextIconTemplate(); as tpl) {
         <ng-container [ngTemplateOutlet]="tpl" />
       } @else {
-        <ui-icon name="chevron-right" size="default" />
+        <ui-icon name="chevron-right" size="sm" />
       }
     </button>
     @if (showFirstLastIcon()) {
@@ -95,7 +95,7 @@
         @if (lastIconTemplate(); as tpl) {
           <ng-container [ngTemplateOutlet]="tpl" />
         } @else {
-          <ui-icon name="angles-right" size="default" />
+          <ui-icon name="angles-right" size="sm" />
         }
       </button>
     }

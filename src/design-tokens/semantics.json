@@ -974,7 +974,6 @@
         "content": {
           "default": {
             "$value": "{primitives.primary.700}",
-            "$description": "semantics",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -982,7 +981,6 @@
                 "collectionId": "VariableCollectionId:4:763",
                 "modeId": "4:3",
                 "resolvedType": "COLOR",
-                "description": "semantics",
                 "scopes": [
                   "SHAPE_FILL",
                   "TEXT_FILL"
@@ -992,7 +990,6 @@
           },
           "hover": {
             "$value": "{primitives.primary.800}",
-            "$description": "semantics",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -1000,7 +997,6 @@
                 "collectionId": "VariableCollectionId:4:763",
                 "modeId": "4:3",
                 "resolvedType": "COLOR",
-                "description": "semantics",
                 "scopes": [
                   "SHAPE_FILL",
                   "TEXT_FILL"
@@ -1010,7 +1006,6 @@
           },
           "focused": {
             "$value": "{primitives.primary.800}",
-            "$description": "semantics",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -1018,7 +1013,6 @@
                 "collectionId": "VariableCollectionId:4:763",
                 "modeId": "4:3",
                 "resolvedType": "COLOR",
-                "description": "semantics",
                 "scopes": [
                   "SHAPE_FILL",
                   "TEXT_FILL"
@@ -1028,7 +1022,6 @@
           },
           "pressed": {
             "$value": "{primitives.primary.900}",
-            "$description": "semantics",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -1036,7 +1029,6 @@
                 "collectionId": "VariableCollectionId:4:763",
                 "modeId": "4:3",
                 "resolvedType": "COLOR",
-                "description": "semantics",
                 "scopes": [
                   "SHAPE_FILL",
                   "TEXT_FILL"
@@ -1046,7 +1038,6 @@
           },
           "disabled": {
             "$value": "{primitives.primary.300}",
-            "$description": "semantics",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -1054,7 +1045,6 @@
                 "collectionId": "VariableCollectionId:4:763",
                 "modeId": "4:3",
                 "resolvedType": "COLOR",
-                "description": "semantics",
                 "scopes": [
                   "SHAPE_FILL",
                   "TEXT_FILL"
@@ -1258,6 +1248,7 @@
           },
           "hover": {
             "$value": "{primitives.slate.600}",
+            "$description": "semantics",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -1265,6 +1256,7 @@
                 "collectionId": "VariableCollectionId:4:763",
                 "modeId": "4:3",
                 "resolvedType": "COLOR",
+                "description": "semantics",
                 "scopes": [
                   "SHAPE_FILL",
                   "TEXT_FILL"
@@ -1339,6 +1331,7 @@
           },
           "hover": {
             "$value": "{primitives.slate.100}",
+            "$description": "semantics",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -1346,6 +1339,7 @@
                 "collectionId": "VariableCollectionId:4:763",
                 "modeId": "4:3",
                 "resolvedType": "COLOR",
+                "description": "semantics",
                 "scopes": [
                   "FRAME_FILL"
                 ]
@@ -8606,7 +8600,6 @@
         "content": {
           "default": {
             "$value": "{primitives.primary.200}",
-            "$description": "semantics",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -8614,7 +8607,6 @@
                 "collectionId": "VariableCollectionId:4:763",
                 "modeId": "5:0",
                 "resolvedType": "COLOR",
-                "description": "semantics",
                 "scopes": [
                   "SHAPE_FILL",
                   "TEXT_FILL"
@@ -8624,7 +8616,6 @@
           },
           "hover": {
             "$value": "{primitives.primary.100}",
-            "$description": "semantics",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -8632,7 +8623,6 @@
                 "collectionId": "VariableCollectionId:4:763",
                 "modeId": "5:0",
                 "resolvedType": "COLOR",
-                "description": "semantics",
                 "scopes": [
                   "SHAPE_FILL",
                   "TEXT_FILL"
@@ -8642,7 +8632,6 @@
           },
           "focused": {
             "$value": "{primitives.primary.100}",
-            "$description": "semantics",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -8650,7 +8639,6 @@
                 "collectionId": "VariableCollectionId:4:763",
                 "modeId": "5:0",
                 "resolvedType": "COLOR",
-                "description": "semantics",
                 "scopes": [
                   "SHAPE_FILL",
                   "TEXT_FILL"
@@ -8660,7 +8648,6 @@
           },
           "pressed": {
             "$value": "{primitives.primary.50}",
-            "$description": "semantics",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -8668,7 +8655,6 @@
                 "collectionId": "VariableCollectionId:4:763",
                 "modeId": "5:0",
                 "resolvedType": "COLOR",
-                "description": "semantics",
                 "scopes": [
                   "SHAPE_FILL",
                   "TEXT_FILL"
@@ -8678,7 +8664,6 @@
           },
           "disabled": {
             "$value": "{primitives.primary.700}",
-            "$description": "semantics",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -8686,7 +8671,6 @@
                 "collectionId": "VariableCollectionId:4:763",
                 "modeId": "5:0",
                 "resolvedType": "COLOR",
-                "description": "semantics",
                 "scopes": [
                   "SHAPE_FILL",
                   "TEXT_FILL"
@@ -8890,6 +8874,7 @@
           },
           "hover": {
             "$value": "{primitives.slate.100}",
+            "$description": "semantics",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -8897,6 +8882,7 @@
                 "collectionId": "VariableCollectionId:4:763",
                 "modeId": "5:0",
                 "resolvedType": "COLOR",
+                "description": "semantics",
                 "scopes": [
                   "SHAPE_FILL",
                   "TEXT_FILL"
@@ -8971,6 +8957,7 @@
           },
           "hover": {
             "$value": "{primitives.slate.500}",
+            "$description": "semantics",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -8978,6 +8965,7 @@
                 "collectionId": "VariableCollectionId:4:763",
                 "modeId": "5:0",
                 "resolvedType": "COLOR",
+                "description": "semantics",
                 "scopes": [
                   "FRAME_FILL"
                 ]
@@ -19690,7 +19678,6 @@
         "content": {
           "default": {
             "$value": "{primitives.grey.900}",
-            "$description": "semantics",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -19698,7 +19685,6 @@
                 "collectionId": "VariableCollectionId:4:763",
                 "modeId": "4:3",
                 "resolvedType": "COLOR",
-                "description": "semantics",
                 "scopes": [
                   "SHAPE_FILL",
                   "TEXT_FILL"
@@ -19708,7 +19694,6 @@
           },
           "hover": {
             "$value": "{primitives.primary.700}",
-            "$description": "semantics",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -19716,7 +19701,38 @@
                 "collectionId": "VariableCollectionId:4:763",
                 "modeId": "4:3",
                 "resolvedType": "COLOR",
-                "description": "semantics",
+                "scopes": [
+                  "SHAPE_FILL",
+                  "TEXT_FILL"
+                ]
+              }
+            }
+          },
+          "focused": {
+            "$value": "{primitives.grey.900}",
+            "$type": "color",
+            "$extensions": {
+              "com.figma": {
+                "variableId": "VariableID:3493:10916",
+                "collectionId": "VariableCollectionId:4:763",
+                "modeId": "4:3",
+                "resolvedType": "COLOR",
+                "scopes": [
+                  "SHAPE_FILL",
+                  "TEXT_FILL"
+                ]
+              }
+            }
+          },
+          "pressed": {
+            "$value": "{primitives.white.base}",
+            "$type": "color",
+            "$extensions": {
+              "com.figma": {
+                "variableId": "VariableID:3493:10917",
+                "collectionId": "VariableCollectionId:4:763",
+                "modeId": "4:3",
+                "resolvedType": "COLOR",
                 "scopes": [
                   "SHAPE_FILL",
                   "TEXT_FILL"
@@ -19726,7 +19742,6 @@
           },
           "active": {
             "$value": "{primitives.white.base}",
-            "$description": "semantics",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -19734,7 +19749,6 @@
                 "collectionId": "VariableCollectionId:4:763",
                 "modeId": "4:3",
                 "resolvedType": "COLOR",
-                "description": "semantics",
                 "scopes": [
                   "SHAPE_FILL",
                   "TEXT_FILL"
@@ -19777,7 +19791,6 @@
           },
           "hover": {
             "$value": "{primitives.primary.100}",
-            "$description": "semantics",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -19785,7 +19798,36 @@
                 "collectionId": "VariableCollectionId:4:763",
                 "modeId": "4:3",
                 "resolvedType": "COLOR",
-                "description": "semantics",
+                "scopes": [
+                  "FRAME_FILL"
+                ]
+              }
+            }
+          },
+          "focused": {
+            "$value": "{primitives.transparent.base}",
+            "$type": "color",
+            "$extensions": {
+              "com.figma": {
+                "variableId": "VariableID:3493:10921",
+                "collectionId": "VariableCollectionId:4:763",
+                "modeId": "4:3",
+                "resolvedType": "COLOR",
+                "scopes": [
+                  "FRAME_FILL"
+                ]
+              }
+            }
+          },
+          "pressed": {
+            "$value": "{primitives.primary.500}",
+            "$type": "color",
+            "$extensions": {
+              "com.figma": {
+                "variableId": "VariableID:3493:10925",
+                "collectionId": "VariableCollectionId:4:763",
+                "modeId": "4:3",
+                "resolvedType": "COLOR",
                 "scopes": [
                   "FRAME_FILL"
                 ]
@@ -19794,7 +19836,6 @@
           },
           "active": {
             "$value": "{primitives.primary.500}",
-            "$description": "semantics",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -19802,7 +19843,6 @@
                 "collectionId": "VariableCollectionId:4:763",
                 "modeId": "4:3",
                 "resolvedType": "COLOR",
-                "description": "semantics",
                 "scopes": [
                   "FRAME_FILL"
                 ]
@@ -19828,7 +19868,6 @@
         "stroke": {
           "default": {
             "$value": "{primitives.grey.900}",
-            "$description": "semantics",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -19836,7 +19875,6 @@
                 "collectionId": "VariableCollectionId:4:763",
                 "modeId": "4:3",
                 "resolvedType": "COLOR",
-                "description": "semantics",
                 "scopes": [
                   "STROKE_COLOR"
                 ]
@@ -19845,7 +19883,6 @@
           },
           "hover": {
             "$value": "{primitives.primary.700}",
-            "$description": "semantics",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -19853,7 +19890,36 @@
                 "collectionId": "VariableCollectionId:4:763",
                 "modeId": "4:3",
                 "resolvedType": "COLOR",
-                "description": "semantics",
+                "scopes": [
+                  "STROKE_COLOR"
+                ]
+              }
+            }
+          },
+          "focused": {
+            "$value": "{primitives.primary.500}",
+            "$type": "color",
+            "$extensions": {
+              "com.figma": {
+                "variableId": "VariableID:3493:10929",
+                "collectionId": "VariableCollectionId:4:763",
+                "modeId": "4:3",
+                "resolvedType": "COLOR",
+                "scopes": [
+                  "STROKE_COLOR"
+                ]
+              }
+            }
+          },
+          "pressed": {
+            "$value": "{primitives.primary.800}",
+            "$type": "color",
+            "$extensions": {
+              "com.figma": {
+                "variableId": "VariableID:3493:10938",
+                "collectionId": "VariableCollectionId:4:763",
+                "modeId": "4:3",
+                "resolvedType": "COLOR",
                 "scopes": [
                   "STROKE_COLOR"
                 ]
@@ -19896,7 +19962,6 @@
         "content": {
           "default": {
             "$value": "{primitives.grey.900}",
-            "$description": "semantics",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -19904,7 +19969,6 @@
                 "collectionId": "VariableCollectionId:4:763",
                 "modeId": "4:3",
                 "resolvedType": "COLOR",
-                "description": "semantics",
                 "scopes": [
                   "SHAPE_FILL",
                   "TEXT_FILL"
@@ -19914,7 +19978,6 @@
           },
           "hover": {
             "$value": "{primitives.secondary.700}",
-            "$description": "semantics",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -19922,7 +19985,38 @@
                 "collectionId": "VariableCollectionId:4:763",
                 "modeId": "4:3",
                 "resolvedType": "COLOR",
-                "description": "semantics",
+                "scopes": [
+                  "SHAPE_FILL",
+                  "TEXT_FILL"
+                ]
+              }
+            }
+          },
+          "focused": {
+            "$value": "{primitives.grey.900}",
+            "$type": "color",
+            "$extensions": {
+              "com.figma": {
+                "variableId": "VariableID:3493:10942",
+                "collectionId": "VariableCollectionId:4:763",
+                "modeId": "4:3",
+                "resolvedType": "COLOR",
+                "scopes": [
+                  "SHAPE_FILL",
+                  "TEXT_FILL"
+                ]
+              }
+            }
+          },
+          "pressed": {
+            "$value": "{primitives.white.base}",
+            "$type": "color",
+            "$extensions": {
+              "com.figma": {
+                "variableId": "VariableID:3493:10946",
+                "collectionId": "VariableCollectionId:4:763",
+                "modeId": "4:3",
+                "resolvedType": "COLOR",
                 "scopes": [
                   "SHAPE_FILL",
                   "TEXT_FILL"
@@ -19932,7 +20026,6 @@
           },
           "active": {
             "$value": "{primitives.white.base}",
-            "$description": "semantics",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -19940,7 +20033,6 @@
                 "collectionId": "VariableCollectionId:4:763",
                 "modeId": "4:3",
                 "resolvedType": "COLOR",
-                "description": "semantics",
                 "scopes": [
                   "SHAPE_FILL",
                   "TEXT_FILL"
@@ -19982,8 +20074,7 @@
             }
           },
           "hover": {
-            "$value": "{primitives.secondary.300}",
-            "$description": "semantics",
+            "$value": "{primitives.secondary.100}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -19991,7 +20082,36 @@
                 "collectionId": "VariableCollectionId:4:763",
                 "modeId": "4:3",
                 "resolvedType": "COLOR",
-                "description": "semantics",
+                "scopes": [
+                  "FRAME_FILL"
+                ]
+              }
+            }
+          },
+          "focused": {
+            "$value": "{primitives.transparent.base}",
+            "$type": "color",
+            "$extensions": {
+              "com.figma": {
+                "variableId": "VariableID:3493:10950",
+                "collectionId": "VariableCollectionId:4:763",
+                "modeId": "4:3",
+                "resolvedType": "COLOR",
+                "scopes": [
+                  "FRAME_FILL"
+                ]
+              }
+            }
+          },
+          "pressed": {
+            "$value": "{primitives.secondary.500}",
+            "$type": "color",
+            "$extensions": {
+              "com.figma": {
+                "variableId": "VariableID:3493:10954",
+                "collectionId": "VariableCollectionId:4:763",
+                "modeId": "4:3",
+                "resolvedType": "COLOR",
                 "scopes": [
                   "FRAME_FILL"
                 ]
@@ -20000,7 +20120,6 @@
           },
           "active": {
             "$value": "{primitives.secondary.500}",
-            "$description": "semantics",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -20008,7 +20127,6 @@
                 "collectionId": "VariableCollectionId:4:763",
                 "modeId": "4:3",
                 "resolvedType": "COLOR",
-                "description": "semantics",
                 "scopes": [
                   "FRAME_FILL"
                 ]
@@ -20034,7 +20152,6 @@
         "stroke": {
           "default": {
             "$value": "{primitives.grey.900}",
-            "$description": "semantics",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -20042,7 +20159,6 @@
                 "collectionId": "VariableCollectionId:4:763",
                 "modeId": "4:3",
                 "resolvedType": "COLOR",
-                "description": "semantics",
                 "scopes": [
                   "STROKE_COLOR"
                 ]
@@ -20050,8 +20166,7 @@
             }
           },
           "hover": {
-            "$value": "{primitives.grey.700}",
-            "$description": "semantics",
+            "$value": "{primitives.secondary.700}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -20059,7 +20174,36 @@
                 "collectionId": "VariableCollectionId:4:763",
                 "modeId": "4:3",
                 "resolvedType": "COLOR",
-                "description": "semantics",
+                "scopes": [
+                  "STROKE_COLOR"
+                ]
+              }
+            }
+          },
+          "focused": {
+            "$value": "{primitives.secondary.500}",
+            "$type": "color",
+            "$extensions": {
+              "com.figma": {
+                "variableId": "VariableID:3493:10958",
+                "collectionId": "VariableCollectionId:4:763",
+                "modeId": "4:3",
+                "resolvedType": "COLOR",
+                "scopes": [
+                  "STROKE_COLOR"
+                ]
+              }
+            }
+          },
+          "pressed": {
+            "$value": "{primitives.secondary.800}",
+            "$type": "color",
+            "$extensions": {
+              "com.figma": {
+                "variableId": "VariableID:3493:10962",
+                "collectionId": "VariableCollectionId:4:763",
+                "modeId": "4:3",
+                "resolvedType": "COLOR",
                 "scopes": [
                   "STROKE_COLOR"
                 ]
@@ -20068,7 +20212,6 @@
           },
           "active": {
             "$value": "{primitives.secondary.500}",
-            "$description": "semantics",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -20076,7 +20219,6 @@
                 "collectionId": "VariableCollectionId:4:763",
                 "modeId": "4:3",
                 "resolvedType": "COLOR",
-                "description": "semantics",
                 "scopes": [
                   "STROKE_COLOR"
                 ]
@@ -20106,7 +20248,6 @@
         "content": {
           "default": {
             "$value": "{primitives.grey.50}",
-            "$description": "semantics",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -20114,7 +20255,6 @@
                 "collectionId": "VariableCollectionId:4:763",
                 "modeId": "5:0",
                 "resolvedType": "COLOR",
-                "description": "semantics",
                 "scopes": [
                   "SHAPE_FILL",
                   "TEXT_FILL"
@@ -20124,7 +20264,6 @@
           },
           "hover": {
             "$value": "{primitives.primary.200}",
-            "$description": "semantics",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -20132,7 +20271,38 @@
                 "collectionId": "VariableCollectionId:4:763",
                 "modeId": "5:0",
                 "resolvedType": "COLOR",
-                "description": "semantics",
+                "scopes": [
+                  "SHAPE_FILL",
+                  "TEXT_FILL"
+                ]
+              }
+            }
+          },
+          "focused": {
+            "$value": "{primitives.grey.50}",
+            "$type": "color",
+            "$extensions": {
+              "com.figma": {
+                "variableId": "VariableID:3493:10916",
+                "collectionId": "VariableCollectionId:4:763",
+                "modeId": "5:0",
+                "resolvedType": "COLOR",
+                "scopes": [
+                  "SHAPE_FILL",
+                  "TEXT_FILL"
+                ]
+              }
+            }
+          },
+          "pressed": {
+            "$value": "{primitives.white.base}",
+            "$type": "color",
+            "$extensions": {
+              "com.figma": {
+                "variableId": "VariableID:3493:10917",
+                "collectionId": "VariableCollectionId:4:763",
+                "modeId": "5:0",
+                "resolvedType": "COLOR",
                 "scopes": [
                   "SHAPE_FILL",
                   "TEXT_FILL"
@@ -20142,7 +20312,6 @@
           },
           "active": {
             "$value": "{primitives.white.base}",
-            "$description": "semantics",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -20150,7 +20319,6 @@
                 "collectionId": "VariableCollectionId:4:763",
                 "modeId": "5:0",
                 "resolvedType": "COLOR",
-                "description": "semantics",
                 "scopes": [
                   "SHAPE_FILL",
                   "TEXT_FILL"
@@ -20193,7 +20361,6 @@
           },
           "hover": {
             "$value": "{primitives.primary.800}",
-            "$description": "semantics",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -20201,7 +20368,36 @@
                 "collectionId": "VariableCollectionId:4:763",
                 "modeId": "5:0",
                 "resolvedType": "COLOR",
-                "description": "semantics",
+                "scopes": [
+                  "FRAME_FILL"
+                ]
+              }
+            }
+          },
+          "focused": {
+            "$value": "{primitives.transparent.base}",
+            "$type": "color",
+            "$extensions": {
+              "com.figma": {
+                "variableId": "VariableID:3493:10921",
+                "collectionId": "VariableCollectionId:4:763",
+                "modeId": "5:0",
+                "resolvedType": "COLOR",
+                "scopes": [
+                  "FRAME_FILL"
+                ]
+              }
+            }
+          },
+          "pressed": {
+            "$value": "{primitives.primary.500}",
+            "$type": "color",
+            "$extensions": {
+              "com.figma": {
+                "variableId": "VariableID:3493:10925",
+                "collectionId": "VariableCollectionId:4:763",
+                "modeId": "5:0",
+                "resolvedType": "COLOR",
                 "scopes": [
                   "FRAME_FILL"
                 ]
@@ -20210,7 +20406,6 @@
           },
           "active": {
             "$value": "{primitives.primary.500}",
-            "$description": "semantics",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -20218,7 +20413,6 @@
                 "collectionId": "VariableCollectionId:4:763",
                 "modeId": "5:0",
                 "resolvedType": "COLOR",
-                "description": "semantics",
                 "scopes": [
                   "FRAME_FILL"
                 ]
@@ -20244,7 +20438,6 @@
         "stroke": {
           "default": {
             "$value": "{primitives.grey.50}",
-            "$description": "semantics",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -20252,7 +20445,6 @@
                 "collectionId": "VariableCollectionId:4:763",
                 "modeId": "5:0",
                 "resolvedType": "COLOR",
-                "description": "semantics",
                 "scopes": [
                   "STROKE_COLOR"
                 ]
@@ -20261,7 +20453,6 @@
           },
           "hover": {
             "$value": "{primitives.primary.200}",
-            "$description": "semantics",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -20269,7 +20460,36 @@
                 "collectionId": "VariableCollectionId:4:763",
                 "modeId": "5:0",
                 "resolvedType": "COLOR",
-                "description": "semantics",
+                "scopes": [
+                  "STROKE_COLOR"
+                ]
+              }
+            }
+          },
+          "focused": {
+            "$value": "{primitives.primary.200}",
+            "$type": "color",
+            "$extensions": {
+              "com.figma": {
+                "variableId": "VariableID:3493:10929",
+                "collectionId": "VariableCollectionId:4:763",
+                "modeId": "5:0",
+                "resolvedType": "COLOR",
+                "scopes": [
+                  "STROKE_COLOR"
+                ]
+              }
+            }
+          },
+          "pressed": {
+            "$value": "{primitives.primary.300}",
+            "$type": "color",
+            "$extensions": {
+              "com.figma": {
+                "variableId": "VariableID:3493:10938",
+                "collectionId": "VariableCollectionId:4:763",
+                "modeId": "5:0",
+                "resolvedType": "COLOR",
                 "scopes": [
                   "STROKE_COLOR"
                 ]
@@ -20312,7 +20532,6 @@
         "content": {
           "default": {
             "$value": "{primitives.grey.50}",
-            "$description": "semantics",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -20320,7 +20539,6 @@
                 "collectionId": "VariableCollectionId:4:763",
                 "modeId": "5:0",
                 "resolvedType": "COLOR",
-                "description": "semantics",
                 "scopes": [
                   "SHAPE_FILL",
                   "TEXT_FILL"
@@ -20329,8 +20547,7 @@
             }
           },
           "hover": {
-            "$value": "{primitives.grey.300}",
-            "$description": "semantics",
+            "$value": "{primitives.secondary.200}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -20338,7 +20555,38 @@
                 "collectionId": "VariableCollectionId:4:763",
                 "modeId": "5:0",
                 "resolvedType": "COLOR",
-                "description": "semantics",
+                "scopes": [
+                  "SHAPE_FILL",
+                  "TEXT_FILL"
+                ]
+              }
+            }
+          },
+          "focused": {
+            "$value": "{primitives.grey.50}",
+            "$type": "color",
+            "$extensions": {
+              "com.figma": {
+                "variableId": "VariableID:3493:10942",
+                "collectionId": "VariableCollectionId:4:763",
+                "modeId": "5:0",
+                "resolvedType": "COLOR",
+                "scopes": [
+                  "SHAPE_FILL",
+                  "TEXT_FILL"
+                ]
+              }
+            }
+          },
+          "pressed": {
+            "$value": "{primitives.white.base}",
+            "$type": "color",
+            "$extensions": {
+              "com.figma": {
+                "variableId": "VariableID:3493:10946",
+                "collectionId": "VariableCollectionId:4:763",
+                "modeId": "5:0",
+                "resolvedType": "COLOR",
                 "scopes": [
                   "SHAPE_FILL",
                   "TEXT_FILL"
@@ -20348,7 +20596,6 @@
           },
           "active": {
             "$value": "{primitives.white.base}",
-            "$description": "semantics",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -20356,7 +20603,6 @@
                 "collectionId": "VariableCollectionId:4:763",
                 "modeId": "5:0",
                 "resolvedType": "COLOR",
-                "description": "semantics",
                 "scopes": [
                   "SHAPE_FILL",
                   "TEXT_FILL"
@@ -20399,7 +20645,6 @@
           },
           "hover": {
             "$value": "{primitives.secondary.800}",
-            "$description": "semantics",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -20407,7 +20652,36 @@
                 "collectionId": "VariableCollectionId:4:763",
                 "modeId": "5:0",
                 "resolvedType": "COLOR",
-                "description": "semantics",
+                "scopes": [
+                  "FRAME_FILL"
+                ]
+              }
+            }
+          },
+          "focused": {
+            "$value": "{primitives.transparent.base}",
+            "$type": "color",
+            "$extensions": {
+              "com.figma": {
+                "variableId": "VariableID:3493:10950",
+                "collectionId": "VariableCollectionId:4:763",
+                "modeId": "5:0",
+                "resolvedType": "COLOR",
+                "scopes": [
+                  "FRAME_FILL"
+                ]
+              }
+            }
+          },
+          "pressed": {
+            "$value": "{primitives.secondary.500}",
+            "$type": "color",
+            "$extensions": {
+              "com.figma": {
+                "variableId": "VariableID:3493:10954",
+                "collectionId": "VariableCollectionId:4:763",
+                "modeId": "5:0",
+                "resolvedType": "COLOR",
                 "scopes": [
                   "FRAME_FILL"
                 ]
@@ -20416,7 +20690,6 @@
           },
           "active": {
             "$value": "{primitives.secondary.500}",
-            "$description": "semantics",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -20424,7 +20697,6 @@
                 "collectionId": "VariableCollectionId:4:763",
                 "modeId": "5:0",
                 "resolvedType": "COLOR",
-                "description": "semantics",
                 "scopes": [
                   "FRAME_FILL"
                 ]
@@ -20450,7 +20722,6 @@
         "stroke": {
           "default": {
             "$value": "{primitives.grey.50}",
-            "$description": "semantics",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -20458,7 +20729,6 @@
                 "collectionId": "VariableCollectionId:4:763",
                 "modeId": "5:0",
                 "resolvedType": "COLOR",
-                "description": "semantics",
                 "scopes": [
                   "STROKE_COLOR"
                 ]
@@ -20466,8 +20736,7 @@
             }
           },
           "hover": {
-            "$value": "{primitives.grey.300}",
-            "$description": "semantics",
+            "$value": "{primitives.secondary.200}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -20475,7 +20744,36 @@
                 "collectionId": "VariableCollectionId:4:763",
                 "modeId": "5:0",
                 "resolvedType": "COLOR",
-                "description": "semantics",
+                "scopes": [
+                  "STROKE_COLOR"
+                ]
+              }
+            }
+          },
+          "focused": {
+            "$value": "{primitives.secondary.200}",
+            "$type": "color",
+            "$extensions": {
+              "com.figma": {
+                "variableId": "VariableID:3493:10958",
+                "collectionId": "VariableCollectionId:4:763",
+                "modeId": "5:0",
+                "resolvedType": "COLOR",
+                "scopes": [
+                  "STROKE_COLOR"
+                ]
+              }
+            }
+          },
+          "pressed": {
+            "$value": "{primitives.secondary.300}",
+            "$type": "color",
+            "$extensions": {
+              "com.figma": {
+                "variableId": "VariableID:3493:10962",
+                "collectionId": "VariableCollectionId:4:763",
+                "modeId": "5:0",
+                "resolvedType": "COLOR",
                 "scopes": [
                   "STROKE_COLOR"
                 ]
@@ -20484,7 +20782,6 @@
           },
           "active": {
             "$value": "{primitives.secondary.500}",
-            "$description": "semantics",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -20492,7 +20789,6 @@
                 "collectionId": "VariableCollectionId:4:763",
                 "modeId": "5:0",
                 "resolvedType": "COLOR",
-                "description": "semantics",
                 "scopes": [
                   "STROKE_COLOR"
                 ]

@@ -43,10 +43,10 @@
     },
     "semantics": {
       "modes": {
-        "modeDark": [
+        "modeLight": [
           "semantics.json"
         ],
-        "modeLight": [
+        "modeDark": [
           "semantics.json"
         ]
       }
