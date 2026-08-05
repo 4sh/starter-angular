@@ -23,7 +23,7 @@ const meta: Meta<UiMenu> = {
     layout: 'padded',
     design: {
       type: 'figma',
-      url: 'https://www.figma.com/design/GZww5hdUA49LB8XWeWP6tl/-Projet----UI-Kit?node-id=0-1&t=PXOwFotKvf72dn1c-1',
+      url: 'https://www.figma.com/design/GZww5hdUA49LB8XWeWP6tl/-Projet----UI-Kit?node-id=3094-10720&t=frNskMgWPnG5cChx-1',
     },
   },
   argTypes: {
