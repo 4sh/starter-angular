@@ -29,6 +29,7 @@ import { UiIcon, UiIconSize } from '@app/shared/components/ui/ui-icon/ui-icon';
 import { UiSpinner } from '@app/shared/components/ui/informative/ui-spinner/ui-spinner';
 import { UiChip } from '@app/shared/components/ui/informative/ui-chip/ui-chip';
 import { UiMotion } from '@app/shared/motion/ui-motion';
+import { closeOnNavigation } from '@app/shared/overlay/close-on-navigation';
 
 /** Model value: the selected suggestion (or its `optionValue`), free text, an array (`multiple`), or `null`. */
 export type AutocompleteValue<T = unknown> = T | string | T[] | null;
@@ -301,6 +302,10 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
 
   constructor() {
     super();
+
+    // Never carry an open panel over to the next page (the field can live in
+    // an app shell that survives the navigation).
+    closeOnNavigation(() => this.close(false));
 
     // Late label resolution: a value written before suggestions exist (e.g. a
     // pre-filled form using `optionValue`) displays the raw value; swap in the

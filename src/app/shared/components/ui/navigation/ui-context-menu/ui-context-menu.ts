@@ -23,6 +23,7 @@ import {
   UiMenuItemCommandEvent,
 } from '@app/shared/components/ui/navigation/ui-menu/ui-menu';
 import { UiMotion } from '@app/shared/motion/ui-motion';
+import { closeOnNavigation } from '@app/shared/overlay/close-on-navigation';
 
 /** Accepted shapes for the `target` input. */
 export type ContextMenuTarget = HTMLElement | ElementRef<HTMLElement> | null;
@@ -118,6 +119,10 @@ export class UiContextMenu {
   });
 
   constructor() {
+    // The anchor is a point of the page that just left: never carry the menu
+    // over to the next one (a `global` context menu outlives every view).
+    closeOnNavigation(() => this.hide());
+
     // Bind the trigger listener on the target (or the document when `global`);
     // re-bound whenever target/global/triggerEvent change. Browser only.
     effect((onCleanup) => {

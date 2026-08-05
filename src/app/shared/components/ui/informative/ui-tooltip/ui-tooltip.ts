@@ -26,6 +26,7 @@ import {
   OverlayRef,
 } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
+import { closeOnNavigation } from '@app/shared/overlay/close-on-navigation';
 import { TooltipPosition, UiTooltipPanel } from './ui-tooltip-panel';
 
 export type TooltipEvent = 'hover' | 'focus' | 'both';
@@ -130,6 +131,10 @@ export class UiTooltip {
   private readonly hasTemplate = computed(() => this.content() instanceof TemplateRef);
 
   constructor() {
+    // A navigation removes the trigger without ever firing `mouseleave`:
+    // drop the tooltip (and any pending show) instead of leaving it stuck.
+    closeOnNavigation(() => this.remove());
+
     // Inputs are only resolved after construction → bind once the view exists (browser only).
     if (this.isBrowser) {
       afterNextRender(() => this.bindTriggerEvents());

@@ -13,7 +13,7 @@
     [uiMotion]="'zoom'"
     [motionDisabled]="!motion()"
     #panelMotion="uiMotion"
-    [animate.enter]="panelMotion.enter()"
+    motionOnInsert
     (keydown.escape)="onEscape($event)"
   >
     <!-- Projected #item / #submenuheader templates are forwarded as inputs:

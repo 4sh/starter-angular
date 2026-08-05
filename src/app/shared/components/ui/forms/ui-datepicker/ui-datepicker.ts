@@ -26,6 +26,7 @@ import { BaseFormField } from '@app/shared/components/ui/forms/base-form-field';
 import { UiInput } from '@app/shared/components/ui/forms/ui-input/ui-input';
 import { UiButton } from '@app/shared/components/ui/actions/ui-button/ui-button';
 import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
+import { closeOnNavigation } from '@app/shared/overlay/close-on-navigation';
 
 export type DatepickerHourFormat = '12' | '24';
 /** Base picking granularity — also the drill-down levels of the panel. */
@@ -501,6 +502,11 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
 
   constructor() {
     super();
+
+    // Never carry an open panel over to the next page (the field can live in
+    // an app shell that survives the navigation).
+    closeOnNavigation(() => this.close(false));
+
     // Keep time signals in sync with the (first) value.
     effect(() => {
       const first = this.firstSelectedFrom(this.modelValue() ?? null);

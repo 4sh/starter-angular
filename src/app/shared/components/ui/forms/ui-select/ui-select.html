@@ -60,7 +60,7 @@
     [style.min-width]="panelStyleMinWidth()"
     [uiMotion]="'slide-down'"
     #panelMotion="uiMotion"
-    [animate.enter]="panelMotion.enter()"
+    motionOnInsert
   >
     @if (headerTemplate(); as tpl) {
       <div class="ui-select-header">

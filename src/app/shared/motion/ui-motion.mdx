@@ -52,7 +52,27 @@ classes `enter()`/`leave()` et applique les surcharges de timing :
 }
 ```
 
-### 2. Classes globales (CSS-only)
+### 2. Panneau dans un overlay CDK — `motionOnInsert`
+
+Pour tout contenu rendu dans un **overlay CDK** (panneau de `ui-select`, `ui-menu` popup,
+`ui-popover`…), l'entrée passe par `motionOnInsert` au lieu de `animate.enter` : la
+directive pose elle-même la classe du preset.
+
+```html
+<div class="ui-x-panel" [uiMotion]="'slide-down'" motionOnInsert>…</div>
+```
+
+C'est une **contrainte, pas une préférence**. `animate.enter` inscrit le nœud dans la file
+d'animations d'Angular, dénouée via l'injecteur quand le nœud disparaît. Si l'application
+est détruite pendant qu'un overlay est ouvert, cette étape échoue et interrompt la
+destruction : l'overlay n'est jamais démonté et son panneau reste affiché, détaché de son
+ancre, dans le coin haut-gauche de l'écran. Une classe CSS n'a pas ce problème — l'animation
+est identique, les presets étant de simples animations CSS.
+
+Le reste de l'API ne change pas : presets, surcharges `--ui-motion-*`, `motionDisabled`,
+`data-motion="off"` et reduced-motion s'appliquent de la même façon.
+
+### 3. Classes globales (CSS-only)
 
 Les mêmes classes sont utilisables directement avec `animate.enter`/`animate.leave` :
 
@@ -63,7 +83,7 @@ Les mêmes classes sont utilisables directement avec `animate.enter`/`animate.le
 }
 ```
 
-### 3. Transition d'état (élément monté)
+### 4. Transition d'état (élément monté)
 
 ```scss
 @use 'utils';

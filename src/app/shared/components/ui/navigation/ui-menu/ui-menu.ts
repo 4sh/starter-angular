@@ -22,6 +22,7 @@ import { DOCUMENT } from '@angular/common';
 import { UiSubLevel } from '@app/shared/types/ui-level';
 import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
 import { UiMotion } from '@app/shared/motion/ui-motion';
+import { closeOnNavigation } from '@app/shared/overlay/close-on-navigation';
 import {UiSeparator} from "@app/shared/components/ui/informative/ui-separator/ui-separator";
 
 /** Menu density: `small` = compact rendering ("…" action menus). */
@@ -213,6 +214,13 @@ export class UiMenu {
   private readonly doc = inject(DOCUMENT);
 
   constructor() {
+    // A menu declared in an app shell outlives the routed view: dismiss its
+    // floating panels rather than carrying them over to the next page.
+    closeOnNavigation(() => {
+      this.hide();
+      this.closeFlyouts();
+    });
+
     // Keep floating panels GLUED to their scrolling anchors: while the popup
     // or a flyout is open, re-apply the overlay positions on any scroll (the
     // CDK reposition scroll strategy proved unreliable in zoneless contexts).
@@ -224,6 +232,13 @@ export class UiMenu {
       // detection — flyouts must re-read their origin AFTER that move.
       const handler = () =>
         setTimeout(() => {
+          // The trigger can be gone while the menu lives on (its page was
+          // destroyed): re-positioning on a detached origin measures 0×0 and
+          // would snap the panel to the top-left corner.
+          if (this.popupOpen() && this.overlayOrigin()?.isConnected === false) {
+            this.hide();
+            return;
+          }
           for (const overlay of this.connectedOverlays()) {
             if (overlay.open) overlay.overlayRef?.updatePosition();
           }

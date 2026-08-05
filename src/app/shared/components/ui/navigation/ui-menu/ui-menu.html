@@ -7,7 +7,7 @@
     [uiMotion]="'slide-down'"
     [motionDisabled]="!motion()"
     #panelMotion="uiMotion"
-    [animate.enter]="popup() ? panelMotion.enter() : ''"
+    [motionOnInsert]="popup()"
   >
     @if (startTemplate(); as tpl) {
       <div class="ui-menu-start">
@@ -145,7 +145,7 @@
               [uiMotion]="'fade'"
               [motionDisabled]="!motion()"
               #flyoutMotion="uiMotion"
-              [animate.enter]="flyoutMotion.enter()"
+              motionOnInsert
               (keydown)="onFlyoutPanelKeydown($event, node)"
             >
               <ui-menu

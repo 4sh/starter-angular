@@ -28,6 +28,7 @@ import { UiIcon, UiIconSize } from '@app/shared/components/ui/ui-icon/ui-icon';
 import { UiChip } from '@app/shared/components/ui/informative/ui-chip/ui-chip';
 import { UiFeedbackLevel, UiSubLevel } from '@app/shared/types/ui-level';
 import { UiMotion } from '@app/shared/motion/ui-motion';
+import { closeOnNavigation } from '@app/shared/overlay/close-on-navigation';
 
 /** Delimiter used to split the typed text (and pasted text) into several tags. */
 export type TagDelimiter = string | RegExp;
@@ -266,6 +267,10 @@ export class UiInputTags<T = unknown> extends BaseFormField<T[]> {
 
   constructor() {
     super();
+
+    // Never carry an open panel over to the next page (the field can live in
+    // an app shell that survives the navigation).
+    closeOnNavigation(() => this.close(false));
 
     if (isDevMode()) {
       effect(() => {

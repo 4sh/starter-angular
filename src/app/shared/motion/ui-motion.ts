@@ -70,6 +70,7 @@ export const motionLeaveClass = (preset: UiMotionPreset): string => `ui-motion-$
   selector: '[uiMotion]',
   exportAs: 'uiMotion',
   host: {
+    '[class]': '_insertClass()',
     '[style.--ui-motion-duration]': '_duration()',
     '[style.--ui-motion-delay]': '_delay()',
     '[style.--ui-motion-easing-enter]': '_enterEasing()',
@@ -97,12 +98,32 @@ export class UiMotion {
   motionScale = input<number | string>();
   /** Disable motion for this element (renders/removes with no animation). */
   motionDisabled = input(false, { transform: booleanAttribute });
+  /**
+   * Play the enter preset through a class the directive applies itself, instead
+   * of binding `animate.enter` in the template — the preset classes are plain
+   * CSS animations, they need no framework hook to run once on insertion.
+   *
+   * **Mandatory for anything rendered in a CDK overlay** (dropdown panels,
+   * menus, popovers). `animate.enter` registers the node in Angular's animation
+   * queue, and that queue is unwound through the injector when the node goes
+   * away; if the application is torn down while the overlay is still attached,
+   * the unwind throws (`NG0205`) in the middle of the teardown and everything
+   * after it is skipped — including the overlay's own `dispose()`. The panel
+   * then stays in the document, detached from its anchor, in the top-left
+   * corner of whatever renders next. No queue, no orphan.
+   *
+   * Leave it off for content inserted by `@if` / `@for` in a normal view, where
+   * `animate.enter` also buys the leave animation.
+   */
+  motionOnInsert = input(false, { transform: booleanAttribute });
 
   /** Class to bind to `animate.enter` (empty when disabled → instant appear). */
   readonly enter = computed(() => (this.motionDisabled() ? '' : motionEnterClass(this.preset())));
   /** Class to bind to `animate.leave` (empty when disabled → instant removal). */
   readonly leave = computed(() => (this.motionDisabled() ? '' : motionLeaveClass(this.preset())));
 
+  /** @ignore Enter class applied by the directive in `motionOnInsert` mode. */
+  protected readonly _insertClass = computed(() => (this.motionOnInsert() ? this.enter() : ''));
   /** @ignore */
   protected readonly _duration = computed(() => this.motionDuration() ?? null);
   /** @ignore */

@@ -19,6 +19,7 @@ import {
 } from '@angular/cdk/overlay';
 import { A11yModule } from '@angular/cdk/a11y';
 import { UiMotion } from '@app/shared/motion/ui-motion';
+import { closeOnNavigation } from '@app/shared/overlay/close-on-navigation';
 
 /** Preferred side of the trigger the panel is displayed on (drives the arrow). */
 export type PopoverPosition = 'top' | 'bottom' | 'left' | 'right';
@@ -126,6 +127,10 @@ export class UiPopover {
   private targetEl: HTMLElement | null = null;
 
   constructor() {
+    // A popover declared in an app shell outlives the routed view: dismiss it
+    // rather than carrying it over to the next page.
+    closeOnNavigation(() => this.hide());
+
     // A11y safeguard: an open dialog must have an accessible name.
     if (isDevMode()) {
       effect(() => {
@@ -214,6 +219,13 @@ export class UiPopover {
 
   /** @ignore Map the active CDK connection pair back to the visual side (for the arrow). */
   protected onPositionChange(change: ConnectedOverlayPositionChange): void {
+    // The trigger can be gone while the popover lives on (its page was
+    // destroyed): re-positioning on a detached anchor measures 0×0 and would
+    // snap the panel to the top-left corner.
+    if (this.targetEl && !this.targetEl.isConnected) {
+      this.hide();
+      return;
+    }
     const pair = change.connectionPair;
     if (pair.overlayY === 'bottom') this.side.set('top');
     else if (pair.overlayY === 'top' && pair.originY === 'bottom') this.side.set('bottom');

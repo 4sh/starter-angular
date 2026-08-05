@@ -50,7 +50,7 @@
     [style.width.px]="overlayWidth()"
     [uiMotion]="'slide-down'"
     #panelMotion="uiMotion"
-    [animate.enter]="panelMotion.enter()"
+    motionOnInsert
   >
     @if (headerTemplate(); as tpl) {
       <div class="ui-autocomplete-header">

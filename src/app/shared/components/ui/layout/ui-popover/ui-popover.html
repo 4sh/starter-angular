@@ -24,7 +24,7 @@
     [uiMotion]="'zoom'"
     [motionDisabled]="!motion()"
     #panelMotion="uiMotion"
-    [animate.enter]="panelMotion.enter()"
+    motionOnInsert
     (keydown.escape)="onEscape($event)"
   >
     @if (showArrow()) {

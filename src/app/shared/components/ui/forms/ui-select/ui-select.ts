@@ -26,6 +26,7 @@ import { UiField } from '@app/shared/components/ui/forms/ui-field/ui-field';
 import { UiIcon, UiIconSize } from '@app/shared/components/ui/ui-icon/ui-icon';
 import { UiSpinner } from '@app/shared/components/ui/informative/ui-spinner/ui-spinner';
 import { UiMotion } from '@app/shared/motion/ui-motion';
+import { closeOnNavigation } from '@app/shared/overlay/close-on-navigation';
 
 /** Model value: a single value, an array (`multiple`), or `null` when cleared. */
 export type SelectValue<T = unknown> = T | T[] | null;
@@ -279,6 +280,10 @@ export class UiSelect<T = unknown> extends BaseFormField<SelectValue<T>> {
 
   constructor() {
     super();
+
+    // Never carry an open panel over to the next page (the field can live in
+    // an app shell that survives the navigation).
+    closeOnNavigation(() => this.close(false));
 
     // Forward the rendered range of the virtual viewport (lazy loading).
     effect((onCleanup) => {
