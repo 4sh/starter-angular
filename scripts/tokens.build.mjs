@@ -367,7 +367,7 @@ for (const output of CONFIG.outputs ?? []) {
     const { tokens, groupSpecs } = buildTokens(col);
     const sd = new StyleDictionary({
       tokens,
-      log: { verbosity: 'silent', warnings: 'disabled' },
+      log: { verbosity: 'verbose', warnings: 'disabled' },
       platforms: {
         out: {
           transforms: ['name/starter'],

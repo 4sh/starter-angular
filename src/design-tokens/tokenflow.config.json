@@ -39,6 +39,39 @@
         "hueShiftDark": 0
       },
       "detached": []
+    },
+    {
+      "collection": "primitives",
+      "groupPath": [
+        "slate"
+      ],
+      "steps": [
+        "50",
+        "100",
+        "200",
+        "300",
+        "400",
+        "500",
+        "600",
+        "700",
+        "800",
+        "900"
+      ],
+      "baseStep": "500",
+      "bases": {
+        "modeBrand1": "#62748e",
+        "modeBrand2": "#62748e",
+        "modeBrand3": "#62748e"
+      },
+      "curve": {
+        "lightMax": 0.98,
+        "lightMin": 0.24,
+        "chromaFalloff": 0.65,
+        "easing": "ease",
+        "hueShiftLight": 0,
+        "hueShiftDark": 0
+      },
+      "detached": []
     }
   ]
 }

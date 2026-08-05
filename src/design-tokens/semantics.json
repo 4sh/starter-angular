@@ -1241,7 +1241,7 @@
       "low": {
         "content": {
           "default": {
-            "$value": "{primitives.primary.600}",
+            "$value": "{primitives.slate.500}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -1257,7 +1257,7 @@
             }
           },
           "hover": {
-            "$value": "{primitives.primary.700}",
+            "$value": "{primitives.slate.600}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -1273,7 +1273,7 @@
             }
           },
           "focused": {
-            "$value": "{primitives.primary.800}",
+            "$value": "{primitives.slate.800}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -1289,7 +1289,7 @@
             }
           },
           "pressed": {
-            "$value": "{primitives.primary.800}",
+            "$value": "{primitives.slate.800}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -1305,7 +1305,7 @@
             }
           },
           "disabled": {
-            "$value": "{primitives.primary.300}",
+            "$value": "{primitives.slate.300}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -1323,7 +1323,7 @@
         },
         "surface": {
           "default": {
-            "$value": "{primitives.transparent.base}",
+            "$value": "{primitives.slate.50}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -1338,7 +1338,7 @@
             }
           },
           "hover": {
-            "$value": "{primitives.primary.50}",
+            "$value": "{primitives.slate.100}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -1353,7 +1353,7 @@
             }
           },
           "focused": {
-            "$value": "{primitives.primary.100}",
+            "$value": "{primitives.slate.200}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -1368,7 +1368,7 @@
             }
           },
           "pressed": {
-            "$value": "{primitives.primary.100}",
+            "$value": "{primitives.slate.300}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -1383,7 +1383,7 @@
             }
           },
           "disabled": {
-            "$value": "{primitives.transparent.base}",
+            "$value": "{primitives.slate.50}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -1400,7 +1400,7 @@
         },
         "stroke": {
           "default": {
-            "$value": "{primitives.primary.500}",
+            "$value": "{primitives.slate.100}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -1415,7 +1415,7 @@
             }
           },
           "hover": {
-            "$value": "{primitives.primary.600}",
+            "$value": "{primitives.slate.200}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -1430,7 +1430,7 @@
             }
           },
           "focused": {
-            "$value": "{primitives.primary.700}",
+            "$value": "{primitives.slate.300}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -1445,7 +1445,7 @@
             }
           },
           "pressed": {
-            "$value": "{primitives.primary.700}",
+            "$value": "{primitives.slate.300}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -1460,7 +1460,7 @@
             }
           },
           "disabled": {
-            "$value": "{primitives.primary.300}",
+            "$value": "{primitives.slate.300}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -1479,7 +1479,7 @@
       "lowOutlined": {
         "content": {
           "default": {
-            "$value": "{primitives.primary.600}",
+            "$value": "{primitives.slate.600}",
             "$description": "semantics",
             "$type": "color",
             "$extensions": {
@@ -1497,7 +1497,7 @@
             }
           },
           "hover": {
-            "$value": "{primitives.primary.700}",
+            "$value": "{primitives.slate.700}",
             "$description": "semantics",
             "$type": "color",
             "$extensions": {
@@ -1515,7 +1515,7 @@
             }
           },
           "focused": {
-            "$value": "{primitives.primary.700}",
+            "$value": "{primitives.slate.700}",
             "$description": "semantics",
             "$type": "color",
             "$extensions": {
@@ -1533,7 +1533,7 @@
             }
           },
           "pressed": {
-            "$value": "{primitives.primary.800}",
+            "$value": "{primitives.slate.800}",
             "$description": "semantics",
             "$type": "color",
             "$extensions": {
@@ -1551,7 +1551,7 @@
             }
           },
           "disabled": {
-            "$value": "{primitives.primary.300}",
+            "$value": "{primitives.slate.300}",
             "$description": "semantics",
             "$type": "color",
             "$extensions": {
@@ -1588,7 +1588,7 @@
             }
           },
           "hover": {
-            "$value": "{primitives.primary.50}",
+            "$value": "{primitives.slate.50}",
             "$description": "semantics",
             "$type": "color",
             "$extensions": {
@@ -1605,7 +1605,7 @@
             }
           },
           "focused": {
-            "$value": "{primitives.primary.50}",
+            "$value": "{primitives.slate.50}",
             "$description": "semantics",
             "$type": "color",
             "$extensions": {
@@ -1622,7 +1622,7 @@
             }
           },
           "pressed": {
-            "$value": "{primitives.primary.100}",
+            "$value": "{primitives.slate.100}",
             "$description": "semantics",
             "$type": "color",
             "$extensions": {
@@ -1658,7 +1658,7 @@
         },
         "stroke": {
           "default": {
-            "$value": "{primitives.primary.500}",
+            "$value": "{primitives.slate.500}",
             "$description": "semantics",
             "$type": "color",
             "$extensions": {
@@ -1675,7 +1675,7 @@
             }
           },
           "hover": {
-            "$value": "{primitives.primary.600}",
+            "$value": "{primitives.slate.600}",
             "$description": "semantics",
             "$type": "color",
             "$extensions": {
@@ -1692,7 +1692,7 @@
             }
           },
           "focused": {
-            "$value": "{primitives.primary.600}",
+            "$value": "{primitives.slate.600}",
             "$description": "semantics",
             "$type": "color",
             "$extensions": {
@@ -1709,7 +1709,7 @@
             }
           },
           "pressed": {
-            "$value": "{primitives.primary.700}",
+            "$value": "{primitives.slate.700}",
             "$description": "semantics",
             "$type": "color",
             "$extensions": {
@@ -1726,7 +1726,7 @@
             }
           },
           "disabled": {
-            "$value": "{primitives.primary.200}",
+            "$value": "{primitives.slate.200}",
             "$description": "semantics",
             "$type": "color",
             "$extensions": {
@@ -1747,7 +1747,7 @@
       "lowGhost": {
         "content": {
           "default": {
-            "$value": "{primitives.primary.600}",
+            "$value": "{primitives.slate.600}",
             "$description": "semantics",
             "$type": "color",
             "$extensions": {
@@ -1765,7 +1765,7 @@
             }
           },
           "hover": {
-            "$value": "{primitives.primary.700}",
+            "$value": "{primitives.slate.700}",
             "$description": "semantics",
             "$type": "color",
             "$extensions": {
@@ -1783,7 +1783,7 @@
             }
           },
           "focused": {
-            "$value": "{primitives.primary.700}",
+            "$value": "{primitives.slate.700}",
             "$description": "semantics",
             "$type": "color",
             "$extensions": {
@@ -1801,7 +1801,7 @@
             }
           },
           "pressed": {
-            "$value": "{primitives.primary.800}",
+            "$value": "{primitives.slate.800}",
             "$description": "semantics",
             "$type": "color",
             "$extensions": {
@@ -1819,7 +1819,7 @@
             }
           },
           "disabled": {
-            "$value": "{primitives.primary.300}",
+            "$value": "{primitives.slate.300}",
             "$description": "semantics",
             "$type": "color",
             "$extensions": {
@@ -1856,7 +1856,7 @@
             }
           },
           "hover": {
-            "$value": "{primitives.primary.50}",
+            "$value": "{primitives.slate.50}",
             "$description": "semantics",
             "$type": "color",
             "$extensions": {
@@ -1873,7 +1873,7 @@
             }
           },
           "focused": {
-            "$value": "{primitives.primary.50}",
+            "$value": "{primitives.slate.50}",
             "$description": "semantics",
             "$type": "color",
             "$extensions": {
@@ -1890,7 +1890,7 @@
             }
           },
           "pressed": {
-            "$value": "{primitives.primary.100}",
+            "$value": "{primitives.slate.100}",
             "$description": "semantics",
             "$type": "color",
             "$extensions": {
@@ -1960,7 +1960,7 @@
             }
           },
           "focused": {
-            "$value": "{primitives.primary.600}",
+            "$value": "{primitives.slate.600}",
             "$description": "semantics",
             "$type": "color",
             "$extensions": {
@@ -8873,7 +8873,7 @@
       "low": {
         "content": {
           "default": {
-            "$value": "{primitives.primary.200}",
+            "$value": "{primitives.slate.50}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -8889,7 +8889,7 @@
             }
           },
           "hover": {
-            "$value": "{primitives.primary.300}",
+            "$value": "{primitives.slate.100}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -8905,7 +8905,7 @@
             }
           },
           "focused": {
-            "$value": "{primitives.primary.400}",
+            "$value": "{primitives.slate.200}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -8921,7 +8921,7 @@
             }
           },
           "pressed": {
-            "$value": "{primitives.primary.400}",
+            "$value": "{primitives.slate.200}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -8937,7 +8937,7 @@
             }
           },
           "disabled": {
-            "$value": "{primitives.primary.50}",
+            "$value": "{primitives.slate.300}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -8955,7 +8955,7 @@
         },
         "surface": {
           "default": {
-            "$value": "{primitives.transparent.base}",
+            "$value": "{primitives.slate.400}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -8970,7 +8970,7 @@
             }
           },
           "hover": {
-            "$value": "{primitives.primary.50}",
+            "$value": "{primitives.slate.500}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -8985,7 +8985,7 @@
             }
           },
           "focused": {
-            "$value": "{primitives.primary.100}",
+            "$value": "{primitives.slate.600}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -9000,7 +9000,7 @@
             }
           },
           "pressed": {
-            "$value": "{primitives.primary.100}",
+            "$value": "{primitives.slate.600}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -9015,7 +9015,7 @@
             }
           },
           "disabled": {
-            "$value": "{primitives.transparent.base}",
+            "$value": "{primitives.slate.700}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -9032,7 +9032,7 @@
         },
         "stroke": {
           "default": {
-            "$value": "{primitives.primary.300}",
+            "$value": "{primitives.slate.300}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -9047,7 +9047,7 @@
             }
           },
           "hover": {
-            "$value": "{primitives.primary.500}",
+            "$value": "{primitives.slate.200}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -9062,7 +9062,7 @@
             }
           },
           "focused": {
-            "$value": "{primitives.primary.600}",
+            "$value": "{primitives.slate.100}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -9077,7 +9077,7 @@
             }
           },
           "pressed": {
-            "$value": "{primitives.primary.600}",
+            "$value": "{primitives.slate.100}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -9092,7 +9092,7 @@
             }
           },
           "disabled": {
-            "$value": "{primitives.primary.200}",
+            "$value": "{primitives.slate.500}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -9111,7 +9111,7 @@
       "lowOutlined": {
         "content": {
           "default": {
-            "$value": "{primitives.primary.300}",
+            "$value": "{primitives.slate.300}",
             "$description": "semantics",
             "$type": "color",
             "$extensions": {
@@ -9129,7 +9129,7 @@
             }
           },
           "hover": {
-            "$value": "{primitives.primary.200}",
+            "$value": "{primitives.slate.200}",
             "$description": "semantics",
             "$type": "color",
             "$extensions": {
@@ -9147,7 +9147,7 @@
             }
           },
           "focused": {
-            "$value": "{primitives.primary.200}",
+            "$value": "{primitives.slate.200}",
             "$description": "semantics",
             "$type": "color",
             "$extensions": {
@@ -9165,7 +9165,7 @@
             }
           },
           "pressed": {
-            "$value": "{primitives.primary.100}",
+            "$value": "{primitives.slate.100}",
             "$description": "semantics",
             "$type": "color",
             "$extensions": {
@@ -9183,7 +9183,7 @@
             }
           },
           "disabled": {
-            "$value": "{primitives.primary.700}",
+            "$value": "{primitives.slate.700}",
             "$description": "semantics",
             "$type": "color",
             "$extensions": {
@@ -9220,7 +9220,7 @@
             }
           },
           "hover": {
-            "$value": "{primitives.primary.800}",
+            "$value": "{primitives.slate.800}",
             "$description": "semantics",
             "$type": "color",
             "$extensions": {
@@ -9237,7 +9237,7 @@
             }
           },
           "focused": {
-            "$value": "{primitives.primary.800}",
+            "$value": "{primitives.slate.800}",
             "$description": "semantics",
             "$type": "color",
             "$extensions": {
@@ -9254,7 +9254,7 @@
             }
           },
           "pressed": {
-            "$value": "{primitives.primary.700}",
+            "$value": "{primitives.slate.700}",
             "$description": "semantics",
             "$type": "color",
             "$extensions": {
@@ -9290,7 +9290,7 @@
         },
         "stroke": {
           "default": {
-            "$value": "{primitives.primary.400}",
+            "$value": "{primitives.slate.400}",
             "$description": "semantics",
             "$type": "color",
             "$extensions": {
@@ -9307,7 +9307,7 @@
             }
           },
           "hover": {
-            "$value": "{primitives.primary.300}",
+            "$value": "{primitives.slate.300}",
             "$description": "semantics",
             "$type": "color",
             "$extensions": {
@@ -9324,7 +9324,7 @@
             }
           },
           "focused": {
-            "$value": "{primitives.primary.300}",
+            "$value": "{primitives.slate.300}",
             "$description": "semantics",
             "$type": "color",
             "$extensions": {
@@ -9341,7 +9341,7 @@
             }
           },
           "pressed": {
-            "$value": "{primitives.primary.300}",
+            "$value": "{primitives.slate.300}",
             "$description": "semantics",
             "$type": "color",
             "$extensions": {
@@ -9358,7 +9358,7 @@
             }
           },
           "disabled": {
-            "$value": "{primitives.primary.800}",
+            "$value": "{primitives.slate.800}",
             "$description": "semantics",
             "$type": "color",
             "$extensions": {
@@ -9379,7 +9379,7 @@
       "lowGhost": {
         "content": {
           "default": {
-            "$value": "{primitives.primary.300}",
+            "$value": "{primitives.slate.300}",
             "$description": "semantics",
             "$type": "color",
             "$extensions": {
@@ -9397,7 +9397,7 @@
             }
           },
           "hover": {
-            "$value": "{primitives.primary.200}",
+            "$value": "{primitives.slate.200}",
             "$description": "semantics",
             "$type": "color",
             "$extensions": {
@@ -9415,7 +9415,7 @@
             }
           },
           "focused": {
-            "$value": "{primitives.primary.200}",
+            "$value": "{primitives.slate.200}",
             "$description": "semantics",
             "$type": "color",
             "$extensions": {
@@ -9433,7 +9433,7 @@
             }
           },
           "pressed": {
-            "$value": "{primitives.primary.100}",
+            "$value": "{primitives.slate.100}",
             "$description": "semantics",
             "$type": "color",
             "$extensions": {
@@ -9451,7 +9451,7 @@
             }
           },
           "disabled": {
-            "$value": "{primitives.primary.700}",
+            "$value": "{primitives.slate.700}",
             "$description": "semantics",
             "$type": "color",
             "$extensions": {
@@ -9488,7 +9488,7 @@
             }
           },
           "hover": {
-            "$value": "{primitives.primary.800}",
+            "$value": "{primitives.slate.800}",
             "$description": "semantics",
             "$type": "color",
             "$extensions": {
@@ -9505,7 +9505,7 @@
             }
           },
           "focused": {
-            "$value": "{primitives.primary.800}",
+            "$value": "{primitives.slate.800}",
             "$description": "semantics",
             "$type": "color",
             "$extensions": {
@@ -9522,7 +9522,7 @@
             }
           },
           "pressed": {
-            "$value": "{primitives.primary.700}",
+            "$value": "{primitives.slate.700}",
             "$description": "semantics",
             "$type": "color",
             "$extensions": {
@@ -9592,7 +9592,7 @@
             }
           },
           "focused": {
-            "$value": "{primitives.primary.300}",
+            "$value": "{primitives.slate.300}",
             "$description": "semantics",
             "$type": "color",
             "$extensions": {
