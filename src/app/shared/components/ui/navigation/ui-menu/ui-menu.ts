@@ -22,6 +22,7 @@ import { DOCUMENT } from '@angular/common';
 import { UiSubLevel } from '@app/shared/types/ui-level';
 import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
 import { UiMotion } from '@app/shared/motion/ui-motion';
+import {UiSeparator} from "@app/shared/components/ui/informative/ui-separator/ui-separator";
 
 /** Menu density: `small` = compact rendering ("…" action menus). */
 export type MenuSize = 'default' | 'small';
@@ -126,7 +127,7 @@ const OVERLAY_OFFSET = 8;
  */
 @Component({
   selector: 'ui-menu',
-  imports: [NgTemplateOutlet, OverlayModule, RouterLink, RouterLinkActive, UiIcon, UiMotion],
+  imports: [NgTemplateOutlet, OverlayModule, RouterLink, RouterLinkActive, UiIcon, UiMotion, UiSeparator],
   templateUrl: './ui-menu.html',
   styleUrl: './ui-menu.scss',
   host: {

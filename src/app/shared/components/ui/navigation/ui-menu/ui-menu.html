@@ -41,7 +41,9 @@
   @for (node of nodes; track node.key) {
     @switch (node.kind) {
       @case ('separator') {
-        <li class="ui-menu-separator" role="separator" aria-hidden="true"></li>
+        <li class="ui-menu-separator" role="separator" aria-hidden="true">
+            <ui-separator></ui-separator>
+        </li>
       }
 
       @case ('header') {

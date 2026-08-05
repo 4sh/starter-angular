@@ -193,7 +193,6 @@ $focus-ring-width: utils.$focus-ring-width;         /// Épaisseur de l'anneau d
 
   // --- Separator ---------------------------------------------------------
   &-separator {
-    margin: var(--units-2xs) 0;
     border: none;
   }
 
@@ -210,10 +209,6 @@ $focus-ring-width: utils.$focus-ring-width;         /// Épaisseur de l'anneau d
     &._#{$lvl} {
       .ui-menu-header {
         color: var(--navigation-#{$lvl}-content-default);
-      }
-
-      .ui-menu-separator {
-        border-top: $separator-width solid var(--navigation-#{$lvl}-stroke-default);
       }
 
       .ui-menu-action {
