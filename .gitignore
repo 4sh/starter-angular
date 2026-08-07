@@ -41,7 +41,6 @@ yarn-error.log*
 
 # Local editor / tool configs
 .vscode
-.idea
 # Ignore local Claude config everywhere (incl. nested settings.local.json),
 # but track the shared project assets at the repo root.
 .claude
