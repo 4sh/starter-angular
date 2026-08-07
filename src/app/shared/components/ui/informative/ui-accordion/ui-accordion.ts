@@ -137,9 +137,7 @@ export class UiAccordionPanel {
  * Headless (composition API inspired by PrimeNG `p-accordion`): it owns the open
  * state (`value` two-way model, `single` or `multiple`), roving-focus keyboard
  * navigation across headers (Up/Down/Home/End), and the group-level defaults
- * (`separator`, `control`, expand/collapse icons, `motion`). Every colour/metric
- * comes from the `informative` / `actions` design tokens; the collapse animation
- * is timed by the shared motion system.
+ * (`separator`, `control`, expand/collapse icons, `motion`).
  *
  * @example
  * ```html

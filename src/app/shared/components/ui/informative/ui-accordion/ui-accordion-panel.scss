@@ -39,7 +39,7 @@ $focus-ring-width: utils.$action-focus-ring-width; /// Épaisseur de l'anneau de
 
     &:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 $focus-ring-width var(--actions-low-stroke-focused);
+      box-shadow: 0 0 0 $focus-ring-width var(--navigation-high-stroke-focused);
     }
     &:disabled { cursor: not-allowed; }
   }
@@ -61,23 +61,24 @@ $focus-ring-width: utils.$action-focus-ring-width; /// Épaisseur de l'anneau de
     width: $control-size;
     height: $control-size;
     border-radius: var(--radius-default);
-    background-color: var(--actions-low-surface-default);
-    color: var(--actions-low-content-default);
-    @include utils.control-transition(background-color, color);
+    background-color: var(--navigation-high-surface-default);
+    color: var(--navigation-high-content-default);
+    @include utils.control-transition(background-color, color, box-shadow);
   }
 
   // Header states drive the control surface (single hit target = the header).
   &-header:hover:not(:disabled) &-header-control {
-    background-color: var(--actions-low-surface-hover);
-    color: var(--actions-low-content-hover);
+    background-color: var(--navigation-high-surface-hover);
+    color: var(--navigation-high-content-hover);
   }
   &-header:active:not(:disabled) &-header-control {
-    background-color: var(--actions-low-surface-pressed);
-    color: var(--actions-low-content-pressed);
+    background-color: var(--navigation-high-surface-pressed);
+    color: var(--navigation-high-content-pressed);
   }
   &-header:focus-visible &-header-control {
-    background-color: var(--actions-low-surface-focused);
-    color: var(--actions-low-content-focused);
+    background-color: var(--navigation-high-surface-focused);
+    color: var(--navigation-high-content-focused);
+    box-shadow: inset 0 0 0 var(--stroke-default) var(--navigation-high-stroke-focused);
   }
 
   // --- Divider -------------------------------------------------------
@@ -120,9 +121,9 @@ $focus-ring-width: utils.$action-focus-ring-width; /// Épaisseur de l'anneau de
 
 // --- Disabled panel ---------------------------------------------------
 :host._disabled {
-  .ui-accordion-header { color: var(--actions-low-content-disabled); }
+  .ui-accordion-header { color: var(--navigation-high-content-disabled); }
   .ui-accordion-header-control {
-    background-color: var(--actions-high-surface-disabled);
-    color: var(--actions-low-content-disabled);
+    background-color: var(--navigation-high-surface-disabled);
+    color: var(--navigation-high-content-disabled);
   }
 }
