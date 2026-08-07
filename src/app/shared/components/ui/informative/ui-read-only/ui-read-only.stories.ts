@@ -12,8 +12,7 @@ const meta: Meta<UiReadOnly> = {
     layout: 'centered',
     design: {
       type: 'figma',
-      // TODO: pointer sur le ComponentSet dédié une fois créé dans le fichier UI Kit.
-      url: 'https://www.figma.com/design/GZww5hdUA49LB8XWeWP6tl/-Projet----UI-Kit?node-id=0-1',
+      url: 'https://www.figma.com/design/GZww5hdUA49LB8XWeWP6tl/-Projet----UI-Kit?node-id=3205-2882&t=QwmSe7YP798RcocA-1',
     },
   },
   argTypes: {
