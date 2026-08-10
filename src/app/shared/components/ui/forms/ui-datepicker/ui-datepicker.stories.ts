@@ -238,6 +238,21 @@ export const AutoFormattedInputEnUs: Story = {
   },
 };
 
+// Saisie assistée en MonthPicker (view="month") : le masque n'a que 2 segments (mois/année,
+// le jour étant hors sujet dans cette vue) — exerce le chemin "99/9999" de typingSlots.
+export const AutoFormattedInputMonthPicker: Story = {
+  render: story(),
+  args: {
+    label: 'Mois',
+    view: 'month',
+    allowInput: true,
+    showClear: true,
+    locale: 'fr-FR',
+    placeholder: '',
+    helperText: 'Tapez "072026" : auto-formaté en "07/2026" (mm/aaaa).',
+  },
+};
+
 // Formatteur/parseur custom (symétriques) : affichage "8 juil. 2026", saisie au même format.
 export const CustomFormat: Story = {
   render: (args) => ({

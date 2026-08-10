@@ -433,12 +433,13 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   /**
    * @ignore Dynamic mask (day/month/year widths in locale order) driving the auto-"/" formatting
    * of the typeable trigger. `null` disables it: `view === 'year'` (free-form numeric field, out
-   * of scope), or a custom `parseDate` (a non-numeric format would make the auto-slash wrong).
+   * of scope), `timeOnly` (the typed text represents a time, not a date — a "/" mask would be
+   * wrong), or a custom `parseDate` (a non-numeric format would make the auto-slash wrong).
    * The `year` segment is deliberately left unbounded so the existing 2-digit shortcut
    * (`normalizeYear`) keeps working — strict validation still happens at `finalizeParsed`.
    */
   private readonly typingSlots = computed<MaskSlot[] | null>(() => {
-    if (this.triggerReadonly() || this.view() === 'year' || this.parseDate()) return null;
+    if (this.triggerReadonly() || this.timeOnly() || this.view() === 'year' || this.parseDate()) return null;
     const widths = { day: '99', month: '99', year: '9999' } as const;
     const bounds: Record<'day' | 'month' | 'year', MaskBounds | null> = {
       day: { min: 1, max: 31 },
@@ -492,25 +493,30 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   // --- Value conversion (the ONLY boundary between the public `Date`/ISO contract
   // and the internal Date-based calendar logic) --------------------------------
 
+  /** @ignore Whether the value carries a time component (date+time ISO / non-midnight `Date`). */
+  private readonly hasTimeComponent = computed(() => this.showTime() || this.timeOnly());
   /** @ignore Date → ISO string, date-only unless `showTime`/`timeOnly`. */
   private toIsoValue(d: Date): string {
-    return this.showTime() || this.timeOnly() ? toIsoDateTime(d) : toIsoDate(d);
+    return this.hasTimeComponent() ? toIsoDateTime(d) : toIsoDate(d);
   }
   /** @ignore ISO string → Date, `null` if malformed (never throws). */
   private fromIsoValue(s: string): Date | null {
-    return this.showTime() || this.timeOnly() ? parseIsoDateTime(s) : parseIsoDate(s);
+    return this.hasTimeComponent() ? parseIsoDateTime(s) : parseIsoDate(s);
   }
   /** @ignore Internal Date → the shape `valueType` commits to emitting: a fresh `Date`
    *  (normalized to midnight when no time is shown — never the original reference) in `'date'`
    *  mode, an ISO string in `'iso'` mode. The single point deciding the emitted type. */
   private serializeValue(d: Date): Date | string {
     if (this.valueType() === 'iso') return this.toIsoValue(d);
-    return this.showTime() || this.timeOnly() ? new Date(d) : startOfDay(d);
+    return this.hasTimeComponent() ? new Date(d) : startOfDay(d);
   }
   /** @ignore A single incoming item, `Date` or ISO string, auto-detected — `writeValue` accepts
-   *  either shape regardless of `valueType` (only the emitted side commits to one). */
+   *  either shape regardless of `valueType` (only the emitted side commits to one). Cloned when
+   *  already a `Date` (never the caller's own reference) — symmetric with `serializeValue`,
+   *  which never hands back the internal reference either; protects against the caller later
+   *  mutating that `Date` in place and silently desyncing `internalValue`. */
   private parseValue(v: Date | string): Date | null {
-    return v instanceof Date ? v : this.fromIsoValue(v);
+    return v instanceof Date ? new Date(v) : this.fromIsoValue(v);
   }
   /** @ignore Internal Date(s) → public value, right before it reaches `modelValue`/the CVA.
    *  The cast is safe: `serializeValue` only branches on `valueType()`, constant across the
@@ -604,8 +610,8 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
 
   // --- Weekday headers -------------------------------------------------
 
-  /** @ignore Short (visible) + full (aria-label) weekday names — the header is `aria-hidden`
-   *  on the short text alone would otherwise leave screen-reader users without column names. */
+  /** @ignore Short (visible) + full (aria-label) weekday names — without both, either the header
+   *  stays `aria-hidden` or the short text alone leaves screen-reader users without column names. */
   protected readonly weekDayNames = computed<{ short: string; full: string }[]>(() => {
     const shortFmt = new Intl.DateTimeFormat(this.resolvedLocale(), { weekday: 'short' });
     const longFmt = new Intl.DateTimeFormat(this.resolvedLocale(), { weekday: 'long' });
