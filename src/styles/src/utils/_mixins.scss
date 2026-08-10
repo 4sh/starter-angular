@@ -35,6 +35,7 @@
 
   &._checked:not(._disabled),
   &._indeterminate:not(._disabled) {
+    --_surface: var(--form-#{$palette}-surface-checked);
     --_stroke: var(--form-#{$palette}-stroke-checked);
   }
 
