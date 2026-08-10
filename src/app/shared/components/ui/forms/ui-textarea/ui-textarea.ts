@@ -66,6 +66,15 @@ export class UiTextarea extends BaseFormField<string> {
     const max = this.maxlength();
     return max != null && this.charCount() > max;
   });
+  /** @ignore id of the character counter (for `aria-describedby`). */
+  protected readonly countId = computed(() => `${this.resolvedId()}-count`);
+  /** @ignore `aria-describedby` combines the message and the counter, whichever are shown. */
+  protected readonly describedByIds = computed(() => {
+    const ids = [this.displayMessage() ? this.messageId() : null, this.showCount() ? this.countId() : null].filter(
+      Boolean,
+    );
+    return ids.length ? ids.join(' ') : null;
+  });
 
   constructor() {
     super();
