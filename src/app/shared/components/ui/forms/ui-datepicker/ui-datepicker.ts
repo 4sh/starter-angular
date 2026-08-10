@@ -248,6 +248,7 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
    * The typed text is parsed on blur / `Enter`; an unparsable value reverts to
    * the previously displayed one. When enabled (and no custom `dateFormat`), the
    * value is displayed in a numeric locale format so it round-trips with typing.
+   * Has no effect in `timeOnly` mode: the trigger stays read-only there.
    */
   allowInput = input(false, { transform: booleanAttribute });
   /**
@@ -356,6 +357,10 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   protected readonly currentView = linkedSignal<DatepickerView>(() => this.view());
   /** @ignore Day cell owning the roving tabindex. */
   protected readonly focusedDate = signal<Date>(startOfDay(new Date()));
+  /** @ignore Month-picker cell (index 0–11) owning the roving tabindex. */
+  protected readonly focusedMonthIndex = signal<number>(new Date().getMonth());
+  /** @ignore Year-picker cell (absolute year) owning the roving tabindex. */
+  protected readonly focusedYear = signal<number>(new Date().getFullYear());
   /** @ignore Time components. */
   protected readonly hours = signal(0);
   protected readonly minutes = signal(0);
@@ -387,9 +392,14 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   private readonly resolvedDisabledDates = computed(() =>
     (this.disabledDates() ?? []).map(normalizeDateInput).filter((d): d is Date => d !== null),
   );
-  /** @ignore The trigger is not typeable (manual input off, not single, or read-only). */
+  /**
+   * @ignore The trigger is not typeable: manual input off, not single, read-only, or
+   * `timeOnly` — free-form typing in time-only mode isn't implemented (no dedicated
+   * parser/formatter for a bare time string), so it's disabled outright here rather than
+   * silently mis-parsing.
+   */
   protected readonly triggerReadonly = computed(
-    () => this.readonly() || !this.allowInput() || this.selectionMode() !== 'single',
+    () => this.readonly() || !this.allowInput() || this.selectionMode() !== 'single' || this.timeOnly(),
   );
   /**
    * @ignore Placeholder shown in the typeable trigger. Falls back to a hint derived
@@ -431,15 +441,18 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     this.dateFieldOrder().filter((f) => (this.view() === 'month' ? f !== 'day' : true)),
   );
   /**
-   * @ignore Dynamic mask (day/month/year widths in locale order) driving the auto-"/" formatting
-   * of the typeable trigger. `null` disables it: `view === 'year'` (free-form numeric field, out
-   * of scope), `timeOnly` (the typed text represents a time, not a date — a "/" mask would be
-   * wrong), or a custom `parseDate` (a non-numeric format would make the auto-slash wrong).
-   * The `year` segment is deliberately left unbounded so the existing 2-digit shortcut
-   * (`normalizeYear`) keeps working — strict validation still happens at `finalizeParsed`.
+   * @ignore Dynamic mask (day/month/year widths in locale order, plus hour/minute — and AM/PM —
+   * widths when `showTime`) driving the auto-"/" (resp. ":") formatting of the typeable trigger.
+   * `null` disables it: `triggerReadonly` (covers `timeOnly` — see there), `view === 'year'`
+   * (free-form numeric field, out of scope), or a custom `parseDate` (a non-numeric format would
+   * make the auto-slash wrong). The `year` segment is deliberately left unbounded so the existing
+   * 2-digit shortcut (`normalizeYear`) keeps working — strict validation still happens at
+   * `finalizeParsed`. `defaultParse` already expects these trailing hour/minute digits (see its
+   * `nums.slice(fields.length)`) — this only keeps the auto-formatting mask in sync with it, so
+   * typed hour/minute digits aren't truncated by `autoFormatSegments` before they reach it.
    */
   private readonly typingSlots = computed<MaskSlot[] | null>(() => {
-    if (this.triggerReadonly() || this.timeOnly() || this.view() === 'year' || this.parseDate()) return null;
+    if (this.triggerReadonly() || this.view() === 'year' || this.parseDate()) return null;
     const widths = { day: '99', month: '99', year: '9999' } as const;
     const bounds: Record<'day' | 'month' | 'year', MaskBounds | null> = {
       day: { min: 1, max: 31 },
@@ -447,8 +460,14 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
       year: null,
     };
     const fields = this.activeFields();
-    const mask = fields.map((f) => widths[f]).join('/');
-    return buildMaskSlots(mask, fields.map((f) => bounds[f]));
+    let mask = fields.map((f) => widths[f]).join('/');
+    const segmentBounds: (MaskBounds | null)[] = fields.map((f) => bounds[f]);
+
+    if (this.showTime() && this.view() === 'date') {
+      mask += this.hourFormat() === '12' ? ' 99:99 aa' : ' 99:99';
+      segmentBounds.push(this.hourFormat() === '12' ? { min: 1, max: 12 } : { min: 0, max: 23 }, { min: 0, max: 59 });
+    }
+    return buildMaskSlots(mask, segmentBounds);
   });
   /** @ignore The panel is visible. */
   protected readonly showPanel = computed(() => this.inline() || this.panelOpen());
@@ -708,6 +727,8 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     if (first) {
       this.viewDate.set(firstOfMonth(first));
       this.focusedDate.set(startOfDay(first));
+      this.focusedMonthIndex.set(first.getMonth());
+      this.focusedYear.set(first.getFullYear());
     }
   }
 
@@ -719,11 +740,17 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     this.viewDate.set(firstOfMonth(base));
     this.currentView.set(this.view());
     this.focusedDate.set(this.clampToRange(startOfDay(base)));
+    this.focusedMonthIndex.set(base.getMonth());
+    this.focusedYear.set(base.getFullYear());
     this.overlayOrigin.set(this.resolveOverlayOrigin());
     this.panelOpen.set(true);
     this.opened.emit();
-    // Keep focus in the input when it's typeable; otherwise rove into the grid.
-    if (this.showCalendar() && this.currentView() === 'date' && this.triggerReadonly()) this.queueDayFocus();
+    // Keep focus in the input when it's typeable; otherwise rove into the (active) grid.
+    if (this.showCalendar() && this.triggerReadonly()) {
+      if (this.currentView() === 'date') this.queueDayFocus();
+      else if (this.currentView() === 'month') this.queueMonthFocus();
+      else this.queueYearFocus();
+    }
   }
 
   close(focusTrigger = true): void {
@@ -926,8 +953,13 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   protected onHeaderClick(): void {
     if (!this.singleMonth()) return;
     const v = this.currentView();
-    if (v === 'date') this.currentView.set('month');
-    else if (v === 'month') this.currentView.set('year');
+    if (v === 'date') {
+      this.focusedMonthIndex.set(this.viewDate().getMonth());
+      this.currentView.set('month');
+    } else if (v === 'month') {
+      this.focusedYear.set(this.viewDate().getFullYear());
+      this.currentView.set('year');
+    }
   }
 
   /** @ignore Prev/next arrow — steps month / year / decade depending on the view. */
@@ -997,7 +1029,7 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     if (this.view() === 'month') {
       this.commit(d);
       this.dateSelect.emit(this.serializeValue(d));
-      if (this.closeOnSelect() && !this.inline()) this.close();
+      if (this.closeOnSelect() && !this.showTime() && !this.inline()) this.close();
     } else {
       this.currentView.set('date');
       this.focusedDate.set(this.clampToRange(startOfDay(d)));
@@ -1013,9 +1045,11 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     if (this.view() === 'year') {
       this.commit(d);
       this.dateSelect.emit(this.serializeValue(d));
-      if (this.closeOnSelect() && !this.inline()) this.close();
+      if (this.closeOnSelect() && !this.showTime() && !this.inline()) this.close();
     } else {
       this.currentView.set('month');
+      this.focusedMonthIndex.set(d.getMonth());
+      this.queueMonthFocus();
     }
   }
 
@@ -1046,15 +1080,21 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   );
   /** @ignore The hours/minutes fields accept typing. */
   protected readonly timeEditable = computed(() => this.editableTime() && !this.isDisabled() && !this.readonly());
+  /** @ignore The time steppers (chevrons + AM/PM toggle) accept interaction — unlike
+   *  `timeEditable`, not gated on `editableTime` (the steppers stay usable in
+   *  `StepperOnlyTime`-style configs; only `disabled`/`readonly` freeze them). */
+  protected readonly timeControlsEnabled = computed(() => !this.isDisabled() && !this.readonly());
 
   /** @ignore Step hours (wraps 0↔23; also flips meridiem across the 12h boundary). */
   protected stepHours(dir: 1 | -1): void {
+    if (!this.timeControlsEnabled()) return;
     this.hoursDraft.set(null);
     this.hours.set((((this.hours() + dir) % 24) + 24) % 24);
     this.applyTime();
   }
   /** @ignore Step minutes by `stepMinute` (wraps 0↔59). */
   protected stepMinutes(dir: 1 | -1): void {
+    if (!this.timeControlsEnabled()) return;
     this.minutesDraft.set(null);
     const step = Math.max(1, this.stepMinute());
     this.minutes.set((((this.minutes() + dir * step) % 60) + 60) % 60);
@@ -1062,6 +1102,7 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   }
   /** @ignore */
   protected toggleMeridiem(): void {
+    if (!this.timeControlsEnabled()) return;
     this.hoursDraft.set(null);
     this.hours.set((this.hours() + 12) % 24);
     this.applyTime();
@@ -1158,6 +1199,7 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   }
   /** @ignore */
   protected onMeridiemKeydown(event: KeyboardEvent): void {
+    if (!this.timeControlsEnabled()) return;
     if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
       event.preventDefault();
       this.toggleMeridiem();
@@ -1242,6 +1284,101 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     return !cell.otherMonth && isSameDay(cell.date, this.focusedDate());
   }
 
+  // --- Grid keyboard navigation (roving focus, month/year pickers) -------
+
+  /**
+   * @ignore Shared arrow/Home/End math for a fixed-size, `columns`-wide grid (the month picker's
+   * 12 cells / 3 columns and the year picker's 10 cells / 2 columns) — the one piece of roving-
+   * focus logic actually common to all three grids; `PageUp`/`PageDown`/`Enter`/`Escape` differ
+   * per grid (paging semantics, selecting a month vs. a year) and stay in their own handler.
+   * Returns `null` for a key it doesn't handle.
+   */
+  private navigateGridIndex(key: string, current: number, columns: number, count: number): number | null {
+    switch (key) {
+      case 'ArrowLeft':
+        return Math.max(0, current - 1);
+      case 'ArrowRight':
+        return Math.min(count - 1, current + 1);
+      case 'ArrowUp':
+        return current - columns >= 0 ? current - columns : current;
+      case 'ArrowDown':
+        return current + columns < count ? current + columns : current;
+      case 'Home':
+        return Math.floor(current / columns) * columns;
+      case 'End':
+        return Math.min(count - 1, Math.floor(current / columns) * columns + columns - 1);
+      default:
+        return null;
+    }
+  }
+
+  /** @ignore Month-picker grid: ←↑→↓/Home/End move within the 12 months (3 columns), PageUp/PageDown
+   *  step the displayed year (Shift = ×10), Enter/Space picks the focused month. */
+  protected onMonthGridKeydown(event: KeyboardEvent): void {
+    const current = this.focusedMonthIndex();
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      this.selectMonth(this.months()[current]);
+      return;
+    }
+    if (event.key === 'Escape') {
+      if (!this.inline()) this.close();
+      return;
+    }
+    if (event.key === 'PageUp' || event.key === 'PageDown') {
+      event.preventDefault();
+      const dir = event.key === 'PageUp' ? -1 : 1;
+      const years = event.shiftKey ? 10 : 1;
+      this.viewDate.set(new Date(this.viewDate().getFullYear() + dir * years, this.viewDate().getMonth(), 1));
+      this.queueMonthFocus();
+      return;
+    }
+    const next = this.navigateGridIndex(event.key, current, 3, 12);
+    if (next === null) return;
+    event.preventDefault();
+    this.focusedMonthIndex.set(next);
+    this.queueMonthFocus();
+  }
+
+  /** @ignore Year-picker grid: ←↑→↓/Home/End move within the displayed decade (2 columns),
+   *  PageUp/PageDown step by a decade (Shift = ×10 decades), Enter/Space picks the focused year. */
+  protected onYearGridKeydown(event: KeyboardEvent): void {
+    const current = this.focusedYear();
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      this.selectYear(this.years()[current - this.decadeStart()]);
+      return;
+    }
+    if (event.key === 'Escape') {
+      if (!this.inline()) this.close();
+      return;
+    }
+    if (event.key === 'PageUp' || event.key === 'PageDown') {
+      event.preventDefault();
+      const dir = event.key === 'PageUp' ? -1 : 1;
+      const delta = (event.shiftKey ? 100 : 10) * dir;
+      this.viewDate.set(new Date(this.viewDate().getFullYear() + delta, this.viewDate().getMonth(), 1));
+      this.focusedYear.set(current + delta);
+      this.queueYearFocus();
+      return;
+    }
+    const idx = this.navigateGridIndex(event.key, current - this.decadeStart(), 2, 10);
+    if (idx === null) return;
+    event.preventDefault();
+    this.focusedYear.set(this.decadeStart() + idx);
+    this.queueYearFocus();
+  }
+
+  /** @ignore The month-picker roving-focus cell. */
+  protected isFocusableMonth(cell: DatepickerMonthCell): boolean {
+    return cell.index === this.focusedMonthIndex();
+  }
+
+  /** @ignore The year-picker roving-focus cell. */
+  protected isFocusableYear(cell: DatepickerYearCell): boolean {
+    return cell.year === this.focusedYear();
+  }
+
   /** @ignore Shift the visible month window just enough to contain `date`. */
   private ensureMonthVisible(date: Date): void {
     const count = Math.max(1, this.numberOfMonths());
@@ -1323,12 +1460,25 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     return host?.querySelector('.ui-field-box') ?? host ?? null;
   }
 
-  /** @ignore */
-  private queueDayFocus(): void {
+  /** @ignore Focus the roving-tabindex cell matching `selector`, once the DOM reflects the
+   *  just-updated `focusedDate`/`focusedMonthIndex`/`focusedYear` signal. */
+  private queueCellFocus(selector: string): void {
     if (typeof requestAnimationFrame === 'undefined') return;
     requestAnimationFrame(() => {
-      this.panelEl()?.nativeElement.querySelector<HTMLElement>('.ui-datepicker-day._focusable')?.focus();
+      this.panelEl()?.nativeElement.querySelector<HTMLElement>(selector)?.focus();
     });
+  }
+  /** @ignore */
+  private queueDayFocus(): void {
+    this.queueCellFocus('.ui-datepicker-day._focusable');
+  }
+  /** @ignore */
+  private queueMonthFocus(): void {
+    this.queueCellFocus('.ui-datepicker-picker._month .ui-datepicker-cell._focusable');
+  }
+  /** @ignore */
+  private queueYearFocus(): void {
+    this.queueCellFocus('.ui-datepicker-picker._year .ui-datepicker-cell._focusable');
   }
 
   /** @ignore */

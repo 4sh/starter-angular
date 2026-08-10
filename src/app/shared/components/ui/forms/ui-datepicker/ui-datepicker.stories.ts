@@ -35,23 +35,29 @@ const meta: Meta<UiDatepicker> = {
     view: { control: 'inline-radio', options: ['date', 'month', 'year'], description: 'Granularité de base (aussi MonthPicker/YearPicker).', table: { type: { summary: 'DatepickerView' }, defaultValue: { summary: '"date"' } } },
     numberOfMonths: { control: { type: 'number', min: 1, max: 3 }, table: { type: { summary: 'number' }, defaultValue: { summary: '1' } } },
     icon: { control: 'text', table: { type: { summary: 'string' }, defaultValue: { summary: '"calendar"' } } },
+    showIcon: { control: 'boolean', description: "Affiche le bouton bascule (calendrier/horloge) du déclencheur.", table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } } },
     firstDayOfWeek: { control: { type: 'number', min: 0, max: 6 }, table: { type: { summary: 'number' }, defaultValue: { summary: '1' } } },
     locale: { control: 'text', table: { type: { summary: 'string' } } },
     minDate: { control: 'text', description: 'Date minimale sélectionnable. `Date` ou ISO `"yyyy-MM-dd"`.', table: { type: { summary: 'Date | string | null' } } },
     maxDate: { control: 'text', description: 'Date maximale sélectionnable. `Date` ou ISO `"yyyy-MM-dd"`.', table: { type: { summary: 'Date | string | null' } } },
     disabledDates: { control: false, description: 'Dates ponctuelles désactivées. `Date` ou ISO `"yyyy-MM-dd"`, mixables.', table: { type: { summary: '(Date | string)[]' } } },
+    disabledDays: { control: false, description: 'Jours de la semaine désactivés (0 = dimanche … 6 = samedi).', table: { type: { summary: 'number[]' } } },
     dateFormat: { control: false, description: "Formatteur d'affichage custom (symétrique de `parseDate`).", table: { type: { summary: '(date: Date) => string' } } },
     parseDate: { control: false, description: 'Parseur custom de la saisie clavier (symétrique de `dateFormat`).', table: { type: { summary: '(value: string) => Date | null' } } },
     showTime: { control: 'boolean', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
     timeOnly: { control: 'boolean', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
     hourFormat: { control: 'inline-radio', options: ['24', '12'], table: { type: { summary: "'12' | '24'" }, defaultValue: { summary: '"24"' } } },
+    stepMinute: { control: { type: 'number', min: 1, max: 30 }, description: "Incrément des minutes aux chevrons / flèches clavier (la frappe reste exacte).", table: { type: { summary: 'number' }, defaultValue: { summary: '1' } } },
     editableTime: { control: 'boolean', description: 'Autorise la frappe des heures / minutes (AM/PM reste une bascule).', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } } },
     showButtonBar: { control: 'boolean', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
+    todayLabel: { control: 'text', description: 'Libellé du bouton « Aujourd\'hui » par défaut.', table: { type: { summary: 'string' }, defaultValue: { summary: '"Aujourd\'hui"' } } },
+    clearLabel: { control: 'text', description: 'Libellé du bouton « Effacer » par défaut (et de la croix `showClear`).', table: { type: { summary: 'string' }, defaultValue: { summary: '"Effacer"' } } },
     inline: { control: 'boolean', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
     showClear: { control: 'boolean', description: 'Affiche une croix pour effacer la valeur quand elle est renseignée.', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
     autoFlip: { control: 'boolean', description: "Retourne le panneau vers le haut si l'espace manque en bas.", table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } } },
     closeOnSelect: { control: 'boolean', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } } },
-    allowInput: { control: 'boolean', description: 'Autorise la saisie clavier de la date dans le champ (mode single). Parsée au blur / Entrée.', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
+    allowInput: { control: 'boolean', description: 'Autorise la saisie clavier de la date dans le champ (mode single, hors timeOnly). Parsée au blur / Entrée.', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
+    panelStyleClass: { control: 'text', description: 'Classe(s) supplémentaire(s) appliquée(s) au panneau (personnalisation scoped).', table: { type: { summary: 'string' } } },
     required: { control: 'boolean', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
     disabled: { control: 'boolean', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
     readonly: { control: 'boolean', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
@@ -62,6 +68,8 @@ const meta: Meta<UiDatepicker> = {
     opened: { action: 'opened', table: { disable: true } },
     closed: { action: 'closed', table: { disable: true } },
     cleared: { action: 'cleared', table: { disable: true } },
+    inputFocus: { action: 'inputFocus', table: { disable: true } },
+    inputBlur: { action: 'inputBlur', table: { disable: true } },
   },
   args: {
     label: 'Date',
@@ -78,10 +86,14 @@ const meta: Meta<UiDatepicker> = {
     selectionMode: 'single',
     view: 'date',
     numberOfMonths: 1,
+    showIcon: true,
     showTime: false,
     timeOnly: false,
+    stepMinute: 1,
     editableTime: true,
     showButtonBar: false,
+    todayLabel: "Aujourd'hui",
+    clearLabel: 'Effacer',
     inline: false,
     showClear: false,
     autoFlip: true,
@@ -103,15 +115,17 @@ const TEMPLATE = `<div style="width:260px"><ui-datepicker
     [(ngModel)]="model"
     [valueType]="valueType"
     [label]="label" [placeholder]="placeholder" [helperText]="helperText" [errorText]="errorText"
-    [size]="size" [level]="level" [icon]="icon" [firstDayOfWeek]="firstDayOfWeek" [locale]="locale"
+    [size]="size" [level]="level" [icon]="icon" [showIcon]="showIcon" [firstDayOfWeek]="firstDayOfWeek" [locale]="locale"
     [selectionMode]="selectionMode" [view]="view" [numberOfMonths]="numberOfMonths"
-    [showTime]="showTime" [timeOnly]="timeOnly" [hourFormat]="hourFormat" [editableTime]="editableTime"
-    [showButtonBar]="showButtonBar" [inline]="inline" [showClear]="showClear" [autoFlip]="autoFlip" [closeOnSelect]="closeOnSelect" [allowInput]="allowInput"
+    [showTime]="showTime" [timeOnly]="timeOnly" [hourFormat]="hourFormat" [stepMinute]="stepMinute" [editableTime]="editableTime"
+    [showButtonBar]="showButtonBar" [todayLabel]="todayLabel" [clearLabel]="clearLabel"
+    [inline]="inline" [showClear]="showClear" [autoFlip]="autoFlip" [closeOnSelect]="closeOnSelect" [allowInput]="allowInput"
     [minDate]="minDate" [maxDate]="maxDate" [disabledDays]="disabledDays" [disabledDates]="disabledDates"
-    [dateFormat]="dateFormat" [parseDate]="parseDate"
+    [dateFormat]="dateFormat" [parseDate]="parseDate" [panelStyleClass]="panelStyleClass"
     [required]="required" [disabled]="disabled" [readonly]="readonly" [invalid]="invalid"
     (valueChange)="valueChange($event)" (dateSelect)="dateSelect($event)" (monthChange)="monthChange($event)"
-    (opened)="opened()" (closed)="closed()" (cleared)="cleared()" /></div>`;
+    (opened)="opened()" (closed)="closed()" (cleared)="cleared()"
+    (inputFocus)="inputFocus($event)" (inputBlur)="inputBlur($event)" /></div>`;
 
 // Default demos use `Date` (valueType="date", set via meta.args below — matches a DTO
 // round-tripped through class-transformer). `writeValue` also accepts an ISO string transparently
@@ -250,6 +264,36 @@ export const AutoFormattedInputMonthPicker: Story = {
     locale: 'fr-FR',
     placeholder: '',
     helperText: 'Tapez "072026" : auto-formaté en "07/2026" (mm/aaaa).',
+  },
+};
+
+// Saisie assistée avec heure (allowInput + showTime) : le masque couvre aussi HH:MM, sans
+// tronquer les chiffres d'heure/minute tapés à la suite de la date (typingSlots).
+export const EditableInputWithTime: Story = {
+  render: story(sample),
+  args: {
+    label: 'Rendez-vous',
+    allowInput: true,
+    showTime: true,
+    showClear: true,
+    locale: 'fr-FR',
+    placeholder: '',
+    helperText: 'Tapez "080720261430" pour "08/07/2026 14:30" (jj/mm/aaaa hh:mm).',
+  },
+};
+
+// Même cas en 12h : le masque ajoute un segment lettres pour AM/PM ("aa").
+export const EditableInputWithTime12h: Story = {
+  render: story(sample),
+  args: {
+    label: 'Rendez-vous',
+    allowInput: true,
+    showTime: true,
+    hourFormat: '12',
+    showClear: true,
+    locale: 'fr-FR',
+    placeholder: '',
+    helperText: 'Tapez "080720260200PM" pour "08/07/2026 02:00 PM" (jj/mm/aaaa hh:mm aa).',
   },
 };
 

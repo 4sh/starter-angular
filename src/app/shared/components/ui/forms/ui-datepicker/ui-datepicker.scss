@@ -308,12 +308,15 @@ $stroke-width: utils.$control-stroke-width; /// Épaisseur des bordures (panneau
     @include utils.control-transition(background-color, box-shadow);
 
     &:read-only { cursor: pointer; }
-    &:hover { background-color: var(--informative-highlightlow-surface-hover); }
+    &:hover:not(:disabled):not([aria-disabled='true']) { background-color: var(--informative-highlightlow-surface-hover); }
     &:focus-visible {
       outline: none;
       box-shadow: 0 0 0 $focus-ring-width rgb(from var(--form-high-stroke-focused) r g b / 50%);
     }
-    &:disabled { color: var(--form-high-content-disabled); cursor: not-allowed; }
+    // `:disabled` covers the HH/MM `<input>`; the AM/PM unit is a `<span>` (no native
+    // disabled state) and mirrors it via `[aria-disabled]` — same token, same look.
+    &:disabled,
+    &[aria-disabled='true'] { color: var(--form-high-content-disabled); cursor: not-allowed; }
   }
 
   &-time-btn {
@@ -330,10 +333,11 @@ $stroke-width: utils.$control-stroke-width; /// Épaisseur des bordures (panneau
     cursor: pointer;
     @include utils.control-transition(background-color, color);
 
-    &:hover {
+    &:hover:not(:disabled) {
       background-color: var(--informative-highlightlow-surface-hover);
       color: var(--form-high-content-hover);
     }
+    &:disabled { color: var(--form-high-content-disabled); cursor: not-allowed; }
   }
 
   &-time-colon {

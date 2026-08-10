@@ -36,14 +36,17 @@
 
       <!-- YEAR view -->
       @if (currentView() === 'year') {
-        <div class="ui-datepicker-picker _year" role="grid">
+        <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
+        <div class="ui-datepicker-picker _year" role="grid" (keydown)="onYearGridKeydown($event)">
           @for (y of years(); track y.year) {
             <button
               type="button"
               role="gridcell"
               class="ui-datepicker-cell"
               [class._selected]="y.selected"
+              [class._focusable]="isFocusableYear(y)"
               [disabled]="y.disabled"
+              [attr.tabindex]="isFocusableYear(y) ? 0 : -1"
               [attr.aria-selected]="y.selected"
               (click)="selectYear(y)"
             >
@@ -55,14 +58,17 @@
 
       <!-- MONTH view -->
       @else if (currentView() === 'month') {
-        <div class="ui-datepicker-picker _month" role="grid">
+        <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
+        <div class="ui-datepicker-picker _month" role="grid" (keydown)="onMonthGridKeydown($event)">
           @for (m of months(); track m.index) {
             <button
               type="button"
               role="gridcell"
               class="ui-datepicker-cell"
               [class._selected]="m.selected"
+              [class._focusable]="isFocusableMonth(m)"
               [disabled]="m.disabled"
+              [attr.tabindex]="isFocusableMonth(m) ? 0 : -1"
               [attr.aria-selected]="m.selected"
               (click)="selectMonth(m)"
             >
@@ -101,13 +107,12 @@
                 </div>
               }
 
-              <div class="ui-datepicker-weekdays" role="row">
-                @for (wd of weekDayNames(); track $index) {
-                  <span class="ui-datepicker-weekday" role="columnheader" [attr.aria-label]="wd.full">{{ wd.short }}</span>
-                }
-              </div>
-
               <div class="ui-datepicker-grid" role="grid">
+                <div class="ui-datepicker-weekdays" role="row">
+                  @for (wd of weekDayNames(); track $index) {
+                    <span class="ui-datepicker-weekday" role="columnheader" [attr.aria-label]="wd.full">{{ wd.short }}</span>
+                  }
+                </div>
                 @for (week of mp.weeks; track $index) {
                   <div class="ui-datepicker-week" role="row">
                     @for (cell of week; track cell.ts) {
@@ -150,7 +155,7 @@
       <div class="ui-datepicker-time">
         <!-- Hours -->
         <div class="ui-datepicker-time-unit">
-          <button type="button" class="ui-datepicker-time-btn" tabindex="-1" [attr.aria-label]="incrementHoursAriaLabel()" (click)="stepHours(1)">
+          <button type="button" class="ui-datepicker-time-btn" tabindex="-1" [disabled]="!timeControlsEnabled()" [attr.aria-label]="incrementHoursAriaLabel()" (click)="stepHours(1)">
             <ui-icon name="chevron-up" size="sm" />
           </button>
           <input
@@ -173,7 +178,7 @@
             (blur)="onHoursBlur()"
             (keydown)="onHourKeydown($event)"
           />
-          <button type="button" class="ui-datepicker-time-btn" tabindex="-1" [attr.aria-label]="decrementHoursAriaLabel()" (click)="stepHours(-1)">
+          <button type="button" class="ui-datepicker-time-btn" tabindex="-1" [disabled]="!timeControlsEnabled()" [attr.aria-label]="decrementHoursAriaLabel()" (click)="stepHours(-1)">
             <ui-icon name="chevron-down" size="sm" />
           </button>
         </div>
@@ -182,7 +187,7 @@
 
         <!-- Minutes -->
         <div class="ui-datepicker-time-unit">
-          <button type="button" class="ui-datepicker-time-btn" tabindex="-1" [attr.aria-label]="incrementMinutesAriaLabel()" (click)="stepMinutes(1)">
+          <button type="button" class="ui-datepicker-time-btn" tabindex="-1" [disabled]="!timeControlsEnabled()" [attr.aria-label]="incrementMinutesAriaLabel()" (click)="stepMinutes(1)">
             <ui-icon name="chevron-up" size="sm" />
           </button>
           <input
@@ -205,7 +210,7 @@
             (blur)="onMinutesBlur()"
             (keydown)="onMinuteKeydown($event)"
           />
-          <button type="button" class="ui-datepicker-time-btn" tabindex="-1" [attr.aria-label]="decrementMinutesAriaLabel()" (click)="stepMinutes(-1)">
+          <button type="button" class="ui-datepicker-time-btn" tabindex="-1" [disabled]="!timeControlsEnabled()" [attr.aria-label]="decrementMinutesAriaLabel()" (click)="stepMinutes(-1)">
             <ui-icon name="chevron-down" size="sm" />
           </button>
         </div>
@@ -214,21 +219,22 @@
         @if (hourFormat() === '12') {
           <span class="ui-datepicker-time-colon" aria-hidden="true">:</span>
           <div class="ui-datepicker-time-unit">
-            <button type="button" class="ui-datepicker-time-btn" tabindex="-1" [attr.aria-label]="toggleMeridiemAriaLabel()" (click)="toggleMeridiem()">
+            <button type="button" class="ui-datepicker-time-btn" tabindex="-1" [disabled]="!timeControlsEnabled()" [attr.aria-label]="toggleMeridiemAriaLabel()" (click)="toggleMeridiem()">
               <ui-icon name="chevron-up" size="sm" />
             </button>
             <span
               class="ui-datepicker-time-value"
               role="spinbutton"
-              tabindex="0"
+              [attr.tabindex]="timeControlsEnabled() ? 0 : -1"
               [attr.aria-label]="meridiemAriaLabel()"
               [attr.aria-valuetext]="meridiem()"
+              [attr.aria-disabled]="!timeControlsEnabled() || null"
               (keydown)="onMeridiemKeydown($event)"
               (click)="toggleMeridiem()"
             >
               {{ meridiem() }}
             </span>
-            <button type="button" class="ui-datepicker-time-btn" tabindex="-1" [attr.aria-label]="toggleMeridiemAriaLabel()" (click)="toggleMeridiem()">
+            <button type="button" class="ui-datepicker-time-btn" tabindex="-1" [disabled]="!timeControlsEnabled()" [attr.aria-label]="toggleMeridiemAriaLabel()" (click)="toggleMeridiem()">
               <ui-icon name="chevron-down" size="sm" />
             </button>
           </div>

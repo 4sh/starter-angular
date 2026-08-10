@@ -131,6 +131,11 @@ Activez `allowInput` pour autoriser la **frappe au clavier** dans le champ (mode
 uniquement). Le texte est parsé au **blur** et sur **Entrée** ; une saisie invalide revient
 à la dernière valeur affichée. `↓` ouvre le panneau et entre dans la grille.
 
+Quand `showTime` est actif (hors `timeOnly`), le masque couvre aussi les segments heure/minute
+(et AM/PM en `hourFormat="12"`) : `allowInput` reste utilisable pour taper la date **et** l'heure
+d'une traite. `allowInput` est en revanche **sans effet en `timeOnly`** (pas de parseur/formatteur
+dédié à une heure seule) : le champ y reste toujours en lecture seule.
+
 Quand `allowInput` est actif (et sans `dateFormat` custom), la valeur s'affiche au **format
 numérique** de la locale (ex. `08/07/2026`) pour un aller-retour fiable avec le parser.
 
@@ -156,6 +161,8 @@ ne sont jamais round-trippés à travers la CVA, donc pas concernés par le cont
 <Canvas of={DatepickerStories.EditableInput} />
 <Canvas of={DatepickerStories.AutoFormattedInputEnUs} />
 <Canvas of={DatepickerStories.AutoFormattedInputMonthPicker} />
+<Canvas of={DatepickerStories.EditableInputWithTime} />
+<Canvas of={DatepickerStories.EditableInputWithTime12h} />
 <Canvas of={DatepickerStories.CustomFormat} />
 
 ## Templates
@@ -231,7 +238,7 @@ via l'interop CVA native, ainsi qu'aux formulaires template-driven (`[(ngModel)]
     </tr>
     <tr>
       <td><strong>Navigation grille</strong></td>
-      <td>Focus roving (tabindex géré). <kbd>← ↑ → ↓</kbd> jour, <kbd>Début</kbd>/<kbd>Fin</kbd> semaine, <kbd>Page↑</kbd>/<kbd>Page↓</kbd> mois (+ <kbd>Maj</kbd> = année), <kbd>Entrée</kbd>/<kbd>Espace</kbd> sélectionne.</td>
+      <td>Focus roving (tabindex géré) dans les trois grilles (jour, <code>MonthPicker</code>, <code>YearPicker</code>). Vue jour : <kbd>← ↑ → ↓</kbd> jour, <kbd>Début</kbd>/<kbd>Fin</kbd> semaine, <kbd>Page↑</kbd>/<kbd>Page↓</kbd> mois (+ <kbd>Maj</kbd> = année). Vue mois : <kbd>← ↑ → ↓</kbd> mois, <kbd>Page↑</kbd>/<kbd>Page↓</kbd> année (+ <kbd>Maj</kbd> = décennie). Vue année : <kbd>← ↑ → ↓</kbd> année dans la décennie affichée, <kbd>Page↑</kbd>/<kbd>Page↓</kbd> décennie (+ <kbd>Maj</kbd> = siècle). <kbd>Entrée</kbd>/<kbd>Espace</kbd> sélectionne partout.</td>
     </tr>
     <tr>
       <td><strong>Fermeture</strong></td>
@@ -264,11 +271,14 @@ via l'interop CVA native, ainsi qu'aux formulaires template-driven (`[(ngModel)]
   </tbody>
 </table>
 
-> **Périmètre / choix** : le champ déclencheur est en **lecture seule** (choix par le calendrier ;
-> pas de saisie/parsing texte libre). Le tiroir de vues (jour → mois → année) et le focus roving
-> clavier sont actifs en **mono-mois** ; en multi-mois les entêtes sont fixes avec flèches aux
-> extrémités. Les états interactifs (hover/focus/pressed) sont des **pseudo-classes CSS** pilotées
-> par les tokens, pas des props. Personnalisation via `panelStyleClass`, `#date`, `#buttonbar`.
+> **Périmètre / choix** : le champ déclencheur est en **lecture seule par défaut** (choix par le
+> calendrier uniquement) ; `allowInput` (mode `single`, hors `timeOnly`) l'ouvre à la **saisie
+> clavier avec masque** — voir [Saisie manuelle](#saisie-manuelle-allowinput). Le tiroir de vues
+> (jour → mois → année) et le focus roving clavier sont actifs en **mono-mois** — désormais aussi
+> dans les grilles `MonthPicker`/`YearPicker` ; en multi-mois les entêtes sont fixes avec flèches
+> aux extrémités. Les états interactifs (hover/focus/pressed) sont des **pseudo-classes CSS**
+> pilotées par les tokens, pas des props. Personnalisation via `panelStyleClass`, `#date`,
+> `#buttonbar`.
 
 ## Theming
 
