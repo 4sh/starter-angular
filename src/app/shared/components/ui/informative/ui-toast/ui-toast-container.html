@@ -6,9 +6,6 @@
   @for (item of items(); track item.id) {
     <div
       class="ui-toast-region-item"
-      [attr.role]="item.level === 'error' || item.level === 'warning' ? 'alert' : 'status'"
-      [attr.aria-live]="item.level === 'error' || item.level === 'warning' ? 'assertive' : 'polite'"
-      aria-atomic="true"
       [uiMotion]="motionPreset()"
       [motionDisabled]="motionDisabled()"
       #m="uiMotion"

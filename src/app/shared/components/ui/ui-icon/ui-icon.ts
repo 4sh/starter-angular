@@ -1,4 +1,4 @@
-import { booleanAttribute, Component, computed, inject, input, isDevMode } from '@angular/core';
+import { booleanAttribute, Component, computed, effect, inject, input, isDevMode } from '@angular/core';
 import {
   fontAwesomeFamily,
   UI_ICON_BUILTIN_FAMILIES,
@@ -67,4 +67,15 @@ export class UiIcon {
   protected readonly content = computed(
     () => this.resolvedFamily().content?.(this.name(), this.type()) ?? null,
   );
+
+  constructor() {
+    effect(() => {
+      if (!this.decorative() && !this.ariaLabel() && isDevMode()) {
+        console.warn(
+          `[ui-icon] Meaningful icon "${this.name()}" (decorative=false) has no ariaLabel — ` +
+            `it renders role="img" with no accessible name.`,
+        );
+      }
+    });
+  }
 }

@@ -49,7 +49,7 @@ $textarea-min-height-small: utils.$form-textarea-min-height-small; /// Hauteur m
     // ui-input-group) by setting `--ui-field-radius` on the component host.
     border-radius: var(--ui-field-radius, #{$radius}); /// Rayon exposé pour reformer les coins (utilisé par `ui-input-group`).
     background-color: var(--form-high-surface-default);
-    cursor: var(--ui-field-box-cursor, text);
+    cursor: var(--ui-field-box-cursor, text);          /// Curseur de la boîte, surchargé par les champs non textuels (`ui-select`…).
     @include utils.control-transition(background-color, box-shadow);
   }
   &._small &-box { height: $height-small; }

@@ -29,7 +29,7 @@
     [attr.maxlength]="maxlength()"
     [attr.aria-label]="label() ? null : ariaLabel() || null"
     [attr.aria-labelledby]="ariaLabelledBy() || null"
-    [attr.aria-describedby]="displayMessage() ? messageId() : null"
+    [attr.aria-describedby]="describedByIds()"
     [attr.aria-invalid]="effectiveLevel() === 'error' ? 'true' : null"
     (input)="onInput()"
     (focus)="textareaFocus.emit($event)"
@@ -43,7 +43,7 @@
       [class._small]="size() === 'small'"
       [class._disabled]="isDisabled()"
       [class._over]="overLimit()"
-      aria-hidden="true"
+      [attr.id]="countId()"
     >
       {{ charCount() }}@if (maxlength(); as max) {&nbsp;/&nbsp;{{ max }}}
     </span>

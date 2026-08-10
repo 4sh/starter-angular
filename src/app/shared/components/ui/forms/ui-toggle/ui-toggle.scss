@@ -89,6 +89,14 @@ $sizes: (
   @include toggle-size(map.get($sizes, 'default'));
   &._small { @include toggle-size(map.get($sizes, 'small')); }
 
+  // --- Hover -----------------------------------------------------------
+  &:hover:not(._disabled):not(._readonly) &-track {
+    background-color: var(--form-low-content-hover);
+  }
+  &._checked:hover:not(._disabled):not(._readonly) &-track {
+    background-color: var(--form-high-content-hover);
+  }
+
   // --- Checked  -------
   &._checked &-track {
     background-color: var(--form-high-content-checked);

@@ -618,6 +618,11 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
       this.close();
       return;
     }
+    // Mark the query as already handled *before* focusing: `focus()` fires a
+    // synchronous `focus` event on the input, and `completeOnFocus` would
+    // otherwise run its own `completeMethod` in addition to the one below —
+    // a single dropdown click must only ever emit one query.
+    this.queryDirty = true;
     this.focus();
     const query = this.inputText();
     this.runSearch(event, this.dropdownMode() === 'current' ? query : '');

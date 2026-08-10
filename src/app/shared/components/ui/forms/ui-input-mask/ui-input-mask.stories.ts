@@ -19,6 +19,7 @@ const meta: Meta<UiInputMask> = {
   argTypes: {
     label: { control: 'text', table: { type: { summary: 'string' } } },
     helperText: { control: 'text', table: { type: { summary: 'string' } } },
+    errorText: { control: 'text', description: "Message affiché à la place de l'aide quand en erreur.", table: { type: { summary: 'string' } } },
     placeholder: { control: 'text', table: { type: { summary: 'string' } } },
     mask: { control: 'text', description: '9 chiffre · a lettre · * alphanumérique · autre = littéral.', table: { type: { summary: 'string' } } },
     ranges: { control: 'text', description: 'Bornes par segment numérique, dans l\'ordre du masque : "0-23 0-59". `*` = non borné.', table: { type: { summary: 'string' } } },
@@ -42,7 +43,7 @@ type Story = StoryObj<UiInputMask>;
 
 const TEMPLATE = `<div style="width:240px"><ui-input-mask
     [(ngModel)]="model"
-    [label]="label" [helperText]="helperText" [placeholder]="placeholder"
+    [label]="label" [helperText]="helperText" [errorText]="errorText" [placeholder]="placeholder"
     [mask]="mask" [ranges]="ranges" [slotChar]="slotChar" [unmask]="unmask"
     [size]="size" [level]="level" [iconLeft]="iconLeft"
     [required]="required" [disabled]="disabled" [readonly]="readonly" [invalid]="invalid"
@@ -63,7 +64,10 @@ export const License: Story = { render: story(), args: { label: 'Immatriculation
 export const Prefilled: Story = { render: story('12/09/2024'), args: { label: 'Date', mask: '99/99/9999' } };
 export const Unmask: Story = { render: story(), args: { label: 'IBAN (brut)', mask: 'FR99 9999 9999 9999', unmask: true, helperText: 'Émet la valeur sans espaces.' } };
 export const Small: Story = { render: story(), args: { label: 'Date', mask: '99/99/9999', size: 'small' } };
-export const Error: Story = { render: story('12/'), args: { label: 'Date', mask: '99/99/9999', level: 'error', errorText: 'Date incomplète.' } };
+export const Error: Story = {
+  render: story('12/'),
+  args: { label: 'Date', mask: '99/99/9999', level: 'error', invalid: true, errorText: 'Date incomplète.' },
+};
 export const Disabled: Story = { render: story('12/09/2024'), args: { label: 'Date', mask: '99/99/9999', disabled: true } };
 
 // --- Signal Forms (@angular/forms/signals) ------------------------------

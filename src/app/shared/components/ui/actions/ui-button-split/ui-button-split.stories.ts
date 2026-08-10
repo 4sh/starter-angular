@@ -23,10 +23,13 @@ const ICON_MODEL: UiMenuItem[] = [
 ];
 
 // Options with nested submenus (collapsible groups inside the panel).
+// Top-level groups are plain headers by default (see UiMenuItem.toggleable) —
+// force `toggleable: true` so this story actually demonstrates the collapse.
 const NESTED_MODEL: UiMenuItem[] = [
   {
     label: 'Fichier',
     icon: 'folder',
+    toggleable: true,
     items: [
       { label: 'Nouveau', icon: 'plus' },
       { label: 'Ouvrir', icon: 'folder-open' },
@@ -36,6 +39,7 @@ const NESTED_MODEL: UiMenuItem[] = [
   {
     label: 'Partager',
     icon: 'share-nodes',
+    toggleable: true,
     items: [
       { label: 'Copier le lien', icon: 'link' },
       { label: 'Par e-mail', icon: 'envelope' },

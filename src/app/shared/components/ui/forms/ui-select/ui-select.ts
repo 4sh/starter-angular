@@ -596,6 +596,10 @@ export class UiSelect<T = unknown> extends BaseFormField<SelectValue<T>> {
   /** Clears the value. */
   clear(): void {
     this.commit(null);
+    // Editable mode: drop any typed text still filtering the list — the
+    // trigger just went blank, the panel (if open) must show every option again,
+    // not the stale query's matches (same reset `selectRow`/`close` already do).
+    this.editableQuery.set(null);
     this.cleared.emit();
     this.focus();
   }

@@ -39,7 +39,7 @@
       [class]="dialogClasses()"
       [attr.data-modal-uid]="uid"
       [attr.role]="role()"
-      aria-modal="true"
+      [attr.aria-modal]="modal() ? 'true' : null"
       [attr.aria-label]="resolvedAriaLabel()"
       [attr.aria-labelledby]="labelledBy()"
       tabindex="-1"
