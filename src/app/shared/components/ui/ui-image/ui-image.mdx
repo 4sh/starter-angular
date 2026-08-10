@@ -136,3 +136,9 @@ Les `.svg` **locaux** sont injectés inline (stylisation CSS possible, fetch via
 <Canvas of={UiImageStories.Error_Placeholder} />
 
 <Canvas of={UiImageStories.Unknown_Name_Placeholder} />
+
+## Theming
+
+Aucune variable locale surchargeable par instance : le placeholder utilise directement les tokens
+`--global-background-muted`/`--global-text-muted`/`--units-xl`/`--radius-default`. Voir le
+[fonctionnement de la configuration](?path=/docs/components-configuration--docs).
