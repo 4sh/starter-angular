@@ -1,4 +1,5 @@
 import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import { ConfigTable } from '../../../../../../storybook/blocks/config-table';
 import * as IconStories from './ui-icon.stories';
 
 <Meta of={IconStories} />
@@ -78,3 +79,10 @@ export const appConfig: ApplicationConfig = {
 
 <Canvas of={IconStories.Outline} />
 <Canvas of={IconStories.Meaningful} />
+
+## Theming
+
+Taille calée sur l'échelle typographique dédiée aux icônes (`--size-typography-icon-*`),
+surchargeable ponctuellement via `--ui-icon-size`.
+
+<ConfigTable of="ui-icon" />

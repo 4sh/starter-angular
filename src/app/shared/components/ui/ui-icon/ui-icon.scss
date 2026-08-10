@@ -3,6 +3,15 @@
   line-height: 0;
 }
 
+// Font-size per `size`, keyed on the dedicated icon scale (not the text one).
+$icon-sizes: (
+  'sm': var(--size-typography-icon-sm),
+  'md': var(--size-typography-icon-md),
+  'default': var(--size-typography-icon-default),
+  'lg': var(--size-typography-icon-lg),
+  'xl': var(--size-typography-icon-xl),
+);
+
 .ui-icon {
   display: inline-flex;
   align-items: center;
@@ -11,11 +20,8 @@
   min-height: 1em;
   aspect-ratio: 1;
   color: inherit;
-  font-size: var(--ui-icon-size, var(--size-typography-text-xl));
 
-  &._sm { font-size: var(--ui-icon-size, var(--size-typography-text-md)); }
-  &._md { font-size: var(--ui-icon-size, var(--size-typography-text-default)); }
-  &._default { font-size: var(--ui-icon-size, var(--size-typography-text-xl)); }
-  &._lg { font-size: var(--ui-icon-size, 24px); }
-  &._xl { font-size: var(--ui-icon-size, 32px); }
+  @each $name, $value in $icon-sizes {
+    &._#{$name} { font-size: var(--ui-icon-size, #{$value}); }       /// Taille de police, surchargeable par instance.
+  }
 }
