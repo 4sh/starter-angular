@@ -12,7 +12,7 @@
   font-family: var(--fontfamily-base);
   font-weight: var(--weight-regular);
   font-size: var(--size-typography-text-md);
-  color: var(--ui-label-color, var(--form-high-content-default));
+  color: var(--ui-label-color, var(--form-high-content-default)); /// Couleur du texte, pilotable par un composant de formulaire parent (hover, disabled…).
   cursor: inherit;
 
   &-marker {

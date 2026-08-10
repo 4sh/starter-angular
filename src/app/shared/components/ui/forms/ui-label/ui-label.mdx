@@ -1,0 +1,53 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import { ConfigTable } from '../../../../../../../storybook/blocks/config-table';
+import * as LabelStories from './ui-label.stories';
+
+<Meta of={LabelStories} />
+
+# ui-label
+
+Label de champ de formulaire natif (`<label>`), utilisé seul ou composé à l'intérieur d'autres
+composants (`ui-checkbox`, `ui-radio`, `ui-input`… via `ui-field`). Le texte vient de l'input
+`label` ou d'un contenu projeté via `<ng-content>` ; `for` relie le label à l'id de l'élément
+de formulaire labellisé.
+
+<Canvas of={LabelStories.Default} />
+
+## API
+
+<ArgTypes of={LabelStories} />
+
+## États
+
+<Canvas of={LabelStories.Required} />
+<Canvas of={LabelStories.Small} />
+<Canvas of={LabelStories.Disabled} />
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Point</th>
+      <th>Implémentation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Élément natif</strong></td>
+      <td>Un vrai <code>&lt;label&gt;</code> (jamais un <code>span</code>/<code>div</code> stylé) : clic natif → focus/activation de l'élément ciblé par <code>for</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Association</strong></td>
+      <td><code>for</code> = id de l'élément de formulaire. À l'intérieur d'un composant composé (ex. <code>ui-field</code>), l'id est calculé par le composant parent.</td>
+    </tr>
+    <tr>
+      <td><strong>Marqueur requis</strong></td>
+      <td>Le <code>*</code> est décoratif (<code>aria-hidden</code>) : le caractère requis doit être porté par l'attribut natif <code>required</code>/<code>aria-required</code> sur le contrôle labellisé, pas ici.</td>
+    </tr>
+  </tbody>
+</table>
+
+## Theming
+
+<ConfigTable of="ui-label" />
