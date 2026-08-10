@@ -1,4 +1,4 @@
-<div [class]="classes()">
+<div [class]="classes()" [attr.role]="role()" [attr.aria-live]="ariaLive()" aria-atomic="true">
   @if (iconName(); as name) {
     <span class="ui-toast-icon">
       <ui-icon [name]="name" size="md" />

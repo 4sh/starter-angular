@@ -66,6 +66,17 @@ export class UiToast {
     return UI_TOAST_DEFAULT_ICONS[this.level()];
   });
 
+  /** @ignore ARIA role — assertive alert for error/warning, polite status otherwise
+   * (mirrors ui-alert, so a standalone ui-toast self-announces without the container). */
+  protected readonly role = computed(() =>
+    this.level() === 'error' || this.level() === 'warning' ? 'alert' : 'status',
+  );
+
+  /** @ignore */
+  protected readonly ariaLive = computed(() =>
+    this.level() === 'error' || this.level() === 'warning' ? 'assertive' : 'polite',
+  );
+
   /** @ignore */
   protected readonly classes = computed(() => {
     const c = ['ui-toast', `_${this.level()}`, `_${this.subLevel()}`];
