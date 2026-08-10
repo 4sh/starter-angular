@@ -104,7 +104,7 @@ natif d'un `<button>`.
   <tbody>
     <tr>
       <td><strong>Rôle & nom</strong></td>
-      <td><code>role="dialog"</code> + <code>aria-modal="true"</code> (le focus reste dans le panneau). Nommez-le via <code>ariaLabel</code> ou <code>ariaLabelledBy</code> ; un warning dev signale un panneau ouvert sans nom accessible.</td>
+      <td><code>role="dialog"</code>, non-modal par défaut (patron WAI-ARIA « non-modal dialog ») : pas d'<code>aria-modal</code>, le focus peut quitter le panneau (au clavier, ou par un clic à l'extérieur). Nommez-le via <code>ariaLabel</code> ou <code>ariaLabelledBy</code> ; un warning dev signale un panneau ouvert sans nom accessible.</td>
     </tr>
     <tr>
       <td><strong>Relation déclencheur</strong></td>
@@ -112,7 +112,7 @@ natif d'un `<button>`.
     </tr>
     <tr>
       <td><strong>Focus</strong></td>
-      <td>Piège de focus (<code>cdkTrapFocus</code>) tant que le panneau est ouvert. À l'ouverture (<code>focusOnShow</code>), le <strong>premier élément focusable</strong> reçoit le focus — personnalisable en ajoutant l'attribut <code>autofocus</code> sur un élément du panneau.</td>
+      <td>Par défaut, le focus n'est pas piégé : <code>Tab</code> / <code>Maj+Tab</code> peuvent sortir du panneau une fois le dernier / premier élément focusable atteint. Activez <code>modal</code> pour un comportement de boîte de dialogue bloquante : <code>aria-modal="true"</code> et un piège de focus permanent (<code>cdkTrapFocus</code>) tant que le panneau est ouvert. Dans tous les cas, à l'ouverture (<code>focusOnShow</code>), le <strong>premier élément focusable</strong> reçoit le focus — personnalisable en ajoutant l'attribut <code>autofocus</code> sur un élément du panneau.</td>
     </tr>
     <tr>
       <td><strong>Clavier</strong></td>

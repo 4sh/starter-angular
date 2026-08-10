@@ -32,6 +32,11 @@ const meta: Meta<UiPopover> = {
       description: 'Affiche la flèche pointant vers le déclencheur.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
+    modal: {
+      control: { type: 'boolean' },
+      description: 'Rend le panneau modal : `aria-modal` et piège de focus permanent.',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
     role: {
       control: { type: 'text' },
       description: 'Rôle ARIA du panneau.',
@@ -76,6 +81,7 @@ const meta: Meta<UiPopover> = {
     dismissable: true,
     position: 'bottom',
     showArrow: true,
+    modal: false,
     focusOnShow: true,
     closeOnEscape: true,
     motion: true,
@@ -98,6 +104,7 @@ export const Basic: Story = {
         [dismissable]="dismissable"
         [position]="position"
         [showArrow]="showArrow"
+        [modal]="modal"
         [focusOnShow]="focusOnShow"
         [closeOnEscape]="closeOnEscape"
         [motion]="motion"
@@ -144,6 +151,7 @@ export const Controlled: Story = {
         [dismissable]="dismissable"
         [position]="position"
         [showArrow]="showArrow"
+        [modal]="modal"
         [focusOnShow]="focusOnShow"
         [closeOnEscape]="closeOnEscape"
         [motion]="motion"

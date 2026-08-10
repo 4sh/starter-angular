@@ -52,10 +52,12 @@ let nextId = 0;
  * variable on the popover and wires a trigger to it; the panel holds arbitrary
  * projected content.
  *
- * Built for accessibility: `role="dialog"` + `aria-modal`, focus trap
- * (`@angular/cdk/a11y`) with the first focusable element (or an element
- * carrying `autofocus`) focused on open, `Escape` to close and return focus to
- * the trigger, and `aria-expanded` / `aria-controls` reflected on the trigger.
+ * Built for accessibility: `role="dialog"`, non-modal WAI-ARIA pattern by
+ * default (no `aria-modal`, focus not trapped — see the `modal` input to opt
+ * into a blocking dialog with `aria-modal` + a permanent focus trap via
+ * `@angular/cdk/a11y`), the first focusable element (or an element carrying
+ * `autofocus`) focused on open, `Escape` to close and return focus to the
+ * trigger, and `aria-expanded` / `aria-controls` reflected on the trigger.
  *
  * Positioning, viewport flipping and scroll re-alignment are delegated to the
  * CDK connected overlay (no manual geometry); the arrow follows the effective
@@ -86,6 +88,8 @@ export class UiPopover {
   position = input<PopoverPosition>('bottom');
   /** Render the arrow pointing back to the trigger. */
   showArrow = input(true, { transform: booleanAttribute });
+  /** Make the panel modal: `aria-modal` reflected + permanent focus trap. */
+  modal = input(false, { transform: booleanAttribute });
   /** ARIA role of the panel. */
   role = input<string>('dialog');
   /** Accessible name of the panel (recommended). */
