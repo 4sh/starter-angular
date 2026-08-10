@@ -312,8 +312,8 @@
         <div class="demo-filter-line"></div>
       </div>
       <div class="flex-y" style="gap: var(--units-sm); margin-top: var(--units-sm);">
-        <ui-datepicker label="Du" [(ngModel)]="filterDateFrom" />
-        <ui-datepicker label="Au" [(ngModel)]="filterDateTo" />
+        <ui-datepicker label="Du" valueType="date" [(ngModel)]="filterDateFrom" />
+        <ui-datepicker label="Au" valueType="date" [(ngModel)]="filterDateTo" />
       </div>
     </div>
 
@@ -467,7 +467,7 @@
       </div>
       <div class="flex-y" style="gap: var(--units-md); margin-top: var(--units-sm);">
         <ui-select label="Statut initial" [options]="statusOptions" [(ngModel)]="newOrderStatus" optionLabel="label" optionValue="value" />
-        <ui-datepicker label="Date d'expédition prévue" [(ngModel)]="newOrderDate" />
+        <ui-datepicker label="Date d'expédition prévue" valueType="date" [(ngModel)]="newOrderDate" />
         <div style="display: flex; flex-direction: column; gap: var(--units-xs);">
           <span style="font-size: var(--size-typography-text-sm); font-weight: 500; color: var(--global-text-default);">Priorité</span>
           <ui-segment-control [options]="priorityOptions" [(ngModel)]="newOrderPriority" optionLabel="label" optionValue="value" fluid />

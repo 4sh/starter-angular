@@ -13,24 +13,15 @@ import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { BaseFormField } from '@app/shared/components/ui/forms/base-form-field';
 import { UiField } from '@app/shared/components/ui/forms/ui-field/ui-field';
 import { UiIcon, UiIconSize } from '@app/shared/components/ui/ui-icon/ui-icon';
-
-/** Mask tokens → accepted character class. */
-const MASK_TOKENS: Record<string, RegExp> = {
-  '9': /[0-9]/, // digit
-  a: /[a-zA-Z]/, // letter
-  '*': /[a-zA-Z0-9]/, // alphanumeric
-};
-
-interface MaskBounds {
-  min: number;
-  max: number;
-}
-
-interface MaskSlot {
-  char: string | null;
-  rgx?: RegExp;
-  bound?: MaskBounds & { pos: number; len: number };
-}
+import {
+  applyMaskTemplate,
+  buildMaskSlots,
+  caretForMask,
+  extractMaskData,
+  MaskBounds,
+  MaskSlot,
+  parseMaskRanges,
+} from '@app/shared/components/ui/forms/mask-engine';
 
 /**
  * ui-input-mask — headless masked field (`ui-field` shell).
@@ -84,50 +75,16 @@ export class UiInputMask extends BaseFormField<string> {
   protected readonly iconSize = computed<UiIconSize>(() => (this.size() === 'small' ? 'sm' : 'md'));
 
   /** @ignore Bounds declared by `ranges`, one entry per numeric segment (`null` = unbounded). */
-  private readonly parsedRanges = computed<(MaskBounds | null)[]>(() =>
-    this.ranges()
-      .trim()
-      .split(/\s+/)
-      .map((part) => {
-        const m = /^(\d+)-(\d+)$/.exec(part);
-        return m ? { min: Number(m[1]), max: Number(m[2]) } : null;
-      }),
-  );
+  private readonly parsedRanges = computed<(MaskBounds | null)[]>(() => parseMaskRanges(this.ranges()));
 
   /**
    * @ignore The mask resolved once per template: literals, input slots, and the
    * `ranges` bounds attached to every slot of the numeric segment it belongs to.
    */
-  private readonly slots = computed<MaskSlot[]>(() => {
-    const bounds = this.parsedRanges();
-    const slots: MaskSlot[] = [];
-    // Consecutive `9` tokens = one numeric segment, indexed in mask order.
-    const segments: MaskSlot[][] = [];
-    let segment: MaskSlot[] | null = null;
-
-    for (const m of this.mask()) {
-      const rgx = MASK_TOKENS[m];
-      const slot: MaskSlot = rgx ? { char: null, rgx } : { char: m };
-      slots.push(slot);
-      if (rgx && m === '9') {
-        if (!segment) segments.push((segment = []));
-        segment.push(slot);
-      } else {
-        segment = null;
-      }
-    }
-
-    segments.forEach((seg, i) => {
-      const range = bounds[i];
-      if (!range) return;
-      seg.forEach((slot, pos) => (slot.bound = { ...range, pos, len: seg.length }));
-    });
-
-    return slots;
-  });
+  private readonly slots = computed<MaskSlot[]>(() => buildMaskSlots(this.mask(), this.parsedRanges()));
 
   override writeValue(value: string | null): void {
-    const built = this.build(this.extract(value ?? ''));
+    const built = applyMaskTemplate(this.slots(), extractMaskData(value ?? ''), this.slotChar());
     this.modelValue.set(this.emitValue(built));
     this.text.set(built.data.length ? built.display : '');
   }
@@ -143,9 +100,9 @@ export class UiInputMask extends BaseFormField<string> {
     const raw = el.value;
     const caret = el.selectionStart ?? raw.length;
     // Number of data characters located BEFORE the caret (stable anchor).
-    const dataBeforeCaret = this.extract(raw.slice(0, caret)).length;
+    const dataBeforeCaret = extractMaskData(raw.slice(0, caret)).length;
 
-    const built = this.build(this.extract(raw));
+    const built = applyMaskTemplate(this.slots(), extractMaskData(raw), this.slotChar());
     const value = this.emitValue(built);
     const display = built.data.length ? built.display : '';
 
@@ -157,82 +114,14 @@ export class UiInputMask extends BaseFormField<string> {
     // Apply synchronously + restore the caret after the Nth typed character
     // (auto-inserted literals skipped). The [value] binding becomes a no-op.
     el.value = display;
-    const pos = this.caretFor(built.tokenIndices, dataBeforeCaret, display.length);
+    const pos = caretForMask(built.tokenIndices, dataBeforeCaret, display.length);
     el.setSelectionRange(pos, pos);
-  }
-
-  /** @ignore Caret position for `n` typed data characters. */
-  private caretFor(tokenIndices: number[], n: number, length: number): number {
-    if (n <= 0) return tokenIndices[0] ?? 0;
-    if (n >= tokenIndices.length) return length; // all filled → end
-    return tokenIndices[n]; // next input position (literals skipped)
   }
 
   /** @ignore */
   protected onBlur(event: FocusEvent): void {
     this.emitTouch();
     this.inputBlur.emit(event);
-  }
-
-  /** @ignore Keep only the data characters (alphanumeric). */
-  private extract(raw: string): string {
-    return raw.replace(/[^a-zA-Z0-9]/g, '');
-  }
-
-  /** @ignore Apply the mask to a sequence of data characters. */
-  private build(data: string): {
-    display: string;
-    masked: string;
-    data: string;
-    tokenIndices: number[];
-  } {
-    const fill = this.slotChar();
-    let di = 0;
-    let display = '';
-    let masked = '';
-    let lastFilled = 0;
-    let used = '';
-    const tokenIndices: number[] = [];
-    // Characters already accepted in the current numeric segment (drives the bounds check).
-    let segment = '';
-
-    for (const slot of this.slots()) {
-      if (slot.char !== null) {
-        display += slot.char;
-        masked += slot.char;
-        continue;
-      }
-      tokenIndices.push(display.length); // index of this token position in `display`
-      if (!slot.bound || slot.bound.pos === 0) segment = '';
-      while (di < data.length && !this.accepts(slot, segment, data[di])) di++;
-      if (di < data.length) {
-        display += data[di];
-        masked += data[di];
-        used += data[di];
-        if (slot.bound) segment += data[di];
-        di++;
-        lastFilled = masked.length;
-      } else {
-        display += fill;
-      }
-    }
-    // Masked value = up to the last typed character (no trailing literals/slots).
-    return { display, masked: masked.slice(0, lastFilled), data: used, tokenIndices };
-  }
-
-  /**
-   * @ignore Can `ch` fill this slot? It must match the token class and — when the
-   * segment is bounded — the digits typed so far plus `ch` must still admit at
-   * least one in-range completion of the remaining positions (`2` then `4` is
-   * refused on `0-23`, `2` then `3` is accepted).
-   */
-  private accepts(slot: MaskSlot, segment: string, ch: string): boolean {
-    if (!slot.rgx?.test(ch)) return false;
-    const bound = slot.bound;
-    if (!bound) return true;
-    const scale = 10 ** (bound.len - bound.pos - 1);
-    const low = Number(segment + ch) * scale;
-    return low <= bound.max && low + scale - 1 >= bound.min;
   }
 
   /** @ignore Emitted value depending on `unmask`. */

@@ -186,7 +186,7 @@ $stroke-width: utils.$control-stroke-width; /// Épaisseur des bordures (panneau
   &-grid { display: flex; flex-direction: column; gap: var(--units-xs); }
 
   // --- Day cell ------------------------------------------------------
-  $range-bg: var(--informative-highlightlow-surface-hover);
+  $range-bg: var(--informative-highlightlow-surface-hover); /// Fond continu de la plage sélectionnée (`range`).
 
   &-day {
     position: relative;
@@ -250,7 +250,14 @@ $stroke-width: utils.$control-stroke-width; /// Épaisseur des bordures (panneau
       }
     }
 
-    // Range: continuous bar on the full-width cell.
+    // Range: continuous bar on the full-width cell. The top/bottom rule reuses the same
+    // stroke token as `._today` so the range reads even without color (WCAG: not color-only).
+    &._in-range,
+    &._range-start,
+    &._range-end {
+      border-top: $stroke-width solid var(--actions-high-stroke-default);
+      border-bottom: $stroke-width solid var(--actions-high-stroke-default);
+    }
     &._in-range { background-color: $range-bg; }
     &._range-start { background: linear-gradient(to right, transparent 50%, #{$range-bg} 50%); }
     &._range-end { background: linear-gradient(to left, transparent 50%, #{$range-bg} 50%); }
@@ -301,12 +308,15 @@ $stroke-width: utils.$control-stroke-width; /// Épaisseur des bordures (panneau
     @include utils.control-transition(background-color, box-shadow);
 
     &:read-only { cursor: pointer; }
-    &:hover { background-color: var(--informative-highlightlow-surface-hover); }
+    &:hover:not(:disabled):not([aria-disabled='true']) { background-color: var(--informative-highlightlow-surface-hover); }
     &:focus-visible {
       outline: none;
       box-shadow: 0 0 0 $focus-ring-width rgb(from var(--form-high-stroke-focused) r g b / 50%);
     }
-    &:disabled { color: var(--form-high-content-disabled); cursor: not-allowed; }
+    // `:disabled` covers the HH/MM `<input>`; the AM/PM unit is a `<span>` (no native
+    // disabled state) and mirrors it via `[aria-disabled]` — same token, same look.
+    &:disabled,
+    &[aria-disabled='true'] { color: var(--form-high-content-disabled); cursor: not-allowed; }
   }
 
   &-time-btn {
@@ -323,10 +333,11 @@ $stroke-width: utils.$control-stroke-width; /// Épaisseur des bordures (panneau
     cursor: pointer;
     @include utils.control-transition(background-color, color);
 
-    &:hover {
+    &:hover:not(:disabled) {
       background-color: var(--informative-highlightlow-surface-hover);
       color: var(--form-high-content-hover);
     }
+    &:disabled { color: var(--form-high-content-disabled); cursor: not-allowed; }
   }
 
   &-time-colon {

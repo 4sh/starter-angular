@@ -23,6 +23,14 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { dropdownOverlayPositions } from '@app/shared/components/ui/forms/overlay-positions';
 import { CdkTrapFocus } from '@angular/cdk/a11y';
 import { BaseFormField } from '@app/shared/components/ui/forms/base-form-field';
+import {
+  autoFormatSegments,
+  buildMaskSlots,
+  caretForMask,
+  extractMaskData,
+  MaskBounds,
+  MaskSlot,
+} from '@app/shared/components/ui/forms/mask-engine';
 import { UiInput } from '@app/shared/components/ui/forms/ui-input/ui-input';
 import { UiButton } from '@app/shared/components/ui/actions/ui-button/ui-button';
 import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
@@ -33,8 +41,30 @@ export type DatepickerHourFormat = '12' | '24';
 export type DatepickerView = 'date' | 'month' | 'year';
 /** Selection quantity. */
 export type DatepickerSelectionMode = 'single' | 'multiple' | 'range';
-/** Model value: single `Date`, or a `Date[]` for `multiple`/`range` (`[start, end]`). */
-export type DatepickerValue = Date | Date[] | null;
+/**
+ * Shape of the value crossing the CVA boundary — see {@link DatepickerValue}. Mandatory
+ * (`input.required`, no default): the consumer must pick one explicitly rather than accidentally
+ * relying on a default that may not match its model's actual type.
+ *
+ * `'date'` matches a DTO round-tripped through `class-transformer` (`@Type(() => Date)`): the
+ * value stays a plain `Date` end to end, normalized to midnight when no time is shown. `'iso'`
+ * emits ISO `"yyyy-MM-dd"` strings instead — for consumers reading/writing the value directly
+ * against a backend `LocalDate` without going through a DTO layer that already handles the
+ * conversion.
+ */
+export type DatepickerValueType = 'date' | 'iso';
+/**
+ * Model value. `writeValue` accepts `Date` **or** ISO string transparently (auto-detected,
+ * mixable in `multiple`/`range` arrays) — whatever the host app already has at hand. What gets
+ * **emitted** (`valueChange`, `dateSelect`, and so whatever lands in the `FormControl`) strictly
+ * follows {@link valueType}: always `Date` in `'date'` mode, always `string` in `'iso'` mode —
+ * never a silent mix, so the consumer's own model type stays predictable in either mode.
+ */
+export type DatepickerValue = Date | Date[] | string | string[] | null;
+/** @ignore Internal calendar representation — the only shape `selectedDates`/`buildDay`/grid
+ *  navigation ever see. `writeValue`/`commit` are the sole two conversion points to/from
+ *  {@link DatepickerValue} (`Date` or ISO string depending on {@link DatepickerValueType}). */
+type DatepickerDateValue = Date | Date[] | null;
 
 /** A single day cell of the month grid. Also the `$implicit` context of the `#date` template. */
 export interface DatepickerDay {
@@ -50,6 +80,8 @@ export interface DatepickerDay {
   rangeEnd: boolean;
   inRange: boolean;
   ts: number;
+  /** Full date, locale-formatted (e.g. "8 juillet 2026") — the gridcell's `aria-label`. */
+  ariaLabel: string;
 }
 
 /** A month cell of the month-picker grid. */
@@ -98,6 +130,48 @@ function addDays(d: Date, n: number): Date {
 function addMonths(d: Date, n: number): Date {
   return new Date(d.getFullYear(), d.getMonth() + n, 1);
 }
+/** Build a Date and reject overflowed components (e.g. 31 Feb). */
+function finalizeParsed(year: number, month: number, day: number, h: number, min: number): Date | null {
+  if (month < 0 || month > 11 || day < 1 || day > 31 || h > 23 || min > 59) return null;
+  const d = new Date(year, month, day, h, min, 0, 0);
+  if (d.getFullYear() !== year || d.getMonth() !== month || d.getDate() !== day) return null;
+  return d;
+}
+
+const ISO_DATE_RE = /^(\d{4})-(\d{2})-(\d{2})$/;
+const ISO_DATETIME_RE = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/;
+
+function pad2(n: number): string {
+  return String(n).padStart(2, '0');
+}
+/** Serialize a `Date` to `"yyyy-MM-dd"` from its LOCAL components — never `toISOString()`
+ *  (which converts to UTC and can shift the day by ±1 depending on the timezone). */
+function toIsoDate(d: Date): string {
+  return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
+}
+/** `"yyyy-MM-ddTHH:mm"` — date part built the same local, never-UTC way as {@link toIsoDate}. */
+function toIsoDateTime(d: Date): string {
+  return `${toIsoDate(d)}T${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+}
+/** Strict `"yyyy-MM-dd"` parser (rejects anything else, incl. overflowed dates via `finalizeParsed`). */
+function parseIsoDate(s: string): Date | null {
+  const m = ISO_DATE_RE.exec(s);
+  if (!m) return null;
+  return finalizeParsed(Number(m[1]), Number(m[2]) - 1, Number(m[3]), 0, 0);
+}
+/** Strict `"yyyy-MM-ddTHH:mm"` parser (`showTime`/`timeOnly` round-trip). */
+function parseIsoDateTime(s: string): Date | null {
+  const m = ISO_DATETIME_RE.exec(s);
+  if (!m) return null;
+  return finalizeParsed(Number(m[1]), Number(m[2]) - 1, Number(m[3]), Number(m[4]), Number(m[5]));
+}
+/** Accepts a `Date` as-is, or parses a `"yyyy-MM-dd"` string — used to let config inputs
+ *  (`minDate`/`maxDate`/`disabledDates`) take either shape. Invalid strings degrade to `null`
+ *  (no constraint) rather than throwing: a malformed config shouldn't crash the picker. */
+function normalizeDateInput(v: Date | string | null | undefined): Date | null {
+  if (!v) return null;
+  return v instanceof Date ? v : parseIsoDate(v);
+}
 
 let nextPanelUid = 0;
 
@@ -109,8 +183,11 @@ let nextPanelUid = 0;
  * views (day → month → year), `MonthPicker`/`YearPicker` modes (`view`), several
  * months side-by-side (`numberOfMonths`), a time row, and roving keyboard focus.
  *
- * Value is `Date | Date[] | null`, wired through `ControlValueAccessor` on
- * {@link BaseFormField} (shared label / helper / level / validation / states).
+ * Value is `Date` or ISO `"yyyy-MM-dd"` string depending on the **required** `valueType` input (no
+ * default — the consumer must pick one), wired through `ControlValueAccessor` on
+ * {@link BaseFormField} (shared label / helper / level / validation / states). `writeValue`
+ * accepts either shape transparently; what gets **emitted** always follows `valueType` — see
+ * {@link DatepickerValueType}.
  *
  * Customisation: `panelStyleClass`, the `#date` cell template
  * (`let-date let-selected="selected"`) and the `#buttonbar` template
@@ -135,6 +212,14 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   /** Show a clear (×) button in the trigger when a value is set. */
   showClear = input(false, { transform: booleanAttribute });
 
+  /**
+   * Shape of the emitted value: `'date'` (a plain `Date` — matches a DTO round-tripped through
+   * `class-transformer`) or `'iso'` (ISO `"yyyy-MM-dd"` string, for a value read/written directly
+   * against a backend `LocalDate`). `writeValue` always accepts either shape regardless of this
+   * setting — it only governs what `valueChange`/`dateSelect` emit. **Required, no default**: the
+   * consumer must pick the one matching its own model's type rather than inherit a silent default.
+   */
+  valueType = input.required<DatepickerValueType>();
   /** Selection quantity: `single` (default), `multiple` or `range`. */
   selectionMode = input<DatepickerSelectionMode>('single');
   /** Base picking granularity: `date` (default), `month` (MonthPicker) or `year` (YearPicker). */
@@ -142,12 +227,12 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   /** Number of month panels shown side-by-side (date view only). */
   numberOfMonths = input<number, unknown>(1, { transform: numberAttribute });
 
-  /** Earliest selectable date (inclusive). */
-  minDate = input<Date | null>(null);
-  /** Latest selectable date (inclusive). */
-  maxDate = input<Date | null>(null);
-  /** Individual dates to disable. */
-  disabledDates = input<Date[]>([]);
+  /** Earliest selectable date (inclusive). `Date` or ISO `"yyyy-MM-dd"`. */
+  minDate = input<Date | string | null>(null);
+  /** Latest selectable date (inclusive). `Date` or ISO `"yyyy-MM-dd"`. */
+  maxDate = input<Date | string | null>(null);
+  /** Individual dates to disable. `Date` or ISO `"yyyy-MM-dd"`, mixable. */
+  disabledDates = input<(Date | string)[]>([]);
   /** Week days to disable (0 = Sunday … 6 = Saturday). */
   disabledDays = input<number[]>([]);
 
@@ -163,6 +248,7 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
    * The typed text is parsed on blur / `Enter`; an unparsable value reverts to
    * the previously displayed one. When enabled (and no custom `dateFormat`), the
    * value is displayed in a numeric locale format so it round-trips with typing.
+   * Has no effect in `timeOnly` mode: the trigger stays read-only there.
    */
   allowInput = input(false, { transform: booleanAttribute });
   /**
@@ -228,8 +314,10 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
 
   /** Emitted whenever the value changes (selection, time, clear). */
   valueChange = output<DatepickerValue>();
-  /** Emitted when a date/month/year is picked. */
-  dateSelect = output<Date>();
+  /** Emitted when a date/month/year is picked — always a single value (in `valueType`'s
+   *  shape), even in `multiple`/`range` (it reports "which day was just clicked", not the model
+   *  value, which is why it never becomes an array there). */
+  dateSelect = output<Date | string>();
   /** Emitted when the displayed month changes. */
   monthChange = output<{ month: number; year: number }>();
   /** Emitted when the panel opens. */
@@ -269,11 +357,19 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   protected readonly currentView = linkedSignal<DatepickerView>(() => this.view());
   /** @ignore Day cell owning the roving tabindex. */
   protected readonly focusedDate = signal<Date>(startOfDay(new Date()));
+  /** @ignore Month-picker cell (index 0–11) owning the roving tabindex. */
+  protected readonly focusedMonthIndex = signal<number>(new Date().getMonth());
+  /** @ignore Year-picker cell (absolute year) owning the roving tabindex. */
+  protected readonly focusedYear = signal<number>(new Date().getFullYear());
   /** @ignore Time components. */
   protected readonly hours = signal(0);
   protected readonly minutes = signal(0);
   /** @ignore Raw text while the user edits the trigger (`allowInput`); `null` when not editing. */
   protected readonly typedValue = signal<string | null>(null);
+  /** @ignore Date-based source of truth for all calendar/selection logic; `modelValue`
+   *  (inherited) only ever carries the public value (`Date` or ISO string per `valueType`),
+   *  written in lockstep. */
+  protected readonly internalValue = signal<DatepickerDateValue>(null);
 
   /** @ignore Below the trigger, flipping above when `autoFlip` and space is lacking. */
   protected readonly overlayPositions = computed(() => dropdownOverlayPositions(this.autoFlip()));
@@ -290,9 +386,20 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
 
   /** @ignore */
   private readonly resolvedLocale = computed(() => this.locale() ?? this.localeId);
-  /** @ignore The trigger is not typeable (manual input off, not single, or read-only). */
+  /** @ignore `minDate`/`maxDate`/`disabledDates` normalized to `Date` (accept ISO strings too). */
+  private readonly resolvedMinDate = computed(() => normalizeDateInput(this.minDate()));
+  private readonly resolvedMaxDate = computed(() => normalizeDateInput(this.maxDate()));
+  private readonly resolvedDisabledDates = computed(() =>
+    (this.disabledDates() ?? []).map(normalizeDateInput).filter((d): d is Date => d !== null),
+  );
+  /**
+   * @ignore The trigger is not typeable: manual input off, not single, read-only, or
+   * `timeOnly` — free-form typing in time-only mode isn't implemented (no dedicated
+   * parser/formatter for a bare time string), so it's disabled outright here rather than
+   * silently mis-parsing.
+   */
   protected readonly triggerReadonly = computed(
-    () => this.readonly() || !this.allowInput() || this.selectionMode() !== 'single',
+    () => this.readonly() || !this.allowInput() || this.selectionMode() !== 'single' || this.timeOnly(),
   );
   /**
    * @ignore Placeholder shown in the typeable trigger. Falls back to a hint derived
@@ -329,6 +436,39 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
       .filter((t): t is 'day' | 'month' | 'year' => t === 'day' || t === 'month' || t === 'year');
     return order.length === 3 ? order : ['day', 'month', 'year'];
   });
+  /** @ignore `dateFieldOrder`, minus `day` in month view — the fields actually typed. */
+  private readonly activeFields = computed<('day' | 'month' | 'year')[]>(() =>
+    this.dateFieldOrder().filter((f) => (this.view() === 'month' ? f !== 'day' : true)),
+  );
+  /**
+   * @ignore Dynamic mask (day/month/year widths in locale order, plus hour/minute — and AM/PM —
+   * widths when `showTime`) driving the auto-"/" (resp. ":") formatting of the typeable trigger.
+   * `null` disables it: `triggerReadonly` (covers `timeOnly` — see there), `view === 'year'`
+   * (free-form numeric field, out of scope), or a custom `parseDate` (a non-numeric format would
+   * make the auto-slash wrong). The `year` segment is deliberately left unbounded so the existing
+   * 2-digit shortcut (`normalizeYear`) keeps working — strict validation still happens at
+   * `finalizeParsed`. `defaultParse` already expects these trailing hour/minute digits (see its
+   * `nums.slice(fields.length)`) — this only keeps the auto-formatting mask in sync with it, so
+   * typed hour/minute digits aren't truncated by `autoFormatSegments` before they reach it.
+   */
+  private readonly typingSlots = computed<MaskSlot[] | null>(() => {
+    if (this.triggerReadonly() || this.view() === 'year' || this.parseDate()) return null;
+    const widths = { day: '99', month: '99', year: '9999' } as const;
+    const bounds: Record<'day' | 'month' | 'year', MaskBounds | null> = {
+      day: { min: 1, max: 31 },
+      month: { min: 1, max: 12 },
+      year: null,
+    };
+    const fields = this.activeFields();
+    let mask = fields.map((f) => widths[f]).join('/');
+    const segmentBounds: (MaskBounds | null)[] = fields.map((f) => bounds[f]);
+
+    if (this.showTime() && this.view() === 'date') {
+      mask += this.hourFormat() === '12' ? ' 99:99 aa' : ' 99:99';
+      segmentBounds.push(this.hourFormat() === '12' ? { min: 1, max: 12 } : { min: 0, max: 23 }, { min: 0, max: 59 });
+    }
+    return buildMaskSlots(mask, segmentBounds);
+  });
   /** @ignore The panel is visible. */
   protected readonly showPanel = computed(() => this.inline() || this.panelOpen());
   /** @ignore Day grid shown (hidden in `timeOnly`). */
@@ -356,17 +496,65 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
 
   // --- Selection helpers ----------------------------------------------
 
-  /** @ignore Flatten the model to a list of selected dates. */
+  /** @ignore Flatten the internal (Date-based) value to a list of selected dates. */
   private readonly selectedDates = computed<Date[]>(() => {
-    const v = this.modelValue();
+    const v = this.internalValue();
     if (!v) return [];
     return (Array.isArray(v) ? v : [v]).filter((d): d is Date => d instanceof Date);
   });
   /** @ignore First selected date (for view seeding / time / display). */
-  private firstSelectedFrom(value: DatepickerValue): Date | null {
+  private firstSelectedFrom(value: DatepickerDateValue): Date | null {
     if (!value) return null;
     const arr = Array.isArray(value) ? value : [value];
     return arr.find((d) => d instanceof Date) ?? null;
+  }
+
+  // --- Value conversion (the ONLY boundary between the public `Date`/ISO contract
+  // and the internal Date-based calendar logic) --------------------------------
+
+  /** @ignore Whether the value carries a time component (date+time ISO / non-midnight `Date`). */
+  private readonly hasTimeComponent = computed(() => this.showTime() || this.timeOnly());
+  /** @ignore Date → ISO string, date-only unless `showTime`/`timeOnly`. */
+  private toIsoValue(d: Date): string {
+    return this.hasTimeComponent() ? toIsoDateTime(d) : toIsoDate(d);
+  }
+  /** @ignore ISO string → Date, `null` if malformed (never throws). */
+  private fromIsoValue(s: string): Date | null {
+    return this.hasTimeComponent() ? parseIsoDateTime(s) : parseIsoDate(s);
+  }
+  /** @ignore Internal Date → the shape `valueType` commits to emitting: a fresh `Date`
+   *  (normalized to midnight when no time is shown — never the original reference) in `'date'`
+   *  mode, an ISO string in `'iso'` mode. The single point deciding the emitted type. */
+  private serializeValue(d: Date): Date | string {
+    if (this.valueType() === 'iso') return this.toIsoValue(d);
+    return this.hasTimeComponent() ? new Date(d) : startOfDay(d);
+  }
+  /** @ignore A single incoming item, `Date` or ISO string, auto-detected — `writeValue` accepts
+   *  either shape regardless of `valueType` (only the emitted side commits to one). Cloned when
+   *  already a `Date` (never the caller's own reference) — symmetric with `serializeValue`,
+   *  which never hands back the internal reference either; protects against the caller later
+   *  mutating that `Date` in place and silently desyncing `internalValue`. */
+  private parseValue(v: Date | string): Date | null {
+    return v instanceof Date ? new Date(v) : this.fromIsoValue(v);
+  }
+  /** @ignore Internal Date(s) → public value, right before it reaches `modelValue`/the CVA.
+   *  The cast is safe: `serializeValue` only branches on `valueType()`, constant across the
+   *  `map`, so the array is always homogeneous (`Date[]` or `string[]`, never mixed). */
+  private toExternalValue(value: DatepickerDateValue): DatepickerValue {
+    if (!value) return null;
+    if (Array.isArray(value)) return value.map((d) => this.serializeValue(d)) as Date[] | string[];
+    return this.serializeValue(value);
+  }
+  /** @ignore Public value → internal Date(s), right as it enters via `writeValue`. Invalid
+   *  entries are dropped rather than failing the whole value (a malformed item in a
+   *  `multiple`/`range` array shouldn't wipe out the rest). */
+  private toInternalValue(value: DatepickerValue): DatepickerDateValue {
+    if (!value) return null;
+    if (Array.isArray(value)) {
+      const parsed = value.map((v) => this.parseValue(v)).filter((d): d is Date => d !== null);
+      return parsed.length ? parsed : null;
+    }
+    return this.parseValue(value);
   }
 
   // --- Display ---------------------------------------------------------
@@ -441,13 +629,22 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
 
   // --- Weekday headers -------------------------------------------------
 
-  /** @ignore */
-  protected readonly weekDayNames = computed(() => {
-    const fmt = new Intl.DateTimeFormat(this.resolvedLocale(), { weekday: 'short' });
+  /** @ignore Short (visible) + full (aria-label) weekday names — without both, either the header
+   *  stays `aria-hidden` or the short text alone leaves screen-reader users without column names. */
+  protected readonly weekDayNames = computed<{ short: string; full: string }[]>(() => {
+    const shortFmt = new Intl.DateTimeFormat(this.resolvedLocale(), { weekday: 'short' });
+    const longFmt = new Intl.DateTimeFormat(this.resolvedLocale(), { weekday: 'long' });
     const sunday = new Date(2023, 0, 1); // getDay() === 0
     const first = this.firstDayOfWeek();
-    return Array.from({ length: 7 }, (_, k) => this.capitalize(fmt.format(addDays(sunday, (first + k) % 7))));
+    return Array.from({ length: 7 }, (_, k) => {
+      const d = addDays(sunday, (first + k) % 7);
+      return { short: this.capitalize(shortFmt.format(d)), full: this.capitalize(longFmt.format(d)) };
+    });
   });
+  /** @ignore Full-date `aria-label` formatter for day gridcells (e.g. "8 juillet 2026"). */
+  private readonly dayAriaFormatter = computed(() =>
+    new Intl.DateTimeFormat(this.resolvedLocale(), { day: 'numeric', month: 'long', year: 'numeric' }),
+  );
 
   // --- Grids -----------------------------------------------------------
 
@@ -509,7 +706,7 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
 
     // Keep time signals in sync with the (first) value.
     effect(() => {
-      const first = this.firstSelectedFrom(this.modelValue() ?? null);
+      const first = this.firstSelectedFrom(this.internalValue() ?? null);
       untracked(() => {
         if (first) {
           this.hours.set(first.getHours());
@@ -523,11 +720,15 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     this.typedValue.set(null);
     this.hoursDraft.set(null);
     this.minutesDraft.set(null);
+    const internal = this.toInternalValue(value ?? null);
+    this.internalValue.set(internal);
     this.modelValue.set(value ?? undefined);
-    const first = this.firstSelectedFrom(value);
+    const first = this.firstSelectedFrom(internal);
     if (first) {
       this.viewDate.set(firstOfMonth(first));
       this.focusedDate.set(startOfDay(first));
+      this.focusedMonthIndex.set(first.getMonth());
+      this.focusedYear.set(first.getFullYear());
     }
   }
 
@@ -535,15 +736,21 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
 
   open(): void {
     if (this.inline() || this.isDisabled() || this.readonly() || this.panelOpen()) return;
-    const base = this.firstSelectedFrom(this.modelValue() ?? null) ?? startOfDay(new Date());
+    const base = this.firstSelectedFrom(this.internalValue() ?? null) ?? startOfDay(new Date());
     this.viewDate.set(firstOfMonth(base));
     this.currentView.set(this.view());
     this.focusedDate.set(this.clampToRange(startOfDay(base)));
+    this.focusedMonthIndex.set(base.getMonth());
+    this.focusedYear.set(base.getFullYear());
     this.overlayOrigin.set(this.resolveOverlayOrigin());
     this.panelOpen.set(true);
     this.opened.emit();
-    // Keep focus in the input when it's typeable; otherwise rove into the grid.
-    if (this.showCalendar() && this.currentView() === 'date' && this.triggerReadonly()) this.queueDayFocus();
+    // Keep focus in the input when it's typeable; otherwise rove into the (active) grid.
+    if (this.showCalendar() && this.triggerReadonly()) {
+      if (this.currentView() === 'date') this.queueDayFocus();
+      else if (this.currentView() === 'month') this.queueMonthFocus();
+      else this.queueYearFocus();
+    }
   }
 
   close(focusTrigger = true): void {
@@ -592,10 +799,30 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     }
   }
 
-  /** @ignore Track the raw text as the user types; live-preview the open panel. */
+  /**
+   * @ignore Track the raw text as the user types; live-preview the open panel. When a typing
+   * mask applies (see `typingSlots`), auto-insert "/" as soon as a segment is complete (same
+   * pattern as a card-expiry field) and reposition the caret accordingly.
+   */
   protected onTriggerInput(value: string): void {
     if (this.triggerReadonly()) return;
-    this.typedValue.set(value);
+    const slots = this.typingSlots();
+    if (!slots) {
+      this.typedValue.set(value);
+      if (this.panelOpen()) this.previewTyped();
+      return;
+    }
+    const el = this.triggerInput()?.nativeInputElement();
+    const caret = el?.selectionStart ?? value.length;
+    // Number of data characters located BEFORE the caret (stable anchor, same trick as ui-input-mask).
+    const dataBeforeCaret = extractMaskData(value.slice(0, caret)).length;
+    const { text, tokenIndices } = autoFormatSegments(slots, extractMaskData(value));
+    this.typedValue.set(text);
+    if (el) {
+      el.value = text;
+      const pos = caretForMask(tokenIndices, dataBeforeCaret, text.length);
+      el.setSelectionRange(pos, pos);
+    }
     if (this.panelOpen()) this.previewTyped();
   }
 
@@ -611,9 +838,11 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     const picked = this.showTime() ? parsed : startOfDay(parsed);
     // Update the model (drives the selected-day highlight + live value) but keep
     // `typedValue` so `displayValue` still returns the raw text (no caret jump).
-    this.modelValue.set(picked);
-    this.emitChange(picked);
-    this.valueChange.emit(picked);
+    this.internalValue.set(picked);
+    const external = this.toExternalValue(picked);
+    this.modelValue.set(external ?? undefined);
+    this.emitChange(external);
+    this.valueChange.emit(external);
     this.viewDate.set(firstOfMonth(picked));
     this.focusedDate.set(startOfDay(picked));
   }
@@ -641,7 +870,7 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     if (parsed && !this.isParsedDisabled(parsed)) {
       const picked = this.showTime() ? parsed : startOfDay(parsed);
       this.commit(picked); // single-only → clears typedValue and reformats
-      this.dateSelect.emit(picked);
+      this.dateSelect.emit(this.serializeValue(picked));
       this.viewDate.set(firstOfMonth(picked));
       this.focusedDate.set(startOfDay(picked));
     } else {
@@ -671,10 +900,10 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     const view = this.view();
     if (view === 'year') {
       if (requireComplete && (groups[0]?.length ?? 0) < 4) return null;
-      return this.finalizeParsed(this.normalizeYear(nums[0]), 0, 1, 0, 0);
+      return finalizeParsed(this.normalizeYear(nums[0]), 0, 1, 0, 0);
     }
 
-    const fields = this.dateFieldOrder().filter((f) => (view === 'month' ? f !== 'day' : true));
+    const fields = this.activeFields();
     if (requireComplete) {
       if (groups.length < fields.length) return null;
       const yearLen = groups[fields.indexOf('year')]?.length ?? 0;
@@ -702,20 +931,12 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
         if (/a/i.test(text) && h === 12) h = 0;
       }
     }
-    return this.finalizeParsed(year, month, view === 'month' ? 1 : day, h, min);
+    return finalizeParsed(year, month, view === 'month' ? 1 : day, h, min);
   }
 
   /** @ignore 2-digit years → 2000s. */
   private normalizeYear(y: number): number {
     return y < 100 ? 2000 + y : y;
-  }
-
-  /** @ignore Build a Date and reject overflowed components (e.g. 31 Feb). */
-  private finalizeParsed(year: number, month: number, day: number, h: number, min: number): Date | null {
-    if (month < 0 || month > 11 || day < 1 || day > 31 || h > 23 || min > 59) return null;
-    const d = new Date(year, month, day, h, min, 0, 0);
-    if (d.getFullYear() !== year || d.getMonth() !== month || d.getDate() !== day) return null;
-    return d;
   }
 
   /** @ignore Range/disabled check for a parsed value, granular to the base view. */
@@ -732,8 +953,13 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   protected onHeaderClick(): void {
     if (!this.singleMonth()) return;
     const v = this.currentView();
-    if (v === 'date') this.currentView.set('month');
-    else if (v === 'month') this.currentView.set('year');
+    if (v === 'date') {
+      this.focusedMonthIndex.set(this.viewDate().getMonth());
+      this.currentView.set('month');
+    } else if (v === 'month') {
+      this.focusedYear.set(this.viewDate().getFullYear());
+      this.currentView.set('year');
+    }
   }
 
   /** @ignore Prev/next arrow — steps month / year / decade depending on the view. */
@@ -766,7 +992,7 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     if (this.showTime()) picked.setHours(this.hours(), this.minutes(), 0, 0);
 
     const mode = this.selectionMode();
-    let value: DatepickerValue;
+    let value: DatepickerDateValue;
     let complete = true;
     if (mode === 'multiple') {
       const arr = [...this.selectedDates()];
@@ -789,7 +1015,7 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     }
 
     this.commit(value);
-    this.dateSelect.emit(picked);
+    this.dateSelect.emit(this.serializeValue(picked));
     this.viewDate.set(firstOfMonth(picked));
     this.focusedDate.set(startOfDay(picked));
     if (this.closeOnSelect() && !this.showTime() && !this.inline() && complete) this.close();
@@ -802,8 +1028,8 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     this.viewDate.set(d);
     if (this.view() === 'month') {
       this.commit(d);
-      this.dateSelect.emit(d);
-      if (this.closeOnSelect() && !this.inline()) this.close();
+      this.dateSelect.emit(this.serializeValue(d));
+      if (this.closeOnSelect() && !this.showTime() && !this.inline()) this.close();
     } else {
       this.currentView.set('date');
       this.focusedDate.set(this.clampToRange(startOfDay(d)));
@@ -818,17 +1044,19 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     this.viewDate.set(d);
     if (this.view() === 'year') {
       this.commit(d);
-      this.dateSelect.emit(d);
-      if (this.closeOnSelect() && !this.inline()) this.close();
+      this.dateSelect.emit(this.serializeValue(d));
+      if (this.closeOnSelect() && !this.showTime() && !this.inline()) this.close();
     } else {
       this.currentView.set('month');
+      this.focusedMonthIndex.set(d.getMonth());
+      this.queueMonthFocus();
     }
   }
 
   /** @ignore Apply the time signals to the value (single selection only). */
   protected applyTime(): void {
     if (this.selectionMode() !== 'single') return;
-    const base = this.firstSelectedFrom(this.modelValue() ?? null) ?? startOfDay(this.timeOnly() ? new Date() : this.viewDate());
+    const base = this.firstSelectedFrom(this.internalValue() ?? null) ?? startOfDay(this.timeOnly() ? new Date() : this.viewDate());
     const next = new Date(base);
     next.setHours(this.hours(), this.minutes(), 0, 0);
     this.commit(next);
@@ -852,15 +1080,21 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   );
   /** @ignore The hours/minutes fields accept typing. */
   protected readonly timeEditable = computed(() => this.editableTime() && !this.isDisabled() && !this.readonly());
+  /** @ignore The time steppers (chevrons + AM/PM toggle) accept interaction — unlike
+   *  `timeEditable`, not gated on `editableTime` (the steppers stay usable in
+   *  `StepperOnlyTime`-style configs; only `disabled`/`readonly` freeze them). */
+  protected readonly timeControlsEnabled = computed(() => !this.isDisabled() && !this.readonly());
 
   /** @ignore Step hours (wraps 0↔23; also flips meridiem across the 12h boundary). */
   protected stepHours(dir: 1 | -1): void {
+    if (!this.timeControlsEnabled()) return;
     this.hoursDraft.set(null);
     this.hours.set((((this.hours() + dir) % 24) + 24) % 24);
     this.applyTime();
   }
   /** @ignore Step minutes by `stepMinute` (wraps 0↔59). */
   protected stepMinutes(dir: 1 | -1): void {
+    if (!this.timeControlsEnabled()) return;
     this.minutesDraft.set(null);
     const step = Math.max(1, this.stepMinute());
     this.minutes.set((((this.minutes() + dir * step) % 60) + 60) % 60);
@@ -868,6 +1102,7 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   }
   /** @ignore */
   protected toggleMeridiem(): void {
+    if (!this.timeControlsEnabled()) return;
     this.hoursDraft.set(null);
     this.hours.set((this.hours() + 12) % 24);
     this.applyTime();
@@ -964,6 +1199,7 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   }
   /** @ignore */
   protected onMeridiemKeydown(event: KeyboardEvent): void {
+    if (!this.timeControlsEnabled()) return;
     if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
       event.preventDefault();
       this.toggleMeridiem();
@@ -981,7 +1217,7 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     if (this.isDateDisabled(today)) return;
     if (this.showTime()) today.setHours(this.hours(), this.minutes(), 0, 0);
     this.commit(this.selectionMode() === 'single' ? today : [today]);
-    this.dateSelect.emit(today);
+    this.dateSelect.emit(this.serializeValue(today));
     this.viewDate.set(firstOfMonth(today));
     this.focusedDate.set(today);
     if (this.closeOnSelect() && !this.showTime() && !this.inline() && this.selectionMode() !== 'multiple') this.close();
@@ -1048,6 +1284,101 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     return !cell.otherMonth && isSameDay(cell.date, this.focusedDate());
   }
 
+  // --- Grid keyboard navigation (roving focus, month/year pickers) -------
+
+  /**
+   * @ignore Shared arrow/Home/End math for a fixed-size, `columns`-wide grid (the month picker's
+   * 12 cells / 3 columns and the year picker's 10 cells / 2 columns) — the one piece of roving-
+   * focus logic actually common to all three grids; `PageUp`/`PageDown`/`Enter`/`Escape` differ
+   * per grid (paging semantics, selecting a month vs. a year) and stay in their own handler.
+   * Returns `null` for a key it doesn't handle.
+   */
+  private navigateGridIndex(key: string, current: number, columns: number, count: number): number | null {
+    switch (key) {
+      case 'ArrowLeft':
+        return Math.max(0, current - 1);
+      case 'ArrowRight':
+        return Math.min(count - 1, current + 1);
+      case 'ArrowUp':
+        return current - columns >= 0 ? current - columns : current;
+      case 'ArrowDown':
+        return current + columns < count ? current + columns : current;
+      case 'Home':
+        return Math.floor(current / columns) * columns;
+      case 'End':
+        return Math.min(count - 1, Math.floor(current / columns) * columns + columns - 1);
+      default:
+        return null;
+    }
+  }
+
+  /** @ignore Month-picker grid: ←↑→↓/Home/End move within the 12 months (3 columns), PageUp/PageDown
+   *  step the displayed year (Shift = ×10), Enter/Space picks the focused month. */
+  protected onMonthGridKeydown(event: KeyboardEvent): void {
+    const current = this.focusedMonthIndex();
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      this.selectMonth(this.months()[current]);
+      return;
+    }
+    if (event.key === 'Escape') {
+      if (!this.inline()) this.close();
+      return;
+    }
+    if (event.key === 'PageUp' || event.key === 'PageDown') {
+      event.preventDefault();
+      const dir = event.key === 'PageUp' ? -1 : 1;
+      const years = event.shiftKey ? 10 : 1;
+      this.viewDate.set(new Date(this.viewDate().getFullYear() + dir * years, this.viewDate().getMonth(), 1));
+      this.queueMonthFocus();
+      return;
+    }
+    const next = this.navigateGridIndex(event.key, current, 3, 12);
+    if (next === null) return;
+    event.preventDefault();
+    this.focusedMonthIndex.set(next);
+    this.queueMonthFocus();
+  }
+
+  /** @ignore Year-picker grid: ←↑→↓/Home/End move within the displayed decade (2 columns),
+   *  PageUp/PageDown step by a decade (Shift = ×10 decades), Enter/Space picks the focused year. */
+  protected onYearGridKeydown(event: KeyboardEvent): void {
+    const current = this.focusedYear();
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      this.selectYear(this.years()[current - this.decadeStart()]);
+      return;
+    }
+    if (event.key === 'Escape') {
+      if (!this.inline()) this.close();
+      return;
+    }
+    if (event.key === 'PageUp' || event.key === 'PageDown') {
+      event.preventDefault();
+      const dir = event.key === 'PageUp' ? -1 : 1;
+      const delta = (event.shiftKey ? 100 : 10) * dir;
+      this.viewDate.set(new Date(this.viewDate().getFullYear() + delta, this.viewDate().getMonth(), 1));
+      this.focusedYear.set(current + delta);
+      this.queueYearFocus();
+      return;
+    }
+    const idx = this.navigateGridIndex(event.key, current - this.decadeStart(), 2, 10);
+    if (idx === null) return;
+    event.preventDefault();
+    this.focusedYear.set(this.decadeStart() + idx);
+    this.queueYearFocus();
+  }
+
+  /** @ignore The month-picker roving-focus cell. */
+  protected isFocusableMonth(cell: DatepickerMonthCell): boolean {
+    return cell.index === this.focusedMonthIndex();
+  }
+
+  /** @ignore The year-picker roving-focus cell. */
+  protected isFocusableYear(cell: DatepickerYearCell): boolean {
+    return cell.year === this.focusedYear();
+  }
+
   /** @ignore Shift the visible month window just enough to contain `date`. */
   private ensureMonthVisible(date: Date): void {
     const count = Math.max(1, this.numberOfMonths());
@@ -1060,12 +1391,16 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
 
   // --- Internals -------------------------------------------------------
 
-  /** @ignore */
-  private commit(value: DatepickerValue): void {
+  /** @ignore Sole "normal" write path: takes internal Date(s), serializes to the public ISO
+   *  string(s) right here, before it ever reaches `modelValue`/the CVA. Callers keep passing
+   *  `Date`/`Date[]`/`null` exactly as before — the ISO contract lives entirely in this method. */
+  private commit(value: DatepickerDateValue): void {
     this.typedValue.set(null); // any committed value re-formats the trigger
-    this.modelValue.set(value ?? undefined);
-    this.emitChange(value);
-    this.valueChange.emit(value);
+    this.internalValue.set(value ?? null);
+    const external = this.toExternalValue(value ?? null);
+    this.modelValue.set(external ?? undefined);
+    this.emitChange(external);
+    this.valueChange.emit(external);
   }
 
   /** @ignore Build a day-cell descriptor with its selection/range flags. */
@@ -1100,6 +1435,7 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
       today: isSameDay(date, today),
       selected,
       disabled: this.isDateDisabled(date),
+      ariaLabel: this.dayAriaFormatter().format(date),
       rangeStart,
       rangeEnd,
       inRange,
@@ -1124,18 +1460,31 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     return host?.querySelector('.ui-field-box') ?? host ?? null;
   }
 
-  /** @ignore */
-  private queueDayFocus(): void {
+  /** @ignore Focus the roving-tabindex cell matching `selector`, once the DOM reflects the
+   *  just-updated `focusedDate`/`focusedMonthIndex`/`focusedYear` signal. */
+  private queueCellFocus(selector: string): void {
     if (typeof requestAnimationFrame === 'undefined') return;
     requestAnimationFrame(() => {
-      this.panelEl()?.nativeElement.querySelector<HTMLElement>('.ui-datepicker-day._focusable')?.focus();
+      this.panelEl()?.nativeElement.querySelector<HTMLElement>(selector)?.focus();
     });
+  }
+  /** @ignore */
+  private queueDayFocus(): void {
+    this.queueCellFocus('.ui-datepicker-day._focusable');
+  }
+  /** @ignore */
+  private queueMonthFocus(): void {
+    this.queueCellFocus('.ui-datepicker-picker._month .ui-datepicker-cell._focusable');
+  }
+  /** @ignore */
+  private queueYearFocus(): void {
+    this.queueCellFocus('.ui-datepicker-picker._year .ui-datepicker-cell._focusable');
   }
 
   /** @ignore */
   private clampToRange(date: Date): Date {
-    const min = this.minDate();
-    const max = this.maxDate();
+    const min = this.resolvedMinDate();
+    const max = this.resolvedMaxDate();
     if (min && date < startOfDay(min)) return startOfDay(min);
     if (max && date > startOfDay(max)) return startOfDay(max);
     return date;
@@ -1143,18 +1492,18 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
 
   /** @ignore */
   private isDateDisabled(date: Date): boolean {
-    const min = this.minDate();
-    const max = this.maxDate();
+    const min = this.resolvedMinDate();
+    const max = this.resolvedMaxDate();
     if (min && date < startOfDay(min)) return true;
     if (max && date > startOfDay(max)) return true;
     if ((this.disabledDays() ?? []).includes(date.getDay())) return true;
-    return (this.disabledDates() ?? []).some((d) => isSameDay(d, date));
+    return this.resolvedDisabledDates().some((d) => isSameDay(d, date));
   }
 
   /** @ignore Whole month out of [min, max]. */
   private isMonthDisabled(year: number, month: number): boolean {
-    const min = this.minDate();
-    const max = this.maxDate();
+    const min = this.resolvedMinDate();
+    const max = this.resolvedMaxDate();
     if (min && new Date(year, month + 1, 0) < startOfDay(min)) return true;
     if (max && new Date(year, month, 1) > startOfDay(max)) return true;
     return false;
@@ -1162,8 +1511,8 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
 
   /** @ignore Whole year out of [min, max]. */
   private isYearDisabled(year: number): boolean {
-    const min = this.minDate();
-    const max = this.maxDate();
+    const min = this.resolvedMinDate();
+    const max = this.resolvedMaxDate();
     if (min && year < min.getFullYear()) return true;
     if (max && year > max.getFullYear()) return true;
     return false;
