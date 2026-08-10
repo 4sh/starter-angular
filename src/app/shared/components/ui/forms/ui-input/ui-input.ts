@@ -80,6 +80,12 @@ export class UiInput extends BaseFormField<string> {
     this.inputEl().nativeElement.focus(options);
   }
 
+  /** Native `<input>` element — composite hosts that own `value` (e.g. `ui-datepicker`)
+   *  need direct DOM access to control the caret while reformatting text as typed. */
+  nativeInputElement(): HTMLInputElement {
+    return this.inputEl().nativeElement;
+  }
+
   /** @ignore Input: single source of the value (view → form). */
   protected onInput(): void {
     const value = this.inputEl().nativeElement.value;

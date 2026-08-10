@@ -186,7 +186,7 @@ $stroke-width: utils.$control-stroke-width; /// Épaisseur des bordures (panneau
   &-grid { display: flex; flex-direction: column; gap: var(--units-xs); }
 
   // --- Day cell ------------------------------------------------------
-  $range-bg: var(--informative-highlightlow-surface-hover);
+  $range-bg: var(--informative-highlightlow-surface-hover); /// Fond continu de la plage sélectionnée (`range`).
 
   &-day {
     position: relative;
@@ -250,7 +250,14 @@ $stroke-width: utils.$control-stroke-width; /// Épaisseur des bordures (panneau
       }
     }
 
-    // Range: continuous bar on the full-width cell.
+    // Range: continuous bar on the full-width cell. The top/bottom rule reuses the same
+    // stroke token as `._today` so the range reads even without color (WCAG: not color-only).
+    &._in-range,
+    &._range-start,
+    &._range-end {
+      border-top: $stroke-width solid var(--actions-high-stroke-default);
+      border-bottom: $stroke-width solid var(--actions-high-stroke-default);
+    }
     &._in-range { background-color: $range-bg; }
     &._range-start { background: linear-gradient(to right, transparent 50%, #{$range-bg} 50%); }
     &._range-end { background: linear-gradient(to left, transparent 50%, #{$range-bg} 50%); }

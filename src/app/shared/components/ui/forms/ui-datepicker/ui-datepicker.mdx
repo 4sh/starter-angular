@@ -14,10 +14,33 @@ modes `MonthPicker` / `YearPicker`, plusieurs mois côte à côte, navigation me
 roving et support clavier complet (motif WAI-ARIA date picker).
 `p-datepicker`.
 
-Valeur `Date | Date[] | null` câblée via `ControlValueAccessor` (Signal Forms `[formField]`,
-`[(ngModel)]` ou `[formControl]`) sur
+Câblé en `ControlValueAccessor` (Signal Forms `[formField]`, `[(ngModel)]` ou `[formControl]`) sur
 [`BaseFormField`](?path=/docs/components-ui-forms-ui-input--docs) : `label`, `helperText`/`errorText`,
 `level`, la validation et les états `disabled`/`readonly` sont partagés avec les autres champs.
+
+**Valeur : `Date` ou string ISO, selon `valueType` (obligatoire, sans défaut).** L'input
+`valueType: 'date' | 'iso'` est **requis** : pas de valeur implicite, pour forcer le choix
+explicite plutôt qu'un défaut silencieux qui ne correspondrait pas au type réel du modèle. `writeValue`
+accepte toujours `Date` **ou** string ISO `"yyyy-MM-dd"` (`"yyyy-MM-ddTHH:mm"` avec
+`showTime`/`timeOnly`), auto-détecté — peu importe ce que l'app a sous la main. Ce qui est
+**émis** (`valueChange`, `dateSelect`, donc ce qui atterrit dans le `FormControl`) suit
+strictement `valueType`, jamais un mélange silencieux des deux formes :
+
+- **`'date'`** — la valeur reste un `Date` de bout en bout, normalisé à minuit quand
+  aucune heure n'est affichée (`!showTime && !timeOnly`). Pensé pour un DTO round-trippé par
+  `class-transformer` (`@Type(() => Date)`) : le formulaire manipule directement le `Date` du DTO,
+  sans conversion à faire côté app — la sérialisation vers le JSON du backend reste la
+  responsabilité de `class-transformer`, pas du champ.
+- **`'iso'`** — la valeur est une string `"yyyy-MM-dd"` (`string[]` en `multiple`/`range`). Pour
+  un champ qui lit/écrit directement contre un `LocalDate` backend, sans DTO/`class-transformer`
+  entre les deux (ex. un filtre de recherche). Toujours construite à partir des composants locaux
+  du `Date` (`getFullYear()/getMonth()/getDate()`), jamais `date.toISOString()` (qui bascule en
+  UTC et peut décaler le jour selon le fuseau local).
+
+`Date` reste de toute façon la représentation interne de tout le calcul de calendrier — seule la
+frontière `writeValue`/`commit` convertit, dans un sens ou dans l'autre selon `valueType`.
+
+<Canvas of={DatepickerStories.IsoValueType} />
 
 <Canvas of={DatepickerStories.Inline} />
 
@@ -27,9 +50,10 @@ Valeur `Date | Date[] | null` câblée via `ControlValueAccessor` (Signal Forms 
 
 ## Sélection : single / multiple / range
 
-`selectionMode` définit la quantité sélectionnée. La valeur du modèle est un `Date` en `single`,
-un `Date[]` en `multiple` (bascule au clic, le panneau reste ouvert) et un `Date[]` `[début, fin]`
-en `range` (1er clic = début, 2ᵉ = fin, surbrillance de l'intervalle).
+`selectionMode` définit la quantité sélectionnée. La valeur du modèle est un `Date`/string ISO
+(selon `valueType`) en `single`, un tableau en `multiple` (bascule au clic, le panneau reste
+ouvert) et un tableau `[début, fin]` en `range` (1er clic = début, 2ᵉ = fin, surbrillance de
+l'intervalle).
 
 <Canvas of={DatepickerStories.Multiple} />
 <Canvas of={DatepickerStories.Range} />
@@ -76,8 +100,15 @@ actif, le panneau **reste ouvert** après le choix d'un jour (pour régler l'heu
 `disabledDates` (dates ponctuelles) neutralisent des cellules. `showButtonBar` ajoute les actions
 « Aujourd'hui » / « Effacer ».
 
+`minDate`, `maxDate` et chaque entrée de `disabledDates` acceptent indifféremment un `Date` **ou**
+une string ISO `"yyyy-MM-dd"` (les deux formes sont mixables dans `disabledDates`) — pratique
+quand les bornes viennent déjà d'un backend au même format que la valeur. Une string malformée
+dégrade silencieusement en « pas de contrainte » plutôt que de lever une erreur.
+
 <Canvas of={DatepickerStories.MinMax} />
+<Canvas of={DatepickerStories.MinMaxIso} />
 <Canvas of={DatepickerStories.DisabledWeekends} />
+<Canvas of={DatepickerStories.DisabledDates} />
 <Canvas of={DatepickerStories.ButtonBar} />
 
 ## Niveaux & états
@@ -103,16 +134,28 @@ uniquement). Le texte est parsé au **blur** et sur **Entrée** ; une saisie inv
 Quand `allowInput` est actif (et sans `dateFormat` custom), la valeur s'affiche au **format
 numérique** de la locale (ex. `08/07/2026`) pour un aller-retour fiable avec le parser.
 
+Les séparateurs **"/" s'insèrent automatiquement pendant la frappe**, dès qu'un segment (jour,
+mois) est complet — même principe qu'un champ de date d'expiration de carte bancaire (`0812…` →
+`08/12…`). Le segment année reste volontairement libre (pas de "/" forcé après 2 ou 4 chiffres) :
+la validation stricte a lieu au parsing (blur/Entrée), pas dans ce masque cosmétique. Ce
+comportement partage son moteur avec [`ui-input-mask`](?path=/docs/components-ui-forms-ui-input-mask--docs)
+(`mask-engine.ts`) et se désactive automatiquement dès qu'un `parseDate` custom est fourni (un
+format non numérique rendrait l'auto-slash faux).
+
 > **L'ordre des champs suit la locale résolue** (`locale` ou, à défaut, `LOCALE_ID`). En
-> `fr-FR` c'est **jj/mm/aaaa** ; en `en-US` c'est **mm/dd/yyyy**. Si `LOCALE_ID` n'est pas
-> configuré, Angular tombe sur `en-US` : passez `locale="fr-FR"` (ou configurez `LOCALE_ID`)
-> pour saisir en JJ/MM/AAAA. Le **placeholder est dérivé automatiquement** de cet ordre quand
-> il n'est pas fourni, pour ne jamais afficher un format trompeur.
+> `fr-FR` c'est **jj/mm/aaaa** ; en `en-US` c'est **mm/dd/yyyy** — l'auto-formatage suit le même
+> ordre. Si `LOCALE_ID` n'est pas configuré, Angular tombe sur `en-US` : passez `locale="fr-FR"`
+> (ou configurez `LOCALE_ID`) pour saisir en JJ/MM/AAAA. Le **placeholder est dérivé
+> automatiquement** de cet ordre quand il n'est pas fourni, pour ne jamais afficher un format
+> trompeur.
 
 Fournissez `parseDate` `(value: string) => Date | null` pour un parsing sur mesure (symétrique
-de `dateFormat`).
+de `dateFormat`). Ces deux hooks travaillent en `Date` (affichage/saisie libre uniquement) — ils
+ne sont jamais round-trippés à travers la CVA, donc pas concernés par le contrat ISO.
 
 <Canvas of={DatepickerStories.EditableInput} />
+<Canvas of={DatepickerStories.AutoFormattedInputEnUs} />
+<Canvas of={DatepickerStories.CustomFormat} />
 
 ## Templates
 
@@ -129,7 +172,7 @@ Deux points d'extension via `<ng-template>` projetés, résolus par `contentChil
 
 ```html
 <!-- Cellule de jour personnalisée -->
-<ui-datepicker [(ngModel)]="date">
+<ui-datepicker [(ngModel)]="date" valueType="date">
   <ng-template #date let-d let-selected="selected">
     <span>{{ d.day }}</span>
     @if (hasEvent(d)) { <span class="dot"></span> }
@@ -137,7 +180,7 @@ Deux points d'extension via `<ng-template>` projetés, résolus par `contentChil
 </ui-datepicker>
 
 <!-- Barre de boutons personnalisée -->
-<ui-datepicker [(ngModel)]="range" selectionMode="range" showButtonBar>
+<ui-datepicker [(ngModel)]="range" valueType="date" selectionMode="range" showButtonBar>
   <ng-template #buttonbar let-todayCallback="todayCallback" let-clearCallback="clearCallback">
     <ui-button size="small" label="Aujourd'hui" (buttonClick)="todayCallback($event)" />
     <ui-button size="small" level="error" icon="xmark" iconOnly ariaLabel="Effacer" (buttonClick)="clearCallback($event)" />
@@ -155,17 +198,20 @@ via l'interop CVA native, ainsi qu'aux formulaires template-driven (`[(ngModel)]
 <Canvas of={DatepickerStories.SignalForms} />
 
 ```html
-<!-- Signal Forms -->
-<ui-datepicker [formField]="birth" label="Date de naissance" />
+<!-- Signal Forms, DTO class-transformer (birth: Date) -->
+<ui-datepicker [formField]="birth" valueType="date" label="Date de naissance" />
 
-<!-- Reactive forms -->
-<ui-datepicker formControlName="birth" label="Date de naissance" [maxDate]="today" required />
+<!-- Reactive forms, DTO class-transformer (form.controls.birth: FormControl<Date | null>) -->
+<ui-datepicker formControlName="birth" valueType="date" label="Date de naissance" [maxDate]="today" required />
+
+<!-- Reactive forms, valeur ISO directe (form.controls.birth: FormControl<string | null>) -->
+<ui-datepicker formControlName="birth" valueType="iso" label="Date de naissance" required />
 
 <!-- Date + heure, ngModel -->
-<ui-datepicker [(ngModel)]="appointment" label="Rendez-vous" showTime hourFormat="12" showButtonBar />
+<ui-datepicker [(ngModel)]="appointment" valueType="date" label="Rendez-vous" showTime hourFormat="12" showButtonBar />
 
 <!-- Inline (pas d'overlay) -->
-<ui-datepicker [(ngModel)]="date" inline />
+<ui-datepicker [(ngModel)]="date" valueType="date" inline />
 ```
 
 ## Accessibilité
@@ -192,7 +238,19 @@ via l'interop CVA native, ainsi qu'aux formulaires template-driven (`[(ngModel)]
     </tr>
     <tr>
       <td><strong>Sémantique</strong></td>
-      <td>Panneau <code>role="dialog"</code> ; grille <code>role="grid"</code> / <code>gridcell</code> avec <code>aria-selected</code> et <code>aria-current="date"</code> pour aujourd'hui.</td>
+      <td>Panneau <code>role="dialog"</code> ; grille <code>role="grid"</code> / <code>gridcell</code> avec <code>aria-selected</code>, <code>aria-current="date"</code> pour aujourd'hui, et un <code>aria-label</code> de date complète (« 8 juillet 2026 ») sur chaque jour — y compris avec la cellule <code>#date</code> custom.</td>
+    </tr>
+    <tr>
+      <td><strong>Titre du mois</strong></td>
+      <td><code>aria-live="polite"</code> sur le titre affiché, en mono-mois **et** en multi-mois : le changement de mois est annoncé dans les deux cas.</td>
+    </tr>
+    <tr>
+      <td><strong>En-têtes de semaine</strong></td>
+      <td><code>role="columnheader"</code> + <code>aria-label</code> du nom complet du jour (texte visible abrégé, ex. « lun »/« Lundi ») — plus <code>aria-hidden</code> qui les aurait rendus muets pour un lecteur d'écran.</td>
+    </tr>
+    <tr>
+      <td><strong>Plage (range)</strong></td>
+      <td>L'indicateur de continuité (<code>_in-range</code>/<code>_range-start</code>/<code>_range-end</code>) combine le fond coloré à une bordure haut/bas (token <code>actions.high.stroke.default</code>) : la plage reste identifiable sans dépendre de la seule couleur.</td>
     </tr>
     <tr>
       <td><strong>Heure</strong></td>

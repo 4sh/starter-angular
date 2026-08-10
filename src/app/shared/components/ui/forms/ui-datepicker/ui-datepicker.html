@@ -90,7 +90,7 @@
                   } @else {
                     <span class="ui-datepicker-nav-spacer" aria-hidden="true"></span>
                   }
-                  <span class="ui-datepicker-title">{{ mp.label }}</span>
+                  <span class="ui-datepicker-title" aria-live="polite">{{ mp.label }}</span>
                   @if (mp.showNext) {
                     <button type="button" class="ui-datepicker-nav" [attr.aria-label]="nextAriaLabel()" (click)="onNext()">
                       <ui-icon name="chevron-right" size="sm" />
@@ -101,9 +101,9 @@
                 </div>
               }
 
-              <div class="ui-datepicker-weekdays" aria-hidden="true">
-                @for (name of weekDayNames(); track $index) {
-                  <span class="ui-datepicker-weekday">{{ name }}</span>
+              <div class="ui-datepicker-weekdays" role="row">
+                @for (wd of weekDayNames(); track $index) {
+                  <span class="ui-datepicker-weekday" role="columnheader" [attr.aria-label]="wd.full">{{ wd.short }}</span>
                 }
               </div>
 
@@ -126,6 +126,7 @@
                         [attr.tabindex]="isFocusableDay(cell) ? 0 : -1"
                         [attr.aria-selected]="cell.selected"
                         [attr.aria-current]="cell.today ? 'date' : null"
+                        [attr.aria-label]="cell.ariaLabel"
                         (click)="selectDay(cell)"
                       >
                         @if (dateTemplate(); as tpl) {
