@@ -20,7 +20,7 @@ D'où le montage retenu :
 | Compte publieur | **`4sh-package-admin`** (le nom `4sh` est réservé par l'organisation éponyme) |
 | Email du compte | `npm@4sh.fr` (ggroup dédié) |
 | Identifiants | **Vaultier** |
-| Token dans GitHub | secret `NPM_TOKEN` du dépôt |
+| Token dans GitHub | secret `NPM_TOKEN`, porté par l'environment `npm-publish` |
 
 > Une organisation npm ne peut pas porter d'access token elle-même : c'est la
 > raison d'être du compte `4sh-package-admin`.
@@ -30,24 +30,54 @@ D'où le montage retenu :
 Sur npmjs, connecté en `4sh-package-admin` : *Access Tokens → Generate New Token
 → **Granular Access Token***.
 
-| Réglage | Valeur |
-|---|---|
-| Expiration | la plus courte praticable (ex. 90 jours) — à renouveler |
-| Packages and scopes | **Read and write**, restreint au seul package `@4sh/ui-kit` |
-| Organizations | `4sh` en lecture seule si demandé |
+⚠️ **Œuf et poule au premier passage.** Un token granulaire ne peut pas être
+restreint à `@4sh/ui-kit` tant que ce package n'existe pas sur le registre : la
+liste ne propose que des packages déjà publiés. La sélection se fait donc **au
+niveau du scope**, pas du package :
 
-Pourquoi granulaire plutôt qu'un token *classic* : un token classique donne les
-pleins droits sur **tous** les packages du compte et **n'expire jamais**. Un token
-granulaire limité à `@4sh/ui-kit` avec expiration borne les dégâts en cas de fuite.
+| Réglage | Premier publish | Ensuite (rotation) |
+|---|---|---|
+| Expiration | la plus courte praticable (ex. 30 jours) | 90 jours, à renouveler |
+| Packages and scopes | **Read and write** sur le **scope `@4sh`** — couvre les packages à créer | *Read and write* restreint au seul `@4sh/ui-kit` |
+| Organizations | `4sh` — lecture seule suffit | idem |
 
-⚠️ **Ce que le secret GitHub protège — et ce qu'il ne protège pas.** Un secret est
+Autrement dit : le premier token est nécessairement un peu plus large (tout le
+scope `@4sh`), et une fois `@4sh/ui-kit` publié, on le remplace par un token
+strictement limité à ce package. D'où l'expiration courte sur le premier.
+
+> Si le premier publish échoue malgré un token de scope (npm a eu des
+> restrictions changeantes sur la **création** d'un package avec un token
+> granulaire), le contournement est un token *classic* de type **Automation**,
+> utilisé pour ce seul premier publish, puis **révoqué immédiatement** et
+> remplacé par le token granulaire.
+
+Pourquoi granulaire plutôt que *classic* en régime normal : un token classique
+donne les pleins droits sur **tous** les packages du compte et **n'expire
+jamais**. Un token granulaire borné avec expiration limite les dégâts en cas de
+fuite.
+
+### L'environment `npm-publish` (approbation humaine)
+
+Le job de publication est rattaché à l'environment **`npm-publish`**. À
+configurer **une fois**, sinon la protection n'existe pas :
+
+*Settings → Environments → New environment → `npm-publish`* puis cocher
+**Required reviewers** et y mettre les personnes autorisées à publier.
+
+⚠️ **Piège** : référencer un environment qui n'existe pas le fait créer
+automatiquement **sans aucune règle de protection**. Le workflow tournerait alors
+sans approbation, en donnant l'illusion d'être protégé. À vérifier explicitement.
+
+Le secret `NPM_TOKEN` peut d'ailleurs être posé **sur l'environment** plutôt que
+sur le dépôt : il devient alors inaccessible aux workflows qui ne passent pas par
+la porte d'approbation.
+
+⚠️ **Ce que le secret protège — et ce qu'il ne protège pas.** Un secret est
 *write-only* : personne ne peut le relire dans l'interface, et il est masqué dans
 les logs. Mais **toute personne pouvant modifier un workflow peut l'utiliser**
-(voire l'exfiltrer). Le compte de service limite donc l'impact à une identité non
-nominative — il ne rend pas le token inaccessible. Pour resserrer davantage :
-placer la publication dans un *environment* GitHub protégé par *required
-reviewers*, ce qui exige une approbation humaine avant que le job n'accède au
-secret.
+(voire l'exfiltrer) — c'est justement ce que l'approbation de l'environment
+ci-dessus vient borner. Le compte de service, lui, limite l'impact à une identité
+non nominative : il ne rend pas le token inaccessible.
 
 ---
 
@@ -57,13 +87,22 @@ La publication passe par le workflow [`publish-ui-kit.yml`](../.github/workflows
 en **déclenchement manuel** — jamais automatique, car l'opération est
 irréversible.
 
-1. Prérequis, une seule fois : ajouter le token de `4sh-package-admin` dans
-   *Settings → Secrets and variables → Actions* du dépôt, sous le nom **`NPM_TOKEN`**.
-2. Mettre à jour la version dans `projects/ui-kit/package.json` et l'entrée
+Prérequis, une seule fois :
+
+1. Créer l'environment **`npm-publish`** avec ses *required reviewers* (voir plus haut).
+2. Y ajouter le token de `4sh-package-admin` sous le nom **`NPM_TOKEN`**
+   (*Settings → Environments → npm-publish → Add secret*, ou à défaut en secret
+   de dépôt).
+
+Puis, à chaque version :
+
+3. Mettre à jour la version dans `projects/ui-kit/package.json` et l'entrée
    `CHANGELOG.md` correspondante, puis merger sur `main`.
-3. *Actions → Publish @4sh/ui-kit to npm → Run workflow* avec **`dry_run: true`** :
-   le job affiche le contenu exact du tarball sans rien publier.
-4. Relancer avec **`dry_run: false`** pour publier.
+4. *Actions → Publish @4sh/ui-kit to npm → Run workflow* avec **`dry_run: true`** :
+   le job `verify` affiche le contenu exact du tarball. Aucune approbation ni
+   secret requis à ce stade.
+5. Relancer avec **`dry_run: false`** : le job `verify` rejoue, puis `publish`
+   **attend l'approbation d'un reviewer** avant de démarrer et de publier.
 
 Le token ne quitte jamais les secrets GitHub : aucune machine de développeur n'en
 a besoin.
