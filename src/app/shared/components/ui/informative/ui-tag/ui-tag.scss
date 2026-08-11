@@ -18,7 +18,7 @@ $sublevels: high, low;                                /// Intensités générant
 /// Hauteur, gouttière et typo, par taille.
 $sizes: (
   'default': (
-    height: 28px,
+    height: var(--size-components-2xs),
     gap: var(--units-sm),
     font-size: var(--size-typography-text-default),
   ),
@@ -31,8 +31,8 @@ $sizes: (
 $size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default` de `$sizes`.
 
 @mixin tag-size($size) {
-  height: utils.rem-calc(map.get($size, height));
-  min-width: utils.rem-calc(map.get($size, height));
+  height: map.get($size, height);
+  min-width: map.get($size, height);
   gap: map.get($size, gap);
   font-size: map.get($size, font-size);
 }
