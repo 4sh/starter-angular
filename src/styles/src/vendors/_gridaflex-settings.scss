@@ -1,4 +1,4 @@
-@use "../generated/_tokens-breakpoint" as brk;
+@use "generated/tokens-breakpoint" as brk;
 @use 'gridaflex/src/settings' with (
   $breakpoints: (
     'phone': brk.$breakpoint-phone,

@@ -1,0 +1,150 @@
+import { Component, signal } from '@angular/core';
+import type { Meta, StoryObj } from '@storybook/angular';
+import { moduleMetadata } from '@storybook/angular';
+import { FormsModule } from '@angular/forms';
+import { FormField, form } from '@angular/forms/signals';
+import { UiToggle } from '@4sh/ui-kit/ui-toggle';
+import { UiIcon } from '@4sh/ui-kit/ui-icon';
+
+const meta: Meta<UiToggle> = {
+  title: 'Components/ui/forms/ui-toggle',
+  component: UiToggle,
+  decorators: [moduleMetadata({ imports: [UiToggle, UiIcon, FormsModule] })],
+  parameters: {
+    layout: 'centered',
+    design: {
+      type: 'figma',
+      url: 'https://www.figma.com/design/GZww5hdUA49LB8XWeWP6tl/-Projet----UI-Kit?node-id=120-1988&t=0SWBsuymjEi87t6k-1',
+    },
+  },
+  argTypes: {
+    label: {
+      control: { type: 'text' },
+      description: 'Texte du label (clic dessus = bascule).',
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    ariaLabel: {
+      control: { type: 'text' },
+      description: 'Nom accessible si aucun label visible.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    size: {
+      control: { type: 'inline-radio' },
+      options: ['default', 'small'],
+      description: 'Taille.',
+      table: { type: { summary: 'ToggleSize' }, defaultValue: { summary: '"default"' } },
+    },
+    labelPosition: {
+      control: { type: 'inline-radio' },
+      options: ['before', 'after'],
+      description: 'Côté du label (gauche = before / droite = after). Les deux côtés sont cliquables.',
+      table: { type: { summary: 'ToggleLabelPosition' }, defaultValue: { summary: '"after"' } },
+    },
+    handle: {
+      control: false,
+      description: 'Template personnalisé du curseur (contexte `{ checked }`).',
+      table: { type: { summary: 'TemplateRef<ToggleHandleContext>' } },
+    },
+    required: {
+      control: { type: 'boolean' },
+      description: 'Marqueur requis (*) + attribut natif required.',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    disabled: {
+      control: { type: 'boolean' },
+      description: 'Désactive le switch (attribut natif).',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    readonly: {
+      control: { type: 'boolean' },
+      description: 'Focusable mais non modifiable.',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    invalid: {
+      control: { type: 'boolean' },
+      description: 'Force le style erreur (auto si le contrôle est invalide et touché/modifié).',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    tabindex: {
+      control: { type: 'number' },
+      description: 'tabindex forwardé sur l’input natif.',
+      table: { type: { summary: 'number' }, defaultValue: { summary: 'undefined' } },
+    },
+    toggleChange: { action: 'toggleChange', table: { disable: true } },
+    toggleFocus: { action: 'toggleFocus', table: { disable: true } },
+    toggleBlur: { action: 'toggleBlur', table: { disable: true } },
+  },
+  args: {
+    label: 'Label',
+    size: 'default',
+    labelPosition: 'after',
+  },
+};
+
+export default meta;
+type Story = StoryObj<UiToggle>;
+
+// Piloté par ngModel pour une bascule réellement interactive dans Storybook.
+const TEMPLATE = `<ui-toggle
+    [(ngModel)]="model"
+    [label]="label" [ariaLabel]="ariaLabel" [size]="size" [labelPosition]="labelPosition"
+    [required]="required" [disabled]="disabled" [readonly]="readonly"
+    [invalid]="invalid" [tabindex]="tabindex"
+    (toggleChange)="toggleChange($event)" />`;
+
+/** Story factory: `on` seeds the initial ngModel value. */
+const story = (on = false): Story['render'] => (args) => ({ props: { ...args, model: on }, template: TEMPLATE });
+
+export const Default: Story = { render: story(), args: { label: 'Notifications' } };
+export const Checked: Story = { render: story(true), args: { label: 'Notifications' } };
+export const Small: Story = { render: story(), args: { label: 'Compact', size: 'small' } };
+export const Required: Story = { render: story(), args: { label: 'Accepter les CGU', required: true } };
+export const Disabled: Story = { render: story(), args: { label: 'Indisponible', disabled: true } };
+export const DisabledChecked: Story = { render: story(true), args: { label: 'Verrouillé activé', disabled: true } };
+export const Readonly: Story = { render: story(), args: { label: 'Lecture seule', readonly: true } };
+export const Invalid: Story = { render: story(), args: { label: 'Champ obligatoire', invalid: true } };
+
+// Sans label visible : nom accessible obligatoire
+export const NoLabel: Story = { render: story(), args: { label: undefined, ariaLabel: 'Mode sombre' } };
+
+// Label à gauche (before) — cliquable des deux côtés
+export const LabelBefore: Story = { render: story(), args: { label: 'Mode sombre', labelPosition: 'before' } };
+
+// --- Signal Forms (@angular/forms/signals) ------------------------------
+@Component({
+  selector: 'demo-toggle-signal-forms',
+  standalone: true,
+  imports: [UiToggle, FormField],
+  template: `
+    <div style="display: grid; gap: 8px; justify-items: start;">
+      <ui-toggle [formField]="notifications" label="Notifications" />
+      <code>value = {{ notifications().value() }}</code>
+    </div>
+  `,
+})
+class SignalFormsDemo {
+  protected readonly model = signal(false);
+  protected readonly notifications = form(this.model);
+}
+
+export const SignalForms: Story = {
+  name: 'Signal Forms',
+  render: () => ({ template: `<demo-toggle-signal-forms />` }),
+  decorators: [moduleMetadata({ imports: [SignalFormsDemo] })],
+};
+
+// Curseur personnalisé : icône check / xmark selon l'état
+export const CustomHandle: Story = {
+  render: (args) => ({
+    props: { ...args, model: true },
+    template: `
+      <ng-template #handle let-checked="checked">
+        <ui-icon [name]="checked ? 'check' : 'xmark'" size="sm" />
+      </ng-template>
+      <ui-toggle
+        [(ngModel)]="model"
+        [label]="label" [handle]="handle" [size]="size" [labelPosition]="labelPosition"
+        (toggleChange)="toggleChange($event)" />`,
+  }),
+  args: { label: 'Notifications' },
+};

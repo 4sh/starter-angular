@@ -29,16 +29,21 @@
  * GENERATED (Tokens)
  * **************************************************************************************** >
  */
-@use "src/generated/tokens";
+@use "generated/tokens";
 
 /**
 /**
  * BASE
  * **************************************************************************************** >
  */
-@use "src/base/base";
-@use "src/base/typography";
-@use "src/base/motion";
+// Base layer, typography utilities and motion presets now live in the kit
+// (`projects/ui-kit/styles/`), shipped with the package as `styles.css`.
+@use "base/base";
+@use "base/typography";
+@use "base/motion";
+// Global utility classes (.text-center, .no-margin…). Explicit since the kit's
+// `utils` build surface is API-only — see projects/ui-kit/styles/utils.scss.
+@use "utils/helpers";
 
 /**
  * PLACEHOLDERS

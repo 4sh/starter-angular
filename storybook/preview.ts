@@ -6,6 +6,8 @@ import { lightTheme, darkTheme } from './myTheme';
 import { addons } from 'storybook/preview-api';
 import docJson from '../documentation.json';
 import { brandGlobalTypes, withBrand, DEFAULT_BRAND } from './brand-toolbar';
+import { provideUiImageAssets, UiImageAssetsMap } from '@4sh/ui-kit/ui-image';
+import assetsMap from '../src/assets/assets-map.json';
 
 setCompodocJson(docJson);
 
@@ -36,7 +38,13 @@ const preview: Preview = {
       return Story();
     },
     applicationConfig({
-      providers: [provideRouter([]), provideAnimations()],
+      providers: [
+        provideRouter([]),
+        provideAnimations(),
+        // `ui-image` reads its local assets from an injected map (the kit can't know a
+        // project's assets) — same wiring as the demo app's `app.config.ts`.
+        provideUiImageAssets(assetsMap as UiImageAssetsMap),
+      ],
     }),
   ],
   parameters: {

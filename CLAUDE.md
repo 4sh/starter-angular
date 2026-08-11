@@ -14,7 +14,7 @@ Before generating anything in Figma, you **must** audit the source Angular compo
 
 > **Repo-wide agent conventions live in `AGENTS.md`** — read it first for any code task
 > (Claude Code only auto-loads this file). Release/versioning conventions:
-> `docs/VERSIONING.md` + `CHANGELOG.md`.
+> `docs/VERSIONING.md` + `CHANGELOG.md`. Publishing the package: `docs/PUBLISHING.md`.
 
 ---
 
@@ -25,14 +25,19 @@ Before generating anything in Figma, you **must** audit the source Angular compo
 | Framework | Angular 22, standalone, signals API, zoneless |
 | Behavior (headless) | Components + Angular CDK (overlay, a11y, focus-trap…) |
 | Style | Co-located per component (scoped `.scss`) + CSS custom properties (`--var`) |
-| Design Tokens | JSON (Token Flow Manager) → `scripts/tokens.build.mjs` → SCSS (`src/styles/src/generated/`) |
+| Design Tokens | JSON (Token Flow Manager) → `scripts/tokens.build.mjs` → SCSS (`projects/ui-kit/styles/generated/`) |
 | Storybook | v10.5.4 + addon-designs (Figma panel) |
 | Themes | themeOne (purple), themeTwo, themeThree × light/dark (via `._themeX` / `.dark-mode` classes) |
 | Icons | FontAwesome Free |
 | Grid | Gridaflex 1.0.0 |
 
-> **Reference pattern**: `src/app/shared/components/ui/actions/ui-button/`. Every new
+> **Reference pattern**: `projects/ui-kit/ui-button/`. Every new
 > `ui-*` component is built on this model (signals + SCSS visual-DNA classes).
+
+> 📦 **The `ui-*` kit lives in `projects/ui-kit/`** — published as the `@4sh/ui-kit`
+> npm package (one secondary entry point per component). `src/app/` only holds the
+> demo app and its `domain/` components. See `AGENTS.md` for the layout and the
+> import rules that apply inside the package.
 
 ### Figma files (two, with distinct roles)
 
@@ -110,7 +115,7 @@ effects.{modeLight|modeDark}.{default|highlight|success|warning|error}
 **MANDATORY**:
 - Always read `src/design-tokens/semantics.json` before choosing a color
 - Always use semantic tokens, never primitives directly in components
-- Figma tokens must carry the same names as the generated SCSS tokens in `src/styles/src/generated/`
+- Figma tokens must carry the same names as the generated SCSS tokens in `projects/ui-kit/styles/generated/`
 - Every color must exist in both light AND dark mode
 
 ---
@@ -133,9 +138,9 @@ ui-{name}/
 > `storybook/main.js`.
 
 > Each component's **style is co-located** in its own `.scss` (Angular scoped
-> styles). The global layer (`src/styles/`) contains ONLY the generated tokens + utilities.
+> styles). The kit's SCSS foundation (tokens, `utils`, base) lives in `projects/ui-kit/styles/` and ships with the package.
 > All values (color, spacing, radius…) come from token CSS variables.
-> Reference pattern: `ui-button` (+ `ui-icon`).
+> Reference pattern: `projects/ui-kit/ui-button/` (+ `ui-icon`).
 
 ### Theming doc: generated from SCSS
 
@@ -169,7 +174,7 @@ Rules:
 
 | Category | Selector prefix | Location |
 |---|---|---|
-| Generic UI | `ui-` | `src/app/shared/components/ui/` |
+| Generic UI | `ui-` | `projects/ui-kit/ui-{name}/` (package `@4sh/ui-kit`) |
 | Business domain | `sp-` or project prefix | `src/app/shared/components/domain/` |
 
 ### Signals patterns
@@ -592,7 +597,7 @@ size/typography/text/md             → --size-typography-text-md
 ## Component styling: Figma points of attention
 
 The components are **headless**. Styling is **co-located** in the component's `.scss`
-(Angular scoped) and consumes the generated CSS variables (`src/styles/src/generated/`).
+(Angular scoped) and consumes the generated CSS variables (`projects/ui-kit/styles/generated/`).
 
 The `hover`/`focused`/`pressed`/`disabled` states are handled in CSS via the semantic tokens
 (e.g. `--actions-high-surface-hover`), never as Angular props. In Figma, these states must
@@ -612,7 +617,7 @@ mirror these same token values.
 
 Source: `src/design-tokens/*.json` (DTCG format + Figma extensions, exported from Figma).
 Build: `npm run tokens:build` (`scripts/tokens.build.mjs`, **Style Dictionary v5** engine) →
-SCSS partials in `src/styles/src/generated/`.
+SCSS partials in `projects/ui-kit/styles/generated/`.
 
 Configuration: **`tokens.config.json`** (repo root, documented/validated by
 `scripts/tokens.config.schema.json`): declares the collections, the mode axes

@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { BrandService } from '@app/core/service/brand.service';
-import { ThemeService } from '@app/core/service/theme.service';
+import { BrandService } from '@4sh/ui-kit/theming';
+import { ThemeService } from '@4sh/ui-kit/theming';
 
 @Component({
   selector: 'app-root',

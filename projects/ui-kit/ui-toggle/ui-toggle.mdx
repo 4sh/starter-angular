@@ -1,0 +1,111 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as ToggleStories from './ui-toggle.stories';
+import { ConfigTable } from '../../../storybook/blocks/config-table';
+
+<Meta of={ToggleStories} />
+
+# ui-toggle
+
+<Canvas of={ToggleStories.Default} />
+
+## API
+
+<ArgTypes of={ToggleStories} />
+
+## États
+
+<Canvas of={ToggleStories.Checked} />
+<Canvas of={ToggleStories.Small} />
+<Canvas of={ToggleStories.Required} />
+<Canvas of={ToggleStories.Disabled} />
+<Canvas of={ToggleStories.Readonly} />
+<Canvas of={ToggleStories.Invalid} />
+
+## Position du label
+
+Le label se place à droite (`after`, défaut) ou à gauche (`before`) du switch. Comme l'ensemble
+est enveloppé dans un `<label>` natif, **cliquer le label des deux côtés bascule le switch**.
+
+<Canvas of={ToggleStories.LabelBefore} />
+
+## Curseur personnalisé
+
+Un template `handle` (contexte `{ checked }`) remplace le contenu du curseur — par exemple une
+icône `check` / `xmark` selon l'état.
+
+<Canvas of={ToggleStories.CustomHandle} />
+
+```html
+<ng-template #handle let-checked="checked">
+  <ui-icon [name]="checked ? 'check' : 'xmark'" size="sm" />
+</ng-template>
+
+<ui-toggle [(ngModel)]="darkMode" [handle]="handle" label="Mode sombre" />
+```
+
+## Formulaires
+
+Branché au système de formulaires du starter via `ControlValueAccessor`
+(`BaseControlValueAccessor`) : fonctionne avec les **Signal Forms** (`@angular/forms/signals`,
+directive `[formField]`, stables depuis Angular 22) via l'interop CVA native, avec
+`[(ngModel)]`, les reactive forms (`formControlName`) ou en autonome. L'état d'erreur se peint
+automatiquement quand le contrôle attaché est invalide **et** touché/modifié.
+
+<Canvas of={ToggleStories.SignalForms} />
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Point</th>
+      <th>Implémentation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Rôle</strong></td>
+      <td>Input natif <code>type="checkbox"</code> + <code>role="switch"</code> et <code>aria-checked</code> : annoncé « activé / désactivé ».</td>
+    </tr>
+    <tr>
+      <td><strong>Clavier</strong></td>
+      <td>Natif : <kbd>Tab</kbd> pour cibler, <kbd>Espace</kbd> pour basculer. Focus visible via <code>:focus-visible</code> (anneau distinct du hover).</td>
+    </tr>
+    <tr>
+      <td><strong>Nom accessible</strong></td>
+      <td>Le clic sur le label (natif, via <code>&lt;label&gt;</code>) bascule le switch. Sans label visible, renseigner <code>ariaLabel</code> (ou <code>ariaLabelledBy</code>).</td>
+    </tr>
+    <tr>
+      <td><strong>Désactivé</strong></td>
+      <td><code>disabled</code> natif (pas seulement visuel) ; couleurs via tokens <code>--form-*-disabled</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Erreur</strong></td>
+      <td><code>aria-invalid</code> + bordure erreur ; automatique quand le contrôle est invalide et touché/modifié.</td>
+    </tr>
+  </tbody>
+</table>
+
+<Canvas of={ToggleStories.NoLabel} />
+
+```html
+<!-- Signal Forms -->
+<ui-toggle [formField]="notifications" label="Notifications" />
+
+<!-- Reactive forms -->
+<ui-toggle formControlName="darkMode" label="Mode sombre" />
+
+<!-- ngModel -->
+<ui-toggle [(ngModel)]="notifications" label="Notifications" />
+
+<!-- Valeurs personnalisées -->
+<ui-toggle [(ngModel)]="status" trueValue="on" falseValue="off" label="Statut" />
+```
+
+## Theming
+
+Variables locales en tête de `ui-toggle.scss`. Voir le groupe partagé
+[Forms](?path=/docs/components-configuration-forms--docs) et le
+[fonctionnement de la configuration](?path=/docs/components-configuration--docs).
+
+<ConfigTable of="ui-toggle" />

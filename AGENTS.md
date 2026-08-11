@@ -1,6 +1,8 @@
 # AGENTS.md — Starter Angular Headless (Design System)
 
 > Single entry point for any AI agent. Read this file first, then consult the indicated sources of truth. For the Figma side (component generation/audit), see `CLAUDE.md`.
+>
+> Release/versioning: `docs/VERSIONING.md` + `CHANGELOG.md`. Publishing the npm package: `docs/PUBLISHING.md`.
 
 ---
 
@@ -26,52 +28,96 @@ Fonts embedded locally (DM Sans + Inter, variable fonts): `src/styles/src/vendor
 | Question | Where to look |
 |---|---|
 | Existing components / roadmap | `src/app/shared/components/components-index.md` |
-| A component's API (`inputs`, `outputs`, types) | `src/app/shared/components/ui/**/ui-<name>/ui-<name>.stories.ts` → `argTypes` (co-located) |
+| A component's API (`inputs`, `outputs`, types) | `projects/ui-kit/ui-<name>/ui-<name>.stories.ts` → `argTypes` (co-located) |
 | Colors, semantic tokens | Storybook → `Foundations / Colors` (brand + mode explorer) |
 | Typography | Storybook → `Foundations / Typography` |
 | Shadows & effects | Storybook → `Foundations / Shadows` |
 | Tokens pipeline, theme, responsive | Storybook → `Spécifications / *` |
-| Source Angular component | `src/app/shared/components/ui/<category>/ui-<name>/` |
-| **Reference pattern** | `src/app/shared/components/ui/actions/ui-button/` (+ `ui-icon`) |
+| Source Angular component | `projects/ui-kit/ui-<name>/src/lib/` |
+| **Reference pattern** | `projects/ui-kit/ui-button/` (+ `ui-icon`) |
+
+---
+
+## The `ui-*` kit lives in the `@4sh/ui-kit` package (FSHSP-83)
+
+All 54 `ui-*` components live in `projects/ui-kit/` — an `ng-packagr` library
+published as a **single** npm package with one *secondary entry point* per
+component. `src/app/` now only holds the demo application and its `domain/`
+components.
+
+Layout of a component:
+
+```
+projects/ui-kit/ui-<name>/
+├── ng-package.json                 ← entry point config (styleIncludePaths → ../styles)
+├── src/public-api.ts               ← what the entry point exports
+├── src/lib/ui-<name>.{ts,html,scss}   (+ sub-components, .types.ts, .model.ts…)
+├── ui-<name>.stories.ts            ← OUTSIDE src/ (Storybook-only, never packaged)
+└── ui-<name>.mdx
+```
+
+Cross-cutting entry points: `forms` (field base classes + helpers), `theming`
+(`ThemeService`, `BrandService`), `motion` (`UiMotion`), `overlay`
+(`closeOnNavigation`), `types`.
+
+Rules when working in `projects/ui-kit/`:
+
+- **Imports between entry points MUST use the real package name**
+  (`@4sh/ui-kit/ui-icon`) — never a relative path to another entry point, never a
+  shorthand. `ng-packagr` only records a dependency when the specifier literally
+  starts with the package name; otherwise build order is undefined and the build
+  fails intermittently. **Inside** one entry point, use relative imports
+  (`./ui-toast.types`) — self-referencing the entry point is a circular dependency.
+- Two entry points must never import each other. A sub-component that consumes its
+  parent's model belongs in the parent's entry point (that's why
+  `ui-file-upload-list` ships inside `ui-file-upload`).
+- Stories/MDX stay **outside** `src/` so Storybook-only imports never leak into the
+  packaged build. Their `ConfigTable` import is `../../../storybook/blocks/config-table`.
+- A component must not depend on app code. Project-specific data is injected:
+  `provideUiKitBrand()` (active brand) and `provideUiImageAssets()` (local asset map
+  for `ui-image`) — both wired in `src/app/app.config.ts` and `storybook/preview.ts`.
+- The kit's SCSS foundation lives in `projects/ui-kit/styles/` (NOT `src/styles/`,
+  which is app-only): a published package cannot depend on the host app. Tokens are
+  generated there (`tokens.config.json`), and `npm run ui-kit:styles` compiles
+  `index.scss` → `dist/ui-kit/styles.css`, shipped alongside the SCSS sources.
+- **Never `@forward` anything that emits CSS from `utils.scss`.** Each component
+  `.scss` is its own Sass compilation unit, so emitted rules get duplicated into all
+  54 components. Global utility classes belong in `index.scss` (and, app-side, in
+  `src/styles/main.scss`).
+- `npm run ui-kit:build` runs before the app/Storybook (chained into `serve` /
+  `build` / `storybook` / `build-storybook` / `postinstall`), since `@4sh/ui-kit/*`
+  resolves to `dist/ui-kit/`.
 
 ---
 
 ## Architecture
 
 ```
+projects/
+  ui-kit/                    # @4sh/ui-kit — the published package (54 components)
+    <ui-name>/               # one secondary entry point per component
+      ng-package.json · src/public-api.ts · src/lib/… · *.stories.ts · *.mdx
+    forms/ theming/ motion/ overlay/ types/     # cross-cutting entry points
+    styles/                  # the kit's SCSS foundation — SHIPPED with the package
+      utils.scss             #   API-only build surface (`@use 'utils'`); emits NO CSS
+      utils/ settings/       #   functions, mixins, $ui-config constants
+      base/ generated/       #   base layer + generated tokens
+      index.scss             #   → compiled to dist/ui-kit/styles.css
+
 src/
   app/
-    core/
-      controlValueAccessor/  # BaseControlValueAccessor (form components)
-      service/               # ThemeService ([data-theme]) · BrandService ([data-brand])
+    app.config.ts            # provides the kit's app-level data (brand, ui-image assets)
     shared/
       components/
         components-index.md  # Index: components built ✅ / to build ⬜
-        ui/                  # Generic headless components — DS source of truth
-          actions/           # ui-button (reference pattern)
-          ui-icon/           # FontAwesome icons
         domain/              # Business components (project prefix) — created per project
-      types/                 # Shared types (ui-level…)
   design-tokens/             # Token JSON sources (Figma / Token Flow export)
-  styles/
-    main.scss                # Global entry point
-    src/
-      generated/             # _tokens-*.scss — GENERATED, do not edit
-      vendors/               # gridaflex-settings.scss, _fonts.scss
-      base/                  # base, typography (utility classes)
-
-storybook/
-  stories/
-    foundations/             # Colors.mdx, Typography.mdx, Shadows.mdx
-    specifications/          # design-tokens.mdx, theme.mdx, responsive.mdx
-    components/ui/           # Stories + MDX per component
-tokens.config.json           # Tokens pipeline config (collections, modes, outputs)
-scripts/tokens.build.mjs     # Style Dictionary build → src/styles/src/generated/
 ```
 
 Each component's style is **co-located** in its `.scss` (Angular scoped) and consumes
-**only** token CSS variables. The global layer (`src/styles/`) contains only the
-generated tokens, vendors and utilities.
+**only** token CSS variables. The kit's SCSS foundation (tokens, `utils`, base layer)
+lives in `projects/ui-kit/styles/` and ships with the package; `src/styles/` only
+holds what is specific to the demo app (aggregator, fonts, grid settings, layout).
 
 ---
 
@@ -84,8 +130,8 @@ generated tokens, vendors and utilities.
 | Angular selector | `ui-<name>` | `ui-button` |
 | TypeScript class | `Ui<Name>` | `UiButton` |
 | File | `ui-<name>.ts` (without `.component`) | `ui-button.ts` |
-| Story & doc | co-located: `src/app/shared/components/ui/<cat>/ui-<name>/ui-<name>.stories.ts` + `ui-<name>.mdx` | `ui-button.stories.ts` |
-| Import alias | Always `@app/` | `@app/shared/components/ui/...` |
+| Story & doc | co-located: `projects/ui-kit/ui-<name>/ui-<name>.stories.ts` + `ui-<name>.mdx` | `ui-button.stories.ts` |
+| Import alias | Kit components: `@4sh/ui-kit/<entry>` · app code: `@app/` | `@4sh/ui-kit/ui-button` |
 
 ### Business components (domain)
 
@@ -172,7 +218,7 @@ pitfall, extension point). No paraphrasing of what the next line does.
   Components: `<name> : co-located styles. All values come from design tokens.`
 - **Inline** — to flag a non-obvious choice, at end of line (`// …`); never to describe the obvious.
 - **Sections** — short separators `// --- <Title> ---` to break up a long file.
-- **Mixins/functions** (partials in `src/styles/src/utils/`) — 1 to 2 `///` lines: role + call example. No walls of text.
+- **Mixins/functions** (partials in `projects/ui-kit/styles/utils/`) — 1 to 2 `///` lines: role + call example. No walls of text.
 - **Language**: comments in **English**… **except** a component's config `///` comments (below), which are published in the docs and therefore in French.
 - **Never reference Figma**: keep the intent ("enlarged for readability"), not the origin ("Figma 3px"). The `.scss` must read without the mockup.
 
@@ -181,7 +227,7 @@ pitfall, extension point). No paraphrasing of what the next line does.
 In a **component** `.scss`, a `///` on a declaration (`$var` or custom property) is the
 **public contract**: `npm run docs:config` reads it and the doc's "Theming" section displays it.
 `//` remains the internal note, invisible in the doc. (The `///` on mixins/functions in
-`src/styles/src/utils/` is never published: the generator only scans components.)
+`projects/ui-kit/styles/utils/` is never scanned: the generator only reads components.)
 
 The `///` goes **at the end of the declaration**, vertically aligned with its visual group (blank
 lines separate groups):
@@ -204,7 +250,7 @@ $card-radius: var(--radius-md);       /// Rayon des coins.
 ### Shared structural constants — `ui-config`
 
 Structural values common to components (focus ring width, form control size,
-transition recipe…) live in **`src/styles/src/settings/_ui-config.scss`**
+transition recipe…) live in **`projects/ui-kit/styles/settings/_ui-config.scss`**
 (exposed via `@use 'utils'`), in 3 levels: global UI → category (`$form-*` / `$action-*`) →
 component.
 
@@ -271,8 +317,8 @@ $focus-ring-width: utils.$form-focus-ring-width; // ← replace the value here t
 
 ### Modify an existing ui-* component
 
-1. Read `src/app/shared/components/ui/<cat>/ui-<name>/ui-<name>.stories.ts` → identify `argTypes`
-2. Read `src/app/shared/components/ui/<cat>/ui-<name>/` → check types and structure
+1. Read `projects/ui-kit/ui-<name>/ui-<name>.stories.ts` → identify `argTypes`
+2. Read `projects/ui-kit/ui-<name>/src/lib/` → check types and structure
 3. Modify `.ts`, `.html`, `.scss` (tokens only) — any added config variable carries its `///`
 4. Update the story + the `.mdx` if the API changes; `npm run docs:config` if the SCSS config moved
 5. Verify light + dark + the 3 brands (Storybook → `Foundations / Colors` for the tokens)
@@ -281,7 +327,7 @@ $focus-ring-width: utils.$form-focus-ring-width; // ← replace the value here t
 
 1. Check `components-index.md` (roadmap, planned name)
 2. Replicate the **`ui-button` pattern**: file structure, signals + `computed()` for the classes, co-located SCSS
-3. Create the story + the `.mdx` **co-located** in the component folder `src/app/shared/components/ui/<cat>/ui-<name>/` (global doc only → `storybook/docs/`)
+3. Create the story + the `.mdx` **co-located** in `projects/ui-kit/ui-<name>/` (outside `src/`; global doc only → `storybook/docs/`)
 4. Check off the component in `components-index.md`
 
 ### Create a business component (domain)

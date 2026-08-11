@@ -14,8 +14,7 @@ node_modules
 .tokenflow
 
 # Generated Tokens (npm run tokens:build)
-src/styles/src/generated
-src/styles/generated
+projects/ui-kit/styles/generated
 
 # Compodoc (generated for Storybook)
 documentation.json
@@ -60,3 +59,6 @@ yarn-error.log*
 .Trashes
 Thumbs.db
 ehthumbs.db
+
+# npm pack output (local package testing)
+*.tgz

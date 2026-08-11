@@ -13,7 +13,7 @@ Il est essentiel de comprendre le flux de nos variables pour maintenir la cohér
 
 * **Source de vérité (Figma & JSON)** : Les variables sont extraites de fichiers JSON situés dans `src/design-tokens/`.
 * **Génération automatisée** : Un script `scripts/tokens.build.mjs` compile ces données en plusieurs formats cibles.
-* **Fichiers SCSS/CSS (`.scss`)** : Générés dans `src/styles/src/generated/`, ce sont les variables (ex: `var(--...)`) que vous devez utiliser lorsque vous écrivez du style pour vos éléments de layout / composants.
+* **Fichiers SCSS/CSS (`.scss`)** : Générés dans `projects/ui-kit/styles/generated/`, ce sont les variables (ex: `var(--...)`) que vous devez utiliser lorsque vous écrivez du style pour vos éléments de layout / composants.
 
 <div className="ai-instruction-block">
     <div className="ai-instruction-block-title">
@@ -30,7 +30,7 @@ Il est essentiel de comprendre le flux de nos variables pour maintenir la cohér
 
 ## 2. Familles de Tokens
 
-Les tokens sont divisés en plusieurs fichiers dans `src/styles/src/generated/` :
+Les tokens sont divisés en plusieurs fichiers dans `projects/ui-kit/styles/generated/` :
 
 - **`_tokens-semantics.scss`** : Couleurs liées à une fonction d'interface (ex: action, feedback, navigation).
 - **`_tokens-metrics.scss`** : Unités de mesure structurelles (espacement, arrondi, bordure).
@@ -85,7 +85,7 @@ voir [Anatomie du domaine `global`](#anatomie-du-domaine-global) ci-dessous.)*
 > **Casse** : le JSON est en camelCase, le générateur met en minuscules **sans séparateur**.
 > `informative.defaultHigh` donne donc `--informative-defaulthigh-*`, et non
 > `--informative-default-high-*`. En cas de doute, la source est
-> `src/styles/src/generated/_tokens-semantics.scss`.
+> `projects/ui-kit/styles/generated/_tokens-semantics.scss`.
 
 > **Hors anatomie** : la famille `effects` est **plate** (`--effects-default`,
 > `--effects-highlight`, `--effects-success`, `--effects-warning`, `--effects-error`) — pas de

@@ -40,8 +40,13 @@ import { dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const SHARED_CONFIG = join(ROOT, 'src/styles/src/settings/_ui-config.scss');
-const COMPONENTS_DIR = join(ROOT, 'src/app/shared/components');
+const SHARED_CONFIG = join(ROOT, 'projects/ui-kit/styles/settings/_ui-config.scss');
+const COMPONENTS_DIRS = [
+  join(ROOT, 'src/app/shared/components'),
+  // Components already migrated to the `ui-kit` npm package (`ng-packagr` secondary
+  // entry points) — their `.scss` still documents the same public contract.
+  join(ROOT, 'projects/ui-kit'),
+];
 const OUT_FILE = join(ROOT, 'storybook/generated/ui-config.json');
 
 // Sections de `_ui-config.scss` → page de doc du groupe partagé.
@@ -377,8 +382,9 @@ function parseSharedConfig() {
 
 function collectComponents(shared) {
   const components = {};
+  const files = COMPONENTS_DIRS.flatMap((dir) => walk(dir)).sort();
 
-  for (const file of walk(COMPONENTS_DIR).sort()) {
+  for (const file of files) {
     const text = readFileSync(file, 'utf8');
     const name = file.split(sep).pop().replace(/\.scss$/, '');
     if (!/^(ui|sp)-/.test(name)) continue;
@@ -447,7 +453,7 @@ function build() {
     $generatedBy: 'scripts/docs.config.mjs',
     $source: {
       shared: relative(ROOT, SHARED_CONFIG).split(sep).join('/'),
-      components: relative(ROOT, COMPONENTS_DIR).split(sep).join('/'),
+      components: COMPONENTS_DIRS.map((dir) => relative(ROOT, dir).split(sep).join('/')).join(', '),
     },
     groups: GROUPS,
     shared: sharedOut,

@@ -3,7 +3,7 @@ import type { Decorator, Preview } from '@storybook/angular';
 // =====================================================================
 // Brand selector for the Storybook toolbar.
 //
-// Exact mirror of `BrandService` (src/app/core/service/brand.service.ts):
+// Exact mirror of `BrandService` (@4sh/ui-kit/theming):
 // the brand is carried by `[data-brand]` on <html>, and since `brand1` is
 // the default (emitted under `:root` by the token pipeline) the attribute
 // is removed rather than set to `brand1`.
