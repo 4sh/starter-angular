@@ -7,17 +7,22 @@
 $pad-x: utils.$form-field-padding-x;                /// Inset horizontal du contrôle multiligne.
 $pad-y: utils.$form-textarea-padding-y;             /// Padding vertical du contrôle multiligne.
 $pad-y-small: utils.$form-textarea-padding-y-small; /// Padding vertical du contrôle multiligne, variante `small`.
+$min-height: utils.$form-textarea-min-height;       /// Hauteur minimale du contrôle multiligne.
+$min-height-small: utils.$form-textarea-min-height-small; /// Hauteur minimale du contrôle multiligne, variante `small`.
 
 .ui-textarea {
   &-native {
     @include utils.field-native-input($pad-x);
     box-sizing: border-box;
     width: 100%;
-    padding-block: $pad-y;
+    min-height: $min-height;
+    line-height: 1.5;
+    padding-block: calc((#{$min-height} - 1.5em) / 2);
     max-width: 100%;
 
     &._small {
-      padding-block: $pad-y-small;
+      min-height: $min-height-small;
+      padding-block: calc((#{$min-height-small} - 1.5em) / 2);
       font-size: var(--size-typography-text-md);
     }
 
