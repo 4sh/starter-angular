@@ -23,7 +23,7 @@ import {
   UiMenuItemCommandEvent,
 } from '@app/shared/components/ui/navigation/ui-menu/ui-menu';
 import { UiMotion } from '@app/shared/motion/ui-motion';
-import { closeOnNavigation } from '@app/shared/overlay/close-on-navigation';
+import { closeOnNavigation } from '@4sh/ui-kit/overlay';
 
 /** Accepted shapes for the `target` input. */
 export type ContextMenuTarget = HTMLElement | ElementRef<HTMLElement> | null;

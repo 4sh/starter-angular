@@ -36,8 +36,9 @@ Before generating anything in Figma, you **must** audit the source Angular compo
 
 > ⚠️ **Components are being migrated to the `@4sh/ui-kit` npm package** (FSHSP-83):
 > they move from `src/app/shared/components/ui/` to `projects/ui-kit/<name>/`, one
-> at a time. **Look in both places.** Migrated: `ui-icon`, `ui-button`, + the
-> `forms` and `types` entry points. See `AGENTS.md` for the layout and the
+> at a time. **Look in both places.** Migrated: `ui-icon`, `ui-button`,
+> `ui-label`, `ui-helper`, `ui-field`, `ui-input`, `ui-datepicker`, + the
+> `forms`, `overlay` and `types` entry points. See `AGENTS.md` for the layout and the
 > import rules that apply inside the package.
 
 ### Figma files (two, with distinct roles)

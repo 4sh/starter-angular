@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
 import { UiReadOnly } from '@app/shared/components/ui/informative/ui-read-only/ui-read-only';
 import { UiBadge } from '@app/shared/components/ui/informative/ui-badge/ui-badge';
-import { UiInput } from '@app/shared/components/ui/forms/ui-input/ui-input';
+import { UiInput } from '@4sh/ui-kit/ui-input';
 
 const meta: Meta<UiReadOnly> = {
   title: 'Components/ui/informative/ui-read-only',

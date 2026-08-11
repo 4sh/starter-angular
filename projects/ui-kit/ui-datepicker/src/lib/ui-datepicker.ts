@@ -31,10 +31,10 @@ import {
   MaskBounds,
   MaskSlot,
 } from '@4sh/ui-kit/forms';
-import { UiInput } from '@app/shared/components/ui/forms/ui-input/ui-input';
+import { UiInput } from '@4sh/ui-kit/ui-input';
 import { UiButton } from '@4sh/ui-kit/ui-button';
 import { UiIcon } from '@4sh/ui-kit/ui-icon';
-import { closeOnNavigation } from '@app/shared/overlay/close-on-navigation';
+import { closeOnNavigation } from '@4sh/ui-kit/overlay';
 
 export type DatepickerHourFormat = '12' | '24';
 /** Base picking granularity — also the drill-down levels of the panel. */

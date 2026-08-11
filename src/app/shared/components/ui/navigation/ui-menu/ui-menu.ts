@@ -22,7 +22,7 @@ import { DOCUMENT } from '@angular/common';
 import { UiSubLevel } from '@4sh/ui-kit/types';
 import { UiIcon } from '@4sh/ui-kit/ui-icon';
 import { UiMotion } from '@app/shared/motion/ui-motion';
-import { closeOnNavigation } from '@app/shared/overlay/close-on-navigation';
+import { closeOnNavigation } from '@4sh/ui-kit/overlay';
 import {UiSeparator} from "@app/shared/components/ui/informative/ui-separator/ui-separator";
 
 /** Menu density: `small` = compact rendering ("…" action menus). */

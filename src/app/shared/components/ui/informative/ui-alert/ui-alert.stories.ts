@@ -3,7 +3,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
 import { UiButton } from '@4sh/ui-kit/ui-button';
-import { UiInput } from '@app/shared/components/ui/forms/ui-input/ui-input';
+import { UiInput } from '@4sh/ui-kit/ui-input';
 import { UiAlert } from '@app/shared/components/ui/informative/ui-alert/ui-alert';
 
 /**

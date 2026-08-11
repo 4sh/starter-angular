@@ -26,7 +26,7 @@ import {
   OverlayRef,
 } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
-import { closeOnNavigation } from '@app/shared/overlay/close-on-navigation';
+import { closeOnNavigation } from '@4sh/ui-kit/overlay';
 import { TooltipPosition, UiTooltipPanel } from './ui-tooltip-panel';
 
 export type TooltipEvent = 'hover' | 'focus' | 'both';

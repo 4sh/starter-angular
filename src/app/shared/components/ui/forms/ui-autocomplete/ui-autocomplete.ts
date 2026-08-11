@@ -24,12 +24,12 @@ import { BaseFormField } from '@4sh/ui-kit/forms';
 import { createOptionResolver } from '@4sh/ui-kit/forms';
 import { dropdownOverlayPositions } from '@4sh/ui-kit/forms';
 import { formatLabel } from '@4sh/ui-kit/forms';
-import { UiField } from '@app/shared/components/ui/forms/ui-field/ui-field';
+import { UiField } from '@4sh/ui-kit/ui-field';
 import { UiIcon, UiIconSize } from '@4sh/ui-kit/ui-icon';
 import { UiSpinner } from '@app/shared/components/ui/informative/ui-spinner/ui-spinner';
 import { UiChip } from '@app/shared/components/ui/informative/ui-chip/ui-chip';
 import { UiMotion } from '@app/shared/motion/ui-motion';
-import { closeOnNavigation } from '@app/shared/overlay/close-on-navigation';
+import { closeOnNavigation } from '@4sh/ui-kit/overlay';
 
 /** Model value: the selected suggestion (or its `optionValue`), free text, an array (`multiple`), or `null`. */
 export type AutocompleteValue<T = unknown> = T | string | T[] | null;

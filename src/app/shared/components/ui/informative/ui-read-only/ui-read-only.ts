@@ -10,7 +10,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
-import { UiLabel } from '@app/shared/components/ui/forms/ui-label/ui-label';
+import { UiLabel } from '@4sh/ui-kit/ui-label';
 
 export type ReadOnlySize = 'default' | 'small';
 export type ReadOnlyLayout = 'vertical' | 'horizontal' | 'grid';

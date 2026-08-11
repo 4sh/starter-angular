@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
-import {UiHelper} from "@app/shared/components/ui/informative/ui-helper/ui-helper";
+import {UiHelper} from "@4sh/ui-kit/ui-helper";
 
 const meta: Meta<UiHelper> = {
   title: 'Components/ui/informative/ui-helper',

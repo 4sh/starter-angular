@@ -3,7 +3,7 @@ import { moduleMetadata } from '@storybook/angular';
 import { FormsModule } from '@angular/forms';
 import { UiInputGroup } from './ui-input-group';
 import { UiInputGroupAddon } from './ui-input-group-addon';
-import { UiInput } from '@app/shared/components/ui/forms/ui-input/ui-input';
+import { UiInput } from '@4sh/ui-kit/ui-input';
 import { UiInputNumber } from '@app/shared/components/ui/forms/ui-input-number/ui-input-number';
 import { UiSelect } from '@app/shared/components/ui/forms/ui-select/ui-select';
 import { UiCheckbox } from '@app/shared/components/ui/forms/ui-checkbox/ui-checkbox';

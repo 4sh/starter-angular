@@ -22,11 +22,11 @@ import { BaseFormField } from '@4sh/ui-kit/forms';
 import { createOptionResolver } from '@4sh/ui-kit/forms';
 import { dropdownOverlayPositions } from '@4sh/ui-kit/forms';
 import { formatLabel } from '@4sh/ui-kit/forms';
-import { UiField } from '@app/shared/components/ui/forms/ui-field/ui-field';
+import { UiField } from '@4sh/ui-kit/ui-field';
 import { UiIcon, UiIconSize } from '@4sh/ui-kit/ui-icon';
 import { UiSpinner } from '@app/shared/components/ui/informative/ui-spinner/ui-spinner';
 import { UiMotion } from '@app/shared/motion/ui-motion';
-import { closeOnNavigation } from '@app/shared/overlay/close-on-navigation';
+import { closeOnNavigation } from '@4sh/ui-kit/overlay';
 
 /** Model value: a single value, an array (`multiple`), or `null` when cleared. */
 export type SelectValue<T = unknown> = T | T[] | null;

@@ -44,10 +44,30 @@ soit à déclarer.
 |---|---|
 | `@4sh/ui-kit/ui-button` | `UiButton` |
 | `@4sh/ui-kit/ui-icon` | `UiIcon`, `provideUiIconFamilies()` |
+| `@4sh/ui-kit/ui-input` | `UiInput` |
+| `@4sh/ui-kit/ui-datepicker` | `UiDatepicker` |
+| `@4sh/ui-kit/ui-field` | `UiField` — coque label + boîte + helper |
+| `@4sh/ui-kit/ui-label` | `UiLabel` |
+| `@4sh/ui-kit/ui-helper` | `UiHelper` — texte d'aide / message d'erreur |
 | `@4sh/ui-kit/forms` | Socle des champs de formulaire (voir plus bas) |
+| `@4sh/ui-kit/overlay` | Utilitaires des composants à overlay CDK (`closeOnNavigation`) |
 | `@4sh/ui-kit/types` | Types transverses : `UiLevel`, `UiSubLevel`, `UiFeedbackLevel` |
 
 *Migration en cours : les composants rejoignent le package progressivement.*
+
+Exemple — n'utiliser **que** le date picker, sans tirer le reste du kit dans
+votre bundle :
+
+```ts
+import { UiDatepicker } from '@4sh/ui-kit/ui-datepicker';
+
+@Component({
+  selector: 'app-booking',
+  imports: [UiDatepicker],
+  template: `<ui-datepicker label="Date" valueType="date" [(ngModel)]="date" />`,
+})
+export class Booking { date = signal<Date | null>(null); }
+```
 
 ---
 

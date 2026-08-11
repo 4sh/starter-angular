@@ -8,9 +8,9 @@ import { UiButton } from '@4sh/ui-kit/ui-button';
 import { UiLink } from '@app/shared/components/ui/actions/ui-link/ui-link';
 
 // Forms
-import { UiInput } from '@app/shared/components/ui/forms/ui-input/ui-input';
+import { UiInput } from '@4sh/ui-kit/ui-input';
 import { UiSelect } from '@app/shared/components/ui/forms/ui-select/ui-select';
-import { UiDatepicker } from '@app/shared/components/ui/forms/ui-datepicker/ui-datepicker';
+import { UiDatepicker } from '@4sh/ui-kit/ui-datepicker';
 import { UiCheckbox } from '@app/shared/components/ui/forms/ui-checkbox/ui-checkbox';
 import { UiSegmentControl } from '@app/shared/components/ui/forms/ui-segment-control/ui-segment-control';
 import { UiToggle } from '@app/shared/components/ui/forms/ui-toggle/ui-toggle';

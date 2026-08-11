@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
-import { UiLabel } from '@app/shared/components/ui/forms/ui-label/ui-label';
+import { UiLabel } from '@4sh/ui-kit/ui-label';
 
 const meta: Meta<UiLabel> = {
   title: 'Components/ui/forms/ui-label',

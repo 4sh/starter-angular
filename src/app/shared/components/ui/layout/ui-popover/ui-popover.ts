@@ -19,7 +19,7 @@ import {
 } from '@angular/cdk/overlay';
 import { A11yModule } from '@angular/cdk/a11y';
 import { UiMotion } from '@app/shared/motion/ui-motion';
-import { closeOnNavigation } from '@app/shared/overlay/close-on-navigation';
+import { closeOnNavigation } from '@4sh/ui-kit/overlay';
 
 /** Preferred side of the trigger the panel is displayed on (drives the arrow). */
 export type PopoverPosition = 'top' | 'bottom' | 'left' | 'right';

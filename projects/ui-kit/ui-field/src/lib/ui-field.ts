@@ -1,6 +1,6 @@
 import { booleanAttribute, Component, computed, input } from '@angular/core';
-import { UiLabel } from '@app/shared/components/ui/forms/ui-label/ui-label';
-import { UiHelper } from '@app/shared/components/ui/informative/ui-helper/ui-helper';
+import { UiLabel } from '@4sh/ui-kit/ui-label';
+import { UiHelper } from '@4sh/ui-kit/ui-helper';
 import { FieldLevel, FieldSize } from '@4sh/ui-kit/forms';
 
 /**

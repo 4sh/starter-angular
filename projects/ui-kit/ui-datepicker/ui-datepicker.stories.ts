@@ -4,7 +4,7 @@ import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
 import { FormsModule } from '@angular/forms';
 import { FormField, form, required } from '@angular/forms/signals';
-import { UiDatepicker } from './ui-datepicker';
+import { UiDatepicker } from '@4sh/ui-kit/ui-datepicker';
 import { UiButton } from '@4sh/ui-kit/ui-button';
 
 const meta: Meta<UiDatepicker> = {

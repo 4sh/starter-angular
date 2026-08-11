@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { BaseFormField } from '@4sh/ui-kit/forms';
-import { UiField } from '@app/shared/components/ui/forms/ui-field/ui-field';
+import { UiField } from '@4sh/ui-kit/ui-field';
 import { UiIcon, UiIconSize } from '@4sh/ui-kit/ui-icon';
 import {
   applyMaskTemplate,

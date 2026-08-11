@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
 import { FormsModule } from '@angular/forms';
 import { FormField, form, minLength, required } from '@angular/forms/signals';
-import { UiInput } from './ui-input';
+import { UiInput } from '@4sh/ui-kit/ui-input';
 
 const meta: Meta<UiInput> = {
   title: 'Components/ui/forms/ui-input',

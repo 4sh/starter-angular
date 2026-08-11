@@ -23,12 +23,12 @@ import { createOptionResolver } from '@4sh/ui-kit/forms';
 import { dropdownOverlayPositions } from '@4sh/ui-kit/forms';
 import { formatLabel } from '@4sh/ui-kit/forms';
 import { warnMissingAccessibleName } from '@4sh/ui-kit/forms';
-import { UiField } from '@app/shared/components/ui/forms/ui-field/ui-field';
+import { UiField } from '@4sh/ui-kit/ui-field';
 import { UiIcon, UiIconSize } from '@4sh/ui-kit/ui-icon';
 import { UiChip } from '@app/shared/components/ui/informative/ui-chip/ui-chip';
 import { UiFeedbackLevel, UiSubLevel } from '@4sh/ui-kit/types';
 import { UiMotion } from '@app/shared/motion/ui-motion';
-import { closeOnNavigation } from '@app/shared/overlay/close-on-navigation';
+import { closeOnNavigation } from '@4sh/ui-kit/overlay';
 
 /** Delimiter used to split the typed text (and pasted text) into several tags. */
 export type TagDelimiter = string | RegExp;

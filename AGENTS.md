@@ -43,8 +43,9 @@ into `projects/ui-kit/` — an `ng-packagr` library published as a **single** np
 package with one *secondary entry point* per component. **Always check both
 locations** when looking for a component.
 
-Migrated so far: `ui-icon`, `ui-button`, plus the `forms` (shared field
-infrastructure) and `types` (cross-component types) entry points.
+Migrated so far: `ui-icon`, `ui-button`, `ui-label`, `ui-helper`, `ui-field`,
+`ui-input`, `ui-datepicker`, plus the `forms` (shared field infrastructure),
+`overlay` (`closeOnNavigation`) and `types` (cross-component types) entry points.
 
 Layout of a migrated component:
 
@@ -78,19 +79,23 @@ Rules when working in `projects/ui-kit/`:
 ## Architecture
 
 ```
+projects/
+  ui-kit/                    # @4sh/ui-kit — published package (migration in progress)
+    <entry>/ng-package.json  # one secondary entry point per component
+    forms/                   # BaseControlValueAccessor, BaseFormField, mask engine…
+    overlay/                 # closeOnNavigation
+    types/                   # Shared types (UiLevel…)
+    ui-button/ ui-icon/ ui-label/ ui-helper/ ui-field/ ui-input/ ui-datepicker/
+
 src/
   app/
     core/
-      controlValueAccessor/  # BaseControlValueAccessor (form components)
       service/               # ThemeService ([data-theme]) · BrandService ([data-brand])
     shared/
       components/
         components-index.md  # Index: components built ✅ / to build ⬜
-        ui/                  # Generic headless components — DS source of truth
-          actions/           # ui-button (reference pattern)
-          ui-icon/           # FontAwesome icons
+        ui/                  # Generic headless components not yet migrated
         domain/              # Business components (project prefix) — created per project
-      types/                 # Shared types (ui-level…)
   design-tokens/             # Token JSON sources (Figma / Token Flow export)
   styles/
     main.scss                # Global entry point
