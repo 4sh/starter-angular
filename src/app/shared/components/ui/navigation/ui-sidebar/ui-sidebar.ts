@@ -264,7 +264,8 @@ export class UiSidebar {
 
     // Overlay lifecycle: scroll lock + show/hide events.
     effect(() => {
-      const open = this.isOverlay() && this.visible();
+      const overlay = this.isOverlay();
+      const open = overlay && this.visible();
       untracked(() => {
         if (open && !wasOpen) {
           wasOpen = true;
@@ -277,6 +278,13 @@ export class UiSidebar {
           wasOpen = false;
           this.releaseLock();
           this.hidden.emit();
+        }
+        // `visible` is only meaningful in the overlay presentation: reset it once
+        // the sidebar leaves that presentation (e.g. `responsive` crossing back
+        // above `breakpoint`), otherwise it silently reopens as an overlay the
+        // next time the breakpoint is crossed again.
+        if (!overlay && this.visible()) {
+          this.visible.set(false);
         }
       });
     });

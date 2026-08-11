@@ -37,7 +37,7 @@
     (blur)="onBlur($event)"
   />
 
-  @if (unit(); as u) {
+  @if (displayUnit(); as u) {
     <span uiFieldSuffix class="ui-input-number-unit" [class._small]="unitSmall()" [class._disabled]="isDisabled()">{{ u }}</span>
   }
 
