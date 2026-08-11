@@ -14,8 +14,11 @@ natif (signals + Angular CDK), style piloté par les design tokens.
 npm install @4sh/ui-kit
 ```
 
-> ℹ️ **Pas encore publié sur un registre.** En attendant, installez-le depuis un
-> tarball local — même contenu et même résolution qu'une vraie publication :
+Publié sur le **registre npm public**, organisation **`4sh`**.
+
+> ℹ️ **Pas encore publié (première version à venir).** En attendant, installez-le
+> depuis un tarball local — même contenu et même résolution qu'une vraie
+> publication :
 >
 > ```bash
 > # dans ce repo
@@ -205,8 +208,12 @@ export class MyField extends BaseFormField<string> {
 
 ```bash
 npm run ui-kit:build   # construit le package dans dist/ui-kit
+npm run ui-kit:pack    # + produit un tarball installable ailleurs
 npm run storybook      # catalogue des composants (port 6006)
 ```
+
+Publication : voir [`docs/PUBLISHING.md`](../../docs/PUBLISHING.md) (workflow
+GitHub Actions manuel, compte de service `4sh-package-admin`).
 
 ⚠️ **Règle impérative pour les imports internes au package** : toujours utiliser
 le nom réel du package (`@4sh/ui-kit/ui-icon`), jamais un chemin relatif vers un
@@ -214,3 +221,9 @@ autre entry point ni un raccourci. `ng-packagr` ne détecte une dépendance entr
 entry points que si l'import commence littéralement par le nom du package ; à
 défaut, l'ordre de compilation devient indéterminé et le build échoue par
 intermittence.
+
+---
+
+## Licence
+
+[Apache-2.0](./LICENSE) — Copyright 2026 4SH.

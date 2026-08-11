@@ -14,7 +14,7 @@ Before generating anything in Figma, you **must** audit the source Angular compo
 
 > **Repo-wide agent conventions live in `AGENTS.md`** — read it first for any code task
 > (Claude Code only auto-loads this file). Release/versioning conventions:
-> `docs/VERSIONING.md` + `CHANGELOG.md`.
+> `docs/VERSIONING.md` + `CHANGELOG.md`. Publishing the package: `docs/PUBLISHING.md`.
 
 ---
 

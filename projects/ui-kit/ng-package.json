@@ -12,6 +12,11 @@
       "glob": "**/*.scss",
       "input": "styles",
       "output": "styles"
+    },
+    {
+      "glob": "NOTICE",
+      "input": ".",
+      "output": "."
     }
   ]
 }

@@ -1,6 +1,8 @@
 # AGENTS.md — Starter Angular Headless (Design System)
 
 > Single entry point for any AI agent. Read this file first, then consult the indicated sources of truth. For the Figma side (component generation/audit), see `CLAUDE.md`.
+>
+> Release/versioning: `docs/VERSIONING.md` + `CHANGELOG.md`. Publishing the npm package: `docs/PUBLISHING.md`.
 
 ---
 

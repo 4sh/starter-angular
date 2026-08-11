@@ -12,6 +12,7 @@
     "url": "https://github.com/4sh/starter-angular/issues"
   },
   "author": "4SH",
+  "license": "Apache-2.0",
   "keywords": [
     "angular",
     "design-system",
@@ -22,6 +23,10 @@
     "accessibility",
     "a11y"
   ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "peerDependencies": {
     "@angular/cdk": "^22.0.0",
     "@angular/common": "^22.0.0",

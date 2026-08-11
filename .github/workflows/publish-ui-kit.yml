@@ -1,0 +1,59 @@
+name: Publish @4sh/ui-kit to npm
+
+# Manual trigger only: publishing is irreversible (a name+version can never be
+# reused, and `npm unpublish` is limited to 72h), so it is never automatic.
+# Run it once with `dry_run: true` to inspect the tarball, then again with
+# `dry_run: false` to publish for real.
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run (inspect the tarball without publishing)"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  id-token: write # required for npm provenance attestation
+
+jobs:
+  publish:
+    name: Build & publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Read Node.js version from .nvmrc
+        id: nvmrc
+        run: echo "NODE_VERSION=$(cat .nvmrc)" >> $GITHUB_OUTPUT
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ steps.nvmrc.outputs.NODE_VERSION }}
+          cache: "npm"
+          registry-url: "https://registry.npmjs.org"
+
+      # `npm ci` already runs postinstall (tokens:build + ui-kit:build +
+      # docs:config), but we rebuild explicitly so the published artifact is
+      # unambiguously the one this job produced.
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build the package
+        run: npm run ui-kit:build
+
+      - name: Show what would be published
+        run: npm publish --dry-run
+        working-directory: dist/ui-kit
+
+      - name: Publish to npm
+        if: ${{ inputs.dry_run == false }}
+        # `access: public` is set in the package's publishConfig — a scoped
+        # package would otherwise default to `restricted` (paid plans only).
+        # `--provenance` links the tarball to this repo + commit on npmjs.
+        run: npm publish --provenance
+        working-directory: dist/ui-kit
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
