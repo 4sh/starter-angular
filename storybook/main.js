@@ -1,14 +1,13 @@
 module.exports = {
   stories: [
     './docs/**/*.mdx',
-    '../src/app/shared/components/**/*.mdx',
-    '../src/app/shared/components/**/*.stories.@(js|jsx|mjs|ts|tsx)',
-    '../src/app/shared/motion/**/*.mdx',
-    '../src/app/shared/motion/**/*.stories.@(js|jsx|mjs|ts|tsx)',
-    // Components already migrated to the `ui-kit` npm package (co-located story/mdx,
-    // excluded from `src/**` under `projects/ui-kit/**/src/`).
+    // The `ui-*` kit lives in the `@4sh/ui-kit` package: story + MDX are co-located
+    // per entry point, outside its `src/` (Storybook-only, never packaged).
     '../projects/ui-kit/**/*.mdx',
     '../projects/ui-kit/**/*.stories.@(js|jsx|mjs|ts|tsx)',
+    // App-side components (domain/, project prefix).
+    '../src/app/shared/components/**/*.mdx',
+    '../src/app/shared/components/**/*.stories.@(js|jsx|mjs|ts|tsx)',
   ],
   staticDirs: ['./public'],
   addons: [

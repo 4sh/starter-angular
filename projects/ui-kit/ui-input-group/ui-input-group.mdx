@@ -1,0 +1,158 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import { ConfigTable } from '../../../storybook/blocks/config-table';
+import * as InputGroupStories from './ui-input-group.stories';
+
+<Meta of={InputGroupStories} />
+
+# ui-input-group
+
+Colle un contrôle et ses **compléments** (texte, icône, bouton, case à cocher, liste
+déroulante) sur une même rangée, pour qu'ils se lisent comme **un seul champ** : coins
+arrondis uniquement aux extrémités, trait partagé fusionné entre deux voisins.
+
+Composant purement présentationnel : chaque enfant conserve son API, ses états et ses
+tokens. Le groupe se contente de la mise en rangée et du raccord visuel (`--radius-sm`
+aux extrémités, recouvrement égal à `--stroke-default`).
+
+Deux briques :
+
+- **`ui-input-group`** : la rangée. Les contrôles (`ui-input`, `ui-input-number`,
+  `ui-select`, `ui-button`…) y sont posés directement.
+- **`ui-input-group-addon`** : une cellule non interactive (texte, icône, `ui-checkbox`,
+  `ui-radio`), alignée sur la hauteur de champ.
+
+<Canvas of={InputGroupStories.Basic} />
+
+## API
+
+<ArgTypes of={InputGroupStories} />
+
+### ui-input-group-addon
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Input</th>
+      <th>Type</th>
+      <th>Défaut</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>size</code></td>
+      <td><code>FieldSize</code></td>
+      <td><code>undefined</code></td>
+      <td>Taille de la cellule. Reprend celle du <code>ui-input-group</code> parent quand elle n'est pas renseignée.</td>
+    </tr>
+  </tbody>
+</table>
+
+## Multiple
+
+Un groupe se compose en enveloppant le contrôle et ses compléments dans
+`ui-input-group`. Chaque complément est un `ui-input-group-addon` : plusieurs peuvent
+se suivre du même côté.
+
+<Canvas of={InputGroupStories.Multiple} />
+
+## Bouton
+
+Un `ui-button` se pose **directement** dans le groupe (pas dans un add-on : il porte
+déjà son propre fond et ses états), d'un côté ou de l'autre du contrôle.
+
+<Canvas of={InputGroupStories.Button} />
+
+## Case à cocher & radio
+
+`ui-checkbox` et `ui-radio` se combinent avec le contrôle dans le même groupe, posés
+dans un add-on.
+
+<Canvas of={InputGroupStories.CheckboxRadio} />
+
+## Liste déroulante
+
+`ui-select` se pose directement dans le groupe, aux côtés d'autres add-ons et
+contrôles.
+
+<Canvas of={InputGroupStories.Select} />
+
+## Numéro de téléphone
+
+Indicatif international sélectionnable : drapeau + code : accolé au champ du numéro.
+Les templates `#selectedItem` et `#item` de `ui-select` portent le rendu ; les drapeaux
+sont des SVG locaux (`assets/img/common/svg/flags/`), décoratifs (`alt=""`).
+
+La zone d'indicatif reste compacte alors que la liste, elle, doit afficher les noms de pays :
+c'est le rôle de `panelWidth="auto"` sur le `ui-select`, qui décorrèle la largeur du panneau
+de celle du champ (voir la doc de `ui-select`).
+
+<Canvas of={InputGroupStories.PhoneNumber} />
+
+## Taille
+
+Le `size` du groupe n'est transmis qu'aux add-ons : chaque contrôle garde le sien, à
+régler pour que les hauteurs concordent.
+
+<Canvas of={InputGroupStories.Small} />
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Point</th>
+      <th>Implémentation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Rôles</strong></td>
+      <td><code>ui-input-group</code> et <code>ui-input-group-addon</code> n'exposent ni rôle ni attribut ARIA : ce sont des enveloppes de présentation. La sémantique reste portée par les contrôles projetés.</td>
+    </tr>
+    <tr>
+      <td><strong>Clavier</strong></td>
+      <td>Le groupe n'ajoute aucune interaction : l'ordre de tabulation et les raccourcis sont ceux des enfants (champ, bouton, liste déroulante…).</td>
+    </tr>
+    <tr>
+      <td><strong>Nom accessible</strong></td>
+      <td>Sans libellé visible dans le groupe, chaque contrôle doit porter son <code>ariaLabel</code> (ou <code>ariaLabelledBy</code>). Un add-on décoratif : icône, symbole : ne nomme pas le champ.</td>
+    </tr>
+    <tr>
+      <td><strong>Focus</strong></td>
+      <td>L'item qui reçoit le focus est remonté au-dessus de ses voisins : sa bordure et son anneau de focus restent entièrement visibles malgré le recouvrement des bordures.</td>
+    </tr>
+  </tbody>
+</table>
+
+```html
+<!-- Icône + champ -->
+<ui-input-group>
+  <ui-input-group-addon><ui-icon name="user" size="sm" /></ui-input-group-addon>
+  <ui-input placeholder="Nom d'utilisateur" ariaLabel="Nom d'utilisateur" />
+</ui-input-group>
+
+<!-- Préfixe + champ + suffixe -->
+<ui-input-group>
+  <ui-input-group-addon>https://</ui-input-group-addon>
+  <ui-input placeholder="mon-site" ariaLabel="Adresse du site" />
+  <ui-input-group-addon>.com</ui-input-group-addon>
+</ui-input-group>
+
+<!-- Champ + bouton d'action -->
+<ui-input-group>
+  <ui-input placeholder="Mot-clé" ariaLabel="Mot-clé" />
+  <ui-button icon="magnifying-glass" ariaLabel="Rechercher" level="low" variant="outlined" />
+</ui-input-group>
+```
+
+## Theming
+
+Les items sont **projetés** : une règle CSS scopée ne peut pas les atteindre. Le groupe
+pilote donc leurs coins via les custom properties exposées par les enfants
+(`--ui-field-radius`, `--ui-button-radius`, `--ui-input-group-item-radius`), qui
+héritent au-delà de la frontière de composant. Un composant tiers placé dans un groupe
+suit le raccord dès qu'il lit `--ui-input-group-item-radius` pour son `border-radius`.
+
+<ConfigTable of="ui-input-group" label="ui-input-group" />
+<ConfigTable of="ui-input-group-addon" label="ui-input-group-addon" />

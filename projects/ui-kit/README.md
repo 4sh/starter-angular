@@ -37,20 +37,55 @@ import { UiIcon } from '@4sh/ui-kit/ui-icon';
 
 ### Entry points disponibles
 
+**54 composants**, un entry point chacun — le nom de l'entry point est celui du
+composant : `@4sh/ui-kit/ui-button`, `@4sh/ui-kit/ui-select`,
+`@4sh/ui-kit/ui-datepicker`…
+
+| Famille | Entry points |
+|---|---|
+| Actions | `ui-button` · `ui-button-split` · `ui-link` |
+| Formulaires | `ui-input` · `ui-textarea` · `ui-select` · `ui-autocomplete` · `ui-datepicker` · `ui-checkbox` · `ui-radio` · `ui-toggle` · `ui-slider` · `ui-nudger` · `ui-rating` · `ui-segment-control` · `ui-input-number` · `ui-input-mask` · `ui-input-otp` · `ui-input-tags` · `ui-input-group` · `ui-file-upload` · `ui-field` · `ui-label` |
+| Informatif | `ui-alert` · `ui-toast` · `ui-badge` · `ui-chip` · `ui-tag` · `ui-avatar` · `ui-avatar-group` · `ui-accordion` · `ui-tooltip` · `ui-spinner` · `ui-skeleton` · `ui-progress-bar` · `ui-empty-state` · `ui-read-only` · `ui-separator` · `ui-helper` |
+| Mise en page | `ui-card` · `ui-modal` · `ui-drawer` · `ui-popover` |
+| Navigation | `ui-menu` · `ui-context-menu` · `ui-tabs` · `ui-stepper` · `ui-sidebar` · `ui-breadcrumb` |
+| Tableau | `ui-table` · `ui-paginator` |
+| Divers | `ui-icon` · `ui-image` |
+
+Plus les entry points transverses :
+
 | Entry point | Contenu |
 |---|---|
-| `@4sh/ui-kit/ui-button` | `UiButton` |
-| `@4sh/ui-kit/ui-icon` | `UiIcon`, `provideUiIconFamilies()` |
-| `@4sh/ui-kit/ui-input` | `UiInput` |
-| `@4sh/ui-kit/ui-datepicker` | `UiDatepicker` |
-| `@4sh/ui-kit/ui-field` | `UiField` — coque label + boîte + helper des champs |
-| `@4sh/ui-kit/ui-label` | `UiLabel` |
-| `@4sh/ui-kit/ui-helper` | `UiHelper` — texte d'aide / message d'erreur |
 | `@4sh/ui-kit/forms` | Socle des champs de formulaire — voir ci-dessous |
+| `@4sh/ui-kit/theming` | `ThemeService` (clair/sombre, `[data-theme]`) · `BrandService` (`[data-brand]`) · `provideUiKitBrand()` |
+| `@4sh/ui-kit/motion` | Directive `UiMotion` + presets d'animation |
 | `@4sh/ui-kit/overlay` | Utilitaires des composants à overlay CDK (`closeOnNavigation`) |
 | `@4sh/ui-kit/types` | Types transverses (`UiLevel`, `UiSubLevel`, `UiFeedbackLevel`) |
 
-*(La migration des composants est en cours : cette liste s'étoffe progressivement.)*
+---
+
+## Configuration requise par certains composants
+
+Deux composants ont besoin d'une donnée que le kit ne peut pas connaître — elle
+est donc **injectée** par l'application plutôt que codée en dur :
+
+```ts
+// app.config.ts
+import { brandFromSubdomain, provideUiKitBrand } from '@4sh/ui-kit/theming';
+import { provideUiImageAssets } from '@4sh/ui-kit/ui-image';
+import assetsMap from './assets/assets-map.json';
+
+providers: [
+  // marque active — la détection (sous-domaine, réglage utilisateur…) reste à vous
+  provideUiKitBrand(brandFromSubdomain(subdomain)),
+  // carte des assets locaux de VOTRE projet, consommée par `ui-image` (input `name`)
+  provideUiImageAssets(assetsMap),
+]
+```
+
+Les deux sont **optionnels** : sans eux, la marque vaut `brand1` et `ui-image`
+n'affiche que ses images distantes (`src`), `name` retombant sur le placeholder.
+
+---
 
 Exemple — n'utiliser que le date picker, sans tirer le reste du kit dans votre bundle :
 

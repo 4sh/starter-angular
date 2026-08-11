@@ -1,46 +1,46 @@
 import { Component, signal, computed, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DecimalPipe } from '@angular/common';
-import { ThemeService } from '@app/core/service/theme.service';
+import { ThemeService } from '@4sh/ui-kit/theming';
 
 // Actions
 import { UiButton } from '@4sh/ui-kit/ui-button';
-import { UiLink } from '@app/shared/components/ui/actions/ui-link/ui-link';
+import { UiLink } from '@4sh/ui-kit/ui-link';
 
 // Forms
 import { UiInput } from '@4sh/ui-kit/ui-input';
-import { UiSelect } from '@app/shared/components/ui/forms/ui-select/ui-select';
+import { UiSelect } from '@4sh/ui-kit/ui-select';
 import { UiDatepicker } from '@4sh/ui-kit/ui-datepicker';
-import { UiCheckbox } from '@app/shared/components/ui/forms/ui-checkbox/ui-checkbox';
-import { UiSegmentControl } from '@app/shared/components/ui/forms/ui-segment-control/ui-segment-control';
-import { UiToggle } from '@app/shared/components/ui/forms/ui-toggle/ui-toggle';
-import { UiInputMask } from '@app/shared/components/ui/forms/ui-input-mask/ui-input-mask';
-import { UiNudger } from '@app/shared/components/ui/forms/ui-nudger/ui-nudger';
-import { UiSlider } from '@app/shared/components/ui/forms/ui-slider/ui-slider';
-import { UiTextarea } from '@app/shared/components/ui/forms/ui-textarea/ui-textarea';
-import { TableSize } from '@app/shared/components/ui/table/ui-table/ui-table';
+import { UiCheckbox } from '@4sh/ui-kit/ui-checkbox';
+import { UiSegmentControl } from '@4sh/ui-kit/ui-segment-control';
+import { UiToggle } from '@4sh/ui-kit/ui-toggle';
+import { UiInputMask } from '@4sh/ui-kit/ui-input-mask';
+import { UiNudger } from '@4sh/ui-kit/ui-nudger';
+import { UiSlider } from '@4sh/ui-kit/ui-slider';
+import { UiTextarea } from '@4sh/ui-kit/ui-textarea';
+import { TableSize } from '@4sh/ui-kit/ui-table';
 
 // Informative
-import { UiTag } from '@app/shared/components/ui/informative/ui-tag/ui-tag';
-import { UiBadge } from '@app/shared/components/ui/informative/ui-badge/ui-badge';
-import { UiAvatar } from '@app/shared/components/ui/informative/ui-avatar/ui-avatar';
-import { UiProgressBar } from '@app/shared/components/ui/informative/ui-progress-bar/ui-progress-bar';
-import { UiTooltip } from '@app/shared/components/ui/informative/ui-tooltip/ui-tooltip';
-import { UiSeparator } from '@app/shared/components/ui/informative/ui-separator/ui-separator';
-import { UiReadOnly } from '@app/shared/components/ui/informative/ui-read-only/ui-read-only';
-import { UiSkeleton } from '@app/shared/components/ui/informative/ui-skeleton/ui-skeleton';
+import { UiTag } from '@4sh/ui-kit/ui-tag';
+import { UiBadge } from '@4sh/ui-kit/ui-badge';
+import { UiAvatar } from '@4sh/ui-kit/ui-avatar';
+import { UiProgressBar } from '@4sh/ui-kit/ui-progress-bar';
+import { UiTooltip } from '@4sh/ui-kit/ui-tooltip';
+import { UiSeparator } from '@4sh/ui-kit/ui-separator';
+import { UiReadOnly } from '@4sh/ui-kit/ui-read-only';
+import { UiSkeleton } from '@4sh/ui-kit/ui-skeleton';
 
 // Layout
-import { UiCard } from '@app/shared/components/ui/layout/ui-card/ui-card';
-import { UiDrawer } from '@app/shared/components/ui/layout/ui-drawer/ui-drawer';
-import { UiModal } from '@app/shared/components/ui/layout/ui-modal/ui-modal';
+import { UiCard } from '@4sh/ui-kit/ui-card';
+import { UiDrawer } from '@4sh/ui-kit/ui-drawer';
+import { UiModal } from '@4sh/ui-kit/ui-modal';
 
 // Navigation
-import { UiBreadcrumb } from '@app/shared/components/ui/navigation/ui-breadcrumb/ui-breadcrumb';
-import { UiTabs, UiTabList, UiTab, UiTabPanels, UiTabPanel } from '@app/shared/components/ui/navigation/ui-tabs/ui-tabs';
-import { UiSidebar } from '@app/shared/components/ui/navigation/ui-sidebar/ui-sidebar';
-import { UiSidebarMenu, UiSidebarMenuItem } from '@app/shared/components/ui/navigation/ui-sidebar/ui-sidebar-menu';
-import { UiSidebarTrigger } from '@app/shared/components/ui/navigation/ui-sidebar/ui-sidebar-trigger';
+import { UiBreadcrumb } from '@4sh/ui-kit/ui-breadcrumb';
+import { UiTabs, UiTabList, UiTab, UiTabPanels, UiTabPanel } from '@4sh/ui-kit/ui-tabs';
+import { UiSidebar } from '@4sh/ui-kit/ui-sidebar';
+import { UiSidebarMenu, UiSidebarMenuItem } from '@4sh/ui-kit/ui-sidebar';
+import { UiSidebarTrigger } from '@4sh/ui-kit/ui-sidebar';
 
 // Table
 import {
@@ -50,7 +50,7 @@ import {
   UiTableSelectableRow,
   UiTableSortableColumn,
   UiTableSortIcon,
-} from '@app/shared/components/ui/table/ui-table/ui-table';
+} from '@4sh/ui-kit/ui-table';
 
 // Root
 import { UiIcon } from '@4sh/ui-kit/ui-icon';

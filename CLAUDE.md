@@ -34,11 +34,9 @@ Before generating anything in Figma, you **must** audit the source Angular compo
 > **Reference pattern**: `projects/ui-kit/ui-button/`. Every new
 > `ui-*` component is built on this model (signals + SCSS visual-DNA classes).
 
-> ⚠️ **Components are being migrated to the `@4sh/ui-kit` npm package** (FSHSP-83):
-> they move from `src/app/shared/components/ui/` to `projects/ui-kit/<name>/`, one
-> at a time. **Look in both places.** Migrated: `ui-icon`, `ui-button`,
-> `ui-label`, `ui-helper`, `ui-field`, `ui-input`, `ui-datepicker`, + the
-> `forms`, `overlay` and `types` entry points. See `AGENTS.md` for the layout and the
+> 📦 **The `ui-*` kit lives in `projects/ui-kit/`** — published as the `@4sh/ui-kit`
+> npm package (one secondary entry point per component). `src/app/` only holds the
+> demo app and its `domain/` components. See `AGENTS.md` for the layout and the
 > import rules that apply inside the package.
 
 ### Figma files (two, with distinct roles)
@@ -142,7 +140,7 @@ ui-{name}/
 > Each component's **style is co-located** in its own `.scss` (Angular scoped
 > styles). The global layer (`src/styles/`) contains ONLY the generated tokens + utilities.
 > All values (color, spacing, radius…) come from token CSS variables.
-> Reference pattern: `ui-button` (+ `ui-icon`).
+> Reference pattern: `projects/ui-kit/ui-button/` (+ `ui-icon`).
 
 ### Theming doc: generated from SCSS
 
@@ -176,7 +174,7 @@ Rules:
 
 | Category | Selector prefix | Location |
 |---|---|---|
-| Generic UI | `ui-` | `src/app/shared/components/ui/` |
+| Generic UI | `ui-` | `projects/ui-kit/ui-{name}/` (package `@4sh/ui-kit`) |
 | Business domain | `sp-` or project prefix | `src/app/shared/components/domain/` |
 
 ### Signals patterns
