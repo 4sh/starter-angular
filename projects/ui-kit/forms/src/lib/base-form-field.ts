@@ -1,5 +1,5 @@
 import { booleanAttribute, computed, Directive, input, signal } from '@angular/core';
-import { BaseControlValueAccessor } from '@app/core/controlValueAccessor/BaseControlValueAccessor';
+import { BaseControlValueAccessor } from './base-control-value-accessor';
 import { UiFeedbackLevel } from '@4sh/ui-kit/types';
 
 export type FieldSize = 'default' | 'small';

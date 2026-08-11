@@ -20,9 +20,9 @@ import {
 import { NgTemplateOutlet } from '@angular/common';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { OverlayModule } from '@angular/cdk/overlay';
-import { dropdownOverlayPositions } from '@app/shared/components/ui/forms/overlay-positions';
+import { dropdownOverlayPositions } from '@4sh/ui-kit/forms';
 import { CdkTrapFocus } from '@angular/cdk/a11y';
-import { BaseFormField } from '@app/shared/components/ui/forms/base-form-field';
+import { BaseFormField } from '@4sh/ui-kit/forms';
 import {
   autoFormatSegments,
   buildMaskSlots,
@@ -30,7 +30,7 @@ import {
   extractMaskData,
   MaskBounds,
   MaskSlot,
-} from '@app/shared/components/ui/forms/mask-engine';
+} from '@4sh/ui-kit/forms';
 import { UiInput } from '@app/shared/components/ui/forms/ui-input/ui-input';
 import { UiButton } from '@4sh/ui-kit/ui-button';
 import { UiIcon } from '@4sh/ui-kit/ui-icon';

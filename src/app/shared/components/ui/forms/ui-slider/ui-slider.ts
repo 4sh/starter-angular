@@ -14,8 +14,8 @@ import {
   viewChildren,
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { BaseFieldControl } from '@app/shared/components/ui/forms/base-form-field';
-import { warnMissingAccessibleName } from '@app/shared/components/ui/forms/warn-missing-accessible-name';
+import { BaseFieldControl } from '@4sh/ui-kit/forms';
+import { warnMissingAccessibleName } from '@4sh/ui-kit/forms';
 
 export type SliderOrientation = 'horizontal' | 'vertical';
 /** Model value: a single number, or a `[start, end]` tuple in `range` mode. */

@@ -31,8 +31,14 @@ Before generating anything in Figma, you **must** audit the source Angular compo
 | Icons | FontAwesome Free |
 | Grid | Gridaflex 1.0.0 |
 
-> **Reference pattern**: `src/app/shared/components/ui/actions/ui-button/`. Every new
+> **Reference pattern**: `projects/ui-kit/ui-button/`. Every new
 > `ui-*` component is built on this model (signals + SCSS visual-DNA classes).
+
+> ⚠️ **Components are being migrated to the `@4sh/ui-kit` npm package** (FSHSP-83):
+> they move from `src/app/shared/components/ui/` to `projects/ui-kit/<name>/`, one
+> at a time. **Look in both places.** Migrated: `ui-icon`, `ui-button`, + the
+> `forms` and `types` entry points. See `AGENTS.md` for the layout and the
+> import rules that apply inside the package.
 
 ### Figma files (two, with distinct roles)
 

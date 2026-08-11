@@ -31,8 +31,47 @@ Fonts embedded locally (DM Sans + Inter, variable fonts): `src/styles/src/vendor
 | Typography | Storybook → `Foundations / Typography` |
 | Shadows & effects | Storybook → `Foundations / Shadows` |
 | Tokens pipeline, theme, responsive | Storybook → `Spécifications / *` |
-| Source Angular component | `src/app/shared/components/ui/<category>/ui-<name>/` |
-| **Reference pattern** | `src/app/shared/components/ui/actions/ui-button/` (+ `ui-icon`) |
+| Source Angular component | `src/app/shared/components/ui/<category>/ui-<name>/`, **or** `projects/ui-kit/<name>/` once migrated (see below) |
+| **Reference pattern** | `projects/ui-kit/ui-button/` (+ `ui-icon`) |
+
+---
+
+## ⚠️ Ongoing migration to the `@4sh/ui-kit` npm package (FSHSP-83)
+
+Components are being moved, one at a time, out of `src/app/shared/components/ui/`
+into `projects/ui-kit/` — an `ng-packagr` library published as a **single** npm
+package with one *secondary entry point* per component. **Always check both
+locations** when looking for a component.
+
+Migrated so far: `ui-icon`, `ui-button`, plus the `forms` (shared field
+infrastructure) and `types` (cross-component types) entry points.
+
+Layout of a migrated component:
+
+```
+projects/ui-kit/ui-<name>/
+├── ng-package.json                 ← entry point config (+ styleIncludePaths if the SCSS uses `@use 'utils'`)
+├── src/public-api.ts               ← what the entry point exports
+├── src/lib/ui-<name>.{ts,html,scss}
+├── ui-<name>.stories.ts            ← OUTSIDE src/ (Storybook-only, never packaged)
+└── ui-<name>.mdx
+```
+
+Rules when working in `projects/ui-kit/`:
+
+- **Imports between entry points MUST use the real package name**
+  (`@4sh/ui-kit/ui-icon`) — never a relative path to another entry point, never a
+  shorthand. `ng-packagr` only records a dependency when the specifier literally
+  starts with the package name; otherwise build order is undefined and the build
+  fails intermittently.
+- Stories/MDX stay **outside** `src/` so Storybook-only imports never leak into
+  the packaged build. Their `ConfigTable` import is `../../../storybook/blocks/config-table`.
+- `npm run ui-kit:build` must run before the app/Storybook (already chained into
+  `serve` / `build` / `storybook` / `build-storybook` / `postinstall`), since
+  `@4sh/ui-kit/*` resolves to `dist/ui-kit/`.
+- Adding an entry point means updating `storybook/tsconfig.json`,
+  `tsconfig.app.json` and `scripts/docs.config.mjs` only if a new **root** folder
+  is involved — `projects/ui-kit/**` is already globbed by all three.
 
 ---
 

@@ -14,7 +14,7 @@ import {
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { NgTemplateOutlet } from '@angular/common';
-import { BaseFieldControl } from '@app/shared/components/ui/forms/base-form-field';
+import { BaseFieldControl } from '@4sh/ui-kit/forms';
 import { UiIcon, UiIconSize } from '@4sh/ui-kit/ui-icon';
 
 export interface UiRatingIconContext {

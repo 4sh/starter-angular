@@ -1,6 +1,6 @@
 import { Component, computed, ElementRef, forwardRef, input, output, viewChild } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { BaseFormField } from '@app/shared/components/ui/forms/base-form-field';
+import { BaseFormField } from '@4sh/ui-kit/forms';
 import { UiField } from '@app/shared/components/ui/forms/ui-field/ui-field';
 import { UiIcon, UiIconSize } from '@4sh/ui-kit/ui-icon';
 

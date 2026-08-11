@@ -1,5 +1,5 @@
 import { Component, computed, inject, input } from '@angular/core';
-import { FieldSize } from '@app/shared/components/ui/forms/base-form-field';
+import { FieldSize } from '@4sh/ui-kit/forms';
 import { UiInputGroup } from './ui-input-group';
 
 /**

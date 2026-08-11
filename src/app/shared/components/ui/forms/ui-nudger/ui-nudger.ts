@@ -9,7 +9,7 @@ import {
   output,
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { BaseFieldControl } from '@app/shared/components/ui/forms/base-form-field';
+import { BaseFieldControl } from '@4sh/ui-kit/forms';
 import { UiLevel } from '@4sh/ui-kit/types';
 import {
   ButtonOnColor,

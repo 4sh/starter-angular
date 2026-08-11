@@ -2,7 +2,7 @@ import { booleanAttribute, Component, computed, input, output } from '@angular/c
 import { UiIcon, UiIconSize } from '@4sh/ui-kit/ui-icon';
 import { UiSpinner } from '@app/shared/components/ui/informative/ui-spinner/ui-spinner';
 import { formatFileSize, UiUploadFile } from '@app/shared/components/ui/forms/ui-file-upload/ui-file-upload.model';
-import { formatLabel } from '@app/shared/components/ui/forms/format-label';
+import { formatLabel } from '@4sh/ui-kit/forms';
 
 export type UiFileUploadListSize = 'default' | 'small';
 

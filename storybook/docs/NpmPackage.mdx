@@ -1,0 +1,100 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Package npm" />
+
+# Package npm — `@4sh/ui-kit`
+
+Les composants de ce Design System sont publiés sous forme d'**un seul package
+npm**, consommable par n'importe quelle application Angular.
+
+```bash
+npm install @4sh/ui-kit
+```
+
+Les dépendances Angular sont en `peerDependencies` (`@angular/core`,
+`@angular/common`, `@angular/forms`, `@angular/router`) : c'est la version déjà
+installée dans votre application qui est utilisée.
+
+---
+
+## Import à la carte
+
+Chaque composant a son propre *entry point*. Vous n'importez que ce dont vous
+avez besoin, et le tree-shaking retire le reste de votre bundle :
+
+```ts
+import { UiButton } from '@4sh/ui-kit/ui-button';
+import { UiIcon } from '@4sh/ui-kit/ui-icon';
+```
+
+<div className="sb-callout">
+
+**Pas de risque d'oubli d'installation.** `@4sh/ui-kit` est un **package unique**
+avec des *secondary entry points* — pas une collection de packages séparés. Tous
+les entry points sont présents dès `npm install`, et les dépendances entre eux
+se résolvent automatiquement : importer `UiDatepicker` tire tout ce dont il a
+besoin (son socle de formulaire, ses icônes…) sans que vous ayez quoi que ce
+soit à déclarer.
+
+</div>
+
+### Entry points
+
+| Entry point | Contenu |
+|---|---|
+| `@4sh/ui-kit/ui-button` | `UiButton` |
+| `@4sh/ui-kit/ui-icon` | `UiIcon`, `provideUiIconFamilies()` |
+| `@4sh/ui-kit/forms` | Socle des champs de formulaire (voir plus bas) |
+| `@4sh/ui-kit/types` | Types transverses : `UiLevel`, `UiSubLevel`, `UiFeedbackLevel` |
+
+*Migration en cours : les composants rejoignent le package progressivement.*
+
+---
+
+## Les design tokens sont requis
+
+Les composants sont **headless** : aucune couleur, taille ni espacement n'est
+codé en dur. Tout est lu depuis des variables CSS
+(`--actions-high-surface-default`, `--units-sm`, `--radius-md`…).
+
+**Sans la feuille de tokens chargée globalement dans votre application, les
+composants s'affichent sans style.** C'est le seul prérequis d'intégration.
+
+---
+
+## `@4sh/ui-kit/forms` — construire son propre champ
+
+Cet entry point contient l'infrastructure partagée par tous les champs du kit.
+**Inutile de l'importer pour utiliser un champ existant** — `UiInput`,
+`UiSelect`, `UiDatepicker` et les autres l'embarquent déjà. Il sert quand vous
+créez **votre propre champ** en réutilisant les conventions du Design System.
+
+| Export | Rôle |
+|---|---|
+| `BaseControlValueAccessor<T>` | Implémente `ControlValueAccessor` et miroite l'état du `NgControl` dans des signals (`touched`, `dirty`, `controlInvalid`, `controlErrors`, `showError`). Rend le champ compatible d'un coup avec `[(ngModel)]`, les Reactive Forms **et** les Signal Forms. |
+| `BaseFieldControl<T>` | Contrôle « nu », sans habillage : inputs communs (`ariaLabel`, `inputId`, `name`, `required`, `disabled`, `readonly`, `invalid`, `tabindex`), `id` accessibles auto-générés, `modelValue`, états dérivés `isDisabled` / `isInvalid`. Socle de `ui-checkbox`, `ui-toggle`, `ui-slider`, `ui-radio`, `ui-nudger`. |
+| `BaseFormField<T>` | Étend le précédent avec le chrome « boîte » : `label`, `helperText`, `errorText`, `size`, `level`, plus `effectiveLevel` / `displayMessage` / `displayValue`. Socle de `ui-input`, `ui-select`, `ui-datepicker`, `ui-textarea`. |
+| `dropdownOverlayPositions()` | Ancrage CDK d'un panneau déroulant (sous le champ, retourné au-dessus si nécessaire). |
+| `maskEngine` | Moteur de masque de saisie partagé (`ui-input-mask`, `ui-datepicker`). |
+
+```ts
+import { Component, forwardRef } from '@angular/core';
+import { NG_VALUE_ACCESSOR } from '@angular/forms';
+import { BaseFormField } from '@4sh/ui-kit/forms';
+
+@Component({
+  selector: 'app-my-field',
+  templateUrl: './my-field.html',
+  providers: [
+    { provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => MyField), multi: true },
+  ],
+})
+export class MyField extends BaseFormField<string> {
+  // `writeValue` est fourni par défaut (écrit dans `modelValue`).
+  // Appelez `emitChange(value)` à la saisie, `emitTouch()` au blur.
+}
+```
+
+Votre champ hérite alors gratuitement de la gestion d'état de formulaire, des
+`id`/`aria-describedby` accessibles, et du contrat visuel commun
+(`label`/`helperText`/`errorText`/`size`/`level`).

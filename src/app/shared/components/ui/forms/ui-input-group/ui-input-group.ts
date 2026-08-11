@@ -7,7 +7,7 @@ import {
   input,
   viewChild,
 } from '@angular/core';
-import { FieldSize } from '@app/shared/components/ui/forms/base-form-field';
+import { FieldSize } from '@4sh/ui-kit/forms';
 
 /**
  * ui-input-group — glues a control and its add-ons into a single visual field.

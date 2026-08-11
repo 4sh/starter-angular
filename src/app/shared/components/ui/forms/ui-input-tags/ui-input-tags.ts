@@ -18,11 +18,11 @@ import {
 import { NgTemplateOutlet } from '@angular/common';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { OverlayModule } from '@angular/cdk/overlay';
-import { BaseFormField } from '@app/shared/components/ui/forms/base-form-field';
-import { createOptionResolver } from '@app/shared/components/ui/forms/option-resolver';
-import { dropdownOverlayPositions } from '@app/shared/components/ui/forms/overlay-positions';
-import { formatLabel } from '@app/shared/components/ui/forms/format-label';
-import { warnMissingAccessibleName } from '@app/shared/components/ui/forms/warn-missing-accessible-name';
+import { BaseFormField } from '@4sh/ui-kit/forms';
+import { createOptionResolver } from '@4sh/ui-kit/forms';
+import { dropdownOverlayPositions } from '@4sh/ui-kit/forms';
+import { formatLabel } from '@4sh/ui-kit/forms';
+import { warnMissingAccessibleName } from '@4sh/ui-kit/forms';
 import { UiField } from '@app/shared/components/ui/forms/ui-field/ui-field';
 import { UiIcon, UiIconSize } from '@4sh/ui-kit/ui-icon';
 import { UiChip } from '@app/shared/components/ui/informative/ui-chip/ui-chip';

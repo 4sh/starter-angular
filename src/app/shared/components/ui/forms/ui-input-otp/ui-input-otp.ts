@@ -17,8 +17,8 @@ import {
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { BaseFieldControl } from '@app/shared/components/ui/forms/base-form-field';
-import { warnMissingAccessibleName } from '@app/shared/components/ui/forms/warn-missing-accessible-name';
+import { BaseFieldControl } from '@4sh/ui-kit/forms';
+import { warnMissingAccessibleName } from '@4sh/ui-kit/forms';
 
 /** Size of the OTP cells. `default` is the base. */
 export type InputOtpSize = 'small' | 'default' | 'large';

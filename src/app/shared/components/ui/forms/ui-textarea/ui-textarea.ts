@@ -10,7 +10,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { BaseFormField } from '@app/shared/components/ui/forms/base-form-field';
+import { BaseFormField } from '@4sh/ui-kit/forms';
 import { UiField } from '@app/shared/components/ui/forms/ui-field/ui-field';
 
 /** Which axes the user can manually resize (ignored when `autoResize` is on). */
