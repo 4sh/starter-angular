@@ -170,8 +170,8 @@ export class UiTab {
 export class UiTabPanel {
   /** Identifier of this panel (matched against the container `value`). */
   value = input.required<UiTabValue>();
-  /** Render this panel's content only once it is first activated. */
-  lazy = input(false, { transform: booleanAttribute });
+  /** Render this panel's content only once it is first activated (overrides the group default). */
+  lazy = input<boolean, unknown>(undefined, { transform: (v) => (v == null ? undefined : booleanAttribute(v)) });
 
   /** Optional lazy content template (`<ng-template #content>`). */
   protected readonly content = contentChild<TemplateRef<unknown>>('content');
@@ -181,8 +181,8 @@ export class UiTabPanel {
 
   /** @ignore */
   protected readonly active = computed(() => this.tabs.isActive(this.value()));
-  /** @ignore Lazy either per panel or inherited from the group. */
-  private readonly isLazy = computed(() => this.tabs.lazy() || this.lazy());
+  /** @ignore Panel-level `lazy` overrides the group default when explicitly set. */
+  private readonly isLazy = computed(() => this.lazy() ?? this.tabs.lazy());
   /** @ignore Sticks once the panel has been activated at least once. */
   private readonly hasRendered = signal(false);
 
