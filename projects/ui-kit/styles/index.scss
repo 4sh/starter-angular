@@ -1,0 +1,25 @@
+// -----------------------------------------------------------------------------
+// @4sh/ui-kit — global stylesheet shipped with the package (compiled to
+// `dist/ui-kit/styles.css` by `npm run ui-kit:styles`).
+//
+// The components are headless: they read CSS custom properties and never hard
+// code a colour, size or spacing. Loading this file ONCE, globally, is what
+// gives them their appearance — without it they render unstyled.
+//
+//   // angular.json
+//   "styles": ["node_modules/@4sh/ui-kit/styles.css", "src/styles/main.scss"]
+//
+// Contains: the generated design tokens (all brands + light/dark + responsive),
+// the base layer that binds them to the page, the typography utility classes
+// and the motion presets the `UiMotion` directive toggles.
+//
+// NOT included: `@font-face` declarations. The tokens only *name* the families
+// (`--fontfamily-base`), so each project ships and declares its own font files;
+// override `--fontfamily-*` to point at yours.
+// -----------------------------------------------------------------------------
+
+@use 'generated/tokens';
+@use 'base/base';
+@use 'base/typography';
+@use 'base/motion';
+@use 'utils/helpers'; // global utility classes (.text-center, .no-margin…)

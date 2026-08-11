@@ -13,7 +13,7 @@
 // =====================================================================
 
 @use 'sass:list';
-@use 'src/settings/ui-config';
+@use '../settings/ui-config';
 
 /// Transition recipe timed by the motion system.
 /// Duration/easing/delay resolve from `--ui-motion-*` (per-instance override)

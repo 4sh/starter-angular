@@ -10,7 +10,7 @@
 // hatch is available through the `--ui-overlay-*` custom properties.
 // =====================================================================
 
-@use 'src/settings/ui-config';
+@use '../settings/ui-config';
 
 /// Floating panel shell. Pass the surface/stroke tokens of the component's
 /// family; structure resolves from `--ui-overlay-*` (per-instance override)

@@ -12,10 +12,11 @@
     "build-storybook": "npm run ui-kit:build && npm run docs:config && ng run demo:build-storybook",
     "generate:assets": "node src/scripts/build-assets.js",
     "postinstall": "npm run tokens:build && npm run ui-kit:build && npm run docs:config",
-    "ui-kit:build": "ng build ui-kit",
+    "ui-kit:build": "ng build ui-kit && npm run ui-kit:styles",
     "tokens:build": "node scripts/tokens.build.mjs",
     "docs:config": "node scripts/docs.config.mjs",
-    "docs:config:check": "node scripts/docs.config.mjs --check"
+    "docs:config:check": "node scripts/docs.config.mjs --check",
+    "ui-kit:styles": "sass projects/ui-kit/styles/index.scss dist/ui-kit/styles.css --load-path=projects/ui-kit/styles --no-source-map --style=compressed"
   },
   "dependencies": {
     "@angular/animations": "22.0.8",

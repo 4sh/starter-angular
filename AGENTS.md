@@ -47,7 +47,7 @@ Layout of a component:
 
 ```
 projects/ui-kit/ui-<name>/
-├── ng-package.json                 ← entry point config (styleIncludePaths → src/styles)
+├── ng-package.json                 ← entry point config (styleIncludePaths → ../styles)
 ├── src/public-api.ts               ← what the entry point exports
 ├── src/lib/ui-<name>.{ts,html,scss}   (+ sub-components, .types.ts, .model.ts…)
 ├── ui-<name>.stories.ts            ← OUTSIDE src/ (Storybook-only, never packaged)
@@ -74,6 +74,14 @@ Rules when working in `projects/ui-kit/`:
 - A component must not depend on app code. Project-specific data is injected:
   `provideUiKitBrand()` (active brand) and `provideUiImageAssets()` (local asset map
   for `ui-image`) — both wired in `src/app/app.config.ts` and `storybook/preview.ts`.
+- The kit's SCSS foundation lives in `projects/ui-kit/styles/` (NOT `src/styles/`,
+  which is app-only): a published package cannot depend on the host app. Tokens are
+  generated there (`tokens.config.json`), and `npm run ui-kit:styles` compiles
+  `index.scss` → `dist/ui-kit/styles.css`, shipped alongside the SCSS sources.
+- **Never `@forward` anything that emits CSS from `utils.scss`.** Each component
+  `.scss` is its own Sass compilation unit, so emitted rules get duplicated into all
+  54 components. Global utility classes belong in `index.scss` (and, app-side, in
+  `src/styles/main.scss`).
 - `npm run ui-kit:build` runs before the app/Storybook (chained into `serve` /
   `build` / `storybook` / `build-storybook` / `postinstall`), since `@4sh/ui-kit/*`
   resolves to `dist/ui-kit/`.
@@ -88,6 +96,11 @@ projects/
     <ui-name>/               # one secondary entry point per component
       ng-package.json · src/public-api.ts · src/lib/… · *.stories.ts · *.mdx
     forms/ theming/ motion/ overlay/ types/     # cross-cutting entry points
+    styles/                  # the kit's SCSS foundation — SHIPPED with the package
+      utils.scss             #   API-only build surface (`@use 'utils'`); emits NO CSS
+      utils/ settings/       #   functions, mixins, $ui-config constants
+      base/ generated/       #   base layer + generated tokens
+      index.scss             #   → compiled to dist/ui-kit/styles.css
 
 src/
   app/
@@ -100,8 +113,9 @@ src/
 ```
 
 Each component's style is **co-located** in its `.scss` (Angular scoped) and consumes
-**only** token CSS variables. The global layer (`src/styles/`) contains only the
-generated tokens, vendors and utilities.
+**only** token CSS variables. The kit's SCSS foundation (tokens, `utils`, base layer)
+lives in `projects/ui-kit/styles/` and ships with the package; `src/styles/` only
+holds what is specific to the demo app (aggregator, fonts, grid settings, layout).
 
 ---
 
@@ -202,7 +216,7 @@ pitfall, extension point). No paraphrasing of what the next line does.
   Components: `<name> : co-located styles. All values come from design tokens.`
 - **Inline** — to flag a non-obvious choice, at end of line (`// …`); never to describe the obvious.
 - **Sections** — short separators `// --- <Title> ---` to break up a long file.
-- **Mixins/functions** (partials in `src/styles/src/utils/`) — 1 to 2 `///` lines: role + call example. No walls of text.
+- **Mixins/functions** (partials in `projects/ui-kit/styles/utils/`) — 1 to 2 `///` lines: role + call example. No walls of text.
 - **Language**: comments in **English**… **except** a component's config `///` comments (below), which are published in the docs and therefore in French.
 - **Never reference Figma**: keep the intent ("enlarged for readability"), not the origin ("Figma 3px"). The `.scss` must read without the mockup.
 
@@ -211,7 +225,7 @@ pitfall, extension point). No paraphrasing of what the next line does.
 In a **component** `.scss`, a `///` on a declaration (`$var` or custom property) is the
 **public contract**: `npm run docs:config` reads it and the doc's "Theming" section displays it.
 `//` remains the internal note, invisible in the doc. (The `///` on mixins/functions in
-`src/styles/src/utils/` is never published: the generator only scans components.)
+`projects/ui-kit/styles/utils/` is never scanned: the generator only reads components.)
 
 The `///` goes **at the end of the declaration**, vertically aligned with its visual group (blank
 lines separate groups):
@@ -234,7 +248,7 @@ $card-radius: var(--radius-md);       /// Rayon des coins.
 ### Shared structural constants — `ui-config`
 
 Structural values common to components (focus ring width, form control size,
-transition recipe…) live in **`src/styles/src/settings/_ui-config.scss`**
+transition recipe…) live in **`projects/ui-kit/styles/settings/_ui-config.scss`**
 (exposed via `@use 'utils'`), in 3 levels: global UI → category (`$form-*` / `$action-*`) →
 component.
 

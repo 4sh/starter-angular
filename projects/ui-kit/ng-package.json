@@ -3,6 +3,15 @@
   "dest": "../../dist/ui-kit",
   "lib": {
     "entryFile": "src/public-api.ts",
-    "styleIncludePaths": ["../../src/styles"]
-  }
+    "styleIncludePaths": [
+      "./styles"
+    ]
+  },
+  "assets": [
+    {
+      "glob": "**/*.scss",
+      "input": "styles",
+      "output": "styles"
+    }
+  ]
 }

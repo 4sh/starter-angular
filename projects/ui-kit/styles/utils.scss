@@ -1,0 +1,15 @@
+// Build-time SCSS surface of the kit — API ONLY (functions, mixins, shared
+// constants). Nothing here emits CSS: every component does `@use 'utils'`, and
+// each component `.scss` is its own Sass compilation unit, so anything that
+// emitted rules would be duplicated into all 54 components' scoped styles.
+// Global utility classes (`_helpers.scss`) therefore live in `index.scss`.
+//
+// Build-time SCSS surface of the kit: every component's `.scss` starts with
+// `@use 'utils'`, resolved through `styleIncludePaths` (see each entry point's
+// ng-package.json). Ships as source in the package so a consumer can build
+// their own component against the same helpers.
+@forward "utils/functions";
+@forward "utils/mixins";
+@forward "utils/motion";
+@forward "utils/overlay";
+@forward "settings/ui-config";

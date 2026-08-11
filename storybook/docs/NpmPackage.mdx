@@ -103,14 +103,29 @@ export class Booking { date = signal<Date | null>(null); }
 
 ---
 
-## Les design tokens sont requis
+## Charger la feuille de styles du kit
 
-Les composants sont **headless** : aucune couleur, taille ni espacement n'est
-codé en dur. Tout est lu depuis des variables CSS
-(`--actions-high-surface-default`, `--units-sm`, `--radius-md`…).
+Les composants sont **headless** : aucune couleur, taille ni espacement codé en
+dur. Le package **livre** la feuille correspondante, à charger une fois :
 
-**Sans la feuille de tokens chargée globalement dans votre application, les
-composants s'affichent sans style.** C'est le seul prérequis d'intégration.
+```jsonc
+// angular.json
+"styles": [
+  "node_modules/@4sh/ui-kit/styles.css",
+  "src/styles/main.scss"
+]
+```
+
+Elle contient les design tokens (3 marques × clair/sombre × responsive), la
+couche de base, les classes typographiques et les presets d'animation.
+**Sans elle, les composants s'affichent sans style.**
+
+Les `@font-face` n'y sont pas : les tokens *nomment* les familles
+(`--fontfamily-base`), chaque projet livre ses polices.
+
+Les sources SCSS sont aussi livrées (`@4sh/ui-kit/styles`) : `@use 'utils'`
+donne accès aux mêmes fonctions, mixins et constantes partagées pour écrire vos
+propres composants.
 
 ---
 

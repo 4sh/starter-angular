@@ -40,7 +40,7 @@ import { dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const SHARED_CONFIG = join(ROOT, 'src/styles/src/settings/_ui-config.scss');
+const SHARED_CONFIG = join(ROOT, 'projects/ui-kit/styles/settings/_ui-config.scss');
 const COMPONENTS_DIRS = [
   join(ROOT, 'src/app/shared/components'),
   // Components already migrated to the `ui-kit` npm package (`ng-packagr` secondary

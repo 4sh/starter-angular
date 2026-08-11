@@ -2,7 +2,9 @@
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "cli": {
     "analytics": "1e1de97b-a744-405a-8b5a-0397bb3d01ce",
-    "schematicCollections": ["angular-eslint"]
+    "schematicCollections": [
+      "angular-eslint"
+    ]
   },
   "newProjectRoot": "projects",
   "projects": {
@@ -27,7 +29,9 @@
             }
           },
           "options": {
-            "assets": ["src/assets"],
+            "assets": [
+              "src/assets"
+            ],
             "index": "src/index.html",
             "browser": "src/main.ts",
             "outputPath": "dist/demo",
@@ -40,9 +44,17 @@
               "node_modules/@angular/cdk/overlay-prebuilt.css"
             ],
             "stylePreprocessorOptions": {
-              "includePaths": ["src/styles", "src/assets", "node_modules"],
+              "includePaths": [
+                "projects/ui-kit/styles",
+                "src/styles",
+                "src/assets",
+                "node_modules"
+              ],
               "sass": {
-                "silenceDeprecations": ["global-builtin", "import"]
+                "silenceDeprecations": [
+                  "global-builtin",
+                  "import"
+                ]
               }
             },
             "tsConfig": "tsconfig.app.json"
@@ -78,10 +90,20 @@
               "node_modules/@angular/cdk/overlay-prebuilt.css"
             ],
             "stylePreprocessorOptions": {
-              "includePaths": ["src/styles", "src/assets", "node_modules"]
+              "includePaths": [
+                "projects/ui-kit/styles",
+                "src/styles",
+                "src/assets",
+                "node_modules"
+              ]
             },
             "compodoc": true,
-            "compodocArgs": ["-e", "json", "-d", "."],
+            "compodocArgs": [
+              "-e",
+              "json",
+              "-d",
+              "."
+            ],
             "port": 6006
           }
         },
@@ -103,17 +125,30 @@
               "node_modules/@angular/cdk/overlay-prebuilt.css"
             ],
             "stylePreprocessorOptions": {
-              "includePaths": ["src/styles", "src/assets", "node_modules"]
+              "includePaths": [
+                "projects/ui-kit/styles",
+                "src/styles",
+                "src/assets",
+                "node_modules"
+              ]
             },
             "compodoc": true,
-            "compodocArgs": ["-e", "json", "-d", "."],
+            "compodocArgs": [
+              "-e",
+              "json",
+              "-d",
+              "."
+            ],
             "outputDir": "storybook-static"
           }
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
+            ]
           }
         }
       },

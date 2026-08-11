@@ -14,8 +14,7 @@ node_modules
 .tokenflow
 
 # Generated Tokens (npm run tokens:build)
-src/styles/src/generated
-src/styles/generated
+projects/ui-kit/styles/generated
 
 # Compodoc (generated for Storybook)
 documentation.json

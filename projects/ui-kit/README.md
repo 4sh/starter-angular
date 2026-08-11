@@ -102,15 +102,49 @@ export class Booking { date = signal<Date | null>(null); }
 
 ---
 
-## Styles : les design tokens sont obligatoires
+## Styles : charger la feuille du kit
 
-Les composants sont **headless** : ils ne portent aucune valeur de couleur, de
-taille ou d'espacement en dur. Tout passe par des variables CSS
-(`--actions-high-surface-default`, `--units-sm`, `--radius-md`…) fournies par
-les design tokens.
+Les composants sont **headless** : aucune couleur, taille ni espacement n'est
+codé en dur — tout est lu depuis des variables CSS. Le package **livre** cette
+feuille, à charger **une fois**, globalement :
 
-**Sans ces variables, les composants s'affichent sans style.** Chargez la
-feuille de tokens **une fois**, globalement, dans votre application.
+```jsonc
+// angular.json
+"styles": [
+  "node_modules/@4sh/ui-kit/styles.css",   // ← tokens + base + typo + motion
+  "src/styles/main.scss"
+]
+```
+
+`styles.css` contient les design tokens (les 3 marques, clair/sombre,
+responsive), la couche de base, les classes typographiques et les presets
+d'animation de la directive `UiMotion`. **Sans elle, les composants s'affichent
+sans style.**
+
+Les `@font-face` ne sont **pas** inclus : les tokens se contentent de *nommer*
+les familles (`--fontfamily-base`). Livrez vos propres polices et surchargez
+`--fontfamily-*` si besoin.
+
+### Écrire ses propres styles avec le socle du kit
+
+Les sources SCSS sont livrées avec le package : vos composants peuvent utiliser
+les mêmes fonctions, mixins et constantes partagées.
+
+```scss
+// avec `node_modules/@4sh/ui-kit/styles` dans vos includePaths
+@use 'utils';
+
+.my-field {
+  min-height: utils.$form-field-height;
+  padding: var(--units-md);
+  border-radius: var(--radius-md);
+}
+```
+
+> `utils` n'expose **que** de l'API (fonctions, mixins, constantes) et n'émet
+> aucune règle CSS : chaque `.scss` de composant étant une unité de compilation
+> Sass distincte, tout CSS qui y serait exposé serait dupliqué dans chaque
+> composant. Les classes utilitaires globales sont dans `styles.css`.
 
 ---
 

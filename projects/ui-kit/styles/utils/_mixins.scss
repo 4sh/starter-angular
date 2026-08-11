@@ -3,7 +3,7 @@
 // =====================================================================
 
 @use 'sass:list';
-@use 'src/settings/ui-config';
+@use '../settings/ui-config';
 
 /// Transition recipe (duration/easing from ui-config) for the given properties.
 /// e.g. @include utils.control-transition(background-color, border-color);

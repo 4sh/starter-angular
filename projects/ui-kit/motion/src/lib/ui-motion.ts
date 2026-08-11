@@ -3,7 +3,7 @@ import { booleanAttribute, computed, Directive, input } from '@angular/core';
 /**
  * Built-in motion presets. Each maps to a pair of global CSS classes
  * (`ui-motion-<preset>-enter` / `ui-motion-<preset>-leave`) defined in
- * `src/styles/src/base/_motion.scss`.
+ * `styles/base/_motion.scss`, compiled into the package's `styles.css`.
  *
  * - `fade`         — opacity only (neutral).
  * - `slide-up`     — rise + fade (toasts, tooltips above a trigger).
