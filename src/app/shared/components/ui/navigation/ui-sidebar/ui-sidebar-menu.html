@@ -97,6 +97,7 @@
               [routerLink]="node.item.routerLink"
               [queryParams]="node.item.queryParams ?? null"
               routerLinkActive="_active"
+              [ariaCurrentWhenActive]="'page'"
               [routerLinkActiveOptions]="{ exact: node.item.routerLinkActiveExact ?? false }"
               [attr.target]="node.item.target || null"
               [attr.aria-label]="railTitle(node)"
