@@ -38,8 +38,28 @@ niveau du scope**, pas du package :
 | Réglage | Premier publish | Ensuite (rotation) |
 |---|---|---|
 | Expiration | la plus courte praticable (ex. 30 jours) | 90 jours, à renouveler |
-| Packages and scopes | **Read and write** sur le **scope `@4sh`** — couvre les packages à créer | *Read and write* restreint au seul `@4sh/ui-kit` |
-| Organizations | `4sh` — lecture seule suffit | idem |
+| **Packages and scopes** | **Read and write**, *Only select…* → le **scope `@4sh`** (un package inexistant n'est pas listé) | *Read and write* restreint au seul `@4sh/ui-kit` |
+| **Organizations** | **No access** | idem |
+| Bypass 2FA | ☑️ **coché** | idem |
+| Allowed IP ranges | vide | idem |
+
+Deux réglages de cet écran prêtent à confusion :
+
+- **`Organizations` → `No access`.** Cette section gouverne l'**administration de
+  l'organisation** (membres, équipes, réglages), pas la publication. Publier dans
+  le scope `@4sh` ne requiert que l'écriture sur les *packages*. Si une erreur de
+  permission apparaissait malgré tout, remonter à `Read only` — mais ce ne devrait
+  pas être nécessaire.
+- **`Bypass two-factor authentication (2FA)` → à cocher.** Cela n'affecte **pas**
+  le 2FA du compte (qui doit rester actif) : ça dispense **ce token** de la saisie
+  d'un code OTP, impossible dans une CI — sans quoi `npm publish` attend une
+  saisie interactive et échoue. C'est le rôle qu'avaient les anciens tokens
+  *Automation*. En contrepartie, un token fuité publie sans second facteur : d'où
+  l'expiration courte, la portée réduite et l'approbation de l'environment.
+- **`Allowed IP ranges` → vide.** Les runners GitHub-hosted sortent depuis un très
+  large ensemble d'IP qui tourne en permanence (API `/meta` de GitHub) ; les
+  épingler casserait la publication à chaque rotation. Utile uniquement avec un
+  runner *self-hosted* à IP de sortie fixe.
 
 Autrement dit : le premier token est nécessairement un peu plus large (tout le
 scope `@4sh`), et une fois `@4sh/ui-kit` publié, on le remplace par un token
