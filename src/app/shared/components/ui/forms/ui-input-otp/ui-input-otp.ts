@@ -236,6 +236,14 @@ export class UiInputOtp extends BaseFieldControl<string> {
         event.preventDefault();
         this.focusCell(index + 1);
         return;
+      case 'Home':
+        event.preventDefault();
+        this.focusCell(0);
+        return;
+      case 'End':
+        event.preventDefault();
+        this.focusCell(this.length() - 1);
+        return;
       case 'ArrowUp':
       case 'ArrowDown':
         event.preventDefault();
