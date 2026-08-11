@@ -14,9 +14,24 @@ natif (signals + Angular CDK), style piloté par les design tokens.
 npm install @4sh/ui-kit
 ```
 
-Les dépendances Angular sont déclarées en `peerDependencies` — elles utilisent
-donc la version déjà présente dans votre application :
-`@angular/core`, `@angular/common`, `@angular/forms`, `@angular/router`.
+> ℹ️ **Pas encore publié sur un registre.** En attendant, installez-le depuis un
+> tarball local — même contenu et même résolution qu'une vraie publication :
+>
+> ```bash
+> # dans ce repo
+> npm run ui-kit:pack          # → 4sh-ui-kit-<version>.tgz
+>
+> # dans le projet consommateur
+> npm install /chemin/vers/4sh-ui-kit-<version>.tgz
+> ```
+>
+> Pour développer les deux en parallèle : `npm install ../starter-angular/dist/ui-kit`
+> (lien local, les modifications sont prises en compte après un `npm run ui-kit:build`).
+
+Les dépendances sont déclarées en `peerDependencies` — c'est la version déjà
+présente dans votre application qui est utilisée (jamais un second exemplaire
+d'Angular) : `@angular/core`, `@angular/common`, `@angular/forms`,
+`@angular/router`, `@angular/cdk`, `@angular/platform-browser` et `rxjs`.
 
 ---
 

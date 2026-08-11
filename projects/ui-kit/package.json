@@ -1,12 +1,35 @@
 {
   "name": "@4sh/ui-kit",
-  "version": "0.0.1",
-  "description": "4SH headless Angular design system components. See https://4sh.github.io/starter-angular/?path=/docs/introduction--docs",
+  "version": "0.1.0",
+  "description": "Composants Angular headless du Design System 4SH : signals + Angular CDK, stylés exclusivement par design tokens.",
+  "homepage": "https://4sh.github.io/starter-angular/?path=/docs/introduction--docs",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/4sh/starter-angular.git",
+    "directory": "projects/ui-kit"
+  },
+  "bugs": {
+    "url": "https://github.com/4sh/starter-angular/issues"
+  },
+  "author": "4SH",
+  "keywords": [
+    "angular",
+    "design-system",
+    "headless",
+    "components",
+    "design-tokens",
+    "ui-kit",
+    "accessibility",
+    "a11y"
+  ],
   "peerDependencies": {
+    "@angular/cdk": "^22.0.0",
     "@angular/common": "^22.0.0",
     "@angular/core": "^22.0.0",
     "@angular/forms": "^22.0.0",
-    "@angular/router": "^22.0.0"
+    "@angular/platform-browser": "^22.0.0",
+    "@angular/router": "^22.0.0",
+    "rxjs": "^7.8.0"
   },
   "dependencies": {
     "tslib": "^2.3.0"
