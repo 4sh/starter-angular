@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
 import { UiPopover } from '@app/shared/components/ui/layout/ui-popover/ui-popover';
 import { UiButton } from '@app/shared/components/ui/actions/ui-button/ui-button';
-import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
+import { UiIcon } from 'ui-kit/ui-icon';
 
 const meta: Meta<UiPopover> = {
   title: 'Components/ui/layout/ui-popover',

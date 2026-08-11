@@ -4,7 +4,7 @@ import { provideRouter } from '@angular/router';
 import { signal } from '@angular/core';
 import { UiContextMenu } from './ui-context-menu';
 import { UiMenuItem } from '@app/shared/components/ui/navigation/ui-menu/ui-menu';
-import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
+import { UiIcon } from 'ui-kit/ui-icon';
 import { UiTag } from '@app/shared/components/ui/informative/ui-tag/ui-tag';
 
 const meta: Meta<UiContextMenu> = {

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
 import { UiPaginator } from '@app/shared/components/ui/table/ui-paginator/ui-paginator';
-import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
+import { UiIcon } from 'ui-kit/ui-icon';
 
 const meta: Meta<UiPaginator> = {
   title: 'Components/ui/table/ui-paginator',

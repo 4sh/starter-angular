@@ -5,6 +5,10 @@ module.exports = {
     '../src/app/shared/components/**/*.stories.@(js|jsx|mjs|ts|tsx)',
     '../src/app/shared/motion/**/*.mdx',
     '../src/app/shared/motion/**/*.stories.@(js|jsx|mjs|ts|tsx)',
+    // Components already migrated to the `ui-kit` npm package (co-located story/mdx,
+    // excluded from `src/**` under `projects/ui-kit/**/src/`).
+    '../projects/ui-kit/**/*.mdx',
+    '../projects/ui-kit/**/*.stories.@(js|jsx|mjs|ts|tsx)',
   ],
   staticDirs: ['./public'],
   addons: [

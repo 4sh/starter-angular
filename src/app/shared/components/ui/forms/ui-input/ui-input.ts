@@ -2,7 +2,7 @@ import { Component, computed, ElementRef, forwardRef, input, output, viewChild }
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { BaseFormField } from '@app/shared/components/ui/forms/base-form-field';
 import { UiField } from '@app/shared/components/ui/forms/ui-field/ui-field';
-import { UiIcon, UiIconSize } from '@app/shared/components/ui/ui-icon/ui-icon';
+import { UiIcon, UiIconSize } from 'ui-kit/ui-icon';
 
 /** Supported text types (numeric has its dedicated `ui-input-number` component). */
 export type InputType = 'text' | 'password' | 'email' | 'tel' | 'url' | 'search';

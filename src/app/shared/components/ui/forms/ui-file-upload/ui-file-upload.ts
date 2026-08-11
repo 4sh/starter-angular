@@ -15,7 +15,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
-import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
+import { UiIcon } from 'ui-kit/ui-icon';
 import { UiButton } from '@app/shared/components/ui/actions/ui-button/ui-button';
 import { UiLink } from '@app/shared/components/ui/actions/ui-link/ui-link';
 import { UiFileUploadList } from '@app/shared/components/ui/forms/ui-file-upload-list/ui-file-upload-list';

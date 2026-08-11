@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
+import { UiIcon } from 'ui-kit/ui-icon';
 
 export type LinkSize = 'default' | 'small';
 

@@ -1,5 +1,5 @@
 import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
-import { ConfigTable } from '../../../../../../storybook/blocks/config-table';
+import { ConfigTable } from '../../../storybook/blocks/config-table';
 import * as IconStories from './ui-icon.stories';
 
 <Meta of={IconStories} />
@@ -26,7 +26,7 @@ intégré ; on enregistre d'autres familles via `provideUiIconFamilies()` :
 
 ```ts
 // app.config.ts
-import { provideUiIconFamilies } from '@app/shared/components/ui/ui-icon/ui-icon-families';
+import { provideUiIconFamilies } from 'ui-kit/ui-icon';
 
 export const appConfig: ApplicationConfig = {
   providers: [

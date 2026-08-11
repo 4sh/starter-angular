@@ -4,14 +4,15 @@
   "private": true,
   "scripts": {
     "ng": "ng",
-    "start": "npm run docs:config && ng run demo:storybook",
-    "serve": "ng serve",
-    "build": "ng build",
+    "start": "npm run ui-kit:build && npm run docs:config && ng run demo:storybook",
+    "serve": "npm run ui-kit:build && ng serve",
+    "build": "npm run ui-kit:build && ng build",
     "lint": "ng lint --fix",
-    "storybook": "npm run docs:config && ng run demo:storybook",
-    "build-storybook": "npm run docs:config && ng run demo:build-storybook",
+    "storybook": "npm run ui-kit:build && npm run docs:config && ng run demo:storybook",
+    "build-storybook": "npm run ui-kit:build && npm run docs:config && ng run demo:build-storybook",
     "generate:assets": "node src/scripts/build-assets.js",
-    "postinstall": "npm run tokens:build && npm run docs:config",
+    "postinstall": "npm run tokens:build && npm run ui-kit:build && npm run docs:config",
+    "ui-kit:build": "ng build ui-kit",
     "tokens:build": "node scripts/tokens.build.mjs",
     "docs:config": "node scripts/docs.config.mjs",
     "docs:config:check": "node scripts/docs.config.mjs --check"
@@ -47,9 +48,12 @@
     "@types/jasmine": "5.1.8",
     "angular-eslint": "^22.1.0",
     "eslint": "^9.39.5",
+    "jsdom": "^28.0.0",
+    "ng-packagr": "^22.0.2",
     "storybook": "10.5.4",
     "style-dictionary": "5.5.0",
     "typescript": "6.0.3",
-    "typescript-eslint": "8.62.1"
+    "typescript-eslint": "8.62.1",
+    "vitest": "^4.0.8"
   }
 }

@@ -33,7 +33,7 @@ import {
 } from '@app/shared/components/ui/forms/mask-engine';
 import { UiInput } from '@app/shared/components/ui/forms/ui-input/ui-input';
 import { UiButton } from '@app/shared/components/ui/actions/ui-button/ui-button';
-import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
+import { UiIcon } from 'ui-kit/ui-icon';
 import { closeOnNavigation } from '@app/shared/overlay/close-on-navigation';
 
 export type DatepickerHourFormat = '12' | '24';

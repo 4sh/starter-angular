@@ -1,5 +1,5 @@
 import { booleanAttribute, Component, computed, input, output } from '@angular/core';
-import { UiIcon, UiIconSize } from '@app/shared/components/ui/ui-icon/ui-icon';
+import { UiIcon, UiIconSize } from 'ui-kit/ui-icon';
 import { UiSpinner } from '@app/shared/components/ui/informative/ui-spinner/ui-spinner';
 import { formatFileSize, UiUploadFile } from '@app/shared/components/ui/forms/ui-file-upload/ui-file-upload.model';
 import { formatLabel } from '@app/shared/components/ui/forms/format-label';

@@ -21,7 +21,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
-import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
+import { UiIcon } from 'ui-kit/ui-icon';
 
 /** Identifier of a tab / panel pair (matched against the container `value`). */
 export type UiTabValue = string | number;

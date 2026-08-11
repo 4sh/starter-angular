@@ -1,0 +1,13 @@
+{
+  "name": "@4sh/ui-kit",
+  "version": "0.0.1",
+  "description": "4SH headless Angular design system components. See https://4sh.github.io/starter-angular/?path=/docs/introduction--docs",
+  "peerDependencies": {
+    "@angular/common": "^22.0.0",
+    "@angular/core": "^22.0.0"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "sideEffects": false
+}

@@ -6,7 +6,7 @@ import {
   input,
   isDevMode,
 } from '@angular/core';
-import { UiIcon, UiIconSize } from '@app/shared/components/ui/ui-icon/ui-icon';
+import { UiIcon, UiIconSize } from 'ui-kit/ui-icon';
 import { UiFeedbackLevel, UiSubLevel } from '@app/shared/types/ui-level';
 
 export type TagSize = 'default' | 'small';

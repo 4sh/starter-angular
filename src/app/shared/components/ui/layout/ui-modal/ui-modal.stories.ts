@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
 import { UiModal } from '@app/shared/components/ui/layout/ui-modal/ui-modal';
 import { UiButton } from '@app/shared/components/ui/actions/ui-button/ui-button';
-import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
+import { UiIcon } from 'ui-kit/ui-icon';
 
 const meta: Meta<UiModal> = {
   title: 'Components/ui/layout/ui-modal',

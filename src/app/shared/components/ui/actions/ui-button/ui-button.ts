@@ -16,7 +16,7 @@ import {
 import { NgTemplateOutlet } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { UiLevel } from '@app/shared/types/ui-level';
-import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
+import { UiIcon } from 'ui-kit/ui-icon';
 
 export type ButtonType = 'button' | 'submit' | 'reset';
 export type ButtonSize = 'default' | 'small';

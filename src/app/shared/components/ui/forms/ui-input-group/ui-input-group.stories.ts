@@ -9,7 +9,7 @@ import { UiSelect } from '@app/shared/components/ui/forms/ui-select/ui-select';
 import { UiCheckbox } from '@app/shared/components/ui/forms/ui-checkbox/ui-checkbox';
 import { UiRadio } from '@app/shared/components/ui/forms/ui-radio/ui-radio';
 import { UiButton } from '@app/shared/components/ui/actions/ui-button/ui-button';
-import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
+import { UiIcon } from 'ui-kit/ui-icon';
 
 interface PhoneCode {
   name: string;

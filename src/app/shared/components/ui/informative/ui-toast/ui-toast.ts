@@ -1,5 +1,5 @@
 import { booleanAttribute, Component, computed, input, output } from '@angular/core';
-import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
+import { UiIcon } from 'ui-kit/ui-icon';
 import { UiFeedbackLevel, UiSubLevel } from '@app/shared/types/ui-level';
 import { UI_TOAST_DEFAULT_ICONS } from './ui-toast.types';
 

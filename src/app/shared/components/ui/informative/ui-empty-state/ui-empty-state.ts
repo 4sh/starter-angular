@@ -10,7 +10,7 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { UiIcon, UiIconType } from '@app/shared/components/ui/ui-icon/ui-icon';
+import { UiIcon, UiIconType } from 'ui-kit/ui-icon';
 
 export type EmptyStateSize = 'default' | 'small';
 

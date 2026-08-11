@@ -23,7 +23,9 @@
     "paths": {
       "@app/*": ["./src/app/*"],
       "@assets/*": ["./src/assets/*"],
-      "@styles/*": ["./src/styles/*"]
+      "@styles/*": ["./src/styles/*"],
+      "ui-kit": ["./dist/ui-kit"],
+      "ui-kit/ui-icon": ["./dist/ui-kit/ui-icon"]
     }
   },
   "angularCompilerOptions": {
@@ -33,5 +35,13 @@
     "strictTemplates": true,
     "strictStandalone": true
   },
-  "include": ["src/**/*.ts", "src/**/*.html", "src/**/*.css"]
+  "include": ["src/**/*.ts", "src/**/*.html", "src/**/*.css", "projects/ui-kit/**/*.ts"],
+  "references": [
+    {
+      "path": "./projects/ui-kit/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/ui-kit/tsconfig.spec.json"
+    }
+  ]
 }

@@ -4,7 +4,7 @@ import { UiSidebar } from '@app/shared/components/ui/navigation/ui-sidebar/ui-si
 import { UiSidebarMenu, UiSidebarMenuItem } from '@app/shared/components/ui/navigation/ui-sidebar/ui-sidebar-menu';
 import { UiSidebarTrigger } from '@app/shared/components/ui/navigation/ui-sidebar/ui-sidebar-trigger';
 import { UiButton } from '@app/shared/components/ui/actions/ui-button/ui-button';
-import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
+import { UiIcon } from 'ui-kit/ui-icon';
 
 // `tooltips` is a `ui-sidebar-menu` input surfaced as a playground control.
 type SidebarArgs = UiSidebar & { tooltips: boolean };

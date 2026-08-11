@@ -20,7 +20,7 @@ import { QueryParamsHandling, RouterLink, RouterLinkActive } from '@angular/rout
 import { CdkConnectedOverlay, ConnectedPosition, OverlayModule } from '@angular/cdk/overlay';
 import { DOCUMENT } from '@angular/common';
 import { UiSubLevel } from '@app/shared/types/ui-level';
-import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
+import { UiIcon } from 'ui-kit/ui-icon';
 import { UiMotion } from '@app/shared/motion/ui-motion';
 import { closeOnNavigation } from '@app/shared/overlay/close-on-navigation';
 import {UiSeparator} from "@app/shared/components/ui/informative/ui-separator/ui-separator";

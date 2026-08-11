@@ -11,7 +11,7 @@ import {
   output,
   viewChild,
 } from '@angular/core';
-import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
+import { UiIcon } from 'ui-kit/ui-icon';
 import { UiSeparator } from '@app/shared/components/ui/informative/ui-separator/ui-separator';
 
 /** Identifier of a panel within an accordion (its `value`). */

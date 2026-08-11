@@ -15,7 +15,7 @@ import {
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { NgTemplateOutlet } from '@angular/common';
 import { BaseFieldControl } from '@app/shared/components/ui/forms/base-form-field';
-import { UiIcon, UiIconSize } from '@app/shared/components/ui/ui-icon/ui-icon';
+import { UiIcon, UiIconSize } from 'ui-kit/ui-icon';
 
 export interface UiRatingIconContext {
   /** The current star value (1-based index). */

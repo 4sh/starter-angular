@@ -1,6 +1,6 @@
 import { Component, computed, effect, input, signal, TemplateRef } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
-import { UiIcon, UiIconSize } from '@app/shared/components/ui/ui-icon/ui-icon';
+import { UiIcon, UiIconSize } from 'ui-kit/ui-icon';
 
 export type UiSpinnerSize = 'default' | 'small';
 export type UiSpinnerOrientation = 'vertical' | 'horizontal';

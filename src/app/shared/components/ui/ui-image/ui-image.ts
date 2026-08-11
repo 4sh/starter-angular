@@ -5,7 +5,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import assetsMapRaw from '../../../../../assets/assets-map.json';
 import { ThemeService } from '@app/core/service/theme.service';
 import { BrandService } from '@app/core/service/brand.service';
-import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
+import { UiIcon } from 'ui-kit/ui-icon';
 
 interface ModeMap {
   base?: string;

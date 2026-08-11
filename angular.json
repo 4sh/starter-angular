@@ -2,9 +2,7 @@
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "cli": {
     "analytics": "1e1de97b-a744-405a-8b5a-0397bb3d01ce",
-    "schematicCollections": [
-      "angular-eslint"
-    ]
+    "schematicCollections": ["angular-eslint"]
   },
   "newProjectRoot": "projects",
   "projects": {
@@ -29,9 +27,7 @@
             }
           },
           "options": {
-            "assets": [
-              "src/assets"
-            ],
+            "assets": ["src/assets"],
             "index": "src/index.html",
             "browser": "src/main.ts",
             "outputPath": "dist/demo",
@@ -44,16 +40,9 @@
               "node_modules/@angular/cdk/overlay-prebuilt.css"
             ],
             "stylePreprocessorOptions": {
-              "includePaths": [
-                "src/styles",
-                "src/assets",
-                "node_modules"
-              ],
+              "includePaths": ["src/styles", "src/assets", "node_modules"],
               "sass": {
-                "silenceDeprecations": [
-                  "global-builtin",
-                  "import"
-                ]
+                "silenceDeprecations": ["global-builtin", "import"]
               }
             },
             "tsConfig": "tsconfig.app.json"
@@ -89,19 +78,10 @@
               "node_modules/@angular/cdk/overlay-prebuilt.css"
             ],
             "stylePreprocessorOptions": {
-              "includePaths": [
-                "src/styles",
-                "src/assets",
-                "node_modules"
-              ]
+              "includePaths": ["src/styles", "src/assets", "node_modules"]
             },
             "compodoc": true,
-            "compodocArgs": [
-              "-e",
-              "json",
-              "-d",
-              "."
-            ],
+            "compodocArgs": ["-e", "json", "-d", "."],
             "port": 6006
           }
         },
@@ -123,29 +103,17 @@
               "node_modules/@angular/cdk/overlay-prebuilt.css"
             ],
             "stylePreprocessorOptions": {
-              "includePaths": [
-                "src/styles",
-                "src/assets",
-                "node_modules"
-              ]
+              "includePaths": ["src/styles", "src/assets", "node_modules"]
             },
             "compodoc": true,
-            "compodocArgs": [
-              "-e",
-              "json",
-              "-d",
-              "."
-            ],
+            "compodocArgs": ["-e", "json", "-d", "."],
             "outputDir": "storybook-static"
           }
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": [
-              "src/**/*.ts",
-              "src/**/*.html"
-            ]
+            "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
           }
         }
       },
@@ -158,6 +126,42 @@
         }
       },
       "sourceRoot": "src"
+    },
+    "ui-kit": {
+      "projectType": "library",
+      "root": "projects/ui-kit",
+      "sourceRoot": "projects/ui-kit/src",
+      "prefix": "ui",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/ui-kit/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/ui-kit/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "tsConfig": "projects/ui-kit/tsconfig.spec.json"
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/ui-kit/**/*.ts",
+              "projects/ui-kit/**/*.html"
+            ],
+            "eslintConfig": "projects/ui-kit/eslint.config.js"
+          }
+        }
+      }
     }
   },
   "version": 1

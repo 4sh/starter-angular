@@ -23,7 +23,7 @@ import { createOptionResolver } from '@app/shared/components/ui/forms/option-res
 import { dropdownOverlayPositions } from '@app/shared/components/ui/forms/overlay-positions';
 import { formatLabel } from '@app/shared/components/ui/forms/format-label';
 import { UiField } from '@app/shared/components/ui/forms/ui-field/ui-field';
-import { UiIcon, UiIconSize } from '@app/shared/components/ui/ui-icon/ui-icon';
+import { UiIcon, UiIconSize } from 'ui-kit/ui-icon';
 import { UiSpinner } from '@app/shared/components/ui/informative/ui-spinner/ui-spinner';
 import { UiMotion } from '@app/shared/motion/ui-motion';
 import { closeOnNavigation } from '@app/shared/overlay/close-on-navigation';

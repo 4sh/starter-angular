@@ -10,7 +10,7 @@ import {
   output,
   signal,
 } from '@angular/core';
-import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
+import { UiIcon } from 'ui-kit/ui-icon';
 import { UiFeedbackLevel, UiSubLevel } from '@app/shared/types/ui-level';
 import { UI_ALERT_DEFAULT_ICONS, UiAlertSize } from './ui-alert.types';
 

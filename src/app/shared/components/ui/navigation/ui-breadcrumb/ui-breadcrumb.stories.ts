@@ -3,7 +3,7 @@ import { applicationConfig, moduleMetadata } from '@storybook/angular';
 import { provideRouter } from '@angular/router';
 import { UiBreadcrumb } from '@app/shared/components/ui/navigation/ui-breadcrumb/ui-breadcrumb';
 import { UiLink } from '@app/shared/components/ui/actions/ui-link/ui-link';
-import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
+import { UiIcon } from 'ui-kit/ui-icon';
 
 const ITEMS = [
   { icon: 'house', ariaLabel: 'Accueil', url: '#' },

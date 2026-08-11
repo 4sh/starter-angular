@@ -1,5 +1,5 @@
 import { booleanAttribute, Component, computed, input } from '@angular/core';
-import { UiIcon } from '@app/shared/components/ui/ui-icon/ui-icon';
+import { UiIcon } from 'ui-kit/ui-icon';
 import { UiFeedbackLevel } from '@app/shared/types/ui-level';
 
 export type HelperSize = 'default' | 'small';
