@@ -153,8 +153,8 @@ export class UiStep {
 export class UiStepPanel {
   /** Identifier of this panel (matched against the step of the same `value`). */
   value = model<UiStepValue | undefined>(undefined);
-  /** Render this panel's content only once it is first activated. */
-  lazy = input(false, { transform: booleanAttribute });
+  /** Render this panel's content only once it is first activated (overrides the group default). */
+  lazy = input<boolean, unknown>(undefined, { transform: (v) => (v == null ? undefined : booleanAttribute(v)) });
 
   /** Optional lazy content template (`<ng-template #content>`). */
   protected readonly content = contentChild<TemplateRef<unknown>>('content');
@@ -164,8 +164,8 @@ export class UiStepPanel {
 
   /** @ignore */
   protected readonly active = computed(() => this.stepper.isActive(this.value()));
-  /** @ignore Lazy either per panel or inherited from the group. */
-  private readonly isLazy = computed(() => this.stepper.lazy() || this.lazy());
+  /** @ignore Panel-level `lazy` overrides the group default when explicitly set. */
+  private readonly isLazy = computed(() => this.lazy() ?? this.stepper.lazy());
   /** @ignore Sticks once the panel has been activated at least once. */
   private readonly hasRendered = signal(false);
 
