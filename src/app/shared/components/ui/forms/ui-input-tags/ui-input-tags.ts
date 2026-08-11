@@ -24,9 +24,9 @@ import { dropdownOverlayPositions } from '@app/shared/components/ui/forms/overla
 import { formatLabel } from '@app/shared/components/ui/forms/format-label';
 import { warnMissingAccessibleName } from '@app/shared/components/ui/forms/warn-missing-accessible-name';
 import { UiField } from '@app/shared/components/ui/forms/ui-field/ui-field';
-import { UiIcon, UiIconSize } from 'ui-kit/ui-icon';
+import { UiIcon, UiIconSize } from '@4sh/ui-kit/ui-icon';
 import { UiChip } from '@app/shared/components/ui/informative/ui-chip/ui-chip';
-import { UiFeedbackLevel, UiSubLevel } from 'ui-kit/types';
+import { UiFeedbackLevel, UiSubLevel } from '@4sh/ui-kit/types';
 import { UiMotion } from '@app/shared/motion/ui-motion';
 import { closeOnNavigation } from '@app/shared/overlay/close-on-navigation';
 

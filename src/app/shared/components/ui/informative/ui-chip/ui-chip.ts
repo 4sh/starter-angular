@@ -10,8 +10,8 @@ import {
   signal,
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
-import { UiIcon, UiIconSize } from 'ui-kit/ui-icon';
-import { UiFeedbackLevel, UiSubLevel } from 'ui-kit/types';
+import { UiIcon, UiIconSize } from '@4sh/ui-kit/ui-icon';
+import { UiFeedbackLevel, UiSubLevel } from '@4sh/ui-kit/types';
 
 export type ChipSize = 'default' | 'small';
 

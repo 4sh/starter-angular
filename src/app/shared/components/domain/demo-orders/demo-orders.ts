@@ -4,7 +4,7 @@ import { DecimalPipe } from '@angular/common';
 import { ThemeService } from '@app/core/service/theme.service';
 
 // Actions
-import { UiButton } from 'ui-kit/ui-button';
+import { UiButton } from '@4sh/ui-kit/ui-button';
 import { UiLink } from '@app/shared/components/ui/actions/ui-link/ui-link';
 
 // Forms
@@ -53,8 +53,8 @@ import {
 } from '@app/shared/components/ui/table/ui-table/ui-table';
 
 // Root
-import { UiIcon } from 'ui-kit/ui-icon';
-import { UiFeedbackLevel } from 'ui-kit/types';
+import { UiIcon } from '@4sh/ui-kit/ui-icon';
+import { UiFeedbackLevel } from '@4sh/ui-kit/types';
 
 // ---- Types ----------------------------------------------------------------
 

@@ -20,7 +20,7 @@ import {
 import { NgTemplateOutlet } from '@angular/common';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { BaseFieldControl } from '@app/shared/components/ui/forms/base-form-field';
-import { UiIcon } from 'ui-kit/ui-icon';
+import { UiIcon } from '@4sh/ui-kit/ui-icon';
 
 export type SegmentControlSize = 'default' | 'small';
 export type SegmentControlOrientation = 'horizontal' | 'vertical';

@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
 import { UiDrawer } from '@app/shared/components/ui/layout/ui-drawer/ui-drawer';
-import { UiButton } from 'ui-kit/ui-button';
-import { UiIcon } from 'ui-kit/ui-icon';
+import { UiButton } from '@4sh/ui-kit/ui-button';
+import { UiIcon } from '@4sh/ui-kit/ui-icon';
 
 const meta: Meta<UiDrawer> = {
   title: 'Components/ui/layout/ui-drawer',

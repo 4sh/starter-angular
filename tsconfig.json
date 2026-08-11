@@ -24,17 +24,20 @@
       "@app/*": ["./src/app/*"],
       "@assets/*": ["./src/assets/*"],
       "@styles/*": ["./src/styles/*"],
+      // Must use the package's REAL name (@4sh/ui-kit/*), not a shorthand:
+      // ng-packagr only registers a dependency between two entry points when
+      // the import literally starts with the package name (see its
+      // analyse-sources.transform.js). A bare "ui-kit/ui-icon" specifier is
+      // invisible to that analysis, leaving the build order undefined and
+      // failing intermittently.
+      //
       // Mapped to dist/ui-kit (the packaged output), NOT source: ng-packagr
       // gives each entry point its own isolated tsconfig with a strict
-      // `rootDir` scoped to that entry's own src/ — a source-to-source path
-      // mapping across entry points (e.g. ui-button -> ui-icon's source)
-      // fails with TS6059 there. So `ng build ui-kit` must run before the
-      // app/Storybook can resolve these; chained into serve/build/storybook/
-      // build-storybook/postinstall below.
-      "ui-kit": ["./dist/ui-kit"],
-      "ui-kit/ui-icon": ["./dist/ui-kit/ui-icon"],
-      "ui-kit/types": ["./dist/ui-kit/types"],
-      "ui-kit/ui-button": ["./dist/ui-kit/ui-button"]
+      // `rootDir` scoped to that entry's src/, so a source-to-source mapping
+      // across entry points fails with TS6059. `ui-kit:build` therefore runs
+      // before the app/Storybook (chained in package.json).
+      "@4sh/ui-kit": ["./dist/ui-kit"],
+      "@4sh/ui-kit/*": ["./dist/ui-kit/*"]
     }
   },
   "angularCompilerOptions": {

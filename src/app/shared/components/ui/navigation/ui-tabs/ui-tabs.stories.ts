@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
 import { UiTab, UiTabList, UiTabPanel, UiTabPanels, UiTabs } from './ui-tabs';
-import { UiButton } from 'ui-kit/ui-button';
+import { UiButton } from '@4sh/ui-kit/ui-button';
 import { UiTag } from '@app/shared/components/ui/informative/ui-tag/ui-tag';
 
 const meta: Meta<UiTabs> = {

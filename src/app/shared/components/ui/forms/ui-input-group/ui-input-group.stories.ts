@@ -8,8 +8,8 @@ import { UiInputNumber } from '@app/shared/components/ui/forms/ui-input-number/u
 import { UiSelect } from '@app/shared/components/ui/forms/ui-select/ui-select';
 import { UiCheckbox } from '@app/shared/components/ui/forms/ui-checkbox/ui-checkbox';
 import { UiRadio } from '@app/shared/components/ui/forms/ui-radio/ui-radio';
-import { UiButton } from 'ui-kit/ui-button';
-import { UiIcon } from 'ui-kit/ui-icon';
+import { UiButton } from '@4sh/ui-kit/ui-button';
+import { UiIcon } from '@4sh/ui-kit/ui-icon';
 
 interface PhoneCode {
   name: string;

@@ -1,5 +1,5 @@
 import { booleanAttribute, Component, computed, input, output, signal, viewChild } from '@angular/core';
-import { UiLevel } from 'ui-kit/types';
+import { UiLevel } from '@4sh/ui-kit/types';
 import {
   ButtonIconPos,
   ButtonNativeProps,
@@ -7,7 +7,7 @@ import {
   ButtonSize,
   ButtonVariant,
   UiButton,
-} from 'ui-kit/ui-button';
+} from '@4sh/ui-kit/ui-button';
 import {
   MenuSize,
   UiMenu,

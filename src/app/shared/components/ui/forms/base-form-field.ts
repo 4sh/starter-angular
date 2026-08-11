@@ -1,6 +1,6 @@
 import { booleanAttribute, computed, Directive, input, signal } from '@angular/core';
 import { BaseControlValueAccessor } from '@app/core/controlValueAccessor/BaseControlValueAccessor';
-import { UiFeedbackLevel } from 'ui-kit/types';
+import { UiFeedbackLevel } from '@4sh/ui-kit/types';
 
 export type FieldSize = 'default' | 'small';
 /** Visual validation status (subset of `UiFeedbackLevel`, shared with `ui-helper`). */

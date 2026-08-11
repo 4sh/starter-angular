@@ -8,7 +8,7 @@ import {
   UiStepPanels,
   UiStepper,
 } from './ui-stepper';
-import { UiButton } from 'ui-kit/ui-button';
+import { UiButton } from '@4sh/ui-kit/ui-button';
 import { UiTag } from '@app/shared/components/ui/informative/ui-tag/ui-tag';
 
 const meta: Meta<UiStepper> = {

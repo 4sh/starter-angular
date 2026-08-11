@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/angular';
 import { applicationConfig, moduleMetadata } from '@storybook/angular';
-import { UiIcon, provideUiIconFamilies } from 'ui-kit/ui-icon';
+import { UiIcon, provideUiIconFamilies } from '@4sh/ui-kit/ui-icon';
 
 const meta: Meta<UiIcon> = {
   title: 'Components/ui/ui-icon',

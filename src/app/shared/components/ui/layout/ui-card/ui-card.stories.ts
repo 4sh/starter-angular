@@ -7,7 +7,7 @@ import {
   UiCardSubtitle,
   UiCardTitle,
 } from '@app/shared/components/ui/layout/ui-card/ui-card';
-import { UiButton } from 'ui-kit/ui-button';
+import { UiButton } from '@4sh/ui-kit/ui-button';
 import { UiTag } from '@app/shared/components/ui/informative/ui-tag/ui-tag';
 
 const cardImports = [UiCard, UiCardMedia, UiCardTitle, UiCardSubtitle, UiCardFooter];

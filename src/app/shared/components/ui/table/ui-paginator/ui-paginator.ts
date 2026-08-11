@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { UiIcon } from 'ui-kit/ui-icon';
+import { UiIcon } from '@4sh/ui-kit/ui-icon';
 import { UiSelect } from '@app/shared/components/ui/forms/ui-select/ui-select';
 
 /** Payload of `pageChange`. */

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/angular';
 import { applicationConfig, moduleMetadata } from '@storybook/angular';
 import { provideRouter } from '@angular/router';
-import { UiButton } from 'ui-kit/ui-button';
+import { UiButton } from '@4sh/ui-kit/ui-button';
 
 const meta: Meta<UiButton> = {
   title: 'Components/ui/actions/ui-button',

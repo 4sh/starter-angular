@@ -3,8 +3,8 @@ import { moduleMetadata } from '@storybook/angular';
 import { UiSidebar } from '@app/shared/components/ui/navigation/ui-sidebar/ui-sidebar';
 import { UiSidebarMenu, UiSidebarMenuItem } from '@app/shared/components/ui/navigation/ui-sidebar/ui-sidebar-menu';
 import { UiSidebarTrigger } from '@app/shared/components/ui/navigation/ui-sidebar/ui-sidebar-trigger';
-import { UiButton } from 'ui-kit/ui-button';
-import { UiIcon } from 'ui-kit/ui-icon';
+import { UiButton } from '@4sh/ui-kit/ui-button';
+import { UiIcon } from '@4sh/ui-kit/ui-icon';
 
 // `tooltips` is a `ui-sidebar-menu` input surfaced as a playground control.
 type SidebarArgs = UiSidebar & { tooltips: boolean };

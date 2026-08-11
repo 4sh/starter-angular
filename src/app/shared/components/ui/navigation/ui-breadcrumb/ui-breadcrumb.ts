@@ -16,7 +16,7 @@ import {
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { Params, RouterLink } from '@angular/router';
-import { UiIcon } from 'ui-kit/ui-icon';
+import { UiIcon } from '@4sh/ui-kit/ui-icon';
 
 /** Breadcrumb density: `small` = compact rendering. */
 export type BreadcrumbSize = 'default' | 'small';

@@ -1,6 +1,6 @@
 import { booleanAttribute, Component, computed, input } from '@angular/core';
-import { UiIcon } from 'ui-kit/ui-icon';
-import { UiFeedbackLevel } from 'ui-kit/types';
+import { UiIcon } from '@4sh/ui-kit/ui-icon';
+import { UiFeedbackLevel } from '@4sh/ui-kit/types';
 
 export type HelperSize = 'default' | 'small';
 export type HelperAriaLive = 'off' | 'polite' | 'assertive';

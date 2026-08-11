@@ -1,6 +1,6 @@
 import { booleanAttribute, Component, computed, input, output } from '@angular/core';
-import { UiIcon } from 'ui-kit/ui-icon';
-import { UiFeedbackLevel, UiSubLevel } from 'ui-kit/types';
+import { UiIcon } from '@4sh/ui-kit/ui-icon';
+import { UiFeedbackLevel, UiSubLevel } from '@4sh/ui-kit/types';
 import { UI_TOAST_DEFAULT_ICONS } from './ui-toast.types';
 
 /**

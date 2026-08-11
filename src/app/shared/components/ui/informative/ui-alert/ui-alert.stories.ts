@@ -2,7 +2,7 @@ import { Component, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
-import { UiButton } from 'ui-kit/ui-button';
+import { UiButton } from '@4sh/ui-kit/ui-button';
 import { UiInput } from '@app/shared/components/ui/forms/ui-input/ui-input';
 import { UiAlert } from '@app/shared/components/ui/informative/ui-alert/ui-alert';
 

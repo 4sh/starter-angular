@@ -1,4 +1,4 @@
-import { UiFeedbackLevel } from 'ui-kit/types';
+import { UiFeedbackLevel } from '@4sh/ui-kit/types';
 
 /** Rendered scale of an alert. `default` = base, `large` = comfortable. */
 export type UiAlertSize = 'default' | 'large';

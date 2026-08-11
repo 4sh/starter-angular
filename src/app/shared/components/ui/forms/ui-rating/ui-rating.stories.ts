@@ -1,7 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { moduleMetadata, type Meta, type StoryObj } from '@storybook/angular';
 import { UiRating } from './ui-rating';
-import { UiIcon } from 'ui-kit/ui-icon';
+import { UiIcon } from '@4sh/ui-kit/ui-icon';
 import { FormsModule } from '@angular/forms';
 import { FormField, form, required } from '@angular/forms/signals';
 

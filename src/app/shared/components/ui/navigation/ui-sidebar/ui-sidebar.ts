@@ -21,7 +21,7 @@ import {
 import { DOCUMENT, isPlatformBrowser, NgTemplateOutlet } from '@angular/common';
 import { A11yModule } from '@angular/cdk/a11y';
 import { UiMotion, UiMotionPreset } from '@app/shared/motion/ui-motion';
-import { UiIcon } from 'ui-kit/ui-icon';
+import { UiIcon } from '@4sh/ui-kit/ui-icon';
 
 /** Edge the sidebar is docked to. */
 export type SidebarSide = 'left' | 'right';

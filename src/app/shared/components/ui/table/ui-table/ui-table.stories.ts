@@ -16,7 +16,7 @@ import {
   UiTableSortableColumn,
   UiTableSortIcon,
 } from '@app/shared/components/ui/table/ui-table/ui-table';
-import { UiButton } from 'ui-kit/ui-button';
+import { UiButton } from '@4sh/ui-kit/ui-button';
 import { UiSelect } from '@app/shared/components/ui/forms/ui-select/ui-select';
 import { UiSkeleton } from '@app/shared/components/ui/informative/ui-skeleton/ui-skeleton';
 

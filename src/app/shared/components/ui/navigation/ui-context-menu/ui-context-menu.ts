@@ -14,7 +14,7 @@ import {
 } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { ConnectedPosition, OverlayModule } from '@angular/cdk/overlay';
-import { UiSubLevel } from 'ui-kit/types';
+import { UiSubLevel } from '@4sh/ui-kit/types';
 import {
   MenuSize,
   MenuSubmenuMode,

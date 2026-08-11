@@ -4,7 +4,7 @@ import { moduleMetadata } from '@storybook/angular';
 import { FormsModule } from '@angular/forms';
 import { FormField, form } from '@angular/forms/signals';
 import { UiToggle } from '@app/shared/components/ui/forms/ui-toggle/ui-toggle';
-import { UiIcon } from 'ui-kit/ui-icon';
+import { UiIcon } from '@4sh/ui-kit/ui-icon';
 
 const meta: Meta<UiToggle> = {
   title: 'Components/ui/forms/ui-toggle',

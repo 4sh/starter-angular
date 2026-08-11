@@ -6,7 +6,7 @@ import { FormsModule, ReactiveFormsModule, FormControl, Validators } from '@angu
 import { FormField, form, required } from '@angular/forms/signals';
 import { UiSelect } from './ui-select';
 import { UiChip } from '@app/shared/components/ui/informative/ui-chip/ui-chip';
-import { UiIcon } from 'ui-kit/ui-icon';
+import { UiIcon } from '@4sh/ui-kit/ui-icon';
 
 interface City {
   name: string;

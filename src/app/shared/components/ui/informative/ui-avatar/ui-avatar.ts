@@ -1,5 +1,5 @@
 import { Component, computed, effect, input, isDevMode, output, signal } from '@angular/core';
-import { UiIcon, UiIconSize } from 'ui-kit/ui-icon';
+import { UiIcon, UiIconSize } from '@4sh/ui-kit/ui-icon';
 
 export type AvatarSize = 'tiny' | 'small' | 'default' | 'large';
 export type AvatarShape = 'circle' | 'square';

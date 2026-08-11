@@ -5,7 +5,7 @@ import { moduleMetadata } from '@storybook/angular';
 import { FormsModule, ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
 import { FormField, form, required } from '@angular/forms/signals';
 import { UiInputOtp } from './ui-input-otp';
-import { UiButton } from 'ui-kit/ui-button';
+import { UiButton } from '@4sh/ui-kit/ui-button';
 
 const meta: Meta<UiInputOtp> = {
   title: 'Components/ui/forms/ui-input-otp',

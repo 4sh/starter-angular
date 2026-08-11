@@ -5,7 +5,7 @@ import { moduleMetadata } from '@storybook/angular';
 import { FormsModule, ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
 import { FormField, form, required } from '@angular/forms/signals';
 import { UiInputTags, InputTagsCompleteEvent, InputTagsAddEvent, InputTagsRemoveEvent } from './ui-input-tags';
-import { UiIcon } from 'ui-kit/ui-icon';
+import { UiIcon } from '@4sh/ui-kit/ui-icon';
 import { UiChip } from '@app/shared/components/ui/informative/ui-chip/ui-chip';
 
 const TECHNOS = [

@@ -15,7 +15,7 @@ import {
   TemplateRef,
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
-import { UiIcon } from 'ui-kit/ui-icon';
+import { UiIcon } from '@4sh/ui-kit/ui-icon';
 
 /** Identifier of a step / panel pair (matched against the container `value`). */
 export type UiStepValue = string | number;

@@ -32,8 +32,8 @@ import {
   MaskSlot,
 } from '@app/shared/components/ui/forms/mask-engine';
 import { UiInput } from '@app/shared/components/ui/forms/ui-input/ui-input';
-import { UiButton } from 'ui-kit/ui-button';
-import { UiIcon } from 'ui-kit/ui-icon';
+import { UiButton } from '@4sh/ui-kit/ui-button';
+import { UiIcon } from '@4sh/ui-kit/ui-icon';
 import { closeOnNavigation } from '@app/shared/overlay/close-on-navigation';
 
 export type DatepickerHourFormat = '12' | '24';

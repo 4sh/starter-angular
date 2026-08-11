@@ -26,7 +26,7 @@ import { NgTemplateOutlet } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UiCheckbox } from '@app/shared/components/ui/forms/ui-checkbox/ui-checkbox';
 import { UiRadio } from '@app/shared/components/ui/forms/ui-radio/ui-radio';
-import { UiIcon } from 'ui-kit/ui-icon';
+import { UiIcon } from '@4sh/ui-kit/ui-icon';
 import { UiEmptyState } from '@app/shared/components/ui/informative/ui-empty-state/ui-empty-state';
 import { UiSpinner } from '@app/shared/components/ui/informative/ui-spinner/ui-spinner';
 import { UiPaginator, UiPaginatorPageEvent } from '@app/shared/components/ui/table/ui-paginator/ui-paginator';
