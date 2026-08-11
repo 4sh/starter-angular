@@ -19,7 +19,7 @@ import { NgTemplateOutlet } from '@angular/common';
 import { QueryParamsHandling, RouterLink, RouterLinkActive } from '@angular/router';
 import { CdkConnectedOverlay, ConnectedPosition, OverlayModule } from '@angular/cdk/overlay';
 import { DOCUMENT } from '@angular/common';
-import { UiSubLevel } from '@app/shared/types/ui-level';
+import { UiSubLevel } from 'ui-kit/types';
 import { UiIcon } from 'ui-kit/ui-icon';
 import { UiMotion } from '@app/shared/motion/ui-motion';
 import { closeOnNavigation } from '@app/shared/overlay/close-on-navigation';

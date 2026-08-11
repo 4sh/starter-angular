@@ -1,7 +1,7 @@
 import { booleanAttribute, Component, computed, inject, input, model, output } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { UiFeedbackLevel, UiSubLevel } from '@app/shared/types/ui-level';
+import { UiFeedbackLevel, UiSubLevel } from 'ui-kit/types';
 import { UiIcon } from 'ui-kit/ui-icon';
 import { UiBadge } from '@app/shared/components/ui/informative/ui-badge/ui-badge';
 import { UiTooltip } from '@app/shared/components/ui/informative/ui-tooltip/ui-tooltip';

@@ -1,6 +1,6 @@
 import { Component, computed, effect, input, isDevMode } from '@angular/core';
 import { UiIcon, UiIconSize } from 'ui-kit/ui-icon';
-import { UiFeedbackLevel, UiSubLevel } from '@app/shared/types/ui-level';
+import { UiFeedbackLevel, UiSubLevel } from 'ui-kit/types';
 
 export type BadgeSize = 'default' | 'small' | 'large';
 

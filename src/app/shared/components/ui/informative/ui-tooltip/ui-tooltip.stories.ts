@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
 import { UiTooltip } from './ui-tooltip';
-import { UiButton } from '@app/shared/components/ui/actions/ui-button/ui-button';
+import { UiButton } from 'ui-kit/ui-button';
 
 // Global demo stylesheet for the "Custom style" story. In a real app this lives in a
 // global .scss (styles injected in a component template are view-scoped and would NOT

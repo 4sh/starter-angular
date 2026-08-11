@@ -4,7 +4,7 @@ import { provideRouter } from '@angular/router';
 import { JsonPipe } from '@angular/common';
 import { computed, signal } from '@angular/core';
 import { UiMenu, UiMenuItem } from './ui-menu';
-import { UiButton } from '@app/shared/components/ui/actions/ui-button/ui-button';
+import { UiButton } from 'ui-kit/ui-button';
 import { UiIcon } from 'ui-kit/ui-icon';
 import { UiTag } from '@app/shared/components/ui/informative/ui-tag/ui-tag';
 

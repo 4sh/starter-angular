@@ -1,4 +1,4 @@
-import { UiFeedbackLevel, UiSubLevel } from '@app/shared/types/ui-level';
+import { UiFeedbackLevel, UiSubLevel } from 'ui-kit/types';
 
 /** Unique identifier of a toast message (auto-generated when omitted). */
 export type UiToastId = string | number;

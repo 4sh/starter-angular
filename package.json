@@ -12,7 +12,7 @@
     "build-storybook": "npm run ui-kit:build && npm run docs:config && ng run demo:build-storybook",
     "generate:assets": "node src/scripts/build-assets.js",
     "postinstall": "npm run tokens:build && npm run ui-kit:build && npm run docs:config",
-    "ui-kit:build": "ng build ui-kit",
+    "ui-kit:build": "node scripts/build-ui-kit.mjs",
     "tokens:build": "node scripts/tokens.build.mjs",
     "docs:config": "node scripts/docs.config.mjs",
     "docs:config:check": "node scripts/docs.config.mjs --check"
@@ -49,7 +49,7 @@
     "angular-eslint": "^22.1.0",
     "eslint": "^9.39.5",
     "jsdom": "^28.0.0",
-    "ng-packagr": "^22.0.2",
+    "ng-packagr": "^22.1.1",
     "storybook": "10.5.4",
     "style-dictionary": "5.5.0",
     "typescript": "6.0.3",

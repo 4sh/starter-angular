@@ -1,7 +1,7 @@
 import { Component, inject, input } from '@angular/core';
 import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
-import { UiButton } from '@app/shared/components/ui/actions/ui-button/ui-button';
+import { UiButton } from 'ui-kit/ui-button';
 import { UiToast } from './ui-toast';
 import { UiToastContainer } from './ui-toast-container';
 import { UiToastService } from './ui-toast.service';

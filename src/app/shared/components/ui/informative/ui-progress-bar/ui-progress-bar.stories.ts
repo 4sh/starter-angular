@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/angular';
 import { componentWrapperDecorator, moduleMetadata } from '@storybook/angular';
 import { Component, signal } from '@angular/core';
 import { UiProgressBar } from '@app/shared/components/ui/informative/ui-progress-bar/ui-progress-bar';
-import { UiButton } from '@app/shared/components/ui/actions/ui-button/ui-button';
+import { UiButton } from 'ui-kit/ui-button';
 
 const meta: Meta<UiProgressBar> = {
   title: 'Components/ui/informative/ui-progress-bar',

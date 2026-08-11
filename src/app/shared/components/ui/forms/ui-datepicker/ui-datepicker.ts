@@ -32,7 +32,7 @@ import {
   MaskSlot,
 } from '@app/shared/components/ui/forms/mask-engine';
 import { UiInput } from '@app/shared/components/ui/forms/ui-input/ui-input';
-import { UiButton } from '@app/shared/components/ui/actions/ui-button/ui-button';
+import { UiButton } from 'ui-kit/ui-button';
 import { UiIcon } from 'ui-kit/ui-icon';
 import { closeOnNavigation } from '@app/shared/overlay/close-on-navigation';
 

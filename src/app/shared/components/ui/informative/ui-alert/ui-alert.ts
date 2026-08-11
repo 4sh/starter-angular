@@ -11,7 +11,7 @@ import {
   signal,
 } from '@angular/core';
 import { UiIcon } from 'ui-kit/ui-icon';
-import { UiFeedbackLevel, UiSubLevel } from '@app/shared/types/ui-level';
+import { UiFeedbackLevel, UiSubLevel } from 'ui-kit/types';
 import { UI_ALERT_DEFAULT_ICONS, UiAlertSize } from './ui-alert.types';
 
 /**

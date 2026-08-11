@@ -1,4 +1,4 @@
-import { UiFeedbackLevel } from '@app/shared/types/ui-level';
+import { UiFeedbackLevel } from 'ui-kit/types';
 
 /** Rendered scale of an alert. `default` = base, `large` = comfortable. */
 export type UiAlertSize = 'default' | 'large';

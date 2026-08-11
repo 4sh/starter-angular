@@ -5,7 +5,7 @@ import { moduleMetadata } from '@storybook/angular';
 import { FormsModule } from '@angular/forms';
 import { FormField, form, required } from '@angular/forms/signals';
 import { UiDatepicker } from './ui-datepicker';
-import { UiButton } from '@app/shared/components/ui/actions/ui-button/ui-button';
+import { UiButton } from 'ui-kit/ui-button';
 
 const meta: Meta<UiDatepicker> = {
   title: 'Components/ui/forms/ui-datepicker',
