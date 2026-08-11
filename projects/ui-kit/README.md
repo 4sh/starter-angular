@@ -14,22 +14,8 @@ natif (signals + Angular CDK), style piloté par les design tokens.
 npm install @4sh/ui-kit
 ```
 
-Publié sur le **registre npm public**, organisation **`4sh`**.
-
-> ℹ️ **Pas encore publié (première version à venir).** En attendant, installez-le
-> depuis un tarball local — même contenu et même résolution qu'une vraie
-> publication :
->
-> ```bash
-> # dans ce repo
-> npm run ui-kit:pack          # → 4sh-ui-kit-<version>.tgz
->
-> # dans le projet consommateur
-> npm install /chemin/vers/4sh-ui-kit-<version>.tgz
-> ```
->
-> Pour développer les deux en parallèle : `npm install ../starter-angular/dist/ui-kit`
-> (lien local, les modifications sont prises en compte après un `npm run ui-kit:build`).
+Publié sur le **registre npm public**, organisation **`4sh`** :
+[npmjs.com/package/@4sh/ui-kit](https://www.npmjs.com/package/@4sh/ui-kit)
 
 Les dépendances sont déclarées en `peerDependencies` — c'est la version déjà
 présente dans votre application qui est utilisée (jamais un second exemplaire
