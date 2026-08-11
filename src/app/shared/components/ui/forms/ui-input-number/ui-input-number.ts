@@ -80,6 +80,9 @@ export class UiInputNumber extends BaseFormField<number | null> {
   /** @ignore Raw displayed text (independent from the model while typing). */
   protected readonly text = signal('');
 
+  /** @ignore Suffix unit, ignored when `currency` is set (the formatted value already carries it). */
+  protected readonly displayUnit = computed(() => (this.currency() ? null : (this.unit() ?? null)));
+
   /** @ignore */
   protected readonly unitSmall = computed(() => this.size() === 'small');
   /** @ignore Bounds reached (disable the spinner buttons). */
