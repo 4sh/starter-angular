@@ -19,10 +19,34 @@ As long as the version starts with `0.x.y`, the API is considered unstable: `MIN
 1. Work on a `feat/*`, `fix/*`, `chore/*` or `breaking/*` branch
 2. Add a line in `CHANGELOG.md` under `## [Unreleased]` in the right section (`Added` / `Changed` / `Deprecated` / `Removed` / `Fixed`)
 3. PR → merge into `main`
-4. At release time:
+4. At release time, on `main`:
    - Move the `[Unreleased]` content to a new `[X.Y.Z] - YYYY-MM-DD` section
-   - `npm version major|minor|patch` (bumps `package.json` + commit + tag)
-   - `git push --follow-tags`
+   - Bump the version in **`projects/ui-kit/package.json`** — that is the one that
+     gets published, and the one the tag is named after. Keep the root
+     `package.json` in step with it; `npm version` at the root bumps only the
+     demo app, which is `private` and never published.
+   - Commit and push (no tag needed — see below)
+5. Run the publish workflow ([`PUBLISHING.md`](./PUBLISHING.md))
+
+## Tag and GitHub release: produced by the CI
+
+Neither is created by hand. The `release` job of
+[`publish-ui-kit.yml`](../.github/workflows/publish-ui-kit.yml) runs **after a
+successful `npm publish`** and creates the `vX.Y.Z` tag on the published commit,
+plus the GitHub release whose body is the `[X.Y.Z]` section of `CHANGELOG.md`.
+
+Hanging it off the publish job is what makes the release trustworthy: it exists
+only if the registry accepted the tarball, and it points at the exact commit that
+produced it. A tag pushed manually carries no such guarantee — that is how
+`0.1.0` and `0.1.1` ended up on npm with no tag at all.
+
+Consequence: **the `[X.Y.Z]` section must exist in `CHANGELOG.md` before you
+publish.** The `verify` job checks it (via `scripts/changelog.section.mjs`), so a
+`dry_run: true` run reports a missing section *before* the irreversible publish.
+
+Pushing a tag yourself still works — `npm version` + `git push --follow-tags` —
+and the release job reuses an existing tag rather than creating one. It is simply
+no longer necessary.
 
 ## Branch and commit conventions
 

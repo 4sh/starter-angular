@@ -138,10 +138,30 @@ Puis, à chaque version :
    le job `verify` affiche le contenu exact du tarball. Aucune approbation ni
    secret requis à ce stade.
 5. Relancer avec **`dry_run: false`** : le job `verify` rejoue, puis `publish`
-   **attend l'approbation d'un reviewer** avant de démarrer et de publier.
+   **attend l'approbation d'un reviewer** avant de démarrer et de publier, et
+   `release` pose le tag et ouvre la release GitHub.
 
 Aucun secret n'intervient : le droit de publier est émis à la demande, pour ce
 job, et expire avec lui.
+
+### Tag et release GitHub
+
+Le job `release` s'exécute **après** une publication réussie : il crée le tag
+`vX.Y.Z` sur le commit publié et la release GitHub, dont le corps est la section
+`[X.Y.Z]` de `CHANGELOG.md`. Rien à poser à la main.
+
+L'accrochage à la publication est le point : la release n'existe que si le
+registre a accepté le tarball, et elle désigne le commit exact qui l'a produit —
+là où un tag poussé manuellement ne garantit ni l'un ni l'autre (`0.1.0` et
+`0.1.1` sont sur npm sans aucun tag, précisément pour cette raison).
+
+Le job est **séparé de `publish`** parce qu'il lui faut `contents: write` : ce
+droit n'a rien à faire dans le job qui porte déjà celui de publier sur npm.
+
+⚠️ **La section `[X.Y.Z]` doit exister dans `CHANGELOG.md` avant de publier.** Le
+job `verify` la vérifie ([`scripts/changelog.section.mjs`](../scripts/changelog.section.mjs)),
+donc un lancement en `dry_run: true` signale l'oubli **avant** la publication
+irréversible, et affiche les notes de release telles qu'elles seront rendues.
 
 ### Provenance
 

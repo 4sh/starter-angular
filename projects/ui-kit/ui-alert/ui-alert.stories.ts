@@ -12,7 +12,7 @@ import { UiAlert } from '@4sh/ui-kit/ui-alert';
  * Re-showing destroys/re-creates the alert, restarting its `life` timer.
  */
 @Component({
-  selector: 'sb-alert-life',
+  selector: 'demo-alert-life',
   imports: [UiAlert, UiButton],
   template: `
     <div style="display:flex; flex-direction:column; gap:12px; max-width:520px; align-items:flex-start;">
@@ -45,7 +45,7 @@ class AlertLifeDemo {
  * or blur) and disappears the moment the value becomes valid.
  */
 @Component({
-  selector: 'sb-alert-forms',
+  selector: 'demo-alert-forms',
   imports: [UiAlert, UiInput, UiButton, ReactiveFormsModule],
   template: `
     <form
@@ -227,7 +227,7 @@ export const Dynamic: Story = {
 export const Life: Story = {
   render: () => ({
     moduleMetadata: { imports: [AlertLifeDemo] },
-    template: `<sb-alert-life />`,
+    template: `<demo-alert-life />`,
   }),
 };
 
@@ -235,6 +235,6 @@ export const Life: Story = {
 export const Forms: Story = {
   render: () => ({
     moduleMetadata: { imports: [AlertFormsDemo] },
-    template: `<sb-alert-forms />`,
+    template: `<demo-alert-forms />`,
   }),
 };

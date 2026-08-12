@@ -97,7 +97,7 @@ export const Small: Story = { args: { size: 'small' } };
 
 // --- Dynamic (value réactif : la barre suit l'état) ------------------
 @Component({
-  selector: 'sb-progress-dynamic',
+  selector: 'demo-progress-dynamic',
   imports: [UiProgressBar, UiButton],
   template: `
     <div style="display:flex; flex-direction:column; gap:16px; max-width:420px;">
@@ -120,7 +120,7 @@ class ProgressDynamicDemo {
 export const Dynamic: Story = {
   render: () => ({
     moduleMetadata: { imports: [ProgressDynamicDemo] },
-    template: `<sb-progress-dynamic />`,
+    template: `<demo-progress-dynamic />`,
   }),
 };
 
@@ -128,7 +128,7 @@ export const Dynamic: Story = {
 // Several bars share the same value; each formats it differently via
 // `valueTemplate` and is recoloured through the `color` input.
 @Component({
-  selector: 'sb-progress-template',
+  selector: 'demo-progress-template',
   imports: [UiProgressBar],
   template: `
     <div style="display:flex; flex-direction:column; gap:20px; max-width:420px;">
@@ -159,7 +159,7 @@ class ProgressTemplateDemo {
 export const Template: Story = {
   render: () => ({
     moduleMetadata: { imports: [ProgressTemplateDemo] },
-    template: `<sb-progress-template />`,
+    template: `<demo-progress-template />`,
   }),
 };
 
