@@ -10,6 +10,14 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-08-12
+
+Version de documentation et d'outillage : **aucun changement de code des
+composants**, le contenu publié du package est identique à la `0.1.0` à ses
+fichiers de documentation près. Elle corrige le README affiché sur npmjs, qui
+annonçait encore « pas encore publié sur un registre » sur la page du package
+publié.
+
 ### Changed
 - **Publication npm en Trusted Publishing (OIDC) : le token disparaît.** L'étape *Publish* de [`publish-ui-kit.yml`](.github/workflows/publish-ui-kit.yml) n'utilise plus `NODE_AUTH_TOKEN` — GitHub Actions présente le jeton OIDC du job, npm vérifie qu'il provient bien du dépôt `4sh/starter-angular` et du workflow `publish-ui-kit.yml` déclarés sur la page du package, puis délivre un droit de publication éphémère valable le temps du job. Plus aucun secret à stocker ni à faire tourner, plus de « bypass 2FA », et la provenance devient implicite (le drapeau `--provenance` reste explicite pour qu'une publication de repli par token soit attestée elle aussi). L'**environment protégé `npm-publish` reste indispensable** : l'OIDC garantit *d'où* vient la publication, jamais *qui* l'a décidée — et son nom fait désormais partie de la déclaration côté npm, donc le renommer casse l'authentification. Nouvelle étape de garde : Trusted Publishing exige **npm ≥ 11.5.1**, le `.nvmrc` (Node 24.15.0) embarque 11.12.1, et le workflow échoue désormais avec un message explicite si une descente de version repassait sous le seuil, au lieu d'un `401` obscur. [`docs/PUBLISHING.md`](docs/PUBLISHING.md) : la section « Authentification » décrit la configuration OIDC (dépôt, workflow, environment, *allowed actions* limitées à `npm publish`), distingue explicitement **publier** (accessible à tout *required reviewer* GitHub, sans compte npm ni 2FA) d'**administrer le package** (connexion au compte partagé, donc second facteur — d'où la discipline associée : codes de récupération en Vaultier, deux facteurs sur deux appareils, et bascule à terme vers des mainteneurs nominatifs), et rétrograde tout le montage token — compte de service `4sh-package-admin`, token granulaire, bypass 2FA, plages IP — en **solution de repli documentée mais non entretenue**.
 
