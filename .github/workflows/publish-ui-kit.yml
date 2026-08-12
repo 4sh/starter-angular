@@ -36,14 +36,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Read Node.js version from .nvmrc
         id: nvmrc
         run: echo "NODE_VERSION=$(cat .nvmrc)" >> $GITHUB_OUTPUT
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: ${{ steps.nvmrc.outputs.NODE_VERSION }}
           cache: "npm"
@@ -87,7 +87,7 @@ jobs:
       id-token: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Read Node.js version from .nvmrc
         id: nvmrc
@@ -101,7 +101,7 @@ jobs:
       # misleading `E404 Not Found` (it masks a 403 on scoped packages).
       # registry.npmjs.org is the default registry anyway, so nothing is lost.
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: ${{ steps.nvmrc.outputs.NODE_VERSION }}
           cache: "npm"
@@ -189,7 +189,7 @@ jobs:
       contents: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       # `npm version` + `git push --follow-tags` (docs/VERSIONING.md) may already
       # have pushed the tag; `gh release create` reuses it when it exists and
