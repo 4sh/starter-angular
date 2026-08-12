@@ -77,12 +77,18 @@ jobs:
         id: nvmrc
         run: echo "NODE_VERSION=$(cat .nvmrc)" >> $GITHUB_OUTPUT
 
+      # ⚠️ Deliberately NO `registry-url` here. That input makes setup-node write
+      # `//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}` into ~/.npmrc — and
+      # with Trusted Publishing there is no NODE_AUTH_TOKEN, so the line resolves
+      # to an EMPTY token. npm then considers itself authenticated, skips the
+      # OIDC exchange entirely, and the registry rejects the anonymous PUT with a
+      # misleading `E404 Not Found` (it masks a 403 on scoped packages).
+      # registry.npmjs.org is the default registry anyway, so nothing is lost.
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ steps.nvmrc.outputs.NODE_VERSION }}
           cache: "npm"
-          registry-url: "https://registry.npmjs.org"
 
       # Trusted Publishing needs npm >= 11.5.1. Node 24.15.0 (.nvmrc) ships
       # 11.12.1, so nothing to install — this only makes the version visible in
@@ -97,6 +103,18 @@ jobs:
             echo "::error::Trusted Publishing requires npm >= $required, got $version. Bump .nvmrc or install npm@latest."
             exit 1
           fi
+
+          # An auth token configured for the registry — even an EMPTY one, as
+          # setup-node's `registry-url` produces without NODE_AUTH_TOKEN — makes
+          # npm skip the OIDC exchange and fail with a misleading E404. Read the
+          # .npmrc files directly: `npm config get` refuses to return protected
+          # auth options.
+          for rc in "$HOME/.npmrc" "$GITHUB_WORKSPACE/.npmrc"; do
+            if [ -f "$rc" ] && grep -q '_authToken' "$rc"; then
+              echo "::error::$rc configures an _authToken; it disables Trusted Publishing. Remove registry-url from setup-node."
+              exit 1
+            fi
+          done
 
       - name: Install dependencies
         run: npm ci

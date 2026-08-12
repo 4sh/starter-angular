@@ -10,6 +10,10 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+### Fixed
+- **Publication `0.1.1` en échec `E404` : `registry-url` neutralisait l'OIDC.** L'input `registry-url` d'`actions/setup-node` écrit `//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}` dans le `~/.npmrc`. Depuis le retrait du token (FSHSP-90), cette variable n'existe plus : la ligne résolvait donc un jeton **vide**, npm se considérait authentifié, sautait entièrement l'échange OIDC, et le registre rejetait le `PUT` anonyme par un `E404 Not Found` trompeur (il masque un 403 sur les packages scopés — la provenance, elle, était bien signée, ce qui égarait le diagnostic). L'input est retiré du job `publish` : `registry.npmjs.org` est de toute façon le registre par défaut. Le contrôle pré-publication vérifie désormais qu'aucun `_authToken` n'est configuré, en lisant les `.npmrc` directement — `npm config get` refuse de retourner les options d'authentification.
+
+
 ## [0.1.1] - 2026-08-12
 
 Version de documentation et d'outillage : **aucun changement de code des
