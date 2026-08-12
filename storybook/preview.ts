@@ -6,6 +6,7 @@ import { lightTheme, darkTheme } from './myTheme';
 import { addons } from 'storybook/preview-api';
 import docJson from '../documentation.json';
 import { brandGlobalTypes, withBrand, DEFAULT_BRAND } from './brand-toolbar';
+import { withComponentMetadata } from './restore-component-metadata';
 import { provideUiImageAssets, UiImageAssetsMap } from '@4sh/ui-kit/ui-image';
 import assetsMap from '../src/assets/assets-map.json';
 
@@ -32,6 +33,9 @@ const preview: Preview = {
   initialGlobals: { brand: DEFAULT_BRAND },
   globalTypes: brandGlobalTypes,
   decorators: [
+    // Must stay first: it repairs `context.component` before Storybook derives the
+    // implicit template from it.
+    withComponentMetadata,
     withBrand,
     (Story, context) => {
       syncTheme(context.globals['darkMode']);
