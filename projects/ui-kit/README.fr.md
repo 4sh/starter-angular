@@ -43,7 +43,7 @@ import { UiIcon } from '@4sh/ui-kit/ui-icon';
 
 ### Entry points disponibles
 
-**54 composants**, un entry point chacun — le nom de l'entry point est celui du
+**53 composants**, un entry point chacun — le nom de l'entry point est celui du
 composant : `@4sh/ui-kit/ui-button`, `@4sh/ui-kit/ui-select`,
 `@4sh/ui-kit/ui-datepicker`…
 

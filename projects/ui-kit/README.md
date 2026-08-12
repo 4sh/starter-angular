@@ -43,7 +43,7 @@ import { UiIcon } from '@4sh/ui-kit/ui-icon';
 
 ### Available entry points
 
-**54 components**, one entry point each — the entry point is named after the
+**53 components**, one entry point each — the entry point is named after the
 component: `@4sh/ui-kit/ui-button`, `@4sh/ui-kit/ui-select`,
 `@4sh/ui-kit/ui-datepicker`…
 
