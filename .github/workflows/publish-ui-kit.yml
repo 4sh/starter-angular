@@ -132,6 +132,26 @@ jobs:
             fi
           done
 
+          # Proves GitHub is actually minting OIDC tokens for this job. These
+          # variables only exist when the id-token write permission is granted;
+          # without them npm publishes unauthenticated and dies on ENEEDAUTH,
+          # several steps later, with no hint of the real cause.
+          if [ -z "$ACTIONS_ID_TOKEN_REQUEST_URL" ]; then
+            echo "::error::No OIDC token available — check the id-token write permission on this job."
+            exit 1
+          fi
+          echo "OIDC token endpoint available."
+
+          # The three claims npm matches against the Trusted Publisher entry.
+          # A mismatch is otherwise invisible: the registry finds no match, stays
+          # silent, and npm carries on unauthenticated. Copy these verbatim into
+          # the package settings page if publishing ever fails on ENEEDAUTH.
+          echo "repository:  $GITHUB_REPOSITORY"
+          echo "workflow:    $(basename "${GITHUB_WORKFLOW_REF%%@*}")"
+          echo "environment: $ENVIRONMENT_NAME"
+        env:
+          ENVIRONMENT_NAME: npm-publish
+
       - name: Install dependencies
         run: npm ci
 
