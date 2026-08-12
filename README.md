@@ -67,7 +67,7 @@ recomposes everything without duplication.
 
 ```
 projects/ui-kit/                  ← the @4sh/ui-kit PACKAGE (published)
-├── ui-button/ … ui-tooltip/      ← 53 ui-* components, one entry point each
+├── ui-button/ … ui-tooltip/      ← 53 entry points / 54 ui-* components
 │   ├── src/lib/ui-x.{ts,html,scss}          ← the component, co-located
 │   └── ui-x.{stories.ts,mdx}                ← its doc, outside src/ (not packaged)
 ├── forms/                        ← BaseControlValueAccessor, BaseFieldControl, BaseFormField…

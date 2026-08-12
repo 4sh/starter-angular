@@ -43,9 +43,10 @@ import { UiIcon } from '@4sh/ui-kit/ui-icon';
 
 ### Available entry points
 
-**53 components**, one entry point each — the entry point is named after the
-component: `@4sh/ui-kit/ui-button`, `@4sh/ui-kit/ui-select`,
-`@4sh/ui-kit/ui-datepicker`…
+**53 entry points**, named after the component they expose:
+`@4sh/ui-kit/ui-button`, `@4sh/ui-kit/ui-select`, `@4sh/ui-kit/ui-datepicker`…
+(54 components in total — `ui-file-upload-list` ships inside `ui-file-upload`,
+whose model it consumes.)
 
 | Family | Entry points |
 |---|---|
