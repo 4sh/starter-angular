@@ -317,7 +317,7 @@ export const Remote_SVG_As_Img: Story = {
 /** URL en échec + `fallback` : l'asset local de repli s'affiche (et `loadFailed` émet l'URL). */
 export const Error_With_Fallback: Story = {
     args: {
-        src: 'https://example.invalid/nope.jpg',
+        src: './nope-missing.jpg',
         fallback: 'test-png.png',
         width: 200,
         height: 200,
@@ -328,7 +328,7 @@ export const Error_With_Fallback: Story = {
 /** URL en échec sans fallback : état dégradé stylé tokens (adapté light/dark). */
 export const Error_Placeholder: Story = {
     args: {
-        src: 'https://example.invalid/nope.jpg',
+        src: './nope-missing.jpg',
         width: 200,
         height: 200,
         alt: 'Erreur sans fallback'
@@ -348,7 +348,7 @@ export const Unknown_Name_Placeholder: Story = {
 /** Fallback `.svg` : rendu via `<img>` (jamais inliné), même en repli. */
 export const Error_SVG_Fallback: Story = {
     args: {
-        src: 'https://example.invalid/nope.jpg',
+        src: './nope-missing.jpg',
         fallback: 'test-svg.svg',
         width: 200,
         height: 200,
