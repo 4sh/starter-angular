@@ -107,5 +107,5 @@ export const PresenceDot: Story = {
 
 // Fallback : image cassée → repli sur les initiales
 export const BrokenImageFallback: Story = {
-  args: { image: 'https://example.invalid/missing.png', label: 'UI', ariaLabel: 'Utilisateur' },
+  args: { image: './nope-missing.png', label: 'UI', ariaLabel: 'Utilisateur' },
 };
