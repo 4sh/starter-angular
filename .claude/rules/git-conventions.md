@@ -33,6 +33,13 @@ left as is.
 | `chore/<name>` | Tooling, internal refactoring | no release |
 | `breaking/<name>` | API/tokens breakage | MAJOR |
 
+## Jira tickets (project `FSHSP`)
+
+- A bug with no ticket: **create one** (type `Bug`) before committing the fix.
+- Keep the description short — symptom, where, root cause, fix. A wall of text is not read.
+- **Move the ticket without being asked**: `DEV IN PROGRESS` when work starts,
+  `CLOSE PROPOSED` once the fix is committed.
+
 ## CHANGELOG discipline
 
 Every user-visible change (component, token, visual behavior) adds an entry to
