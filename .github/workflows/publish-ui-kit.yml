@@ -9,6 +9,10 @@ name: Publish @4sh/ui-kit to npm
 #             you like.
 #   publish — only when dry_run is false, and gated behind the `npm-publish`
 #             environment so a human must approve before the job can run.
+#   release — tags the published commit and opens the GitHub release, from the
+#             CHANGELOG section of that version. Split out of `publish` on
+#             purpose: it needs `contents: write`, which has no business sitting
+#             in the job that holds the npm publishing right.
 #
 # Authentication uses npm **Trusted Publishing** (OIDC): there is no token and no
 # secret. npm verifies the job's OIDC claims against the repository + workflow
@@ -44,6 +48,16 @@ jobs:
           node-version: ${{ steps.nvmrc.outputs.NODE_VERSION }}
           cache: "npm"
 
+      # Before anything expensive, and above all before the irreversible publish:
+      # the release notes are the CHANGELOG section of this version, so a missing
+      # section must surface here — during the dry run — and not once the version
+      # is already on the registry.
+      - name: Check the CHANGELOG documents this version
+        run: |
+          version=$(node -p "require('./projects/ui-kit/package.json').version")
+          echo "Release notes for $version:"
+          node scripts/changelog.section.mjs "$version"
+
       - name: Install dependencies
         run: npm ci
 
@@ -59,6 +73,8 @@ jobs:
     needs: verify
     if: ${{ inputs.dry_run == false }}
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.published.outputs.version }}
     # Requires a human approval before this job starts — configure
     # *Settings → Environments → npm-publish → Required reviewers*.
     # ⚠️ Referencing an environment that does not exist yet creates it WITHOUT
@@ -134,3 +150,50 @@ jobs:
         # package would otherwise default to `restricted` (paid plans only).
         run: npm publish --provenance
         working-directory: dist/ui-kit
+
+      # Read from the tarball manifest rather than from `projects/ui-kit/`, so the
+      # tag can only ever name the version that was actually accepted by npm.
+      - name: Record the published version
+        id: published
+        run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+        working-directory: dist/ui-kit
+
+  release:
+    name: Tag & GitHub release
+    needs: publish
+    runs-on: ubuntu-latest
+    permissions:
+      # Creates the tag and the release. Deliberately not granted to `publish`:
+      # that job already carries the npm publishing right, and the two should not
+      # be reachable from the same compromised step.
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # `npm version` + `git push --follow-tags` (docs/VERSIONING.md) may already
+      # have pushed the tag; `gh release create` reuses it when it exists and
+      # creates it on --target otherwise. Both ways of working stay valid.
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.publish.outputs.version }}
+        run: |
+          tag="v$VERSION"
+
+          # Idempotent: re-running this job alone (after a transient failure)
+          # must not error out on an already-published release. A duplicate
+          # *version* cannot reach this point — npm rejects a republish.
+          if gh release view "$tag" >/dev/null 2>&1; then
+            echo "::notice::Release $tag already exists — nothing to do."
+            exit 0
+          fi
+
+          # Already validated by `verify`; if it fails here the CHANGELOG changed
+          # between the two jobs, and failing is the right answer.
+          node scripts/changelog.section.mjs "$VERSION" > release-notes.md
+
+          gh release create "$tag" \
+            --target "$GITHUB_SHA" \
+            --title "$tag" \
+            --notes-file release-notes.md
