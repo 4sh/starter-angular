@@ -15,7 +15,8 @@
     "ui-kit:build": "ng build ui-kit && npm run ui-kit:styles",
     "tokens:build": "node scripts/tokens.build.mjs",
     "docs:config": "node scripts/docs.config.mjs",
-    "docs:config:check": "node scripts/docs.config.mjs --check",
+    "docs:config:check": "node scripts/docs.config.mjs --check && npm run components:check",
+    "components:check": "node scripts/components.check.mjs",
     "ui-kit:styles": "sass projects/ui-kit/styles/index.scss dist/ui-kit/styles.css --load-path=projects/ui-kit/styles --no-source-map --style=compressed",
     "ui-kit:pack": "npm run ui-kit:build && npm pack ./dist/ui-kit"
   },

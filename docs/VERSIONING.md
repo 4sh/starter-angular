@@ -24,23 +24,12 @@ As long as the version starts with `0.x.y`, the API is considered unstable: `MIN
    - `npm version major|minor|patch` (bumps `package.json` + commit + tag)
    - `git push --follow-tags`
 
-## Branch convention
+## Branch and commit conventions
 
-| Prefix | Usage | Expected SemVer |
-|---|---|---|
-| `feat/<name>` | New feature | MINOR |
-| `fix/<name>` | Bug fix | PATCH |
-| `chore/<name>` | Tooling, internal refactoring | no release |
-| `breaking/<name>` | API/tokens breakage | MAJOR |
+Branch prefixes (`feat/`, `fix/`, `chore/`, `breaking/`), the Conventional
+Commits format and the CHANGELOG discipline are defined **once**, in
+[`.claude/rules/git-conventions.md`](../.claude/rules/git-conventions.md).
 
-## Commit convention (optional)
-
-[Conventional Commits](https://www.conventionalcommits.org/) format:
-
-```
-feat(button): add outlined variant
-fix(tokens): correct dark mode contrast on form.error
-feat(tokens)!: rename actions.primary to actions.high
-```
-
-The `!` or `BREAKING CHANGE:` in the body indicates a MAJOR.
+What matters here is only how they map onto a release: the branch prefix
+announces the expected bump, and a `!` after the scope (or a `BREAKING CHANGE:`
+footer) forces a MAJOR — see the table at the top of this page.
