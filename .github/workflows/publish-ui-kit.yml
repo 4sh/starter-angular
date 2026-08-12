@@ -8,8 +8,13 @@ name: Publish @4sh/ui-kit to npm
 #             secret, no approval needed, so it is cheap to run as often as
 #             you like.
 #   publish — only when dry_run is false, and gated behind the `npm-publish`
-#             environment so a human must approve before the job can even
-#             read NPM_TOKEN.
+#             environment so a human must approve before the job can run.
+#
+# Authentication uses npm **Trusted Publishing** (OIDC): there is no token and no
+# secret. npm verifies the job's OIDC claims against the repository + workflow
+# declared on the package settings page, then issues a short-lived publish right
+# valid for this job only. The environment gate stays essential: OIDC proves
+# *where* the publish comes from, never *who* decided it.
 on:
   workflow_dispatch:
     inputs:
@@ -61,7 +66,9 @@ jobs:
     environment: npm-publish
     permissions:
       contents: read
-      id-token: write # npm provenance attestation
+      # Required twice over: it mints the OIDC token npm exchanges for a publish
+      # right, and it signs the provenance attestation.
+      id-token: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -77,6 +84,20 @@ jobs:
           cache: "npm"
           registry-url: "https://registry.npmjs.org"
 
+      # Trusted Publishing needs npm >= 11.5.1. Node 24.15.0 (.nvmrc) ships
+      # 11.12.1, so nothing to install — this only makes the version visible in
+      # the logs, and turns a downgrade of .nvmrc into an explicit failure
+      # instead of a confusing 401 at publish time.
+      - name: Check npm supports Trusted Publishing
+        run: |
+          version=$(npm --version)
+          echo "npm $version"
+          required=11.5.1
+          if [ "$(printf '%s\n%s\n' "$required" "$version" | sort -V | head -n1)" != "$required" ]; then
+            echo "::error::Trusted Publishing requires npm >= $required, got $version. Bump .nvmrc or install npm@latest."
+            exit 1
+          fi
+
       - name: Install dependencies
         run: npm ci
 
@@ -87,9 +108,11 @@ jobs:
         run: npm run ui-kit:build
 
       - name: Publish
+        # No NODE_AUTH_TOKEN: npm exchanges the job's OIDC token for a
+        # short-lived publish right (Trusted Publishing). `--provenance` stays
+        # explicit even though OIDC implies it, so a fallback token publish
+        # would still be attested.
         # `access: public` comes from the package's publishConfig — a scoped
         # package would otherwise default to `restricted` (paid plans only).
         run: npm publish --provenance
         working-directory: dist/ui-kit
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
