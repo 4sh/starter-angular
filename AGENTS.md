@@ -94,7 +94,7 @@ Rules when working in `projects/ui-kit/`:
 
 ```
 projects/
-  ui-kit/                    # @4sh/ui-kit — the published package (54 components)
+  ui-kit/                    # @4sh/ui-kit — the published package (53 entry points, 54 components)
     <ui-name>/               # one secondary entry point per component
       ng-package.json · src/public-api.ts · src/lib/… · *.stories.ts · *.mdx
     forms/ theming/ motion/ overlay/ types/     # cross-cutting entry points

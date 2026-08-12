@@ -17,6 +17,11 @@
       "glob": "NOTICE",
       "input": ".",
       "output": "."
+    },
+    {
+      "glob": "README.fr.md",
+      "input": ".",
+      "output": "."
     }
   ]
 }

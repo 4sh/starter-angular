@@ -5,76 +5,99 @@ Versionnage : voir [`VERSIONING.md`](./VERSIONING.md).
 
 ---
 
-## Authentification : compte dédié, jamais un compte perso
+## Authentification : Trusted Publishing (OIDC), aucun token
 
-Un *access token* npm est **persistant** et donne le droit de publier **en tant
-que** son porteur. Comme le token doit vivre dans les secrets GitHub (donc
-visible des personnes ayant accès aux settings du dépôt), un token de compte
-personnel donnerait à ces personnes le droit de publier sous cette identité.
+La publication s'authentifie par **Trusted Publishing** : GitHub Actions présente
+à npm le jeton OIDC du job, npm vérifie qu'il provient bien du dépôt et du
+workflow déclarés sur la page du package, et délivre un droit de publication
+éphémère valable le temps du job.
 
-D'où le montage retenu :
+**Il n'y a donc aucun secret à stocker, ni à faire tourner.**
 
 | | |
 |---|---|
 | Organisation npm | `4sh` — porte les packages `@4sh/*` |
-| Compte publieur | **`4sh-package-admin`** (le nom `4sh` est réservé par l'organisation éponyme) |
-| Email du compte | `npm@4sh.fr` (ggroup dédié) |
-| Identifiants | **Vaultier** |
-| Token dans GitHub | secret `NPM_TOKEN`, porté par l'environment `npm-publish` |
+| Dépôt autorisé | `4sh/starter-angular` |
+| Workflow autorisé | `publish-ui-kit.yml` |
+| Environment | `npm-publish` (approbation humaine, voir plus bas) |
+| Secret GitHub | **aucun** |
 
-> Une organisation npm ne peut pas porter d'access token elle-même : c'est la
-> raison d'être du compte `4sh-package-admin`.
+### Configurer (une seule fois, sur npmjs)
 
-### Générer le token (granulaire, pas classique)
+Page du package → *Settings* → section **Trusted Publisher** :
 
-Sur npmjs, connecté en `4sh-package-admin` : *Access Tokens → Generate New Token
-→ **Granular Access Token***.
+| Champ | Valeur |
+|---|---|
+| Publisher | GitHub Actions |
+| Organization / user | `4sh` |
+| Repository | `starter-angular` |
+| Workflow filename | `publish-ui-kit.yml` |
+| Environment | `npm-publish` |
+| **Allowed actions** | **`npm publish` uniquement** |
 
-⚠️ **Œuf et poule au premier passage.** Un token granulaire ne peut pas être
-restreint à `@4sh/ui-kit` tant que ce package n'existe pas sur le registre : la
-liste ne propose que des packages déjà publiés. La sélection se fait donc **au
-niveau du scope**, pas du package :
+Le champ *Allowed actions* propose aussi `npm stage publish` (publication en
+deux temps : dépôt en zone de staging, puis promotion). Le workflow ne lance que
+`npm publish` : cocher la seconde case élargirait le droit délivré sans usage.
+Réglage modifiable après coup si le staging devenait utile.
 
-| Réglage | Premier publish | Ensuite (rotation) |
+Le réglage n'est possible qu'une fois le package **déjà présent** sur le
+registre : la `0.1.0` a donc été publiée par token, et c'est ce token que la
+bascule supprime.
+
+### Pourquoi c'est strictement mieux qu'un token
+
+| | Token | Trusted Publishing |
 |---|---|---|
-| Expiration | la plus courte praticable (ex. 30 jours) | 90 jours, à renouveler |
-| **Packages and scopes** | **Read and write**, *Only select…* → le **scope `@4sh`** (un package inexistant n'est pas listé) | *Read and write* restreint au seul `@4sh/ui-kit` |
-| **Organizations** | **No access** | idem |
-| Bypass 2FA | ☑️ **coché** | idem |
-| Allowed IP ranges | vide | idem |
+| Secret stocké dans GitHub | oui (`NPM_TOKEN`) | **aucun** |
+| Utilisable par quiconque peut modifier un workflow | oui | **non** — lié au dépôt + workflow déclarés |
+| Expiration / rotation | à gérer | **rien** |
+| « Bypass 2FA » | nécessaire | **inutile** |
+| Provenance | à demander | implicite |
 
-Deux réglages de cet écran prêtent à confusion :
+npm affiche d'ailleurs un avertissement sur l'option *bypass 2FA* d'un token,
+recommandant Trusted Publishing pour tout usage CI/CD.
 
-- **`Organizations` → `No access`.** Cette section gouverne l'**administration de
-  l'organisation** (membres, équipes, réglages), pas la publication. Publier dans
-  le scope `@4sh` ne requiert que l'écriture sur les *packages*. Si une erreur de
-  permission apparaissait malgré tout, remonter à `Read only` — mais ce ne devrait
-  pas être nécessaire.
-- **`Bypass two-factor authentication (2FA)` → à cocher.** Cela n'affecte **pas**
-  le 2FA du compte (qui doit rester actif) : ça dispense **ce token** de la saisie
-  d'un code OTP, impossible dans une CI — sans quoi `npm publish` attend une
-  saisie interactive et échoue. C'est le rôle qu'avaient les anciens tokens
-  *Automation*. En contrepartie, un token fuité publie sans second facteur : d'où
-  l'expiration courte, la portée réduite et l'approbation de l'environment.
-- **`Allowed IP ranges` → vide.** Les runners GitHub-hosted sortent depuis un très
-  large ensemble d'IP qui tourne en permanence (API `/meta` de GitHub) ; les
-  épingler casserait la publication à chaque rotation. Utile uniquement avec un
-  runner *self-hosted* à IP de sortie fixe.
+### Qui peut publier, qui peut administrer
 
-Autrement dit : le premier token est nécessairement un peu plus large (tout le
-scope `@4sh`), et une fois `@4sh/ui-kit` publié, on le remplace par un token
-strictement limité à ce package. D'où l'expiration courte sur le premier.
+Deux accès distincts, à ne pas confondre :
 
-> Si le premier publish échoue malgré un token de scope (npm a eu des
-> restrictions changeantes sur la **création** d'un package avec un token
-> granulaire), le contournement est un token *classic* de type **Automation**,
-> utilisé pour ce seul premier publish, puis **révoqué immédiatement** et
-> remplacé par le token granulaire.
+| | Ce qu'il faut | Qui l'a |
+|---|---|---|
+| **Publier une version** | lancer le workflow + approuver l'environment `npm-publish` | toute personne *required reviewer* sur GitHub — **aucun compte npm, aucun 2FA** |
+| **Administrer le package** (Trusted Publisher, mainteneurs, révocations) | se connecter au compte `4sh-package-admin` sur npmjs | seulement qui détient le mot de passe **et** un second facteur enrôlé |
 
-Pourquoi granulaire plutôt que *classic* en régime normal : un token classique
-donne les pleins droits sur **tous** les packages du compte et **n'expire
-jamais**. Un token granulaire borné avec expiration limite les dégâts en cas de
-fuite.
+C'est l'intérêt de l'OIDC : la publication ne dépend plus d'une identité npm.
+Reste l'administration, et elle mérite sa propre discipline, le compte étant
+partagé mais son second facteur nécessairement porté par un appareil :
+
+- **Codes de récupération** de la 2FA → dans **Vaultier**, avec les identifiants.
+  Sans eux, la perte de l'appareil enrôlé ferme définitivement le compte.
+- **Au moins deux facteurs enrôlés**, sur les appareils de deux personnes
+  différentes (npm accepte plusieurs méthodes sur un même compte). Un seul
+  appareil = un seul point de défaillance sur un compte censé être collectif.
+- À terme, préférer des **comptes nominatifs déclarés mainteneurs** de
+  `@4sh/ui-kit` à un compte partagé : chacun son 2FA, plus aucun secret
+  d'authentification en commun. Le compte de service perd l'essentiel de sa
+  raison d'être maintenant que la publication ne passe plus par lui.
+
+### Exigence de version
+
+Trusted Publishing réclame **npm ≥ 11.5.1**. Le `.nvmrc` est sur Node 24.15.0,
+qui embarque npm 11.12.1 — rien à installer. Le workflow le vérifie explicitement
+avant de publier, pour qu'une descente de version du `.nvmrc` échoue avec un
+message clair plutôt qu'avec un `401` obscur.
+
+### Repli : le token (déprécié)
+
+Si l'OIDC échouait, la voie token reste techniquement disponible : compte de
+service **`4sh-package-admin`** (identifiants dans **Vaultier**), *Granular
+Access Token* restreint au seul `@4sh/ui-kit`, *bypass 2FA* coché, posé en secret
+`NPM_TOKEN` **sur l'environment** `npm-publish`, et `NODE_AUTH_TOKEN:
+${{ secrets.NPM_TOKEN }}` remis sur l'étape *Publish*.
+
+C'est un repli, pas une configuration entretenue : un token est persistant,
+publie **en tant que** son porteur, et reste utilisable par toute personne
+pouvant modifier un workflow. À révoquer dès que la voie OIDC fonctionne.
 
 ### L'environment `npm-publish` (approbation humaine)
 
@@ -88,16 +111,11 @@ configurer **une fois**, sinon la protection n'existe pas :
 automatiquement **sans aucune règle de protection**. Le workflow tournerait alors
 sans approbation, en donnant l'illusion d'être protégé. À vérifier explicitement.
 
-Le secret `NPM_TOKEN` peut d'ailleurs être posé **sur l'environment** plutôt que
-sur le dépôt : il devient alors inaccessible aux workflows qui ne passent pas par
-la porte d'approbation.
-
-⚠️ **Ce que le secret protège — et ce qu'il ne protège pas.** Un secret est
-*write-only* : personne ne peut le relire dans l'interface, et il est masqué dans
-les logs. Mais **toute personne pouvant modifier un workflow peut l'utiliser**
-(voire l'exfiltrer) — c'est justement ce que l'approbation de l'environment
-ci-dessus vient borner. Le compte de service, lui, limite l'impact à une identité
-non nominative : il ne rend pas le token inaccessible.
+⚠️ **L'approbation reste indispensable, même sans secret à protéger.** L'OIDC
+garantit *d'où* vient la publication, jamais *qui* l'a décidée : sans la porte
+d'approbation, toute personne pouvant lancer le workflow publierait. Les deux
+mécanismes sont complémentaires, et le nom de l'environment fait partie de la
+déclaration côté npm — le renommer ici casse l'authentification.
 
 ---
 
@@ -110,9 +128,7 @@ irréversible.
 Prérequis, une seule fois :
 
 1. Créer l'environment **`npm-publish`** avec ses *required reviewers* (voir plus haut).
-2. Y ajouter le token de `4sh-package-admin` sous le nom **`NPM_TOKEN`**
-   (*Settings → Environments → npm-publish → Add secret*, ou à défaut en secret
-   de dépôt).
+2. Déclarer le *Trusted Publisher* sur npmjs (voir « Authentification »).
 
 Puis, à chaque version :
 
@@ -124,20 +140,23 @@ Puis, à chaque version :
 5. Relancer avec **`dry_run: false`** : le job `verify` rejoue, puis `publish`
    **attend l'approbation d'un reviewer** avant de démarrer et de publier.
 
-Le token ne quitte jamais les secrets GitHub : aucune machine de développeur n'en
-a besoin.
+Aucun secret n'intervient : le droit de publier est émis à la demande, pour ce
+job, et expire avec lui.
 
 ### Provenance
 
-Le workflow publie avec `--provenance` : npmjs affiche alors un lien vérifiable
-entre le tarball et le commit + workflow qui l'a produit. C'est ce qui permet de
-prouver *quoi* a été publié *depuis où*, malgré le compte de service partagé.
+Le workflow publie avec `--provenance` : npmjs affiche un lien vérifiable entre
+le tarball et le commit + workflow qui l'a produit. Trusted Publishing la rend
+implicite, mais le drapeau reste explicite pour qu'une publication de repli par
+token soit attestée elle aussi. L'attestation de la `0.1.0` est déjà consultable
+via `npm view @4sh/ui-kit dist --json`.
 
 ---
 
 ## Publier depuis un poste (secours)
 
-À éviter — le token se retrouve sur la machine. Si nécessaire :
+À éviter — cette voie **sort du périmètre de Trusted Publishing** : elle exige un
+token, donc réintroduit exactement ce que la bascule supprime. Si nécessaire :
 
 ```bash
 npm run ui-kit:build

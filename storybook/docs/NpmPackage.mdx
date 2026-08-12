@@ -11,25 +11,6 @@ npm**, consommable par n'importe quelle application Angular.
 npm install @4sh/ui-kit
 ```
 
-Les dépendances sont en `peerDependencies` (`@angular/core`, `@angular/common`,
-`@angular/forms`, `@angular/router`, `@angular/cdk`,
-`@angular/platform-browser`, `rxjs`) : c'est la version déjà installée dans
-votre application qui est utilisée.
-
-Package sur npmjs : <a href="https://www.npmjs.com/package/@4sh/ui-kit" target="_blank" rel="noopener noreferrer">npmjs.com/package/@4sh/ui-kit</a>
-
----
-
-## Import à la carte
-
-Chaque composant a son propre *entry point*. Vous n'importez que ce dont vous
-avez besoin, et le tree-shaking retire le reste de votre bundle :
-
-```ts
-import { UiButton } from '@4sh/ui-kit/ui-button';
-import { UiIcon } from '@4sh/ui-kit/ui-icon';
-```
-
 <div className="sb-callout">
 
 **Pas de risque d'oubli d'installation.** `@4sh/ui-kit` est un **package unique**
@@ -40,58 +21,6 @@ besoin (son socle de formulaire, ses icônes…) sans que vous ayez quoi que ce
 soit à déclarer.
 
 </div>
-
-### Entry points
-
-**54 composants**, un entry point chacun — nommé comme le composant :
-`@4sh/ui-kit/ui-button`, `@4sh/ui-kit/ui-select`, `@4sh/ui-kit/ui-datepicker`…
-
-| Famille | Entry points |
-|---|---|
-| Actions | `ui-button` · `ui-button-split` · `ui-link` |
-| Formulaires | `ui-input` · `ui-textarea` · `ui-select` · `ui-autocomplete` · `ui-datepicker` · `ui-checkbox` · `ui-radio` · `ui-toggle` · `ui-slider` · `ui-nudger` · `ui-rating` · `ui-segment-control` · `ui-input-number` · `ui-input-mask` · `ui-input-otp` · `ui-input-tags` · `ui-input-group` · `ui-file-upload` · `ui-field` · `ui-label` |
-| Informatif | `ui-alert` · `ui-toast` · `ui-badge` · `ui-chip` · `ui-tag` · `ui-avatar` · `ui-avatar-group` · `ui-accordion` · `ui-tooltip` · `ui-spinner` · `ui-skeleton` · `ui-progress-bar` · `ui-empty-state` · `ui-read-only` · `ui-separator` · `ui-helper` |
-| Mise en page | `ui-card` · `ui-modal` · `ui-drawer` · `ui-popover` |
-| Navigation | `ui-menu` · `ui-context-menu` · `ui-tabs` · `ui-stepper` · `ui-sidebar` · `ui-breadcrumb` |
-| Tableau | `ui-table` · `ui-paginator` |
-| Divers | `ui-icon` · `ui-image` |
-
-Plus les entry points transverses :
-
-| Entry point | Contenu |
-|---|---|
-| `@4sh/ui-kit/forms` | Socle des champs de formulaire (voir plus bas) |
-| `@4sh/ui-kit/theming` | `ThemeService` (clair/sombre) · `BrandService` · `provideUiKitBrand()` |
-| `@4sh/ui-kit/motion` | Directive `UiMotion` + presets d'animation |
-| `@4sh/ui-kit/overlay` | Utilitaires des composants à overlay CDK |
-| `@4sh/ui-kit/types` | Types transverses : `UiLevel`, `UiSubLevel`, `UiFeedbackLevel` |
-
----
-
-## Configuration requise par deux composants
-
-Certaines données ne peuvent pas être connues du kit : elles sont **injectées**
-par l'application.
-
-```ts
-// app.config.ts
-import { brandFromSubdomain, provideUiKitBrand } from '@4sh/ui-kit/theming';
-import { provideUiImageAssets } from '@4sh/ui-kit/ui-image';
-import assetsMap from './assets/assets-map.json';
-
-providers: [
-  provideUiKitBrand(brandFromSubdomain(subdomain)),  // marque active
-  provideUiImageAssets(assetsMap),                   // assets locaux de ui-image
-]
-```
-
-Les deux sont optionnels : sans eux, la marque vaut `brand1`, et `ui-image`
-n'affiche que ses images distantes (`src`).
-
----
-
-Exemple — n'utiliser **que** le date picker, sans tirer le reste du kit dans
-votre bundle :
 
 ```ts
 import { UiDatepicker } from '@4sh/ui-kit/ui-datepicker';
@@ -104,67 +33,31 @@ import { UiDatepicker } from '@4sh/ui-kit/ui-datepicker';
 export class Booking { date = signal<Date | null>(null); }
 ```
 
----
-
-## Charger la feuille de styles du kit
-
-Les composants sont **headless** : aucune couleur, taille ni espacement codé en
-dur. Le package **livre** la feuille correspondante, à charger une fois :
-
-```jsonc
-// angular.json
-"styles": [
-  "node_modules/@4sh/ui-kit/styles.css",
-  "src/styles/main.scss"
-]
-```
-
-Elle contient les design tokens (3 marques × clair/sombre × responsive), la
-couche de base, les classes typographiques et les presets d'animation.
-**Sans elle, les composants s'affichent sans style.**
-
-Les `@font-face` n'y sont pas : les tokens *nomment* les familles
-(`--fontfamily-base`), chaque projet livre ses polices.
-
-Les sources SCSS sont aussi livrées (`@4sh/ui-kit/styles`) : `@use 'utils'`
-donne accès aux mêmes fonctions, mixins et constantes partagées pour écrire vos
-propres composants.
+Le nom de l'entry point est celui du composant : la page de doc de chaque
+composant, dans la barre latérale, donne l'import exact à recopier.
 
 ---
 
-## `@4sh/ui-kit/forms` — construire son propre champ
+## Le mode d'emploi complet vit dans le README du package
 
-Cet entry point contient l'infrastructure partagée par tous les champs du kit.
-**Inutile de l'importer pour utiliser un champ existant** — `UiInput`,
-`UiSelect`, `UiDatepicker` et les autres l'embarquent déjà. Il sert quand vous
-créez **votre propre champ** en réutilisant les conventions du Design System.
+Installation, liste des entry points, feuille de styles à charger, providers
+attendus par `ui-image` et `BrandService`, construction de votre propre champ
+sur `@4sh/ui-kit/forms` : tout est décrit **une seule fois**, dans le README
+livré avec le package — c'est aussi ce qu'affiche la page npmjs.
 
-| Export | Rôle |
+| | |
 |---|---|
-| `BaseControlValueAccessor<T>` | Implémente `ControlValueAccessor` et miroite l'état du `NgControl` dans des signals (`touched`, `dirty`, `controlInvalid`, `controlErrors`, `showError`). Rend le champ compatible d'un coup avec `[(ngModel)]`, les Reactive Forms **et** les Signal Forms. |
-| `BaseFieldControl<T>` | Contrôle « nu », sans habillage : inputs communs (`ariaLabel`, `inputId`, `name`, `required`, `disabled`, `readonly`, `invalid`, `tabindex`), `id` accessibles auto-générés, `modelValue`, états dérivés `isDisabled` / `isInvalid`. Socle de `ui-checkbox`, `ui-toggle`, `ui-slider`, `ui-radio`, `ui-nudger`. |
-| `BaseFormField<T>` | Étend le précédent avec le chrome « boîte » : `label`, `helperText`, `errorText`, `size`, `level`, plus `effectiveLevel` / `displayMessage` / `displayValue`. Socle de `ui-input`, `ui-select`, `ui-datepicker`, `ui-textarea`. |
-| `dropdownOverlayPositions()` | Ancrage CDK d'un panneau déroulant (sous le champ, retourné au-dessus si nécessaire). |
-| `maskEngine` | Moteur de masque de saisie partagé (`ui-input-mask`, `ui-datepicker`). |
+| Page du package | <a href="https://www.npmjs.com/package/@4sh/ui-kit" target="_blank" rel="noopener noreferrer">npmjs.com/package/@4sh/ui-kit</a> |
+| README (anglais) | <a href="https://github.com/4sh/starter-angular/blob/main/projects/ui-kit/README.md" target="_blank" rel="noopener noreferrer">projects/ui-kit/README.md</a> |
+| README (français) | <a href="https://github.com/4sh/starter-angular/blob/main/projects/ui-kit/README.fr.md" target="_blank" rel="noopener noreferrer">projects/ui-kit/README.fr.md</a> |
+| Dépôt | <a href="https://github.com/4sh/starter-angular" target="_blank" rel="noopener noreferrer">github.com/4sh/starter-angular</a> |
 
-```ts
-import { Component, forwardRef } from '@angular/core';
-import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { BaseFormField } from '@4sh/ui-kit/forms';
+<div className="sb-callout">
 
-@Component({
-  selector: 'app-my-field',
-  templateUrl: './my-field.html',
-  providers: [
-    { provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => MyField), multi: true },
-  ],
-})
-export class MyField extends BaseFormField<string> {
-  // `writeValue` est fourni par défaut (écrit dans `modelValue`).
-  // Appelez `emitChange(value)` à la saisie, `emitTouch()` au blur.
-}
-```
+**Pourquoi un simple renvoi ?** Ces informations étaient auparavant recopiées
+ici, dans le README anglais et dans le README français. Trois copies d'une même
+page d'installation divergent — c'est ainsi que le nombre d'entry points annoncé
+avait fini par être faux à deux endroits sur trois. La page publique du package
+fait foi ; cette page ne garde que ce qui lui est propre.
 
-Votre champ hérite alors gratuitement de la gestion d'état de formulaire, des
-`id`/`aria-describedby` accessibles, et du contrat visuel commun
-(`label`/`helperText`/`errorText`/`size`/`level`).
+</div>

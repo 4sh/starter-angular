@@ -1,7 +1,7 @@
 {
   "name": "@4sh/ui-kit",
-  "version": "0.1.0",
-  "description": "Composants Angular headless du Design System 4SH : signals + Angular CDK, stylés exclusivement par design tokens.",
+  "version": "0.1.1",
+  "description": "Headless Angular components from the 4SH Design System: signals + Angular CDK, styled exclusively through design tokens.",
   "homepage": "https://4sh.github.io/starter-angular/?path=/docs/introduction--docs",
   "repository": {
     "type": "git",
