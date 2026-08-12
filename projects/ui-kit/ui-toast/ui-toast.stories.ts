@@ -18,7 +18,7 @@ const DEMO_BOX =
   'position:relative; min-height:240px; padding:16px; border:1px dashed var(--global-border-default, #ccc); border-radius:12px; overflow:hidden;';
 
 @Component({
-  selector: 'toast-demo-basic',
+  selector: 'demo-toast-basic',
   imports: [UiButton, UiToastContainer],
   providers: [UiToastService],
   template: `
@@ -42,7 +42,7 @@ class ToastDemoBasic {
 }
 
 @Component({
-  selector: 'toast-demo-promise',
+  selector: 'demo-toast-promise',
   imports: [UiButton, UiToastContainer],
   providers: [UiToastService],
   template: `
@@ -81,7 +81,7 @@ class ToastDemoPromise {
 }
 
 @Component({
-  selector: 'toast-demo-sticky',
+  selector: 'demo-toast-sticky',
   imports: [UiButton, UiToastContainer],
   providers: [UiToastService],
   template: `
@@ -105,7 +105,7 @@ class ToastDemoSticky {
 }
 
 @Component({
-  selector: 'toast-demo-custom',
+  selector: 'demo-toast-custom',
   imports: [UiToastContainer],
   providers: [UiToastService],
   template: `
@@ -133,7 +133,7 @@ class ToastDemoCustom {
 }
 
 @Component({
-  selector: 'toast-demo-position',
+  selector: 'demo-toast-position',
   imports: [UiButton, UiToastContainer],
   providers: [UiToastService],
   template: `
@@ -157,7 +157,7 @@ class ToastDemoPosition {
 }
 
 @Component({
-  selector: 'toast-demo-expanded',
+  selector: 'demo-toast-expanded',
   imports: [UiButton, UiToastContainer],
   providers: [UiToastService],
   template: `
@@ -180,7 +180,7 @@ class ToastDemoExpanded {
 }
 
 @Component({
-  selector: 'toast-demo-action',
+  selector: 'demo-toast-action',
   imports: [UiButton, UiToastContainer],
   providers: [UiToastService],
   template: `
@@ -216,7 +216,7 @@ class ToastDemoAction {
 }
 
 @Component({
-  selector: 'toast-demo-stacking',
+  selector: 'demo-toast-stacking',
   imports: [UiButton, UiToastContainer],
   providers: [UiToastService],
   template: `
@@ -372,7 +372,7 @@ export const Default: Story = {
 
 /** Usage nominal : un bouton pousse un toast via le service. */
 export const Basic: Story = {
-  render: () => ({ template: `<toast-demo-basic />` }),
+  render: () => ({ template: `<demo-toast-basic />` }),
   parameters: { layout: 'padded' },
 };
 
@@ -406,19 +406,19 @@ export const SubLevelLow: Story = {
 
 /** Toast « en attente » puis résolu : idéal pour une opération asynchrone (Promise). */
 export const Promise: Story = {
-  render: () => ({ template: `<toast-demo-promise />` }),
+  render: () => ({ template: `<demo-toast-promise />` }),
   parameters: { layout: 'padded' },
 };
 
 /** Toast persistant (`sticky`) : jamais auto-fermé, fermeture manuelle uniquement. */
 export const Sticky: Story = {
-  render: () => ({ template: `<toast-demo-sticky />` }),
+  render: () => ({ template: `<demo-toast-sticky />` }),
   parameters: { layout: 'padded' },
 };
 
 /** Contenu personnalisé via `template` (contexte `{ $implicit: message, closeFn }`). */
 export const Custom: Story = {
-  render: () => ({ template: `<toast-demo-custom />` }),
+  render: () => ({ template: `<demo-toast-custom />` }),
   parameters: { layout: 'padded' },
 };
 
@@ -435,7 +435,7 @@ export const Position: StoryObj = {
   },
   render: (args) => ({
     props: { position: args['position'] },
-    template: `<toast-demo-position [position]="position" />`,
+    template: `<demo-toast-position [position]="position" />`,
   }),
   parameters: {
     layout: 'padded',
@@ -445,18 +445,18 @@ export const Position: StoryObj = {
 
 /** Mode bannière (`expanded`) : les toasts occupent toute la largeur de la pile. */
 export const ExpandedMode: Story = {
-  render: () => ({ template: `<toast-demo-expanded />` }),
+  render: () => ({ template: `<demo-toast-expanded />` }),
   parameters: { layout: 'padded' },
 };
 
 /** Toast avec actions (annuler / fermer) via un `template` et des `ui-button`. */
 export const Action: Story = {
-  render: () => ({ template: `<toast-demo-action />` }),
+  render: () => ({ template: `<demo-toast-action />` }),
   parameters: { layout: 'padded' },
 };
 
 /** Empilement : `stackVisibleLimit` (3 max), `stackGap` resserré, `preventDuplicates`. */
 export const Stacking: Story = {
-  render: () => ({ template: `<toast-demo-stacking />` }),
+  render: () => ({ template: `<demo-toast-stacking />` }),
   parameters: { layout: 'padded' },
 };

@@ -1,0 +1,84 @@
+name: PR checks
+
+# Runs on every pull request. Until this existed, nothing verified that a PR
+# compiled, linted or type-checked before landing on `main` — and `main` is the
+# branch `@4sh/ui-kit` is published from, so a regression reaching it can reach
+# consumers.
+#
+# ⚠️ A green workflow blocks nothing on its own. Turn these checks into merge
+# requirements: *Settings → Branches → main → Require status checks to pass*.
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# A new push to the same branch supersedes the previous run.
+concurrency:
+  group: pr-checks-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Lint, types & docs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Read Node.js version from .nvmrc
+        id: nvmrc
+        run: echo "NODE_VERSION=$(cat .nvmrc)" >> $GITHUB_OUTPUT
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ steps.nvmrc.outputs.NODE_VERSION }}
+          cache: "npm"
+
+      # `postinstall` chains tokens:build → ui-kit:build → docs:config, so this
+      # step already proves the 53 entry points compile. A failing package build
+      # fails the install, before any check below runs.
+      - name: Install dependencies (builds tokens + package)
+        run: npm ci
+
+      # `npm run lint` carries --fix: it repairs instead of reporting, so in CI
+      # it would never fail. lint:check is the same target without it.
+      - name: Lint
+        run: npm run lint:check
+
+      - name: Typecheck the demo app
+        run: npx tsc -p tsconfig.app.json --noEmit
+
+      # Not `docs:config:check`: postinstall just regenerated the doc manifest,
+      # so that half is a no-op here. components:check is the meaningful one —
+      # it compares the hand-written component lists against the entry points
+      # actually on disk.
+      - name: Check the component lists
+        run: npm run components:check
+
+  storybook:
+    name: Build Storybook
+    runs-on: ubuntu-latest
+    # Separate job so it runs alongside the fast checks instead of delaying
+    # them: it is the slowest step by far, and it is the public deliverable.
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Read Node.js version from .nvmrc
+        id: nvmrc
+        run: echo "NODE_VERSION=$(cat .nvmrc)" >> $GITHUB_OUTPUT
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ steps.nvmrc.outputs.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Storybook
+        run: npm run build-storybook

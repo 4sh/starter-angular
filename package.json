@@ -8,6 +8,7 @@
     "serve": "npm run ui-kit:build && ng serve",
     "build": "npm run ui-kit:build && ng build",
     "lint": "ng lint --fix",
+    "lint:check": "ng lint",
     "storybook": "npm run ui-kit:build && npm run docs:config && ng run demo:storybook",
     "build-storybook": "npm run ui-kit:build && npm run docs:config && ng run demo:build-storybook",
     "generate:assets": "node src/scripts/build-assets.js",

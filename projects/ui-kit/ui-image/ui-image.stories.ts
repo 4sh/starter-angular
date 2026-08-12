@@ -43,7 +43,7 @@ class MockBrandService {
 
 // --- 3. WRAPPER COMPONENT (Sans encart de debug) ---
 @Component({
-    selector: 'storybook-ui-image-wrapper',
+    selector: 'demo-image-wrapper',
     standalone: true,
     imports: [UiImage, CommonModule],
     template: `
