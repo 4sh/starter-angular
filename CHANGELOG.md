@@ -10,6 +10,19 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-08-12
+
+Version d'outillage et de CI : **aucun changement de code des composants**, le
+contenu publié du package est identique à la `0.1.1`. Rien de ce qui suit ne part
+dans le tarball — workflows, scripts, documentation et stories restent hors du
+package.
+
+Elle est publiée délibérément malgré cela : c'est la première version à emprunter
+la chaîne `tag + release GitHub` introduite ici même, et le dépôt ne portait
+jusqu'à présent **aucun tag** (`0.1.0` et `0.1.1` sont sur npm sans trace côté
+GitHub). Éprouver ce dispositif sur une version sans enjeu fonctionnel vaut mieux
+que de le découvrir lors d'une vraie livraison de composants.
+
 ### Added
 - **CI de vérification sur les pull requests** ([`pr-checks.yml`](.github/workflows/pr-checks.yml)). Jusqu'ici **aucun workflow ne se déclenchait sur une PR** : `deploy-storybook` part sur un push `main`, `publish-ui-kit` est manuel. Rien ne vérifiait qu'une PR compile, lint ou type-check avant d'atterrir sur `main` — la branche depuis laquelle le package est publié. Deux jobs parallèles : `checks` (lint, typecheck de l'app de démo, `components:check`) et `storybook` (build du livrable public, isolé parce qu'il est de loin le plus lent). `npm ci` suffit à prouver que les 53 entry points compilent, son `postinstall` enchaînant `tokens:build` → `ui-kit:build` → `docs:config`. Nouveau script **`lint:check`** : `npm run lint` porte `--fix`, donc *répare* au lieu de signaler — en CI il n'aurait jamais rien détecté. ⚠️ Un workflow vert ne bloque rien par lui-même : il reste à exiger ces statuts dans les règles de protection de `main`.
 - **Release GitHub créée automatiquement à la publication npm.** Le dépôt ne portait **aucun tag** : `0.1.0` et `0.1.1` sont sur npm sans trace côté GitHub, l'étape `npm version` + `git push --follow-tags` de [`VERSIONING.md`](docs/VERSIONING.md) ayant sauté aux deux publications — et rien ne la rattrapait. Nouveau job `release` dans [`publish-ui-kit.yml`](.github/workflows/publish-ui-kit.yml), déclenché **après** un `npm publish` réussi : il pose le tag `vX.Y.Z` sur le commit publié et ouvre la release GitHub, dont le corps est la section `[X.Y.Z]` de ce fichier. L'accrochage à la publication est délibéré — la release ne peut pas mentir, elle n'existe que si le registre a accepté le tarball, et elle désigne le commit exact qui l'a produit, là où un tag posé à la main ne garantit ni l'un ni l'autre. La version est lue dans le `package.json` **du tarball** (`dist/ui-kit/`) et non dans `projects/ui-kit/` : le tag ne peut ainsi nommer que ce qui a réellement été accepté par le registre. Job **séparé de `publish`** parce qu'il réclame `contents: write`, droit qui n'a rien à faire dans celui qui porte déjà l'autorisation de publier sur npm. Idempotent : relancé seul après un échec passager, il constate la release existante au lieu d'échouer. Un tag poussé manuellement reste réutilisé tel quel, la voie `npm version` n'est pas cassée — seulement rendue inutile.
