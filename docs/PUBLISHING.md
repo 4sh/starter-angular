@@ -87,17 +87,23 @@ qui embarque npm 11.12.1 — rien à installer. Le workflow le vérifie explicit
 avant de publier, pour qu'une descente de version du `.nvmrc` échoue avec un
 message clair plutôt qu'avec un `401` obscur.
 
-### Repli : le token (déprécié)
+### Si l'OIDC échoue un jour
 
-Si l'OIDC échouait, la voie token reste techniquement disponible : compte de
-service **`4sh-package-admin`** (identifiants dans **Vaultier**), *Granular
-Access Token* restreint au seul `@4sh/ui-kit`, *bypass 2FA* coché, posé en secret
-`NPM_TOKEN` **sur l'environment** `npm-publish`, et `NODE_AUTH_TOKEN:
-${{ secrets.NPM_TOKEN }}` remis sur l'étape *Publish*.
+**Ne pas remettre de token dans la CI.** C'est la tentation évidente en situation
+de panne, et c'est exactement ce que cette bascule a supprimé : un secret
+persistant, publiant *en tant que* son porteur, utilisable par toute personne
+pouvant modifier un workflow. npm restreint d'ailleurs progressivement les tokens
+qui contournent la 2FA — la voie se ferme.
 
-C'est un repli, pas une configuration entretenue : un token est persistant,
-publie **en tant que** son porteur, et reste utilisable par toute personne
-pouvant modifier un workflow. À révoquer dès que la voie OIDC fonctionne.
+Deux réponses saines :
+
+1. **Attendre.** Publier un design system n'est jamais urgent à l'heure près.
+2. **Publier interactivement depuis un poste** (voir « Publier depuis un poste »
+   plus bas) : `npm login`, code 2FA saisi à la main, `npm publish`. La session
+   meurt avec le terminal, aucun secret n'est stocké ni partagé.
+
+Le token du compte de service a été révoqué et le secret `NPM_TOKEN` supprimé de
+GitHub après la publication de la `0.1.1` — le premier passage réussi par OIDC.
 
 ### L'environment `npm-publish` (approbation humaine)
 
@@ -167,27 +173,33 @@ irréversible, et affiche les notes de release telles qu'elles seront rendues.
 
 Le workflow publie avec `--provenance` : npmjs affiche un lien vérifiable entre
 le tarball et le commit + workflow qui l'a produit. Trusted Publishing la rend
-implicite, mais le drapeau reste explicite pour qu'une publication de repli par
-token soit attestée elle aussi. L'attestation de la `0.1.0` est déjà consultable
-via `npm view @4sh/ui-kit dist --json`.
+implicite, mais le drapeau reste explicite — il ne coûte rien et documente
+l'intention. Les attestations SLSA de la `0.1.0` et de la `0.1.1` sont
+consultables via `npm view @4sh/ui-kit dist --json`.
 
 ---
 
 ## Publier depuis un poste (secours)
 
-À éviter — cette voie **sort du périmètre de Trusted Publishing** : elle exige un
-token, donc réintroduit exactement ce que la bascule supprime. Si nécessaire :
+La voie normale reste la CI : elle publie depuis un environnement reproductible,
+sous approbation, avec provenance. Mais si l'OIDC était indisponible, c'est
+**ici** qu'il faut se replier — pas dans un token de CI.
 
 ```bash
+npm login                      # compte 4sh-package-admin, code 2FA à la saisie
 npm run ui-kit:build
 cd dist/ui-kit
 npm publish --dry-run          # toujours, d'abord
-npm publish
+npm publish --provenance=false # pas de provenance hors CI : rien à attester
 ```
 
-L'authentification se fait par `npm login` (compte `4sh-package-admin`) ou via un
-`.npmrc` local **non commité**. Ne jamais écrire un token dans un fichier suivi
-par git.
+`npm login` ouvre une **session interactive**, pas un secret partagé : elle est
+liée au poste, expire, et se ferme avec `npm logout`. C'est ce qui distingue ce
+repli d'un token de CI. Ne jamais écrire de token dans un fichier suivi par git,
+et vérifier que le `.npmrc` du poste ne l'est pas.
+
+Contrepartie assumée : le tarball ne porte alors aucune attestation de
+provenance, puisqu'il n'est produit par aucun workflow vérifiable.
 
 ---
 
