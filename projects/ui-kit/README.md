@@ -1,9 +1,11 @@
 # @4sh/ui-kit
 
-Composants Angular *headless* du Design System 4SH : logique et accessibilité en
-natif (signals + Angular CDK), style piloté par les design tokens.
+***English** · [Français](./README.fr.md)*
 
-**Documentation complète (Storybook)** :
+*Headless* Angular components from the 4SH Design System: logic and accessibility
+built in natively (signals + Angular CDK), styling driven by design tokens.
+
+**Full documentation (Storybook)**:
 <https://4sh.github.io/starter-angular/?path=/docs/introduction--docs>
 
 ---
@@ -14,63 +16,63 @@ natif (signals + Angular CDK), style piloté par les design tokens.
 npm install @4sh/ui-kit
 ```
 
-Publié sur le **registre npm public**, organisation **`4sh`** :
+Published on the **public npm registry**, under the **`4sh`** organization:
 [npmjs.com/package/@4sh/ui-kit](https://www.npmjs.com/package/@4sh/ui-kit)
 
-Les dépendances sont déclarées en `peerDependencies` — c'est la version déjà
-présente dans votre application qui est utilisée (jamais un second exemplaire
-d'Angular) : `@angular/core`, `@angular/common`, `@angular/forms`,
-`@angular/router`, `@angular/cdk`, `@angular/platform-browser` et `rxjs`.
+Dependencies are declared as `peerDependencies` — the version already present in
+your application is the one used (never a second copy of Angular):
+`@angular/core`, `@angular/common`, `@angular/forms`, `@angular/router`,
+`@angular/cdk`, `@angular/platform-browser` and `rxjs`.
 
 ---
 
-## Import à la carte (secondary entry points)
+## À la carte imports (secondary entry points)
 
-Chaque composant est exposé par son propre *entry point*. Vous importez ce dont
-vous avez besoin, et le tree-shaking élimine le reste de votre bundle final :
+Every component is exposed through its own *entry point*. You import what you
+need, and tree-shaking drops the rest from your final bundle:
 
 ```ts
 import { UiButton } from '@4sh/ui-kit/ui-button';
 import { UiIcon } from '@4sh/ui-kit/ui-icon';
 ```
 
-> `@4sh/ui-kit` est **un seul package npm**. Les entry points ne s'installent
-> pas séparément : ils sont tous présents dès l'installation, et les
-> dépendances entre eux se résolvent automatiquement (importer `UiDatepicker`
-> tire ce qu'il lui faut, vous n'avez rien à déclarer).
+> `@4sh/ui-kit` is **a single npm package**. Entry points are not installed
+> separately: they are all there from the moment you install, and dependencies
+> between them resolve automatically (importing `UiDatepicker` pulls in whatever
+> it needs, you have nothing to declare).
 
-### Entry points disponibles
+### Available entry points
 
-**54 composants**, un entry point chacun — le nom de l'entry point est celui du
-composant : `@4sh/ui-kit/ui-button`, `@4sh/ui-kit/ui-select`,
+**54 components**, one entry point each — the entry point is named after the
+component: `@4sh/ui-kit/ui-button`, `@4sh/ui-kit/ui-select`,
 `@4sh/ui-kit/ui-datepicker`…
 
-| Famille | Entry points |
+| Family | Entry points |
 |---|---|
 | Actions | `ui-button` · `ui-button-split` · `ui-link` |
-| Formulaires | `ui-input` · `ui-textarea` · `ui-select` · `ui-autocomplete` · `ui-datepicker` · `ui-checkbox` · `ui-radio` · `ui-toggle` · `ui-slider` · `ui-nudger` · `ui-rating` · `ui-segment-control` · `ui-input-number` · `ui-input-mask` · `ui-input-otp` · `ui-input-tags` · `ui-input-group` · `ui-file-upload` · `ui-field` · `ui-label` |
-| Informatif | `ui-alert` · `ui-toast` · `ui-badge` · `ui-chip` · `ui-tag` · `ui-avatar` · `ui-avatar-group` · `ui-accordion` · `ui-tooltip` · `ui-spinner` · `ui-skeleton` · `ui-progress-bar` · `ui-empty-state` · `ui-read-only` · `ui-separator` · `ui-helper` |
-| Mise en page | `ui-card` · `ui-modal` · `ui-drawer` · `ui-popover` |
+| Forms | `ui-input` · `ui-textarea` · `ui-select` · `ui-autocomplete` · `ui-datepicker` · `ui-checkbox` · `ui-radio` · `ui-toggle` · `ui-slider` · `ui-nudger` · `ui-rating` · `ui-segment-control` · `ui-input-number` · `ui-input-mask` · `ui-input-otp` · `ui-input-tags` · `ui-input-group` · `ui-file-upload` · `ui-field` · `ui-label` |
+| Informative | `ui-alert` · `ui-toast` · `ui-badge` · `ui-chip` · `ui-tag` · `ui-avatar` · `ui-avatar-group` · `ui-accordion` · `ui-tooltip` · `ui-spinner` · `ui-skeleton` · `ui-progress-bar` · `ui-empty-state` · `ui-read-only` · `ui-separator` · `ui-helper` |
+| Layout | `ui-card` · `ui-modal` · `ui-drawer` · `ui-popover` |
 | Navigation | `ui-menu` · `ui-context-menu` · `ui-tabs` · `ui-stepper` · `ui-sidebar` · `ui-breadcrumb` |
-| Tableau | `ui-table` · `ui-paginator` |
-| Divers | `ui-icon` · `ui-image` |
+| Table | `ui-table` · `ui-paginator` |
+| Misc | `ui-icon` · `ui-image` |
 
-Plus les entry points transverses :
+Plus the cross-cutting entry points:
 
-| Entry point | Contenu |
+| Entry point | Contents |
 |---|---|
-| `@4sh/ui-kit/forms` | Socle des champs de formulaire — voir ci-dessous |
-| `@4sh/ui-kit/theming` | `ThemeService` (clair/sombre, `[data-theme]`) · `BrandService` (`[data-brand]`) · `provideUiKitBrand()` |
-| `@4sh/ui-kit/motion` | Directive `UiMotion` + presets d'animation |
-| `@4sh/ui-kit/overlay` | Utilitaires des composants à overlay CDK (`closeOnNavigation`) |
-| `@4sh/ui-kit/types` | Types transverses (`UiLevel`, `UiSubLevel`, `UiFeedbackLevel`) |
+| `@4sh/ui-kit/forms` | Form field foundation — see below |
+| `@4sh/ui-kit/theming` | `ThemeService` (light/dark, `[data-theme]`) · `BrandService` (`[data-brand]`) · `provideUiKitBrand()` |
+| `@4sh/ui-kit/motion` | `UiMotion` directive + animation presets |
+| `@4sh/ui-kit/overlay` | Helpers for CDK overlay components (`closeOnNavigation`) |
+| `@4sh/ui-kit/types` | Cross-cutting types (`UiLevel`, `UiSubLevel`, `UiFeedbackLevel`) |
 
 ---
 
-## Configuration requise par certains composants
+## Configuration required by some components
 
-Deux composants ont besoin d'une donnée que le kit ne peut pas connaître — elle
-est donc **injectée** par l'application plutôt que codée en dur :
+Two components need a piece of data the kit cannot know about — it is therefore
+**injected** by the application rather than hardcoded:
 
 ```ts
 // app.config.ts
@@ -79,19 +81,21 @@ import { provideUiImageAssets } from '@4sh/ui-kit/ui-image';
 import assetsMap from './assets/assets-map.json';
 
 providers: [
-  // marque active — la détection (sous-domaine, réglage utilisateur…) reste à vous
+  // active brand — how you detect it (subdomain, user setting…) is up to you
   provideUiKitBrand(brandFromSubdomain(subdomain)),
-  // carte des assets locaux de VOTRE projet, consommée par `ui-image` (input `name`)
+  // map of YOUR project's local assets, consumed by `ui-image` (`name` input)
   provideUiImageAssets(assetsMap),
 ]
 ```
 
-Les deux sont **optionnels** : sans eux, la marque vaut `brand1` et `ui-image`
-n'affiche que ses images distantes (`src`), `name` retombant sur le placeholder.
+Both are **optional**: without them the brand defaults to `brand1`, and
+`ui-image` only renders its remote images (`src`), `name` falling back to the
+placeholder.
 
 ---
 
-Exemple — n'utiliser que le date picker, sans tirer le reste du kit dans votre bundle :
+Example — using only the date picker, without pulling the rest of the kit into
+your bundle:
 
 ```ts
 import { UiDatepicker } from '@4sh/ui-kit/ui-datepicker';
@@ -106,36 +110,35 @@ export class Booking { date = signal<Date | null>(null); }
 
 ---
 
-## Styles : charger la feuille du kit
+## Styles: loading the kit's stylesheet
 
-Les composants sont **headless** : aucune couleur, taille ni espacement n'est
-codé en dur — tout est lu depuis des variables CSS. Le package **livre** cette
-feuille, à charger **une fois**, globalement :
+The components are **headless**: no color, size or spacing is hardcoded —
+everything is read from CSS variables. The package **ships** that stylesheet,
+to be loaded **once**, globally:
 
 ```jsonc
 // angular.json
 "styles": [
-  "node_modules/@4sh/ui-kit/styles.css",   // ← tokens + base + typo + motion
+  "node_modules/@4sh/ui-kit/styles.css",   // ← tokens + base + typography + motion
   "src/styles/main.scss"
 ]
 ```
 
-`styles.css` contient les design tokens (les 3 marques, clair/sombre,
-responsive), la couche de base, les classes typographiques et les presets
-d'animation de la directive `UiMotion`. **Sans elle, les composants s'affichent
-sans style.**
+`styles.css` contains the design tokens (all 3 brands, light/dark, responsive),
+the base layer, the typography classes and the animation presets of the
+`UiMotion` directive. **Without it, components render unstyled.**
 
-Les `@font-face` ne sont **pas** inclus : les tokens se contentent de *nommer*
-les familles (`--fontfamily-base`). Livrez vos propres polices et surchargez
-`--fontfamily-*` si besoin.
+`@font-face` rules are **not** included: the tokens merely *name* the families
+(`--fontfamily-base`). Ship your own fonts and override `--fontfamily-*` if
+needed.
 
-### Écrire ses propres styles avec le socle du kit
+### Writing your own styles on the kit's foundation
 
-Les sources SCSS sont livrées avec le package : vos composants peuvent utiliser
-les mêmes fonctions, mixins et constantes partagées.
+The SCSS sources ship with the package: your own components can use the same
+shared functions, mixins and constants.
 
 ```scss
-// avec `node_modules/@4sh/ui-kit/styles` dans vos includePaths
+// with `node_modules/@4sh/ui-kit/styles` in your includePaths
 @use 'utils';
 
 .my-field {
@@ -145,30 +148,30 @@ les mêmes fonctions, mixins et constantes partagées.
 }
 ```
 
-> `utils` n'expose **que** de l'API (fonctions, mixins, constantes) et n'émet
-> aucune règle CSS : chaque `.scss` de composant étant une unité de compilation
-> Sass distincte, tout CSS qui y serait exposé serait dupliqué dans chaque
-> composant. Les classes utilitaires globales sont dans `styles.css`.
+> `utils` exposes **API only** (functions, mixins, constants) and emits no CSS
+> rule: since each component `.scss` is a separate Sass compilation unit, any
+> CSS exposed there would be duplicated into every component. The global utility
+> classes live in `styles.css`.
 
 ---
 
-## `@4sh/ui-kit/forms` — socle des champs
+## `@4sh/ui-kit/forms` — form field foundation
 
-Cet entry point regroupe l'infrastructure partagée par tous les champs du kit.
-**Vous n'avez pas à l'importer pour utiliser un champ existant** (`UiInput`,
-`UiSelect`, `UiDatepicker`… le tirent déjà). Il devient utile quand vous
-construisez **votre propre champ** en réutilisant les conventions du kit.
+This entry point gathers the infrastructure shared by every field in the kit.
+**You do not need to import it to use an existing field** (`UiInput`,
+`UiSelect`, `UiDatepicker`… already pull it in). It becomes useful when you
+build **your own field** while reusing the kit's conventions.
 
-| Export | Rôle |
+| Export | Role |
 |---|---|
-| `BaseControlValueAccessor<T>` | Implémente `ControlValueAccessor` et miroite l'état du `NgControl` attaché dans des signals (`touched`, `dirty`, `controlInvalid`, `controlErrors`, `showError`). C'est ce qui rend un champ compatible d'un coup avec `[(ngModel)]`, les Reactive Forms **et** les Signal Forms. |
-| `BaseFieldControl<T>` | Contrôle « nu », sans habillage : inputs communs (`ariaLabel`, `inputId`, `name`, `required`, `disabled`, `readonly`, `invalid`, `tabindex`), génération d'`id` accessibles, `modelValue`, états dérivés `isDisabled`/`isInvalid`. Base de `ui-checkbox`, `ui-toggle`, `ui-slider`, `ui-radio`, `ui-nudger`. |
-| `BaseFormField<T>` | Étend le précédent avec le chrome « boîte » : `label`, `helperText`, `errorText`, `size`, `level`, plus `effectiveLevel` / `displayMessage` / `displayValue`. Base de `ui-input`, `ui-select`, `ui-datepicker`, `ui-textarea`… |
-| `dropdownOverlayPositions()` | Ancrage CDK standard d'un panneau déroulant (sous le champ, retourné au-dessus si besoin). |
-| `maskEngine` | Moteur de masque de saisie partagé (`ui-input-mask`, `ui-datepicker`). |
-| `option-resolver`, `format-label`, `warn-missing-accessible-name` | Utilitaires de résolution d'options, de formatage de libellé et garde-fou d'accessibilité. |
+| `BaseControlValueAccessor<T>` | Implements `ControlValueAccessor` and mirrors the state of the attached `NgControl` into signals (`touched`, `dirty`, `controlInvalid`, `controlErrors`, `showError`). This is what makes a field compatible in one go with `[(ngModel)]`, Reactive Forms **and** Signal Forms. |
+| `BaseFieldControl<T>` | A "bare" control, with no chrome: common inputs (`ariaLabel`, `inputId`, `name`, `required`, `disabled`, `readonly`, `invalid`, `tabindex`), accessible `id` generation, `modelValue`, derived `isDisabled`/`isInvalid` states. Base of `ui-checkbox`, `ui-toggle`, `ui-slider`, `ui-radio`, `ui-nudger`. |
+| `BaseFormField<T>` | Extends the previous one with the "box" chrome: `label`, `helperText`, `errorText`, `size`, `level`, plus `effectiveLevel` / `displayMessage` / `displayValue`. Base of `ui-input`, `ui-select`, `ui-datepicker`, `ui-textarea`… |
+| `dropdownOverlayPositions()` | Standard CDK anchoring for a dropdown panel (below the field, flipped above when needed). |
+| `maskEngine` | Shared input mask engine (`ui-input-mask`, `ui-datepicker`). |
+| `option-resolver`, `format-label`, `warn-missing-accessible-name` | Option resolution, label formatting and accessibility guardrail helpers. |
 
-### Créer son propre champ
+### Building your own field
 
 ```ts
 import { Component, forwardRef } from '@angular/core';
@@ -183,33 +186,32 @@ import { BaseFormField } from '@4sh/ui-kit/forms';
   ],
 })
 export class MyField extends BaseFormField<string> {
-  // `writeValue` est fourni par défaut (écrit dans `modelValue`).
-  // Appelez `emitChange(value)` à la saisie et `emitTouch()` au blur.
+  // `writeValue` is provided by default (writes into `modelValue`).
+  // Call `emitChange(value)` on input and `emitTouch()` on blur.
 }
 ```
 
 ---
 
-## Contribuer (développement dans ce repo)
+## Contributing (development inside this repo)
 
 ```bash
-npm run ui-kit:build   # construit le package dans dist/ui-kit
-npm run ui-kit:pack    # + produit un tarball installable ailleurs
-npm run storybook      # catalogue des composants (port 6006)
+npm run ui-kit:build   # builds the package into dist/ui-kit
+npm run ui-kit:pack    # + produces a tarball installable elsewhere
+npm run storybook      # component catalogue (port 6006)
 ```
 
-Publication : voir [`docs/PUBLISHING.md`](../../docs/PUBLISHING.md) (workflow
-GitHub Actions manuel, compte de service `4sh-package-admin`).
+Publishing: see [`docs/PUBLISHING.md`](../../docs/PUBLISHING.md) (manual GitHub
+Actions workflow, `4sh-package-admin` service account).
 
-⚠️ **Règle impérative pour les imports internes au package** : toujours utiliser
-le nom réel du package (`@4sh/ui-kit/ui-icon`), jamais un chemin relatif vers un
-autre entry point ni un raccourci. `ng-packagr` ne détecte une dépendance entre
-entry points que si l'import commence littéralement par le nom du package ; à
-défaut, l'ordre de compilation devient indéterminé et le build échoue par
-intermittence.
+⚠️ **Hard rule for imports internal to the package**: always use the real
+package name (`@4sh/ui-kit/ui-icon`), never a relative path to another entry
+point nor a shortcut. `ng-packagr` only detects a dependency between entry
+points if the import literally starts with the package name; otherwise the
+compilation order becomes undefined and the build fails intermittently.
 
 ---
 
-## Licence
+## License
 
 [Apache-2.0](./LICENSE) — Copyright 2026 4SH.

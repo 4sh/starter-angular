@@ -10,6 +10,9 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+### Changed
+- **`@4sh/ui-kit` : README du package en anglais, version française conservée.** npmjs comme GitHub n'affichent que le `README.md` du tarball, sans négociation de langue : la seule mise en œuvre bilingue qui fonctionne des deux côtés est un fichier par langue relié par un sélecteur en tête de page. Le README d'origine devient [`projects/ui-kit/README.fr.md`](projects/ui-kit/README.fr.md) (contenu inchangé, `git mv` pour préserver l'historique) et `README.md` en porte la traduction anglaise — c'est donc l'anglais qui s'affiche désormais sur la page npm. `README.fr.md` est déclaré dans les `assets` de [`ng-package.json`](projects/ui-kit/ng-package.json) : `ng-packagr` ne copie automatiquement que `README.md` et `LICENSE`, le lien « Français » aurait sinon pointé vers un fichier absent du tarball. La `description` npm du package, elle aussi en français (affichée sous le titre sur npmjs et dans les résultats de recherche), passe en anglais.
+
 ## [0.1.0] - 2026-08-11
 
 Première version publiée du package **`@4sh/ui-kit`** (voir la section
