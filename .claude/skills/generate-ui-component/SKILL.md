@@ -88,7 +88,7 @@ Rules:
 - `classes = computed()`: `['ui-{name}']` + `_{modifier}` (`_` prefix), derived state via computed. Size `default` = no class (base); only emit non-default ones.
 - Figma boolean props `text`/`icon`/… → **presence** of an input (`hasIcon = computed(() => !!this.icon())`), not a dedicated boolean — see `ui-button`.
 - Internal comments: `/** @ignore */` on protected members.
-- **Code comments always in English** (JSDoc, inline comments in `.ts`/`.html`/`.scss`). User-facing documentation (stories/MDX) stays in French.
+- **Code comments always in English** (JSDoc, inline comments in `.ts`/`.html`/`.scss`). User-facing documentation (stories/MDX, `///` roles) is **also in English** — it is the source language (FSHSP-87); French is a translation added via the FSHSP-88 mechanism, never written in place of the English.
 - Icons: `ui-icon` component (`[name]`, `[size]`), decorative by default.
 
 ## SCSS conventions
@@ -178,11 +178,11 @@ If the component holds a value (checked, selection, input):
 **stories.ts**:
 - `title: 'Components/ui/{cat}/ui-{name}'`, `component`, `decorators: [moduleMetadata({ imports: [...] })]` (+ `FormsModule` if `ngModel`).
 - `parameters.design.url` Figma (UI Kit file `GZww5hdUA49LB8XWeWP6tl`) — point to the ComponentSet's `node-id` if known.
-- `argTypes` documented (control, description in French, `table.type`/`defaultValue`).
+- `argTypes` documented (control, description in English, `table.type`/`defaultValue`).
 - One story per distinct visual state from the YAML (levels, sizes, states…). Form controls: drive with `[(ngModel)]` via a `render` factory for real interactivity.
 - Form controls: add a **`SignalForms`** story (`form()` + `required()` + `[formField]` from `@angular/forms/signals`, demo in a co-located `@Component` class) modeled on `ui-slider.stories.ts`, in addition to the Template-driven/Reactive demos; the "Formulaires" section of the mdx shows all three APIs.
 
-**mdx** (co-located, imports its sibling story via relative `./ui-{name}.stories`): `import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks'`; sections `# ui-{name}` (French intro + tokens), `## API` (`<ArgTypes>`), `## États`, `## Accessibilité` (table `className="doc-table"`), `html` examples.
+**mdx** (co-located, imports its sibling story via relative `./ui-{name}.stories`): `import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks'`; sections `# ui-{name}` (English intro + tokens), `## API` (`<ArgTypes>`), `## States`, `## Accessibility` (table `className="doc-table"`), `html` examples. English headings: pages not yet translated still carry the French ones (`## États`, `## Accessibilité`) — don't align a new page on them.
 
 **`## Theming`** — as soon as the component has an SCSS config, **always the last section of the page**:
 

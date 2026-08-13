@@ -241,7 +241,7 @@ pitfall, extension point). No paraphrasing of what the next line does.
 - **Inline** — to flag a non-obvious choice, at end of line (`// …`); never to describe the obvious.
 - **Sections** — short separators `// --- <Title> ---` to break up a long file.
 - **Mixins/functions** (partials in `projects/ui-kit/styles/utils/`) — 1 to 2 `///` lines: role + call example. No walls of text.
-- **Language**: comments in **English**… **except** a component's config `///` comments (below), which are published in the docs and therefore in French.
+- **Language**: comments in **English** — including a component's config `///` comments (below). English is the documentation's **source language**; a French translation is carried by a separate `///fr` marker, never by replacing the `///` (see FSHSP-87 / FSHSP-88).
 - **Never reference Figma**: keep the intent ("enlarged for readability"), not the origin ("Figma 3px"). The `.scss` must read without the mockup.
 
 #### A `///` on a config variable = the published doc
@@ -255,8 +255,8 @@ The `///` goes **at the end of the declaration**, vertically aligned with its vi
 lines separate groups):
 
 ```scss
-$card-padding: var(--units-lg);       /// Inset du corps.
-$card-radius: var(--radius-md);       /// Rayon des coins.
+$card-padding: var(--units-lg);       /// Body inset.
+$card-radius: var(--radius-md);       /// Corner radius.
 ```
 
 - **Never a resolved value in a role** (`(12px)`): the doc measures it at runtime, in the active
@@ -268,6 +268,9 @@ $card-radius: var(--radius-md);       /// Rayon des coins.
   (declaration, or a fallback read `var(--ui-x, <default>)`) — never on an internal dark-mode
   override, otherwise the doc shows the wrong default value.
 - Every config variable must have its `///`: `npm run docs:config` counts the missing ones.
+- **Written in English** — it is published documentation, and English is the source
+  language. Existing roles are still in French: translate the ones you touch, and never
+  add a new French one.
 
 ### Shared structural constants — `ui-config`
 
@@ -325,6 +328,14 @@ $focus-ring-width: utils.$form-focus-ring-width; // ← replace the value here t
 
 ### Documentation (MDX)
 
+- **Language — English is the source** (FSHSP-87). Everything published to a consumer is
+  written in English: `.mdx` pages (component + global), `argTypes` descriptions in the
+  stories, the `///` roles in the `.scss`, and `projects/ui-kit/README.md` (the npmjs page).
+  A French version is a **translation**, added through the bilingual mechanism of FSHSP-88 —
+  never by writing the French in place of the English. Much of the existing content is still
+  in French: translate what you touch, never add new French.
+- Internal-only files stay as they are: `CHANGELOG.md` history and
+  `docs/figma-migration-global.md` are out of the translation scope.
 - **Tables**: always in HTML tags (`<table>`, `<tr>`, `<td>`) rather than native Markdown in `.mdx` files, to guarantee rendering and CSS control.
 - **"Theming" section**: never written by hand. `<ConfigTable of="ui-<name>" />`
   (`storybook/blocks/config-table.js`), fed by `npm run docs:config` from the `.scss`'s `///`
