@@ -222,6 +222,10 @@ export class UiTabPanel {
 export class UiTabList {
   /** Accessible name for the tab list (recommended). */
   ariaLabel = input<string>();
+  /** Accessible name of the "previous" scroll navigator. */
+  prevAriaLabel = input<string>('Défiler vers les onglets précédents');
+  /** Accessible name of the "next" scroll navigator. */
+  nextAriaLabel = input<string>('Défiler vers les onglets suivants');
 
   /** @ignore Parent container (state + group options). */
   protected readonly tabs = inject(UiTabs);

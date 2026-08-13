@@ -51,6 +51,16 @@ const meta: Meta<UiTabs> = {
       description: "Anime l'indicateur actif et l'apparition des panneaux (reduced-motion respecté).",
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
+    prevAriaLabel: {
+      control: { type: 'text' },
+      description: 'Nom accessible du navigateur « précédent » (`ui-tab-list`), à traduire côté application.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: "'Défiler vers les onglets précédents'" } },
+    },
+    nextAriaLabel: {
+      control: { type: 'text' },
+      description: 'Nom accessible du navigateur « suivant » (`ui-tab-list`), à traduire côté application.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: "'Défiler vers les onglets suivants'" } },
+    },
   },
   args: {
     orientation: 'horizontal',
@@ -59,6 +69,8 @@ const meta: Meta<UiTabs> = {
     selectOnFocus: false,
     showNavigators: true,
     motion: true,
+    prevAriaLabel: 'Défiler vers les onglets précédents',
+    nextAriaLabel: 'Défiler vers les onglets suivants',
   },
 };
 
@@ -160,7 +172,7 @@ export const Scrollable: Story = {
     },
     template: box(`
       <ui-tabs [(value)]="active" [scrollable]="scrollable" [showNavigators]="showNavigators" [motion]="motion">
-        <ui-tab-list ariaLabel="Nombreux onglets">
+        <ui-tab-list ariaLabel="Nombreux onglets" [prevAriaLabel]="prevAriaLabel" [nextAriaLabel]="nextAriaLabel">
           @for (n of items; track n) {
             <ui-tab [value]="n">Onglet {{ n }}</ui-tab>
           }
