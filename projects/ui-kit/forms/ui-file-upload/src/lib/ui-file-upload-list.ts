@@ -30,13 +30,13 @@ export class UiFileUploadList {
   /** Whether the remove button is shown. */
   removable = input(true, { transform: booleanAttribute });
   /** Accessible name of the remove button (raw text — the file name is appended in the template). */
-  removeAriaLabel = input<string>('Supprimer le fichier');
+  removeAriaLabel = input<string>('Remove file');
   /** Fallback error text when the file carries no message. */
-  failedLabel = input<string>('Échec');
+  failedLabel = input<string>('Failed');
   /** Accessible name of the upload spinner — `{0}` is the file name. */
-  uploadingLabel = input<string>('Téléversement de {0}');
+  uploadingLabel = input<string>('Uploading {0}');
   /** Accessible name of the progress bar — `{0}` is the file name. */
-  progressLabel = input<string>('Progression du téléversement de {0}');
+  progressLabel = input<string>('Upload progress for {0}');
 
   /** Emitted when the remove button is activated. */
   remove = output<UiUploadFile>();

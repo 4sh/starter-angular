@@ -157,7 +157,7 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   /** Show the trigger's calendar toggle button. */
   showIcon = input(true, { transform: booleanAttribute });
   /** Accessible name of the toggle button (a11y). */
-  iconAriaLabel = input<string>('Ouvrir le calendrier');
+  iconAriaLabel = input<string>('Open calendar');
   /** Show a clear (×) button in the trigger when a value is set. */
   showClear = input(false, { transform: booleanAttribute });
 
@@ -224,30 +224,30 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   /** Label of the default "Today" button. */
   todayLabel = input<string>("Aujourd'hui");
   /** Label of the default "Clear" button. */
-  clearLabel = input<string>('Effacer');
+  clearLabel = input<string>('Clear');
 
   /** Accessible name of the calendar panel (fallback when no `label`/`ariaLabel`). */
-  panelAriaLabel = input<string>('Calendrier');
+  panelAriaLabel = input<string>('Calendar');
   /** Accessible label of the previous-month/year navigation arrow. */
-  prevAriaLabel = input<string>('Précédent');
+  prevAriaLabel = input<string>('Previous');
   /** Accessible label of the next-month/year navigation arrow. */
-  nextAriaLabel = input<string>('Suivant');
+  nextAriaLabel = input<string>('Next');
   /** Accessible name of the hours spinbutton. */
-  hoursAriaLabel = input<string>('Heures');
+  hoursAriaLabel = input<string>('Hours');
   /** Accessible name of the minutes spinbutton. */
   minutesAriaLabel = input<string>('Minutes');
   /** Accessible name of the AM/PM spinbutton. */
   meridiemAriaLabel = input<string>('AM/PM');
   /** Accessible label of the hours increment button. */
-  incrementHoursAriaLabel = input<string>('Augmenter les heures');
+  incrementHoursAriaLabel = input<string>('Increase hours');
   /** Accessible label of the hours decrement button. */
-  decrementHoursAriaLabel = input<string>('Diminuer les heures');
+  decrementHoursAriaLabel = input<string>('Decrease hours');
   /** Accessible label of the minutes increment button. */
-  incrementMinutesAriaLabel = input<string>('Augmenter les minutes');
+  incrementMinutesAriaLabel = input<string>('Increase minutes');
   /** Accessible label of the minutes decrement button. */
-  decrementMinutesAriaLabel = input<string>('Diminuer les minutes');
+  decrementMinutesAriaLabel = input<string>('Decrease minutes');
   /** Accessible label of the AM/PM toggle buttons. */
-  toggleMeridiemAriaLabel = input<string>('Changer AM/PM');
+  toggleMeridiemAriaLabel = input<string>('Toggle AM/PM');
 
   /** Render the panel inline (no trigger, no overlay). */
   inline = input(false, { transform: booleanAttribute });

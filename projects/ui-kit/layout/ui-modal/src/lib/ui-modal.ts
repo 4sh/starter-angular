@@ -90,7 +90,7 @@ function unlockBodyScroll(doc: Document): void {
  * <ui-modal [(visible)]="open" header="Titre" [dialogStyle]="{ width: '32rem' }">
  *   <p>Contenu…</p>
  *   <ng-template #footer>
- *     <ui-button label="Fermer" level="low" (buttonClick)="open.set(false)" />
+ *     <ui-button label="Close" level="low" (buttonClick)="open.set(false)" />
  *   </ng-template>
  * </ui-modal>
  * ```
@@ -165,9 +165,9 @@ export class UiModal {
   /** FontAwesome name of the restore (minimize) icon. */
   minimizeIcon = input<string>('compress');
   /** Accessible name of the close button. */
-  closeAriaLabel = input<string>('Fermer');
+  closeAriaLabel = input<string>('Close');
   /** Accessible name of the maximize / restore button. */
-  maximizeAriaLabel = input<string>('Agrandir');
+  maximizeAriaLabel = input<string>('Maximize');
 
   /** Extra class(es) merged onto the dialog surface. */
   styleClass = input<string>();

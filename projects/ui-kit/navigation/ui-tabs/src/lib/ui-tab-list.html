@@ -2,7 +2,7 @@
   <button
     type="button"
     class="ui-tab-list-nav _prev"
-    aria-label="Défiler vers les onglets précédents"
+    aria-label="Scroll to previous tabs"
     tabindex="-1"
     [disabled]="!prevEnabled()"
     (click)="scrollBy(-1)"
@@ -36,7 +36,7 @@
   <button
     type="button"
     class="ui-tab-list-nav _next"
-    aria-label="Défiler vers les onglets suivants"
+    aria-label="Scroll to next tabs"
     tabindex="-1"
     [disabled]="!nextEnabled()"
     (click)="scrollBy(1)"

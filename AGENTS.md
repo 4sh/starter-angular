@@ -323,9 +323,9 @@ $focus-ring-width: utils.$form-focus-ring-width; // ← replace the value here t
 - Every `[attr.aria-label]`/`[attr.aria-labelledby]` binding guards against an empty
   string: `ariaLabel() || null` (never bind the signal raw), so an unset input omits
   the attribute instead of emitting `aria-label=""`.
-- **No i18n catalog in the kit.** `*AriaLabel`/`*Label` inputs only carry a French
+- **No i18n catalog in the kit.** `*AriaLabel`/`*Label` inputs only carry an **English**
   default; translating them (and handling singular/plural, e.g. `filesSummaryLabel`
-  rendering "1 fichiers") is the consuming app's responsibility via its own i18n
+  rendering "1 files") is the consuming app's responsibility via its own i18n
   tooling — the design system does not ship a translation layer.
 - Dev-mode "missing accessible name" warnings go through the shared
   `warnMissingAccessibleName` helper (`forms/warn-missing-accessible-name.ts`), not an
@@ -345,7 +345,8 @@ $focus-ring-width: utils.$form-focus-ring-width; // ← replace the value here t
   | `argTypes` descriptions (`*.stories.ts`) | custom ArgTypes block (Storybook's own reads one static string) | **yes** |
   | `///` roles in the `.scss` | `///` (EN) + `///fr`, extracted by `npm run docs:config` | **yes** |
   | Labels of the doc blocks themselves (`config-table.js`…) | — | no, **English only** |
-  | Demo values in the stories | — | no, **English only** |
+  | Demo values in the stories (`label="Birth date"`…) | — | no, **English only** |
+  | The kit's input defaults (`closeAriaLabel`, `emptyMessage`…) | — | no, **English only** |
   | `projects/ui-kit/README.md` | `README.md` + `README.fr.md` (already in place) | yes |
 
   Deliberately excluded: the `CHANGELOG.md` history and `docs/figma-migration-global.md`
@@ -353,9 +354,10 @@ $focus-ring-width: utils.$form-focus-ring-width; // ← replace the value here t
 - **Rule of thumb for anything new**: short text whose translation would cost a dedicated
   mechanism → English only. Translate what is read to *understand a component*; do not build
   machinery for a handful of UI labels.
-- The kit's French input defaults (`*AriaLabel`/`*Label`, see «&nbsp;No i18n catalog&nbsp;»
-  below) are **public API of the package**, not documentation: changing them is a consumer-facing
-  change, out of the FSHSP-87/88 scope.
+- The kit's input defaults (`*AriaLabel`/`*Label`, see «&nbsp;No i18n catalog&nbsp;» below) are
+  **public API of the package**, not documentation. They were switched to English (see the
+  `CHANGELOG` `[Unreleased]` entry); changing one again is a consumer-facing change and needs
+  its own `CHANGELOG` entry — not a doc task.
 - **Tables**: always in HTML tags (`<table>`, `<tr>`, `<td>`) rather than native Markdown in `.mdx` files, to guarantee rendering and CSS control.
 - **"Theming" section**: never written by hand. `<ConfigTable of="ui-<name>" />`
   (`storybook/blocks/config-table.js`), fed by `npm run docs:config` from the `.scss`'s `///`

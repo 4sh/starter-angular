@@ -255,11 +255,11 @@ export class UiTable<T = unknown> {
   /** Displays a mask + spinner over the table while data is being fetched. */
   loading = input(false, { transform: booleanAttribute });
   /** Accessible name of the loading indicator. */
-  loadingAriaLabel = input<string>('Chargement des données');
+  loadingAriaLabel = input<string>('Loading data');
 
   // --- Empty state ------------------------------------------------------------------
   /** Title of the default empty state (rendered with `ui-empty-state`; `#emptymessage` overrides it). */
-  emptyMessage = input<string>('Aucune donnée à afficher');
+  emptyMessage = input<string>('No data to display');
   /** Icon of the default empty state. */
   emptyIcon = input<string>('inbox');
 
@@ -1062,7 +1062,7 @@ export class UiTableCheckbox<T = unknown> {
   /** Disables the checkbox. */
   disabled = input(false, { transform: booleanAttribute });
   /** Accessible name of the checkbox. */
-  ariaLabel = input<string>('Sélectionner la ligne');
+  ariaLabel = input<string>('Select row');
 
   /** @ignore */
   protected readonly checked = computed(() => this.table.isSelected(this.value()));
@@ -1097,7 +1097,7 @@ export class UiTableHeaderCheckbox<T = unknown> {
   /** Disables the checkbox. */
   disabled = input(false, { transform: booleanAttribute });
   /** Accessible name of the checkbox. */
-  ariaLabel = input<string>('Tout sélectionner');
+  ariaLabel = input<string>('Select all');
 
   /** @ignore */
   protected onToggle(checked: unknown): void {
@@ -1136,7 +1136,7 @@ export class UiTableRadio<T = unknown> {
   /** Disables the radio. */
   disabled = input(false, { transform: booleanAttribute });
   /** Accessible name of the radio. */
-  ariaLabel = input<string>('Sélectionner la ligne');
+  ariaLabel = input<string>('Select row');
 
   /** @ignore */
   protected onSelect(): void {

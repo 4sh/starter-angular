@@ -174,7 +174,7 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
   /** `blank` queries with an empty string, `current` with the input's current text. */
   dropdownMode = input<AutocompleteDropdownMode>('blank');
   /** Accessible name of the dropdown trigger. */
-  dropdownAriaLabel = input<string>('Afficher les suggestions');
+  dropdownAriaLabel = input<string>('Show suggestions');
   /** FontAwesome icon of the dropdown trigger. */
   dropdownIcon = input<string>('angle-down');
 
@@ -191,20 +191,20 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
   /** With `multiple`: max number of chips rendered; the rest collapses behind `overflowLabel`. */
   maxSelectedLabels = input<number>();
   /** With `multiple`: format of the collapsed-count chip (`{0}` = hidden count). */
-  overflowLabel = input<string>('(+{0} autres)');
+  overflowLabel = input<string>('(+{0} more)');
   /** With `multiple`: accessible label of each chip's remove action — `{0}` is the chip label. */
-  removeTagLabel = input<string>('Supprimer {0}');
+  removeTagLabel = input<string>('Remove {0}');
 
   /** Show a clear (×) action when the input holds text. */
   showClear = input(false, { transform: booleanAttribute });
   /** Accessible name of the clear action. */
-  clearAriaLabel = input<string>('Effacer la saisie');
+  clearAriaLabel = input<string>('Clear input');
 
   /** Loading state: a spinner replaces the dropdown trigger while a query runs. */
   loading = input(false, { transform: booleanAttribute });
 
   /** Message shown when a query returns no suggestion. */
-  emptyMessage = input<string>('Aucun résultat');
+  emptyMessage = input<string>('No results');
   /** Render the empty-state row when there is no suggestion. */
   showEmptyMessage = input(true, { transform: booleanAttribute });
 

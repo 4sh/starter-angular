@@ -74,7 +74,7 @@ export class UiChip {
   /** Id of the element labelling the chip (overrides `ariaLabel`/`label`). */
   ariaLabelledBy = input<string>();
   /** Accessible name of the remove action. */
-  removeAriaLabel = input<string>('Supprimer');
+  removeAriaLabel = input<string>('Remove');
   /**
    * `tabindex` of the remove action. Leave unset for the natural tab order;
    * set `-1` when the chip lives inside a roving-focus container (e.g.

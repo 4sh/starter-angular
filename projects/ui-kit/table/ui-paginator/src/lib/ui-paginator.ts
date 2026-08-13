@@ -96,7 +96,7 @@ export class UiPaginator {
   /** Shows the current-page report (e.g. `1 - 10 sur 120`). */
   showCurrentPageReport = input(false, { transform: booleanAttribute });
   /** Report pattern — placeholders: `{first}` `{last}` `{rows}` `{page}` `{pageCount}` `{totalRecords}`. */
-  currentPageReportTemplate = input<string>('{first} - {last} sur {totalRecords}');
+  currentPageReportTemplate = input<string>('{first} - {last} of {totalRecords}');
   /** Disables every control. */
   disabled = input(false, { transform: booleanAttribute });
   /** Accessible name of the navigation landmark. */
@@ -104,12 +104,12 @@ export class UiPaginator {
   /** Accessible name pattern of a page button (`{page}` is replaced). */
   pageAriaLabel = input<string>('Page {page}');
   /** Accessible names of the edge / step controls. */
-  firstPageAriaLabel = input<string>('Première page');
-  prevPageAriaLabel = input<string>('Page précédente');
-  nextPageAriaLabel = input<string>('Page suivante');
-  lastPageAriaLabel = input<string>('Dernière page');
+  firstPageAriaLabel = input<string>('First page');
+  prevPageAriaLabel = input<string>('Previous page');
+  nextPageAriaLabel = input<string>('Next page');
+  lastPageAriaLabel = input<string>('Last page');
   /** Accessible name of the rows-per-page select. */
-  rowsPerPageAriaLabel = input<string>('Lignes par page');
+  rowsPerPageAriaLabel = input<string>('Rows per page');
 
   /** Emitted on any pagination change (navigation or rows-per-page). */
   pageChange = output<UiPaginatorPageEvent>();

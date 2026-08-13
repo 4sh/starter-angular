@@ -107,7 +107,7 @@ export class UiInputOtp extends BaseFieldControl<string> {
   /** Cell size. */
   size = input<InputOtpSize>('default');
   /** Accessible-name prefix of each cell ("<prefix> N"). Falls back to `ariaLabel`. */
-  charAriaLabel = input<string>('Caractère');
+  charAriaLabel = input<string>('Character');
   /** Focus the first cell on init. */
   autofocus = input(false, { transform: booleanAttribute });
 

@@ -155,14 +155,14 @@ export class UiSelect<T = unknown> extends BaseFormField<SelectValue<T>> {
   /** Max number of selected items rendered in the trigger (`multiple`); the rest collapses into `overflowLabel`. */
   maxSelectedLabels = input<number>();
   /** Collapsed-count indicator — `{0}` is replaced by the number of hidden items. */
-  overflowLabel = input<string>('(+{0} autres)');
+  overflowLabel = input<string>('(+{0} more)');
 
   /** Placeholder shown in the trigger when nothing is selected. */
   placeholder = input<string>();
   /** Show a clear (×) action in the trigger when a value is set. */
   showClear = input(false, { transform: booleanAttribute });
   /** Accessible name of the clear action. */
-  clearAriaLabel = input<string>('Effacer la sélection');
+  clearAriaLabel = input<string>('Clear selection');
   /** FontAwesome icon of the dropdown chevron. */
   icon = input<string>('angle-down');
 
@@ -171,7 +171,7 @@ export class UiSelect<T = unknown> extends BaseFormField<SelectValue<T>> {
   /** Placeholder of the filter input. */
   filterPlaceholder = input<string>();
   /** Accessible name of the filter input. */
-  filterAriaLabel = input<string>('Filtrer les options');
+  filterAriaLabel = input<string>('Filter options');
   /** Comma-separated field names (dot-paths) the filter matches against (defaults to the label). */
   filterBy = input<string>();
   /** Move the focus into the filter input when the panel opens. */
@@ -180,9 +180,9 @@ export class UiSelect<T = unknown> extends BaseFormField<SelectValue<T>> {
   resetFilterOnHide = input(false, { transform: booleanAttribute });
 
   /** Message shown when there is no option. */
-  emptyMessage = input<string>('Aucune option disponible');
+  emptyMessage = input<string>('No options available');
   /** Message shown when the filter matches nothing. */
-  emptyFilterMessage = input<string>('Aucun résultat');
+  emptyFilterMessage = input<string>('No results');
 
   /** Free-text mode: the trigger becomes a real `<input>`, typing sets the value directly. */
   editable = input(false, { transform: booleanAttribute });

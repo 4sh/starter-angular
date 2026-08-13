@@ -158,7 +158,7 @@ export class UiSidebar {
   /** FontAwesome name of the close button icon. */
   closeIcon = input<string>('xmark');
   /** Accessible name of the close button. */
-  closeAriaLabel = input<string>('Fermer');
+  closeAriaLabel = input<string>('Close');
 
   /** Extra class(es) merged onto the panel surface. */
   styleClass = input<string>();

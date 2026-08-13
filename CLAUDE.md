@@ -185,8 +185,8 @@ never is.
 
 Three surfaces are bilingual: the `.mdx` pages (two files, `<name>.mdx` + `<name>.fr.mdx`),
 the `argTypes` descriptions, and the `///` roles (`///` = EN, `///fr` = FR). The doc blocks'
-own labels and the stories' demo values stay **English only** — translating them would cost
-a mechanism for a handful of short strings.
+own labels stay **English only** — translating them would cost a mechanism for a handful of
+short strings. The stories' demo values are **left in French for now**.
 
 Out of scope: the `CHANGELOG.md` history, `docs/figma-migration-global.md`, and the kit's
 French input defaults (`*AriaLabel`/`*Label`), which are public API of the package rather

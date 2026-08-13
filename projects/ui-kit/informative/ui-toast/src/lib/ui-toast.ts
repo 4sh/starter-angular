@@ -49,7 +49,7 @@ export class UiToast {
   /** FontAwesome name of the dismiss icon. */
   closeIcon = input<string>('times-circle');
   /** Accessible label of the dismiss button. */
-  closeAriaLabel = input<string>('Fermer');
+  closeAriaLabel = input<string>('Close');
   /** Stretch the card to fill its region width (banner-style). */
   expanded = input(false, { transform: booleanAttribute });
   /** Extra class(es) merged onto the card root. */

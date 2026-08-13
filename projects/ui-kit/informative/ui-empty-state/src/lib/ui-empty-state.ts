@@ -19,7 +19,7 @@ export type EmptyStateSize = 'default' | 'small';
  * into a `<ui-empty-state>` to route it to the matching region. They carry no
  * behaviour; the component queries their presence to render the surrounding structure.
  *
- *   <ui-empty-state title="Aucun résultat" description="Essayez d'élargir vos filtres.">
+ *   <ui-empty-state title="No results" description="Essayez d'élargir vos filtres.">
  *     <img uiEmptyStateMedia src="/illustrations/empty.svg" alt="" />
  *     <div uiEmptyStateActions>
  *       <ui-button label="Réinitialiser les filtres" level="low" />

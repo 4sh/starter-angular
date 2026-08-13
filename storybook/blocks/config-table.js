@@ -102,14 +102,6 @@ function useResolvedVars(names) {
 
 // --- Rendu ------------------------------------------------------------
 
-// Texte de l'infobulle du repère « générée depuis … ». Dit le modèle une fois,
-// au lieu d'un paragraphe recopié dans chaque section Theming.
-// Texte brut : une infobulle native ne rend ni markdown ni HTML.
-const ORIGIN_TOOLTIP =
-  'Table générée par « npm run docs:config ». Le contrat, c’est le nom de la variable et son rôle. ' +
-  'La colonne « Défaut (starter) » n’est que le réglage livré par ce starter : la rebinder ne demande ' +
-  'aucune reprise de doc. La valeur résolue est mesurée dans le thème, la marque et le viewport actifs.';
-
 const BADGES = {
   token: { label: 'token', title: 'Pointe directement sur un design token.' },
   shared: { label: 'partagé', title: 'Passe par une constante mutualisée de ui-config.' },
@@ -327,23 +319,14 @@ export function ConfigTable({ of, only, hooks = true, label }) {
   return el(
     'div',
     { ref: scopeRef },
-    // Repère discret sous le titre : l'explication du modèle (contrat vs réglage
-    // livré vs valeur mesurée) tient dans l'infobulle, pour ne pas alourdir la
-    // page d'un paragraphe répété sur chaque composant.
+    // Repère discret sous le titre : dit de quel `.scss` la table est extraite.
     el(
       'p',
       {
         style: { margin: '0 0 12px', fontSize: 12, color: 'var(--sb-text-subtle)' },
       },
-      el(
-        'span',
-        {
-          title: ORIGIN_TOOLTIP,
-          style: { cursor: 'help', borderBottom: '1px dotted currentColor' },
-        },
-        'ⓘ générée depuis ',
-        el('code', null, component.file)
-      )
+      'générée depuis ',
+      el('code', null, component.file)
     ),
     // `label` : à passer quand une page documente plusieurs composants, pour
     // qu'on sache à quel `.scss` chaque table appartient.

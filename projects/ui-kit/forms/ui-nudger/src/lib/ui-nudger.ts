@@ -58,9 +58,9 @@ export class UiNudger extends BaseFieldControl<number> {
   onColor = input<ButtonOnColor | null>(null);
 
   /** Accessible label of the decrement button. */
-  decrementAriaLabel = input<string>('Diminuer');
+  decrementAriaLabel = input<string>('Decrease');
   /** Accessible label of the increment button. */
-  incrementAriaLabel = input<string>('Augmenter');
+  incrementAriaLabel = input<string>('Increase');
   /** FontAwesome icon name of the decrement button. */
   decrementIcon = input<string>('minus');
   /** FontAwesome icon name of the increment button. */

@@ -69,7 +69,7 @@ export class UiAlert {
   /** FontAwesome name of the dismiss icon. */
   closeIcon = input<string>('times-circle');
   /** Accessible label of the dismiss button. */
-  closeAriaLabel = input<string>('Fermer');
+  closeAriaLabel = input<string>('Close');
   /** Auto-dismiss delay in ms. `0` (default) never auto-dismisses. */
   life = input(0, { transform: numberAttribute });
   /** Accessible label of the alert region (screen readers). */

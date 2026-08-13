@@ -92,35 +92,35 @@ export class UiFileUpload {
   showFileList = input(true, { transform: booleanAttribute });
   /** Show the Upload/Cancel toolbar buttons (drag mode). */
   showControls = input(true, { transform: booleanAttribute });
-  browseLabel = input<string>('Parcourir');
+  browseLabel = input<string>('Browse');
   /** Placeholder shown in field mode before any selection. */
-  chooseLabel = input<string>('Choisir un fichier…');
-  uploadLabel = input<string>('Téléverser');
-  cancelLabel = input<string>('Effacer');
+  chooseLabel = input<string>('Choose a file…');
+  uploadLabel = input<string>('Upload');
+  cancelLabel = input<string>('Clear');
   /** Drag-zone link + prompt. */
-  dragLinkLabel = input<string>('Cliquer pour téléverser');
-  dragPromptLabel = input<string>('ou glisser-déposer les fichiers ici');
+  dragLinkLabel = input<string>('Click to upload');
+  dragPromptLabel = input<string>('or drag and drop files here');
   /** Small hint under the drag prompt (e.g. "JPG, PNG (max 5 MB)"). */
   hint = input<string>();
   /** Accessible name for the whole control. */
   // Composite widget (dropzone + file list), not a single-value CVA control: unlike the other
   // form components it doesn't extend BaseFieldControl, so it redeclares its own `ariaLabel`
   // here — with a non-undefined default, since the dropzone always needs an accessible name.
-  ariaLabel = input<string>('Téléversement de fichiers');
+  ariaLabel = input<string>('File upload');
   /** Multi-file summary in field mode — `{0}` is replaced by the file count. */
-  filesSummaryLabel = input<string>('{0} fichiers');
+  filesSummaryLabel = input<string>('{0} files');
   /** Rejection message: file type not accepted — `{0}` is the file name. */
-  invalidTypeMessage = input<string>('Type de fichier non autorisé : {0}');
+  invalidTypeMessage = input<string>('File type not allowed: {0}');
   /** Rejection message: file too large — `{0}` is the file name. */
-  invalidSizeMessage = input<string>('Fichier trop volumineux : {0}');
+  invalidSizeMessage = input<string>('File too large: {0}');
   /** Rejection message: `fileLimit` reached — `{0}` is the limit. */
-  limitReachedMessage = input<string>('Nombre maximum de fichiers atteint ({0}).');
+  limitReachedMessage = input<string>('Maximum number of files reached ({0}).');
   /** Error shown when an upload fails without a server message. */
-  uploadErrorMessage = input<string>('Échec du téléversement');
+  uploadErrorMessage = input<string>('Upload failed');
   /** Error shown when the upload request fails at the network level. */
-  networkErrorMessage = input<string>('Erreur réseau');
+  networkErrorMessage = input<string>('Network error');
   /** Error shown on a non-2xx response — `{0}` is the HTTP status. */
-  httpErrorMessage = input<string>('Erreur {0}');
+  httpErrorMessage = input<string>('Error {0}');
 
   // --- Templates (drag/advanced) --------------------------------------
   /** Overrides a single file row (context: `{ $implicit: UiUploadFile, remove }`). */
