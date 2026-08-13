@@ -6,6 +6,7 @@ import { lightTheme, darkTheme } from './myTheme';
 import { addons } from 'storybook/preview-api';
 import docJson from '../documentation.json';
 import { brandGlobalTypes, withBrand, DEFAULT_BRAND } from './brand-toolbar';
+import { localeGlobalTypes, withLocale, syncLocale, DEFAULT_LOCALE } from './locale-toolbar';
 import { withComponentMetadata } from './restore-component-metadata';
 import { provideUiImageAssets, UiImageAssetsMap } from '@4sh/ui-kit/base/ui-image';
 import assetsMap from '../src/assets/assets-map.json';
@@ -29,14 +30,24 @@ channel.on('DARK_MODE', (isDark) => {
   setTimeout(() => syncTheme(isDark), 0);
 });
 
+// The `withLocale` decorator only fires when a story renders, so a docs-only MDX
+// page (Introduction, foundations…) would never see a locale change. Storybook's
+// globals event fires on those pages too — hence this second, non-story path.
+// String literal rather than the `GLOBALS_UPDATED` constant, to match the
+// `DARK_MODE` listener above and avoid importing from a `core-events` path.
+channel.on('globalsUpdated', ({ globals }) => {
+  syncLocale(globals?.['locale']);
+});
+
 const preview: Preview = {
-  initialGlobals: { brand: DEFAULT_BRAND },
-  globalTypes: brandGlobalTypes,
+  initialGlobals: { brand: DEFAULT_BRAND, locale: DEFAULT_LOCALE },
+  globalTypes: { ...brandGlobalTypes, ...localeGlobalTypes },
   decorators: [
     // Must stay first: it repairs `context.component` before Storybook derives the
     // implicit template from it.
     withComponentMetadata,
     withBrand,
+    withLocale,
     (Story, context) => {
       syncTheme(context.globals['darkMode']);
       return Story();
