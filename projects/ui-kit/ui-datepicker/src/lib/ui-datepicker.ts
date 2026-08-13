@@ -1183,7 +1183,7 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   /** @ignore */
   protected onGridKeydown(event: KeyboardEvent): void {
     const current = this.focusedDate();
-    let next: Date | null = null;
+    let next: Date | null;
     switch (event.key) {
       case 'ArrowLeft':
         next = addDays(current, -1);
