@@ -32,8 +32,8 @@ Chaque composant est exposé par son propre *entry point*. Vous importez ce dont
 vous avez besoin, et le tree-shaking élimine le reste de votre bundle final :
 
 ```ts
-import { UiButton } from '@4sh/ui-kit/ui-button';
-import { UiIcon } from '@4sh/ui-kit/ui-icon';
+import { UiButton } from '@4sh/ui-kit/actions/ui-button';
+import { UiIcon } from '@4sh/ui-kit/base/ui-icon';
 ```
 
 > `@4sh/ui-kit` est **un seul package npm**. Les entry points ne s'installent
@@ -43,8 +43,10 @@ import { UiIcon } from '@4sh/ui-kit/ui-icon';
 
 ### Entry points disponibles
 
-**53 entry points**, chacun nommé d'après le composant qu'il expose :
-`@4sh/ui-kit/ui-button`, `@4sh/ui-kit/ui-select`, `@4sh/ui-kit/ui-datepicker`…
+**53 entry points**, chacun nommé `@4sh/ui-kit/<famille>/<composant>` — la
+famille ci-dessous est littéralement le segment de chemin, en minuscules :
+`@4sh/ui-kit/actions/ui-button`, `@4sh/ui-kit/forms/ui-select`,
+`@4sh/ui-kit/forms/ui-datepicker`…
 (54 composants au total — `ui-file-upload-list` est livré dans
 `ui-file-upload`, dont il consomme le modèle.)
 
@@ -56,7 +58,7 @@ import { UiIcon } from '@4sh/ui-kit/ui-icon';
 | Mise en page | `ui-card` · `ui-modal` · `ui-drawer` · `ui-popover` |
 | Navigation | `ui-menu` · `ui-context-menu` · `ui-tabs` · `ui-stepper` · `ui-sidebar` · `ui-breadcrumb` |
 | Tableau | `ui-table` · `ui-paginator` |
-| Divers | `ui-icon` · `ui-image` |
+| Base | `ui-icon` · `ui-image` |
 
 Plus les entry points transverses :
 
@@ -78,7 +80,7 @@ est donc **injectée** par l'application plutôt que codée en dur :
 ```ts
 // app.config.ts
 import { brandFromSubdomain, provideUiKitBrand } from '@4sh/ui-kit/theming';
-import { provideUiImageAssets } from '@4sh/ui-kit/ui-image';
+import { provideUiImageAssets } from '@4sh/ui-kit/base/ui-image';
 import assetsMap from './assets/assets-map.json';
 
 providers: [
@@ -97,7 +99,7 @@ n'affiche que ses images distantes (`src`), `name` retombant sur le placeholder.
 Exemple — n'utiliser que le date picker, sans tirer le reste du kit dans votre bundle :
 
 ```ts
-import { UiDatepicker } from '@4sh/ui-kit/ui-datepicker';
+import { UiDatepicker } from '@4sh/ui-kit/forms/ui-datepicker';
 
 @Component({
   selector: 'app-booking',
@@ -205,7 +207,7 @@ Publication : voir [`docs/PUBLISHING.md`](../../docs/PUBLISHING.md) (workflow
 GitHub Actions manuel, compte de service `4sh-package-admin`).
 
 ⚠️ **Règle impérative pour les imports internes au package** : toujours utiliser
-le nom réel du package (`@4sh/ui-kit/ui-icon`), jamais un chemin relatif vers un
+le nom réel du package (`@4sh/ui-kit/base/ui-icon`), jamais un chemin relatif vers un
 autre entry point ni un raccourci. `ng-packagr` ne détecte une dépendance entre
 entry points que si l'import commence littéralement par le nom du package ; à
 défaut, l'ordre de compilation devient indéterminé et le build échoue par

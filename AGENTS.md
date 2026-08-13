@@ -40,7 +40,7 @@ Fonts embedded locally (DM Sans + Inter, variable fonts): `src/styles/src/vendor
 
 ## The `ui-*` kit lives in the `@4sh/ui-kit` package (FSHSP-83)
 
-All 53 `ui-*` components live in `projects/ui-kit/` — an `ng-packagr` library
+All 54 `ui-*` components live in `projects/ui-kit/` — an `ng-packagr` library
 published as a **single** npm package with one *secondary entry point* per
 component. `src/app/` now only holds the demo application and its `domain/`
 components.
@@ -48,10 +48,14 @@ components.
 Components are grouped on disk by category (FSHSP-107 — mirrors the sections of
 `storybook/docs/Overview.mdx`, the source of truth for the mapping):
 `actions/`, `forms/`, `informative/`, `layout/`, `navigation/`, `table/`, `base/`.
-**No change to the npm entry points**: `@4sh/ui-kit/ui-button` still resolves the
-same way regardless of which category folder `ui-button/` physically lives in —
-`ng-packagr` discovers a secondary entry point by the presence of a
-`ng-package.json` file, at any depth, not by its path.
+
+⚠️ **The category IS part of the public import path**: `@4sh/ui-kit/actions/ui-button`,
+not `@4sh/ui-kit/ui-button`. `ng-packagr` derives a secondary entry point's sub-path
+from its folder location relative to the primary entry point
+(`secondaryModuleId = primary.moduleId + '/' + relativeSourcePath`) and offers **no
+way to decouple the two** — a `package.json` `name` in the component folder is ignored
+for a secondary entry point. Moving a component between categories is therefore a
+**breaking change** for consumers, never a cosmetic move.
 
 Layout of a component:
 
@@ -78,8 +82,8 @@ naming accident — see the ticket for why), `theming` (`ThemeService`,
 
 Rules when working in `projects/ui-kit/`:
 
-- **Imports between entry points MUST use the real package name**
-  (`@4sh/ui-kit/ui-icon`) — never a relative path to another entry point, never a
+- **Imports between entry points MUST use the real package name, category included**
+  (`@4sh/ui-kit/base/ui-icon`) — never a relative path to another entry point, never a
   shorthand. `ng-packagr` only records a dependency when the specifier literally
   starts with the package name; otherwise build order is undefined and the build
   fails intermittently. **Inside** one entry point, use relative imports
@@ -88,7 +92,8 @@ Rules when working in `projects/ui-kit/`:
   parent's model belongs in the parent's entry point (that's why
   `ui-file-upload-list` ships inside `ui-file-upload`).
 - Stories/MDX stay **outside** `src/` so Storybook-only imports never leak into the
-  packaged build. Their `ConfigTable` import is `../../../storybook/blocks/config-table`.
+  packaged build. Their `ConfigTable` import is `../../../../storybook/blocks/config-table`
+  (four levels — the category folder adds one, same trap as `ng-package.json` above).
 - A component must not depend on app code. Project-specific data is injected:
   `provideUiKitBrand()` (active brand) and `provideUiImageAssets()` (local asset map
   for `ui-image`) — both wired in `src/app/app.config.ts` and `storybook/preview.ts`.
@@ -98,7 +103,7 @@ Rules when working in `projects/ui-kit/`:
   `index.scss` → `dist/ui-kit/styles.css`, shipped alongside the SCSS sources.
 - **Never `@forward` anything that emits CSS from `utils.scss`.** Each component
   `.scss` is its own Sass compilation unit, so emitted rules get duplicated into all
-  53 components. Global utility classes belong in `index.scss` (and, app-side, in
+  54 components. Global utility classes belong in `index.scss` (and, app-side, in
   `src/styles/main.scss`).
 - `npm run ui-kit:build` runs before the app/Storybook (chained into `serve` /
   `build` / `storybook` / `build-storybook` / `postinstall`), since `@4sh/ui-kit/*`
@@ -110,7 +115,7 @@ Rules when working in `projects/ui-kit/`:
 
 ```
 projects/
-  ui-kit/                    # @4sh/ui-kit — the published package (53 entry points, 53 components)
+  ui-kit/                    # @4sh/ui-kit — the published package (53 entry points, 54 components)
     <category>/              # actions/ forms/ informative/ layout/ navigation/ table/ base/
       <ui-name>/             # one secondary entry point per component
         ng-package.json · src/public-api.ts · src/lib/… · *.stories.ts · *.mdx
@@ -148,7 +153,7 @@ holds what is specific to the demo app (aggregator, fonts, grid settings, layout
 | TypeScript class | `Ui<Name>` | `UiButton` |
 | File | `ui-<name>.ts` (without `.component`) | `ui-button.ts` |
 | Story & doc | co-located: `projects/ui-kit/<category>/ui-<name>/ui-<name>.stories.ts` + `ui-<name>.mdx` | `ui-button.stories.ts` |
-| Import alias | Kit components: `@4sh/ui-kit/<entry>` · app code: `@app/` | `@4sh/ui-kit/ui-button` |
+| Import alias | Kit components: `@4sh/ui-kit/<category>/<entry>` · app code: `@app/` | `@4sh/ui-kit/actions/ui-button` |
 
 ### Business components (domain)
 
