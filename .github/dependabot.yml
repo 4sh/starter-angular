@@ -1,0 +1,49 @@
+version: 2
+
+updates:
+  # npm : cadence hebdomadaire + regroupement par famille technique. Sans ça,
+  # Angular (22.0.x → 22.1.x → ...), Storybook et l'outillage ESLint génèrent
+  # chacun leur propre PR à chaque bump — sur cette stack (Angular 22,
+  # Storybook 10, ng-packagr, Style Dictionary), le bruit ferait abandonner
+  # l'outil (FSHSP-94). Une PR de sécurité individuelle sort quand même du lot
+  # : Dependabot ne groupe jamais les alertes de sécurité.
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      angular:
+        patterns:
+          - "@angular/*"
+          - "@angular-devkit/*"
+          - "angular-eslint"
+      storybook:
+        patterns:
+          - "@storybook/*"
+          - "@storybook-community/*"
+          - "storybook"
+      eslint:
+        patterns:
+          - "eslint*"
+          - "@eslint/*"
+          - "typescript-eslint"
+      dev-tooling:
+        patterns:
+          - "*"
+        exclude-patterns:
+          - "@angular/*"
+          - "@angular-devkit/*"
+          - "angular-eslint"
+          - "@storybook/*"
+          - "@storybook-community/*"
+          - "storybook"
+          - "eslint*"
+          - "@eslint/*"
+          - "typescript-eslint"
+
+  # GitHub Actions : peu de dépendances (checkout, setup-node, deploy-pages…),
+  # pas besoin de regroupement.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
