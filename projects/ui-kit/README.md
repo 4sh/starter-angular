@@ -32,8 +32,8 @@ Every component is exposed through its own *entry point*. You import what you
 need, and tree-shaking drops the rest from your final bundle:
 
 ```ts
-import { UiButton } from '@4sh/ui-kit/ui-button';
-import { UiIcon } from '@4sh/ui-kit/ui-icon';
+import { UiButton } from '@4sh/ui-kit/actions/ui-button';
+import { UiIcon } from '@4sh/ui-kit/base/ui-icon';
 ```
 
 > `@4sh/ui-kit` is **a single npm package**. Entry points are not installed
@@ -43,8 +43,10 @@ import { UiIcon } from '@4sh/ui-kit/ui-icon';
 
 ### Available entry points
 
-**53 entry points**, named after the component they expose:
-`@4sh/ui-kit/ui-button`, `@4sh/ui-kit/ui-select`, `@4sh/ui-kit/ui-datepicker`…
+**53 entry points**, each named `@4sh/ui-kit/<family>/<component>` — the family
+below is literally the path segment, lowercased:
+`@4sh/ui-kit/actions/ui-button`, `@4sh/ui-kit/forms/ui-select`,
+`@4sh/ui-kit/forms/ui-datepicker`…
 (54 components in total — `ui-file-upload-list` ships inside `ui-file-upload`,
 whose model it consumes.)
 
@@ -56,7 +58,7 @@ whose model it consumes.)
 | Layout | `ui-card` · `ui-modal` · `ui-drawer` · `ui-popover` |
 | Navigation | `ui-menu` · `ui-context-menu` · `ui-tabs` · `ui-stepper` · `ui-sidebar` · `ui-breadcrumb` |
 | Table | `ui-table` · `ui-paginator` |
-| Misc | `ui-icon` · `ui-image` |
+| Base | `ui-icon` · `ui-image` |
 
 Plus the cross-cutting entry points:
 
@@ -78,7 +80,7 @@ Two components need a piece of data the kit cannot know about — it is therefor
 ```ts
 // app.config.ts
 import { brandFromSubdomain, provideUiKitBrand } from '@4sh/ui-kit/theming';
-import { provideUiImageAssets } from '@4sh/ui-kit/ui-image';
+import { provideUiImageAssets } from '@4sh/ui-kit/base/ui-image';
 import assetsMap from './assets/assets-map.json';
 
 providers: [
@@ -99,7 +101,7 @@ Example — using only the date picker, without pulling the rest of the kit into
 your bundle:
 
 ```ts
-import { UiDatepicker } from '@4sh/ui-kit/ui-datepicker';
+import { UiDatepicker } from '@4sh/ui-kit/forms/ui-datepicker';
 
 @Component({
   selector: 'app-booking',
@@ -206,7 +208,7 @@ Publishing: see [`docs/PUBLISHING.md`](../../docs/PUBLISHING.md) (manual GitHub
 Actions workflow, `4sh-package-admin` service account).
 
 ⚠️ **Hard rule for imports internal to the package**: always use the real
-package name (`@4sh/ui-kit/ui-icon`), never a relative path to another entry
+package name (`@4sh/ui-kit/base/ui-icon`), never a relative path to another entry
 point nor a shortcut. `ng-packagr` only detects a dependency between entry
 points if the import literally starts with the package name; otherwise the
 compilation order becomes undefined and the build fails intermittently.

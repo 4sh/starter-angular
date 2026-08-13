@@ -123,7 +123,7 @@ docs/                             ← VERSIONING.md · PUBLISHING.md · Figma ru
 Replicate the `actions/ui-button` (+ `base/ui-icon`) reference pattern. One folder
 per component under `projects/ui-kit/<category>/` (grouped by category — see
 `storybook/docs/Overview.mdx` for the mapping), which **is** the secondary entry
-point — example for `@4sh/ui-kit/ui-input` (category `forms`):
+point — example for `@4sh/ui-kit/forms/ui-input`:
 
 ```
 projects/ui-kit/forms/ui-input/
@@ -146,7 +146,7 @@ projects/ui-kit/forms/ui-input/
 3. **Story & doc** — `ui-input.stories.ts` + `ui-input.mdx` at the folder root.
 
 ⚠️ Importing from **another entry point** must use the real package name
-(`@4sh/ui-kit/ui-icon`), never a relative path: `ng-packagr` only records the
+(`@4sh/ui-kit/base/ui-icon`), never a relative path: `ng-packagr` only records the
 dependency in that form — otherwise the build order is undefined and fails
 intermittently.
 
