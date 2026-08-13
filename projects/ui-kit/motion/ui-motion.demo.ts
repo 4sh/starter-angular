@@ -27,7 +27,7 @@ import { UiButton } from '@4sh/ui-kit/actions/ui-button';
             class="motion-demo-box"
             [uiMotion]="preset()"
             #m="uiMotion"
-            [motionDuration]="duration() || null"
+            [motionDuration]="duration() || undefined"
             [motionDisabled]="disabled()"
             [animate.enter]="m.enter()"
             [animate.leave]="m.leave()"
