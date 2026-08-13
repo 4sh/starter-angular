@@ -93,3 +93,51 @@ jobs:
 
       - name: Build Storybook
         run: npm run build-storybook
+
+      # Consumed by the `a11y` job below — avoids rebuilding Storybook twice.
+      - name: Upload Storybook build
+        uses: actions/upload-artifact@v4
+        with:
+          name: storybook-static
+          path: storybook-static
+          retention-days: 1
+
+  a11y:
+    name: Accessibility (informational)
+    needs: storybook
+    runs-on: ubuntu-latest
+    # FSHSP-93: the addon (@storybook/addon-a11y) was already configured, just
+    # never run outside the browser panel. Wiring it into CI surfaced 122
+    # pre-existing violations across 21/54 components — turning this into a
+    # blocking check today would break every PR touching one of them,
+    # including PRs unrelated to accessibility. Kept informational
+    # (`continue-on-error`) until that backlog is cleared — see FSHSP-106.
+    continue-on-error: true
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Read Node.js version from .nvmrc
+        id: nvmrc
+        run: echo "NODE_VERSION=$(cat .nvmrc)" >> $GITHUB_OUTPUT
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ steps.nvmrc.outputs.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download Storybook build
+        uses: actions/download-artifact@v4
+        with:
+          name: storybook-static
+          path: storybook-static
+
+      - name: Install Playwright's Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run accessibility checks (axe-core via test-runner)
+        run: npm run test-storybook:ci

@@ -12,6 +12,7 @@
     "test": "ng test ui-kit",
     "storybook": "npm run build-info && npm run ui-kit:build && npm run docs:config && ng run demo:storybook",
     "build-storybook": "npm run build-info && npm run ui-kit:build && npm run docs:config && ng run demo:build-storybook",
+    "test-storybook:ci": "http-server storybook-static --port 6006 --silent & npx wait-on tcp:6006 && test-storybook --ci --config-dir storybook --url http://localhost:6006",
     "generate:assets": "node src/scripts/build-assets.js",
     "postinstall": "npm run tokens:build && npm run ui-kit:build && npm run docs:config",
     "ui-kit:build": "ng build ui-kit && npm run ui-kit:styles",
@@ -51,14 +52,18 @@
     "@storybook/addon-designs": "11.1.1",
     "@storybook/addon-docs": "10.5.4",
     "@storybook/angular": "10.5.4",
+    "@storybook/test-runner": "^0.24.4",
     "angular-eslint": "^22.1.0",
+    "axe-playwright": "^2.2.2",
     "eslint": "^9.39.5",
+    "http-server": "^14.1.1",
     "jsdom": "^28.0.0",
     "ng-packagr": "^22.0.2",
     "storybook": "10.5.4",
     "style-dictionary": "5.5.0",
     "typescript": "6.0.3",
     "typescript-eslint": "8.62.1",
-    "vitest": "^4.0.8"
+    "vitest": "^4.0.8",
+    "wait-on": "^9.1.0"
   }
 }
