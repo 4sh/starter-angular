@@ -268,9 +268,14 @@ $card-radius: var(--radius-md);       /// Corner radius.
   (declaration, or a fallback read `var(--ui-x, <default>)`) — never on an internal dark-mode
   override, otherwise the doc shows the wrong default value.
 - Every config variable must have its `///`: `npm run docs:config` counts the missing ones.
-- **Written in English** — it is published documentation, and English is the source
-  language. Existing roles are still in French: translate the ones you touch, and never
-  add a new French one.
+- **Bilingual** (FSHSP-88): `///` carries the English role (source language), `///fr` the
+  French translation, both at the end of the declaration. English alone is valid — the doc
+  falls back to it — French alone is not.
+
+  ```scss
+  $card-radius: var(--radius-md);        /// Corner radius.
+                                        ///fr Rayon des coins.
+  ```
 
 ### Shared structural constants — `ui-config`
 
@@ -328,14 +333,29 @@ $focus-ring-width: utils.$form-focus-ring-width; // ← replace the value here t
 
 ### Documentation (MDX)
 
-- **Language — English is the source** (FSHSP-87). Everything published to a consumer is
-  written in English: `.mdx` pages (component + global), `argTypes` descriptions in the
-  stories, the `///` roles in the `.scss`, and `projects/ui-kit/README.md` (the npmjs page).
-  A French version is a **translation**, added through the bilingual mechanism of FSHSP-88 —
-  never by writing the French in place of the English. Much of the existing content is still
-  in French: translate what you touch, never add new French.
-- Internal-only files stay as they are: `CHANGELOG.md` history and
-  `docs/figma-migration-global.md` are out of the translation scope.
+- **Language — English is the source, French is a translation** (FSHSP-87 / FSHSP-88).
+  Never write French in place of the English; a page or a role may exist in English only
+  (the doc falls back to it), never in French only.
+
+  What is bilingual, and by which mechanism:
+
+  | Content | Mechanism | Bilingual? |
+  |---|---|---|
+  | `.mdx` pages (component + global) | `<name>.mdx` (EN) + `<name>.fr.mdx`, rendered by `<LocalizedPage>` | **yes** |
+  | `argTypes` descriptions (`*.stories.ts`) | custom ArgTypes block (Storybook's own reads one static string) | **yes** |
+  | `///` roles in the `.scss` | `///` (EN) + `///fr`, extracted by `npm run docs:config` | **yes** |
+  | Labels of the doc blocks themselves (`config-table.js`…) | — | no, **English only** |
+  | Demo values in the stories | — | no, **English only** |
+  | `projects/ui-kit/README.md` | `README.md` + `README.fr.md` (already in place) | yes |
+
+  Deliberately excluded: the `CHANGELOG.md` history and `docs/figma-migration-global.md`
+  (internal runbook).
+- **Rule of thumb for anything new**: short text whose translation would cost a dedicated
+  mechanism → English only. Translate what is read to *understand a component*; do not build
+  machinery for a handful of UI labels.
+- The kit's French input defaults (`*AriaLabel`/`*Label`, see «&nbsp;No i18n catalog&nbsp;»
+  below) are **public API of the package**, not documentation: changing them is a consumer-facing
+  change, out of the FSHSP-87/88 scope.
 - **Tables**: always in HTML tags (`<table>`, `<tr>`, `<td>`) rather than native Markdown in `.mdx` files, to guarantee rendering and CSS control.
 - **"Theming" section**: never written by hand. `<ConfigTable of="ui-<name>" />`
   (`storybook/blocks/config-table.js`), fed by `npm run docs:config` from the `.scss`'s `///`

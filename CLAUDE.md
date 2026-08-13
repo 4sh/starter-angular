@@ -180,9 +180,17 @@ the `argTypes` descriptions in the stories, the `///` roles in the `.scss`, and
 
 French is a **translation**, not an alternative source: it is added through the bilingual
 mechanism of FSHSP-88 (locale selector in the Storybook toolbar), never by writing French in
-place of the English. A large share of the existing content is still in French — translate
-what you touch, and never add new French. Out of scope: the `CHANGELOG.md` history and the
-internal runbooks (`docs/figma-migration-global.md`), which stay monolingual.
+place of the English. English alone is always valid — the doc falls back to it; French alone
+never is.
+
+Three surfaces are bilingual: the `.mdx` pages (two files, `<name>.mdx` + `<name>.fr.mdx`),
+the `argTypes` descriptions, and the `///` roles (`///` = EN, `///fr` = FR). The doc blocks'
+own labels and the stories' demo values stay **English only** — translating them would cost
+a mechanism for a handful of short strings.
+
+Out of scope: the `CHANGELOG.md` history, `docs/figma-migration-global.md`, and the kit's
+French input defaults (`*AriaLabel`/`*Label`), which are public API of the package rather
+than documentation. See `AGENTS.md` for the full table.
 
 ### Categories
 
