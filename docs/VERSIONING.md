@@ -4,27 +4,54 @@ This project follows [Semantic Versioning](https://semver.org/) adapted to a Des
 
 Format: `MAJOR.MINOR.PATCH`
 
-## When to bump
+## Scope: only the published package is versioned
+
+SemVer applies to **`projects/ui-kit/package.json`** only — that is the artifact
+published as `@4sh/ui-kit`, the one a consumer's `package.json` pins a version
+against.
+
+The root `package.json` (demo app + Storybook tooling) is **not** versioned in
+step with it. Nothing depends on it: it is never published, `private: true`, and
+its own version number carries no meaning to anyone outside this repo. Bumping it
+alongside `projects/ui-kit` was a drafting convenience from before the package
+existed (see `0.1.2`'s history) — not a deliberate choice, and there is no reason
+to keep it. It can drift, stay put, or get dropped entirely; nothing consumes it.
+
+## When to bump `projects/ui-kit`
 
 | Bump | When |
 |---|---|
-| **MAJOR** | Breaking change: rename/removal of a token, removal of a component, API change of an input |
-| **MINOR** | New component, new token, new non-breaking variant |
+| **MAJOR** | Breaking change: rename/removal of a token, removal of a component, API change of an input, entry point renamed/removed, new `peerDependency` or a raised floor on an existing one |
+| **MINOR** | New component, new token, new non-breaking variant, new entry point |
 | **PATCH** | Visual fix, bug fix, adjustment of an existing token value without rename |
 
 As long as the version starts with `0.x.y`, the API is considered unstable: `MINOR` releases may contain breaking changes documented in the CHANGELOG. Moving to `1.0.0` freezes the public API.
 
+## No release without a tarball change
+
+**If `projects/ui-kit` did not change, there is no release** — no version bump,
+no tag, no CHANGELOG entry, no publish. A change scoped to Storybook (stories,
+MDX, `storybook/` config), the demo app, CI, or documentation ships by merging to
+`main` like any other change: Storybook redeploys on every push to `main`
+([`deploy-storybook.yml`](../.github/workflows/deploy-storybook.yml)), completely
+independently of [`publish-ui-kit.yml`](../.github/workflows/publish-ui-kit.yml),
+which only ever runs on manual dispatch. There is nothing to gate.
+
+`0.1.2` published with an unchanged tarball on purpose, to prove the tag+release
+chain on a version with nothing at stake — that was a one-off exercise, not a
+precedent. Do not reproduce it: a version with an identical tarball to its
+predecessor should not exist.
+
 ## Release workflow
 
 1. Work on a `feat/*`, `fix/*`, `chore/*` or `breaking/*` branch
-2. Add a line in `CHANGELOG.md` under `## [Unreleased]` in the right section (`Added` / `Changed` / `Deprecated` / `Removed` / `Fixed`)
+2. Add a line in `CHANGELOG.md` under `## [Unreleased]` in the right section (`Added` / `Changed` / `Deprecated` / `Removed` / `Fixed`) — **only if the change touches `projects/ui-kit`** (see above)
 3. PR → merge into `main`
 4. At release time, on `main`:
    - Move the `[Unreleased]` content to a new `[X.Y.Z] - YYYY-MM-DD` section
    - Bump the version in **`projects/ui-kit/package.json`** — that is the one that
-     gets published, and the one the tag is named after. Keep the root
-     `package.json` in step with it; `npm version` at the root bumps only the
-     demo app, which is `private` and never published.
+     gets published, and the one the tag is named after. The root `package.json`
+     is left untouched.
    - Commit and push (no tag needed — see below)
 5. Run the publish workflow ([`PUBLISHING.md`](./PUBLISHING.md))
 

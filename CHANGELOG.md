@@ -1,12 +1,18 @@
 # Changelog
 
-Toutes les évolutions notables de ce Design System sont documentées dans ce fichier.
+Toutes les évolutions notables du package publié **`@4sh/ui-kit`**
+(`projects/ui-kit`) sont documentées dans ce fichier.
 
 Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le projet adhère à [Semantic Versioning](https://semver.org/) (voir [VERSIONING.md](./docs/VERSIONING.md)).
 
 > Tant que la version commence par `0.x`, l'API est considérée instable : une
 > release `MINOR` peut contenir des ruptures, documentées ici. Le passage en
 > `1.0.0` figera l'API publique.
+
+> Un changement qui ne touche que Storybook, la démo, la CI ou la documentation
+> n'a pas sa place ici : sans impact sur le tarball publié, il n'y a pas de
+> release à documenter (voir « No release without a tarball change » dans
+> [VERSIONING.md](./docs/VERSIONING.md)).
 
 ## [Unreleased]
 
