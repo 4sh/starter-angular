@@ -3,7 +3,7 @@ import { provideHttpClient, withFetch } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { brandFromSubdomain, provideUiKitBrand } from '@4sh/ui-kit/theming';
-import { provideUiImageAssets, UiImageAssetsMap } from '@4sh/ui-kit/ui-image';
+import { provideUiImageAssets, UiImageAssetsMap } from '@4sh/ui-kit/base/ui-image';
 import assetsMap from '../assets/assets-map.json';
 import { routes } from './app.routes';
 

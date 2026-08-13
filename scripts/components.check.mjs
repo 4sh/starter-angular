@@ -36,13 +36,34 @@ const READMES = [
 const OVERVIEW = join(ROOT, 'storybook/docs/Overview.mdx');
 const INDEX = join(ROOT, 'src/app/shared/components/components-index.md');
 
-/** Entry points du disque : un dossier `ui-*` portant un `ng-package.json`. */
+/**
+ * Entry points du disque : un dossier `ui-*` portant un `ng-package.json`, à
+ * n'importe quelle profondeur (FSHSP-107 : rangés par catégorie —
+ * `actions/ui-button/`, `forms/ui-input/`… — plutôt qu'à plat). On descend
+ * dans tout dossier qui n'est pas lui-même un entry point `ui-*` (catégories,
+ * mais aussi `forms/` qui est À LA FOIS un entry point transverse — son
+ * propre `ng-package.json` à la racine — ET une catégorie contenant d'autres
+ * entry points `ui-*`).
+ */
+/** name → full path on disk, filled by {@link entryPointsOnDisk}. */
+const entryPointDirs = new Map();
+
 function entryPointsOnDisk() {
-  return readdirSync(KIT, { withFileTypes: true })
-    .filter((e) => e.isDirectory() && e.name.startsWith('ui-'))
-    .filter((e) => existsSync(join(KIT, e.name, 'ng-package.json')))
-    .map((e) => e.name)
-    .sort();
+  const found = [];
+  const walk = (dir) => {
+    for (const e of readdirSync(dir, { withFileTypes: true })) {
+      if (!e.isDirectory()) continue;
+      const full = join(dir, e.name);
+      if (e.name.startsWith('ui-') && existsSync(join(full, 'ng-package.json'))) {
+        found.push(e.name);
+        entryPointDirs.set(e.name, full);
+      } else {
+        walk(full);
+      }
+    }
+  };
+  walk(KIT);
+  return [...new Set(found)].sort();
 }
 
 /**
@@ -71,10 +92,14 @@ function componentsInReadme(file, heading) {
     .sort();
 }
 
-/** Chemins `projects/ui-kit/<name>/` importés par la page « Composants ». */
+/**
+ * Composants importés par la page « Composants » : le nom est lu sur le
+ * fichier de story lui-même (`.../ui-<name>/ui-<name>.stories`), pas sur le
+ * chemin du dossier — insensible à la profondeur de catégorie (FSHSP-107).
+ */
 function componentsInOverview() {
   const src = readFileSync(OVERVIEW, 'utf8');
-  return [...new Set([...src.matchAll(/projects\/ui-kit\/(ui-[a-z0-9-]+)\//g)].map((m) => m[1]))].sort();
+  return [...new Set([...src.matchAll(/\/(ui-[a-z0-9-]+)\/ui-[a-z0-9-]+\.stories["']/g)].map((m) => m[1]))].sort();
 }
 
 /** Composants cochés ✅ dans l'index. */
@@ -99,7 +124,7 @@ for (const { file, heading } of READMES) {
 
 const overview = componentsInOverview();
 const withStories = disk.filter((name) =>
-  readdirSync(join(KIT, name)).some((f) => f.endsWith('.stories.ts')),
+  readdirSync(entryPointDirs.get(name)).some((f) => f.endsWith('.stories.ts')),
 );
 const missingFromOverview = diff(withStories, overview);
 if (missingFromOverview.length) {

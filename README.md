@@ -120,12 +120,13 @@ docs/                             ← VERSIONING.md · PUBLISHING.md · Figma ru
 
 ## Adding a new component (recipe)
 
-Replicate the `ui-button` (+ `ui-icon`) reference pattern. One folder per component
-under `projects/ui-kit/`, which **is** the secondary entry point — example for
-`@4sh/ui-kit/ui-input`:
+Replicate the `actions/ui-button` (+ `base/ui-icon`) reference pattern. One folder
+per component under `projects/ui-kit/<category>/` (grouped by category — see
+`storybook/docs/Overview.mdx` for the mapping), which **is** the secondary entry
+point — example for `@4sh/ui-kit/ui-input` (category `forms`):
 
 ```
-projects/ui-kit/ui-input/
+projects/ui-kit/forms/ui-input/
 ├── ng-package.json        ← declares the entry point (entryFile + styleIncludePaths)
 ├── src/
 │   ├── public-api.ts      ← what the entry point exports
@@ -160,7 +161,7 @@ Three locations, one simple rule:
 
 - **Component → co-location.** Each component carries its `*.stories.ts` and `*.mdx`
   files **in its own folder**, at the entry point root (outside `src/`, so they never
-  ship in the package): `projects/ui-kit/ui-x/ui-x.stories.ts` + `ui-x.mdx`.
+  ship in the package): `projects/ui-kit/<category>/ui-x/ui-x.stories.ts` + `ui-x.mdx`.
 - **Global documentation** (foundations, guidelines, design system, overview) → **`storybook/docs/`**
   (subfolders `foundations/`, `specifications/`). Never put component-specific doc there.
 

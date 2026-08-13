@@ -16,6 +16,9 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+### Changed
+- **BREAKING** : les 53 composants `ui-*` sont réorganisés par catégorie dans `projects/ui-kit/` (`actions/`, `forms/`, `informative/`, `layout/`, `navigation/`, `table/`, `base/` — mapping dans `storybook/docs/Overview.mdx`), pour restaurer le regroupement perdu lors de la migration vers le package npm (FSHSP-83). Conséquence inévitable : `ng-packagr` calcule le chemin public d'un entry point secondaire à partir de son chemin sur disque (aucune option pour le découpler), donc **chaque import change** — ex. `@4sh/ui-kit/ui-button` devient `@4sh/ui-kit/actions/ui-button`. Voir `storybook/docs/Overview.mdx` pour la liste complète des 53 renommages. Un projet qui consomme `@4sh/ui-kit` doit mettre à jour tous ses imports de composants.
+
 ## [0.1.2] - 2026-08-12
 
 Version d'outillage et de CI : **aucun changement de code des composants**, le

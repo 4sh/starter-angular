@@ -3,7 +3,7 @@
  *
  * Shared form infrastructure: the base classes every `ui-*` field inherits
  * from, plus the helpers those fields rely on. Importing a field component
- * (e.g. `@4sh/ui-kit/ui-input`) pulls this in automatically — you only import
+ * (e.g. `@4sh/ui-kit/forms/ui-input`) pulls this in automatically — you only import
  * from here directly when building your OWN field on top of the kit's
  * conventions.
  */
