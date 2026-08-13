@@ -1,4 +1,7 @@
 import { Meta, Story } from "@storybook/addon-docs/blocks";
+// FSHSP-101 : généré par `npm run build-info`, même mécanique que
+// `generated/ui-config.json` (voir `scripts/docs.config.mjs`).
+import buildInfo from "../generated/build-info.json";
 import * as ButtonStories from "../../projects/ui-kit/ui-button/ui-button.stories";
 import * as ButtonSplitStories from "../../projects/ui-kit/ui-button-split/ui-button-split.stories";
 import * as LinkStories from "../../projects/ui-kit/ui-link/ui-link.stories";
@@ -315,6 +318,27 @@ export const StatsCards = ({ categories }) => {
     </div>
   );
 };
+
+{/* FSHSP-101 : ce Storybook est redéployé à chaque push `main` — il documente donc
+    potentiellement du code en avance sur ce qui est installable depuis npm. Cet
+    encart rend l'écart visible plutôt que silencieux. Écrit en JSX inline (pas de
+    `export const` séparé) : un nouveau composant top-level nommé casse le rendu
+    de cette page — l'indexeur MDX de Storybook le traite comme une story CSF
+    manquante plutôt qu'un composant local, cf. commit de ce fichier. */}
+<div style={{
+  display: 'flex', alignItems: 'center', gap: 10,
+  padding: '10px 16px', marginTop: 24, marginBottom: 8,
+  borderRadius: 8, background: 'var(--sb-bg-subtle)', border: '1px solid var(--sb-border)',
+  fontSize: 13, color: 'var(--sb-text-subtle)',
+}}>
+  <span aria-hidden="true">📦</span>
+  <span>
+    Version documentée : <strong style={{ color: 'var(--sb-text)' }}>{buildInfo.label}</strong>
+    {!buildInfo.isReleased && buildInfo.lastPublished && (
+      <> — en avance sur la <strong style={{ color: 'var(--sb-text)' }}>{buildInfo.lastPublished}</strong> publiée sur npm.</>
+    )}
+  </span>
+</div>
 
 <StatsCards categories={CATEGORIES} />
 

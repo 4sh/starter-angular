@@ -1,7 +1,13 @@
 import { create } from 'storybook/theming';
+// Généré par `npm run build-info` (chaîné avant `storybook`/`build-storybook`),
+// même mécanique que `generated/ui-config.json` — voir `docs.config.mjs`.
+import buildInfo from './generated/build-info.json';
 
 const brandContent = {
-  brandTitle: 'Starter Design System',
+  // FSHSP-101 : ce Storybook est redéployé à chaque push `main`, donc en
+  // avance sur ce qui est installable — le label rend cet écart visible sur
+  // toutes les pages (barre du manager), pas juste sur l'accueil.
+  brandTitle: `Starter Design System · ${buildInfo.label}`,
   brandTarget: '_self',
   fontBase: '"Inter", sans-serif',
   fontCode: 'monospace',
