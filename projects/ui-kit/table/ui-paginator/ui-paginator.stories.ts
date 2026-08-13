@@ -68,7 +68,7 @@ const meta: Meta<UiPaginator> = {
     currentPageReportTemplate: {
       control: { type: 'text' },
       description: 'Motif du rapport — placeholders `{first}` `{last}` `{rows}` `{page}` `{pageCount}` `{totalRecords}`.',
-      table: { type: { summary: 'string' }, defaultValue: { summary: '{first} - {last} sur {totalRecords}' } },
+      table: { type: { summary: 'string' }, defaultValue: { summary: '{first} - {last} of {totalRecords}' } },
     },
     disabled: {
       control: { type: 'boolean' },

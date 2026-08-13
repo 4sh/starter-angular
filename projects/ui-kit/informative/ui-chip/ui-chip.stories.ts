@@ -91,7 +91,7 @@ const meta: Meta<UiChip> = {
     removeAriaLabel: {
       control: { type: 'text' },
       description: "Nom accessible de l'action de suppression.",
-      table: { type: { summary: 'string' }, defaultValue: { summary: '"Supprimer"' } },
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Remove"' } },
     },
     remove: { action: 'remove', table: { category: 'Events' } },
     chipClick: { action: 'chipClick', table: { category: 'Events' } },

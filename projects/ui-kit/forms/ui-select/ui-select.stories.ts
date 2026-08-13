@@ -150,7 +150,7 @@ const meta: Meta<UiSelect> = {
     overflowLabel: {
       control: 'text',
       description: 'Indicateur de repli — `{0}` est remplacé par le nombre d’éléments masqués.',
-      table: { type: { summary: 'string' }, defaultValue: { summary: "'(+{0} autres)'" } },
+      table: { type: { summary: 'string' }, defaultValue: { summary: "'(+{0} more)'" } },
     },
     placeholder: {
       control: 'text',

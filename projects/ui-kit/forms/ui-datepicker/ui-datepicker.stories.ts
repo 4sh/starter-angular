@@ -51,7 +51,7 @@ const meta: Meta<UiDatepicker> = {
     editableTime: { control: 'boolean', description: 'Autorise la frappe des heures / minutes (AM/PM reste une bascule).', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } } },
     showButtonBar: { control: 'boolean', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
     todayLabel: { control: 'text', description: 'Libellé du bouton « Aujourd\'hui » par défaut.', table: { type: { summary: 'string' }, defaultValue: { summary: '"Aujourd\'hui"' } } },
-    clearLabel: { control: 'text', description: 'Libellé du bouton « Effacer » par défaut (et de la croix `showClear`).', table: { type: { summary: 'string' }, defaultValue: { summary: '"Effacer"' } } },
+    clearLabel: { control: 'text', description: 'Libellé du bouton d’effacement (et de la croix `showClear`).', table: { type: { summary: 'string' }, defaultValue: { summary: '"Clear"' } } },
     inline: { control: 'boolean', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
     showClear: { control: 'boolean', description: 'Affiche une croix pour effacer la valeur quand elle est renseignée.', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
     autoFlip: { control: 'boolean', description: "Retourne le panneau vers le haut si l'espace manque en bas.", table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } } },

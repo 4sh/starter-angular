@@ -152,7 +152,7 @@ const meta: Meta<UiAlert> = {
     closeAriaLabel: {
       control: { type: 'text' },
       description: 'Nom accessible du bouton de fermeture.',
-      table: { type: { summary: 'string' }, defaultValue: { summary: '"Fermer"' } },
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Close"' } },
     },
     life: {
       control: { type: 'number' },

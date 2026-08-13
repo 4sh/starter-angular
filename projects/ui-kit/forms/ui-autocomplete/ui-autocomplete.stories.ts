@@ -215,7 +215,7 @@ const meta: Meta<UiAutocomplete> = {
     overflowLabel: {
       control: 'text',
       description: 'Avec `multiple` : format de la chip de repli (`{0}` = nombre masqué).',
-      table: { type: { summary: 'string' }, defaultValue: { summary: "'(+{0} autres)'" } },
+      table: { type: { summary: 'string' }, defaultValue: { summary: "'(+{0} more)'" } },
     },
     showClear: {
       control: 'boolean',
@@ -230,7 +230,7 @@ const meta: Meta<UiAutocomplete> = {
     emptyMessage: {
       control: 'text',
       description: 'Message affiché quand une requête ne renvoie aucune suggestion.',
-      table: { type: { summary: 'string' }, defaultValue: { summary: "'Aucun résultat'" } },
+      table: { type: { summary: 'string' }, defaultValue: { summary: "'No results'" } },
     },
     autoOptionFocus: {
       control: 'boolean',

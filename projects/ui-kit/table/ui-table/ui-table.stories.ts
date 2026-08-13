@@ -242,12 +242,12 @@ const meta: Meta<UiTable<Product>> = {
     loadingAriaLabel: {
       control: false,
       description: 'Nom accessible de l’indicateur de chargement.',
-      table: { type: { summary: 'string' }, defaultValue: { summary: 'Chargement des données' } },
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'Loading data' } },
     },
     emptyMessage: {
       control: { type: 'text' },
       description: 'Titre de l’état vide par défaut (rendu avec `ui-empty-state`).',
-      table: { type: { summary: 'string' }, defaultValue: { summary: 'Aucune donnée à afficher' } },
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'No data to display' } },
     },
     emptyIcon: {
       control: false,

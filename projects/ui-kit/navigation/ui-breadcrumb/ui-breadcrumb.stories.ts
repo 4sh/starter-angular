@@ -64,7 +64,7 @@ const meta: Meta<UiBreadcrumb> = {
     ellipsisAriaLabel: {
       control: { type: 'text' },
       description: "Nom accessible du bouton ellipsis qui révèle les éléments masqués.",
-      table: { type: { summary: 'string' }, defaultValue: { summary: '"Afficher les éléments masqués"' } },
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Show hidden items"' } },
     },
     styleClass: {
       control: { type: 'text' },
