@@ -348,7 +348,7 @@ export class UiTabList {
     const viewSize = horizontal ? viewport.clientWidth : viewport.clientHeight;
     if (viewSize === 0) return; // not laid out yet , a later pass will re-run.
 
-    let target = viewStart;
+    let target: number;
     if (start < viewStart) {
       target = start; // clipped at the start edge , align to it.
     } else if (start + size > viewStart + viewSize) {
