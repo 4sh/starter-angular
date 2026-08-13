@@ -31,7 +31,7 @@ Before generating anything in Figma, you **must** audit the source Angular compo
 | Icons | FontAwesome Free |
 | Grid | Gridaflex 1.0.0 |
 
-> **Reference pattern**: `projects/ui-kit/ui-button/`. Every new
+> **Reference pattern**: `projects/ui-kit/actions/ui-button/`. Every new
 > `ui-*` component is built on this model (signals + SCSS visual-DNA classes).
 
 > 📦 **The `ui-*` kit lives in `projects/ui-kit/`** — published as the `@4sh/ui-kit`
@@ -140,7 +140,7 @@ ui-{name}/
 > Each component's **style is co-located** in its own `.scss` (Angular scoped
 > styles). The kit's SCSS foundation (tokens, `utils`, base) lives in `projects/ui-kit/styles/` and ships with the package.
 > All values (color, spacing, radius…) come from token CSS variables.
-> Reference pattern: `projects/ui-kit/ui-button/` (+ `ui-icon`).
+> Reference pattern: `projects/ui-kit/actions/ui-button/` (+ `base/ui-icon`).
 
 ### Theming doc: generated from SCSS
 
@@ -174,7 +174,7 @@ Rules:
 
 | Category | Selector prefix | Location |
 |---|---|---|
-| Generic UI | `ui-` | `projects/ui-kit/ui-{name}/` (package `@4sh/ui-kit`) |
+| Generic UI | `ui-` | `projects/ui-kit/{category}/ui-{name}/` (package `@4sh/ui-kit`) |
 | Business domain | `sp-` or project prefix | `src/app/shared/components/domain/` |
 
 ### Signals patterns

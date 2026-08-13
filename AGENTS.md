@@ -28,37 +28,53 @@ Fonts embedded locally (DM Sans + Inter, variable fonts): `src/styles/src/vendor
 | Question | Where to look |
 |---|---|
 | Existing components / roadmap | `src/app/shared/components/components-index.md` |
-| A component's API (`inputs`, `outputs`, types) | `projects/ui-kit/ui-<name>/ui-<name>.stories.ts` → `argTypes` (co-located) |
+| A component's API (`inputs`, `outputs`, types) | `projects/ui-kit/<category>/ui-<name>/ui-<name>.stories.ts` → `argTypes` (co-located) |
 | Colors, semantic tokens | Storybook → `Foundations / Colors` (brand + mode explorer) |
 | Typography | Storybook → `Foundations / Typography` |
 | Shadows & effects | Storybook → `Foundations / Shadows` |
 | Tokens pipeline, theme, responsive | Storybook → `Spécifications / *` |
-| Source Angular component | `projects/ui-kit/ui-<name>/src/lib/` |
-| **Reference pattern** | `projects/ui-kit/ui-button/` (+ `ui-icon`) |
+| Source Angular component | `projects/ui-kit/<category>/ui-<name>/src/lib/` |
+| **Reference pattern** | `projects/ui-kit/actions/ui-button/` (+ `base/ui-icon`) |
 
 ---
 
 ## The `ui-*` kit lives in the `@4sh/ui-kit` package (FSHSP-83)
 
-All 54 `ui-*` components live in `projects/ui-kit/` — an `ng-packagr` library
+All 53 `ui-*` components live in `projects/ui-kit/` — an `ng-packagr` library
 published as a **single** npm package with one *secondary entry point* per
 component. `src/app/` now only holds the demo application and its `domain/`
 components.
 
+Components are grouped on disk by category (FSHSP-107 — mirrors the sections of
+`storybook/docs/Overview.mdx`, the source of truth for the mapping):
+`actions/`, `forms/`, `informative/`, `layout/`, `navigation/`, `table/`, `base/`.
+**No change to the npm entry points**: `@4sh/ui-kit/ui-button` still resolves the
+same way regardless of which category folder `ui-button/` physically lives in —
+`ng-packagr` discovers a secondary entry point by the presence of a
+`ng-package.json` file, at any depth, not by its path.
+
 Layout of a component:
 
 ```
-projects/ui-kit/ui-<name>/
-├── ng-package.json                 ← entry point config (styleIncludePaths → ../styles)
+projects/ui-kit/<category>/ui-<name>/
+├── ng-package.json                 ← entry point config (styleIncludePaths → ../../styles)
 ├── src/public-api.ts               ← what the entry point exports
 ├── src/lib/ui-<name>.{ts,html,scss}   (+ sub-components, .types.ts, .model.ts…)
 ├── ui-<name>.stories.ts            ← OUTSIDE src/ (Storybook-only, never packaged)
 └── ui-<name>.mdx
 ```
 
-Cross-cutting entry points: `forms` (field base classes + helpers), `theming`
-(`ThemeService`, `BrandService`), `motion` (`UiMotion`), `overlay`
-(`closeOnNavigation`), `types`.
+⚠️ **`styleIncludePaths` and `$schema` in `ng-package.json` are one level deeper**
+than a flat layout would suggest (`../../styles`, `../../../../node_modules`) — the
+category folder adds a level. Get this wrong and `ui-kit:build` fails to resolve
+`utils.scss`/the JSON schema, not always loudly.
+
+Cross-cutting entry points, at the root of `projects/ui-kit/` (not categorized —
+they are not `ui-*` components): `forms` (field base classes + helpers — also
+**doubles as the `forms/` category folder**, so it holds both its own
+`forms/src/` and the 20 `forms/ui-<name>/` components; this is deliberate, not a
+naming accident — see the ticket for why), `theming` (`ThemeService`,
+`BrandService`), `motion` (`UiMotion`), `overlay` (`closeOnNavigation`), `types`.
 
 Rules when working in `projects/ui-kit/`:
 
@@ -82,7 +98,7 @@ Rules when working in `projects/ui-kit/`:
   `index.scss` → `dist/ui-kit/styles.css`, shipped alongside the SCSS sources.
 - **Never `@forward` anything that emits CSS from `utils.scss`.** Each component
   `.scss` is its own Sass compilation unit, so emitted rules get duplicated into all
-  54 components. Global utility classes belong in `index.scss` (and, app-side, in
+  53 components. Global utility classes belong in `index.scss` (and, app-side, in
   `src/styles/main.scss`).
 - `npm run ui-kit:build` runs before the app/Storybook (chained into `serve` /
   `build` / `storybook` / `build-storybook` / `postinstall`), since `@4sh/ui-kit/*`
@@ -94,10 +110,11 @@ Rules when working in `projects/ui-kit/`:
 
 ```
 projects/
-  ui-kit/                    # @4sh/ui-kit — the published package (53 entry points, 54 components)
-    <ui-name>/               # one secondary entry point per component
-      ng-package.json · src/public-api.ts · src/lib/… · *.stories.ts · *.mdx
-    forms/ theming/ motion/ overlay/ types/     # cross-cutting entry points
+  ui-kit/                    # @4sh/ui-kit — the published package (53 entry points, 53 components)
+    <category>/              # actions/ forms/ informative/ layout/ navigation/ table/ base/
+      <ui-name>/             # one secondary entry point per component
+        ng-package.json · src/public-api.ts · src/lib/… · *.stories.ts · *.mdx
+    forms/ theming/ motion/ overlay/ types/     # cross-cutting entry points (forms/ doubles as a category, see above)
     styles/                  # the kit's SCSS foundation — SHIPPED with the package
       utils.scss             #   API-only build surface (`@use 'utils'`); emits NO CSS
       utils/ settings/       #   functions, mixins, $ui-config constants
@@ -130,7 +147,7 @@ holds what is specific to the demo app (aggregator, fonts, grid settings, layout
 | Angular selector | `ui-<name>` | `ui-button` |
 | TypeScript class | `Ui<Name>` | `UiButton` |
 | File | `ui-<name>.ts` (without `.component`) | `ui-button.ts` |
-| Story & doc | co-located: `projects/ui-kit/ui-<name>/ui-<name>.stories.ts` + `ui-<name>.mdx` | `ui-button.stories.ts` |
+| Story & doc | co-located: `projects/ui-kit/<category>/ui-<name>/ui-<name>.stories.ts` + `ui-<name>.mdx` | `ui-button.stories.ts` |
 | Import alias | Kit components: `@4sh/ui-kit/<entry>` · app code: `@app/` | `@4sh/ui-kit/ui-button` |
 
 ### Business components (domain)
@@ -317,8 +334,8 @@ $focus-ring-width: utils.$form-focus-ring-width; // ← replace the value here t
 
 ### Modify an existing ui-* component
 
-1. Read `projects/ui-kit/ui-<name>/ui-<name>.stories.ts` → identify `argTypes`
-2. Read `projects/ui-kit/ui-<name>/src/lib/` → check types and structure
+1. Read `projects/ui-kit/<category>/ui-<name>/ui-<name>.stories.ts` → identify `argTypes`
+2. Read `projects/ui-kit/<category>/ui-<name>/src/lib/` → check types and structure
 3. Modify `.ts`, `.html`, `.scss` (tokens only) — any added config variable carries its `///`
 4. Update the story + the `.mdx` if the API changes; `npm run docs:config` if the SCSS config moved
 5. Verify light + dark + the 3 brands (Storybook → `Foundations / Colors` for the tokens)
@@ -326,8 +343,8 @@ $focus-ring-width: utils.$form-focus-ring-width; // ← replace the value here t
 ### Create a ui-* component (generic)
 
 1. Check `components-index.md` (roadmap, planned name)
-2. Replicate the **`ui-button` pattern**: file structure, signals + `computed()` for the classes, co-located SCSS
-3. Create the story + the `.mdx` **co-located** in `projects/ui-kit/ui-<name>/` (outside `src/`; global doc only → `storybook/docs/`)
+2. Replicate the **`actions/ui-button` pattern**: file structure, signals + `computed()` for the classes, co-located SCSS
+3. Create the story + the `.mdx` **co-located** in `projects/ui-kit/<category>/ui-<name>/` (outside `src/`; global doc only → `storybook/docs/`) — pick `<category>` from `storybook/docs/Overview.mdx`'s sections, or ask if the component doesn't fit an existing one
 4. Check off the component in `components-index.md`
 
 ### Create a business component (domain)

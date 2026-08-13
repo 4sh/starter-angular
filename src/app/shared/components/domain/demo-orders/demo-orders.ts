@@ -4,43 +4,43 @@ import { DecimalPipe } from '@angular/common';
 import { ThemeService } from '@4sh/ui-kit/theming';
 
 // Actions
-import { UiButton } from '@4sh/ui-kit/ui-button';
-import { UiLink } from '@4sh/ui-kit/ui-link';
+import { UiButton } from '@4sh/ui-kit/actions/ui-button';
+import { UiLink } from '@4sh/ui-kit/actions/ui-link';
 
 // Forms
-import { UiInput } from '@4sh/ui-kit/ui-input';
-import { UiSelect } from '@4sh/ui-kit/ui-select';
-import { UiDatepicker } from '@4sh/ui-kit/ui-datepicker';
-import { UiCheckbox } from '@4sh/ui-kit/ui-checkbox';
-import { UiSegmentControl } from '@4sh/ui-kit/ui-segment-control';
-import { UiToggle } from '@4sh/ui-kit/ui-toggle';
-import { UiInputMask } from '@4sh/ui-kit/ui-input-mask';
-import { UiNudger } from '@4sh/ui-kit/ui-nudger';
-import { UiSlider } from '@4sh/ui-kit/ui-slider';
-import { UiTextarea } from '@4sh/ui-kit/ui-textarea';
-import { TableSize } from '@4sh/ui-kit/ui-table';
+import { UiInput } from '@4sh/ui-kit/forms/ui-input';
+import { UiSelect } from '@4sh/ui-kit/forms/ui-select';
+import { UiDatepicker } from '@4sh/ui-kit/forms/ui-datepicker';
+import { UiCheckbox } from '@4sh/ui-kit/forms/ui-checkbox';
+import { UiSegmentControl } from '@4sh/ui-kit/forms/ui-segment-control';
+import { UiToggle } from '@4sh/ui-kit/forms/ui-toggle';
+import { UiInputMask } from '@4sh/ui-kit/forms/ui-input-mask';
+import { UiNudger } from '@4sh/ui-kit/forms/ui-nudger';
+import { UiSlider } from '@4sh/ui-kit/forms/ui-slider';
+import { UiTextarea } from '@4sh/ui-kit/forms/ui-textarea';
+import { TableSize } from '@4sh/ui-kit/table/ui-table';
 
 // Informative
-import { UiTag } from '@4sh/ui-kit/ui-tag';
-import { UiBadge } from '@4sh/ui-kit/ui-badge';
-import { UiAvatar } from '@4sh/ui-kit/ui-avatar';
-import { UiProgressBar } from '@4sh/ui-kit/ui-progress-bar';
-import { UiTooltip } from '@4sh/ui-kit/ui-tooltip';
-import { UiSeparator } from '@4sh/ui-kit/ui-separator';
-import { UiReadOnly } from '@4sh/ui-kit/ui-read-only';
-import { UiSkeleton } from '@4sh/ui-kit/ui-skeleton';
+import { UiTag } from '@4sh/ui-kit/informative/ui-tag';
+import { UiBadge } from '@4sh/ui-kit/informative/ui-badge';
+import { UiAvatar } from '@4sh/ui-kit/informative/ui-avatar';
+import { UiProgressBar } from '@4sh/ui-kit/informative/ui-progress-bar';
+import { UiTooltip } from '@4sh/ui-kit/informative/ui-tooltip';
+import { UiSeparator } from '@4sh/ui-kit/informative/ui-separator';
+import { UiReadOnly } from '@4sh/ui-kit/informative/ui-read-only';
+import { UiSkeleton } from '@4sh/ui-kit/informative/ui-skeleton';
 
 // Layout
-import { UiCard } from '@4sh/ui-kit/ui-card';
-import { UiDrawer } from '@4sh/ui-kit/ui-drawer';
-import { UiModal } from '@4sh/ui-kit/ui-modal';
+import { UiCard } from '@4sh/ui-kit/layout/ui-card';
+import { UiDrawer } from '@4sh/ui-kit/layout/ui-drawer';
+import { UiModal } from '@4sh/ui-kit/layout/ui-modal';
 
 // Navigation
-import { UiBreadcrumb } from '@4sh/ui-kit/ui-breadcrumb';
-import { UiTabs, UiTabList, UiTab, UiTabPanels, UiTabPanel } from '@4sh/ui-kit/ui-tabs';
-import { UiSidebar } from '@4sh/ui-kit/ui-sidebar';
-import { UiSidebarMenu, UiSidebarMenuItem } from '@4sh/ui-kit/ui-sidebar';
-import { UiSidebarTrigger } from '@4sh/ui-kit/ui-sidebar';
+import { UiBreadcrumb } from '@4sh/ui-kit/navigation/ui-breadcrumb';
+import { UiTabs, UiTabList, UiTab, UiTabPanels, UiTabPanel } from '@4sh/ui-kit/navigation/ui-tabs';
+import { UiSidebar } from '@4sh/ui-kit/navigation/ui-sidebar';
+import { UiSidebarMenu, UiSidebarMenuItem } from '@4sh/ui-kit/navigation/ui-sidebar';
+import { UiSidebarTrigger } from '@4sh/ui-kit/navigation/ui-sidebar';
 
 // Table
 import {
@@ -50,10 +50,10 @@ import {
   UiTableSelectableRow,
   UiTableSortableColumn,
   UiTableSortIcon,
-} from '@4sh/ui-kit/ui-table';
+} from '@4sh/ui-kit/table/ui-table';
 
 // Root
-import { UiIcon } from '@4sh/ui-kit/ui-icon';
+import { UiIcon } from '@4sh/ui-kit/base/ui-icon';
 import { UiFeedbackLevel } from '@4sh/ui-kit/types';
 
 // ---- Types ----------------------------------------------------------------

@@ -7,7 +7,7 @@ import { addons } from 'storybook/preview-api';
 import docJson from '../documentation.json';
 import { brandGlobalTypes, withBrand, DEFAULT_BRAND } from './brand-toolbar';
 import { withComponentMetadata } from './restore-component-metadata';
-import { provideUiImageAssets, UiImageAssetsMap } from '@4sh/ui-kit/ui-image';
+import { provideUiImageAssets, UiImageAssetsMap } from '@4sh/ui-kit/base/ui-image';
 import assetsMap from '../src/assets/assets-map.json';
 
 setCompodocJson(docJson);

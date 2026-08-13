@@ -1,6 +1,6 @@
 import { Component, computed, input, signal } from '@angular/core';
 import { UiMotion, UiMotionPreset } from '@4sh/ui-kit/motion';
-import { UiButton } from '@4sh/ui-kit/ui-button';
+import { UiButton } from '@4sh/ui-kit/actions/ui-button';
 
 /**
  * Interactive harness for the motion presets (Storybook only). Renders a toggle
