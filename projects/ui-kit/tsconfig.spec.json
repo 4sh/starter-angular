@@ -6,5 +6,9 @@
     "outDir": "../../out-tsc/spec",
     "types": ["vitest/globals"]
   },
-  "include": ["src/**/*.d.ts", "src/**/*.spec.ts"]
+  // Not scoped to "src/**": each entry point owns its own `src/` (forms/src,
+  // ui-datepicker/src…), sibling to this file's directory, not nested under
+  // it — see AGENTS.md. A "src/**" glob would only ever match the (unused)
+  // projects/ui-kit/src, silently collecting zero specs everywhere else.
+  "include": ["**/*.d.ts", "**/*.spec.ts"]
 }

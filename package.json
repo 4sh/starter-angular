@@ -9,8 +9,10 @@
     "build": "npm run ui-kit:build && ng build",
     "lint": "ng lint --fix",
     "lint:check": "ng lint",
+    "test": "ng test ui-kit",
     "storybook": "npm run build-info && npm run ui-kit:build && npm run docs:config && ng run demo:storybook",
     "build-storybook": "npm run build-info && npm run ui-kit:build && npm run docs:config && ng run demo:build-storybook",
+    "test-storybook:ci": "http-server storybook-static --port 6006 --silent & npx wait-on tcp:6006 && test-storybook --ci --config-dir storybook --url http://localhost:6006",
     "generate:assets": "node src/scripts/build-assets.js",
     "postinstall": "npm run tokens:build && npm run ui-kit:build && npm run docs:config",
     "ui-kit:build": "ng build ui-kit && npm run ui-kit:styles",
@@ -39,7 +41,7 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "22.1.3",
-    "@angular/build": "^22.0.8",
+    "@angular/build": "^22.1.3",
     "@angular/cli": "22.1.3",
     "@angular/compiler-cli": "22.1.1",
     "@compodoc/compodoc": "1.1.26",
@@ -50,15 +52,18 @@
     "@storybook/addon-designs": "11.1.4",
     "@storybook/addon-docs": "10.5.7",
     "@storybook/angular": "10.5.7",
-    "@types/jasmine": "5.1.8",
+    "@storybook/test-runner": "^0.24.4",
     "angular-eslint": "^22.1.0",
+    "axe-playwright": "^2.2.2",
     "eslint": "^10.8.1",
+    "http-server": "^14.1.1",
     "jsdom": "^28.0.0",
     "ng-packagr": "^22.0.2",
     "storybook": "10.5.7",
     "style-dictionary": "5.5.0",
     "typescript": "6.0.3",
     "typescript-eslint": "8.66.0",
-    "vitest": "^4.0.8"
+    "vitest": "^4.0.8",
+    "wait-on": "^9.1.0"
   }
 }

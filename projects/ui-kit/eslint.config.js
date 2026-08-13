@@ -26,12 +26,13 @@ module.exports = defineConfig([
     },
   },
   {
-    // Stories host their own demo components (`demo-select-signal-forms`…) to
-    // exercise a scenario the kit itself must not ship. They live outside the
-    // entry point's `src/`, so they never reach the package — the `ui` prefix,
-    // which reserves the kit's public element namespace, would be a lie here.
+    // Stories AND specs host their own demo/test components (`demo-select-signal-forms`,
+    // `demo-cva`…) to exercise a scenario the kit itself must not ship. Stories live
+    // outside the entry point's `src/`; specs live inside it but are excluded from the
+    // packaged output by ng-packagr (default) same as `.stories.ts` — either way the `ui`
+    // prefix, which reserves the kit's public element namespace, would be a lie here.
     // The rule stays fully enforced on everything that IS packaged.
-    files: ["**/*.stories.ts"],
+    files: ["**/*.stories.ts", "**/*.spec.ts"],
     rules: {
       "@angular-eslint/component-selector": [
         "error",

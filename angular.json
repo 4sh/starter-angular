@@ -183,7 +183,14 @@
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
-            "tsConfig": "projects/ui-kit/tsconfig.spec.json"
+            "tsConfig": "projects/ui-kit/tsconfig.spec.json",
+            // "include" globs relative to `sourceRoot` (projects/ui-kit/src),
+            // but every entry point owns its own sibling src/ (forms/src,
+            // ui-datepicker/src…) — the default "**/*.spec.ts" would only ever
+            // scan the (unused) projects/ui-kit/src. "../" reaches the actual
+            // entry points, one level up. Same root cause as tsconfig.spec.json's
+            // "include" fix above this file's diff.
+            "include": ["../**/*.spec.ts"]
           }
         },
         "lint": {
