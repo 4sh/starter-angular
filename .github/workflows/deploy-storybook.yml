@@ -21,8 +21,14 @@ jobs:
     name: Build Storybook
     runs-on: ubuntu-latest
     steps:
+      # fetch-depth 0 : `npm run build-storybook` calls `build-info.mjs`, which
+      # runs `git describe --tags` to find the last published version. A
+      # shallow checkout (the default) fetches no tags, so the "ahead of
+      # X.Y.Z" part of the label would silently disappear.
       - name: Checkout repository
         uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
 
       - name: Read Node.js version from .nvmrc
         id: nvmrc
