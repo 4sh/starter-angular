@@ -51,6 +51,12 @@ jobs:
       - name: Typecheck the demo app
         run: npx tsc -p tsconfig.app.json --noEmit
 
+      # FSHSP-93: unit tests on the kit (vitest, via the `test` architect
+      # target). Only pure-logic specs so far (mask engine, option resolver,
+      # date helpers) — no component/DOM tests yet.
+      - name: Unit tests
+        run: npm run test
+
       # Not `docs:config:check`: postinstall just regenerated the doc manifest,
       # so that half is a no-op here. components:check is the meaningful one —
       # it compares the hand-written component lists against the entry points

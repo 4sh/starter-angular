@@ -35,6 +35,19 @@ import { UiInput } from '@4sh/ui-kit/ui-input';
 import { UiButton } from '@4sh/ui-kit/ui-button';
 import { UiIcon } from '@4sh/ui-kit/ui-icon';
 import { closeOnNavigation } from '@4sh/ui-kit/overlay';
+import {
+  addDays,
+  addMonths,
+  finalizeParsed,
+  firstOfMonth,
+  isSameDay,
+  normalizeDateInput,
+  parseIsoDate,
+  parseIsoDateTime,
+  startOfDay,
+  toIsoDate,
+  toIsoDateTime,
+} from './date-utils';
 
 export type DatepickerHourFormat = '12' | '24';
 /** Base picking granularity — also the drill-down levels of the panel. */
@@ -108,70 +121,6 @@ export interface DatepickerMonthPanel {
   showNext: boolean;
 }
 
-// --- Pure date helpers (module-level, side-effect free) ----------------
-
-function startOfDay(d: Date): Date {
-  const x = new Date(d);
-  x.setHours(0, 0, 0, 0);
-  return x;
-}
-function firstOfMonth(d: Date): Date {
-  return new Date(d.getFullYear(), d.getMonth(), 1);
-}
-function isSameDay(a: Date | null | undefined, b: Date | null | undefined): boolean {
-  if (!a || !b) return false;
-  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
-}
-function addDays(d: Date, n: number): Date {
-  const x = new Date(d);
-  x.setDate(x.getDate() + n);
-  return x;
-}
-function addMonths(d: Date, n: number): Date {
-  return new Date(d.getFullYear(), d.getMonth() + n, 1);
-}
-/** Build a Date and reject overflowed components (e.g. 31 Feb). */
-function finalizeParsed(year: number, month: number, day: number, h: number, min: number): Date | null {
-  if (month < 0 || month > 11 || day < 1 || day > 31 || h > 23 || min > 59) return null;
-  const d = new Date(year, month, day, h, min, 0, 0);
-  if (d.getFullYear() !== year || d.getMonth() !== month || d.getDate() !== day) return null;
-  return d;
-}
-
-const ISO_DATE_RE = /^(\d{4})-(\d{2})-(\d{2})$/;
-const ISO_DATETIME_RE = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/;
-
-function pad2(n: number): string {
-  return String(n).padStart(2, '0');
-}
-/** Serialize a `Date` to `"yyyy-MM-dd"` from its LOCAL components — never `toISOString()`
- *  (which converts to UTC and can shift the day by ±1 depending on the timezone). */
-function toIsoDate(d: Date): string {
-  return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
-}
-/** `"yyyy-MM-ddTHH:mm"` — date part built the same local, never-UTC way as {@link toIsoDate}. */
-function toIsoDateTime(d: Date): string {
-  return `${toIsoDate(d)}T${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
-}
-/** Strict `"yyyy-MM-dd"` parser (rejects anything else, incl. overflowed dates via `finalizeParsed`). */
-function parseIsoDate(s: string): Date | null {
-  const m = ISO_DATE_RE.exec(s);
-  if (!m) return null;
-  return finalizeParsed(Number(m[1]), Number(m[2]) - 1, Number(m[3]), 0, 0);
-}
-/** Strict `"yyyy-MM-ddTHH:mm"` parser (`showTime`/`timeOnly` round-trip). */
-function parseIsoDateTime(s: string): Date | null {
-  const m = ISO_DATETIME_RE.exec(s);
-  if (!m) return null;
-  return finalizeParsed(Number(m[1]), Number(m[2]) - 1, Number(m[3]), Number(m[4]), Number(m[5]));
-}
-/** Accepts a `Date` as-is, or parses a `"yyyy-MM-dd"` string — used to let config inputs
- *  (`minDate`/`maxDate`/`disabledDates`) take either shape. Invalid strings degrade to `null`
- *  (no constraint) rather than throwing: a malformed config shouldn't crash the picker. */
-function normalizeDateInput(v: Date | string | null | undefined): Date | null {
-  if (!v) return null;
-  return v instanceof Date ? v : parseIsoDate(v);
-}
 
 let nextPanelUid = 0;
 
