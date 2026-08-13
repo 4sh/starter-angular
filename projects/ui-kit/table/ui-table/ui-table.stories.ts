@@ -30,20 +30,20 @@ interface Product {
 }
 
 const products: Product[] = [
-  { id: 1, code: 'f230fh0g3', name: 'Bracelet bambou', category: 'Accessoires', quantity: 24, price: 65 },
-  { id: 2, code: 'nvklal433', name: 'Montre noire', category: 'Accessoires', quantity: 61, price: 72 },
-  { id: 3, code: 'zz21cz3c1', name: 'Ceinture bleue', category: 'Accessoires', quantity: 2, price: 79 },
-  { id: 4, code: '244wgerg2', name: 'T-shirt bleu', category: 'Vêtements', quantity: 25, price: 29 },
-  { id: 5, code: 'h456wer53', name: 'Bracelet cuir', category: 'Accessoires', quantity: 73, price: 15 },
-  { id: 6, code: 'av2231fwg', name: 'Chaussures marine', category: 'Chaussures', quantity: 0, price: 109 },
+  { id: 1, code: 'f230fh0g3', name: 'Bamboo bracelet', category: 'Accessories', quantity: 24, price: 65 },
+  { id: 2, code: 'nvklal433', name: 'Black watch', category: 'Accessories', quantity: 61, price: 72 },
+  { id: 3, code: 'zz21cz3c1', name: 'Blue belt', category: 'Accessories', quantity: 2, price: 79 },
+  { id: 4, code: '244wgerg2', name: 'Blue t-shirt', category: 'Clothing', quantity: 25, price: 29 },
+  { id: 5, code: 'h456wer53', name: 'Leather bracelet', category: 'Accessories', quantity: 73, price: 15 },
+  { id: 6, code: 'av2231fwg', name: 'Navy shoes', category: 'Shoes', quantity: 0, price: 109 },
 ];
 
 /** Dataset étendu pour les démonstrations de scroll / pagination. */
 const manyProducts: Product[] = Array.from({ length: 40 }, (_, i) => ({
   id: i + 1,
   code: `sku-${String(i + 1).padStart(4, '0')}`,
-  name: `Produit ${i + 1}`,
-  category: ['Accessoires', 'Vêtements', 'Chaussures', 'Fitness'][i % 4],
+  name: `Product ${i + 1}`,
+  category: ['Accessories', 'Clothing', 'Shoes', 'Fitness'][i % 4],
   quantity: (i * 7) % 90,
   price: 10 + ((i * 13) % 120),
 }));
@@ -52,9 +52,9 @@ const basicColumns = `
   <ng-template #header>
     <tr>
       <th>Code</th>
-      <th>Nom</th>
-      <th>Catégorie</th>
-      <th>Quantité</th>
+      <th>Name</th>
+      <th>Category</th>
+      <th>Quantity</th>
     </tr>
   </ng-template>
   <ng-template #body let-product>
@@ -397,8 +397,8 @@ export const SelectionCheckbox: Story = {
           <tr>
             <th style="width: 3rem"><ui-table-header-checkbox /></th>
             <th>Code</th>
-            <th>Nom</th>
-            <th>Catégorie</th>
+            <th>Name</th>
+            <th>Category</th>
           </tr>
         </ng-template>
         <ng-template #body let-product let-rowIndex="rowIndex">
@@ -424,8 +424,8 @@ export const SelectionRadio: Story = {
           <tr>
             <th style="width: 3rem"></th>
             <th>Code</th>
-            <th>Nom</th>
-            <th>Catégorie</th>
+            <th>Name</th>
+            <th>Category</th>
           </tr>
         </ng-template>
         <ng-template #body let-product let-rowIndex="rowIndex">
@@ -455,7 +455,7 @@ export const SelectionEvents: Story = {
       },
     },
     template: `
-      <p style="min-height: 1.5rem">{{ lastEvent || 'Sélectionnez une ligne…' }}</p>
+      <p style="min-height: 1.5rem">{{ lastEvent || 'Select a row…' }}</p>
       <ui-table
         [value]="products"
         dataKey="id"
@@ -476,9 +476,9 @@ const sortableColumns = `
   <ng-template #header>
     <tr>
       <th uiSortableColumn="code">Code <ui-table-sort-icon field="code" /></th>
-      <th uiSortableColumn="name">Nom <ui-table-sort-icon field="name" /></th>
-      <th uiSortableColumn="category">Catégorie <ui-table-sort-icon field="category" /></th>
-      <th uiSortableColumn="quantity">Quantité <ui-table-sort-icon field="quantity" /></th>
+      <th uiSortableColumn="name">Name <ui-table-sort-icon field="name" /></th>
+      <th uiSortableColumn="category">Category <ui-table-sort-icon field="category" /></th>
+      <th uiSortableColumn="quantity">Quantity <ui-table-sort-icon field="quantity" /></th>
     </tr>
   </ng-template>
   <ng-template #body let-product>
@@ -547,8 +547,8 @@ export const PaginationProgrammatic: Story = {
 const serverProducts: Product[] = Array.from({ length: 200 }, (_, i) => ({
   id: i + 1,
   code: `srv-${String(i + 1).padStart(4, '0')}`,
-  name: `Produit ${i + 1}`,
-  category: ['Accessoires', 'Vêtements', 'Chaussures', 'Fitness'][i % 4],
+  name: `Product ${i + 1}`,
+  category: ['Accessories', 'Clothing', 'Shoes', 'Fitness'][i % 4],
   quantity: (i * 7) % 90,
   price: 10 + ((i * 13) % 120),
 }));
@@ -633,10 +633,10 @@ export const ScrollHorizontal: Story = {
         <ng-template #header>
           <tr>
             <th style="min-width: 16rem">Code</th>
-            <th style="min-width: 16rem">Nom</th>
-            <th style="min-width: 16rem">Catégorie</th>
-            <th style="min-width: 16rem">Quantité</th>
-            <th style="min-width: 16rem">Prix</th>
+            <th style="min-width: 16rem">Name</th>
+            <th style="min-width: 16rem">Category</th>
+            <th style="min-width: 16rem">Quantity</th>
+            <th style="min-width: 16rem">Price</th>
           </tr>
         </ng-template>
         <ng-template #body let-product>
@@ -676,11 +676,11 @@ export const FrozenColumns: Story = {
         <ng-template #header>
           <tr>
             <th uiFrozenColumn style="min-width: 12rem">Code</th>
-            <th uiFrozenColumn style="min-width: 14rem">Nom</th>
-            <th style="min-width: 16rem">Catégorie</th>
-            <th style="min-width: 16rem">Quantité</th>
+            <th uiFrozenColumn style="min-width: 14rem">Name</th>
+            <th style="min-width: 16rem">Category</th>
+            <th style="min-width: 16rem">Quantity</th>
             <th style="min-width: 16rem">Stock</th>
-            <th uiFrozenColumn alignFrozen="right" style="min-width: 10rem">Prix</th>
+            <th uiFrozenColumn alignFrozen="right" style="min-width: 10rem">Price</th>
           </tr>
         </ng-template>
         <ng-template #body let-product>
@@ -689,7 +689,7 @@ export const FrozenColumns: Story = {
             <td uiFrozenColumn>{{ product.name }}</td>
             <td>{{ product.category }}</td>
             <td>{{ product.quantity }}</td>
-            <td>{{ product.quantity > 0 ? 'En stock' : 'Épuisé' }}</td>
+            <td>{{ product.quantity > 0 ? 'In stock' : 'Out of stock' }}</td>
             <td uiFrozenColumn alignFrozen="right">{{ product.price }} €</td>
           </tr>
         </ng-template>
@@ -720,8 +720,8 @@ export const RowExpansion: Story = {
           <tr>
             <th style="width: 4rem"></th>
             <th>Code</th>
-            <th>Nom</th>
-            <th>Catégorie</th>
+            <th>Name</th>
+            <th>Category</th>
           </tr>
         </ng-template>
         <ng-template #body let-product let-expanded="expanded">
@@ -733,7 +733,7 @@ export const RowExpansion: Story = {
                 level="low"
                 size="small"
                 iconOnly
-                [ariaLabel]="expanded ? 'Replier la ligne' : 'Déplier la ligne'"
+                [ariaLabel]="expanded ? 'Collapse row' : 'Expand row'"
               />
             </td>
             <td>{{ product.code }}</td>
@@ -744,8 +744,8 @@ export const RowExpansion: Story = {
         <ng-template #expandedrow let-product>
           <tr>
             <td colspan="4">
-              <strong>{{ product.name }}</strong> — quantité {{ product.quantity }},
-              prix {{ product.price }} €, référence {{ product.code }}.
+              <strong>{{ product.name }}</strong> — quantity {{ product.quantity }},
+              price {{ product.price }} €, ref {{ product.code }}.
             </td>
           </tr>
         </ng-template>
@@ -763,9 +763,9 @@ export const ColumnResizeFit: Story = {
         <ng-template #header>
           <tr>
             <th uiResizableColumn>Code</th>
-            <th uiResizableColumn>Nom</th>
-            <th uiResizableColumn>Catégorie</th>
-            <th>Quantité</th>
+            <th uiResizableColumn>Name</th>
+            <th uiResizableColumn>Category</th>
+            <th>Quantity</th>
           </tr>
         </ng-template>
         <ng-template #body let-product>
@@ -790,9 +790,9 @@ export const Templates: Story = {
         <ng-template #caption>Produits ({{ products.length }})</ng-template>
         <ng-template #header>
           <tr>
-            <th>Nom</th>
-            <th>Catégorie</th>
-            <th>Prix</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Price</th>
           </tr>
         </ng-template>
         <ng-template #body let-product>
@@ -817,7 +817,7 @@ export const EmptyState: Story = {
   render: () => ({
     props: { products: [] },
     template: `
-      <ui-table [value]="products" emptyMessage="Aucun produit ne correspond à votre recherche" emptyIcon="magnifying-glass">
+      <ui-table [value]="products" emptyMessage="No product matches your search" emptyIcon="magnifying-glass">
         ${basicColumns}
       </ui-table>
     `,
@@ -838,9 +838,9 @@ export const RowReorder: Story = {
         <ng-template #header>
           <tr>
             <th>Code</th>
-            <th>Nom</th>
-            <th>Catégorie</th>
-            <th>Quantité</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Quantity</th>
           </tr>
         </ng-template>
         <ng-template #body let-product let-rowIndex="rowIndex">
@@ -863,15 +863,15 @@ export const ColumnToggle: Story = {
       products,
       allColumns: [
         { field: 'code', header: 'Code' },
-        { field: 'name', header: 'Nom' },
-        { field: 'category', header: 'Catégorie' },
-        { field: 'quantity', header: 'Quantité' },
-        { field: 'price', header: 'Prix' },
+        { field: 'name', header: 'Name' },
+        { field: 'category', header: 'Category' },
+        { field: 'quantity', header: 'Quantity' },
+        { field: 'price', header: 'Price' },
       ],
       visibleColumns: [
         { field: 'code', header: 'Code' },
-        { field: 'name', header: 'Nom' },
-        { field: 'category', header: 'Catégorie' },
+        { field: 'name', header: 'Name' },
+        { field: 'category', header: 'Category' },
       ],
     },
     template: `
@@ -884,7 +884,7 @@ export const ColumnToggle: Story = {
             [options]="allColumns"
             optionLabel="header"
             [(ngModel)]="visibleColumns"
-            ariaLabel="Colonnes affichées"
+            ariaLabel="Visible columns"
             placeholder="Colonnes"
           />
         </div>
@@ -915,7 +915,7 @@ export const Loading: Story = {
     props: { products, loading: true },
     template: `
       <div style="margin-bottom: 8px">
-        <ui-button [label]="loading ? 'Arrêter le chargement' : 'Charger'" level="low" size="small" (buttonClick)="loading = !loading" />
+        <ui-button [label]="loading ? 'Stop loading' : 'Load'" level="low" size="small" (buttonClick)="loading = !loading" />
       </div>
       <ui-table [value]="products" [loading]="loading">
         ${basicColumns}
@@ -928,8 +928,8 @@ export const Loading: Story = {
 const hugeProducts: Product[] = Array.from({ length: 10000 }, (_, i) => ({
   id: i + 1,
   code: `sku-${String(i + 1).padStart(5, '0')}`,
-  name: `Produit ${i + 1}`,
-  category: ['Accessoires', 'Vêtements', 'Chaussures', 'Fitness'][i % 4],
+  name: `Product ${i + 1}`,
+  category: ['Accessories', 'Clothing', 'Shoes', 'Fitness'][i % 4],
   quantity: (i * 7) % 90,
   price: 10 + ((i * 13) % 120),
 }));
@@ -943,9 +943,9 @@ export const VirtualScrollPreload: Story = {
         <ng-template #header>
           <tr>
             <th>Code</th>
-            <th>Nom</th>
-            <th>Catégorie</th>
-            <th>Quantité</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Quantity</th>
           </tr>
         </ng-template>
         <ng-template #body let-product>
@@ -989,9 +989,9 @@ export const VirtualScrollLazy: Story = {
         <ng-template #header>
           <tr>
             <th>Code</th>
-            <th>Nom</th>
-            <th>Catégorie</th>
-            <th>Quantité</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Quantity</th>
           </tr>
         </ng-template>
         <ng-template #body let-product>
@@ -1022,9 +1022,9 @@ export const Skeleton: Story = {
         <ng-template #header>
           <tr>
             <th>Code</th>
-            <th>Nom</th>
-            <th>Catégorie</th>
-            <th>Quantité</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Quantity</th>
           </tr>
         </ng-template>
         <ng-template #body>
