@@ -18,88 +18,88 @@ const meta: Meta<UiDrawer> = {
   argTypes: {
     visible: {
       control: { type: 'boolean' },
-      description: "État d'ouverture (two-way `[(visible)]`). Pilote l'animation entrée/sortie.",
+      description: "Open state (two-way `[(visible)]`). Drives the enter/exit animation.",
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     position: {
       control: { type: 'inline-radio' },
       options: ['left', 'right', 'top', 'bottom'],
-      description: "Bord d'ancrage — le panneau glisse depuis ce bord.",
+      description: "Anchor edge — the panel slides in from this edge.",
       table: { type: { summary: 'DrawerPosition' }, defaultValue: { summary: '"left"' } },
     },
     fullScreen: {
       control: { type: 'boolean' },
-      description: 'Occupe tout le viewport (le panneau apparaît en fondu, sans glissement).',
+      description: 'Takes up the whole viewport (the panel fades in, no slide).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     header: {
       control: { type: 'text' },
-      description: 'Titre simple (ignoré si un template `#header` est projeté).',
+      description: 'Plain title (ignored if a `#header` template is projected).',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     modal: {
       control: { type: 'boolean' },
-      description: 'Affiche le masque (assombrit + capture les clics) et bloque le scroll de fond.',
+      description: 'Shows the mask (dims + captures clicks) and locks background scroll.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
     dismissableMask: {
       control: { type: 'boolean' },
-      description: 'Ferme au clic sur le masque (hors panneau) — nécessite `modal`.',
+      description: 'Closes on clicking the mask (outside the panel) — requires `modal`.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
     closable: {
       control: { type: 'boolean' },
-      description: 'Affiche le bouton de fermeture (×).',
+      description: 'Shows the close button (×).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
     closeOnEscape: {
       control: { type: 'boolean' },
-      description: 'Ferme le panneau à la touche Échap.',
+      description: 'Closes the panel on the Escape key.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
     blockScroll: {
       control: { type: 'boolean' },
-      description: 'Bloque le scroll de fond même pour un panneau non-modal.',
+      description: 'Locks background scroll even for a non-modal panel.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     showHeader: {
       control: { type: 'boolean' },
-      description: "Rend la zone d'en-tête (titre + fermeture).",
+      description: "Renders the header area (title + close).",
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
     focusOnShow: {
       control: { type: 'boolean' },
-      description: "Capture le focus dans le panneau à l'ouverture (restauré à la fermeture).",
+      description: "Captures focus in the panel on open (restored on close).",
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
     focusTrap: {
       control: { type: 'boolean' },
-      description: 'Piège le focus Tab à l’intérieur du panneau tant qu’il est ouvert.',
+      description: 'Traps Tab focus inside the panel while it\'s open.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
     contained: {
       control: { type: 'boolean' },
       description:
-        "Scope le panneau à l'ancêtre positionné (`position: absolute`) et n'affecte pas le scroll du body — pour embarquer un drawer dans un conteneur.",
+        "Scopes the panel to the positioned ancestor (`position: absolute`) and doesn't affect the body's scroll — for embedding a drawer in a container.",
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     motionDisabled: {
       control: { type: 'boolean' },
-      description: "Désactive l'animation d'ouverture/fermeture.",
+      description: "Disables the open/close animation.",
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     closeIcon: {
       control: { type: 'text' },
-      description: 'Nom FontAwesome de l’icône de fermeture.',
+      description: 'FontAwesome name of the close icon.',
       table: { type: { summary: 'string' }, defaultValue: { summary: '"xmark"' } },
     },
     drawerStyle: {
       control: false,
-      description: 'Styles inline appliqués au panneau (ex : `{ width: "30rem" }`).',
+      description: 'Inline styles applied to the panel (e.g. `{ width: "30rem" }`).',
       table: { type: { summary: 'Record<string, string>' }, defaultValue: { summary: 'undefined' } },
     },
-    shown: { action: 'shown', description: 'Émis après ouverture.' },
-    hidden: { action: 'hidden', description: 'Émis après fermeture.' },
+    shown: { action: 'shown', description: 'Emitted after opening.' },
+    hidden: { action: 'hidden', description: 'Emitted after closing.' },
   },
 };
 
