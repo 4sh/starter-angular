@@ -6,101 +6,101 @@ import { ConfigTable } from '../../../../storybook/blocks/config-table';
 
 # ui-input-tags
 
-Champ de saisie **multi-valeurs** bâti sur le shell partagé
-[`ui-field`](?path=/docs/components-ui-forms-ui-field--docs) (label + boîte + helper). La boîte
-héberge une liste de **tags** (chips retirables) et un input en ligne : on saisit une valeur et
-`Entrée` l'ajoute, `Retour arrière` (champ vide) retire le dernier.
+**Multi-value** input field built on the shared
+[`ui-field`](?path=/docs/components-ui-forms-ui-field--docs) shell (label + box + helper). The box
+hosts a list of **tags** (removable chips) and an inline input: type a value and
+`Enter` adds it, `Backspace` (empty field) removes the last one.
 
 <Canvas of={InputTagsStories.Basic} />
 
 ## Basic
 
-`Entrée` ajoute la valeur saisie ; `Retour arrière` (input vide) retire le dernier tag. Au
-clavier, `←`/`→` déplacent le focus entre les tags, `Suppr`/`Retour arrière` sur un tag focalisé
-le retire.
+`Enter` adds the typed value; `Backspace` (empty input) removes the last tag. On the
+keyboard, `←`/`→` move focus between tags, `Delete`/`Backspace` on a focused tag
+removes it.
 
 ```html
-<ui-input-tags label="Technologies" [(ngModel)]="keywords" placeholder="Ajouter…" />
+<ui-input-tags label="Technologies" [(ngModel)]="keywords" placeholder="Add…" />
 ```
 
 ## Delimiter
 
-Un `delimiter` (ex. la virgule) ajoute des tags en plus de `Entrée`. Avec `addOnPaste`, un texte
-collé est découpé selon le délimiteur (ou, à défaut, sur les espaces/retours/`,`/`;`).
+A `delimiter` (e.g. a comma) adds tags in addition to `Enter`. With `addOnPaste`, pasted
+text is split on the delimiter (or, failing that, on spaces/newlines/`,`/`;`).
 
 <Canvas of={InputTagsStories.Delimiter} />
 
 ## Allow Duplicate
 
-Par défaut, une valeur déjà présente n'est pas ré-ajoutée. `allowDuplicate` autorise les doublons.
+By default, a value already present isn't re-added. `allowDuplicate` allows duplicates.
 
 <Canvas of={InputTagsStories.AllowDuplicate} />
 
 ## Max
 
-`max` limite le nombre de tags : une fois la limite atteinte, la saisie est bloquée jusqu'à ce
-qu'un tag soit retiré.
+`max` caps the number of tags: once the limit is reached, input is blocked until
+a tag is removed.
 
 <Canvas of={InputTagsStories.Max} />
 
 ## Template
 
-Par défaut, chaque tag est rendu avec un
-[`ui-chip`](?path=/docs/components-ui-informative-ui-chip--docs) retirable — cohérent avec le
-reste du design system. Sa couleur se règle via `chipLevel` / `chipSubLevel` (voir _Styled_).
+By default, each tag is rendered with a removable
+[`ui-chip`](?path=/docs/components-ui-informative-ui-chip--docs) — consistent with the
+rest of the design system. Its color is set via `chipLevel` / `chipSubLevel` (see _Styled_).
 
-Pour un rendu **entièrement personnalisé** (icône, avatar, couleur métier…), fournissez un
-template `#item` : il remplace le `ui-chip` par défaut. Le contexte expose `value`, `label`,
-`index` et un callback `onRemove` à brancher sur l'action de suppression.
+For a **fully custom** rendering (icon, avatar, business color…), provide an
+`#item` template: it replaces the default `ui-chip`. The context exposes `value`, `label`,
+`index` and an `onRemove` callback to wire to the remove action.
 
 <Canvas of={InputTagsStories.Template} />
 
 ## Styled
 
-Les tags `ui-chip` par défaut se colorent via `chipLevel` (famille) et `chipSubLevel`
-(intensité `low`/`high`), sans recourir à un template.
+The default `ui-chip` tags take color via `chipLevel` (family) and `chipSubLevel`
+(`low`/`high` intensity), with no need for a template.
 
 <Canvas of={InputTagsStories.Styled} />
 
 ## Typeahead
 
-Avec `typeahead`, une liste de suggestions s'affiche dans un overlay pendant la frappe (requête
-`completeMethod` anti-rebondie par `delay`, seuil `minLength`). Le parent renseigne `suggestions`.
-Les valeurs déjà ajoutées sont marquées (coche) et non re-sélectionnables (sauf `allowDuplicate`).
+With `typeahead`, a suggestion list displays in an overlay while typing (a
+debounced `completeMethod` request, `delay`, `minLength` threshold). The parent sets `suggestions`.
+Already-added values are marked (checked) and not re-selectable (unless `allowDuplicate`).
 
 <Canvas of={InputTagsStories.Typeahead} />
 
 ## Events
 
-`tagAdd` et `tagRemove` notifient les changements (valeur ajoutée / retirée + index).
+`tagAdd` and `tagRemove` notify changes (value added / removed + index).
 
 <Canvas of={InputTagsStories.Events} />
 
 ## Invalid
 
-L'état d'erreur s'applique via `invalid` (ou automatiquement lorsqu'un contrôle Angular attaché
-est invalide et touché/modifié).
+The error state applies via `invalid` (or automatically when an attached Angular control
+is invalid and touched/dirty).
 
 <Canvas of={InputTagsStories.Invalid} />
 
 ## Disabled
 
-Avec `disabled`, le champ ne peut être ni édité ni focalisé.
+With `disabled`, the field can be neither edited nor focused.
 
 <Canvas of={InputTagsStories.Disabled} />
 
 ## Sizes
 
-Tailles `default` et `small`.
+`default` and `small` sizes.
 
 <Canvas of={InputTagsStories.Sizes} />
 
-## Formulaires (ngModel / Reactive / Signal Forms)
+## Forms (ngModel / Reactive / Signal Forms)
 
-`ui-input-tags` est un `ControlValueAccessor` standard : sa valeur est un `string[]` (ou `T[]`).
-Il se branche sans code additionnel aux **Signal Forms** (`@angular/forms/signals`, directive
-`[formField]`, stables depuis Angular 22) via l'interop CVA native, et fonctionne à l'identique
-avec les formulaires template-driven (`[(ngModel)]`) et réactifs (`[formControl]`).
+`ui-input-tags` is a standard `ControlValueAccessor`: its value is a `string[]` (or `T[]`).
+It wires up with no extra code to **Signal Forms** (`@angular/forms/signals`,
+`[formField]` directive, stable since Angular 22) via native CVA interop, and works identically
+with template-driven (`[(ngModel)]`) and reactive (`[formControl]`) forms.
 
 <Canvas of={InputTagsStories.SignalForms} />
 
@@ -115,69 +115,69 @@ avec les formulaires template-driven (`[(ngModel)]`) et réactifs (`[formControl
 <ui-input-tags label="Tags" [formControl]="tagsCtrl" />
 ```
 
-L'état de validation (`touched`/`dirty`/`invalid`) est reflété dans des signaux internes
-(`BaseControlValueAccessor`), y compris via l'interop Signal Forms (contrôle sans flux `events`). Le
-style d'erreur s'active donc automatiquement quand le contrôle est invalide **et** touché/modifié.
+Validation state (`touched`/`dirty`/`invalid`) is reflected in internal signals
+(`BaseControlValueAccessor`), including via the Signal Forms interop (a control with no `events`
+stream). The error style therefore activates automatically when the control is invalid **and** touched/dirty.
 
 ## API
 
 <ArgTypes of={InputTagsStories} />
 
-## États
+## States
 
-L'ensemble suit les états `form.*` du shell `ui-field` (défaut / hover / focus / disabled / error).
-Chaque tag est un `ui-chip` (tokens `informative.*`, `chipLevel`/`chipSubLevel`) ; l'enveloppe
-option porte le focus roving (`:focus-visible` → anneau `form.high.stroke.focused`). Dans le panneau de suggestions,
-focus visuel et survol partagent `global.high.surface.hover` ; une suggestion déjà ajoutée est
-marquée `form.high.content.checked`. Les états interactifs sont gérés en CSS via les tokens.
+The whole thing follows the `ui-field` shell's `form.*` states (default / hover / focus / disabled / error).
+Each tag is a `ui-chip` (`informative.*` tokens, `chipLevel`/`chipSubLevel`); the option
+wrapper carries roving focus (`:focus-visible` → `form.high.stroke.focused` ring). In the suggestions panel,
+visual focus and hover share `global.high.surface.hover`; an already-added suggestion is
+marked `form.high.content.checked`. Interactive states are handled in CSS via tokens.
 
-## Accessibilité
+## Accessibility
 
 <table className="doc-table">
   <thead>
     <tr>
       <th>Aspect</th>
-      <th>Comportement</th>
+      <th>Behavior</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td>Nom accessible</td>
-      <td>`label` (associé via `for`/`inputId`), ou `ariaLabel` / `ariaLabelledBy`.</td>
+      <td>Accessible name</td>
+      <td>`label` (associated via `for`/`inputId`), or `ariaLabel` / `ariaLabelledBy`.</td>
     </tr>
     <tr>
-      <td>Liste de tags</td>
-      <td>Conteneur `role="listbox"` + `aria-orientation="horizontal"` ; chaque tag `role="option"` avec `aria-label`, `aria-selected`, `aria-setsize`, `aria-posinset`.</td>
+      <td>Tag list</td>
+      <td>`role="listbox"` container + `aria-orientation="horizontal"`; each tag `role="option"` with `aria-label`, `aria-selected`, `aria-setsize`, `aria-posinset`.</td>
     </tr>
     <tr>
       <td>Input (typeahead)</td>
-      <td>`role="combobox"` + `aria-autocomplete="list"` / `aria-haspopup` / `aria-expanded`, `aria-controls` + `aria-activedescendant` vers la liste de suggestions.</td>
+      <td>`role="combobox"` + `aria-autocomplete="list"` / `aria-haspopup` / `aria-expanded`, `aria-controls` + `aria-activedescendant` pointing to the suggestion list.</td>
     </tr>
     <tr>
-      <td>`Entrée`</td>
-      <td>Ajoute la valeur saisie comme tag.</td>
+      <td>`Enter`</td>
+      <td>Adds the typed value as a tag.</td>
     </tr>
     <tr>
-      <td>`Retour arrière`</td>
-      <td>Retire le dernier tag lorsque l'input est vide.</td>
+      <td>`Backspace`</td>
+      <td>Removes the last tag when the input is empty.</td>
     </tr>
     <tr>
       <td>`←` / `→`</td>
-      <td>Déplacent le focus (roving) entre les tags ; `→` depuis le dernier tag revient à l'input.</td>
+      <td>Move focus (roving) between tags; `→` from the last tag returns to the input.</td>
     </tr>
     <tr>
-      <td>`Suppr` / `Retour arrière`</td>
-      <td>Sur un tag focalisé : le retire.</td>
+      <td>`Delete` / `Backspace`</td>
+      <td>On a focused tag: removes it.</td>
     </tr>
     <tr>
-      <td>États</td>
-      <td>`disabled` natif ; `:focus-visible` distinct du `:hover` ; la couleur n'est jamais le seul vecteur de sens.</td>
+      <td>States</td>
+      <td>Native `disabled`; `:focus-visible` distinct from `:hover`; color is never the sole carrier of meaning.</td>
     </tr>
   </tbody>
 </table>
 
 ## Theming
 
-La boîte du champ vient du shell `ui-field` ; les variables ci-dessous couvrent les tags et le panneau.
+The field's box comes from the `ui-field` shell; the variables below cover the tags and the panel.
 
 <ConfigTable of="ui-input-tags" />
