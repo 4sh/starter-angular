@@ -6,14 +6,14 @@ import { ConfigTable } from '../../../../storybook/blocks/config-table';
 
 # ui-tag
 
-Étiquette informative (pilule) : un libellé court catégorisé par **famille de couleur**
-(`level`) et **intensité** (`subLevel`), avec une icône optionnelle de chaque côté.
-Composant **statique** (non interactif).
+Informative label (pill): a short label categorized by **color family**
+(`level`) and **intensity** (`subLevel`), with an optional icon on each side.
+**Static** component (non-interactive).
 
-100 % piloté par les **design tokens** de la catégorie `informative`
-(`--informative-{level}{sub}-surface|content|stroke-*`), comme `ui-badge`. La
-personnalisation passe par les variantes intégrées (`level`/`subLevel`/`size`), pas par des
-surcharges CSS.
+100% driven by the **design tokens** of the `informative` category
+(`--informative-{level}{sub}-surface|content|stroke-*`), like `ui-badge`.
+Customization goes through the built-in variants (`level`/`subLevel`/`size`), not
+CSS overrides.
 
 <Canvas of={TagStories.Default} />
 
@@ -21,10 +21,10 @@ surcharges CSS.
 
 <ArgTypes of={TagStories} />
 
-## Niveaux & intensité
+## Levels & intensity
 
-Cinq familles (`default`, `highlight`, `success`, `warning`, `error`) × deux intensités
-(`high` soutenu, `low` discret).
+Five families (`default`, `highlight`, `success`, `warning`, `error`) × two intensities
+(`high` strong, `low` subtle).
 
 <Canvas of={TagStories.Highlight} />
 <Canvas of={TagStories.Success} />
@@ -32,71 +32,71 @@ Cinq familles (`default`, `highlight`, `success`, `warning`, `error`) × deux in
 <Canvas of={TagStories.Error} />
 <Canvas of={TagStories.SubLevelLow} />
 
-## Tailles
+## Sizes
 
 <Canvas of={TagStories.Small} />
 
-## Icônes
+## Icons
 
-Icône optionnelle à gauche et/ou à droite (nom FontAwesome). La taille de l'icône suit la
-taille du tag (`md` en `default`, `sm` en `small`).
+Optional icon on the left and/or right (FontAwesome name). The icon size follows the
+tag size (`md` in `default`, `sm` in `small`).
 
 <Canvas of={TagStories.WithIconLeft} />
 <Canvas of={TagStories.WithIconRight} />
 <Canvas of={TagStories.WithBothIcons} />
 
-## Forme
+## Shape
 
-Pilule par défaut (`rounded`), ou rectangle arrondi (`rounded=false`).
+Pill by default (`rounded`), or rounded rectangle (`rounded=false`).
 
 <Canvas of={TagStories.Square} />
 
-## Accessibilité
+## Accessibility
 
 <table className="doc-table">
   <thead>
     <tr>
       <th>Point</th>
-      <th>Implémentation</th>
+      <th>Implementation</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td>Icônes décoratives</td>
-      <td>Rendues via `ui-icon` (décoratif par défaut, `aria-hidden`) ; jamais porteuses de sens seules.</td>
+      <td>Decorative icons</td>
+      <td>Rendered via `ui-icon` (decorative by default, `aria-hidden`); never the sole carrier of meaning.</td>
     </tr>
     <tr>
-      <td>Tag sans texte</td>
-      <td>`ariaLabel` obligatoire ; un avertissement `isDevMode()` prévient si un tag icon-only n'a pas de nom accessible.</td>
+      <td>Text-free tag</td>
+      <td>`ariaLabel` mandatory; an `isDevMode()` warning fires if an icon-only tag has no accessible name.</td>
     </tr>
     <tr>
-      <td>Couleur ≠ seul vecteur</td>
-      <td>Le sens passe par le texte/l'icône, pas uniquement par la famille de couleur.</td>
+      <td>Color ≠ sole carrier</td>
+      <td>Meaning goes through the text/icon, not only the color family.</td>
     </tr>
     <tr>
-      <td>Contraste</td>
-      <td>Surface/contenu issus des tokens `informative` (conformes WCAG AA en clair et sombre).</td>
+      <td>Contrast</td>
+      <td>Surface/content from the `informative` tokens (WCAG AA compliant in light and dark).</td>
     </tr>
   </tbody>
 </table>
 
-## Exemples
+## Examples
 
 ```html
 <!-- Simple -->
-<ui-tag label="Actif" level="success" />
+<ui-tag label="Active" level="success" />
 
-<!-- Intensité discrète + icône gauche -->
-<ui-tag label="Brouillon" level="highlight" subLevel="low" iconLeft="pen" />
+<!-- Subtle intensity + left icon -->
+<ui-tag label="Draft" level="highlight" subLevel="low" iconLeft="pen" />
 
-<!-- Petit, avec icône droite -->
-<ui-tag label="Erreur" level="error" size="small" iconRight="times-circle" />
+<!-- Small, with right icon -->
+<ui-tag label="Error" level="error" size="small" iconRight="times-circle" />
 
-<!-- Rectangle arrondi -->
+<!-- Rounded rectangle -->
 <ui-tag label="Beta" level="highlight" [rounded]="false" />
 
-<!-- Icon-only (nom accessible requis) -->
-<ui-tag iconLeft="star" ariaLabel="Favori" level="warning" />
+<!-- Icon-only (accessible name required) -->
+<ui-tag iconLeft="star" ariaLabel="Favorite" level="warning" />
 ```
 
 ## Theming

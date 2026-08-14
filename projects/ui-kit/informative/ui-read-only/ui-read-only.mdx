@@ -6,9 +6,9 @@ import { ConfigTable } from '../../../../storybook/blocks/config-table';
 
 # ui-read-only
 
-Affiche une **valeur libellée en lecture seule** (couple label / valeur). Purement
-présentationnel : aucun état interactif, aucune participation au formulaire : pour saisir une
-valeur, utiliser les composants `forms/`.
+Displays a **read-only labeled value** (label / value pair). Purely
+presentational: no interactive state, no form participation — to enter a
+value, use the `forms/` components.
 
 <Canvas of={ReadOnlyStories.Vertical} />
 
@@ -16,50 +16,50 @@ valeur, utiliser les composants `forms/`.
 
 <ArgTypes of={ReadOnlyStories} />
 
-## Disposition
+## Layout
 
-`layout="vertical"` empile le libellé au-dessus de la valeur ; `layout="horizontal"` les place
-côte à côte. En horizontal, `labelWidth` fige la largeur de la colonne de libellé (pour aligner
-plusieurs lignes) et `labelAlign` gère l'alignement du texte du libellé.
+`layout="vertical"` stacks the label above the value; `layout="horizontal"` places them
+side by side. In horizontal, `labelWidth` fixes the label column's width (to align
+several rows) and `labelAlign` controls the label text's alignment.
 
 <Canvas of={ReadOnlyStories.Horizontal} />
 <Canvas of={ReadOnlyStories.HorizontalFixedLabel} />
 
-## Contrôle total du layout (grille / classes utilitaires)
+## Full layout control (grid / utility classes)
 
-Pour un contrôle **fin et responsive**, `layout="grid"` laisse le composant **sans disposition
-imposée** : c'est votre système de grille (Gridaflex) ou vos classes utilitaires qui pilotent tout,
-injectées via `rowClass` (rangée `<dl>`), `labelClass` (cellule `<dt>`) et `valueClass` (cellule
-`<dd>`). Ces trois entrées sont **additives dans toutes les dispositions** — elles complètent aussi
-`vertical`/`horizontal` au besoin.
+For **fine-grained, responsive control**, `layout="grid"` leaves the component with **no
+imposed layout**: your grid system (Gridaflex) or your utility classes drive everything,
+injected via `rowClass` (`<dl>` row), `labelClass` (`<dt>` cell) and `valueClass` (`<dd>`
+cell). These three inputs are **additive across every layout** — they also complement
+`vertical`/`horizontal` when needed.
 
 <Canvas of={ReadOnlyStories.GridLayout} />
 
 ```html
-<!-- Gridaflex : colonne label 6/24, valeur 18/24 sur desktop, pleine largeur mobile -->
+<!-- Gridaflex: label column 6/24, value 18/24 on desktop, full width on mobile -->
 <ui-read-only
   layout="grid"
   rowClass="flex-x flex-gap-x"
   labelClass="cell phone-24 desktop-6"
   valueClass="cell phone-24 desktop-18"
-  label="Libellé"
+  label="Label"
   value="…" />
 ```
 
-## Cohabitation avec un champ de formulaire
+## Sitting alongside a form field
 
-Par défaut un read-only reste **compact** (écart label→valeur serré, valeur ajustée au contenu) —
-idéal pour une fiche autonome. Quand il **cohabite avec des champs**, activer **`matchField`** : le
-composant reprend alors l'**écart label→valeur** du champ (`--units-sm` / `--units-xs` en `small`) **et**
-cale la **zone de valeur sur la hauteur du champ** (valeur centrée, sans padding horizontal). Combiné
-au libellé partagé (`ui-label`), l'alignement est **pixel-perfect**.
+By default a read-only stays **compact** (tight label→value gap, value sized to its content) —
+ideal for a standalone summary card. When it **sits alongside fields**, enable **`matchField`**: the
+component then reuses the field's **label→value gap** (`--units-sm` / `--units-xs` in `small`) **and**
+sizes the **value area to the field's height** (value centered, no horizontal padding). Combined
+with the shared label (`ui-label`), the alignment is **pixel-perfect**.
 
 <Canvas of={ReadOnlyStories.NextToField} />
 
-## Contenu & états
+## Content & states
 
-`fallback` s'affiche (atténué) quand la valeur est vide/nulle. `multiline` préserve les retours à
-la ligne. Un contenu projeté remplace la valeur textuelle par une valeur riche.
+`fallback` shows (muted) when the value is empty/null. `multiline` preserves line
+breaks. Projected content replaces the text value with a rich value.
 
 <Canvas of={ReadOnlyStories.Fallback} />
 <Canvas of={ReadOnlyStories.EmptyAccessible} />
@@ -68,51 +68,51 @@ la ligne. Un contenu projeté remplace la valeur textuelle par une valeur riche.
 <Canvas of={ReadOnlyStories.ProjectedContent} />
 
 ```html
-<!-- Valeur simple -->
-<ui-read-only label="E-mail" value="test@test.fr" />
+<!-- Plain value -->
+<ui-read-only label="Email" value="test@test.com" />
 
-<!-- Colonne de label fixe, alignée à droite -->
-<ui-read-only layout="horizontal" labelWidth="140px" labelAlign="right" label="Rôle" value="Engineer" />
+<!-- Fixed label column, right-aligned -->
+<ui-read-only layout="horizontal" labelWidth="140px" labelAlign="right" label="Role" value="Engineer" />
 
-<!-- Valeur riche projetée -->
-<ui-read-only label="Statut">
-  <ui-badge level="success" value="Actif" icon="check" />
+<!-- Projected rich value -->
+<ui-read-only label="Status">
+  <ui-badge level="success" value="Active" icon="check" />
 </ui-read-only>
 ```
 
-## Accessibilité
+## Accessibility
 
 <table className="doc-table">
   <thead>
     <tr>
       <th>Point</th>
-      <th>Implémentation</th>
+      <th>Implementation</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><strong>Association label / valeur</strong></td>
-      <td>Structure native <code>&lt;dl&gt;</code> / <code>&lt;dt&gt;</code> / <code>&lt;dd&gt;</code> quand un <code>label</code> est présent : le lien sémantique est exposé aux lecteurs d'écran sans <code>aria-*</code>. Sans label, aucun <code>&lt;dl&gt;</code> n'est émis (un <code>&lt;dd&gt;</code> sans <code>&lt;dt&gt;</code> serait un markup invalide) : la valeur est rendue dans un conteneur neutre.</td>
+      <td><strong>Label / value association</strong></td>
+      <td>Native <code>&lt;dl&gt;</code> / <code>&lt;dt&gt;</code> / <code>&lt;dd&gt;</code> structure when a <code>label</code> is present: the semantic link is exposed to screen readers with no <code>aria-*</code>. With no label, no <code>&lt;dl&gt;</code> is emitted (a <code>&lt;dd&gt;</code> with no <code>&lt;dt&gt;</code> would be invalid markup): the value is rendered in a neutral container.</td>
     </tr>
     <tr>
-      <td><strong>Non interactif</strong></td>
-      <td>Aucun élément focusable, aucun <code>role</code> interactif : c'est un affichage. Pour une valeur cliquable (lien), projeter un élément natif (<code>ui-link</code>) qui porte lui-même sa sémantique.</td>
+      <td><strong>Non-interactive</strong></td>
+      <td>No focusable element, no interactive <code>role</code>: this is a display. For a clickable value (link), project a native element (<code>ui-link</code>) that carries its own semantics.</td>
     </tr>
     <tr>
-      <td><strong>Repli non ambigu</strong></td>
-      <td>Le <code>fallback</code> (« — ») indique visuellement l'absence de valeur ; la couleur atténuée n'est qu'un renfort, jamais le seul vecteur de sens. Pour les lecteurs d'écran, <code>emptyLabel</code> annonce un texte explicite (ex. « Non renseigné ») via un span visuellement masqué, tandis que le « — » passe en <code>aria-hidden</code>.</td>
+      <td><strong>Unambiguous fallback</strong></td>
+      <td>The <code>fallback</code> ("—") visually signals the absence of a value; the muted color is only reinforcement, never the sole carrier of meaning. For screen readers, <code>emptyLabel</code> announces explicit text (e.g. "Not provided") via a visually hidden span, while the "—" carries <code>aria-hidden</code>.</td>
     </tr>
   </tbody>
 </table>
 
 ## Theming
 
-Le composant est présentationnel : les tailles de police sont des tokens de typographie locaux
-(`$sizes` en tête du `.scss`) et la largeur de la colonne de libellé se pilote par instance via
-l'input `labelWidth` (custom property `--ui-read-only-label-width`). Le mode `matchField`
-**consomme** les constantes partagées du champ (écart + hauteur ; aucune nouvelle constante) :
+The component is presentational: font sizes are local typography tokens
+(`$sizes` at the top of the `.scss`) and the label column's width is set per instance via
+the `labelWidth` input (`--ui-read-only-label-width` custom property). `matchField` mode
+**consumes** the field's shared constants (gap + height; no new constant):
 
 <ConfigTable of="ui-read-only" />
 
-Voir la page de groupe <a href="?path=/docs/components-configuration-forms--docs">Configuration → Forms</a>
-et <a href="?path=/docs/components-configuration--docs">Components / Configuration</a>.
+See the <a href="?path=/docs/components-configuration-forms--docs">Configuration → Forms</a> group page
+and <a href="?path=/docs/components-configuration--docs">Components / Configuration</a>.
