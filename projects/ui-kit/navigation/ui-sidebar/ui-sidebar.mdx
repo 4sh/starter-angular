@@ -6,53 +6,53 @@ import { ConfigTable } from '../../../../storybook/blocks/config-table';
 
 # ui-sidebar
 
-Barre latérale applicative :
+Application sidebar:
 
-- **Statique** (défaut) : la barre vit dans le flux et **pousse le contenu**. Repliable en
-  **rail d'icônes** (`collapsed`, two-way). Avec `openOnHover`, un rail replié **flotte
-  temporairement** ouvert au survol / focus, sans décaler le contenu.
-- **Overlay** : la barre **flotte** au-dessus du contenu en offcanvas avec un `backdrop`
-  optionnel, piloté par le modèle two-way `visible` — **piège de focus** + restauration
-  (`@angular/cdk/a11y`), `aria-modal`, **blocage du scroll**, `Échap` et clic extérieur.
+- **Static** (default): the bar lives in the flow and **pushes the content**. Collapsible into
+  an **icon rail** (`collapsed`, two-way). With `openOnHover`, a collapsed rail **temporarily
+  floats** open on hover / focus, without shifting the content.
+- **Overlay**: the bar **floats** above the content as an offcanvas with an optional
+  `backdrop`, driven by the two-way `visible` model — **focus trap** + restoration
+  (`@angular/cdk/a11y`), `aria-modal`, **scroll lock**, `Escape` and outside click.
 
 <Canvas of={SidebarStories.Variants} />
 
 ## API
 <ArgTypes of={SidebarStories} />
 
-## Anatomie
+## Anatomy
 
 <table className="doc-table">
   <thead>
     <tr>
-      <th>Élément</th>
+      <th>Element</th>
       <th>Description</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td><strong>Rail</strong></td>
-      <td><code>.ui-sidebar-rail</code> — empreinte <strong>dans le flux</strong> (statique) qui réserve la largeur ; le panneau peut flotter plus large au survol.</td>
+      <td><code>.ui-sidebar-rail</code> — footprint **in the flow** (static) that reserves the width; the panel can float wider on hover.</td>
     </tr>
     <tr>
-      <td><strong>Fond / Positionneur</strong></td>
-      <td><code>.ui-sidebar-backdrop</code> + <code>.ui-sidebar-positioner</code> — couche masquante et enveloppe ancrée au bord ; portent le glissement (overlay).</td>
+      <td><strong>Backdrop / Positioner</strong></td>
+      <td><code>.ui-sidebar-backdrop</code> + <code>.ui-sidebar-positioner</code> — masking layer and edge-anchored wrapper; carry the slide animation (overlay).</td>
     </tr>
     <tr>
-      <td><strong>Panneau</strong></td>
-      <td><code>.ui-sidebar</code> — surface (<code>&lt;aside&gt;</code>, bordure sur le bord intérieur) ; colonne flex : en-tête / corps scrollable / pied.</td>
+      <td><strong>Panel</strong></td>
+      <td><code>.ui-sidebar</code> — surface (<code>&lt;aside&gt;</code>, border on the inner edge); flex column: header / scrollable body / footer.</td>
     </tr>
   </tbody>
 </table>
 
-## Avec menu
+## With a menu
 
-Chrome applicatif complet : sélecteur d'espace de travail en en-tête (`#header`), navigation
-groupée via `ui-sidebar-menu`, carte utilisateur en pied (`#footer`). Le déclencheur replie la
-barre en rail d'icônes — libellés, en-têtes de sections et badges masqués.
+Full application chrome: workspace switcher in the header (`#header`), grouped
+navigation via `ui-sidebar-menu`, user card in the footer (`#footer`). The trigger collapses
+the bar into an icon rail — labels, section headers and badges hidden.
 
-Les templates `#header` / `#footer` reçoivent l'**état replié résolu** dans leur contexte
-(`let-collapsed="collapsed"`), pour n'afficher que les icônes en mode rail :
+The `#header` / `#footer` templates receive the **resolved collapsed state** in their context
+(`let-collapsed="collapsed"`), to show only icons in rail mode:
 
 ```html
 <ng-template #header let-collapsed="collapsed">
@@ -65,122 +65,122 @@ Les templates `#header` / `#footer` reçoivent l'**état replié résolu** dans 
 
 ## Responsive
 
-Sous `breakpoint` (ici `1024px`, aligné sur l'échelle `$breakpoint-*` du design system), la
-barre devient un offcanvas avec fond ; au-dessus, elle reste un rail d'icônes qui pousse le
-contenu. Redimensionnez l'aperçu pour observer la bascule.
+Below `breakpoint` (here `1024px`, aligned with the design system's `$breakpoint-*` scale), the
+bar becomes an offcanvas with a backdrop; above it, it stays an icon rail that pushes the
+content. Resize the preview to see the switch.
 
 <Canvas of={SidebarStories.Responsive} />
 
-## Double barre
+## Dual bar
 
-Chrome à deux niveaux façon console d'administration : un **rail d'icônes** permanent (replié,
-libellés en info-bulle) comme navigation primaire, accolé à une **barre de navigation
-secondaire** listant les sections d'un module, le tout bordant le contenu. Deux `ui-sidebar`
-statiques côte à côte — pas d'offcanvas.
+Two-tier chrome, admin-console style: a permanent **icon rail** (collapsed,
+tooltip labels) as primary navigation, next to a **secondary navigation
+bar** listing a module's sections, both bordering the content. Two static
+`ui-sidebar`s side by side — no offcanvas.
 
 <Canvas of={SidebarStories.DualSidebar} />
 
-## Menu imbriqué
+## Nested menu
 
-Les entrées deviennent des groupes **repliables** révélant un sous-arbre imbriqué. L'**état
-actif est suivi** : un groupe contenant l'élément actif se déplie automatiquement.
+Entries become **collapsible** groups revealing a nested subtree. The **active
+state is tracked**: a group containing the active item expands automatically.
 
 <Canvas of={SidebarStories.NestedMenu} />
 
 ## ui-sidebar-menu
 
-Menu de navigation déclaratif (`UiSidebarMenuItem[]`) rendu comme **landmark de navigation** :
-un `<nav>` enveloppant des conteneurs `role="list"` / `role="listitem"`. Il gère :
+Declarative navigation menu (`UiSidebarMenuItem[]`) rendered as a **navigation
+landmark**: a `<nav>` wrapping `role="list"` / `role="listitem"` containers. It handles:
 
-- des **sections** libellées (navigation groupée) ;
-- des **groupes repliables** (`toggleable`) révélant des sous-arbres profonds, avec état
-  d'expansion (`expandedKeys` two-way) ;
-- le **suivi d'état actif** par item (RouterLink pour les liens de route, `active` pour la
-  navigation manuelle — les groupes contenant un descendant actif se déplient d'office) ;
-- un **badge** de fin rendu via `ui-badge` (`badge` + `badgeLevel`) et une icône « ouvre
-  ailleurs » automatique pour les liens externes (`external` ou `target="_blank"`).
+- labeled **sections** (grouped navigation);
+- **collapsible groups** (`toggleable`) revealing deep subtrees, with expansion
+  state (`expandedKeys` two-way);
+- **active-state tracking** per item (RouterLink for route links, `active` for
+  manual navigation — groups containing an active descendant expand automatically);
+- a trailing **badge** rendered via `ui-badge` (`badge` + `badgeLevel`) and an automatic
+  "opens elsewhere" icon for external links (`external` or `target="_blank"`).
 
-Déposé dans un `ui-sidebar`, il lit l'état replié résolu par DI et se replie en **rail
-d'icônes** (libellés masqués, boutons parfaitement carrés). En usage autonome, pilotez le rail
-avec l'entrée `collapsed`. En rail, activez **`tooltips`** pour révéler le libellé de chaque
-icône au survol / focus (via la directive `[uiTooltip]`, positionnée à droite).
+Dropped inside a `ui-sidebar`, it reads the collapsed state resolved via DI and
+collapses into an **icon rail** (labels hidden, perfectly square buttons). Used standalone,
+drive the rail with the `collapsed` input. In rail mode, enable **`tooltips`** to reveal
+each icon's label on hover / focus (via the `[uiTooltip]` directive, positioned to the right).
 
-### Modèle `UiSidebarMenuItem`
+### `UiSidebarMenuItem` model
 
 <table className="doc-table">
   <thead>
     <tr>
-      <th>Champ</th>
+      <th>Field</th>
       <th>Type</th>
-      <th>Rôle</th>
+      <th>Role</th>
     </tr>
   </thead>
   <tbody>
-    <tr><td><code>label</code></td><td><code>string</code></td><td>Texte de l'entrée / en-tête de groupe.</td></tr>
-    <tr><td><code>icon</code></td><td><code>string</code></td><td>Icône FontAwesome (aussi affichée dans le rail).</td></tr>
-    <tr><td><code>items</code></td><td><code>UiSidebarMenuItem[]</code></td><td>Enfants → section ou groupe repliable.</td></tr>
-    <tr><td><code>toggleable</code></td><td><code>boolean</code></td><td>Groupe repliable (défaut : faux au 1<sup>er</sup> niveau, vrai imbriqué).</td></tr>
-    <tr><td><code>routerLink</code> / <code>url</code></td><td><code>…</code></td><td>Lien de route (RouterLink) ou URL externe.</td></tr>
-    <tr><td><code>command</code></td><td><code>(e) =&gt; void</code></td><td>Callback d'activation (item bouton).</td></tr>
-    <tr><td><code>active</code></td><td><code>boolean</code></td><td>État actif manuel (navigation hors route).</td></tr>
-    <tr><td><code>badge</code> / <code>badgeLevel</code></td><td><code>string</code> / <code>UiFeedbackLevel</code></td><td>Badge de fin rendu via <code>ui-badge</code> (compteur, statut).</td></tr>
-    <tr><td><code>external</code></td><td><code>boolean</code></td><td>Force l'icône « ouvre ailleurs » (auto si <code>target="_blank"</code>).</td></tr>
-    <tr><td><code>separator</code> / <code>disabled</code> / <code>visible</code></td><td><code>boolean</code></td><td>Séparateur / désactivation / masquage.</td></tr>
+    <tr><td><code>label</code></td><td><code>string</code></td><td>Entry text / group header.</td></tr>
+    <tr><td><code>icon</code></td><td><code>string</code></td><td>FontAwesome icon (also shown in the rail).</td></tr>
+    <tr><td><code>items</code></td><td><code>UiSidebarMenuItem[]</code></td><td>Children → section or collapsible group.</td></tr>
+    <tr><td><code>toggleable</code></td><td><code>boolean</code></td><td>Collapsible group (default: false at the 1<sup>st</sup> level, true when nested).</td></tr>
+    <tr><td><code>routerLink</code> / <code>url</code></td><td><code>…</code></td><td>Route link (RouterLink) or external URL.</td></tr>
+    <tr><td><code>command</code></td><td><code>(e) =&gt; void</code></td><td>Activation callback (button item).</td></tr>
+    <tr><td><code>active</code></td><td><code>boolean</code></td><td>Manual active state (non-route navigation).</td></tr>
+    <tr><td><code>badge</code> / <code>badgeLevel</code></td><td><code>string</code> / <code>UiFeedbackLevel</code></td><td>Trailing badge rendered via <code>ui-badge</code> (counter, status).</td></tr>
+    <tr><td><code>external</code></td><td><code>boolean</code></td><td>Forces the "opens elsewhere" icon (auto if <code>target="_blank"</code>).</td></tr>
+    <tr><td><code>separator</code> / <code>disabled</code> / <code>visible</code></td><td><code>boolean</code></td><td>Separator / disabling / hiding.</td></tr>
   </tbody>
 </table>
 
 ## uiSidebarTrigger
 
-Directive qui **bascule** une barre depuis n'importe quel élément. Elle reflète le contrat
-d'accessibilité entre un contrôle et la barre : `aria-controls` (id du panneau) et
-`aria-expanded` (état résolu ouvert / replié), et bascule à l'activation. `Entrée` / `Espace`
-sont natifs sur un `<button>`.
+Directive that **toggles** a bar from any element. It reflects the accessibility
+contract between a control and the bar: `aria-controls` (panel id) and
+`aria-expanded` (resolved open / collapsed state), and toggles on activation. `Enter` / `Space`
+are native on a `<button>`.
 
 ```html
-<button [uiSidebarTrigger]="sb" aria-label="Basculer le menu">☰</button>
+<button [uiSidebarTrigger]="sb" aria-label="Toggle menu">☰</button>
 <ui-sidebar #sb>…</ui-sidebar>
 ```
 
-## Accessibilité
+## Accessibility
 
 <table className="doc-table">
   <thead>
     <tr>
       <th>Aspect</th>
-      <th>Comportement</th>
+      <th>Behavior</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td><strong>Landmark</strong></td>
-      <td>Panneau <code>&lt;aside&gt;</code> nommé (<code>ariaLabel</code> / <code>ariaLabelledBy</code>) ; les menus s'enveloppent dans un <code>&lt;nav&gt;</code>.</td>
+      <td>Named <code>&lt;aside&gt;</code> panel (<code>ariaLabel</code> / <code>ariaLabelledBy</code>); menus wrap in a <code>&lt;nav&gt;</code>.</td>
     </tr>
     <tr>
-      <td><strong>Listes</strong></td>
-      <td>Les entrées de menu sont des <code>role="listitem"</code> dans des conteneurs <code>role="list"</code> (sémantique préservée malgré <code>list-style:none</code>).</td>
+      <td><strong>Lists</strong></td>
+      <td>Menu entries are <code>role="listitem"</code> in <code>role="list"</code> containers (semantics preserved despite <code>list-style:none</code>).</td>
     </tr>
     <tr>
-      <td><strong>Déclencheur</strong></td>
-      <td><code>[uiSidebarTrigger]</code> expose <code>aria-controls</code> / <code>aria-expanded</code> liés à la barre.</td>
+      <td><strong>Trigger</strong></td>
+      <td><code>[uiSidebarTrigger]</code> exposes <code>aria-controls</code> / <code>aria-expanded</code> linked to the bar.</td>
     </tr>
     <tr>
       <td><strong>Overlay</strong></td>
-      <td><code>aria-modal</code>, piège de focus + restauration ; <code>Échap</code> ferme si <code>dismissable</code>.</td>
+      <td><code>aria-modal</code>, focus trap + restoration; <code>Escape</code> closes if <code>dismissable</code>.</td>
     </tr>
     <tr>
-      <td><strong>Clavier</strong></td>
-      <td><code>Tab</code> / <code>Maj+Tab</code> parcourent les contrôles ; <code>Entrée</code> / <code>Espace</code> activent ; <code>Échap</code> ferme l'overlay.</td>
+      <td><strong>Keyboard</strong></td>
+      <td><code>Tab</code> / <code>Shift+Tab</code> traverse the controls; <code>Enter</code> / <code>Space</code> activate; <code>Escape</code> closes the overlay.</td>
     </tr>
     <tr>
-      <td><strong>Rail replié</strong></td>
-      <td>Chaque icône conserve un nom accessible (<code>aria-label</code> / <code>title</code> = libellé).</td>
+      <td><strong>Collapsed rail</strong></td>
+      <td>Each icon keeps an accessible name (<code>aria-label</code> / <code>title</code> = label).</td>
     </tr>
   </tbody>
 </table>
 
 ## Theming
 
-Largeurs pilotables par variables CSS locales (aucune constante partagée ajoutée) :
+Widths adjustable via local CSS variables (no shared constant added):
 
 <ConfigTable of="ui-sidebar" label="ui-sidebar" />
 
