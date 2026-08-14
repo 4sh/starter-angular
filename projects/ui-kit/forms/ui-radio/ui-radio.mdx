@@ -12,121 +12,121 @@ import { ConfigTable } from '../../../../storybook/blocks/config-table';
 
 <ArgTypes of={RadioStories} />
 
-## Anatomie
+## Anatomy
 
 <table className="doc-table">
   <thead>
     <tr>
-      <th>Élément</th>
+      <th>Element</th>
       <th>Description</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td><strong>Structure</strong></td>
-      <td>racine <code>&lt;label&gt;</code> (toute la surface est cliquable, gap inclus) englobant <code>control</code> (input natif invisible + <code>box</code> circulaire + <code>dot</code>) + le texte — calqué sur le composant Figma <code>ui-radio</code>.</td>
+      <td>root <code>&lt;label&gt;</code> (the whole surface is clickable, gap included) wrapping <code>control</code> (invisible native input + circular <code>box</code> + <code>dot</code>) + the text — mirrors the Figma <code>ui-radio</code> component.</td>
     </tr>
     <tr>
       <td><strong>Tokens</strong></td>
-      <td>Cercle 24px, <code>--radius-full</code>, <code>--stroke-default</code>, point 12px (<code>--form-high-content-checked</code>), gap <code>--units-sm</code>. Palette `--form-error-*` si invalide.</td>
+      <td>24px circle, <code>--radius-full</code>, <code>--stroke-default</code>, 12px dot (<code>--form-high-content-checked</code>), <code>--units-sm</code> gap. `--form-error-*` palette if invalid.</td>
     </tr>
     <tr>
       <td><strong>States</strong></td>
-      <td><code>hover</code> / <code>focused</code> / <code>disabled</code> via pseudo-classes CSS ; <code>checked</code> / <code>invalid</code> en classes <code>_modifier</code>.</td>
+      <td><code>hover</code> / <code>focused</code> / <code>disabled</code> via CSS pseudo-classes; <code>checked</code> / <code>invalid</code> as <code>_modifier</code> classes.</td>
     </tr>
   </tbody>
 </table>
 
-## Groupes & formulaires
+## Groups & forms
 
-Chaque <code>ui-radio</code> porte une <code>value</code> ; le groupe se forme en liant tous les
-membres **au même contrôle** (même <code>[formField]</code>, même <code>formControlName</code> ou
-même <code>[(ngModel)]</code>) **et** en leur donnant le même <code>name</code> (groupement natif
-→ navigation aux flèches). Le radio dont la <code>value</code> égale la valeur du modèle est
-sélectionné. Le composant est un <code>ControlValueAccessor</code> : il se branche sans code
-additionnel aux **Signal Forms** (`@angular/forms/signals`, directive `[formField]`, stables
-depuis Angular 22) via l'interop CVA native, ainsi qu'aux formulaires template-driven et réactifs.
+Each <code>ui-radio</code> carries a <code>value</code>; the group forms by linking every
+member **to the same control** (same <code>[formField]</code>, same <code>formControlName</code> or
+same <code>[(ngModel)]</code>) **and** giving them the same <code>name</code> (native grouping
+→ arrow-key navigation). The radio whose <code>value</code> equals the model's value is
+selected. The component is a <code>ControlValueAccessor</code>: it wires up with no extra code
+to **Signal Forms** (`@angular/forms/signals`, `[formField]` directive, stable since
+Angular 22) via native CVA interop, as well as to template-driven and reactive forms.
 
 <Canvas of={RadioStories.SignalForms} />
 
 ```html
-<!-- Signal Forms : chaque membre lié au même [formField] -->
-<div role="radiogroup" aria-label="Parfum">
-  <ui-radio [formField]="flavor" name="flavor" value="vanilla" label="Vanille" />
-  <ui-radio [formField]="flavor" name="flavor" value="chocolate" label="Chocolat" />
+<!-- Signal Forms: each member linked to the same [formField] -->
+<div role="radiogroup" aria-label="Flavor">
+  <ui-radio [formField]="flavor" name="flavor" value="vanilla" label="Vanilla" />
+  <ui-radio [formField]="flavor" name="flavor" value="chocolate" label="Chocolate" />
 </div>
 
 <!-- Template-driven -->
-<div role="radiogroup" aria-label="Parfum">
-  <ui-radio [(ngModel)]="flavor" name="flavor" value="vanilla" label="Vanille" />
-  <ui-radio [(ngModel)]="flavor" name="flavor" value="chocolate" label="Chocolat" />
+<div role="radiogroup" aria-label="Flavor">
+  <ui-radio [(ngModel)]="flavor" name="flavor" value="vanilla" label="Vanilla" />
+  <ui-radio [(ngModel)]="flavor" name="flavor" value="chocolate" label="Chocolate" />
 </div>
 
-<!-- Reactive : chaque membre lié au même formControlName -->
-<div role="radiogroup" aria-label="Formule" formGroupName="subscription">
-  <ui-radio formControlName="plan" name="plan" value="free" label="Gratuit" />
+<!-- Reactive: each member linked to the same formControlName -->
+<div role="radiogroup" aria-label="Plan" formGroupName="subscription">
+  <ui-radio formControlName="plan" name="plan" value="free" label="Free" />
   <ui-radio formControlName="plan" name="plan" value="pro" label="Pro" />
 </div>
 ```
 
-> ⚠️ **Limite template-driven dans un `<form>`** : chaque `ui-radio` est un CVA
-> *indépendant* (pas de registre partagé comme les `<input type=radio>` natifs).
-> À l'intérieur d'un `<form>` (NgForm), plusieurs `[(ngModel)]` portant le même
-> `name` déclenchent l'erreur Angular « more than one control with the same
-> name ». Dans ce cas, utilisez les formulaires réactifs / Signal Forms, ou
-> `[ngModelOptions]="{ standalone: true }"` sur chaque membre. Le `[(ngModel)]`
-> hors `<form>` (exemple ci-dessus) fonctionne sans restriction.
+> ⚠️ **Template-driven limitation inside a `<form>`**: each `ui-radio` is an
+> *independent* CVA (no shared registry like native `<input type=radio>`s).
+> Inside a `<form>` (NgForm), several `[(ngModel)]`s carrying the same
+> `name` trigger Angular's "more than one control with the same
+> name" error. In that case, use reactive forms / Signal Forms, or
+> `[ngModelOptions]="{ standalone: true }"` on each member. `[(ngModel)]`
+> outside a `<form>` (example above) works with no restriction.
 
-- Le style **erreur s'applique automatiquement** quand le contrôle attaché est invalide **et**
-  touché/modifié ; `invalid` permet de le forcer.
-- `disabled` par membre (option grisée) ou via `control.disable()` (tout le groupe).
-- La `value` accepte n'importe quel type (`T`), pas seulement des strings.
+- The **error style applies automatically** when the attached control is invalid **and**
+  touched/dirty; `invalid` lets you force it.
+- `disabled` per member (grays out an option) or via `control.disable()` (the whole group).
+- `value` accepts any type (`T`), not just strings.
 
-## Accessibilité
+## Accessibility
 
 <table className="doc-table">
   <thead>
     <tr>
-      <th>Règle</th>
-      <th>Détail</th>
+      <th>Rule</th>
+      <th>Detail</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><strong>Sémantique</strong></td>
-      <td>Input natif <code>type="radio"</code> : sélection Espace, navigation flèches dans le groupe (même <code>name</code>), <code>disabled</code> / <code>required</code> natifs.</td>
+      <td><strong>Semantics</strong></td>
+      <td>Native <code>type="radio"</code> input: Space selects, arrow keys navigate within the group (same <code>name</code>), native <code>disabled</code> / <code>required</code>.</td>
     </tr>
     <tr>
-      <td><strong>Groupe</strong></td>
-      <td>Entourer le groupe d'un conteneur <code>role="radiogroup"</code> + <code>aria-label</code> (ou <code>&lt;fieldset&gt;</code>/<code>&lt;legend&gt;</code>).</td>
+      <td><strong>Group</strong></td>
+      <td>Wrap the group in a <code>role="radiogroup"</code> container + <code>aria-label</code> (or <code>&lt;fieldset&gt;</code>/<code>&lt;legend&gt;</code>).</td>
     </tr>
     <tr>
       <td><strong>Labeling</strong></td>
-      <td>Le composant est un <code>&lt;label&gt;</code> natif enveloppant l'input : cliquer n'importe où (cercle, espacement, texte) sélectionne. Sans label visible : <code>ariaLabel</code> obligatoire.</td>
+      <td>The component is a native <code>&lt;label&gt;</code> wrapping the input: clicking anywhere (circle, spacing, text) selects. With no visible label: <code>ariaLabel</code> required.</td>
     </tr>
     <tr>
-      <td><strong>États</strong></td>
-      <td><code>:focus-visible</code> = anneau distinct du hover. <code>aria-invalid</code> posé quand le style erreur est actif. Le cercle et le point sont <code>aria-hidden</code>.</td>
+      <td><strong>States</strong></td>
+      <td><code>:focus-visible</code> = ring distinct from hover. <code>aria-invalid</code> set when the error style is active. The circle and dot are <code>aria-hidden</code>.</td>
     </tr>
   </tbody>
 </table>
 
-## États
+## States
 
 <Canvas of={RadioStories.Default} />
 <Canvas of={RadioStories.Checked} />
 <Canvas of={RadioStories.Disabled} />
 <Canvas of={RadioStories.Invalid} />
 
-## Groupe avec option désactivée
+## Group with a disabled option
 
 <Canvas of={RadioStories.GroupeAvecDisabled} />
 
 ## Theming
 
-Variables locales en tête de `ui-radio.scss`. Celles qui pointent vers `utils.$form-*` sont le
-**point d'ajustement per-composant** (remplacer ici n'affecte que le radio) ; voir le groupe
-partagé [Forms](?path=/docs/components-configuration-forms--docs) et le
-[fonctionnement de la configuration](?path=/docs/components-configuration--docs).
+Local variables at the top of `ui-radio.scss`. Those pointing to `utils.$form-*` are the
+**per-component adjustment point** (replacing here only affects the radio); see the shared
+[Forms](?path=/docs/components-configuration-forms--docs) group and
+[how configuration works](?path=/docs/components-configuration--docs).
 
 <ConfigTable of="ui-radio" />

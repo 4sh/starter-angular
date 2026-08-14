@@ -6,12 +6,12 @@ import { ConfigTable } from '../../../../storybook/blocks/config-table';
 
 # ui-slider
 
-Le composant `ui-slider` permet de choisir une valeur numérique (ou un intervalle)
-en faisant glisser une poignée le long d'une piste. Il implémente le motif
-WAI-ARIA « slider » : chaque poignée porte `role="slider"` avec `aria-valuemin`,
-`aria-valuemax`, `aria-valuenow` et `aria-orientation`, et se pilote entièrement au
-clavier. Les interactions pointeur (souris, tactile, stylet) passent par un unique
-chemin de code (`PointerEvent` + pointer capture).
+The `ui-slider` component lets you pick a numeric value (or a range)
+by dragging a handle along a track. It implements the
+WAI-ARIA "slider" pattern: each handle carries `role="slider"` with `aria-valuemin`,
+`aria-valuemax`, `aria-valuenow` and `aria-orientation`, and is fully keyboard-drivable.
+Pointer interactions (mouse, touch, stylus) go through a single code
+path (`PointerEvent` + pointer capture).
 
 <Canvas of={SliderStories.Basic} />
 
@@ -21,49 +21,49 @@ chemin de code (`PointerEvent` + pointer capture).
 
 ## Step
 
-La granularité de chaque déplacement (drag et clavier) est définie par `step`.
+The granularity of every move (drag and keyboard) is set by `step`.
 
 <Canvas of={SliderStories.Step} />
 
 ## Range
 
-Avec `range`, le curseur affiche deux poignées définissant deux valeurs. Le modèle
-doit alors être un tableau `[début, fin]`.
+With `range`, the slider shows two handles defining two values. The model
+must then be a `[start, end]` array.
 
 <Canvas of={SliderStories.Range} />
 
-### Écart entre poignées
+### Gap between handles
 
-`minStepsBetweenHandles` définit le nombre minimal de pas conservés entre les deux
-poignées en mode `range`.
+`minStepsBetweenHandles` sets the minimum number of steps kept between the two
+handles in `range` mode.
 
 <Canvas of={SliderStories.HandlesDistance} />
 
 ## Controlled
 
-Le curseur partage son modèle avec un [`ui-input-number`](?path=/docs/components-ui-forms-ui-input-number--docs)
-via une liaison bidirectionnelle : les deux restent synchronisés.
+The slider shares its model with a [`ui-input-number`](?path=/docs/components-ui-forms-ui-input-number--docs)
+via a two-way binding: the two stay in sync.
 
 <Canvas of={SliderStories.Controlled} />
 
 ## Value Change
 
-`sliderChange` est émis **en continu** pendant le déplacement, tandis que `slideEnd`
-ne l'est qu'une fois le glissement (ou le clic sur la piste) **terminé**.
+`sliderChange` is emitted **continuously** while moving, whereas `slideEnd`
+is only emitted once the drag (or the track click) is **complete**.
 
 <Canvas of={SliderStories.ValueChange} />
 
-## Repères (marks)
+## Marks
 
-`marks` affiche un repère par pas le long de la piste (borné pour préserver le DOM :
-désactivé au-delà de 100 pas).
+`marks` shows a tick per step along the track (bounded to protect the DOM:
+disabled beyond 100 steps).
 
 <Canvas of={SliderStories.Marks} />
 
 ## Custom
 
-Le composant est headless : au-delà des thèmes/tokens, trois **hooks structurels**
-(CSS custom properties) permettent de le réaccorder par instance sans surcharge SCSS.
+The component is headless: beyond themes/tokens, three **structural hooks**
+(CSS custom properties) let you retune it per instance without an SCSS override.
 
 ```html
 <ui-slider [(ngModel)]="value"
@@ -74,21 +74,21 @@ Le composant est headless : au-delà des thèmes/tokens, trois **hooks structure
 
 ## Orientation
 
-`orientation="vertical"` bascule la disposition (et adapte les flèches clavier). La
-longueur en vertical se règle via `--ui-slider-length`.
+`orientation="vertical"` switches the layout (and adapts the arrow keys). The
+length in vertical mode is set via `--ui-slider-length`.
 
 <Canvas of={SliderStories.Vertical} />
 
-## États
+## States
 
 <Canvas of={SliderStories.States} />
 
-## Formulaires
+## Forms
 
-Le composant est un `ControlValueAccessor`, donc il se branche à toutes les APIs de
-formulaire sans code additionnel. Les Signal Forms (`@angular/forms/signals`,
-directive `[formField]`), stables depuis Angular 22, fonctionnent via la couche
-d'interop CVA native, sans réécriture du composant.
+The component is a `ControlValueAccessor`, so it wires up to every form
+API with no extra code. Signal Forms (`@angular/forms/signals`,
+`[formField]` directive), stable since Angular 22, work via the
+native CVA interop layer, with no component rewrite.
 
 <Canvas of={SliderStories.SignalForms} />
 <Canvas of={SliderStories.TemplateDriven} />
@@ -99,51 +99,51 @@ d'interop CVA native, sans réécriture du composant.
 <ui-slider [formField]="volume" ariaLabel="Volume" />
 
 <!-- Template-driven -->
-<ui-slider [(ngModel)]="level" name="level" required ariaLabel="Niveau" />
+<ui-slider [(ngModel)]="level" name="level" required ariaLabel="Level" />
 
 <!-- Reactive -->
-<ui-slider [formControl]="levelCtrl" ariaLabel="Niveau" />
+<ui-slider [formControl]="levelCtrl" ariaLabel="Level" />
 ```
 
-- Le style **erreur s'applique automatiquement** quand le contrôle attaché est invalide
-  **et** touché/modifié ; `invalid` permet de le forcer.
-- `disabled` désactive le contrôle (par input ou via `control.disable()`).
+- The **error style applies automatically** when the attached control is invalid
+  **and** touched/dirty; `invalid` lets you force it.
+- `disabled` disables the control (via the input or `control.disable()`).
 
-## Accessibilité
+## Accessibility
 
 <table className="doc-table">
   <thead>
     <tr>
-      <th>Règle</th>
-      <th>Détail</th>
+      <th>Rule</th>
+      <th>Detail</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><strong>Sémantique</strong></td>
-      <td>Chaque poignée est un <code>role="slider"</code> exposant <code>aria-valuemin</code> / <code>aria-valuemax</code> / <code>aria-valuenow</code> / <code>aria-orientation</code>.</td>
+      <td><strong>Semantics</strong></td>
+      <td>Each handle is a <code>role="slider"</code> exposing <code>aria-valuemin</code> / <code>aria-valuemax</code> / <code>aria-valuenow</code> / <code>aria-orientation</code>.</td>
     </tr>
     <tr>
-      <td><strong>Clavier</strong></td>
-      <td>Flèches ←/→ (ou ↓/↑) : ± <code>step</code>. Page↑/↓ : ± 10 pas. Début/Fin : <code>min</code> / <code>max</code>.</td>
+      <td><strong>Keyboard</strong></td>
+      <td>Arrow keys ←/→ (or ↓/↑): ± <code>step</code>. PageUp/PageDown: ± 10 steps. Home/End: <code>min</code> / <code>max</code>.</td>
     </tr>
     <tr>
-      <td><strong>Nom accessible</strong></td>
-      <td><code>ariaLabel</code> (ou <code>ariaLabelledBy</code>) requis sur le contrôle — un avertissement est émis en développement s'il manque.</td>
+      <td><strong>Accessible name</strong></td>
+      <td><code>ariaLabel</code> (or <code>ariaLabelledBy</code>) required on the control — a dev-mode warning is emitted if missing.</td>
     </tr>
     <tr>
-      <td><strong>États</strong></td>
-      <td><code>:focus-visible</code> = anneau distinct du hover. <code>aria-disabled</code> / <code>aria-readonly</code> reflètent l'état. Les repères sont <code>aria-hidden</code>.</td>
+      <td><strong>States</strong></td>
+      <td><code>:focus-visible</code> = ring distinct from hover. <code>aria-disabled</code> / <code>aria-readonly</code> reflect the state. Marks are <code>aria-hidden</code>.</td>
     </tr>
   </tbody>
 </table>
 
 ## Theming
 
-Variables locales en tête de `ui-slider.scss`. Celles qui pointent vers `utils.*`
-sont le **point d'ajustement per-composant** ; voir le groupe partagé
-[Forms](?path=/docs/components-configuration-forms--docs) et le
-[fonctionnement de la configuration](?path=/docs/components-configuration--docs). Les
-hooks `--ui-slider-*` se surchargent par instance (voir [Custom](#custom)).
+Local variables at the top of `ui-slider.scss`. Those pointing to `utils.*`
+are the **per-component adjustment point**; see the shared
+[Forms](?path=/docs/components-configuration-forms--docs) group and
+[how configuration works](?path=/docs/components-configuration--docs). The
+`--ui-slider-*` hooks can be overridden per instance (see [Custom](#custom)).
 
 <ConfigTable of="ui-slider" />

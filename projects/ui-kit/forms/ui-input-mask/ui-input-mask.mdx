@@ -5,37 +5,37 @@ import * as MaskStories from './ui-input-mask.stories';
 
 # ui-input-mask
 
-Champ **masqué** bâti sur le shell [`ui-field`](?path=/docs/components-ui-forms-ui-field--docs).
-Le gabarit `mask` insère automatiquement les littéraux pendant la frappe :
+**Masked** field built on the [`ui-field`](?path=/docs/components-ui-forms-ui-field--docs) shell.
+The `mask` pattern automatically inserts literals while typing:
 
 <table className="doc-table">
   <thead>
     <tr>
       <th>Token</th>
-      <th>Accepte</th>
+      <th>Accepts</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td><code>9</code></td>
-      <td>un chiffre <code>0-9</code></td>
+      <td>a digit <code>0-9</code></td>
     </tr>
     <tr>
       <td><code>a</code></td>
-      <td>une lettre <code>a-z A-Z</code></td>
+      <td>a letter <code>a-z A-Z</code></td>
     </tr>
     <tr>
       <td><code>*</code></td>
-      <td>un caractère alphanumérique</td>
+      <td>an alphanumeric character</td>
     </tr>
     <tr>
-      <td><em>autre</em></td>
-      <td>littéral inséré automatiquement (<code>/</code>, <code>-</code>, espace, <code>(</code>, <code>)</code>…)</td>
+      <td><em>other</em></td>
+      <td>literal, inserted automatically (<code>/</code>, <code>-</code>, space, <code>(</code>, <code>)</code>…)</td>
     </tr>
   </tbody>
 </table>
 
-Valeur modèle = string masquée (`12/09/2024`) par défaut, ou brute (`12092024`) si `unmask`.
+Model value = masked string (`12/09/2024`) by default, or raw (`12092024`) with `unmask`.
 
 <Canvas of={MaskStories.Phone} />
 
@@ -43,50 +43,50 @@ Valeur modèle = string masquée (`12/09/2024`) par défaut, ou brute (`12092024
 
 <ArgTypes of={MaskStories} />
 
-## Valeurs bornées (`ranges`)
+## Bounded values (`ranges`)
 
-Le masque décrit la **forme**. L'input `ranges` borne
-chaque **segment numérique** — une suite de tokens `9` consécutifs — dans l'**ordre du masque**,
-sous forme de `min-max` séparés par des espaces (`*` laisse un segment libre) :
+The mask describes the **shape**. The `ranges` input bounds
+each **numeric segment** — a run of consecutive `9` tokens — in **mask order**,
+as `min-max` pairs separated by spaces (`*` leaves a segment unbounded):
 
 <table className="doc-table">
   <thead>
-    <tr><th>Masque</th><th><code>ranges</code></th><th>Effet</th></tr>
+    <tr><th>Mask</th><th><code>ranges</code></th><th>Effect</th></tr>
   </thead>
   <tbody>
     <tr>
       <td><code>99:99</code></td>
       <td><code>0-23 0-59</code></td>
-      <td>heure 24 h — <code>33:33</code> devient impossible à saisir</td>
+      <td>24h time — <code>33:33</code> becomes impossible to type</td>
     </tr>
     <tr>
       <td><code>99/99/9999</code></td>
       <td><code>1-31 1-12 1900-2100</code></td>
-      <td>jour / mois / année</td>
+      <td>day / month / year</td>
     </tr>
     <tr>
       <td><code>99:99:99</code></td>
       <td><code>* 0-59 0-59</code></td>
-      <td>seuls les 2ᵉ et 3ᵉ segments sont bornés</td>
+      <td>only the 2nd and 3rd segments are bounded</td>
     </tr>
   </tbody>
 </table>
 
-Le contrôle se fait **à la frappe**, par anticipation : un caractère n'est accepté que s'il reste
-au moins une façon de compléter le segment dans la plage. Sur `0-23`, `3` est refusé d'emblée
-(`30`-`39` sortent tous de la plage) ; `2` passe, puis `4` est refusé et `3` accepté. Un segment
-**entièrement rempli** est donc toujours dans sa plage — la borne inférieure reste, elle,
-atteignable par préfixe (`0` est accepté sur `1-31`, en attente du `1`-`9` suivant).
+Checking happens **while typing**, ahead of time: a character is only accepted if at least
+one way remains to complete the segment within the range. For `0-23`, `3` is rejected outright
+(`30`-`39` all fall outside the range); `2` passes, then `4` is rejected and `3` is accepted. A
+**fully filled** segment is therefore always within its range — the lower bound, on the
+other hand, remains reachable by prefix (`0` is accepted on `1-31`, awaiting the next `1`-`9`).
 
 <Canvas of={MaskStories.Time} />
 
-> `ranges` ne borne que les segments **numériques** (`9`) ; les tokens `a`/`*` sont ignorés dans la
-> numérotation. Les bornes s'appliquent aussi aux valeurs **écrites par le formulaire**
-> (`writeValue`), comme le filtrage de caractères déjà en place. Un segment **incomplet**
-> (`9_:__`) reste possible : la complétude relève de la validation du formulaire (`required`, ou un
-> validateur dédié), pas du masque.
+> `ranges` only bounds **numeric** segments (`9`); the `a`/`*` tokens are ignored in the
+> numbering. Bounds also apply to values **written by the form**
+> (`writeValue`), just like the character filtering already in place. An **incomplete**
+> segment (`9_:__`) remains possible: completeness is the form's validation's concern
+> (`required`, or a dedicated validator), not the mask's.
 
-## Exemples
+## Examples
 
 <Canvas of={MaskStories.Date} />
 <Canvas of={MaskStories.Time} />
@@ -94,53 +94,53 @@ atteignable par préfixe (`0` est accepté sur `1-31`, en attente du `1`-`9` sui
 <Canvas of={MaskStories.Unmask} />
 <Canvas of={MaskStories.Error} />
 
-## Formulaires
+## Forms
 
-Le composant est un `ControlValueAccessor` : il se branche sans code additionnel aux
-**Signal Forms** (`@angular/forms/signals`, directive `[formField]`, stables depuis Angular 22)
-via l'interop CVA native, ainsi qu'aux formulaires template-driven (`[(ngModel)]`) et réactifs
-(`[formControl]`).
+The component is a `ControlValueAccessor`: it wires up with no extra code to
+**Signal Forms** (`@angular/forms/signals`, `[formField]` directive, stable since Angular 22)
+via native CVA interop, as well as to template-driven (`[(ngModel)]`) and reactive
+(`[formControl]`) forms.
 
 <Canvas of={MaskStories.SignalForms} />
 
-## Accessibilité & notes
+## Accessibility & notes
 
 <table className="doc-table">
   <thead>
-    <tr><th>Point</th><th>Implémentation</th></tr>
+    <tr><th>Point</th><th>Implementation</th></tr>
   </thead>
   <tbody>
     <tr>
-      <td><strong>Label / aide / erreur</strong></td>
-      <td>Via le shell `ui-field` : label lié par <code>for</code>/<code>id</code>, message relié par <code>aria-describedby</code>, <code>aria-invalid</code> en erreur.</td>
+      <td><strong>Label / helper / error</strong></td>
+      <td>Via the `ui-field` shell: label linked via <code>for</code>/<code>id</code>, message linked via <code>aria-describedby</code>, <code>aria-invalid</code> on error.</td>
     </tr>
     <tr>
-      <td><strong>Saisie</strong></td>
-      <td>Les littéraux (`/`, `-`…) sont insérés automatiquement ; les caractères non conformes au token — ou hors des bornes <code>ranges</code> — sont ignorés.</td>
+      <td><strong>Input</strong></td>
+      <td>Literals (`/`, `-`…) are inserted automatically; characters that don't match the token — or fall outside the <code>ranges</code> bounds — are ignored.</td>
     </tr>
   </tbody>
 </table>
 
 ```html
 <!-- Signal Forms -->
-<ui-input-mask [formField]="field" label="Date" mask="99/99/9999" placeholder="jj/mm/aaaa" />
+<ui-input-mask [formField]="field" label="Date" mask="99/99/9999" placeholder="dd/mm/yyyy" />
 
-<ui-input-mask formControlName="birthDate" label="Date" mask="99/99/9999" placeholder="jj/mm/aaaa" iconLeft="calendar" />
-<ui-input-mask [(ngModel)]="phone" label="Téléphone" mask="(999) 999-9999" />
+<ui-input-mask formControlName="birthDate" label="Date" mask="99/99/9999" placeholder="dd/mm/yyyy" iconLeft="calendar" />
+<ui-input-mask [(ngModel)]="phone" label="Phone" mask="(999) 999-9999" />
 <ui-input-mask [(ngModel)]="iban" label="IBAN" mask="FR99 9999 9999 9999" [unmask]="true" />
 
-<!-- Valeurs bornées -->
-<ui-input-mask [(ngModel)]="time" label="Heure" mask="99:99" ranges="0-23 0-59" />
+<!-- Bounded values -->
+<ui-input-mask [(ngModel)]="time" label="Time" mask="99:99" ranges="0-23 0-59" />
 <ui-input-mask [(ngModel)]="birth" label="Date" mask="99/99/9999" ranges="1-31 1-12 1900-2100" />
 ```
 
-> Caret : après masquage, le curseur est repositionné d'après le nombre de caractères de donnée
-> situés avant lui (littéraux auto-insérés sautés) — l'édition **au milieu** de la chaîne conserve
-> une position cohérente, pas seulement en fin de saisie.
+> Caret: after masking, the cursor is repositioned based on the number of data characters
+> before it (auto-inserted literals skipped) — editing **in the middle** of the string keeps
+> a consistent position, not just at the end of input.
 
 ## Theming
 
-Aucune variable locale surchargeable : la boîte vient du shell `ui-field`. La configuration passe
-par ses variables (groupe partagé [Forms](?path=/docs/components-configuration-forms--docs)),
-détaillées sur la doc [`ui-input`](?path=/docs/components-ui-forms-ui-input--docs). Voir le
-[fonctionnement de la configuration](?path=/docs/components-configuration--docs).
+No overridable local variables: the box comes from the `ui-field` shell. Configuration goes
+through its variables (shared [Forms](?path=/docs/components-configuration-forms--docs) group),
+detailed in [`ui-input`](?path=/docs/components-ui-forms-ui-input--docs)'s docs. See
+[how configuration works](?path=/docs/components-configuration--docs).
