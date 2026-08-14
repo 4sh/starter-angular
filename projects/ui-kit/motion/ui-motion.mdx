@@ -5,44 +5,44 @@ import * as MotionStories from './ui-motion.stories';
 
 # Motion
 
-Système d'animation **léger, piloté par les design tokens** et pensé pour être
-**activable, personnalisable et réutilisable** sur tous les composants (ouverture
-d'accordéon, dropdown, modale, apparition d'un helper ou d'un toast…).
+**Lightweight, design-token-driven** animation system, designed to be
+**toggleable, customizable and reusable** across every component (accordion
+opening, dropdown, modal, a helper or toast appearing…).
 
-Il s'appuie sur les **animations CSS natives** et sur l'API Angular native
-`animate.enter` / `animate.leave` (aucune dépendance runtime `@angular/animations`).
-Deux primitives complémentaires :
+It relies on **native CSS animations** and the native Angular API
+`animate.enter` / `animate.leave` (no `@angular/animations` runtime dependency).
+Two complementary primitives:
 
-- **Presets d'entrée/sortie** — des classes globales `ui-motion-<preset>-enter|leave`
-  pour l'insertion/retrait d'un élément (`@if`, `@for`, overlays, toasts…).
-- **Transitions d'état** — le mixin SCSS `utils.motion-transition(...)` pour un élément
-  monté qui bascule (accordéon replié/déplié, tooltip visible/masqué…).
+- **Enter/leave presets** — global classes `ui-motion-<preset>-enter|leave`
+  for inserting/removing an element (`@if`, `@for`, overlays, toasts…).
+- **State transitions** — the SCSS mixin `utils.motion-transition(...)` for a
+  mounted element that toggles (collapsed/expanded accordion, visible/hidden tooltip…).
 
-## Préréglages
+## Presets
 
 <table className="doc-table">
   <thead>
-    <tr><th>Preset</th><th>Effet</th><th>Usage type</th></tr>
+    <tr><th>Preset</th><th>Effect</th><th>Typical use</th></tr>
   </thead>
   <tbody>
-    <tr><td>`fade`</td><td>Opacité</td><td>Neutre, transitions douces.</td></tr>
-    <tr><td>`slide-up`</td><td>Montée + fondu</td><td>Toasts, tooltips au-dessus.</td></tr>
-    <tr><td>`slide-down`</td><td>Descente + fondu</td><td>Menus / dropdowns sous un déclencheur.</td></tr>
-    <tr><td>`slide-left`</td><td>Entrée par la droite</td><td>Drawers, panneaux latéraux.</td></tr>
-    <tr><td>`slide-right`</td><td>Entrée par la gauche</td><td>Drawers (côté opposé).</td></tr>
-    <tr><td>`zoom`</td><td>Échelle + fondu</td><td>Modales, dialogs, popovers.</td></tr>
-    <tr><td>`collapse`</td><td>Hauteur (grid-rows) + fondu</td><td>Accordéons, panneaux (requiert un wrapper grid).</td></tr>
+    <tr><td>`fade`</td><td>Opacity</td><td>Neutral, gentle transitions.</td></tr>
+    <tr><td>`slide-up`</td><td>Rise + fade</td><td>Toasts, tooltips above.</td></tr>
+    <tr><td>`slide-down`</td><td>Drop + fade</td><td>Menus / dropdowns under a trigger.</td></tr>
+    <tr><td>`slide-left`</td><td>Enters from the right</td><td>Drawers, side panels.</td></tr>
+    <tr><td>`slide-right`</td><td>Enters from the left</td><td>Drawers (opposite side).</td></tr>
+    <tr><td>`zoom`</td><td>Scale + fade</td><td>Modals, dialogs, popovers.</td></tr>
+    <tr><td>`collapse`</td><td>Height (grid-rows) + fade</td><td>Accordions, panels (requires a grid wrapper).</td></tr>
   </tbody>
 </table>
 
 <Canvas of={MotionStories.Playground} />
 
-## Utilisation
+## Usage
 
-### 1. Directive `[uiMotion]` (recommandé)
+### 1. `[uiMotion]` directive (recommended)
 
-Sur un élément rendu conditionnellement, la directive choisit le preset, expose les
-classes `enter()`/`leave()` et applique les surcharges de timing :
+On a conditionally rendered element, the directive picks the preset, exposes the
+`enter()`/`leave()` classes and applies the timing overrides:
 
 ```html
 @if (open()) {
@@ -52,29 +52,29 @@ classes `enter()`/`leave()` et applique les surcharges de timing :
 }
 ```
 
-### 2. Panneau dans un overlay CDK — `motionOnInsert`
+### 2. Panel in a CDK overlay — `motionOnInsert`
 
-Pour tout contenu rendu dans un **overlay CDK** (panneau de `ui-select`, `ui-menu` popup,
-`ui-popover`…), l'entrée passe par `motionOnInsert` au lieu de `animate.enter` : la
-directive pose elle-même la classe du preset.
+For any content rendered inside a **CDK overlay** (a `ui-select` panel, a `ui-menu` popup,
+`ui-popover`…), the enter goes through `motionOnInsert` instead of `animate.enter`: the
+directive sets the preset's class itself.
 
 ```html
 <div class="ui-x-panel" [uiMotion]="'slide-down'" motionOnInsert>…</div>
 ```
 
-C'est une **contrainte, pas une préférence**. `animate.enter` inscrit le nœud dans la file
-d'animations d'Angular, dénouée via l'injecteur quand le nœud disparaît. Si l'application
-est détruite pendant qu'un overlay est ouvert, cette étape échoue et interrompt la
-destruction : l'overlay n'est jamais démonté et son panneau reste affiché, détaché de son
-ancre, dans le coin haut-gauche de l'écran. Une classe CSS n'a pas ce problème — l'animation
-est identique, les presets étant de simples animations CSS.
+This is a **constraint, not a preference**. `animate.enter` registers the node in Angular's
+animation queue, resolved via the injector when the node disappears. If the application
+is destroyed while an overlay is open, that step fails and interrupts the
+destruction: the overlay is never unmounted and its panel stays displayed, detached from its
+anchor, in the top-left corner of the screen. A CSS class doesn't have this problem — the
+animation is identical, since the presets are plain CSS animations.
 
-Le reste de l'API ne change pas : presets, surcharges `--ui-motion-*`, `motionDisabled`,
-`data-motion="off"` et reduced-motion s'appliquent de la même façon.
+The rest of the API doesn't change: presets, `--ui-motion-*` overrides, `motionDisabled`,
+`data-motion="off"` and reduced-motion apply the same way.
 
-### 3. Classes globales (CSS-only)
+### 3. Global classes (CSS-only)
 
-Les mêmes classes sont utilisables directement avec `animate.enter`/`animate.leave` :
+The same classes can be used directly with `animate.enter`/`animate.leave`:
 
 ```html
 @if (open()) {
@@ -83,7 +83,7 @@ Les mêmes classes sont utilisables directement avec `animate.enter`/`animate.le
 }
 ```
 
-### 4. Transition d'état (élément monté)
+### 4. State transition (mounted element)
 
 ```scss
 @use 'utils';
@@ -99,68 +99,68 @@ Les mêmes classes sont utilisables directement avec `animate.enter`/`animate.le
 <Canvas of={MotionStories.SlideDown} />
 <Canvas of={MotionStories.Collapse} />
 
-## Personnalisation
+## Customization
 
-Chaque élément se re-cadence via les **custom properties** `--ui-motion-*` (par la
-directive : `motionDuration`, `motionEasing`, `motionDelay`, `motionDistance`,
-`motionScale`, ou en CSS directement), avec les **tokens** `$motion-*` comme défauts :
+Each element can be re-timed via the **custom properties** `--ui-motion-*` (through the
+directive: `motionDuration`, `motionEasing`, `motionDelay`, `motionDistance`,
+`motionScale`, or directly in CSS), with the **`$motion-*` tokens** as defaults:
 
 <table className="doc-table">
   <thead>
-    <tr><th>Custom property</th><th>Défaut (token)</th><th>Rôle</th></tr>
+    <tr><th>Custom property</th><th>Default (token)</th><th>Role</th></tr>
   </thead>
   <tbody>
-    <tr><td>`--ui-motion-duration`</td><td>`--transition-default` (180ms)</td><td>Durée.</td></tr>
-    <tr><td>`--ui-motion-easing`</td><td>`--transition-easeinout`</td><td>Courbe (transitions symétriques).</td></tr>
-    <tr><td>`--ui-motion-easing-enter`</td><td>`--transition-easeout`</td><td>Courbe d'entrée (décélération).</td></tr>
-    <tr><td>`--ui-motion-easing-leave`</td><td>`--transition-easein`</td><td>Courbe de sortie (accélération).</td></tr>
-    <tr><td>`--ui-motion-delay`</td><td>`0ms`</td><td>Délai avant démarrage.</td></tr>
-    <tr><td>`--ui-motion-distance`</td><td>`0.5rem`</td><td>Décalage des presets `slide-*`.</td></tr>
-    <tr><td>`--ui-motion-scale`</td><td>`0.96`</td><td>Échelle de départ du preset `zoom`.</td></tr>
+    <tr><td>`--ui-motion-duration`</td><td>`--transition-default` (180ms)</td><td>Duration.</td></tr>
+    <tr><td>`--ui-motion-easing`</td><td>`--transition-easeinout`</td><td>Curve (symmetric transitions).</td></tr>
+    <tr><td>`--ui-motion-easing-enter`</td><td>`--transition-easeout`</td><td>Enter curve (deceleration).</td></tr>
+    <tr><td>`--ui-motion-easing-leave`</td><td>`--transition-easein`</td><td>Leave curve (acceleration).</td></tr>
+    <tr><td>`--ui-motion-delay`</td><td>`0ms`</td><td>Delay before starting.</td></tr>
+    <tr><td>`--ui-motion-distance`</td><td>`0.5rem`</td><td>Offset of the `slide-*` presets.</td></tr>
+    <tr><td>`--ui-motion-scale`</td><td>`0.96`</td><td>Starting scale of the `zoom` preset.</td></tr>
   </tbody>
 </table>
 
-## Désactivation & accessibilité
+## Disabling & accessibility
 
-- **Par élément** : `[motionDisabled]="true"` (directive) ou `[motion]="false"` (accordéon).
-- **Global** : `data-motion="off"` sur `<html>` neutralise toutes les animations **et**
-  transitions du kit (même réinitialisation que reduced-motion).
-- **Préférence système** : `prefers-reduced-motion: reduce` réduit tous les presets à un
-  flash instantané — l'état change toujours, sans mouvement.
+- **Per element**: `[motionDisabled]="true"` (directive) or `[motion]="false"` (accordion).
+- **Global**: `data-motion="off"` on `<html>` neutralizes all of the kit's animations **and**
+  transitions (same reset as reduced-motion).
+- **System preference**: `prefers-reduced-motion: reduce` reduces every preset to an
+  instant flash — the state still changes, with no motion.
 
-## Intégration aux composants
+## Component integration
 
 <table className="doc-table">
   <thead>
     <tr>
-      <th>Composant</th>
-      <th>Mécanisme</th>
+      <th>Component</th>
+      <th>Mechanism</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td><code>ui-accordion</code></td>
-      <td>Transition <code>grid-template-rows</code> via <code>utils.motion-transition</code> (préréglage <code>collapse</code> en esprit).</td>
+      <td><code>grid-template-rows</code> transition via <code>utils.motion-transition</code> (in the spirit of the <code>collapse</code> preset).</td>
     </tr>
     <tr>
       <td><code>ui-tooltip</code></td>
-      <td>Transition opacité/translate via <code>utils.motion-transition</code> (durée <code>fast</code>, ease-out).</td>
+      <td>Opacity/translate transition via <code>utils.motion-transition</code> (<code>fast</code> duration, ease-out).</td>
     </tr>
     <tr>
-      <td>Dropdown / Select (à venir)</td>
-      <td><code>[uiMotion]="'slide-down'"</code> sur le panneau CDK.</td>
+      <td>Dropdown / Select (upcoming)</td>
+      <td><code>[uiMotion]="'slide-down'"</code> on the CDK panel.</td>
     </tr>
     <tr>
-      <td>Modale / Dialog (à venir)</td>
-      <td><code>[uiMotion]="'zoom'"</code> sur la boîte, <code>fade</code> sur le fond.</td>
+      <td>Modal / Dialog (upcoming)</td>
+      <td><code>[uiMotion]="'zoom'"</code> on the box, <code>fade</code> on the background.</td>
     </tr>
     <tr>
-      <td>Toast (à venir)</td>
-      <td><code>[uiMotion]="'slide-up'"</code> par toast.</td>
+      <td>Toast (upcoming)</td>
+      <td><code>[uiMotion]="'slide-up'"</code> per toast.</td>
     </tr>
     <tr>
-      <td>Helper (à venir)</td>
-      <td><code>[uiMotion]="'fade'"</code> ou <code>slide-down</code> sous le champ.</td>
+      <td>Helper (upcoming)</td>
+      <td><code>[uiMotion]="'fade'"</code> or <code>slide-down</code> under the field.</td>
     </tr>
   </tbody>
 </table>
