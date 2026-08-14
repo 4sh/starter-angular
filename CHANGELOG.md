@@ -16,6 +16,9 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+### Fixed
+- **`dropdownOverlayPositions` ne repositionnait jamais horizontalement le panneau** (`ui-select`, `ui-autocomplete`, `ui-input-tags`, `ui-datepicker`) : `originX`/`overlayX` restaient figés à `start`, donc un champ proche du bord droit ouvrait un panneau à moitié caché au lieu de le basculer à gauche. Ajout des positions `end`-alignées en repli, sur le même principe déjà utilisé par `ui-tooltip`/`ui-popover`/`ui-context-menu` (FSHSP-112).
+
 ### Changed
 - **BREAKING** : les 53 composants `ui-*` sont réorganisés par catégorie dans `projects/ui-kit/` (`actions/`, `forms/`, `informative/`, `layout/`, `navigation/`, `table/`, `base/` — mapping dans `storybook/docs/Overview.mdx`), pour restaurer le regroupement perdu lors de la migration vers le package npm (FSHSP-83). Conséquence inévitable : `ng-packagr` calcule le chemin public d'un entry point secondaire à partir de son chemin sur disque (aucune option pour le découpler), donc **chaque import change** — ex. `@4sh/ui-kit/ui-button` devient `@4sh/ui-kit/actions/ui-button`. Voir `storybook/docs/Overview.mdx` pour la liste complète des 53 renommages. Un projet qui consomme `@4sh/ui-kit` doit mettre à jour tous ses imports de composants.
 
