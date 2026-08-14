@@ -12,7 +12,7 @@ const meta: Meta<UiChip> = {
   argTypes: {
     label: {
       control: { type: 'text' },
-      description: 'Texte du chip.',
+      description: 'Chip text.',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     level: {
@@ -24,7 +24,7 @@ const meta: Meta<UiChip> = {
     subLevel: {
       control: { type: 'inline-radio' },
       options: ['high', 'low'],
-      description: 'Intensité : high (soutenu) ou low (discret).',
+      description: 'Intensity: high (strong) or low (subtle).',
       table: { type: { summary: 'UiSubLevel' }, defaultValue: { summary: '"low"' } },
     },
     size: {
@@ -35,62 +35,62 @@ const meta: Meta<UiChip> = {
     },
     icon: {
       control: { type: 'text' },
-      description: "Nom FontAwesome de l'icône de tête (ignoré si `image` est défini).",
+      description: "FontAwesome name of the leading icon (ignored if `image` is set).",
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     image: {
       control: { type: 'text' },
-      description: "URL d'une image de tête (façon avatar). Prioritaire sur `icon`.",
+      description: "URL of a leading image (avatar-style). Takes priority over `icon`.",
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     alt: {
       control: { type: 'text' },
-      description: "Texte alternatif de l'image (vide si décorative à côté d'un label).",
+      description: "Alt text of the image (empty if decorative next to a label).",
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     rounded: {
       control: { type: 'boolean' },
-      description: 'Forme pilule (défaut) ; rectangle arrondi si false.',
+      description: 'Pill shape (default); rounded rectangle if false.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
     removable: {
       control: { type: 'boolean' },
-      description: 'Affiche une action de suppression en fin de chip.',
+      description: 'Shows a remove action at the end of the chip.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     removeIcon: {
       control: { type: 'text' },
-      description: "Nom FontAwesome de l'icône de suppression.",
+      description: "FontAwesome name of the remove icon.",
       table: { type: { summary: 'string' }, defaultValue: { summary: '"xmark"' } },
     },
     disabled: {
       control: { type: 'boolean' },
-      description: "Désactive le chip (l'action de suppression devient inerte).",
+      description: "Disables the chip (the remove action becomes inert).",
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     selectable: {
       control: { type: 'boolean' },
-      description: 'Transforme le chip en bascule sélectionnable (rendu `<button aria-pressed>`).',
+      description: 'Turns the chip into a selectable toggle (rendered as `<button aria-pressed>`).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     selected: {
       control: { type: 'boolean' },
-      description: 'État de sélection (mode `selectable`, two-way).',
+      description: 'Selection state (`selectable` mode, two-way).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     selectedIcon: {
       control: { type: 'text' },
-      description: "Icône FontAwesome affichée en tête lorsque sélectionné.",
+      description: "FontAwesome icon shown leading when selected.",
       table: { type: { summary: 'string' }, defaultValue: { summary: '"check"' } },
     },
     ariaLabel: {
       control: { type: 'text' },
-      description: 'Nom accessible (remplace le `label` par défaut).',
+      description: 'Accessible name (replaces the default `label`).',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     removeAriaLabel: {
       control: { type: 'text' },
-      description: "Nom accessible de l'action de suppression.",
+      description: "Accessible name of the remove action.",
       table: { type: { summary: 'string' }, defaultValue: { summary: '"Remove"' } },
     },
     remove: { action: 'remove', table: { category: 'Events' } },
