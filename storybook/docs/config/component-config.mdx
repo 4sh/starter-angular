@@ -2,119 +2,124 @@ import { Meta } from '@storybook/addon-docs/blocks';
 
 <Meta title="Components/configuration" />
 
-# Configuration des styles composants
+# Component style configuration
 
-Cette page explique **comment fonctionne** la configuration structurelle des composants `ui-*`,
-et sert de **sommaire** vers les groupes de variables et les sections de configuration de chaque
-composant.
+This page explains **how** the structural configuration of `ui-*` components
+works, and serves as a **summary** pointing to the variable groups and the
+configuration sections of each component.
 
-À ne pas confondre avec les deux autres leviers de configuration du design system :
+Not to be confused with the design system's two other configuration levers:
 
 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
   <thead>
     <tr style={{ textAlign: 'left', borderBottom: '2px solid rgba(128,128,128,.25)' }}>
-      <th style={{ padding: 8, width: 194}}>Axe</th>
-      <th style={{ padding: 8 }}>Quoi</th>
-      <th style={{ padding: 8 }}>Quand</th>
-      <th style={{ padding: 8 }}>Où</th>
+      <th style={{ padding: 8, width: 194}}>Axis</th>
+      <th style={{ padding: 8 }}>What</th>
+      <th style={{ padding: 8 }}>When</th>
+      <th style={{ padding: 8 }}>Where</th>
     </tr>
   </thead>
   <tbody>
     <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
-      <td style={{ padding: 8 }}><strong>Theming runtime</strong></td>
-      <td style={{ padding: 8 }}>Couleurs (marque, clair/sombre), typo, espacements : via variables CSS</td>
-      <td style={{ padding: 8 }}>À l'exécution (attributs sur <code>&lt;html&gt;</code>)</td>
+      <td style={{ padding: 8 }}><strong>Runtime theming</strong></td>
+      <td style={{ padding: 8 }}>Colors (brand, light/dark), typography, spacing: via CSS variables</td>
+      <td style={{ padding: 8 }}>At runtime (attributes on <code>&lt;html&gt;</code>)</td>
       <td style={{ padding: 8 }}>Design tokens · <code>ThemeService</code> / <code>BrandService</code></td>
     </tr>
     <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
       <td style={{ padding: 8 }}><strong>Structure (ui-config)</strong></td>
-      <td style={{ padding: 8 }}>Choix mutualisé d'un token pour un rôle : focus ring, bordure, taille des contrôles, transition</td>
-      <td style={{ padding: 8 }}>À la compilation (SASS)</td>
+      <td style={{ padding: 8 }}>Shared choice of a token for a role: focus ring, border, control size, transition</td>
+      <td style={{ padding: 8 }}>At compile time (SASS)</td>
       <td style={{ padding: 8 }}><code>projects/ui-kit/styles/settings/_ui-config.scss</code></td>
     </tr>
   </tbody>
 </table>
 
-> Pour le theming runtime, voir **Spécifications → Thème & Système de Tokens** et
-> **Foundations → Colors**. Cette page documente l'axe **structure**.
+> For runtime theming, see **Specifications → Theme & Token System** and
+> **Foundations → Colors**. This page documents the **structure** axis.
 
 <br/>
 
-## Principe : 3 niveaux, une variable locale par composant
+## Principle: 3 levels, one local variable per component
 
-`_ui-config.scss` (exposé par <code>@use 'utils'</code>) déclare des constantes à 3 portées,
-de la plus large à la plus étroite :
+`_ui-config.scss` (exposed via <code>@use 'utils'</code>) declares constants at 3 scopes,
+from widest to narrowest:
 
 ```
-GLOBAL UI  ──►  CATÉGORIE  ──►  COMPOSANT (variable locale)
-(tous)          (forms /        (un seul .scss)
+GLOBAL UI  ──►  CATEGORY  ──►  COMPONENT (local variable)
+(all)           (forms /
                  actions /
                  informative)
 ```
 
-- Les constantes sont regroupées par **portée** : certaines sont **globales** (partagées par plusieurs familles de composants / des concepts communs à l’ensemble de l’interface), d’autres sont propres à une **catégorie** (forms, actions, informative).
-- Chaque composant consomme ensuite les constantes dont il a besoin dans sa propre configuration SCSS (variables locales, maps, mixins, etc.), ce qui permet d’ajuster un composant sans impacter les autres.
+- Constants are grouped by **scope**: some are **global** (shared across several
+  component families / concepts common to the whole interface), others belong to a
+  **category** (forms, actions, informative).
+- Each component then consumes the constants it needs in its own SCSS configuration
+  (local variables, maps, mixins, etc.), which lets you adjust one component without
+  affecting the others.
 
 ```scss
-// Exemple dans ui-radio.scss : la valeur commune arrive via une variable LOCALE :
-$focus-ring-width: utils.$form-focus-ring-width; // ← remplacer ici = ajuster CE composant
+// Example in ui-radio.scss: the shared value arrives via a LOCAL variable:
+$focus-ring-width: utils.$form-focus-ring-width; // ← replace here to adjust THIS component
 ```
 
 <br/>
 
-## Sommaire : groupes de variables partagées
+## Summary: shared variable groups
 
-Le référentiel des constantes **mutualisées** (`_ui-config.scss`) est découpé par groupe. Chaque
-page liste les variables, leur rôle et leur valeur par défaut.
+The **shared** constants reference (`_ui-config.scss`) is split by group. Each
+page lists the variables, their role and their default value.
 
 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
   <thead>
     <tr style={{ textAlign: 'left', borderBottom: '2px solid rgba(128,128,128,.25)' }}>
-      <th style={{ padding: 8, width: 220 }}>Groupe</th>
-      <th style={{ padding: 8 }}>Préfixe</th>
-      <th style={{ padding: 8 }}>Portée</th>
+      <th style={{ padding: 8, width: 220 }}>Group</th>
+      <th style={{ padding: 8 }}>Prefix</th>
+      <th style={{ padding: 8 }}>Scope</th>
     </tr>
   </thead>
   <tbody>
     <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
       <td style={{ padding: 8 }}><a href="?path=/docs/components-configuration-global-ui--docs"><strong>Global UI</strong></a></td>
       <td style={{ padding: 8 }}><code>$focus-ring-width</code>, <code>$control-{'*'}</code>, <code>$motion-{'*'}</code></td>
-      <td style={{ padding: 8 }}>Tous les composants interactifs / Concepts Globaux à l'interface (dont le système de motion)</td>
+      <td style={{ padding: 8 }}>Every interactive component / global interface concepts (including the motion system)</td>
     </tr>
     <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
       <td style={{ padding: 8 }}><a href="?path=/docs/components-configuration-forms--docs"><strong>Forms</strong></a></td>
       <td style={{ padding: 8 }}><code>$form-*</code></td>
-      <td style={{ padding: 8 }}>Éléments de formulaire</td>
+      <td style={{ padding: 8 }}>Form elements</td>
     </tr>
     <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
       <td style={{ padding: 8 }}><a href="?path=/docs/components-configuration-actions--docs"><strong>Actions</strong></a></td>
       <td style={{ padding: 8 }}><code>$action-*</code></td>
-      <td style={{ padding: 8 }}>Composants interactifs (ex : button) </td>
+      <td style={{ padding: 8 }}>Interactive components (e.g. button) </td>
     </tr>
     <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
       <td style={{ padding: 8 }}><a href="?path=/docs/components-configuration-informative--docs"><strong>Informative</strong></a></td>
       <td style={{ padding: 8 }}><code>$avatar-*</code></td>
-      <td style={{ padding: 8 }}>Élements portant un message / non interactif</td>
+      <td style={{ padding: 8 }}>Elements carrying a message / non-interactive</td>
     </tr>
   </tbody>
 </table>
 
 <br/>
 
-## Sommaire : configuration par composant
+## Summary: per-component configuration
 
-Les variables **locales** de chaque composant (dont celles qui pointent vers `ui-config` =
-points d'ajustement per-composant) sont documentées dans la section **« Theming »** de la doc du
-composant. Cette table est **générée** depuis le `.scss` par `npm run docs:config` : le rôle de
-chaque variable vient de son commentaire `///`, le binding et la chaîne vers `ui-config` sont
-déduits, et la valeur affichée est **mesurée** dans le thème, la marque et le viewport actifs.
-Rebinder une variable dans un projet ne demande donc aucune reprise de doc.
+Each component's **local** variables (including those that point to `ui-config` —
+per-component adjustment points) are documented in the **"Theming"** section of the
+component's doc. That table is **generated** from the `.scss` by `npm run docs:config`:
+each variable's role comes from its `///` comment, the binding and the chain to
+`ui-config` are inferred, and the displayed value is **measured** in the active
+theme, brand and viewport. Rebinding a variable in a project therefore requires no
+doc update.
 
 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
   <thead>
     <tr style={{ textAlign: 'left', borderBottom: '2px solid rgba(128,128,128,.25)' }}>
-      <th style={{ padding: 8, width: 220 }}>Composant</th>
-      <th style={{ padding: 8 }}>Groupe(s) consommé(s)</th>
+      <th style={{ padding: 8, width: 220 }}>Component</th>
+      <th style={{ padding: 8 }}>Group(s) consumed</th>
     </tr>
   </thead>
   <tbody>
@@ -136,7 +141,7 @@ Rebinder une variable dans un projet ne demande donc aucune reprise de doc.
     </tr>
     <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
       <td style={{ padding: 8 }}><a href="?path=/docs/components-ui-forms-ui-input--docs"><code>ui-input</code></a> · <code>ui-input-mask</code> · <code>ui-input-number</code></td>
-      <td style={{ padding: 8 }}>Forms (via le shell <code>ui-field</code>)</td>
+      <td style={{ padding: 8 }}>Forms (via the <code>ui-field</code> shell)</td>
     </tr>
     <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
       <td style={{ padding: 8 }}><a href="?path=/docs/components-ui-informative-ui-avatar--docs"><code>ui-avatar</code></a> · <code>ui-avatar-group</code></td>
@@ -152,41 +157,41 @@ Rebinder une variable dans un projet ne demande donc aucune reprise de doc.
 <br/>
 <br/>
 
-## Comment surcharger
+## How to override
 
 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
   <thead>
     <tr style={{ textAlign: 'left', borderBottom: '2px solid rgba(128,128,128,.25)' }}>
-      <th style={{ padding: 8 }}>Objectif</th>
-      <th style={{ padding: 8 }}>Où intervenir</th>
+      <th style={{ padding: 8 }}>Goal</th>
+      <th style={{ padding: 8 }}>Where to act</th>
     </tr>
   </thead>
   <tbody>
     <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
-      <td style={{ padding: 8 }}><strong>Tout le kit</strong> (ex : focus ring de 2px → 3px partout)</td>
-      <td style={{ padding: 8 }}>Éditer la valeur globale dans <code>_ui-config.scss</code>. Tous les composants re-<code>@use</code> ce fichier, ils suivent.</td>
+      <td style={{ padding: 8 }}><strong>The whole kit</strong> (e.g. 2px focus ring → 3px everywhere)</td>
+      <td style={{ padding: 8 }}>Edit the global value in <code>_ui-config.scss</code>. Every component re-<code>@use</code>s this file, they follow.</td>
     </tr>
     <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
-      <td style={{ padding: 8 }}><strong>Une catégorie</strong> (ex : contrôles de formulaire plus grands)</td>
-      <td style={{ padding: 8 }}>Éditer la variable `$form-*` (ou `$action-*` / `$avatar-*`) dans <code>_ui-config.scss</code>.</td>
+      <td style={{ padding: 8 }}><strong>One category</strong> (e.g. larger form controls)</td>
+      <td style={{ padding: 8 }}>Edit the `$form-*` (or `$action-*` / `$avatar-*`) variable in <code>_ui-config.scss</code>.</td>
     </tr>
     <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
-      <td style={{ padding: 8 }}><strong>Un seul composant</strong> (ex : anneau plus épais sur le radio uniquement)</td>
-      <td style={{ padding: 8 }}>Remplacer la valeur de la variable locale en tête du <code>.scss</code> du composant.</td>
+      <td style={{ padding: 8 }}><strong>A single component</strong> (e.g. a thicker ring on radio only)</td>
+      <td style={{ padding: 8 }}>Replace the local variable's value at the top of the component's <code>.scss</code>.</td>
     </tr>
   </tbody>
 </table>
 
-> Deux leviers, c'est tout. Les composants font <code>@use 'utils'</code> (qui expose
-> `ui-config`) et lisent chaque valeur dans une variable **locale** ; éditer `_ui-config.scss`
-> se répercute donc partout, et remplacer la variable locale n'affecte que le composant.
+> Two levers, that's it. Components do <code>@use 'utils'</code> (which exposes
+> `ui-config`) and read each value from a **local** variable; editing `_ui-config.scss`
+> therefore ripples everywhere, and replacing the local variable only affects that component.
 
 <br/>
 
-## Mixin `control-transition()`
+## The `control-transition()` mixin
 
-Applique la recette de transition mutualisée à une liste de propriétés (durée + easing pris
-dans `ui-config`), en une déclaration :
+Applies the shared transition recipe to a list of properties (duration + easing taken
+from `ui-config`), in one declaration:
 
 ```scss
 @use 'utils';
@@ -197,29 +202,29 @@ dans `ui-config`), en une déclaration :
 // → transition: background-color 80ms ease-in-out, border-color 80ms ease-in-out, box-shadow 80ms ease-in-out;
 ```
 
-Changer la durée/courbe pour tous les composants = éditer `$control-transition-duration` /
-`$control-transition-easing` dans `ui-config`.
+Changing the duration/curve for every component = editing `$control-transition-duration` /
+`$control-transition-easing` in `ui-config`.
 
-Pour les **animations d'apparition/disparition et les transitions d'état** (accordéon,
-tooltip, overlays…), voir le **système de motion** dédié : mixin `utils.motion-transition()`,
-garde `utils.motion-reduce`, presets `ui-motion-*` et directive `[uiMotion]`, documentés dans
-**Foundations → Motion** (timing dans le groupe `$motion-*` ci-dessus).
-
-<br/>
-
-## Gouvernance : quand créer une constante partagée
-
-- Valeur utilisée par **≥ 2 composants** → la remonter dans `ui-config` (niveau **catégorie**
-  si propre à une famille `forms`/`actions`/`informative`, **global** sinon), et l'ajouter à la
-  page de groupe correspondante ci-dessus.
-- Valeur d'un **seul** composant → elle reste **locale** à son `.scss` (documentée dans la
-  section « Theming » de sa doc).
-- `ui-config` porte des **choix de tokens** (structure). Les couleurs thémables restent des
-  **design tokens** runtime : **jamais** de couleur ici.
+For **enter/exit animations and state transitions** (accordion,
+tooltip, overlays…), see the dedicated **motion system**: the `utils.motion-transition()`
+mixin, the `utils.motion-reduce` guard, the `ui-motion-*` presets and the `[uiMotion]`
+directive, documented in **Foundations → Motion** (timing in the `$motion-*` group above).
 
 <br/>
 
-> **Recherche Storybook** : la barre de recherche indexe les **titres** de l'arborescence
-> (nom / chemin), pas le contenu des pages. Pour retrouver une variable, cherchez son **groupe**
-> (`Global UI`, `Forms`, `Actions`, `Informative`) ou le **composant** qui la consomme
-> (`ui-radio`, `ui-avatar`…), puis sa section « Theming ».
+## Governance: when to create a shared constant
+
+- A value used by **≥ 2 components** → promote it into `ui-config` (**category**
+  level if specific to a `forms`/`actions`/`informative` family, **global** otherwise),
+  and add it to the matching group page above.
+- A value used by a **single** component → it stays **local** to its `.scss` (documented
+  in its doc's "Theming" section).
+- `ui-config` carries **token choices** (structure). Themeable colors remain runtime
+  **design tokens**: **never** a color here.
+
+<br/>
+
+> **Storybook search**: the search bar indexes the tree's **titles**
+> (name / path), not the pages' content. To find a variable, search for its **group**
+> (`Global UI`, `Forms`, `Actions`, `Informative`) or the **component** that consumes
+> it (`ui-radio`, `ui-avatar`…), then its "Theming" section.
