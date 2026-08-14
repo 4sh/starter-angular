@@ -23,45 +23,45 @@ const meta: Meta<UiEmptyState> = {
   argTypes: {
     title: {
       control: { type: 'text' },
-      description: 'Ligne principale : ce qui est vide / pourquoi.',
+      description: 'Main line: what\'s empty / why.',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     description: {
       control: { type: 'text' },
-      description: 'Ligne de soutien (guidance, prochaine étape).',
+      description: 'Supporting line (guidance, next step).',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     icon: {
       control: { type: 'text' },
-      description: "Nom FontAwesome du visuel (raccourci ; ignoré si un slot média est projeté).",
+      description: "FontAwesome name of the visual (shorthand; ignored if a media slot is projected).",
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     iconType: {
       control: { type: 'inline-radio' },
       options: ['solid', 'outline'],
-      description: "Variante de l'icône, transmise à ui-icon.",
+      description: "Icon variant, forwarded to ui-icon.",
       table: { type: { summary: 'UiIconType' }, defaultValue: { summary: '"solid"' } },
     },
     size: {
       control: { type: 'inline-radio' },
       options: ['default', 'small'],
-      description: 'Densité.',
+      description: 'Density.',
       table: { type: { summary: 'EmptyStateSize' }, defaultValue: { summary: '"default"' } },
     },
     showMedia: {
       control: { type: 'boolean' },
-      description: 'Affiche la zone visuelle (true par défaut). false = état vide texte seul.',
+      description: 'Shows the visual area (true by default). false = text-only empty state.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
     ariaLabel: {
       control: { type: 'text' },
-      description: 'Nom accessible de la région (ajoute role="region").',
+      description: 'Accessible name of the region (adds role="region").',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
   },
   args: {
     title: 'No results',
-    description: 'Aucun élément ne correspond à votre recherche. Essayez d’élargir vos filtres.',
+    description: 'No item matches your search. Try widening your filters.',
     icon: 'folder-open',
     iconType: 'solid',
     size: 'default',
@@ -136,7 +136,7 @@ export const MultipleActions: Story = {
   }),
   args: {
     title: 'Could not load the data',
-    description: 'Une erreur est survenue. Vérifiez votre connexion puis réessayez.',
+    description: 'An error occurred. Check your connection then try again.',
     icon: 'triangle-exclamation',
   },
 };
@@ -166,7 +166,7 @@ export const WithIllustration: Story = {
   }),
   args: {
     title: 'Empty inbox',
-    description: 'Vous êtes à jour. Aucun nouveau message pour le moment.',
+    description: 'You\'re all caught up. No new messages for now.',
   },
 };
 

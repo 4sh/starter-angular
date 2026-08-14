@@ -24,44 +24,44 @@ const meta: Meta<SidebarArgs> = {
     side: {
       control: { type: 'inline-radio' },
       options: ['left', 'right'],
-      description: "Bord d'ancrage de la barre.",
+      description: "Anchor edge of the bar.",
       table: { type: { summary: 'SidebarSide' }, defaultValue: { summary: '"left"' } },
     },
     mode: {
       control: { type: 'inline-radio' },
       options: ['static', 'overlay'],
       description:
-        'Stratégie de présentation : `static` (dans le flux, pousse le contenu, repliable en rail) ou `overlay` (offcanvas flottant + fond).',
+        'Presentation strategy: `static` (in the flow, pushes the content, collapsible to a rail) or `overlay` (floating offcanvas + backdrop).',
       table: { type: { summary: 'SidebarMode' }, defaultValue: { summary: '"static"' } },
     },
     collapsible: {
       control: { type: 'boolean' },
-      description: 'Autorise le repli en rail d’icônes (mode statique).',
+      description: 'Allows collapsing to an icon rail (static mode).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
     collapsed: {
       control: { type: 'boolean' },
-      description: "État du rail d'icônes (two-way `[(collapsed)]`, mode statique).",
+      description: "Icon rail state (two-way `[(collapsed)]`, static mode).",
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     visible: {
       control: { type: 'boolean' },
-      description: "État d'ouverture de l'offcanvas (two-way `[(visible)]`, mode overlay).",
+      description: "Offcanvas open state (two-way `[(visible)]`, overlay mode).",
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     openOnHover: {
       control: { type: 'boolean' },
-      description: 'Un rail replié se déploie au survol / focus (sans pousser le contenu).',
+      description: 'A collapsed rail expands on hover / focus (without pushing the content).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     backdrop: {
       control: { type: 'boolean' },
-      description: 'Affiche le fond (assombrit + capture) et bloque le scroll — mode overlay.',
+      description: 'Shows the backdrop (dims + captures clicks) and locks scroll — overlay mode.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
     dismissable: {
       control: { type: 'boolean' },
-      description: 'Ferme au clic sur le fond / à Échap — mode overlay.',
+      description: 'Closes on clicking the backdrop / on Escape — overlay mode.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
     responsive: {
@@ -72,23 +72,23 @@ const meta: Meta<SidebarArgs> = {
     breakpoint: {
       control: { type: 'text' },
       description:
-        'Largeur sous laquelle une barre responsive devient un offcanvas. Aligner sur l’échelle `$breakpoint-*`.',
+        'Width below which a responsive bar becomes an offcanvas. Align with the `$breakpoint-*` scale.',
       table: { type: { summary: 'string' }, defaultValue: { summary: '"1024px"' } },
     },
     contained: {
       control: { type: 'boolean' },
-      description: "Scope l'overlay à l'ancêtre positionné (embarquer la barre dans une région bornée).",
+      description: "Scopes the overlay to the positioned ancestor (embed the bar in a bounded region).",
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     ariaLabel: {
       control: { type: 'text' },
-      description: 'Nom accessible de la zone de navigation.',
+      description: 'Accessible name of the navigation area.',
       table: { type: { summary: 'string' }, defaultValue: { summary: '"Navigation"' } },
     },
     tooltips: {
       control: { type: 'boolean' },
       description:
-        "En rail replié, révèle le libellé de chaque item en info-bulle au survol (via `[uiTooltip]`, entrée de `ui-sidebar-menu`).",
+        "In collapsed rail, reveals each item's label as a tooltip on hover (via `[uiTooltip]`, `ui-sidebar-menu` entry).",
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
   },
