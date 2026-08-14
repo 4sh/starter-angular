@@ -5,9 +5,14 @@ import * as UiImageStories from './ui-image.stories';
 
 # ui-image
 
-Composant d'image intelligent avec deux sources : `name` (asset local résolu via l'assets-map en fonction de la marque active `BrandService` et du mode clair/sombre `ThemeService`) ou `src` (URL distante/absolue, prioritaire sur `name`). Basé sur `NgOptimizedImage` pour les performances de chargement.
+Smart image component with two sources: `name` (local asset resolved via the assets-map based on
+the active brand `BrandService` and the light/dark mode `ThemeService`) or `src` (remote/absolute
+URL, takes priority over `name`). Based on `NgOptimizedImage` for loading performance.
 
-Les `.svg` **locaux** sont injectés inline (stylisation CSS possible, fetch via `httpResource` + cache partagé) ; un `.svg` **distant** passe toujours par `<img>` (jamais inliné — pas de surface XSS). En cas d'échec de chargement, l'asset local `fallback` prend le relais, puis un placeholder stylé tokens (adapté light/dark) si le fallback échoue aussi ou n'est pas fourni ; l'output `loadFailed` émet l'URL en échec.
+**Local** `.svg`s are injected inline (CSS styling possible, fetched via `httpResource` + shared
+cache); a **remote** `.svg` always goes through `<img>` (never inlined — no XSS surface). On load
+failure, the `fallback` local asset takes over, then a token-styled placeholder (light/dark
+adapted) if the fallback also fails or isn't provided; the `loadFailed` output emits the failing URL.
 
 <br/>
 
@@ -17,7 +22,7 @@ Les `.svg` **locaux** sont injectés inline (stylisation CSS possible, fetch via
 
 <br/>
 
-## Règles d'utilisation (DOs & DON'Ts)
+## Usage rules (DOs & DON'Ts)
 
 <table className="doc-table">
   <thead>
@@ -29,34 +34,34 @@ Les `.svg` **locaux** sont injectés inline (stylisation CSS possible, fetch via
   <tbody>
     <tr>
       <td>
-        Toujours fournir l'attribut <code>name</code> avec le nom de fichier complet (extension incluse) :
+        Always provide the <code>name</code> attribute with the full filename (extension included):
         <pre><code>{`<ui-image
   name="logo.svg"
   [width]="200"
   widthUnit="px"
-  alt="Logo de l'application">
+  alt="Application logo">
 </ui-image>`}</code></pre>
       </td>
       <td>
-        Ne pas fournir un chemin complet dans <code>name</code> — le composant construit lui-même le chemin via l'assets-map :
-        <pre><code>{`<!-- INCORRECT -->
+        Don't provide a full path in <code>name</code> — the component builds the path itself via the assets-map:
+        <pre><code>{`<!-- WRONG -->
 <ui-image name="assets/img/common/base/logo.svg">
 </ui-image>`}</code></pre>
       </td>
     </tr>
     <tr>
       <td>
-        Utiliser <code>src</code> pour une URL distante, avec <code>width</code> + <code>height</code> (ou <code>fill</code>) — requis par NgOptimizedImage :
+        Use <code>src</code> for a remote URL, with <code>width</code> + <code>height</code> (or <code>fill</code>) — required by NgOptimizedImage:
         <pre><code>{`<ui-image
   src="https://cdn.example.com/photo.jpg"
   [width]="400"
   [height]="300"
-  alt="Photo distante">
+  alt="Remote photo">
 </ui-image>`}</code></pre>
       </td>
       <td>
-        Ne pas fournir <code>src</code> ET <code>name</code> (précédence à <code>src</code>, warning en dev) ; ne pas utiliser d'URL <code>data:</code>/<code>blob:</code> (non supportées par NgOptimizedImage) :
-        <pre><code>{`<!-- INCORRECT -->
+        Don't provide both <code>src</code> AND <code>name</code> (precedence to <code>src</code>, warning in dev); don't use a <code>data:</code>/<code>blob:</code> URL (unsupported by NgOptimizedImage):
+        <pre><code>{`<!-- WRONG -->
 <ui-image
   src="data:image/png;base64,…"
   name="logo.svg">
@@ -65,7 +70,7 @@ Les `.svg` **locaux** sont injectés inline (stylisation CSS possible, fetch via
     </tr>
     <tr>
       <td>
-        Fournir un <code>fallback</code> (nom d'asset <strong>local</strong> de l'assets-map) pour les sources incertaines — rendu via <code>&lt;img&gt;</code> même si c'est un <code>.svg</code> :
+        Provide a <code>fallback</code> (a <strong>local</strong> assets-map asset name) for uncertain sources — rendered via <code>&lt;img&gt;</code> even for a <code>.svg</code>:
         <pre><code>{`<ui-image
   src="https://cdn.example.com/avatar.jpg"
   fallback="avatar-default.png"
@@ -74,8 +79,8 @@ Les `.svg` **locaux** sont injectés inline (stylisation CSS possible, fetch via
 </ui-image>`}</code></pre>
       </td>
       <td>
-        Ne pas passer une URL comme <code>fallback</code> — c'est une clé d'assets-map locale, pas une source distante :
-        <pre><code>{`<!-- INCORRECT -->
+        Don't pass a URL as <code>fallback</code> — it's a local assets-map key, not a remote source:
+        <pre><code>{`<!-- WRONG -->
 <ui-image
   src="https://cdn.example.com/a.jpg"
   fallback="https://cdn.example.com/b.jpg">
@@ -84,15 +89,15 @@ Les `.svg` **locaux** sont injectés inline (stylisation CSS possible, fetch via
     </tr>
     <tr>
       <td>
-        Utiliser <code>[fill]="true"</code> avec un conteneur parent en <code>position: relative</code> pour les images en mode remplissage :
-        <pre><code>{`<!-- Conteneur parent -->
+        Use <code>[fill]="true"</code> with a <code>position: relative</code> parent container for fill-mode images:
+        <pre><code>{`<!-- Parent container -->
 <div style="width: 400px; height: 300px; position: relative;">
   <ui-image name="hero.jpg" [fill]="true" alt="Hero"></ui-image>
 </div>`}</code></pre>
       </td>
       <td>
-        Ne pas utiliser <code>[fill]="true"</code> en même temps que <code>[width]</code> ou <code>[height]</code> — ces propriétés sont mutuellement exclusives avec <code>fill</code> :
-        <pre><code>{`<!-- INCORRECT -->
+        Don't use <code>[fill]="true"</code> together with <code>[width]</code> or <code>[height]</code> — these properties are mutually exclusive with <code>fill</code>:
+        <pre><code>{`<!-- WRONG -->
 <ui-image
   name="hero.jpg"
   [fill]="true"
@@ -105,7 +110,7 @@ Les `.svg` **locaux** sont injectés inline (stylisation CSS possible, fetch via
 
 <br/>
 
-## Exemples d'implémentation
+## Implementation examples
 
 <Canvas of={UiImageStories.Common_JPG_Base} />
 
@@ -123,13 +128,13 @@ Les `.svg` **locaux** sont injectés inline (stylisation CSS possible, fetch via
 
 <Canvas of={UiImageStories.Test_Fill_Container} />
 
-## Source distante
+## Remote source
 
 <Canvas of={UiImageStories.Remote_Src} />
 
 <Canvas of={UiImageStories.Remote_SVG_As_Img} />
 
-## Erreur / fallback / placeholder
+## Error / fallback / placeholder
 
 <Canvas of={UiImageStories.Error_With_Fallback} />
 
@@ -139,6 +144,6 @@ Les `.svg` **locaux** sont injectés inline (stylisation CSS possible, fetch via
 
 ## Theming
 
-Aucune variable locale surchargeable par instance : le placeholder utilise directement les tokens
-`--global-background-muted`/`--global-text-muted`/`--units-xl`/`--radius-default`. Voir le
-[fonctionnement de la configuration](?path=/docs/components-configuration--docs).
+No local variable overridable per instance: the placeholder directly uses the
+`--global-background-muted`/`--global-text-muted`/`--units-xl`/`--radius-default` tokens. See
+[how the configuration works](?path=/docs/components-configuration--docs).

@@ -6,10 +6,10 @@ import * as IconStories from './ui-icon.stories';
 
 # ui-icon
 
-Affiche une icône par son nom (`name`, ex. `circle-user`), en `solid` ou `outline`, à cinq
-tailles (`sm` → `xl`). **FontAwesome** est la famille par défaut, mais le composant supporte
-**n'importe quelle famille de police d'icônes** (voir _Familles d'icônes_). **Décorative par
-défaut** (ignorée par les lecteurs d'écran) : si l'icône porte une information isolément, passe
+Displays an icon by its name (`name`, e.g. `circle-user`), in `solid` or `outline`, at five
+sizes (`sm` → `xl`). **FontAwesome** is the default family, but the component supports
+**any icon font family** (see _Icon families_). **Decorative by
+default** (ignored by screen readers): if the icon carries information on its own, pass
 `decorative=false` + `ariaLabel`.
 
 <Canvas of={IconStories.Solid} />
@@ -18,11 +18,11 @@ défaut** (ignorée par les lecteurs d'écran) : si l'icône porte une informati
 
 <ArgTypes of={IconStories} />
 
-## Familles d'icônes
+## Icon families
 
-Le rendu de chaque famille est décrit par une `UiIconFamily` (comment construire les classes
-CSS et, pour les polices à ligatures comme Material Symbols, le contenu texte). FontAwesome est
-intégré ; on enregistre d'autres familles via `provideUiIconFamilies()` :
+Each family's rendering is described by a `UiIconFamily` (how to build the CSS
+classes and, for ligature fonts like Material Symbols, the text content). FontAwesome is
+built in; other families are registered via `provideUiIconFamilies()`:
 
 ```ts
 // app.config.ts
@@ -34,55 +34,55 @@ export const appConfig: ApplicationConfig = {
       {
         material: {
           classes: () => 'material-symbols-outlined',
-          content: (name) => name, // police à ligature : le nom est le contenu
+          content: (name) => name, // ligature font: the name is the content
         },
         bootstrap: { classes: (name) => `bi bi-${name}` },
       },
-      { default: 'material' }, // optionnel : change la famille par défaut
+      { default: 'material' }, // optional: changes the default family
     ),
   ],
 };
 ```
 
 ```html
-<!-- Utilisation par famille -->
+<!-- Usage per family -->
 <ui-icon name="home" family="material" />
 <ui-icon name="alarm" family="bootstrap" />
 <ui-icon name="circle-user" family="fontawesome" />
 ```
 
-> La police correspondante doit être chargée par le projet (CSS/webfont). Une clé de famille
-> inconnue retombe sur `fontawesome` (avec un warning en dev).
+> The matching font must be loaded by the project (CSS/webfont). An unknown family
+> key falls back to `fontawesome` (with a warning in dev).
 
-## Accessibilité
+## Accessibility
 
 <table className="doc-table">
   <thead>
     <tr>
-      <th>État</th>
-      <th>Implémentation</th>
+      <th>State</th>
+      <th>Implementation</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><strong>Décorative (défaut)</strong></td>
-      <td><code>decorative</code> → <code>aria-hidden</code>. À l'intérieur d'un bouton/lien labellisé, laisser décoratif.</td>
+      <td><strong>Decorative (default)</strong></td>
+      <td><code>decorative</code> → <code>aria-hidden</code>. Inside an already-labeled button/link, leave it decorative.</td>
     </tr>
     <tr>
-      <td><strong>Porteuse de sens</strong></td>
-      <td><code>decorative="false"</code> + <code>ariaLabel</code> (rend <code>role="img"</code>).</td>
+      <td><strong>Carries meaning</strong></td>
+      <td><code>decorative="false"</code> + <code>ariaLabel</code> (renders <code>role="img"</code>).</td>
     </tr>
   </tbody>
 </table>
 
-## Styles & tailles
+## Styles & sizes
 
 <Canvas of={IconStories.Outline} />
 <Canvas of={IconStories.Meaningful} />
 
 ## Theming
 
-Taille calée sur l'échelle typographique dédiée aux icônes (`--size-typography-icon-*`),
-surchargeable ponctuellement via `--ui-icon-size`.
+Size aligned with the typography scale dedicated to icons (`--size-typography-icon-*`),
+overridable ad hoc via `--ui-icon-size`.
 
 <ConfigTable of="ui-icon" />
