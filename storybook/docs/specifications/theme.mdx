@@ -1,103 +1,103 @@
 import { Meta } from '@storybook/addon-docs/blocks';
 
-<Meta title="Spécifications/Thème & Système de Tokens" />
+<Meta title="Specifications/Theme & Token System" />
 
-# Thème & Système de Tokens
+# Theme & Token System
 
-Ce starter n'utilise **aucune librairie UI propriétaire**. Le thème repose entièrement sur des
-**design tokens** générés en variables CSS, consommés par les composants.
+This starter uses **no proprietary UI library**. The theme rests entirely on
+**design tokens** generated as CSS variables, consumed by the components.
 
 ## Pipeline
 
 ```
-src/design-tokens/*.json        (source DTCG, export Token Flow Manager)
+src/design-tokens/*.json        (DTCG source, Token Flow Manager export)
         │  npm run tokens:build  (scripts/tokens.build.mjs)
         ▼
-projects/ui-kit/styles/generated/_tokens-*.scss   (variables CSS)
+projects/ui-kit/styles/generated/_tokens-*.scss   (CSS variables)
         ▼
-composants (.scss co-localisés) + classes utilitaires (typo…)
+components (co-located .scss) + utility classes (typo…)
 ```
 
-## Collections & nommage
+## Collections & naming
 
 <table className="doc-table">
   <thead>
     <tr>
       <th>Collection</th>
-      <th>Préfixe variable</th>
-      <th>Exemple</th>
+      <th>Variable prefix</th>
+      <th>Example</th>
     </tr>
   </thead>
   <tbody>
     <tr><td>primitives</td><td><code>{'--primitives-*'}</code></td><td><code>--primitives-primary-500</code></td></tr>
     <tr><td>metrics</td><td><code>{'--metrics-*'}</code></td><td><code>--metrics-units-sm</code>, <code>--metrics-radius-sm</code></td></tr>
-    <tr><td>semantics</td><td><em>(aucun)</em></td><td><code>--actions-high-surface-default</code>, <code>--global-text-default</code></td></tr>
-    <tr><td>typography</td><td><em>(aucun)</em></td><td><code>--fontfamily-base</code>, <code>--weight-bold</code></td></tr>
-    <tr><td>responsive</td><td><em>(aucun)</em></td><td><code>--size-typography-title-lg</code></td></tr>
-    <tr><td>transitions</td><td><em>(aucun)</em></td><td><code>--transition-fast</code></td></tr>
+    <tr><td>semantics</td><td><em>(none)</em></td><td><code>--actions-high-surface-default</code>, <code>--global-text-default</code></td></tr>
+    <tr><td>typography</td><td><em>(none)</em></td><td><code>--fontfamily-base</code>, <code>--weight-bold</code></td></tr>
+    <tr><td>responsive</td><td><em>(none)</em></td><td><code>--size-typography-title-lg</code></td></tr>
+    <tr><td>transitions</td><td><em>(none)</em></td><td><code>--transition-fast</code></td></tr>
   </tbody>
 </table>
 
-Les **semantics référencent les primitives** (`var(--primitives-*)`), ce qui permet le switch
-de marque/mode sans duplication.
+**Semantics reference the primitives** (`var(--primitives-*)`), which makes the
+brand/mode switch possible without duplication.
 
-## Marque & mode (runtime)
+## Brand & mode (runtime)
 
 <table className="doc-table">
   <thead>
     <tr>
       <th>Dimension</th>
-      <th>Porté par</th>
-      <th>Application</th>
+      <th>Carried by</th>
+      <th>Applied via</th>
     </tr>
   </thead>
   <tbody>
-    <tr><td>Marque</td><td>primitives (modeBrand1/2/3)</td><td><code>[data-brand='brand2'|'brand3']</code> : <code>BrandService</code></td></tr>
-    <tr><td>Clair / Sombre</td><td>semantics (modeLight/modeDark)</td><td><code>[data-theme='dark']</code> : <code>ThemeService</code></td></tr>
+    <tr><td>Brand</td><td>primitives (modeBrand1/2/3)</td><td><code>[data-brand='brand2'|'brand3']</code>: <code>BrandService</code></td></tr>
+    <tr><td>Light / Dark</td><td>semantics (modeLight/modeDark)</td><td><code>[data-theme='dark']</code>: <code>ThemeService</code></td></tr>
     <tr><td>Viewport</td><td>responsive</td><td><code>@media (min-width: …)</code></td></tr>
   </tbody>
 </table>
 
-> Voir **Foundations → Colors** pour explorer les valeurs résolues et basculer marque/mode en direct.
+> See **Foundations → Colors** to explore the resolved values and switch brand/mode live.
 
-## Services runtime
+## Runtime services
 
-Deux services Angular (`providedIn: 'root'`, signals + `effect`) pilotent ces attributs sur
-`<html>`. Ils sont **headless et sans dépendance UI** : ils ne font que positionner un attribut,
-tout le rendu découle des tokens CSS. Ils sont instanciés dans `AppComponent` (leur `effect`
-applique l'attribut au démarrage puis à chaque changement de signal).
+Two Angular services (`providedIn: 'root'`, signals + `effect`) drive these attributes on
+`<html>`. They are **headless and UI-dependency-free**: they only set an attribute,
+all the rendering follows from the CSS tokens. They are instantiated in `AppComponent` (their
+`effect` applies the attribute on startup and on every signal change).
 
-### ThemeService : light / dark
+### ThemeService: light / dark
 
 `src/app/core/service/theme.service.ts`
 
-- **État** : `currentMode` (signal `'light' | 'dark'`), initialisé depuis `localStorage` (clé `theme-mode`), défaut `'light'`.
-- **Effet** : `dark` → `document.documentElement` reçoit `[data-theme='dark']` ; `light` → l'attribut est retiré (les sémantiques `:root` s'appliquent). Le choix est persisté dans `localStorage`.
-- **API** : `toggle()` (bascule light/dark), `isDark` (getter booléen), `currentMode.set(...)`.
+- **State**: `currentMode` (signal `'light' | 'dark'`), initialized from `localStorage` (key `theme-mode`), default `'light'`.
+- **Effect**: `dark` → `document.documentElement` receives `[data-theme='dark']`; `light` → the attribute is removed (the `:root` semantics apply). The choice is persisted in `localStorage`.
+- **API**: `toggle()` (switches light/dark), `isDark` (boolean getter), `currentMode.set(...)`.
 
 ```ts
 private theme = inject(ThemeService);
 
-this.theme.toggle();          // light ⇄ dark, persisté
+this.theme.toggle();          // light ⇄ dark, persisted
 this.theme.currentMode.set('dark');
 const dark = this.theme.isDark;
 ```
 
-### BrandService : marque (thème de couleurs)
+### BrandService: brand (color theme)
 
 `src/app/core/service/brand.service.ts`
 
-- **État** : `currentBrand` (signal `'brand1' | 'brand2' | 'brand3'`), initialisé depuis le **sous-domaine** (`themeone → brand1`, `themetwo → brand2`, `themethree → brand3`), défaut `'brand1'`.
-- **Effet** : `brand1` (défaut) → aucun attribut (primitives `:root` = brand 1) ; `brand2`/`brand3` → `[data-brand='brand2'|'brand3']`, ce qui redéfinit les `--primitives-*` et se propage aux sémantiques qui les référencent.
-- **API** : `set(brand)`, `currentBrand()` (lecture).
+- **State**: `currentBrand` (signal `'brand1' | 'brand2' | 'brand3'`), initialized from the **subdomain** (`themeone → brand1`, `themetwo → brand2`, `themethree → brand3`), default `'brand1'`.
+- **Effect**: `brand1` (default) → no attribute (`:root` primitives = brand 1); `brand2`/`brand3` → `[data-brand='brand2'|'brand3']`, which redefines the `--primitives-*` and propagates to the semantics that reference them.
+- **API**: `set(brand)`, `currentBrand()` (read).
 
 ```ts
 private brand = inject(BrandService);
 
-this.brand.set('brand2');           // active la palette de la marque 2
+this.brand.set('brand2');           // activates brand 2's palette
 const current = this.brand.currentBrand();
 ```
 
-> Contrairement au thème, la marque n'est **pas persistée** : elle dérive du sous-domaine
-> (multi-tenant). L'explorateur **Foundations → Colors** permet de forcer marque + mode pour
-> prévisualiser les tokens, sans altérer le reste de l'UI Storybook.
+> Unlike the theme, the brand is **not persisted**: it derives from the subdomain
+> (multi-tenant). The **Foundations → Colors** explorer lets you force brand + mode to
+> preview the tokens, without altering the rest of the Storybook UI.
