@@ -68,7 +68,7 @@ export class UiButtonSplit {
   /** Accessible name of the action button (required when it is icon-only). */
   ariaLabel = input<string>();
   /** Accessible name of the dropdown trigger (icon-only button). */
-  menuButtonAriaLabel = input<string>("Plus d'options");
+  menuButtonAriaLabel = input<string>('More options');
   /** Accessible name of the options list. */
   menuAriaLabel = input<string>();
   /** Color family of the menu panel: `high` (default) or `low`. */

@@ -115,7 +115,7 @@ export class UiBreadcrumb {
    */
   maxItems = input<number>();
   /** Accessible name of the `<nav>` landmark. */
-  ariaLabel = input<string>("Fil d'Ariane");
+  ariaLabel = input<string>('Breadcrumb');
   /** Accessible name of the ellipsis button revealing the hidden crumbs. */
   ellipsisAriaLabel = input<string>('Show hidden items');
   /** Extra class(es) applied to the root `<nav>`. */

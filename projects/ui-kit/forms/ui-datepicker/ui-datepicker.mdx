@@ -98,7 +98,7 @@ actif, le panneau **reste ouvert** après le choix d'un jour (pour régler l'heu
 
 `minDate` / `maxDate` bornent la plage ; `disabledDays` (0 = dimanche … 6 = samedi) et
 `disabledDates` (dates ponctuelles) neutralisent des cellules. `showButtonBar` ajoute les actions
-« Aujourd'hui » / « Effacer ».
+« Today » / « Clear ».
 
 `minDate`, `maxDate` et chaque entrée de `disabledDates` acceptent indifféremment un `Date` **ou**
 une string ISO `"yyyy-MM-dd"` (les deux formes sont mixables dans `disabledDates`) — pratique
@@ -190,7 +190,7 @@ Deux points d'extension via `<ng-template>` projetés, résolus par `contentChil
 <!-- Barre de boutons personnalisée -->
 <ui-datepicker [(ngModel)]="range" valueType="date" selectionMode="range" showButtonBar>
   <ng-template #buttonbar let-todayCallback="todayCallback" let-clearCallback="clearCallback">
-    <ui-button size="small" label="Aujourd'hui" (buttonClick)="todayCallback($event)" />
+    <ui-button size="small" label="Today" (buttonClick)="todayCallback($event)" />
     <ui-button size="small" level="error" icon="xmark" iconOnly ariaLabel="Effacer" (buttonClick)="clearCallback($event)" />
   </ng-template>
 </ui-datepicker>

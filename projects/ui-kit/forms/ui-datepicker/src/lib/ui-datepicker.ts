@@ -222,7 +222,7 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   /** Show the bottom button bar (Today / Clear) — or the `#buttonbar` template. */
   showButtonBar = input(false, { transform: booleanAttribute });
   /** Label of the default "Today" button. */
-  todayLabel = input<string>("Aujourd'hui");
+  todayLabel = input<string>('Today');
   /** Label of the default "Clear" button. */
   clearLabel = input<string>('Clear');
 
