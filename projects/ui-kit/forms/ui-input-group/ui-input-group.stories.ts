@@ -69,7 +69,7 @@ const meta: Meta<UiInputGroup> = {
       control: { type: 'inline-radio' },
       options: ['default', 'small'],
       description:
-        'Taille transmise aux `ui-input-group-addon` projetés (les contrôles gardent leur propre `size`).',
+        'Size passed down to the projected `ui-input-group-addon` (the controls keep their own `size`).',
       table: { type: { summary: 'FieldSize' }, defaultValue: { summary: '"default"' } },
     },
   },
@@ -105,7 +105,7 @@ export const Basic: Story = {
 
       <ui-input-group [size]="size">
         <ui-input-group-addon>https://</ui-input-group-addon>
-        <ui-input placeholder="mon-site" ariaLabel="Website address" />
+        <ui-input placeholder="my-site" ariaLabel="Website address" />
         <ui-input-group-addon>.com</ui-input-group-addon>
       </ui-input-group>`),
   }),
@@ -204,7 +204,7 @@ export const Select: Story = {
 
       <ui-input-group [size]="size">
         <ui-input-group-addon>www</ui-input-group-addon>
-        <ui-input placeholder="mon-site" ariaLabel="Website address" />
+        <ui-input placeholder="my-site" ariaLabel="Website address" />
         <ui-select
           placeholder="City"
           ariaLabel="Home city"

@@ -6,20 +6,20 @@ import * as InputGroupStories from './ui-input-group.stories';
 
 # ui-input-group
 
-Colle un contrôle et ses **compléments** (texte, icône, bouton, case à cocher, liste
-déroulante) sur une même rangée, pour qu'ils se lisent comme **un seul champ** : coins
-arrondis uniquement aux extrémités, trait partagé fusionné entre deux voisins.
+Joins a control and its **add-ons** (text, icon, button, checkbox, dropdown)
+on the same row, so they read as **a single field**: rounded corners only at the
+ends, a shared border merged between two neighbors.
 
-Composant purement présentationnel : chaque enfant conserve son API, ses états et ses
-tokens. Le groupe se contente de la mise en rangée et du raccord visuel (`--radius-sm`
-aux extrémités, recouvrement égal à `--stroke-default`).
+Purely presentational component: each child keeps its own API, states and
+tokens. The group only handles row layout and the visual join (`--radius-sm`
+at the ends, overlap equal to `--stroke-default`).
 
-Deux briques :
+Two building blocks:
 
-- **`ui-input-group`** : la rangée. Les contrôles (`ui-input`, `ui-input-number`,
-  `ui-select`, `ui-button`…) y sont posés directement.
-- **`ui-input-group-addon`** : une cellule non interactive (texte, icône, `ui-checkbox`,
-  `ui-radio`), alignée sur la hauteur de champ.
+- **`ui-input-group`**: the row. Controls (`ui-input`, `ui-input-number`,
+  `ui-select`, `ui-button`…) sit directly inside it.
+- **`ui-input-group-addon`**: a non-interactive cell (text, icon, `ui-checkbox`,
+  `ui-radio`), aligned to the field's height.
 
 <Canvas of={InputGroupStories.Basic} />
 
@@ -34,7 +34,7 @@ Deux briques :
     <tr>
       <th>Input</th>
       <th>Type</th>
-      <th>Défaut</th>
+      <th>Default</th>
       <th>Description</th>
     </tr>
   </thead>
@@ -43,116 +43,116 @@ Deux briques :
       <td><code>size</code></td>
       <td><code>FieldSize</code></td>
       <td><code>undefined</code></td>
-      <td>Taille de la cellule. Reprend celle du <code>ui-input-group</code> parent quand elle n'est pas renseignée.</td>
+      <td>Cell size. Falls back to the parent <code>ui-input-group</code>'s when not set.</td>
     </tr>
   </tbody>
 </table>
 
 ## Multiple
 
-Un groupe se compose en enveloppant le contrôle et ses compléments dans
-`ui-input-group`. Chaque complément est un `ui-input-group-addon` : plusieurs peuvent
-se suivre du même côté.
+A group is composed by wrapping the control and its add-ons in
+`ui-input-group`. Each add-on is a `ui-input-group-addon`: several can
+follow each other on the same side.
 
 <Canvas of={InputGroupStories.Multiple} />
 
-## Bouton
+## Button
 
-Un `ui-button` se pose **directement** dans le groupe (pas dans un add-on : il porte
-déjà son propre fond et ses états), d'un côté ou de l'autre du contrôle.
+A `ui-button` sits **directly** in the group (not in an add-on: it already
+carries its own background and states), on either side of the control.
 
 <Canvas of={InputGroupStories.Button} />
 
-## Case à cocher & radio
+## Checkbox & radio
 
-`ui-checkbox` et `ui-radio` se combinent avec le contrôle dans le même groupe, posés
-dans un add-on.
+`ui-checkbox` and `ui-radio` combine with the control in the same group, placed
+inside an add-on.
 
 <Canvas of={InputGroupStories.CheckboxRadio} />
 
-## Liste déroulante
+## Dropdown
 
-`ui-select` se pose directement dans le groupe, aux côtés d'autres add-ons et
-contrôles.
+`ui-select` sits directly in the group, alongside other add-ons and
+controls.
 
 <Canvas of={InputGroupStories.Select} />
 
-## Numéro de téléphone
+## Phone number
 
-Indicatif international sélectionnable : drapeau + code : accolé au champ du numéro.
-Les templates `#selectedItem` et `#item` de `ui-select` portent le rendu ; les drapeaux
-sont des SVG locaux (`assets/img/common/svg/flags/`), décoratifs (`alt=""`).
+Selectable international dial code: flag + code, joined to the number field.
+`ui-select`'s `#selectedItem` and `#item` templates carry the rendering; the flags
+are local SVGs (`assets/img/common/svg/flags/`), decorative (`alt=""`).
 
-La zone d'indicatif reste compacte alors que la liste, elle, doit afficher les noms de pays :
-c'est le rôle de `panelWidth="auto"` sur le `ui-select`, qui décorrèle la largeur du panneau
-de celle du champ (voir la doc de `ui-select`).
+The dial-code zone stays compact while the list, on the other hand, must display country
+names: that's the role of `panelWidth="auto"` on the `ui-select`, which decouples the panel's
+width from the field's (see `ui-select`'s docs).
 
 <Canvas of={InputGroupStories.PhoneNumber} />
 
-## Taille
+## Size
 
-Le `size` du groupe n'est transmis qu'aux add-ons : chaque contrôle garde le sien, à
-régler pour que les hauteurs concordent.
+The group's `size` is only forwarded to the add-ons: each control keeps its own, to
+be set so heights line up.
 
 <Canvas of={InputGroupStories.Small} />
 
-## Accessibilité
+## Accessibility
 
 <table className="doc-table">
   <thead>
     <tr>
       <th>Point</th>
-      <th>Implémentation</th>
+      <th>Implementation</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><strong>Rôles</strong></td>
-      <td><code>ui-input-group</code> et <code>ui-input-group-addon</code> n'exposent ni rôle ni attribut ARIA : ce sont des enveloppes de présentation. La sémantique reste portée par les contrôles projetés.</td>
+      <td><strong>Roles</strong></td>
+      <td><code>ui-input-group</code> and <code>ui-input-group-addon</code> expose neither role nor ARIA attribute: they are presentational wrappers. Semantics stay carried by the projected controls.</td>
     </tr>
     <tr>
-      <td><strong>Clavier</strong></td>
-      <td>Le groupe n'ajoute aucune interaction : l'ordre de tabulation et les raccourcis sont ceux des enfants (champ, bouton, liste déroulante…).</td>
+      <td><strong>Keyboard</strong></td>
+      <td>The group adds no interaction: tab order and shortcuts are those of the children (field, button, dropdown…).</td>
     </tr>
     <tr>
-      <td><strong>Nom accessible</strong></td>
-      <td>Sans libellé visible dans le groupe, chaque contrôle doit porter son <code>ariaLabel</code> (ou <code>ariaLabelledBy</code>). Un add-on décoratif : icône, symbole : ne nomme pas le champ.</td>
+      <td><strong>Accessible name</strong></td>
+      <td>With no visible label in the group, each control must carry its own <code>ariaLabel</code> (or <code>ariaLabelledBy</code>). A decorative add-on — icon, symbol — doesn't name the field.</td>
     </tr>
     <tr>
       <td><strong>Focus</strong></td>
-      <td>L'item qui reçoit le focus est remonté au-dessus de ses voisins : sa bordure et son anneau de focus restent entièrement visibles malgré le recouvrement des bordures.</td>
+      <td>The item that receives focus is raised above its neighbors: its border and focus ring stay fully visible despite the border overlap.</td>
     </tr>
   </tbody>
 </table>
 
 ```html
-<!-- Icône + champ -->
+<!-- Icon + field -->
 <ui-input-group>
   <ui-input-group-addon><ui-icon name="user" size="sm" /></ui-input-group-addon>
-  <ui-input placeholder="Nom d'utilisateur" ariaLabel="Nom d'utilisateur" />
+  <ui-input placeholder="Username" ariaLabel="Username" />
 </ui-input-group>
 
-<!-- Préfixe + champ + suffixe -->
+<!-- Prefix + field + suffix -->
 <ui-input-group>
   <ui-input-group-addon>https://</ui-input-group-addon>
-  <ui-input placeholder="mon-site" ariaLabel="Adresse du site" />
+  <ui-input placeholder="my-site" ariaLabel="Website address" />
   <ui-input-group-addon>.com</ui-input-group-addon>
 </ui-input-group>
 
-<!-- Champ + bouton d'action -->
+<!-- Field + action button -->
 <ui-input-group>
-  <ui-input placeholder="Mot-clé" ariaLabel="Mot-clé" />
-  <ui-button icon="magnifying-glass" ariaLabel="Rechercher" level="low" variant="outlined" />
+  <ui-input placeholder="Keyword" ariaLabel="Keyword" />
+  <ui-button icon="magnifying-glass" ariaLabel="Search" level="low" variant="outlined" />
 </ui-input-group>
 ```
 
 ## Theming
 
-Les items sont **projetés** : une règle CSS scopée ne peut pas les atteindre. Le groupe
-pilote donc leurs coins via les custom properties exposées par les enfants
-(`--ui-field-radius`, `--ui-button-radius`, `--ui-input-group-item-radius`), qui
-héritent au-delà de la frontière de composant. Un composant tiers placé dans un groupe
-suit le raccord dès qu'il lit `--ui-input-group-item-radius` pour son `border-radius`.
+The items are **projected**: a scoped CSS rule can't reach them. The group
+therefore drives their corners via custom properties exposed by the children
+(`--ui-field-radius`, `--ui-button-radius`, `--ui-input-group-item-radius`), which
+inherit across the component boundary. A third-party component placed in a group
+follows the join as soon as it reads `--ui-input-group-item-radius` for its `border-radius`.
 
 <ConfigTable of="ui-input-group" label="ui-input-group" />
 <ConfigTable of="ui-input-group-addon" label="ui-input-group-addon" />

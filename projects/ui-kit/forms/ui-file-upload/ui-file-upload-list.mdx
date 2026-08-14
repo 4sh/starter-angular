@@ -6,11 +6,11 @@ import * as ListStories from './ui-file-upload-list.stories';
 
 # ui-file-upload-list
 
-Ligne de fichier — l'**unité répétée** d'une liste de téléversement (miroir du
-composant Figma). [ui-file-upload](?path=/docs/components-ui-forms-ui-file-upload--docs)
-en empile une par fichier. Présentationnelle : vignette (images) ou icône de
-fichier, nom + taille/état, bouton de suppression. Pendant le téléversement, le
-marqueur bascule sur `ui-spinner` et une barre de progression apparaît.
+File row — the **repeated unit** of an upload list (mirrors the
+Figma component). [ui-file-upload](?path=/docs/components-ui-forms-ui-file-upload--docs)
+stacks one per file. Presentational: thumbnail (images) or file
+icon, name + size/state, remove button. During upload, the
+marker switches to `ui-spinner` and a progress bar appears.
 
 <Canvas of={ListStories.Default} />
 
@@ -18,34 +18,34 @@ marqueur bascule sur `ui-spinner` et une barre de progression apparaît.
 
 <ArgTypes of={ListStories} />
 
-## États
+## States
 
 <Canvas of={ListStories.Uploading} />
 <Canvas of={ListStories.ErrorState} />
 <Canvas of={ListStories.ImageThumbnail} />
 <Canvas of={ListStories.Small} />
 
-## Accessibilité
+## Accessibility
 
 <table className="doc-table">
   <thead>
     <tr>
       <th>Point</th>
-      <th>Implémentation</th>
+      <th>Implementation</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><strong>Suppression</strong></td>
-      <td>Vrai <code>&lt;button&gt;</code> avec <code>aria-label</code> incluant le nom du fichier.</td>
+      <td><strong>Removal</strong></td>
+      <td>Real <code>&lt;button&gt;</code> with an <code>aria-label</code> including the file name.</td>
     </tr>
     <tr>
-      <td><strong>Progression</strong></td>
-      <td>Barre <code>role="progressbar"</code> (<code>aria-valuenow</code>/<code>min</code>/<code>max</code>) ; <code>ui-spinner</code> en région <code>status</code>.</td>
+      <td><strong>Progress</strong></td>
+      <td><code>role="progressbar"</code> bar (<code>aria-valuenow</code>/<code>min</code>/<code>max</code>); <code>ui-spinner</code> in a <code>status</code> region.</td>
     </tr>
     <tr>
-      <td><strong>Vignette</strong></td>
-      <td>Décorative (<code>alt=""</code>) — le nom du fichier reste le texte lu.</td>
+      <td><strong>Thumbnail</strong></td>
+      <td>Decorative (<code>alt=""</code>) — the file name remains the text read out.</td>
     </tr>
   </tbody>
 </table>
