@@ -6,13 +6,13 @@ import { ConfigTable } from '../../../../storybook/blocks/config-table';
 
 # ui-alert
 
-Message **inline** pour un retour informatif, de succès, d'avertissement ou d'erreur.
+**Inline** message for informational, success, warning or error feedback.
 
-Contrairement à [`ui-toast`](/docs/components-ui-informative-ui-toast--docs) (notification
-flottante, pilotée par service), `ui-alert` s'insère dans le flux de la page : bandeau de
-formulaire, résumé d'erreurs, statut inline. La racine porte `role="alert"`
-(`aria-live="assertive"` + `aria-atomic="true"` implicites) : le message est annoncé dès
-son apparition.
+Unlike [`ui-toast`](/docs/components-ui-informative-ui-toast--docs) (floating
+notification, service-driven), `ui-alert` sits within the page's flow: a form
+banner, an error summary, an inline status. The root carries `role="alert"`
+(implicit `aria-live="assertive"` + `aria-atomic="true"`): the message is announced as soon as
+it appears.
 
 <Canvas of={AlertStories.Basic} />
 
@@ -22,7 +22,7 @@ son apparition.
 
 ## Level
 
-Le niveau (`level`) définit la sévérité : couleur + icône par défaut.
+The level (`level`) sets the severity: default color + icon.
 
 <Canvas of={AlertStories.Info} />
 <Canvas of={AlertStories.Highlight} />
@@ -32,97 +32,97 @@ Le niveau (`level`) définit la sévérité : couleur + icône par défaut.
 
 ## Icon
 
-L'icône de tête se pilote via `icon` : un nom FontAwesome pour surcharger,
-`false` pour la masquer, `true` (défaut) pour l'icône par défaut du niveau.
+The leading icon is driven by `icon`: a FontAwesome name to override,
+`false` to hide it, `true` (default) for the level's default icon.
 
 <Canvas of={AlertStories.CustomIcon} />
 <Canvas of={AlertStories.NoIcon} />
 
 ## Variant
 
-Le sous-niveau (`subLevel`) module l'intensité : `high` (soutenu) ou `low` (discret).
+The sub-level (`subLevel`) modulates the intensity: `high` (strong) or `low` (subtle).
 
 <Canvas of={AlertStories.SubLevelLow} />
 
 ## Sizes
 
-Deux tailles : `default` et `large`.
+Two sizes: `default` and `large`.
 
 <Canvas of={AlertStories.Large} />
 
 ## Dynamic
 
-Plusieurs messages s'affichent via un bloc `@for` ; chacun se retire à la fermeture.
+Several messages display via an `@for` block; each removes itself on close.
 
 <Canvas of={AlertStories.Dynamic} />
 
 ## Life
 
-Renseigner `life` (ms) fait disparaître l'alerte automatiquement (elle se masque et
-émet `closed`).
+Setting `life` (ms) makes the alert disappear automatically (it hides and
+emits `closed`).
 
 <Canvas of={AlertStories.Life} />
 
 ```html
-<ui-alert level="success" text="Enregistré." [life]="4000" (closed)="onClose()" />
+<ui-alert level="success" text="Saved." [life]="4000" (closed)="onClose()" />
 ```
 
 ## Forms
 
-Les erreurs de validation d'un formulaire s'affichent en sévérité `error`.
+A form's validation errors display at `error` severity.
 
 <Canvas of={AlertStories.Forms} />
 
-## Accessibilité
+## Accessibility
 
 <table className="doc-table">
   <thead>
     <tr>
       <th>Point</th>
-      <th>Implémentation</th>
+      <th>Implementation</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><strong>Rôle</strong></td>
-      <td>La racine porte <code>role="alert"</code> : <code>aria-live="assertive"</code> et <code>aria-atomic="true"</code> implicites : le lecteur d'écran annonce le message entier dès son apparition.</td>
+      <td><strong>Role</strong></td>
+      <td>The root carries <code>role="alert"</code>: implicit <code>aria-live="assertive"</code> and <code>aria-atomic="true"</code> — the screen reader announces the whole message as soon as it appears.</td>
     </tr>
     <tr>
-      <td><strong>Étiquetage</strong></td>
-      <td><code>ariaLabel</code> / <code>ariaLabelledBy</code> optionnels pour nommer la région.</td>
+      <td><strong>Labeling</strong></td>
+      <td>Optional <code>ariaLabel</code> / <code>ariaLabelledBy</code> to name the region.</td>
     </tr>
     <tr>
-      <td><strong>Bouton de fermeture</strong></td>
-      <td><code>&lt;button&gt;</code> natif avec <code>aria-label</code> (<code>closeAriaLabel</code>, défaut « Close ») ; support clavier <kbd>Entrée</kbd> / <kbd>Espace</kbd> natif.</td>
+      <td><strong>Close button</strong></td>
+      <td>Native <code>&lt;button&gt;</code> with <code>aria-label</code> (<code>closeAriaLabel</code>, default "Close"); native <kbd>Enter</kbd> / <kbd>Space</kbd> keyboard support.</td>
     </tr>
     <tr>
-      <td><strong>Couleur</strong></td>
-      <td>Jamais le seul vecteur de sens : l'icône et le texte (titre/corps) complètent la sévérité.</td>
+      <td><strong>Color</strong></td>
+      <td>Never the sole carrier of meaning: the icon and text (title/body) complement the severity.</td>
     </tr>
     <tr>
       <td><strong>Focus</strong></td>
-      <td><code>:focus-visible</code> visible et distinct du <code>:hover</code> sur le bouton de fermeture.</td>
+      <td><code>:focus-visible</code> visible and distinct from <code>:hover</code> on the close button.</td>
     </tr>
   </tbody>
 </table>
 
-### Support clavier du bouton de fermeture
+### Close button keyboard support
 
 <table className="doc-table">
   <thead>
     <tr>
-      <th>Touche</th>
-      <th>Fonction</th>
+      <th>Key</th>
+      <th>Function</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><kbd>Entrée</kbd></td>
-      <td>Ferme le message.</td>
+      <td><kbd>Enter</kbd></td>
+      <td>Closes the message.</td>
     </tr>
     <tr>
-      <td><kbd>Espace</kbd></td>
-      <td>Ferme le message.</td>
+      <td><kbd>Space</kbd></td>
+      <td>Closes the message.</td>
     </tr>
   </tbody>
 </table>

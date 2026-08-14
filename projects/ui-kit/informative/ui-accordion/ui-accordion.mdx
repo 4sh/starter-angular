@@ -6,19 +6,19 @@ import { ConfigTable } from '../../../../storybook/blocks/config-table';
 
 # ui-accordion
 
-Accordéon **headless** : un groupe de panneaux repliables. API de **composition**
-Un conteneur `ui-accordion` qui pilote l'état
-d'ouverture, et des `ui-accordion-panel` qui projettent leur en-tête et leur contenu.
+**Headless** accordion: a group of collapsible panels. **Composition** API —
+a `ui-accordion` container drives the open
+state, and `ui-accordion-panel`s project their header and content.
 
-L'ouverture/fermeture est animée par le **système de motion**
-partagé (`utils.motion-transition`, technique `grid-template-rows`), qui respecte
-automatiquement `prefers-reduced-motion` et le commutateur global `data-motion="off"`.
+Opening/closing is animated by the shared **motion system**
+(`utils.motion-transition`, `grid-template-rows` technique), which automatically
+respects `prefers-reduced-motion` and the global `data-motion="off"` switch.
 
 <Canvas of={AccordionStories.Default} />
 
 ## API
 
-### ui-accordion (conteneur)
+### ui-accordion (container)
 
 <ArgTypes of={AccordionStories} />
 
@@ -26,109 +26,109 @@ automatiquement `prefers-reduced-motion` et le commutateur global `data-motion="
 
 <table className="doc-table">
   <thead>
-    <tr><th>Entrée</th><th>Type</th><th>Défaut</th><th>Rôle</th></tr>
+    <tr><th>Input</th><th>Type</th><th>Default</th><th>Role</th></tr>
   </thead>
   <tbody>
-    <tr><td>`value` *(requis)*</td><td>`string \| number`</td><td>—</td><td>Identifiant du panneau (comparé au `value` du conteneur).</td></tr>
-    <tr><td>`header`</td><td>`string`</td><td>`undefined`</td><td>Titre texte (raccourci du slot `uiAccordionHeader`).</td></tr>
-    <tr><td>`disabled`</td><td>`boolean`</td><td>`false`</td><td>Panneau non repliable, ignoré par la navigation clavier.</td></tr>
-    <tr><td>`separator`</td><td>`boolean \| undefined`</td><td>`undefined`</td><td>Surcharge locale du trait (sinon défaut de groupe).</td></tr>
-    <tr><td>`control`</td><td>`boolean \| undefined`</td><td>`undefined`</td><td>Surcharge locale du chevron (sinon défaut de groupe).</td></tr>
+    <tr><td>`value` *(required)*</td><td>`string \| number`</td><td>—</td><td>Panel identifier (compared to the container's `value`).</td></tr>
+    <tr><td>`header`</td><td>`string`</td><td>`undefined`</td><td>Text title (shorthand for the `uiAccordionHeader` slot).</td></tr>
+    <tr><td>`disabled`</td><td>`boolean`</td><td>`false`</td><td>Non-collapsible panel, ignored by keyboard navigation.</td></tr>
+    <tr><td>`separator`</td><td>`boolean \| undefined`</td><td>`undefined`</td><td>Local override of the rule (otherwise the group default).</td></tr>
+    <tr><td>`control`</td><td>`boolean \| undefined`</td><td>`undefined`</td><td>Local override of the chevron (otherwise the group default).</td></tr>
   </tbody>
 </table>
 
 ## Modes
 
-Mode **simple** (défaut) : un seul panneau ouvert à la fois ; recliquer sur l'en-tête
-actif le referme. Mode **multiple** (`[multiple]="true"`) : plusieurs panneaux ouverts,
-la `value` devient un tableau.
+**Single** mode (default): only one panel open at a time; re-clicking the
+active header closes it. **Multiple** mode (`[multiple]="true"`): several panels open,
+`value` becomes an array.
 
 <Canvas of={AccordionStories.Multiple} />
 
-## En-tête riche
+## Rich header
 
-Le slot `uiAccordionHeader` accepte n'importe quel contenu (icône, `ui-tag`, badge…).
-Sans slot, l'entrée `header` suffit pour un titre texte.
+The `uiAccordionHeader` slot accepts any content (icon, `ui-tag`, badge…).
+With no slot, the `header` input is enough for a text title.
 
 <Canvas of={AccordionStories.RichHeader} />
 
-## États
+## States
 
-Un panneau `disabled` n'est pas repliable et est sauté par les flèches. Le chevron et
-le trait sont désactivables (par groupe ou par panneau).
+A `disabled` panel isn't collapsible and is skipped by the arrow keys. The chevron and
+the rule can be disabled (per group or per panel).
 
 <Canvas of={AccordionStories.DisabledPanel} />
 <Canvas of={AccordionStories.Minimal} />
 
 ## Animation
 
-L'ouverture/fermeture utilise le **système de motion** partagé. Coupez-la localement
-avec `[motion]="false"`, globalement via `data-motion="off"`, ou laissez la préférence
-système `reduced-motion` la neutraliser. Voir **Foundations → Motion**.
+Opening/closing uses the shared **motion system**. Turn it off locally
+with `[motion]="false"`, globally via `data-motion="off"`, or let the system's
+`reduced-motion` preference neutralize it. See **Foundations → Motion**.
 
 <Canvas of={AccordionStories.MotionOff} />
 
-## Accessibilité
+## Accessibility
 
 <table className="doc-table">
   <thead>
-    <tr><th>Point</th><th>Implémentation</th></tr>
+    <tr><th>Point</th><th>Implementation</th></tr>
   </thead>
   <tbody>
     <tr>
-      <td>En-tête natif</td>
-      <td>L'en-tête entier est un `&lt;button&gt;` (motif WAI-ARIA Accordion) : cible de clic large, focusable, `disabled` natif.</td>
+      <td>Native header</td>
+      <td>The whole header is a `&lt;button&gt;` (WAI-ARIA Accordion pattern): large click target, focusable, native `disabled`.</td>
     </tr>
     <tr>
-      <td>Liaison ARIA</td>
-      <td>`aria-expanded` sur l'en-tête, `aria-controls` → région de contenu (`role="region"` + `aria-labelledby` vers l'en-tête).</td>
+      <td>ARIA binding</td>
+      <td>`aria-expanded` on the header, `aria-controls` → content region (`role="region"` + `aria-labelledby` pointing to the header).</td>
     </tr>
     <tr>
-      <td>Clavier</td>
-      <td>`Entrée`/`Espace` bascule ; `↑`/`↓` déplacent le focus entre en-têtes (roving, boucle), `Début`/`Fin` au premier/dernier.</td>
+      <td>Keyboard</td>
+      <td>`Enter`/`Space` toggles; `↑`/`↓` move focus between headers (roving, wraps around), `Home`/`End` to the first/last.</td>
     </tr>
     <tr>
-      <td>Contenu masqué</td>
-      <td>Le contenu reste dans le DOM mais est `inert` et de hauteur nulle quand fermé (état de formulaire conservé, invisible pour les lecteurs d'écran).</td>
+      <td>Hidden content</td>
+      <td>Content stays in the DOM but is `inert` and zero-height when closed (form state preserved, invisible to screen readers).</td>
     </tr>
     <tr>
-      <td>Chevron décoratif</td>
-      <td>`ui-icon` en `aria-hidden` ; le sens passe par `aria-expanded`, pas seulement par l'icône.</td>
+      <td>Decorative chevron</td>
+      <td>`ui-icon` with `aria-hidden`; meaning goes through `aria-expanded`, not the icon alone.</td>
     </tr>
     <tr>
       <td>Motion</td>
-      <td>Transition neutralisée sous `prefers-reduced-motion` et `data-motion="off"`.</td>
+      <td>Transition neutralized under `prefers-reduced-motion` and `data-motion="off"`.</td>
     </tr>
   </tbody>
 </table>
 
-## Exemples
+## Examples
 
 ```html
-<!-- Simple (un ouvert à la fois) -->
+<!-- Single (one open at a time) -->
 <ui-accordion [(value)]="open">
-  <ui-accordion-panel value="a" header="Section A">Contenu A…</ui-accordion-panel>
-  <ui-accordion-panel value="b" header="Section B">Contenu B…</ui-accordion-panel>
+  <ui-accordion-panel value="a" header="Section A">Content A…</ui-accordion-panel>
+  <ui-accordion-panel value="b" header="Section B">Content B…</ui-accordion-panel>
 </ui-accordion>
 
-<!-- Multiple + en-tête riche + panneau désactivé -->
+<!-- Multiple + rich header + disabled panel -->
 <ui-accordion [(value)]="openList" [multiple]="true">
   <ui-accordion-panel value="a">
-    <span uiAccordionHeader>Facturation <ui-tag label="À jour" level="success" size="small" /></span>
-    Contenu…
+    <span uiAccordionHeader>Billing <ui-tag label="Up to date" level="success" size="small" /></span>
+    Content…
   </ui-accordion-panel>
-  <ui-accordion-panel value="b" header="Archivé" [disabled]="true">Contenu…</ui-accordion-panel>
+  <ui-accordion-panel value="b" header="Archived" [disabled]="true">Content…</ui-accordion-panel>
 </ui-accordion>
 
-<!-- Sans animation -->
+<!-- No animation -->
 <ui-accordion [motion]="false"> … </ui-accordion>
 ```
 
 ## Theming
 
-Variables **locales** au composant (co-localisées dans `ui-accordion-panel.scss`) :
+**Local** variables to the component (co-located in `ui-accordion-panel.scss`):
 
 <ConfigTable of="ui-accordion-panel" />
 
-Le timing d'animation provient du groupe partagé `$motion-*` (`ui-config`, catégorie
-**global**) — voir [Components / Configuration](?path=/docs/components-configuration--docs).
+The animation timing comes from the shared `$motion-*` group (`ui-config`, **global**
+category) — see [Components / Configuration](?path=/docs/components-configuration--docs).

@@ -6,17 +6,17 @@ import { ConfigTable } from '../../../../storybook/blocks/config-table';
 
 # ui-skeleton
 
-Placeholder affiché **à la place du contenu** pendant son chargement. Rend une
-boîte unique colorée par les tokens (`--global-background-muted`,
-surchargeable via `--ui-skeleton-background`). Trois formes (`text`, `circle`,
-`rectangle`) fournissent des dimensions par défaut ; `width` / `height` /
-`borderRadius` acceptent une valeur CSS brute pour composer cartes, grilles,
-listes et tableaux. La motion respecte `prefers-reduced-motion` et
-l'interrupteur global `data-motion="off"`.
+Placeholder shown **in place of content** while it loads. Renders a
+single box colored by tokens (`--global-background-muted`,
+overridable via `--ui-skeleton-background`). Three shapes (`text`, `circle`,
+`rectangle`) provide default dimensions; `width` / `height` /
+`borderRadius` accept a raw CSS value to compose cards, grids,
+lists and tables. Motion respects `prefers-reduced-motion` and
+the global `data-motion="off"` switch.
 
 ## Basic
 
-Des formes qui imitent la mise en page du contenu attendu.
+Shapes that mimic the expected content's layout.
 
 <Canvas of={SkeletonStories.Basic} />
 
@@ -26,13 +26,13 @@ Des formes qui imitent la mise en page du contenu attendu.
 
 ## Card
 
-Composition d'une carte à partir de plusieurs `ui-skeleton`.
+Composing a card from several `ui-skeleton`s.
 
 <Canvas of={SkeletonStories.Card} />
 
 ## Shapes
 
-Formes et tailles variées via `shape`, `width`, `height`, `borderRadius` et
+Varied shapes and sizes via `shape`, `width`, `height`, `borderRadius` and
 `size`.
 
 <Canvas of={SkeletonStories.Shapes} />
@@ -47,8 +47,8 @@ Formes et tailles variées via `shape`, `width`, `height`, `borderRadius` et
 
 ## Color
 
-La couleur de fond se personnalise par instance via la custom property
-`--ui-skeleton-background`.
+The background color is customizable per instance via the
+`--ui-skeleton-background` custom property.
 
 <Canvas of={SkeletonStories.Color} />
 
@@ -58,29 +58,29 @@ La couleur de fond se personnalise par instance via la custom property
 
 ## Grid
 
-Composition d'une grille de cartes.
+Composing a grid of cards.
 
 <Canvas of={SkeletonStories.Grid} />
 
 ## List
 
-Composition d'une liste.
+Composing a list.
 
 <Canvas of={SkeletonStories.List} />
 
 ## DataTable
 
-Composition d'un tableau de données (en-tête + lignes).
+Composing a data table (header + rows).
 
 <Canvas of={SkeletonStories.DataTable} />
 
 ## Animation
 
-L'animation de base est **`wave`** : un reflet clair, large et doux, glisse de
-gauche à droite et s'estompe aux bords (teinte pilotable via
-`--ui-skeleton-shine`, atténuée automatiquement en thème sombre). `pulse`
-propose à la place une pulsation d'opacité ; `none` fige la boîte. Toutes
-s'arrêtent sous `prefers-reduced-motion` ou `data-motion="off"`.
+The base animation is **`wave`**: a light, wide, soft shine slides from
+left to right and fades at the edges (tint drivable via
+`--ui-skeleton-shine`, automatically dimmed in dark theme). `pulse`
+offers an opacity pulse instead; `none` freezes the box. All
+stop under `prefers-reduced-motion` or `data-motion="off"`.
 
 ```html
 <ui-skeleton animation="wave" />
@@ -88,50 +88,50 @@ s'arrêtent sous `prefers-reduced-motion` ou `data-motion="off"`.
 <ui-skeleton animation="none" />
 ```
 
-## Accessibilité
+## Accessibility
 
 <table className="doc-table">
   <thead>
     <tr>
       <th>Point</th>
-      <th>Implémentation</th>
+      <th>Implementation</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><strong>Ignoré par les lecteurs d'écran</strong></td>
-      <td>La racine porte <code>aria-hidden="true"</code> : le chargement est un état purement visuel, jamais annoncé comme du contenu.</td>
+      <td><strong>Ignored by screen readers</strong></td>
+      <td>The root carries <code>aria-hidden="true"</code>: loading is a purely visual state, never announced as content.</td>
     </tr>
     <tr>
-      <td><strong>Région en chargement</strong></td>
-      <td>Regrouper plusieurs skeletons sous un conteneur portant <code>aria-busy="true"</code> pour signaler la zone en cours de chargement.</td>
+      <td><strong>Loading region</strong></td>
+      <td>Group several skeletons under a container carrying <code>aria-busy="true"</code> to flag the area as loading.</td>
     </tr>
     <tr>
-      <td><strong>Clavier</strong></td>
-      <td>Aucun élément interactif : le composant n'est jamais dans l'ordre de tabulation.</td>
+      <td><strong>Keyboard</strong></td>
+      <td>No interactive element: the component is never in the tab order.</td>
     </tr>
     <tr>
-      <td><strong>Motion réduite</strong></td>
-      <td><code>prefers-reduced-motion: reduce</code> et <code>data-motion="off"</code> figent l'animation.</td>
+      <td><strong>Reduced motion</strong></td>
+      <td><code>prefers-reduced-motion: reduce</code> and <code>data-motion="off"</code> freeze the animation.</td>
     </tr>
   </tbody>
 </table>
 
 ```html
-<!-- Zone en cours de chargement -->
+<!-- Loading area -->
 <div [attr.aria-busy]="loading">
   @if (loading) {
     <ui-skeleton width="100%" />
     <ui-skeleton width="80%" />
   } @else {
-    <!-- contenu -->
+    <!-- content -->
   }
 </div>
 ```
 
 ## Theming
 
-Toutes les valeurs proviennent des design tokens. Point de réglage exposé (par
-instance, via custom property CSS) :
+All values come from the design tokens. Exposed adjustment point (per
+instance, via a CSS custom property):
 
 <ConfigTable of="ui-skeleton" />
