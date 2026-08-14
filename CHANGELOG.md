@@ -17,6 +17,18 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 ## [Unreleased]
 
 ### Added
+- **Starter : installer les composants dans son code source plutôt que comme dépendance** (FSHSP-109). À la manière de shadcn/ui ou spartan-ng, un projet peut désormais **copier** les sources des composants chez lui et les posséder, au lieu de consommer `@4sh/ui-kit` en dépendance figée :
+
+  ```bash
+  ng add @4sh/ui-kit                    # fondation : styles, tokens, angular.json
+  ng generate @4sh/ui-kit:add           # sélection interactive (a = tout)
+  ng generate @4sh/ui-kit:add --all     # sans prompt
+  ng generate @4sh/ui-kit:update        # diff par composant, appliquer/ignorer
+  ```
+
+  `add` résout les dépendances entre composants (`ui-select` entraîne `ui-icon`, `ui-field`, `ui-spinner`…) par analyse des imports, sans liste à maintenir. Chaque fichier copié porte son origine en en-tête, et `ui-kit.json` recense ce qui est installé. `ng add` embarque aussi la **chaîne de génération des tokens** (JSON, `tokens.config.json`, `tokens.build.mjs`) : un projet peut rebrander sans attendre une release du kit.
+
+  Le kit gagne pour cela une façade de schematics (`collection.json` + `schematics/index.cjs`) qui ne contient aucune logique et délègue à un package compagnon, **`@4sh/ui-kit-schematics`**, publié en même temps et sous le même numéro (voir [`PUBLISHING.md`](./docs/PUBLISHING.md)). Les sources brutes restent hors du package compilé : un consommateur classique de `@4sh/ui-kit` ne les télécharge pas. Aucun changement pour lui.
 - **`prevAriaLabel` / `nextAriaLabel` sur `ui-tab-list`** : les noms accessibles des navigateurs de défilement (mode `scrollable`) étaient écrits en dur dans le template, seuls libellés du kit qu'une application ne pouvait pas traduire. Ils deviennent des entrées, avec les textes actuels comme valeurs par défaut — aucun changement de rendu.
 
 ### Fixed
