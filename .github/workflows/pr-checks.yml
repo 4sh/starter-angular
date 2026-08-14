@@ -52,8 +52,10 @@ jobs:
         run: npx tsc -p tsconfig.app.json --noEmit
 
       # FSHSP-93: unit tests on the kit (vitest, via the `test` architect
-      # target). Only pure-logic specs so far (mask engine, option resolver,
-      # date helpers) — no component/DOM tests yet.
+      # target). Covers both the pure-logic specs (mask engine, option
+      # resolver, date helpers, label formatting) and the TestBed component
+      # specs (select, autocomplete, input-tags, segment-control, tabs, modal,
+      # accordion, base CVA).
       - name: Unit tests
         run: npm run test
 
