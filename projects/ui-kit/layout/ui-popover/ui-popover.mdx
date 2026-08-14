@@ -6,7 +6,7 @@ import { ConfigTable } from '../../../../storybook/blocks/config-table';
 
 # ui-popover
 
-Panneau flottant ancré à un déclencheur.
+Floating panel anchored to a trigger.
 
 <Canvas of={PopoverStories.Basic} />
 
@@ -14,12 +14,12 @@ Panneau flottant ancré à un déclencheur.
 
 <ArgTypes of={PopoverStories} />
 
-## Méthodes
+## Methods
 
 <table className="doc-table">
   <thead>
     <tr>
-      <th>Méthode</th>
+      <th>Method</th>
       <th>Signature</th>
       <th>Description</th>
     </tr>
@@ -28,111 +28,111 @@ Panneau flottant ancré à un déclencheur.
     <tr>
       <td><code>show</code></td>
       <td><code>show(event?, target?)</code></td>
-      <td>Ouvre le panneau, ancré à <code>target</code> (ou au <code>currentTarget</code> de l'événement).</td>
+      <td>Opens the panel, anchored to <code>target</code> (or the event's <code>currentTarget</code>).</td>
     </tr>
     <tr>
       <td><code>hide</code></td>
       <td><code>hide()</code></td>
-      <td>Ferme le panneau ; rend le focus au déclencheur si le focus était à l'intérieur.</td>
+      <td>Closes the panel; returns focus to the trigger if focus was inside.</td>
     </tr>
     <tr>
       <td><code>toggle</code></td>
       <td><code>toggle(event?, target?)</code></td>
-      <td>Bascule l'état, en ancrant comme <code>show</code> à l'ouverture.</td>
+      <td>Toggles the state, anchoring like <code>show</code> on open.</td>
     </tr>
     <tr>
       <td><code>visible</code></td>
       <td><code>Signal&lt;boolean&gt;</code></td>
-      <td>Signal en lecture seule de l'état d'ouverture.</td>
+      <td>Read-only signal of the open state.</td>
     </tr>
   </tbody>
 </table>
 
-## Basique
+## Basic
 
-Le panneau est accédé via sa référence : l'événement de clic du déclencheur transporte
-l'ancre, et la visibilité est pilotée par `toggle` / `show` / `hide`.
+The panel is accessed via its reference: the trigger's click event carries
+the anchor, and visibility is driven by `toggle` / `show` / `hide`.
 
 ```html
-<ui-button label="Détails" (buttonClick)="op.toggle($event)" />
-<ui-popover #op ariaLabel="Détails du produit">
-  <p>Contenu du panneau…</p>
+<ui-button label="Details" (buttonClick)="op.toggle($event)" />
+<ui-popover #op ariaLabel="Product details">
+  <p>Panel content…</p>
 </ui-popover>
 ```
 
-## Contrôlé
+## Controlled
 
-La visibilité peut être pilotée depuis l'extérieur via la variable de référence. On passe
-**l'élément déclencheur en second argument** pour que l'overlay reste ancré à lui, quel que
-soit le bouton qui commande l'état.
+Visibility can be driven from the outside via the reference variable. **Pass
+the triggering element as the second argument** so the overlay stays anchored
+to it, regardless of which button drives the state.
 
 ```html
-<span #anchor>Ancre</span>
-<ui-button label="Afficher" (buttonClick)="op.show($event, anchor)" />
-<ui-button label="Masquer" (buttonClick)="op.hide()" />
-<ui-button label="Basculer" (buttonClick)="op.toggle($event, anchor)" />
-<ui-popover #op ariaLabel="Panneau contrôlé"><p>…</p></ui-popover>
+<span #anchor>Anchor</span>
+<ui-button label="Show" (buttonClick)="op.show($event, anchor)" />
+<ui-button label="Hide" (buttonClick)="op.hide()" />
+<ui-button label="Toggle" (buttonClick)="op.toggle($event, anchor)" />
+<ui-popover #op ariaLabel="Controlled panel"><p>…</p></ui-popover>
 ```
 
 <Canvas of={PopoverStories.Controlled} />
 
 ## Positions
 
-`position` choisit le côté préféré (`top` / `bottom` / `left` / `right`) ; l'overlay
-retourne automatiquement vers un autre côté si la place manque, et la flèche s'oriente selon
-le côté effectif.
+`position` picks the preferred side (`top` / `bottom` / `left` / `right`); the overlay
+automatically flips to another side if there's not enough room, and the arrow orients
+according to the effective side.
 
 <Canvas of={PopoverStories.Positions} />
 
-## Contenu riche
+## Rich content
 
-Le contenu projeté est libre et peut être interactif. Un bouton de fermeture dédié appelle
-simplement `hide()` — son activation au clavier (`Entrée` / `Espace`) est le comportement
-natif d'un `<button>`.
+Projected content is free-form and can be interactive. A dedicated close button
+simply calls `hide()` — its keyboard activation (`Enter` / `Space`) is the
+native behavior of a `<button>`.
 
 <Canvas of={PopoverStories.RichContent} />
 
-## Accessibilité
+## Accessibility
 
 <table className="doc-table">
   <thead>
     <tr>
-      <th>Règle</th>
-      <th>Détail</th>
+      <th>Rule</th>
+      <th>Detail</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><strong>Rôle & nom</strong></td>
-      <td><code>role="dialog"</code>, non-modal par défaut (patron WAI-ARIA « non-modal dialog ») : pas d'<code>aria-modal</code>, le focus peut quitter le panneau (au clavier, ou par un clic à l'extérieur). Nommez-le via <code>ariaLabel</code> ou <code>ariaLabelledBy</code> ; un warning dev signale un panneau ouvert sans nom accessible.</td>
+      <td><strong>Role & name</strong></td>
+      <td><code>role="dialog"</code>, non-modal by default (WAI-ARIA "non-modal dialog" pattern): no <code>aria-modal</code>, focus can leave the panel (via keyboard, or an outside click). Name it via <code>ariaLabel</code> or <code>ariaLabelledBy</code>; a dev warning flags an open panel with no accessible name.</td>
     </tr>
     <tr>
-      <td><strong>Relation déclencheur</strong></td>
-      <td>À l'ouverture, le déclencheur reçoit <code>aria-expanded="true"</code> et <code>aria-controls</code> (id du panneau) ; nettoyés à la fermeture. Utilisez un déclencheur accessible au clavier (<code>&lt;button&gt;</code>), sinon ajoutez <code>tabindex</code>.</td>
+      <td><strong>Trigger relationship</strong></td>
+      <td>On open, the trigger receives <code>aria-expanded="true"</code> and <code>aria-controls</code> (panel id); cleaned up on close. Use a keyboard-accessible trigger (<code>&lt;button&gt;</code>), otherwise add <code>tabindex</code>.</td>
     </tr>
     <tr>
       <td><strong>Focus</strong></td>
-      <td>Par défaut, le focus n'est pas piégé : <code>Tab</code> / <code>Maj+Tab</code> peuvent sortir du panneau une fois le dernier / premier élément focusable atteint. Activez <code>modal</code> pour un comportement de boîte de dialogue bloquante : <code>aria-modal="true"</code> et un piège de focus permanent (<code>cdkTrapFocus</code>) tant que le panneau est ouvert. Dans tous les cas, à l'ouverture (<code>focusOnShow</code>), le <strong>premier élément focusable</strong> reçoit le focus — personnalisable en ajoutant l'attribut <code>autofocus</code> sur un élément du panneau.</td>
+      <td>By default focus is not trapped: <code>Tab</code> / <code>Shift+Tab</code> can leave the panel once the last / first focusable element is reached. Enable <code>modal</code> for a blocking dialog behavior: <code>aria-modal="true"</code> and a permanent focus trap (<code>cdkTrapFocus</code>) while the panel is open. In every case, on open (<code>focusOnShow</code>), the **first focusable element** receives focus — customizable by adding the <code>autofocus</code> attribute on an element in the panel.</td>
     </tr>
     <tr>
-      <td><strong>Clavier</strong></td>
-      <td><code>Tab</code> / <code>Maj+Tab</code> circulent dans le panneau. <code>Échap</code> ferme (<code>closeOnEscape</code>) et rend le focus au déclencheur.</td>
+      <td><strong>Keyboard</strong></td>
+      <td><code>Tab</code> / <code>Shift+Tab</code> cycle within the panel. <code>Escape</code> closes (<code>closeOnEscape</code>) and returns focus to the trigger.</td>
     </tr>
     <tr>
-      <td><strong>Clic extérieur</strong></td>
-      <td><code>dismissable</code> (défaut) ferme au clic hors du panneau ; un clic sur le déclencheur est ignoré (c'est son propre gestionnaire qui bascule l'état).</td>
+      <td><strong>Outside click</strong></td>
+      <td><code>dismissable</code> (default) closes on a click outside the panel; a click on the trigger is ignored (its own handler toggles the state).</td>
     </tr>
     <tr>
       <td><strong>Motion</strong></td>
-      <td>Entrée <code>zoom</code> via le système de motion ; respecte <code>prefers-reduced-motion</code> et l'interrupteur global <code>data-motion="off"</code>, désactivable par instance via <code>motion="false"</code>.</td>
+      <td><code>zoom</code> entrance via the motion system; respects <code>prefers-reduced-motion</code> and the global <code>data-motion="off"</code> switch, can be disabled per instance via <code>motion="false"</code>.</td>
     </tr>
   </tbody>
 </table>
 
 ## Theming
 
-Variables locales en tête de `ui-popover.scss`. La coque du panneau (rayon, épaisseur de
-bordure, ombre) provient des constantes partagées `$overlay-panel-*` de `ui-config` — voir le
-[fonctionnement de la configuration](?path=/docs/components-configuration--docs).
+Local variables at the top of `ui-popover.scss`. The panel's shell (radius, border
+thickness, shadow) comes from the shared `$overlay-panel-*` constants in `ui-config` — see
+[how the configuration works](?path=/docs/components-configuration--docs).
 
 <ConfigTable of="ui-popover" />

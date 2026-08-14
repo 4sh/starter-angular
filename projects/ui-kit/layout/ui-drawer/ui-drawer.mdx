@@ -6,18 +6,18 @@ import { ConfigTable } from '../../../../storybook/blocks/config-table';
 
 # ui-drawer
 
-Panneau **glissant** headless ancré à un bord de l'écran : une surface stylée par tokens,
-rendue au-dessus d'un masque de viewport optionnel et pilotée par le modèle two-way
-`visible`. L'apparition / la disparition passent par le **système de motion** — le masque
-fait un fondu pendant que le panneau **glisse depuis son bord** (la direction est déduite de
-`position`, l'amplitude étirée à la taille propre du panneau). Pensé pour l'accessibilité :
-**piège de focus** avec restauration (`@angular/cdk/a11y`), `aria-modal`, **blocage du scroll
-de fond**, fermeture au clavier (`Échap`) et fermeture optionnelle au clic extérieur.
+Headless **sliding** panel anchored to a screen edge: a surface styled by tokens,
+rendered above an optional viewport mask and driven by the two-way `visible`
+model. Appearance / disappearance go through the **motion system** — the mask
+fades while the panel **slides in from its edge** (the direction is derived from
+`position`, the distance stretched to the panel's own size). Built for accessibility:
+**focus trap** with restoration (`@angular/cdk/a11y`), `aria-modal`, **background
+scroll lock**, keyboard closing (`Escape`) and optional closing on outside click.
 
-Le panneau compose trois régions : un `header` (chaîne simple ou template `#header`), le
-contenu par défaut (`<ng-content>`, qui **scrolle en interne** si long) et un pied via le
-template `#footer`. Un template `#headless` prend la main sur **tout l'intérieur** du panneau
-quand un contrôle total de l'interface est nécessaire.
+The panel composes three regions: a `header` (plain string or `#header` template), the
+default content (`<ng-content>`, which **scrolls internally** if long) and a footer via
+the `#footer` template. A `#headless` template takes over **the entire inside** of the
+panel when full control of the UI is needed.
 
 <Canvas of={DrawerStories.Basic} />
 
@@ -25,119 +25,119 @@ quand un contrôle total de l'interface est nécessaire.
 
 <ArgTypes of={DrawerStories} />
 
-## Anatomie
+## Anatomy
 
 <table className="doc-table">
   <thead>
     <tr>
-      <th>Élément</th>
+      <th>Element</th>
       <th>Description</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><strong>Masque</strong></td>
-      <td><code>.ui-drawer-scrim</code> — couche <code>fixed</code> plein viewport. Assombrit et capture les clics quand <code>modal</code> ; ferme au clic extérieur si <code>dismissableMask</code>.</td>
+      <td><strong>Mask</strong></td>
+      <td><code>.ui-drawer-scrim</code> — full-viewport <code>fixed</code> layer. Darkens and captures clicks when <code>modal</code>; closes on outside click if <code>dismissableMask</code>.</td>
     </tr>
     <tr>
-      <td><strong>Positionneur</strong></td>
-      <td><code>.ui-drawer-positioner</code> — enveloppe ancrée au bord (<code>_left</code>/<code>_right</code>/<code>_top</code>/<code>_bottom</code>/<code>_full-screen</code>) ; porte l'animation de glissement.</td>
+      <td><strong>Positioner</strong></td>
+      <td><code>.ui-drawer-positioner</code> — edge-anchored wrapper (<code>_left</code>/<code>_right</code>/<code>_top</code>/<code>_bottom</code>/<code>_full-screen</code>); carries the slide animation.</td>
     </tr>
     <tr>
-      <td><strong>Panneau</strong></td>
-      <td><code>.ui-drawer</code> — surface (<code>role="dialog"</code> + <code>aria-modal</code>), colonne flex : en-tête / contenu / pied. Bordure sur le bord intérieur + élévation.</td>
+      <td><strong>Panel</strong></td>
+      <td><code>.ui-drawer</code> — surface (<code>role="dialog"</code> + <code>aria-modal</code>), flex column: header / content / footer. Border on the inner edge + elevation.</td>
     </tr>
   </tbody>
 </table>
 
 ## Position
 
-Le panneau s'ancre à l'un des quatre bords via `position` (`left`, `right`, `top`, `bottom`)
-et glisse depuis ce bord. Le preset de motion est **dérivé automatiquement** de la position.
+The panel anchors to one of four edges via `position` (`left`, `right`, `top`, `bottom`)
+and slides in from that edge. The motion preset is **automatically derived** from the position.
 
 <Canvas of={DrawerStories.Position} />
 
-## Plein écran
+## Full screen
 
-`fullScreen` étend le panneau à tout le viewport ; l'apparition passe alors en fondu (pas de
-glissement d'un écran entier).
+`fullScreen` extends the panel to the whole viewport; the appearance then switches
+to a fade (no full-screen slide).
 
 <Canvas of={DrawerStories.FullScreen} />
 
-## Largeur responsive
+## Responsive width
 
-La taille du panneau se pilote via `drawerStyle` (ou `styleClass`). Une valeur fluide comme
-`min(90vw, 28rem)` garde le panneau dans l'écran sur mobile tout en le plafonnant sur grand
-écran.
+The panel's size is driven via `drawerStyle` (or `styleClass`). A fluid value like
+`min(90vw, 28rem)` keeps the panel on screen on mobile while capping it on large
+screens.
 
 <Canvas of={DrawerStories.Responsive} />
 
-## Contenu & templates
+## Content & templates
 
-- `header` (chaîne) ou `#header` (contenu riche) pour le titre.
-- `<ng-content>` pour le corps.
-- `#footer` pour les actions.
-- `#closeicon` pour remplacer l'icône de fermeture.
+- `header` (string) or `#header` (rich content) for the title.
+- `<ng-content>` for the body.
+- `#footer` for the actions.
+- `#closeicon` to replace the close icon.
 
 <Canvas of={DrawerStories.Template} />
 
-## Mode headless
+## Headless mode
 
-`#headless` remplace **tout l'intérieur** du panneau (en-tête, contenu, pied) par un contenu
-sur mesure, tandis que le drawer conserve la mécanique d'overlay : masque, motion, piège de
-focus et fermeture `Échap`. Idéal pour un panneau de navigation entièrement personnalisé.
+`#headless` replaces **the entire inside** of the panel (header, content, footer) with
+custom content, while the drawer keeps the overlay mechanics: mask, motion, focus
+trap and `Escape` closing. Ideal for a fully custom navigation panel.
 
 <Canvas of={DrawerStories.Headless} />
 
-## Embarqué (`contained`)
+## Embedded (`contained`)
 
-`contained` scope le panneau à l'ancêtre positionné le plus proche (`position: absolute` au
-lieu de `fixed`) et **n'affecte pas** le scroll du body : idéal pour intégrer un drawer dans
-un conteneur borné (panneau, aperçu). Le conteneur parent doit être positionné
+`contained` scopes the panel to the nearest positioned ancestor (`position: absolute`
+instead of `fixed`) and **does not affect** body scroll: ideal for embedding a drawer
+in a bounded container (panel, preview). The parent container must be positioned
 (`position: relative`).
 
 <Canvas of={DrawerStories.Contained} />
 
-## Accessibilité
+## Accessibility
 
 <table className="doc-table">
   <thead>
     <tr>
-      <th>Règle</th>
-      <th>Détail</th>
+      <th>Rule</th>
+      <th>Detail</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><strong>Rôle & nom</strong></td>
-      <td><code>role="dialog"</code> + <code>aria-modal="true"</code> (en mode modal). Nom accessible via <code>aria-labelledby</code> (titre de l'en-tête) sinon <code>ariaLabel</code> / <code>ariaLabelledBy</code>. Un warning dev signale un panneau sans nom accessible.</td>
+      <td><strong>Role & name</strong></td>
+      <td><code>role="dialog"</code> + <code>aria-modal="true"</code> (in modal mode). Accessible name via <code>aria-labelledby</code> (header title), otherwise <code>ariaLabel</code> / <code>ariaLabelledBy</code>. A dev warning flags a panel with no accessible name.</td>
     </tr>
     <tr>
       <td><strong>Focus</strong></td>
-      <td>Piège de focus (<code>cdkTrapFocus</code>) tant que le panneau est ouvert ; le focus est capturé à l'ouverture (<code>focusOnShow</code>) et <strong>restauré</strong> sur l'élément déclencheur à la fermeture.</td>
+      <td>Focus trap (<code>cdkTrapFocus</code>) while the panel is open; focus is captured on open (<code>focusOnShow</code>) and **restored** to the triggering element on close.</td>
     </tr>
     <tr>
-      <td><strong>Clavier</strong></td>
-      <td><code>Échap</code> ferme (<code>closeOnEscape</code> + <code>closable</code>). Bouton de fermeture <code>&lt;button&gt;</code> natif avec <code>aria-label</code>.</td>
+      <td><strong>Keyboard</strong></td>
+      <td><code>Escape</code> closes (<code>closeOnEscape</code> + <code>closable</code>). Native <code>&lt;button&gt;</code> close button with <code>aria-label</code>.</td>
     </tr>
     <tr>
-      <td><strong>Scroll de fond</strong></td>
-      <td>Bloqué quand <code>modal</code> (ou <code>blockScroll</code>), avec compensation de la gouttière de scrollbar (pas de saut de mise en page). Compteur partagé : le scroll est rétabli à la fermeture du dernier panneau.</td>
+      <td><strong>Background scroll</strong></td>
+      <td>Blocked when <code>modal</code> (or <code>blockScroll</code>), with scrollbar-gutter compensation (no layout shift). Shared counter: scroll is restored when the last panel closes.</td>
     </tr>
     <tr>
-      <td><strong>Clic extérieur</strong></td>
-      <td>Activé par défaut via <code>dismissableMask</code> (modal uniquement) ; désactivable pour un panneau bloquant.</td>
+      <td><strong>Outside click</strong></td>
+      <td>Enabled by default via <code>dismissableMask</code> (modal only); can be disabled for a blocking panel.</td>
     </tr>
     <tr>
       <td><strong>Motion</strong></td>
-      <td>Respecte <code>prefers-reduced-motion</code> et l'interrupteur global <code>data-motion="off"</code> ; désactivable par panneau via <code>motionDisabled</code>.</td>
+      <td>Respects <code>prefers-reduced-motion</code> and the global <code>data-motion="off"</code> switch; can be disabled per panel via <code>motionDisabled</code>.</td>
     </tr>
   </tbody>
 </table>
 
 ## Theming
 
-Variables locales en tête de `ui-drawer.scss`. Voir le
-[fonctionnement de la configuration](?path=/docs/components-configuration--docs).
+Local variables at the top of `ui-drawer.scss`. See
+[how the configuration works](?path=/docs/components-configuration--docs).
 
 <ConfigTable of="ui-drawer" />

@@ -6,14 +6,14 @@ import { ConfigTable } from '../../../../storybook/blocks/config-table';
 
 # ui-card
 
-Conteneur **flexible** qui compose des régions optionnelles : média, en-tête
-(titre + sous-titre), contenu et pied. Chaque région n'est rendue que si elle
-porte du contenu — aucun wrapper vide, donc aucun espacement fantôme.
+**Flexible** container that composes optional regions: media, header
+(title + subtitle), content and footer. Each region is only rendered if it
+carries content — no empty wrapper, so no ghost spacing.
 
-Surface neutre (tokens `global`) : fond `--global-background-default`, texte
-`--global-text-default`, bordure `--global-border-subtle`, ombre
-`--shadow-default-md` (variante `elevated`), rayon `--radius-lg`. Light **et** dark
-via les modes de variables.
+Neutral surface (`global` tokens): background `--global-background-default`, text
+`--global-text-default`, border `--global-border-subtle`, shadow
+`--shadow-default-md` (`elevated` variant), radius `--radius-lg`. Light **and** dark
+via variable modes.
 
 <Canvas of={CardStories.Complete} />
 
@@ -21,26 +21,26 @@ via les modes de variables.
 
 <ArgTypes of={CardStories} />
 
-## Système de slots
+## Slot system
 
-Le cas courant ne demande **aucun import** : le contenu par défaut passe par
-`<ng-content>`, et le titre / sous-titre acceptent les inputs `header` / `subheader`.
-Les slots riches utilisent des **directives marqueurs** (attribut ou élément) à
-importer dans le composant hôte.
+The common case needs **no import**: default content flows through
+`<ng-content>`, and the title / subtitle accept the `header` / `subheader` inputs.
+Rich slots use **marker directives** (attribute or element) that need to be
+imported in the host component.
 
 ```html
-<ui-card header="Titre" subheader="Sous-titre">
-  Contenu de la carte (slot par défaut)
+<ui-card header="Title" subheader="Subtitle">
+  Card content (default slot)
 </ui-card>
 
 <ui-card>
   <img uiCardMedia src="…" alt="…" />
-  <span uiCardTitle>Titre <ui-tag label="New" /></span>
-  <span uiCardSubtitle>Sous-titre</span>
-  Contenu riche…
+  <span uiCardTitle>Title <ui-tag label="New" /></span>
+  <span uiCardSubtitle>Subtitle</span>
+  Rich content…
   <div uiCardFooter>
-    <ui-button label="Annuler" level="low" />
-    <ui-button label="Valider" />
+    <ui-button label="Cancel" level="low" />
+    <ui-button label="Confirm" />
   </div>
 </ui-card>
 ```
@@ -49,41 +49,41 @@ importer dans le composant hôte.
   <thead>
     <tr>
       <th>Slot</th>
-      <th>Marqueur</th>
-      <th>Raccourci</th>
-      <th>Rôle</th>
+      <th>Marker</th>
+      <th>Shorthand</th>
+      <th>Role</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><strong>Média</strong></td>
+      <td><strong>Media</strong></td>
       <td><code>[uiCardMedia]</code> · <code>ui-card-media</code></td>
       <td>—</td>
-      <td>Visuel pleine largeur en tête (clippé aux coins arrondis).</td>
+      <td>Full-width visual at the top (clipped to the rounded corners).</td>
     </tr>
     <tr>
-      <td><strong>Titre</strong></td>
+      <td><strong>Title</strong></td>
       <td><code>[uiCardTitle]</code> · <code>ui-card-title</code></td>
       <td><code>header</code></td>
-      <td>Titre (typo <code>title</code>).</td>
+      <td>Title (<code>title</code> typography).</td>
     </tr>
     <tr>
-      <td><strong>Sous-titre</strong></td>
+      <td><strong>Subtitle</strong></td>
       <td><code>[uiCardSubtitle]</code> · <code>ui-card-subtitle</code></td>
       <td><code>subheader</code></td>
-      <td>Sous-titre atténué (<code>--global-text-muted</code>).</td>
+      <td>Muted subtitle (<code>--global-text-muted</code>).</td>
     </tr>
     <tr>
-      <td><strong>Contenu</strong></td>
-      <td><em>slot par défaut</em> (<code>&lt;ng-content&gt;</code>)</td>
+      <td><strong>Content</strong></td>
+      <td><em>default slot</em> (<code>&lt;ng-content&gt;</code>)</td>
       <td>—</td>
-      <td>Corps de la carte.</td>
+      <td>Body of the card.</td>
     </tr>
     <tr>
-      <td><strong>Pied</strong></td>
+      <td><strong>Footer</strong></td>
       <td><code>[uiCardFooter]</code> · <code>ui-card-footer</code></td>
       <td>—</td>
-      <td>Footer de la card</td>
+      <td>Card footer.</td>
     </tr>
   </tbody>
 </table>
@@ -93,18 +93,18 @@ importer dans le composant hôte.
 <Canvas of={CardStories.WithMedia} />
 <Canvas of={CardStories.RichTitle} />
 
-## Contenu full-bleed (`contentFlush`)
+## Full-bleed content (`contentFlush`)
 
-Par défaut le contenu porte la gouttière de la carte. `contentFlush` la **retire**
-pour laisser le consommateur maîtriser sa mise en page : bande média / couleur
-edge-to-edge, tableau pleine largeur… La gouttière reste disponible via la variable
-CSS `--ui-card-padding` (à ré-appliquer sur les blocs qui doivent rester en retrait).
+By default the content carries the card's gutter. `contentFlush` **removes**
+it to let the consumer control the layout: full-bleed media/color band,
+full-width table… The gutter is still available via the `--ui-card-padding`
+CSS variable (re-apply it on blocks that should stay inset).
 
 ```html
-<ui-card header="Titre" [contentFlush]="true">
+<ui-card header="Title" [contentFlush]="true">
   <div class="flex-y" style="--flex-gap-y: var(--units-md)">
-    <div class="banniere"></div> <!-- pleine largeur -->
-    <p style="padding-inline: var(--ui-card-padding)">Paragraphe regouttiéré…</p>
+    <div class="banner"></div> <!-- full width -->
+    <p style="padding-inline: var(--ui-card-padding)">Re-guttered paragraph…</p>
   </div>
 </ui-card>
 ```
@@ -114,13 +114,13 @@ CSS `--ui-card-padding` (à ré-appliquer sur les blocs qui doivent rester en re
 ## Footer
 
 ```html
-<!-- actions groupées à droite -->
+<!-- actions grouped on the right -->
 <div uiCardFooter class="flex-x flex-gap-x align-right" style="--flex-gap-x: var(--units-sm)">
-  <ui-button label="Annuler" level="low" />
-  <ui-button label="Valider" />
+  <ui-button label="Cancel" level="low" />
+  <ui-button label="Confirm" />
 </div>
 
-<!-- tags à gauche, action à droite -->
+<!-- tags on the left, action on the right -->
 <div uiCardFooter class="flex-x align-justify" style="flex:1;align-items:center">
   <div class="flex-x flex-gap-x"><ui-tag … /><ui-tag … /></div>
   <ui-button label="Action" />
@@ -130,47 +130,47 @@ CSS `--ui-card-padding` (à ré-appliquer sur les blocs qui doivent rester en re
 <Canvas of={CardStories.WithFooter} />
 <Canvas of={CardStories.Complete} />
 
-## Variantes
+## Variants
 
-`variant` pilote uniquement le traitement de la **surface** (les états interactifs
-ne sont pas gérés : la carte est un conteneur).
+`variant` only drives the **surface** treatment (interactive states are not
+handled: the card is a container).
 
 <Canvas of={CardStories.Outlined} />
 <Canvas of={CardStories.Elevated} />
 <Canvas of={CardStories.Flat} />
 
-## Accessibilité
+## Accessibility
 
 <table className="doc-table">
   <thead>
     <tr>
-      <th>Règle</th>
-      <th>Détail</th>
+      <th>Rule</th>
+      <th>Detail</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><strong>Sémantique</strong></td>
-      <td>Conteneur neutre par défaut. Renseigner <code>ariaLabel</code> ou <code>ariaLabelledBy</code> promeut la carte en <code>role="region"</code> (repère de navigation).</td>
+      <td><strong>Semantics</strong></td>
+      <td>Neutral container by default. Setting <code>ariaLabel</code> or <code>ariaLabelledBy</code> promotes the card to <code>role="region"</code> (navigation landmark).</td>
     </tr>
     <tr>
-      <td><strong>Titre</strong></td>
-      <td>Le slot titre est un simple bloc stylé : pour une hiérarchie de titres réelle, projeter un <code>&lt;h2&gt;</code>/<code>&lt;h3&gt;</code> via <code>uiCardTitle</code>.</td>
+      <td><strong>Title</strong></td>
+      <td>The title slot is a plain styled block: for a real heading hierarchy, project an <code>&lt;h2&gt;</code>/<code>&lt;h3&gt;</code> via <code>uiCardTitle</code>.</td>
     </tr>
     <tr>
-      <td><strong>Média</strong></td>
-      <td>Fournir un <code>alt</code> pertinent (ou <code>alt=""</code> si décoratif) sur l’image projetée.</td>
+      <td><strong>Media</strong></td>
+      <td>Provide a relevant <code>alt</code> (or <code>alt=""</code> if decorative) on the projected image.</td>
     </tr>
     <tr>
-      <td><strong>Contraste</strong></td>
-      <td>Couleurs issues des tokens sémantiques <code>global</code> (WCAG AA), déclinées light / dark.</td>
+      <td><strong>Contrast</strong></td>
+      <td>Colors from the <code>global</code> semantic tokens (WCAG AA), for light / dark.</td>
     </tr>
   </tbody>
 </table>
 
 ## Theming
 
-Variables locales en tête de `ui-card.scss` (spécifiques à ce composant). Voir le
-[fonctionnement de la configuration](?path=/docs/components-configuration--docs).
+Local variables at the top of `ui-card.scss` (specific to this component). See
+[how the configuration works](?path=/docs/components-configuration--docs).
 
 <ConfigTable of="ui-card" />
