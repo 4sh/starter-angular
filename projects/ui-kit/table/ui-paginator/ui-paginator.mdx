@@ -6,11 +6,11 @@ import { ConfigTable } from '../../../../storybook/blocks/config-table';
 
 # ui-paginator
 
-Barre de pagination **autonome** : premier/précédent, numéros de page,
-suivant/dernier, et sélecteur « lignes par page » optionnel.
+**Standalone** pagination bar: first/previous, page numbers,
+next/last, and an optional "rows per page" selector.
 
-Utilisée en interne par `ui-table` (`paginator`), elle fonctionne aussi seule
-sur n'importe quelle collection : bindez `totalRecords`, `rows` et le two-way
+Used internally by `ui-table` (`paginator`), it also works standalone
+on any collection: bind `totalRecords`, `rows` and the two-way
 `first`.
 
 <Canvas of={PaginatorStories.Basic} />
@@ -25,59 +25,59 @@ sur n'importe quelle collection : bindez `totalRecords`, `rows` et le two-way
 />
 ```
 
-## Lignes par page
+## Rows per page
 
-`rowsPerPageOptions` affiche le sélecteur ; le choix met `rows` à jour et
-ramène à la première page.
+`rowsPerPageOptions` shows the selector; choosing a value updates `rows`
+and returns to the first page.
 
 <Canvas of={PaginatorStories.WithRowsPerPage} />
 
-## Fenêtre de pages
+## Page window
 
-Au-delà de `pageLinks` pages, la fenêtre de numéros se recentre sur la page
-courante ; les contrôles de butée se désactivent nativement.
+Past `pageLinks` pages, the number window recenters on the current
+page; the boundary controls disable natively.
 
 <Canvas of={PaginatorStories.ManyPages} />
 
-## Mode compact (`ellipsis`)
+## Compact mode (`ellipsis`)
 
-`ellipsis` remplace la fenêtre glissante par la forme compacte
-`1 2 3 … 30 31 32` : `boundaryCount` pages à chaque bord, le voisinage de la
-page courante, et des `…` décoratifs (non focusables) dans les trous — un
-trou d'une seule page est affiché plutôt qu'élidé.
+`ellipsis` replaces the sliding window with the compact
+`1 2 3 … 30 31 32` form: `boundaryCount` pages at each edge, the
+current page's neighborhood, and decorative (non-focusable) `…`s in the
+gaps — a single-page gap is shown rather than elided.
 
 <Canvas of={PaginatorStories.Ellipsis} />
 <Canvas of={PaginatorStories.EllipsisMiddle} />
 
-## Rapport de page courante
+## Current-page report
 
-`showCurrentPageReport` affiche `1 - 10 sur 120` devant les contrôles ; le
-motif `currentPageReportTemplate` accepte les placeholders `{first}`
-`{last}` `{rows}` `{page}` `{pageCount}` `{totalRecords}`. Combiné à
-`showFirstLastIcon="false"` / `showPageLinks="false"`, la barre se réduit à
-un rapport + précédent/suivant.
+`showCurrentPageReport` shows `1 - 10 of 120` in front of the controls; the
+`currentPageReportTemplate` pattern accepts the placeholders `{first}`
+`{last}` `{rows}` `{page}` `{pageCount}` `{totalRecords}`. Combined with
+`showFirstLastIcon="false"` / `showPageLinks="false"`, the bar reduces to
+a report + previous/next.
 
 <Canvas of={PaginatorStories.CurrentPageReport} />
 
 ## Template
 
-Chaque élément de la barre est personnalisable par un template nommé, et la
-barre peut **embarquer des contenus libres** :
+Each element of the bar is customizable via a named template, and the
+bar can **embed free content**:
 
 <table className="doc-table">
   <thead>
-    <tr><th>Template</th><th>Rôle</th><th>Contexte</th></tr>
+    <tr><th>Template</th><th>Role</th><th>Context</th></tr>
   </thead>
   <tbody>
-    <tr><td>`#start` / `#end`</td><td>Contenu libre avant les contrôles / après le sélecteur (libellé, compteur, actions…).</td><td>`{ $implicit: état }` (`first`, `last`, `rows`, `page`, `pageCount`, `totalRecords`)</td></tr>
-    <tr><td>`#report`</td><td>Rapport de page riche (remplace le motif texte).</td><td>idem</td></tr>
-    <tr><td>`#firsticon` / `#previcon` / `#nexticon` / `#lasticon`</td><td>Icônes des contrôles.</td><td>—</td></tr>
-    <tr><td>`#pagelink`</td><td>Contenu d'un numéro de page.</td><td>`{ $implicit: numéro, page, active }`</td></tr>
+    <tr><td>`#start` / `#end`</td><td>Free content before the controls / after the selector (label, counter, actions…).</td><td>`{ $implicit: state }` (`first`, `last`, `rows`, `page`, `pageCount`, `totalRecords`)</td></tr>
+    <tr><td>`#report`</td><td>Rich page report (replaces the text pattern).</td><td>same</td></tr>
+    <tr><td>`#firsticon` / `#previcon` / `#nexticon` / `#lasticon`</td><td>Control icons.</td><td>—</td></tr>
+    <tr><td>`#pagelink`</td><td>Content of a page number.</td><td>`{ $implicit: number, page, active }`</td></tr>
   </tbody>
 </table>
 
-Les attributs d'accessibilité (nom, `aria-current`, `disabled`) restent
-portés par les boutons quel que soit le contenu injecté.
+Accessibility attributes (name, `aria-current`, `disabled`) stay
+carried by the buttons regardless of the injected content.
 
 <Canvas of={PaginatorStories.Template} />
 
@@ -89,7 +89,7 @@ portés par les boutons quel que soit le contenu injecté.
   [showFirstLastIcon]="false"
   [showPageLinks]="false"
 >
-  <ng-template #start>Lignes par page :</ng-template>
+  <ng-template #start>Rows per page:</ng-template>
   <ng-template #end let-state>page {{ state.page + 1 }} / {{ state.pageCount }}</ng-template>
 </ui-paginator>
 ```
@@ -101,45 +101,45 @@ portés par les boutons quel que soit le contenu injecté.
 
 <ArgTypes of={PaginatorStories} />
 
-## Accessibilité
+## Accessibility
 
 <table className="doc-table">
   <thead>
     <tr>
       <th>Point</th>
-      <th>Détail</th>
+      <th>Detail</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>Landmark</td>
-      <td><code>&lt;nav&gt;</code> nommé (<code>ariaLabel</code>, défaut « Pagination »).</td>
+      <td>Named <code>&lt;nav&gt;</code> (<code>ariaLabel</code>, default "Pagination").</td>
     </tr>
     <tr>
-      <td>Contrôles</td>
-      <td>Vrais <code>&lt;button type="button"&gt;</code> natifs, tous nommés (<code>firstPageAriaLabel</code>…, <code>pageAriaLabel</code> avec motif <code>{'{page}'}</code>) ; butées et mode <code>disabled</code> désactivés nativement.</td>
+      <td>Controls</td>
+      <td>Real native <code>&lt;button type="button"&gt;</code>s, all named (<code>firstPageAriaLabel</code>…, <code>pageAriaLabel</code> with the <code>{'{page}'}</code> pattern); boundaries and <code>disabled</code> mode disabled natively.</td>
     </tr>
     <tr>
-      <td>Page courante</td>
-      <td><code>aria-current="page"</code> + famille visuelle <code>high</code> (jamais la couleur seule).</td>
+      <td>Current page</td>
+      <td><code>aria-current="page"</code> + <code>high</code> visual family (never color alone).</td>
     </tr>
     <tr>
       <td>Focus</td>
-      <td><code>:focus-visible</code> en anneau <code>actions.*.stroke.focused</code>, distinct du survol.</td>
+      <td><code>:focus-visible</code> as an <code>actions.*.stroke.focused</code> ring, distinct from hover.</td>
     </tr>
     <tr>
       <td>Ellipses</td>
-      <td><code>…</code> décoratifs : <code>&lt;span aria-hidden&gt;</code>, jamais focusables.</td>
+      <td>Decorative <code>…</code>: <code>&lt;span aria-hidden&gt;</code>, never focusable.</td>
     </tr>
     <tr>
-      <td>Lignes par page</td>
-      <td><code>ui-select</code> nommé (<code>rowsPerPageAriaLabel</code>), clavier hérité du combobox.</td>
+      <td>Rows per page</td>
+      <td>Named <code>ui-select</code> (<code>rowsPerPageAriaLabel</code>), keyboard inherited from the combobox.</td>
     </tr>
   </tbody>
 </table>
 
 ## Theming
 
-Constantes locales en tête de `ui-paginator.scss` :
+Local constants at the top of `ui-paginator.scss`:
 
 <ConfigTable of="ui-paginator" />

@@ -6,18 +6,18 @@ import { ConfigTable } from '../../../../storybook/blocks/config-table';
 
 # ui-table
 
-Tableau de données **headless** : le composant orchestre le pipeline de données
-(tri → pagination), la sélection, l'expansion, le scroll et la pagination, le
-**markup des lignes reste entièrement à la main du consommateur** via les
-templates `#header` / `#body` / `#footer` (de vrais `<tr>/<th>/<td>`). Les
-comportements de colonne s'activent à la carte avec les directives compagnes
+**Headless** data table: the component orchestrates the data pipeline
+(sort → pagination), selection, expansion, scroll and pagination, while the
+**row markup stays entirely in the consumer's hands** via the
+`#header` / `#body` / `#footer` templates (real `<tr>/<th>/<td>`). Column
+behaviors are opted into individually via companion directives
 (`uiSortableColumn`, `uiSelectableRow`, `uiFrozenColumn`, `uiResizableColumn`,
-`uiRowToggler`) et les sous-composants (`ui-table-sort-icon`,
+`uiRowToggler`) and sub-components (`ui-table-sort-icon`,
 `ui-table-checkbox`, `ui-table-header-checkbox`, `ui-table-radio`).
 
 ## Basic
 
-Une collection à afficher et un template de colonnes suffisent.
+A collection to display and a column template are enough.
 
 <Canvas of={TableStories.Basic} />
 
@@ -26,7 +26,7 @@ Une collection à afficher et un template de colonnes suffisent.
   <ng-template #header>
     <tr>
       <th>Code</th>
-      <th>Nom</th>
+      <th>Name</th>
     </tr>
   </ng-template>
   <ng-template #body let-product>
@@ -40,21 +40,21 @@ Une collection à afficher et un template de colonnes suffisent.
 
 ## Size
 
-`size` ajuste le padding des cellules : `small`, `large`, ou rien pour la
-densité par défaut.
+`size` adjusts cell padding: `small`, `large`, or nothing for the
+default density.
 
 <Canvas of={TableStories.Small} />
 <Canvas of={TableStories.Large} />
 
 ## Grid Lines
 
-`showGridlines` affiche les bordures entre cellules.
+`showGridlines` shows the borders between cells.
 
 <Canvas of={TableStories.GridLines} />
 
 ## Striped Rows
 
-`stripedRows` alterne le fond des lignes (tokens `table.body.*.even/odd`).
+`stripedRows` alternates row backgrounds (`table.body.*.even/odd` tokens).
 
 <Canvas of={TableStories.StripedRows} />
 
@@ -62,50 +62,50 @@ densité par défaut.
 
 ### Single
 
-Une ligne à la fois : cliquer une autre ligne remplace la sélection. Poser
-`[uiSelectableRow]` sur le `<tr>` du template body.
+One row at a time: clicking another row replaces the selection. Put
+`[uiSelectableRow]` on the body template's `<tr>`.
 
 <Canvas of={TableStories.SelectionSingle} />
 
 ### Multiple
 
-Plusieurs lignes sans colonne dédiée. Avec `metaKeySelection`, Ctrl/Cmd +
-clic bascule une ligne, Maj + clic sélectionne une plage, un clic simple
-remplace la sélection.
+Several rows with no dedicated column. With `metaKeySelection`, Ctrl/Cmd +
+click toggles a row, Shift + click selects a range, a plain click
+replaces the selection.
 
 <Canvas of={TableStories.SelectionMultiple} />
 
 ### Checkbox
 
-Sélection multiple par cases à cocher : `ui-table-header-checkbox` en
-en-tête (tout sélectionner, indéterminée sur sélection partielle) et
-`ui-table-checkbox` sur chaque ligne.
+Multiple selection via checkboxes: `ui-table-header-checkbox` in the
+header (select all, indeterminate on partial selection) and
+`ui-table-checkbox` on each row.
 
 <Canvas of={TableStories.SelectionCheckbox} />
 
 ### Radio
 
-Sélection simple par boutons radio : `selectionMode="single"` +
-`ui-table-radio` dans une colonne.
+Single selection via radio buttons: `selectionMode="single"` +
+`ui-table-radio` in a column.
 
 <Canvas of={TableStories.SelectionRadio} />
 
-### Clavier
+### Keyboard
 
-Sur les lignes `uiSelectableRow` : `↑`/`↓` déplacent le focus de ligne en
-ligne, `Espace`/`Entrée` basculent la ligne focalisée, `Maj + flèche` étend
-la plage. Combiné à `selectionMode="multiple"` + `metaKeySelection`, tout le
-flux est pilotable au clavier.
+On `uiSelectableRow` rows: `↑`/`↓` move focus row by row,
+`Space`/`Enter` toggle the focused row, `Shift + arrow` extends
+the range. Combined with `selectionMode="multiple"` + `metaKeySelection`, the
+whole flow is keyboard-drivable.
 
 ### Column
 
-La sélection depuis un élément d'une colonne (lien, bouton…) s'implémente
-par templating : appelez vos propres handlers dans le template `#body`, la
-sélection reste pilotable via le two-way `[(selection)]`.
+Selection from a column element (link, button…) is implemented via
+templating: call your own handlers in the `#body` template, the
+selection stays drivable via the two-way `[(selection)]`.
 
 ### Events
 
-`rowSelect` et `rowUnselect` notifient chaque (dé)sélection avec
+`rowSelect` and `rowUnselect` notify each (de)selection with
 `{ originalEvent, data, index, type }`.
 
 <Canvas of={TableStories.SelectionEvents} />
@@ -114,63 +114,63 @@ sélection reste pilotable via le two-way `[(selection)]`.
 
 ### Single
 
-`uiSortableColumn` + `ui-table-sort-icon` sur un `<th>` : chaque clic (ou
-`Entrée`/`Espace`) cycle croissant → décroissant → non trié.
+`uiSortableColumn` + `ui-table-sort-icon` on a `<th>`: each click (or
+`Enter`/`Space`) cycles ascending → descending → unsorted.
 
 <Canvas of={TableStories.SortSingle} />
 
 ```html
-<th uiSortableColumn="name">Nom <ui-table-sort-icon field="name" /></th>
+<th uiSortableColumn="name">Name <ui-table-sort-icon field="name" /></th>
 ```
 
 ### Multiple
 
-`sortMode="multiple"` : Ctrl/Cmd + clic compose le tri sur plusieurs
-colonnes (un clic simple repart sur la colonne seule).
+`sortMode="multiple"`: Ctrl/Cmd + click composes the sort across several
+columns (a plain click restarts on that column alone).
 
 <Canvas of={TableStories.SortMultiple} />
 
 ### Presort
 
-`sortField` + `sortOrder` appliquent un tri au montage ; les en-têtes
-restent interactifs (`multiSortMeta` pour le mode multiple).
+`sortField` + `sortOrder` apply a sort on mount; the headers
+stay interactive (`multiSortMeta` for multiple mode).
 
 <Canvas of={TableStories.SortPresort} />
 
 ### Removable / custom
 
-Le cycle simple retire déjà le tri au troisième clic. Pour un ordre
-entièrement personnalisé, `customSort` désactive le tri interne : la table
-émet `sortFunction` avec `{ data, mode, field, order, multiSortMeta }` et
-c'est au consommateur d'ordonner `value`. Pour un tri exécuté côté serveur,
-utiliser plutôt le mode `lazy` et l'output `sortChange` (voir
-[Lazy / serveur](#lazy--serveur)) — ne pas combiner avec `customSort`.
+The simple cycle already removes the sort on the third click. For a fully
+custom order, `customSort` disables the internal sort: the table
+emits `sortFunction` with `{ data, mode, field, order, multiSortMeta }` and
+it's up to the consumer to order `value`. For a server-side sort,
+use `lazy` mode and the `sortChange` output instead (see
+[Lazy / server](#lazy--server)) — don't combine with `customSort`.
 
 ## Pagination
 
 ### Basic
 
-`paginator` + `rows` découpent la collection ; `rowsPerPageOptions` ajoute
-le sélecteur de lignes par page. La barre est une instance du composant
-autonome **`ui-paginator`** (voir sa doc dédiée), composée de `ui-button`
-(contrôles circulaires, page courante en `high`) et `ui-select`.
+`paginator` + `rows` split the collection; `rowsPerPageOptions` adds
+the rows-per-page selector. The bar is an instance of the standalone
+**`ui-paginator`** component (see its dedicated doc), composed of `ui-button`
+(circular controls, current page in `high`) and `ui-select`.
 
 <Canvas of={TableStories.PaginationBasic} />
 
 ### Programmatic
 
-Le modèle two-way `first` pilote la pagination depuis l'extérieur, tout
-changement déclenche la re-pagination et `pageChange`.
+The two-way `first` model drives pagination from the outside; any
+change triggers re-pagination and `pageChange`.
 
 <Canvas of={TableStories.PaginationProgrammatic} />
 
-### Lazy / serveur
+### Lazy / server
 
-En mode `lazy`, la table ne trie ni ne découpe plus : le consommateur possède
-le pipeline de données. `value` est la **page courante** renvoyée par le
-serveur et `totalRecords` (total serveur) pilote le paginator. Réagir à
-`pageChange` et `sortChange` pour relancer la requête, et activer `loading`
-pendant l'aller-retour.
+In `lazy` mode, the table no longer sorts or splits: the consumer owns
+the data pipeline. `value` is the **current page** returned by the
+server and `totalRecords` (server total) drives the paginator. React to
+`pageChange` and `sortChange` to re-trigger the request, and enable `loading`
+during the round-trip.
 
 ```html
 <ui-table
@@ -186,16 +186,16 @@ pendant l'aller-retour.
 >
 ```
 
-À savoir :
+Worth knowing:
 
-- un changement de tri remet `first` à `0` (la table le fait elle-même) —
-  refetch depuis la première page ;
-- la case « tout sélectionner » de l'en-tête porte sur la **page courante**
-  uniquement ; la sélection persiste entre les pages via `dataKey` ;
-- sans `totalRecords`, le paginator croit que la page courante est tout le
-  jeu de données (warning en mode dev) ;
-- combiné à `virtualScroll`, `lazy` conserve le comportement existant
-  d'hydratation fenêtrée via `lazyLoad`.
+- a sort change resets `first` to `0` (the table does it itself) —
+  refetch from the first page;
+- the header's "select all" checkbox only covers the **current
+  page**; the selection persists across pages via `dataKey`;
+- with no `totalRecords`, the paginator believes the current page is the whole
+  dataset (warning in dev mode);
+- combined with `virtualScroll`, `lazy` keeps the existing windowed
+  hydration behavior via `lazyLoad`.
 
 <Canvas of={TableStories.PaginationServer} />
 
@@ -203,92 +203,92 @@ pendant l'aller-retour.
 
 ### Vertical
 
-`scrollable` + `scrollHeight` fixe activent le scroll vertical avec en-tête
-sticky (et pied sticky).
+`scrollable` + a fixed `scrollHeight` enable vertical scroll with a sticky
+header (and sticky footer).
 
 <Canvas of={TableStories.ScrollVertical} />
 
 ### Horizontal
 
-Quand la somme des largeurs dépasse le conteneur, la table défile
-horizontalement, donnez un `min-width` à chaque colonne pour éviter
-l'écrasement (via `tableStyle` + styles de colonne).
+When the sum of column widths exceeds the container, the table scrolls
+horizontally; give each column a `min-width` to avoid
+crushing (via `tableStyle` + column styles).
 
 <Canvas of={TableStories.ScrollHorizontal} />
 
 ### Flexible
 
-`scrollHeight="flex"` laisse le viewport grandir et rétrécir avec son parent
-flex, pratique dans une modale redimensionnable ou un split layout.
+`scrollHeight="flex"` lets the viewport grow and shrink with its flex
+parent, handy in a resizable modal or a split layout.
 
 <Canvas of={TableStories.ScrollFlexible} />
 
 ## Frozen Columns
 
-`uiFrozenColumn` fige une colonne pendant le scroll horizontal ;
-`alignFrozen` la colle à gauche (défaut) ou à droite. Plusieurs colonnes
-peuvent être figées de chaque côté, les décalages s'accumulent
-automatiquement.
+`uiFrozenColumn` freezes a column during horizontal scroll;
+`alignFrozen` sticks it to the left (default) or the right. Several columns
+can be frozen on each side, offsets stack up
+automatically.
 
 <Canvas of={TableStories.FrozenColumns} />
 
 ## Frozen Rows
 
-`frozenValue` épingle des lignes sous l'en-tête pendant le scroll vertical.
+`frozenValue` pins rows under the header during vertical scroll.
 
 <Canvas of={TableStories.FrozenRows} />
 
 ## Row Expansion
 
-`uiRowToggler` sur le bouton d'expansion + template `#expandedrow` pour le
-contenu déplié. L'état vit dans le two-way `expandedRowKeys` (nécessite
-`dataKey`) ; `rowExpand`/`rowCollapse` notifient chaque bascule.
+`uiRowToggler` on the expand button + the `#expandedrow` template for the
+unfolded content. The state lives in the two-way `expandedRowKeys` (requires
+`dataKey`); `rowExpand`/`rowCollapse` notify each toggle.
 
 <Canvas of={TableStories.RowExpansion} />
 
 ## Column Resize (fit)
 
-`resizableColumns` + `uiResizableColumn` sur les `<th>` : le glissement
-prend la largeur sur la colonne voisine, la largeur totale de la table ne
-change pas. `showGridlines` rend l'effet visible.
+`resizableColumns` + `uiResizableColumn` on the `<th>`s: dragging
+takes width from the neighboring column, the table's total width doesn't
+change. `showGridlines` makes the effect visible.
 
 <Canvas of={TableStories.ColumnResizeFit} />
 
 ## Row Reorder
 
-`uiReorderableRow` sur le `<tr>` (avec le `rowIndex` du contexte) rend les
-lignes réordonnables par glisser-déposer ; un indicateur marque le bord de
-dépose. `rowReorder` émet `{ dragIndex, dropIndex, value }` avec la **copie
-réordonnée de `value`** à re-binder. Prévu pour des données non triées.
+`uiReorderableRow` on the `<tr>` (with the context's `rowIndex`) makes
+rows reorderable via drag and drop; an indicator marks the drop
+edge. `rowReorder` emits `{ dragIndex, dropIndex, value }` with the **reordered
+copy of `value`** to rebind. Designed for unsorted data.
 
 <Canvas of={TableStories.RowReorder} />
 
 ## Column Toggle
 
-L'affichage dynamique des colonnes est du pur templating : pilotez la liste
-des colonnes avec un `ui-select multiple` et bouclez dessus dans `#header`
-et `#body`.
+Dynamic column display is pure templating: drive the list
+of columns with a `ui-select multiple` and loop over it in `#header`
+and `#body`.
 
 <Canvas of={TableStories.ColumnToggle} />
 
 ## Loading
 
-Pendant le chargement (`loading`), les lignes du corps sont **remplacées par
-une ligne d'attente** (`ui-spinner` centré) — l'en-tête reste net et en
-place, sans voile translucide par-dessus. Les lignes apparaissent une fois
-les données chargées ; la racine passe `aria-busy="true"` et le spinner est
-une région `role="status"` nommée.
+While loading (`loading`), the body rows are **replaced by
+a waiting row** (centered `ui-spinner`) — the header stays crisp and
+in place, with no translucent veil on top. Rows appear once the
+data has loaded; the root gets `aria-busy="true"` and the spinner is
+a named `role="status"` region.
 
 <Canvas of={TableStories.Loading} />
 
 ## Skeleton
 
-Pendant qu'une requête est en vol, on peut rendre des **lignes de substitution**
-remplies de `ui-skeleton` plutôt qu'un voile de chargement. On alimente le
-tableau avec un tableau d'espaces réservés et le template `#body` place un
-`ui-skeleton` par cellule : la structure (en-têtes, colonnes, densité) reste
-identique au contenu réel, ce qui évite tout saut de mise en page à l'arrivée
-des données.
+While a request is in flight, you can render **placeholder rows**
+filled with `ui-skeleton` rather than a loading veil. Feed the
+table an array of placeholders and the `#body` template places a
+`ui-skeleton` per cell: the structure (headers, columns, density) stays
+identical to the real content, avoiding any layout shift when the
+data arrives.
 
 <Canvas of={TableStories.Skeleton} />
 
@@ -296,31 +296,31 @@ des données.
 
 ### Preload
 
-`virtualScroll` + `virtualScrollItemSize` (hauteur fixe, à reporter sur le
-`<tr>` du template body) fenêtrent le rendu sur le viewport visible,
-10 000 lignes préchargées se rendent en quelques dizaines de `<tr>`.
-Requiert `scrollable` + un `scrollHeight` fixe.
+`virtualScroll` + `virtualScrollItemSize` (fixed height, to report on the
+body template's `<tr>`) window the render to the visible viewport,
+10,000 preloaded rows render as a few dozen `<tr>`s.
+Requires `scrollable` + a fixed `scrollHeight`.
 
 <Canvas of={TableStories.VirtualScrollPreload} />
 
 ### Lazy
 
-`lazy` + l'output `lazyLoad { first, last }` notifient chaque déplacement de
-la fenêtre rendue : chargez la plage à la demande et re-bindez `value`.
+`lazy` + the `lazyLoad { first, last }` output notify each move of
+the rendered window: load the range on demand and rebind `value`.
 
 <Canvas of={TableStories.VirtualScrollLazy} />
 
 ## Template
 
-Contenus libres en caption, en-tête, corps, pied et message vide.
+Free content in the caption, header, body, footer and empty message.
 
 <Canvas of={TableStories.Templates} />
 
 ## Empty State
 
-Sans lignes, le tableau rend une instance **`ui-empty-state`**
-(`emptyMessage` / `emptyIcon`) ; le template `#emptymessage` la remplace
-entièrement.
+With no rows, the table renders a **`ui-empty-state`** instance
+(`emptyMessage` / `emptyIcon`); the `#emptymessage` template replaces
+it entirely.
 
 <Canvas of={TableStories.EmptyState} />
 
@@ -328,114 +328,114 @@ entièrement.
 
 <ArgTypes of={TableStories} />
 
-### Contexte du template `#body`
+### `#body` template context
 
 <table className="doc-table">
   <thead>
     <tr><th>Variable</th><th>Type</th><th>Description</th></tr>
   </thead>
   <tbody>
-    <tr><td>`$implicit`</td><td>`T`</td><td>La ligne.</td></tr>
-    <tr><td>`rowIndex`</td><td>`number`</td><td>Index absolu dans le jeu trié.</td></tr>
-    <tr><td>`even`</td><td>`boolean`</td><td>Position paire dans la page rendue.</td></tr>
-    <tr><td>`selected`</td><td>`boolean`</td><td>La ligne est sélectionnée.</td></tr>
-    <tr><td>`expanded`</td><td>`boolean`</td><td>La ligne est dépliée.</td></tr>
-    <tr><td>`frozen`</td><td>`boolean`</td><td>La ligne provient de `frozenValue`.</td></tr>
+    <tr><td>`$implicit`</td><td>`T`</td><td>The row.</td></tr>
+    <tr><td>`rowIndex`</td><td>`number`</td><td>Absolute index in the sorted set.</td></tr>
+    <tr><td>`even`</td><td>`boolean`</td><td>Even position in the rendered page.</td></tr>
+    <tr><td>`selected`</td><td>`boolean`</td><td>The row is selected.</td></tr>
+    <tr><td>`expanded`</td><td>`boolean`</td><td>The row is expanded.</td></tr>
+    <tr><td>`frozen`</td><td>`boolean`</td><td>The row comes from `frozenValue`.</td></tr>
   </tbody>
 </table>
 
-## États
+## States
 
-- **Ligne survolée** : `table.body.surface.hover` (dès `rowHover` ou un mode de sélection).
-- **Ligne sélectionnée** : famille `informative.highlightLow` (la catégorie `table.*` n'a pas d'état `selected`).
-- **Ligne paire** (striped) : `table.body.*.even`.
-- **En-tête triable survolé** : `table.head.surface.hover` ; focus visible en anneau intérieur `global.high.stroke.focused`.
-- Les états interactifs sont des **pseudo-classes CSS**, jamais des props.
+- **Hovered row**: `table.body.surface.hover` (from `rowHover` or a selection mode).
+- **Selected row**: `informative.highlightLow` family (the `table.*` category has no `selected` state).
+- **Even row** (striped): `table.body.*.even`.
+- **Hovered sortable header**: `table.head.surface.hover`; visible focus as an inner `global.high.stroke.focused` ring.
+- Interactive states are **CSS pseudo-classes**, never props.
 
-## Accessibilité
+## Accessibility
 
 <table className="doc-table">
   <thead>
     <tr>
       <th>Point</th>
-      <th>Détail</th>
+      <th>Detail</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td>Markup natif</td>
-      <td>Vraie <code>&lt;table&gt;</code> avec <code>&lt;thead&gt;/&lt;tbody&gt;/&lt;tfoot&gt;</code> ; le consommateur fournit de vrais <code>&lt;th&gt;/&lt;td&gt;</code>.</td>
+      <td>Native markup</td>
+      <td>Real <code>&lt;table&gt;</code> with <code>&lt;thead&gt;/&lt;tbody&gt;/&lt;tfoot&gt;</code>; the consumer provides real <code>&lt;th&gt;/&lt;td&gt;</code>.</td>
     </tr>
     <tr>
-      <td>Tri</td>
-      <td><code>uiSortableColumn</code> : <code>&lt;th&gt;</code> focusable, activation <code>Entrée</code>/<code>Espace</code>, état exposé via <code>aria-sort</code> ; l'icône est décorative.</td>
+      <td>Sort</td>
+      <td><code>uiSortableColumn</code>: focusable <code>&lt;th&gt;</code>, <code>Enter</code>/<code>Space</code> activation, state exposed via <code>aria-sort</code>; the icon is decorative.</td>
     </tr>
     <tr>
-      <td>Sélection</td>
-      <td>Roving tabindex (<code>Tab</code> atteint la première ligne sélectionnée, sinon la première ligne) + <code>aria-selected</code>. Cases et radios = vrais contrôles nommés (<code>ui-checkbox</code>/<code>ui-radio</code>, labels surchargeables via <code>ariaLabel</code>).</td>
+      <td>Selection</td>
+      <td>Roving tabindex (<code>Tab</code> reaches the first selected row, otherwise the first row) + <code>aria-selected</code>. Checkboxes and radios = real named controls (<code>ui-checkbox</code>/<code>ui-radio</code>, labels overridable via <code>ariaLabel</code>).</td>
     </tr>
     <tr>
-      <td>Rôles</td>
-      <td>Sémantique <strong>native</strong> <code>table/thead/tbody/tfoot/tr/th/td</code> (rôles implicites <code>table</code>/<code>rowgroup</code>/<code>row</code>/<code>columnheader</code>/<code>cell</code>). <code>aria-posinset</code>/<code>aria-setsize</code>/<code>aria-label</code> des lignes restent à poser côté templating si besoin.</td>
+      <td>Roles</td>
+      <td><strong>Native</strong> <code>table/thead/tbody/tfoot/tr/th/td</code> semantics (implicit <code>table</code>/<code>rowgroup</code>/<code>row</code>/<code>columnheader</code>/<code>cell</code> roles). Row <code>aria-posinset</code>/<code>aria-setsize</code>/<code>aria-label</code> are still up to the templating layer if needed.</td>
     </tr>
     <tr>
       <td>Expansion</td>
-      <td><code>uiRowToggler</code> reflète <code>aria-expanded</code> sur le bouton ; nom accessible à fournir (<code>ariaLabel</code>).</td>
+      <td><code>uiRowToggler</code> reflects <code>aria-expanded</code> on the button; accessible name to provide (<code>ariaLabel</code>).</td>
     </tr>
     <tr>
       <td>Pagination</td>
-      <td><code>&lt;nav&gt;</code> nommé ; boutons <code>ui-button</code> nommés, page courante en <code>aria-current="page"</code>, contrôles désactivés nativement en butée.</td>
+      <td>Named <code>&lt;nav&gt;</code>; named <code>ui-button</code>s, current page as <code>aria-current="page"</code>, controls disabled natively at boundaries.</td>
     </tr>
     <tr>
       <td>Focus</td>
-      <td><code>:focus-visible</code> distinct du survol : anneau <strong>encadrant la ligne entière</strong> (outline intérieur sur la <code>&lt;tr&gt;</code>) et anneau intérieur sur les en-têtes triables.</td>
+      <td><code>:focus-visible</code> distinct from hover: ring **framing the whole row** (inner outline on the <code>&lt;tr&gt;</code>) and inner ring on sortable headers.</td>
     </tr>
     <tr>
-      <td>Chargement</td>
-      <td><code>aria-busy="true"</code> sur la racine, spinner <code>role="status"</code> nommé (<code>loadingAriaLabel</code>).</td>
+      <td>Loading</td>
+      <td><code>aria-busy="true"</code> on the root, named <code>role="status"</code> spinner (<code>loadingAriaLabel</code>).</td>
     </tr>
   </tbody>
 </table>
 
-### Clavier, sélection de lignes (`uiSelectableRow`)
+### Keyboard, row selection (`uiSelectableRow`)
 
 <table className="doc-table">
   <thead>
     <tr>
-      <th>Touche</th>
-      <th>Fonction</th>
+      <th>Key</th>
+      <th>Function</th>
     </tr>
   </thead>
   <tbody>
-    <tr><td><code>Tab</code></td><td>Atteint la première ligne sélectionnée, sinon la première ligne (roving tabindex).</td></tr>
-    <tr><td><code>↑</code> / <code>↓</code></td><td>Déplace le focus de ligne en ligne.</td></tr>
-    <tr><td><code>Entrée</code> / <code>Espace</code></td><td>Bascule la ligne focalisée (selon <code>metaKeySelection</code>).</td></tr>
-    <tr><td><code>Début</code> / <code>Fin</code></td><td>Focus la première / dernière ligne.</td></tr>
-    <tr><td><code>Maj + ↑/↓</code></td><td>Déplace le focus et étend la plage sélectionnée.</td></tr>
-    <tr><td><code>Maj + Espace</code></td><td>Sélectionne la plage entre l'ancre et la ligne focalisée.</td></tr>
-    <tr><td><code>Ctrl/Cmd + Maj + Début/Fin</code></td><td>Sélectionne de la ligne focalisée jusqu'à la première / dernière ligne.</td></tr>
-    <tr><td><code>Ctrl/Cmd + A</code></td><td>Sélectionne toutes les lignes (mode <code>multiple</code>).</td></tr>
+    <tr><td><code>Tab</code></td><td>Reaches the first selected row, otherwise the first row (roving tabindex).</td></tr>
+    <tr><td><code>↑</code> / <code>↓</code></td><td>Moves focus row by row.</td></tr>
+    <tr><td><code>Enter</code> / <code>Space</code></td><td>Toggles the focused row (depending on <code>metaKeySelection</code>).</td></tr>
+    <tr><td><code>Home</code> / <code>End</code></td><td>Focuses the first / last row.</td></tr>
+    <tr><td><code>Shift + ↑/↓</code></td><td>Moves focus and extends the selected range.</td></tr>
+    <tr><td><code>Shift + Space</code></td><td>Selects the range between the anchor and the focused row.</td></tr>
+    <tr><td><code>Ctrl/Cmd + Shift + Home/End</code></td><td>Selects from the focused row to the first / last row.</td></tr>
+    <tr><td><code>Ctrl/Cmd + A</code></td><td>Selects all rows (`multiple` mode).</td></tr>
   </tbody>
 </table>
 
-### Clavier, en-têtes triables
+### Keyboard, sortable headers
 
 <table className="doc-table">
   <thead>
     <tr>
-      <th>Touche</th>
-      <th>Fonction</th>
+      <th>Key</th>
+      <th>Function</th>
     </tr>
   </thead>
   <tbody>
-    <tr><td><code>Tab</code></td><td>Parcourt les en-têtes triables.</td></tr>
-    <tr><td><code>Entrée</code> / <code>Espace</code></td><td>Trie la colonne (cycle asc → desc → aucun).</td></tr>
+    <tr><td><code>Tab</code></td><td>Traverses the sortable headers.</td></tr>
+    <tr><td><code>Enter</code> / <code>Space</code></td><td>Sorts the column (cycle asc → desc → none).</td></tr>
   </tbody>
 </table>
 
 ## Theming
 
-Constantes locales en tête de `ui-table.scss` (voir aussi
-[Configuration des composants](?path=/docs/components-configuration--docs)) :
+Local constants at the top of `ui-table.scss` (see also
+[Components configuration](?path=/docs/components-configuration--docs)):
 
 <ConfigTable of="ui-table" />
