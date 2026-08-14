@@ -6,11 +6,11 @@ import { ConfigTable } from '../../../../storybook/blocks/config-table';
 
 # ui-nudger
 
-Le composant `ui-nudger` est un **incrémenteur numérique** compact : deux boutons
-`ui-button` icon-only (`−` / `+`) encadrant la valeur courante. Il n'a pas de champ
-de saisie, c'est un pas-à-pas pur, idéal pour de petites quantités (panier, filtres,
-paramètres). La valeur est portée via `ControlValueAccessor` : autonome, `[(ngModel)]`,
-Reactive Forms ou Signal Forms.
+The `ui-nudger` component is a compact **numeric stepper**: two icon-only
+`ui-button`s (`−` / `+`) flanking the current value. It has no text
+input, it's a pure step-by-step control, ideal for small quantities (cart, filters,
+settings). The value is carried via `ControlValueAccessor`: standalone, `[(ngModel)]`,
+Reactive Forms or Signal Forms.
 
 <Canvas of={UiNudgerStories.Default} />
 
@@ -18,98 +18,98 @@ Reactive Forms ou Signal Forms.
 
 <ArgTypes />
 
-## Bornes (min / max)
+## Bounds (min / max)
 
-`min` et `max` bornent la valeur. Le bouton concerné est **désactivé** dès que la borne
-est atteinte, les états Figma `Min` / `Max` sont donc **dérivés** de la valeur, jamais
-des props (idiome Angular). Le pas est réglé par `step`.
+`min` and `max` bound the value. The relevant button is **disabled** as soon as the bound
+is reached, so Figma's `Min` / `Max` states are **derived** from the value, never
+from props (Angular idiom). The step is set by `step`.
 
 <Canvas of={UiNudgerStories.MinMax} />
 <Canvas of={UiNudgerStories.Step} />
 
-## Tailles
+## Sizes
 
-`default` (44px, valeur `title/xl`) et `small` (40px, valeur `title/lg`).
+`default` (44px, `title/xl` value) and `small` (40px, `title/lg` value).
 
 <Canvas of={UiNudgerStories.Small} />
 
-## Niveaux
+## Levels
 
-La famille de couleur des deux boutons suit l'input `level` (tokens `actions.*`).
+The color family of both buttons follows the `level` input (`actions.*` tokens).
 
 <Canvas of={UiNudgerStories.LevelLow} />
 
 ## Variant
 
-L'input `variant` (`filled` par défaut, `outlined` · `ghost`) est forwardé aux deux
-boutons internes, ainsi que `onColor` (`dark` · `light`) quand le nudger est posé
-sur un fond de couleur — voir
+The `variant` input (`filled` by default, `outlined` · `ghost`) is forwarded to both
+internal buttons, as is `onColor` (`dark` · `light`) when the nudger sits
+on a colored background — see
 [`ui-button`](?path=/docs/components-ui-actions-ui-button--docs).
 
 <Canvas of={UiNudgerStories.Outlined} />
 
-## États
+## States
 
 <Canvas of={UiNudgerStories.Disabled} />
 <Canvas of={UiNudgerStories.Readonly} />
 <Canvas of={UiNudgerStories.Invalid} />
 
-## Formatage de la valeur
+## Value formatting
 
-L'input `formatValue` reçoit la valeur numérique et retourne la chaîne affichée
-(unité, symbole, etc.).
+The `formatValue` input receives the numeric value and returns the displayed
+string (unit, symbol, etc.).
 
 <Canvas of={UiNudgerStories.Formatted} />
 
 ```html
-<ui-nudger [(ngModel)]="poids" [min]="0" [formatValue]="(v) => v + ' kg'" ariaLabel="Poids" />
+<ui-nudger [(ngModel)]="weight" [min]="0" [formatValue]="(v) => v + ' kg'" ariaLabel="Weight" />
 ```
 
-## Formulaires
+## Forms
 
-Le composant est un `ControlValueAccessor` : il se branche sans code additionnel aux
-**Signal Forms** (`@angular/forms/signals`, directive `[formField]`, stables depuis
-Angular 22) via l'interop CVA native, ainsi qu'aux formulaires template-driven
-(`[(ngModel)]`) et réactifs (`[formControl]`).
+The component is a `ControlValueAccessor`: it wires up with no extra code to
+**Signal Forms** (`@angular/forms/signals`, `[formField]` directive, stable since
+Angular 22) via native CVA interop, as well as to template-driven
+(`[(ngModel)]`) and reactive (`[formControl]`) forms.
 
 <Canvas of={UiNudgerStories.SignalForms} />
 
 ```html
 <!-- Signal Forms -->
-<ui-nudger [formField]="quantity" [min]="0" [max]="10" ariaLabel="Quantité" />
+<ui-nudger [formField]="quantity" [min]="0" [max]="10" ariaLabel="Quantity" />
 
 <!-- Template-driven -->
-<ui-nudger [(ngModel)]="quantity" [min]="0" [max]="10" ariaLabel="Quantité" />
+<ui-nudger [(ngModel)]="quantity" [min]="0" [max]="10" ariaLabel="Quantity" />
 
 <!-- Reactive -->
-<ui-nudger [formControl]="quantityCtrl" ariaLabel="Quantité" />
+<ui-nudger [formControl]="quantityCtrl" ariaLabel="Quantity" />
 ```
 
-## Accessibilité
+## Accessibility
 
 <table className="doc-table">
   <thead>
     <tr>
-      <th>Élément</th>
-      <th>Attribut / Rôle</th>
-      <th>Détail</th>
+      <th>Element</th>
+      <th>Attribute / Role</th>
+      <th>Detail</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td>Racine</td>
+      <td>Root</td>
       <td><code>role="group"</code> + <code>aria-label</code></td>
-      <td>Regroupe les deux boutons ; nom accessible requis (garde-fou en dev). Utiliser <code>ariaLabelledBy</code> si un libellé externe existe.</td>
+      <td>Groups the two buttons; accessible name required (dev-mode guard). Use <code>ariaLabelledBy</code> if an external label exists.</td>
     </tr>
     <tr>
-      <td>Boutons <code>−</code> / <code>+</code></td>
-      <td><code>&lt;button&gt;</code> natif + <code>aria-label</code></td>
-      <td>Opérables au clavier (Tab, Entrée/Espace). Libellés via <code>decrementAriaLabel</code> / <code>incrementAriaLabel</code>. <code>disabled</code> natif aux bornes.</td>
+      <td><code>−</code> / <code>+</code> buttons</td>
+      <td>Native <code>&lt;button&gt;</code> + <code>aria-label</code></td>
+      <td>Keyboard-operable (Tab, Enter/Space). Labels via <code>decrementAriaLabel</code> / <code>incrementAriaLabel</code>. Native <code>disabled</code> at the bounds.</td>
     </tr>
     <tr>
-      <td>Valeur</td>
+      <td>Value</td>
       <td><code>aria-live="polite"</code></td>
-      <td>Chaque changement de valeur est annoncé par le lecteur d'écran.</td>
+      <td>Every value change is announced by the screen reader.</td>
     </tr>
   </tbody>
 </table>

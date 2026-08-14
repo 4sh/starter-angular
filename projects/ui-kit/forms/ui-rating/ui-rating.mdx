@@ -6,7 +6,7 @@ import { ConfigTable } from '../../../../storybook/blocks/config-table';
 
 # ui-rating
 
-Le composant `ui-rating` permet à l'utilisateur de donner une note sur une échelle (par défaut 5 étoiles). Il est construit sur un `<input type="range">` invisible, garantissant l'accessibilité native (clavier, lecteur d'écran, formulaire).
+The `ui-rating` component lets the user give a rating on a scale (5 stars by default). It's built on an invisible `<input type="range">`, guaranteeing native accessibility (keyboard, screen reader, form).
 
 <Canvas of={UiRatingStories.Default} />
 
@@ -14,39 +14,39 @@ Le composant `ui-rating` permet à l'utilisateur de donner une note sur une éch
 
 <ArgTypes />
 
-### Demi-étoiles
+### Half stars
 
-`allowHalf` fait passer le pas de sélection à **0,5** : le clic sur la moitié avant d'une
-étoile pose la demi-note, le clic sur la moitié arrière l'étoile entière, et les flèches du
-clavier avancent de 0,5 en 0,5 (le `step` de l'`<input type="range">` sous-jacent suit).
-`cancel` reste actif sur la valeur exacte : re-cliquer la même moitié remet à `null`.
+`allowHalf` switches the selection step to **0.5**: clicking the front half of a
+star sets the half rating, clicking the back half sets the whole star, and the
+keyboard arrows advance by 0.5 increments (the underlying `<input type="range">`'s `step` follows
+suit). `cancel` still works on the exact value: re-clicking the same half resets to `null`.
 
 <Canvas of={UiRatingStories.AllowHalf} />
 
-Le remplissage partiel ne dépend d'aucune icône dédiée : l'icône « on » est **superposée**
-à l'icône « off » puis rognée (`clip-path`) à la fraction voulue. La demi-étoile fonctionne
-donc telle quelle avec n'importe quelle famille d'icônes et avec les templates projetés
-`#onIcon` / `#offIcon`, en LTR comme en RTL.
+The partial fill relies on no dedicated icon: the "on" icon is **layered**
+over the "off" icon then clipped (`clip-path`) to the desired fraction. The half star
+therefore works as-is with any icon family and with the projected
+`#onIcon` / `#offIcon` templates, in LTR as well as RTL.
 
 <Canvas of={UiRatingStories.HalfReadonly} />
 
-### Tailles
-La taille des étoiles et leur espacement sont gérés nativement via l'input `size` (`sm` à `xl`).
+### Sizes
+Star size and spacing are handled natively via the `size` input (`sm` to `xl`).
 <Canvas of={UiRatingStories.SizeXL} />
 
-### Désactivé
+### Disabled
 <Canvas of={UiRatingStories.Disabled} />
 
-### Erreur
+### Error
 <Canvas of={UiRatingStories.Invalid} />
 
-## Templates Personnalisés
-Vous pouvez remplacer l'icône étoile par n'importe quelle autre icône ou SVG en projetant les templates `#onIcon` et `#offIcon`.
+## Custom Templates
+You can replace the star icon with any other icon or SVG by projecting the `#onIcon` and `#offIcon` templates.
 
 <table className="doc-table">
   <thead>
     <tr>
-      <th>Nom</th>
+      <th>Name</th>
       <th>Type</th>
       <th>Description</th>
     </tr>
@@ -55,64 +55,64 @@ Vous pouvez remplacer l'icône étoile par n'importe quelle autre icône ou SVG 
     <tr>
       <td><code>onIcon</code></td>
       <td><code>TemplateRef&lt;UiRatingIconContext&gt;</code></td>
-      <td>Template pour l'icône active. Contexte : <code>$implicit: number</code> (index), <code>active: boolean</code>, <code>fill: number</code> (0 → 1, survol compris).</td>
+      <td>Template for the active icon. Context: <code>$implicit: number</code> (index), <code>active: boolean</code>, <code>fill: number</code> (0 → 1, hover included).</td>
     </tr>
     <tr>
       <td><code>offIcon</code></td>
       <td><code>TemplateRef&lt;UiRatingIconContext&gt;</code></td>
-      <td>Template pour l'icône inactive. Contexte : <code>$implicit: number</code> (index), <code>active: boolean</code>, <code>fill: number</code> (0 → 1, survol compris).</td>
+      <td>Template for the inactive icon. Context: <code>$implicit: number</code> (index), <code>active: boolean</code>, <code>fill: number</code> (0 → 1, hover included).</td>
     </tr>
   </tbody>
 </table>
 
 <Canvas of={UiRatingStories.CustomTemplates} />
 
-## Formulaires
+## Forms
 
-Le composant est un `ControlValueAccessor` : il se branche sans code additionnel aux
-**Signal Forms** (`@angular/forms/signals`, directive `[formField]`, stables depuis
-Angular 22) via l'interop CVA native, ainsi qu'aux formulaires template-driven
-(`[(ngModel)]`) et réactifs (`[formControl]`).
+The component is a `ControlValueAccessor`: it wires up with no extra code to
+**Signal Forms** (`@angular/forms/signals`, `[formField]` directive, stable since
+Angular 22) via native CVA interop, as well as to template-driven
+(`[(ngModel)]`) and reactive (`[formControl]`) forms.
 
-> ℹ️ **Valeur « non notée » = `null`** (type `number | null`) : le `cancel`
-> (re-clic sur la note courante) et la remise à zéro au clavier émettent `null`,
-> et `writeValue(null)` est préservé — `Validators.required` (ou `required()` en
-> Signal Forms) rejette donc naturellement l'absence de note, sans workaround
-> `min(1)`. *(Breaking : les versions antérieures émettaient la sentinelle `0`.)*
+> ℹ️ **"Not rated" value = `null`** (type `number | null`): `cancel`
+> (re-clicking the current rating) and the keyboard reset both emit `null`,
+> and `writeValue(null)` is preserved — `Validators.required` (or `required()` in
+> Signal Forms) therefore naturally rejects a missing rating, with no `min(1)`
+> workaround. *(Breaking: earlier versions emitted the `0` sentinel.)*
 
 <Canvas of={UiRatingStories.SignalForms} />
 
 ```html
 <!-- Signal Forms -->
-<ui-rating [formField]="rating" ariaLabel="Note" />
+<ui-rating [formField]="rating" ariaLabel="Rating" />
 
 <!-- Template-driven -->
-<ui-rating [(ngModel)]="note" ariaLabel="Note" />
+<ui-rating [(ngModel)]="note" ariaLabel="Rating" />
 
 <!-- Reactive -->
-<ui-rating [formControl]="noteCtrl" ariaLabel="Note" />
+<ui-rating [formControl]="noteCtrl" ariaLabel="Rating" />
 ```
 
-## Accessibilité
+## Accessibility
 
 <table className="doc-table">
   <thead>
     <tr>
-      <th>Élément</th>
-      <th>Attribut</th>
-      <th>Rôle</th>
+      <th>Element</th>
+      <th>Attribute</th>
+      <th>Role</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td><code>&lt;input type="range"&gt;</code></td>
       <td><code>min</code> / <code>max</code> / <code>step</code> / <code>value</code></td>
-      <td>Support natif des flèches directionnelles et de l'annonce de la valeur au clavier. <code>step</code> vaut <code>0.5</code> sous <code>allowHalf</code> : le lecteur d'écran annonce alors « 3,5 ».</td>
+      <td>Native support for arrow keys and keyboard value announcement. <code>step</code> is <code>0.5</code> under <code>allowHalf</code>: the screen reader then announces "3.5".</td>
     </tr>
     <tr>
-      <td>Composant</td>
+      <td>Component</td>
       <td><code>ariaLabel</code></td>
-      <td>Identifie le contrôle s'il n'est pas associé à un label explicite via <code>inputId</code>.</td>
+      <td>Identifies the control if it isn't associated with an explicit label via <code>inputId</code>.</td>
     </tr>
   </tbody>
 </table>
