@@ -6,10 +6,10 @@ import * as LabelStories from './ui-label.stories';
 
 # ui-label
 
-Label de champ de formulaire natif (`<label>`), utilisé seul ou composé à l'intérieur d'autres
-composants (`ui-checkbox`, `ui-radio`, `ui-input`… via `ui-field`). Le texte vient de l'input
-`label` ou d'un contenu projeté via `<ng-content>` ; `for` relie le label à l'id de l'élément
-de formulaire labellisé.
+Native form field label (`<label>`), used standalone or composed inside other
+components (`ui-checkbox`, `ui-radio`, `ui-input`… via `ui-field`). The text comes from the
+`label` input or from content projected via `<ng-content>`; `for` links the label to the id of the
+labeled form element.
 
 <Canvas of={LabelStories.Default} />
 
@@ -17,33 +17,33 @@ de formulaire labellisé.
 
 <ArgTypes of={LabelStories} />
 
-## États
+## States
 
 <Canvas of={LabelStories.Required} />
 <Canvas of={LabelStories.Small} />
 <Canvas of={LabelStories.Disabled} />
 
-## Accessibilité
+## Accessibility
 
 <table className="doc-table">
   <thead>
     <tr>
       <th>Point</th>
-      <th>Implémentation</th>
+      <th>Implementation</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><strong>Élément natif</strong></td>
-      <td>Un vrai <code>&lt;label&gt;</code> (jamais un <code>span</code>/<code>div</code> stylé) : clic natif → focus/activation de l'élément ciblé par <code>for</code>.</td>
+      <td><strong>Native element</strong></td>
+      <td>A real <code>&lt;label&gt;</code> (never a styled <code>span</code>/<code>div</code>): native click → focuses/activates the element targeted by <code>for</code>.</td>
     </tr>
     <tr>
       <td><strong>Association</strong></td>
-      <td><code>for</code> = id de l'élément de formulaire. À l'intérieur d'un composant composé (ex. <code>ui-field</code>), l'id est calculé par le composant parent.</td>
+      <td><code>for</code> = id of the form element. Inside a composed component (e.g. <code>ui-field</code>), the id is computed by the parent component.</td>
     </tr>
     <tr>
-      <td><strong>Marqueur requis</strong></td>
-      <td>Le <code>*</code> est décoratif (<code>aria-hidden</code>) : le caractère requis doit être porté par l'attribut natif <code>required</code>/<code>aria-required</code> sur le contrôle labellisé, pas ici.</td>
+      <td><strong>Required marker</strong></td>
+      <td>The <code>*</code> is decorative (<code>aria-hidden</code>): the required semantics must be carried by the native <code>required</code>/<code>aria-required</code> attribute on the labeled control, not here.</td>
     </tr>
   </tbody>
 </table>

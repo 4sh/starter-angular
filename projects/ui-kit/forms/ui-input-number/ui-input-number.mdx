@@ -6,11 +6,11 @@ import { ConfigTable } from '../../../../storybook/blocks/config-table';
 
 # ui-input-number
 
-Champ **numérique** bâti sur le shell [`ui-field`](?path=/docs/components-ui-forms-ui-field--docs).
-Valeur modèle = `number | null`. Saisie tolérante (pas de reformatage pendant la frappe →
-pas de saut de curseur), `min`/`max`/`step`, spinner ± et flèches clavier ↑/↓, **clamp au blur**.
+**Numeric** field built on the [`ui-field`](?path=/docs/components-ui-forms-ui-field--docs) shell.
+Model value = `number | null`. Tolerant input (no reformatting while typing →
+no cursor jump), `min`/`max`/`step`, ± spinner and ↑/↓ arrow keys, **clamp on blur**.
 
-Autonome, `[(ngModel)]`, reactive forms ou Signal Forms (`[formField]`).
+Standalone, `[(ngModel)]`, reactive forms or Signal Forms (`[formField]`).
 
 <Canvas of={NumberStories.Default} />
 
@@ -18,7 +18,7 @@ Autonome, `[(ngModel)]`, reactive forms ou Signal Forms (`[formField]`).
 
 <ArgTypes of={NumberStories} />
 
-## Exemples
+## Examples
 
 <Canvas of={NumberStories.MinMax} />
 <Canvas of={NumberStories.Step} />
@@ -28,65 +28,65 @@ Autonome, `[(ngModel)]`, reactive forms ou Signal Forms (`[formField]`).
 <Canvas of={NumberStories.Small} />
 <Canvas of={NumberStories.Error} />
 
-## Formatage (Intl.NumberFormat)
+## Formatting (Intl.NumberFormat)
 
-Le format riche (groupement des milliers, devise, décimales) est appliqué **au blur** ; au
-focus, le champ bascule sur une forme éditable (sans groupement/devise) pour une saisie fluide.
-Piloté par `locale` / `currency` / `useGrouping` / `minFractionDigits` / `maxFractionDigits`.
+The rich format (thousands grouping, currency, decimals) is applied **on blur**; on
+focus, the field switches to an editable form (no grouping/currency) for smooth typing.
+Driven by `locale` / `currency` / `useGrouping` / `minFractionDigits` / `maxFractionDigits`.
 
 <Canvas of={NumberStories.Grouped} />
 <Canvas of={NumberStories.Currency} />
 
-## Formulaires
+## Forms
 
-Le composant est un `ControlValueAccessor` : il se branche sans code additionnel aux
-**Signal Forms** (`@angular/forms/signals`, directive `[formField]`, stables depuis
-Angular 22) via l'interop CVA native, ainsi qu'aux formulaires template-driven
-(`[(ngModel)]`) et réactifs (`[formControl]`).
+The component is a `ControlValueAccessor`: it wires up with no extra code to
+**Signal Forms** (`@angular/forms/signals`, `[formField]` directive, stable since
+Angular 22) via native CVA interop, as well as to template-driven
+(`[(ngModel)]`) and reactive (`[formControl]`) forms.
 
 <Canvas of={NumberStories.SignalForms} />
 
 ```html
 <!-- Signal Forms -->
-<ui-input-number [formField]="quantity" label="Note (0–10)" [min]="0" [max]="10" />
+<ui-input-number [formField]="quantity" label="Rating (0–10)" [min]="0" [max]="10" />
 
 <!-- Template-driven -->
-<ui-input-number [(ngModel)]="price" label="Prix" locale="fr-FR" currency="EUR" [step]="0.5" />
+<ui-input-number [(ngModel)]="price" label="Price" locale="en-US" currency="USD" [step]="0.5" />
 
 <!-- Reactive -->
-<ui-input-number [formControl]="ageCtrl" label="Âge" [min]="0" [max]="120" [allowDecimals]="false" />
+<ui-input-number [formControl]="ageCtrl" label="Age" [min]="0" [max]="120" [allowDecimals]="false" />
 ```
 
-## Accessibilité
+## Accessibility
 
 <table className="doc-table">
   <thead>
-    <tr><th>Point</th><th>Implémentation</th></tr>
+    <tr><th>Point</th><th>Implementation</th></tr>
   </thead>
   <tbody>
     <tr>
-      <td><strong>Rôle</strong></td>
+      <td><strong>Role</strong></td>
       <td><code>role="spinbutton"</code> + <code>aria-valuenow/valuemin/valuemax</code>.</td>
     </tr>
     <tr>
-      <td><strong>Clavier</strong></td>
-      <td>Flèches <kbd>↑</kbd>/<kbd>↓</kbd> incrémentent de <code>step</code>. Les boutons du spinner sont <code>tabindex="-1"</code> (non intrusifs) avec <code>aria-label</code>, désactivés aux bornes.</td>
+      <td><strong>Keyboard</strong></td>
+      <td>Arrow keys <kbd>↑</kbd>/<kbd>↓</kbd> increment by <code>step</code>. The spinner buttons carry <code>tabindex="-1"</code> (non-intrusive) with <code>aria-label</code>, disabled at the bounds.</td>
     </tr>
     <tr>
-      <td><strong>Saisie mobile</strong></td>
-      <td><code>inputmode="decimal"</code> (clavier numérique).</td>
+      <td><strong>Mobile input</strong></td>
+      <td><code>inputmode="decimal"</code> (numeric keyboard).</td>
     </tr>
   </tbody>
 </table>
 
-> Cas très spécifique : surcharger la méthode protégée `format(value: number): string` dans une
-> sous-classe (le parsing locale-aware reste géré par le composant).
+> Very specific case: override the protected `format(value: number): string` method in a
+> subclass (locale-aware parsing stays handled by the component).
 
 ## Theming
 
-La boîte vient du shell `ui-field` : sa configuration passe par ses variables (groupe partagé
-[Forms](?path=/docs/components-configuration-forms--docs)), détaillées sur la doc
-[`ui-input`](?path=/docs/components-ui-forms-ui-input--docs). Voir le
-[fonctionnement de la configuration](?path=/docs/components-configuration--docs).
+The box comes from the `ui-field` shell: its configuration goes through its variables (shared
+[Forms](?path=/docs/components-configuration-forms--docs) group), detailed in
+[`ui-input`](?path=/docs/components-ui-forms-ui-input--docs)'s docs. See
+[how configuration works](?path=/docs/components-configuration--docs).
 
 <ConfigTable of="ui-input-number" />
