@@ -6,14 +6,14 @@ import { ConfigTable } from '../../../../storybook/blocks/config-table';
 
 # ui-input
 
-Champ **texte** (text/email/tel/url/search/**password**) bâti sur le shell partagé
-[`ui-field`](?path=/docs/components-ui-forms-ui-field--docs) (label + boîte + helper) et un
-`<input>` natif. Couleurs via tokens `form.*`, bordure pilotée par le `level`. Slots
-optionnels : icône gauche, unité suffixe, et **zone d'action droite**.
+**Text** field (text/email/tel/url/search/**password**) built on the shared
+[`ui-field`](?path=/docs/components-ui-forms-ui-field--docs) shell (label + box + helper) and a
+native `<input>`. Colors via `form.*` tokens, border driven by the `level`. Optional
+slots: left icon, suffix unit, and a **right action zone**.
 
-Autonome, `[(ngModel)]` ou reactive forms (`ControlValueAccessor` via `BaseFormField`).
-Pour les nombres → [`ui-input-number`](?path=/docs/components-ui-forms-ui-input-number--docs) ;
-pour les masques → [`ui-input-mask`](?path=/docs/components-ui-forms-ui-input-mask--docs).
+Standalone, `[(ngModel)]` or reactive forms (`ControlValueAccessor` via `BaseFormField`).
+For numbers → [`ui-input-number`](?path=/docs/components-ui-forms-ui-input-number--docs);
+for masks → [`ui-input-mask`](?path=/docs/components-ui-forms-ui-input-mask--docs).
 
 <Canvas of={InputStories.WithHelper} />
 
@@ -21,10 +21,10 @@ pour les masques → [`ui-input-mask`](?path=/docs/components-ui-forms-ui-input-
 
 <ArgTypes of={InputStories} />
 
-## Niveaux & états
+## Levels & states
 
-`level` (`default`/`success`/`error`) pilote la bordure. `errorText` remplace l'aide quand le
-champ est en erreur (`invalid` explicite, ou automatique : contrôle invalide + touché).
+`level` (`default`/`success`/`error`) drives the border. `errorText` replaces the helper when the
+field is in error (explicit `invalid`, or automatic: invalid control + touched).
 
 <Canvas of={InputStories.Success} />
 <Canvas of={InputStories.Error} />
@@ -33,83 +33,83 @@ champ est en erreur (`invalid` explicite, ou automatique : contrôle invalide + 
 <Canvas of={InputStories.Readonly} />
 <Canvas of={InputStories.Small} />
 
-## Slots & zone d'action
+## Slots & action zone
 
-L'icône droite devient une **zone d'action** (bouton carré pleine hauteur, focusable) dès qu'on
-renseigne `iconRightAriaLabel` ; le clic émet `iconRightClick`.
+The right icon becomes an **action zone** (a square, full-height, focusable button) as soon as
+`iconRightAriaLabel` is set; clicking it emits `iconRightClick`.
 
 <Canvas of={InputStories.Search} />
 <Canvas of={InputStories.Password} />
 <Canvas of={InputStories.WithUnit} />
 
-## Formulaires
+## Forms
 
-Le composant est un `ControlValueAccessor` : il se branche sans code additionnel aux
-**Signal Forms** (`@angular/forms/signals`, directive `[formField]`, stables depuis Angular 22)
-via l'interop CVA native, ainsi qu'aux formulaires template-driven (`[(ngModel)]`) et réactifs
-(`[formControl]`).
+The component is a `ControlValueAccessor`: it wires up with no extra code to
+**Signal Forms** (`@angular/forms/signals`, `[formField]` directive, stable since Angular 22)
+via native CVA interop, as well as to template-driven (`[(ngModel)]`) and reactive
+(`[formControl]`) forms.
 
 <Canvas of={InputStories.SignalForms} />
 
 ```html
 <!-- Signal Forms -->
-<ui-input [formField]="field" label="Nom" placeholder="Votre nom" />
+<ui-input [formField]="field" label="Name" placeholder="Your name" />
 ```
 
-## Accessibilité
+## Accessibility
 
 <table className="doc-table">
   <thead>
     <tr>
       <th>Point</th>
-      <th>Implémentation</th>
+      <th>Implementation</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td><strong>Label</strong></td>
-      <td><code>ui-label</code> natif lié à l'input par <code>for</code>/<code>id</code> (clic sur le label = focus). Sans label visible : <code>ariaLabel</code> / <code>ariaLabelledBy</code>.</td>
+      <td>Native <code>ui-label</code> linked to the input via <code>for</code>/<code>id</code> (clicking the label = focus). With no visible label: <code>ariaLabel</code> / <code>ariaLabelledBy</code>.</td>
     </tr>
     <tr>
-      <td><strong>Aide & erreur</strong></td>
-      <td><code>ui-helper</code> relié par <code>aria-describedby</code>. <code>aria-invalid</code> + bordure erreur, automatique quand le contrôle est invalide et touché/modifié.</td>
+      <td><strong>Helper & error</strong></td>
+      <td><code>ui-helper</code> linked via <code>aria-describedby</code>. <code>aria-invalid</code> + error border, automatic when the control is invalid and touched/dirty.</td>
     </tr>
     <tr>
-      <td><strong>Zone d'action</strong></td>
-      <td>Bouton natif (dans l'ordre de tabulation) avec <code>aria-label</code> obligatoire. Icônes décoratives en <code>aria-hidden</code>.</td>
+      <td><strong>Action zone</strong></td>
+      <td>Native button (in tab order) with a required <code>aria-label</code>. Decorative icons carry <code>aria-hidden</code>.</td>
     </tr>
     <tr>
-      <td><strong>Désactivé</strong></td>
-      <td><code>disabled</code> natif (pas seulement visuel) ; couleurs via tokens <code>--form-*-disabled</code>.</td>
+      <td><strong>Disabled</strong></td>
+      <td>Native <code>disabled</code> (not just visual); colors via <code>--form-*-disabled</code> tokens.</td>
     </tr>
   </tbody>
 </table>
 
 ```html
-<!-- Reactive forms + message d'erreur -->
-<ui-input formControlName="email" type="email" label="Email" errorText="Adresse invalide" required />
+<!-- Reactive forms + error message -->
+<ui-input formControlName="email" type="email" label="Email" errorText="Invalid address" required />
 
-<!-- Recherche : icône « effacer » actionnable, visible seulement avec du texte -->
+<!-- Search: actionable "clear" icon, visible only with text -->
 <ui-input
   [(ngModel)]="q"
-  label="Recherche"
+  label="Search"
   iconLeft="magnifying-glass"
   [iconRight]="q ? 'xmark' : undefined"
-  iconRightAriaLabel="Effacer"
+  iconRightAriaLabel="Clear"
   (iconRightClick)="q = ''"
 />
 ```
 
-> Architecture : `ui-input`, `ui-input-number` et `ui-input-mask` partagent le shell `ui-field`
-> (label + boîte + helper + états) et la base `BaseFormField` (CVA + validation). Le
-> sous-composant Figma `_ui-input-content` est porté nativement par l'`<input>`.
+> Architecture: `ui-input`, `ui-input-number` and `ui-input-mask` share the `ui-field` shell
+> (label + box + helper + states) and the `BaseFormField` base (CVA + validation). The
+> Figma subcomponent `_ui-input-content` is carried natively by the `<input>`.
 
 ## Theming
 
-`ui-input`, `ui-input-mask` et `ui-input-number` n'ont **aucune variable locale surchargeable** :
-leur boîte est fournie par le shell `ui-field`, stylé via les mixins `utils.field-*`. Toute la
-configuration passe donc par les variables locales de `ui-field.scss` (qui pointent vers le groupe
-partagé [Forms](?path=/docs/components-configuration-forms--docs)). Voir aussi le
-[fonctionnement de la configuration](?path=/docs/components-configuration--docs).
+`ui-input`, `ui-input-mask` and `ui-input-number` have **no overridable local variable**:
+their box is provided by the `ui-field` shell, styled via the `utils.field-*` mixins. The whole
+configuration therefore goes through `ui-field.scss`'s local variables (which point to the shared
+[Forms](?path=/docs/components-configuration-forms--docs) group). See also
+[how configuration works](?path=/docs/components-configuration--docs).
 
 <ConfigTable of="ui-field" />
