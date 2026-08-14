@@ -6,26 +6,26 @@ import { ConfigTable } from '../../../../storybook/blocks/config-table';
 
 # ui-autocomplete
 
-Champ de **suggestions** bâti sur le shell partagé
-[`ui-field`](?path=/docs/components-ui-forms-ui-field--docs) (label + boîte + helper) et un
-panneau de suggestions token-stylé en overlay CDK. Le déclencheur est un `<input>` natif
-suivant le motif WAI-ARIA **combobox** (`aria-activedescendant` : le focus ne quitte jamais
-l'input, les suggestions ne reçoivent qu'un focus visuel).
+**Suggestion** field built on the shared
+[`ui-field`](?path=/docs/components-ui-forms-ui-field--docs) shell (label + box + helper) and a
+token-styled suggestions panel in a CDK overlay. The trigger is a native `<input>`
+following the WAI-ARIA **combobox** pattern (`aria-activedescendant`: focus never leaves
+the input, suggestions only receive visual focus).
 
 <Canvas of={AutocompleteStories.Basic} />
 
 ## Basic
 
-Contrôle piloté par `ngModel` (ou Signal Forms / reactive forms — voir
-[Formulaires](#formulaires)). La frappe émet `completeMethod` — la
-requête est **anti-rebondie** (`delay`, 300 ms par défaut) et déclenchée à partir de
-`minLength` caractères (1 par défaut). Le parent renseigne alors `suggestions` avec les
-résultats. `optionLabel` indique quelle propriété afficher quand les suggestions sont des
-objets.
+Control driven by `ngModel` (or Signal Forms / reactive forms — see
+[Forms](#forms)). Typing emits `completeMethod` — the
+request is **debounced** (`delay`, 300 ms by default) and triggered from
+`minLength` characters (1 by default). The parent then sets `suggestions` with the
+results. `optionLabel` indicates which property to display when suggestions are
+objects.
 
 ```html
 <ui-autocomplete
-  label="Pays"
+  label="Country"
   [(ngModel)]="country"
   [suggestions]="results()"
   optionLabel="name"
@@ -42,56 +42,56 @@ search(event: AutocompleteCompleteEvent): void {
 
 ## Dropdown
 
-`dropdown` affiche un bouton déclencheur à côté de l'input. `dropdownMode` définit sa requête :
-`blank` envoie une chaîne vide (toutes les suggestions), `current` envoie le texte courant de
-l'input.
+`dropdown` shows a trigger button next to the input. `dropdownMode` sets its query:
+`blank` sends an empty string (all suggestions), `current` sends the input's current
+text.
 
 <Canvas of={AutocompleteStories.Dropdown} />
 
 ## Custom Option
 
-Le template `#item` personnalise le contenu d'une suggestion (contexte : `$implicit`/`option`,
+The `#item` template customizes a suggestion's content (context: `$implicit`/`option`,
 `selected`, `index`).
 
 <Canvas of={AutocompleteStories.CustomOption} />
 
 ## Group
 
-Avec `group`, les suggestions sont regroupées par catégorie via `optionGroupLabel` et
-`optionGroupChildren`. Le template `#group` personnalise l'en-tête de chaque groupe.
+With `group`, suggestions are grouped by category via `optionGroupLabel` and
+`optionGroupChildren`. The `#group` template customizes each group's header.
 
 <Canvas of={AutocompleteStories.Group} />
 
 ## Multiple
 
-`multiple` bascule le modèle en **tableau** : chaque suggestion choisie s'affiche comme une
-chip supprimable (`ui-chip`) dans le champ, la saisie repart à vide après chaque choix et le
-panneau se referme. `Backspace` sur une saisie vide retire la dernière valeur ; `←` depuis le
-début de la saisie déplace le focus sur les chips (navigation `←`/`→`, suppression `Backspace`/
-`Suppr`). `unique` (défaut) ignore les choix déjà sélectionnés — l'égalité s'appuie sur
-`dataKey` pour les objets (sans `dataKey`, deux instances distinctes sont considérées
-différentes). En mode `multiple`, la saisie libre ne modifie jamais la sélection et `showClear`
-vide le tableau entier. `maxSelectedLabels` limite le nombre de chips affichées : le reste est
-replié derrière une chip informative dont le libellé vient d'`overflowLabel` (`{0}` = nombre
-masqué). Avec `forceSelection`, une saisie non reconnue est simplement effacée au blur, sans
-toucher à la sélection. Le rendu par défaut des valeurs est une `ui-chip` retirable ; le
-template `#selectedItem` le remplace entièrement (voir
+`multiple` switches the model to an **array**: each chosen suggestion displays as a
+removable chip (`ui-chip`) in the field, typing resets to empty after each pick and the
+panel closes. `Backspace` on empty input removes the last value; `←` from the
+start of the input moves focus to the chips (navigation `←`/`→`, removal `Backspace`/
+`Delete`). `unique` (default) ignores already-selected choices — equality relies on
+`dataKey` for objects (without `dataKey`, two distinct instances are considered
+different). In `multiple` mode, free typing never modifies the selection and `showClear`
+clears the entire array. `maxSelectedLabels` limits how many chips are shown: the rest
+collapses behind an informational chip whose label comes from `overflowLabel` (`{0}` = hidden
+count). With `forceSelection`, unrecognized input is simply cleared on blur, without
+touching the selection. The default rendering of values is a removable `ui-chip`; the
+`#selectedItem` template replaces it entirely (see
 [Custom Selected Item](#custom-selected-item)).
 
 <Canvas of={AutocompleteStories.Multiple} />
 
 ## Custom Selected Item
 
-En mode `multiple`, le template `#selectedItem` est rendu **une fois par valeur
-sélectionnée** — idéal pour afficher la sélection en
-[`ui-chip`](?path=/docs/components-ui-informative-ui-chip--docs) personnalisée. Le contexte
-expose `$implicit`/`option` (la suggestion d'origine), `index` et un callback **`remove`** :
-branchez-le sur l'action de suppression de la chip (`removable` + `(remove)="remove()"`) pour
-retirer une valeur **directement depuis le champ**. Quand le template est fourni, l'a11y des
-valeurs (rôles, focus) est **déléguée au template consommateur** — le composant retire sa
-listbox de chips par défaut ; au clavier, `Retour arrière` sur une saisie vide retire toujours
-la dernière valeur. `maxSelectedLabels` et `overflowLabel` restent actifs : le surplus est
-replié derrière la chip informative de repli.
+In `multiple` mode, the `#selectedItem` template is rendered **once per selected
+value** — ideal for displaying the selection as a customized
+[`ui-chip`](?path=/docs/components-ui-informative-ui-chip--docs). The context
+exposes `$implicit`/`option` (the original suggestion), `index` and a **`remove`** callback:
+wire it to the chip's remove action (`removable` + `(remove)="remove()"`) to
+remove a value **directly from the field**. When the template is provided, the values' a11y
+(roles, focus) is **delegated to the consumer's template** — the component removes its
+default chip listbox; on the keyboard, `Backspace` on empty input still removes
+the last value. `maxSelectedLabels` and `overflowLabel` remain active: overflow
+collapses behind the informational overflow chip.
 
 ```html
 <ng-template #selectedItem let-country let-remove="remove">
@@ -103,74 +103,74 @@ replié derrière la chip informative de repli.
 
 ## Force Selection
 
-`forceSelection` valide la saisie manuelle au blur : si le texte ne correspond à aucune
-suggestion, l'input est effacé — la valeur portée dans le modèle est **toujours** l'une des
-suggestions.
+`forceSelection` validates manual input on blur: if the text matches no
+suggestion, the input is cleared — the value carried in the model is **always** one of
+the suggestions.
 
 <Canvas of={AutocompleteStories.ForceSelection} />
 
 ## Clear Icon
 
-`showClear` affiche une icône d'effacement qui réinitialise la valeur.
+`showClear` shows a clear icon that resets the value.
 
 <Canvas of={AutocompleteStories.ClearIcon} />
 
 ## Loading
 
-`loading` compose un indicateur de chargement à la place du déclencheur pendant qu'une requête
-asynchrone est en cours (typiquement passé à `true` avant l'appel réseau, `false` une fois les
-`suggestions` renseignées).
+`loading` swaps in a loading indicator in place of the trigger while an
+asynchronous request is in flight (typically set to `true` before the network call, `false` once
+`suggestions` has been set).
 
 <Canvas of={AutocompleteStories.Loading} />
 
 ## Sizes
 
-Tailles `default` et `small`.
+`default` and `small` sizes.
 
 <Canvas of={AutocompleteStories.Sizes} />
 
 ## Disabled
 
-Avec `disabled`, le champ ne peut être ni édité ni focalisé.
+With `disabled`, the field can be neither edited nor focused.
 
 <Canvas of={AutocompleteStories.Disabled} />
 
 ## Invalid
 
-L'état d'erreur s'applique via `invalid` (ou automatiquement lorsqu'un contrôle Angular attaché
-est invalide et touché/modifié).
+The error state applies via `invalid` (or automatically when an attached Angular control
+is invalid and touched/dirty).
 
 <Canvas of={AutocompleteStories.Invalid} />
 
 ## Focus Behavior
 
-Personnalisez le comportement de focus clavier/souris avec `autoOptionFocus` (focus visuel
-initial sur la première suggestion), `selectOnFocus` (applique la valeur dès qu'une suggestion
-reçoit le focus clavier) et `focusOnHover` (focus visuel sur la suggestion survolée).
+Customize keyboard/mouse focus behavior with `autoOptionFocus` (initial visual focus
+on the first suggestion), `selectOnFocus` (applies the value as soon as a suggestion
+receives keyboard focus) and `focusOnHover` (visual focus on the hovered suggestion).
 
 <Canvas of={AutocompleteStories.FocusBehavior} />
 
 ## Objects
 
-Les suggestions peuvent être des objets : `optionLabel` définit le label affiché, mais la valeur
-portée par le modèle reste l'**instance** de la suggestion (ex. `{ name: 'France', code: 'FR' }`).
-`optionValue` permet de ne porter qu'un champ.
+Suggestions can be objects: `optionLabel` sets the displayed label, but the value
+carried by the model remains the suggestion's **instance** (e.g. `{ name: 'France', code: 'FR' }`).
+`optionValue` lets you carry only one field.
 
 <Canvas of={AutocompleteStories.Objects} />
 
 ## Template
 
-Le composant offre plusieurs templates de personnalisation : `#item` (une suggestion),
-`#selectedItem` (une valeur sélectionnée, mode `multiple` — voir
+The component offers several customization templates: `#item` (a suggestion),
+`#selectedItem` (a selected value, `multiple` mode — see
 [Custom Selected Item](#custom-selected-item)), `#group`
-(en-tête de groupe), `#header` / `#footer` (contenu épinglé au-dessus/en-dessous de la liste) et
-`#empty` (état vide).
+(group header), `#header` / `#footer` (content pinned above/below the list) and
+`#empty` (empty state).
 
 ## Virtual Scroll
 
-Le défilement virtuel rend un petit sous-ensemble des suggestions dans le viewport à tout
-instant — indispensable pour de très grandes listes. `virtualScroll` l'active et
-`virtualScrollItemSize` fixe la hauteur d'une ligne.
+Virtual scrolling renders a small subset of suggestions in the viewport at any
+given moment — essential for very large lists. `virtualScroll` enables it and
+`virtualScrollItemSize` sets a row's height.
 
 <Canvas of={AutocompleteStories.VirtualScroll} />
 
@@ -178,27 +178,27 @@ instant — indispensable pour de très grandes listes. `virtualScroll` l'active
 
 <ArgTypes of={AutocompleteStories} />
 
-## États
+## States
 
-L'input suit les états `form.*` du shell `ui-field` (défaut / hover / focus / disabled / error).
-Dans le panneau, chaque suggestion partage un même rendu pour le **focus visuel**
-(`aria-activedescendant`) et le **survol** (`global.high.surface.hover`) ; la suggestion
-correspondant à la valeur courante est mise en évidence (`form.high.surface.hover` +
-`form.high.content.checked`). Les états interactifs sont gérés en CSS via les tokens, jamais par
-des props Angular.
+The input follows the `ui-field` shell's `form.*` states (default / hover / focus / disabled / error).
+In the panel, each suggestion shares the same rendering for **visual focus**
+(`aria-activedescendant`) and **hover** (`global.high.surface.hover`); the suggestion
+matching the current value is highlighted (`form.high.surface.hover` +
+`form.high.content.checked`). Interactive states are handled in CSS via tokens, never
+by Angular props.
 
-## Formulaires
+## Forms
 
-Le composant est un `ControlValueAccessor` : il se branche sans code additionnel aux
-**Signal Forms** (`@angular/forms/signals`, directive `[formField]`, stables depuis Angular 22)
-via l'interop CVA native, ainsi qu'aux formulaires template-driven (`[(ngModel)]`) et réactifs
-(`[formControl]`). Dans tous les cas, le modèle porte la valeur sélectionnée (chaîne, objet
-suggestion ou champ `optionValue`) ; le flux `completeMethod` → `suggestions` reste inchangé.
+The component is a `ControlValueAccessor`: it wires up with no extra code to
+**Signal Forms** (`@angular/forms/signals`, `[formField]` directive, stable since Angular 22)
+via native CVA interop, as well as to template-driven (`[(ngModel)]`) and reactive
+(`[formControl]`) forms. In every case, the model carries the selected value (string, suggestion
+object, or `optionValue` field); the `completeMethod` → `suggestions` flow stays unchanged.
 
 <Canvas of={AutocompleteStories.SignalForms} />
 
-L'exemple [Invalid](#invalid) ci-dessus illustre le branchement `[formControl]` (réactif) avec
-validation `required`.
+The [Invalid](#invalid) example above illustrates the (reactive) `[formControl]` wiring with
+`required` validation.
 
 ```html
 <!-- Signal Forms -->
@@ -211,61 +211,61 @@ validation `required`.
 <ui-autocomplete [formControl]="countryCtrl" [suggestions]="results()" (completeMethod)="search($event)" />
 ```
 
-## Accessibilité
+## Accessibility
 
 <table className="doc-table">
   <thead>
     <tr>
       <th>Aspect</th>
-      <th>Comportement</th>
+      <th>Behavior</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td>Nom accessible</td>
-      <td>`label` (associé via `for`/`inputId`), ou `ariaLabel` / `ariaLabelledBy`.</td>
+      <td>Accessible name</td>
+      <td>`label` (associated via `for`/`inputId`), or `ariaLabel` / `ariaLabelledBy`.</td>
     </tr>
     <tr>
-      <td>Rôles</td>
-      <td>Input `role="combobox"` + `aria-autocomplete="list"`, `aria-haspopup="listbox"`, `aria-expanded` ; panneau `role="listbox"`, suggestions `role="option"`.</td>
+      <td>Roles</td>
+      <td>Input `role="combobox"` + `aria-autocomplete="list"`, `aria-haspopup="listbox"`, `aria-expanded`; panel `role="listbox"`, suggestions `role="option"`.</td>
     </tr>
     <tr>
-      <td>Relation input ↔ liste</td>
-      <td>`aria-controls` pointe vers l'`id` de la liste ; `aria-activedescendant` désigne la suggestion focalisée à lire.</td>
+      <td>Input ↔ list relation</td>
+      <td>`aria-controls` points to the list's `id`; `aria-activedescendant` names the focused suggestion to read out.</td>
     </tr>
     <tr>
       <td>`↑` / `↓`</td>
-      <td>Surligne la suggestion précédente / suivante (ouvre le panneau si fermé).</td>
+      <td>Highlights the previous / next suggestion (opens the panel if closed).</td>
     </tr>
     <tr>
-      <td>`Début` / `Fin`</td>
-      <td>Surligne la première / dernière suggestion.</td>
+      <td>`Home` / `End`</td>
+      <td>Highlights the first / last suggestion.</td>
     </tr>
     <tr>
-      <td>`Entrée`</td>
-      <td>Sélectionne la suggestion surlignée et ferme le panneau.</td>
+      <td>`Enter`</td>
+      <td>Selects the highlighted suggestion and closes the panel.</td>
     </tr>
     <tr>
-      <td>`Échap`</td>
-      <td>Ferme le panneau.</td>
+      <td>`Escape`</td>
+      <td>Closes the panel.</td>
     </tr>
     <tr>
       <td>`Tab`</td>
-      <td>Ferme le panneau et déplace le focus vers l'élément suivant.</td>
+      <td>Closes the panel and moves focus to the next element.</td>
     </tr>
     <tr>
-      <td>Mode `multiple`</td>
-      <td>Double listbox : les chips par défaut vivent dans une `role="listbox"` horizontale (focus roving `←`/`→`, `aria-setsize`/`aria-posinset`) et le panneau porte `aria-multiselectable="true"` avec `aria-selected` reflétant l'appartenance au tableau. La suppression d'une chip est annoncée via `removeAriaLabel` (« Supprimer » suivi du label de la chip). Avec le template `#selectedItem`, la listbox de chips et son roving sont retirés : l'a11y des valeurs est déléguée au template consommateur (`Retour arrière` sur saisie vide reste géré).</td>
+      <td>`multiple` mode</td>
+      <td>Double listbox: the default chips live in a horizontal `role="listbox"` (roving focus `←`/`→`, `aria-setsize`/`aria-posinset`) and the panel carries `aria-multiselectable="true"` with `aria-selected` reflecting array membership. Removing a chip is announced via `removeAriaLabel` ("Remove" followed by the chip's label). With the `#selectedItem` template, the chip listbox and its roving are removed: the values' a11y is delegated to the consumer's template (`Backspace` on empty input is still handled).</td>
     </tr>
     <tr>
-      <td>États</td>
-      <td>`disabled` natif ; `:focus-visible` distinct du `:hover` ; contrastes conformes WCAG AA.</td>
+      <td>States</td>
+      <td>Native `disabled`; `:focus-visible` distinct from `:hover`; WCAG AA-compliant contrast.</td>
     </tr>
   </tbody>
 </table>
 
 ## Theming
 
-La boîte du champ vient du shell `ui-field` ; les variables ci-dessous ne couvrent que le panneau de suggestions.
+The field's box comes from the `ui-field` shell; the variables below only cover the suggestions panel.
 
 <ConfigTable of="ui-autocomplete" />

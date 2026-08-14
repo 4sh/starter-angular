@@ -6,62 +6,62 @@ import { ConfigTable } from '../../../../storybook/blocks/config-table';
 
 # ui-select
 
-Liste **déroulante** headless bâtie sur le shell partagé
-[`ui-field`](?path=/docs/components-ui-forms-ui-field--docs) (label + boîte + helper) et un
-panneau d'options token-stylé en overlay CDK.
+Headless **dropdown** built on the shared
+[`ui-field`](?path=/docs/components-ui-forms-ui-field--docs) shell (label + box + helper) and a
+token-styled options panel in a CDK overlay.
 
 <Canvas of={SelectStories.Basic} />
 
 ## Basic
 
-Contrôle piloté par `ngModel` (ou reactive forms) avec une collection `options`. Quand les
-options sont des objets, `optionLabel` et `optionValue` (chemins pointés) indiquent quoi
-afficher et quoi porter dans le modèle. Avec des **primitives** (tableau de chaînes),
-aucun des deux n'est nécessaire.
+Control driven by `ngModel` (or reactive forms) with an `options` collection. When the
+options are objects, `optionLabel` and `optionValue` (dotted paths) indicate what to
+display and what to carry in the model. With **primitives** (an array of strings),
+neither is needed.
 
 ```html
-<ui-select label="Ville" [(ngModel)]="city" [options]="cities" optionLabel="name" optionValue="code" />
-<ui-select label="Fruit" [(ngModel)]="fruit" [options]="['Pomme', 'Poire', 'Cerise']" />
+<ui-select label="City" [(ngModel)]="city" [options]="cities" optionLabel="name" optionValue="code" />
+<ui-select label="Fruit" [(ngModel)]="fruit" [options]="['Apple', 'Pear', 'Cherry']" />
 ```
 
 ## Multiple
 
-Avec `multiple`, plusieurs éléments sont sélectionnables : le modèle devient un **tableau** et
-le panneau reste ouvert après chaque bascule. Combinez `checkmark` pour un indicateur de coche
-et le template `#selectedItem` pour personnaliser l'affichage du déclencheur.
+With `multiple`, several items can be selected: the model becomes an **array** and
+the panel stays open after each toggle. Combine `checkmark` for a check indicator
+and the `#selectedItem` template to customize the trigger's display.
 
-`maxSelectedLabels` limite le nombre d'éléments affichés dans le champ : au-delà, le reste est
-replié dans un indicateur `overflowLabel` (`(+{0} autres)` par défaut, `{0}` = nombre masqué).
-En largeur contrainte, la boîte passe en **hauteur automatique** et les valeurs passent à la
-ligne au lieu d'être tronquées. `Retour arrière` sur le déclencheur retire le dernier élément
-sélectionné.
+`maxSelectedLabels` limits the number of items shown in the field: beyond that, the rest
+collapses into an `overflowLabel` indicator (`(+{0} more)` by default, `{0}` = hidden count).
+Under constrained width, the box switches to **automatic height** and values wrap to the
+next line instead of being truncated. `Backspace` on the trigger removes the last selected
+item.
 
 <Canvas of={SelectStories.Multiple} />
 
 ## Checkmark
 
-Une autre façon de mettre en évidence la sélection : une **coche** en fin de ligne
-(en plus du fond `form.high.surface.hover` + texte `checked`).
+Another way to highlight the selection: a **check** at the end of the row
+(in addition to the `form.high.surface.hover` background + `checked` text).
 
 <Canvas of={SelectStories.Checkmark} />
 
 ## Checkbox Selection
 
-Sélection multiple avec **cases à cocher** (`multiple` + `checkbox`) et templates `#item` /
-`#header`. Les cases sont purement visuelles (`aria-hidden`) : l'état accessible est porté par
-`aria-selected` sur l'option elle-même.
+Multiple selection with **checkboxes** (`multiple` + `checkbox`) and `#item` /
+`#header` templates. The checkboxes are purely visual (`aria-hidden`): the accessible state is
+carried by `aria-selected` on the option itself.
 
 <Canvas of={SelectStories.CheckboxSelection} />
 
 ## Chips
 
-En mode `multiple`, le template `#selectedItem` est rendu **une fois par valeur
-sélectionnée** — idéal pour afficher la sélection en
-[`ui-chip`](?path=/docs/components-ui-informative-ui-chip--docs). Le contexte expose un
-callback **`remove`** : branchez-le sur l'action de suppression du chip (`removable` +
-`(remove)="remove()"`) pour retirer une valeur **directement depuis le champ**. Les chips sont
-rendues **à côté** du bouton combobox (HTML interactif valide) ; au clavier, `Retour arrière`
-retire le dernier élément. Les chips passent à la ligne en largeur contrainte.
+In `multiple` mode, the `#selectedItem` template is rendered **once per selected
+value** — ideal for displaying the selection as
+[`ui-chip`](?path=/docs/components-ui-informative-ui-chip--docs). The context exposes a
+**`remove`** callback: wire it to the chip's remove action (`removable` +
+`(remove)="remove()"`) to remove a value **directly from the field**. Chips are
+rendered **next to** the combobox button (valid interactive HTML); on the keyboard, `Backspace`
+removes the last item. Chips wrap under constrained width.
 
 ```html
 <ng-template #selectedItem let-city let-remove="remove">
@@ -73,35 +73,35 @@ retire le dernier élément. Les chips passent à la ligne en largeur contrainte
 
 ## Clear
 
-Avec `showClear`, une action d'effacement (×) apparaît quand une valeur est définie —
-affordance **discrète** intégrée au champ (feedback par couleur + anneau de focus, sans fond
-de bouton), bouton natif avec `aria-label`, masqué si champ désactivé/readonly. La valeur
-repasse à `null`.
+With `showClear`, a clear action (×) appears when a value is set —
+a **subtle** affordance built into the field (color feedback + focus ring, no button
+background), a native button with `aria-label`, hidden if the field is disabled/readonly. The
+value goes back to `null`.
 
 <Canvas of={SelectStories.Clear} />
 
 ## Filter
 
-`filter` active le **filtrage intégré** (insensible à la casse et aux accents). Le champ de
-filtre prend le focus à l'ouverture (`autofocusFilter`), `filterBy` liste les champs comparés
-(label par défaut), `resetFilterOnHide` vide le filtre à la fermeture, et `emptyFilterMessage`
-s'affiche quand rien ne correspond.
+`filter` enables **built-in filtering** (case- and accent-insensitive). The
+filter field takes focus on open (`autofocusFilter`), `filterBy` lists the compared fields
+(label by default), `resetFilterOnHide` clears the filter on close, and `emptyFilterMessage`
+displays when nothing matches.
 
 <Canvas of={SelectStories.Filter} />
 
 ## Custom Option
 
-Le template `#item` remplace le rendu d'une option
-(contexte : `$implicit`/`option`, `selected`, `index`).
+The `#item` template replaces an option's rendering
+(context: `$implicit`/`option`, `selected`, `index`).
 
 <Canvas of={SelectStories.CustomOption} />
 
 ## Selected Value
 
-Le template `#selectedItem` personnalise la **valeur affichée dans le champ** (pas seulement
-en mode `multiple` : il s'applique aussi au mono-sélect). Combiné à `#item`, on obtient un
-rendu riche identique pour l'option de la liste et pour la valeur sélectionnée (contexte :
-`$implicit`/`option`, `index`, callback `remove`).
+The `#selectedItem` template customizes the **value displayed in the field** (not just
+in `multiple` mode: it also applies to single-select). Combined with `#item`, you get
+identical rich rendering for the list option and for the selected value (context:
+`$implicit`/`option`, `index`, `remove` callback).
 
 ```html
 <ui-select [(ngModel)]="lang" [options]="languages" optionLabel="label" optionValue="value" [filter]="true" [checkmark]="true">
@@ -118,91 +118,91 @@ rendu riche identique pour l'option de la liste et pour la valeur sélectionnée
 
 ## Group
 
-Avec `group`, `options` est une structure imbriquée : `optionGroupLabel` (défaut `label`) et
-`optionGroupChildren` (défaut `items`) décrivent chaque groupe. Les en-têtes sont
-personnalisables via le template `#group`. Les groupes vidés par le filtre disparaissent.
+With `group`, `options` is a nested structure: `optionGroupLabel` (default `label`) and
+`optionGroupChildren` (default `items`) describe each group. Headers are
+customizable via the `#group` template. Groups emptied by the filter disappear.
 
 <Canvas of={SelectStories.Group} />
 
 ## Checkbox and Filter
 
-Groupes + cases à cocher + filtre se combinent librement pour une expérience de
-multi-sélection riche.
+Groups + checkboxes + filter combine freely for a rich multi-select
+experience.
 
 <Canvas of={SelectStories.CheckboxAndFilter} />
 
 ## Sizes
 
-`size` propose `small` en alternative à la taille de base (`default`) — comme tous les champs
-du kit (le design system ne définit pas de taille `large`).
+`size` offers `small` as an alternative to the base size (`default`) — like every field
+in the kit (the design system doesn't define a `large` size).
 
 <Canvas of={SelectStories.Sizes} />
 
 ## Panel Width
 
-Par défaut le panneau reprend la largeur du champ. Quand le champ est volontairement
-compact, un indicatif téléphonique dans un `ui-input-group`, par exemple, mais que les
-options ne le sont pas, `panelWidth` décorrèle les deux : `auto` dimensionne le panneau sur
-son contenu **sans jamais passer sous la largeur du champ**, une taille CSS (`320px`) la fixe.
+By default the panel matches the field's width. When the field is deliberately
+compact — a phone code in a `ui-input-group`, for example — but the
+options aren't, `panelWidth` decouples the two: `auto` sizes the panel to
+its content **while never going below the field's width**, a CSS size (`320px`) fixes it.
 
 <Canvas of={SelectStories.PanelWidth} />
 
 ## Disabled
 
-`disabled` désactive le champ (attribut **natif** sur le déclencheur : ni éditable, ni
-focusable). Une option seule se désactive via `optionDisabled` (ou une clé `disabled` sur
-l'objet).
+`disabled` disables the field (**native** attribute on the trigger: neither editable, nor
+focusable). A single option can be disabled via `optionDisabled` (or a `disabled` key
+on the object).
 
 <Canvas of={SelectStories.Disabled} />
 
 ## Invalid
 
-Le style d'erreur s'applique via `invalid` — ou **automatiquement** quand le contrôle attaché
-(reactive forms / `ngModel`) est invalide et touché/modifié. `errorText` remplace alors le
-helper, `aria-invalid` est posé sur le déclencheur.
+The error style applies via `invalid` — or **automatically** when the attached control
+(reactive forms / `ngModel`) is invalid and touched/dirty. `errorText` then replaces the
+helper, `aria-invalid` is set on the trigger.
 
 <Canvas of={SelectStories.Invalid} />
 
 ## Focus Behavior
 
-Le comportement du focus visuel se règle avec `autoOptionFocus` (focaliser la première option
-à l'ouverture), `selectOnFocus` (sélectionner en naviguant au clavier, mode simple) et
-`focusOnHover` (suivre le survol souris, actif par défaut).
+Visual focus behavior is configured with `autoOptionFocus` (focus the first option
+on open), `selectOnFocus` (select while navigating by keyboard, single mode) and
+`focusOnHover` (follow mouse hover, active by default).
 
 <Canvas of={SelectStories.FocusBehavior} />
 
 ## Editable
 
-Avec `editable`, le déclencheur devient un vrai `<input>` : la frappe fixe **directement** la
-valeur du modèle **et ouvre le panneau en filtrant les options correspondantes** (façon
-autocomplete). Sélectionner une suggestion remplace le texte par le libellé de l'option ;
-fermer le panneau conserve le texte saisi tel quel (mode simple uniquement).
+With `editable`, the trigger becomes a real `<input>`: typing **directly** sets the
+model's value **and opens the panel filtering matching options** (autocomplete-style).
+Selecting a suggestion replaces the text with the option's label;
+closing the panel keeps the typed text as is (single mode only).
 
 <Canvas of={SelectStories.Editable} />
 
 ## Loading State
 
-`loading` remplace le chevron par un
-[`ui-spinner`](?path=/docs/components-ui-informative-ui-spinner--docs) (région live
-`role="status"`).
+`loading` replaces the chevron with a
+[`ui-spinner`](?path=/docs/components-ui-informative-ui-spinner--docs) (`role="status"`
+live region).
 
 <Canvas of={SelectStories.Loading} />
 
 ## Virtual Scroll
 
-Pour les listes volumineuses, `virtualScroll` rend les options dans un **viewport de
-défilement virtuel** (CDK) : seul un sous-ensemble est présent dans le DOM.
-`virtualScrollItemSize` fixe la hauteur (px) d'une ligne — en-têtes de groupe compris (ils
-sont alignés sur cette hauteur dans ce mode). `aria-setsize`/`aria-posinset` préservent
-l'annonce des positions.
+For large lists, `virtualScroll` renders options in a **virtual scroll
+viewport** (CDK): only a subset is present in the DOM.
+`virtualScrollItemSize` sets a row's height (px) — group headers included (they
+are aligned to this height in this mode). `aria-setsize`/`aria-posinset` preserve
+position announcements.
 
 <Canvas of={SelectStories.VirtualScroll} />
 
 ## Lazy Virtual Scroll
 
-Avec `lazy` (+ `virtualScroll`), l'output `lazyLoad` émet la **plage rendue**
-(`{ first, last }`) à chaque défilement : chargez les données à la demande et réinjectez-les
-dans `options`.
+With `lazy` (+ `virtualScroll`), the `lazyLoad` output emits the **rendered range**
+(`{ first, last }`) on every scroll: load data on demand and feed it back
+into `options`.
 
 <Canvas of={SelectStories.LazyVirtualScroll} />
 
@@ -210,93 +210,93 @@ dans `options`.
 
 <ArgTypes of={SelectStories} />
 
-## Formulaires
+## Forms
 
-Le composant est un `ControlValueAccessor` : il se branche sans code additionnel aux
-**Signal Forms** (`@angular/forms/signals`, directive `[formField]`, stables depuis Angular 22)
-via l'interop CVA native, ainsi qu'aux formulaires template-driven (`[(ngModel)]`) et réactifs
-(`[formControl]`).
+The component is a `ControlValueAccessor`: it wires up with no extra code to
+**Signal Forms** (`@angular/forms/signals`, `[formField]` directive, stable since Angular 22)
+via native CVA interop, as well as to template-driven (`[(ngModel)]`) and reactive
+(`[formControl]`) forms.
 
 <Canvas of={SelectStories.SignalForms} />
 
-## Accessibilité
+## Accessibility
 
 <table className="doc-table">
   <thead>
     <tr>
       <th>Point</th>
-      <th>Implémentation</th>
+      <th>Implementation</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><strong>Motif combobox</strong></td>
-      <td>Déclencheur natif (<code>&lt;button&gt;</code>, ou <code>&lt;input&gt;</code> en <code>editable</code>) avec <code>role="combobox"</code>, <code>aria-haspopup="listbox"</code>, <code>aria-expanded</code>, <code>aria-controls</code>. Panneau <code>role="listbox"</code> + options <code>role="option"</code>/<code>aria-selected</code> (<code>aria-multiselectable</code> en multiple).</td>
+      <td><strong>Combobox pattern</strong></td>
+      <td>Native trigger (<code>&lt;button&gt;</code>, or <code>&lt;input&gt;</code> in <code>editable</code>) with <code>role="combobox"</code>, <code>aria-haspopup="listbox"</code>, <code>aria-expanded</code>, <code>aria-controls</code>. Panel <code>role="listbox"</code> + options <code>role="option"</code>/<code>aria-selected</code> (<code>aria-multiselectable</code> when multiple).</td>
     </tr>
     <tr>
-      <td><strong>Focus géré</strong></td>
-      <td>Le focus DOM reste sur le déclencheur ou le filtre ; l'option active est référencée par <code>aria-activedescendant</code> et défilée en vue. Fermeture = retour du focus au déclencheur.</td>
+      <td><strong>Managed focus</strong></td>
+      <td>DOM focus stays on the trigger or the filter; the active option is referenced via <code>aria-activedescendant</code> and scrolled into view. Closing = focus returns to the trigger.</td>
     </tr>
     <tr>
-      <td><strong>Clavier</strong></td>
-      <td><kbd>↓</kbd>/<kbd>↑</kbd> ouvrent puis naviguent (sans boucle), <kbd>Début</kbd>/<kbd>Fin</kbd>, <kbd>Entrée</kbd>/<kbd>Espace</kbd> sélectionnent, <kbd>Échap</kbd> ferme, <kbd>Tab</kbd> ferme et poursuit, <kbd>Alt+↑</kbd> ferme, <kbd>Retour arrière</kbd> retire le dernier élément (multiple). Recherche par frappe (type-ahead, insensible aux accents) sur le déclencheur.</td>
+      <td><strong>Keyboard</strong></td>
+      <td><kbd>↓</kbd>/<kbd>↑</kbd> open then navigate (no wraparound), <kbd>Home</kbd>/<kbd>End</kbd>, <kbd>Enter</kbd>/<kbd>Space</kbd> select, <kbd>Escape</kbd> closes, <kbd>Tab</kbd> closes and moves on, <kbd>Alt+↑</kbd> closes, <kbd>Backspace</kbd> removes the last item (multiple). Type-ahead search (accent-insensitive) on the trigger.</td>
     </tr>
     <tr>
       <td><strong>Label & messages</strong></td>
-      <td><code>ui-label</code> lié par <code>for</code>/<code>id</code> ; sans label visible : <code>ariaLabel</code>/<code>ariaLabelledBy</code> (warning dev sinon). Helper/erreur reliés par <code>aria-describedby</code>, <code>aria-invalid</code> et <code>aria-required</code> posés sur le déclencheur.</td>
+      <td><code>ui-label</code> linked via <code>for</code>/<code>id</code>; without a visible label: <code>ariaLabel</code>/<code>ariaLabelledBy</code> (dev warning otherwise). Helper/error linked via <code>aria-describedby</code>, <code>aria-invalid</code> and <code>aria-required</code> set on the trigger.</td>
     </tr>
     <tr>
-      <td><strong>Désactivé</strong></td>
-      <td><code>disabled</code> natif (pas seulement visuel) ; couleurs via tokens <code>--form-*-disabled</code>. Options désactivées : <code>aria-disabled</code> + non sélectionnables.</td>
+      <td><strong>Disabled</strong></td>
+      <td>Native <code>disabled</code> (not just visual); colors via <code>--form-*-disabled</code> tokens. Disabled options: <code>aria-disabled</code> + not selectable.</td>
     </tr>
     <tr>
-      <td><strong>Non-couleur</strong></td>
-      <td>La sélection ne repose pas que sur la couleur : coche (<code>checkmark</code>) ou case (<code>checkbox</code>) disponibles.</td>
+      <td><strong>Non-color</strong></td>
+      <td>Selection doesn't rely on color alone: check (<code>checkmark</code>) or checkbox (<code>checkbox</code>) available.</td>
     </tr>
     <tr>
-      <td><strong>Chips retirables</strong></td>
-      <td>Rendues hors du bouton combobox (imbriquer des boutons serait invalide) ; le bouton porte la valeur en texte masqué visuellement. Chemin clavier équivalent : <kbd>Retour arrière</kbd> ou bascule dans la liste.</td>
+      <td><strong>Removable chips</strong></td>
+      <td>Rendered outside the combobox button (nesting buttons would be invalid); the button carries the value as visually-hidden text. Equivalent keyboard path: <kbd>Backspace</kbd> or toggling in the list.</td>
     </tr>
   </tbody>
 </table>
 
-> **Sécurité & perf** : aucun `innerHTML` — tout le contenu (labels, filtre, messages) est
-> interpolé, donc échappé par Angular. Les listes se recalculent en `computed()` (pas de
-> re-scan par cycle), le défilement virtuel borne le DOM aux lignes visibles et `lazy`
-> repousse le chargement des données au défilement.
+> **Security & perf**: no `innerHTML` — all content (labels, filter, messages) is
+> interpolated, hence escaped by Angular. Lists are recomputed in `computed()` (no
+> rescan per cycle), virtual scrolling bounds the DOM to the visible rows, and `lazy`
+> defers data loading to scroll time.
 
 ```html
 <!-- Signal Forms -->
-<ui-select [formField]="city" label="Ville" [options]="cities"
+<ui-select [formField]="city" label="City" [options]="cities"
            optionLabel="name" optionValue="code" />
 
-<!-- Reactive forms + erreur automatique -->
-<ui-select formControlName="country" label="Pays" [options]="countries"
-           optionLabel="name" optionValue="iso" required errorText="Sélection obligatoire" />
+<!-- Reactive forms + automatic error -->
+<ui-select formControlName="country" label="Country" [options]="countries"
+           optionLabel="name" optionValue="iso" required errorText="Selection required" />
 
-<!-- Multi-sélection riche : groupes + cases + filtre -->
+<!-- Rich multi-select: groups + checkboxes + filter -->
 <ui-select [(ngModel)]="cities" [options]="groupedCities" [group]="true"
            optionLabel="name" optionValue="code"
            [multiple]="true" [checkbox]="true" [filter]="true" />
 
-<!-- Liste volumineuse chargée à la demande -->
+<!-- Large list loaded on demand -->
 <ui-select [(ngModel)]="item" [options]="rows" [virtualScroll]="true"
            [virtualScrollItemSize]="40" [lazy]="true" (lazyLoad)="fetchRange($event)" />
 ```
 
-> Architecture : `ui-select` partage le shell `ui-field` (label + boîte + helper + états) et la
-> base `BaseFormField` (CVA + validation) avec les autres champs. Le panneau reprend la coque
-> partagée `utils.overlay-panel` (comme `ui-menu` et `ui-datepicker`), en famille de tokens
-> `form.*`.
+> Architecture: `ui-select` shares the `ui-field` shell (label + box + helper + states) and the
+> `BaseFormField` base (CVA + validation) with the other fields. The panel reuses the
+> shared `utils.overlay-panel` shell (like `ui-menu` and `ui-datepicker`), in the `form.*`
+> token family.
 
 ## Theming
 
-Variables locales en tête de `ui-select.scss` (la boîte du déclencheur est configurée par
-`ui-field`, voir le groupe partagé [Forms](?path=/docs/components-configuration-forms--docs) et
-le [fonctionnement de la configuration](?path=/docs/components-configuration--docs)) :
+Local variables at the top of `ui-select.scss` (the trigger's box is configured by
+`ui-field`, see the shared [Forms](?path=/docs/components-configuration-forms--docs) group and
+[how configuration works](?path=/docs/components-configuration--docs)):
 
 <ConfigTable of="ui-select" />
 
-La coque du panneau (rayon, ombre, bordure) vient des constantes partagées
-`utils.$overlay-panel-*` ; surcharge ponctuelle possible via les custom properties
-`--ui-overlay-*` ou `panelStyleClass`.
+The panel's shell (radius, shadow, border) comes from the shared
+`utils.$overlay-panel-*` constants; one-off overrides are possible via the
+`--ui-overlay-*` custom properties or `panelStyleClass`.

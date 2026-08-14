@@ -6,39 +6,39 @@ import { ConfigTable } from '../../../../storybook/blocks/config-table';
 
 # ui-datepicker
 
-Sélecteur de **date / mois / année** (et d'**heure** optionnelle) headless. Un champ
-déclencheur [`ui-input`](?path=/docs/components-ui-forms-ui-input--docs) en lecture seule ouvre
-un calendrier stylé (tokens `form.*` / `actions.*`) dans un overlay Angular CDK — ou rendu
-**inline**. Sélection `single` / `multiple` / `range`, vues à tiroir (jour → mois → année),
-modes `MonthPicker` / `YearPicker`, plusieurs mois côte à côte, navigation mensuelle, focus
-roving et support clavier complet (motif WAI-ARIA date picker).
+Headless **date / month / year** (and optional **time**) picker. A read-only
+[`ui-input`](?path=/docs/components-ui-forms-ui-input--docs) trigger field opens
+a token-styled calendar (`form.*` / `actions.*` tokens) in an Angular CDK overlay — or renders
+**inline**. `single` / `multiple` / `range` selection, drill-down views (day → month → year),
+`MonthPicker` / `YearPicker` modes, several months side by side, monthly navigation, roving
+focus and full keyboard support (WAI-ARIA date picker pattern).
 `p-datepicker`.
 
-Câblé en `ControlValueAccessor` (Signal Forms `[formField]`, `[(ngModel)]` ou `[formControl]`) sur
-[`BaseFormField`](?path=/docs/components-ui-forms-ui-input--docs) : `label`, `helperText`/`errorText`,
-`level`, la validation et les états `disabled`/`readonly` sont partagés avec les autres champs.
+Wired as a `ControlValueAccessor` (Signal Forms `[formField]`, `[(ngModel)]` or `[formControl]`) on
+[`BaseFormField`](?path=/docs/components-ui-forms-ui-input--docs): `label`, `helperText`/`errorText`,
+`level`, validation and the `disabled`/`readonly` states are shared with the other fields.
 
-**Valeur : `Date` ou string ISO, selon `valueType` (obligatoire, sans défaut).** L'input
-`valueType: 'date' | 'iso'` est **requis** : pas de valeur implicite, pour forcer le choix
-explicite plutôt qu'un défaut silencieux qui ne correspondrait pas au type réel du modèle. `writeValue`
-accepte toujours `Date` **ou** string ISO `"yyyy-MM-dd"` (`"yyyy-MM-ddTHH:mm"` avec
-`showTime`/`timeOnly`), auto-détecté — peu importe ce que l'app a sous la main. Ce qui est
-**émis** (`valueChange`, `dateSelect`, donc ce qui atterrit dans le `FormControl`) suit
-strictement `valueType`, jamais un mélange silencieux des deux formes :
+**Value: `Date` or an ISO string, depending on `valueType` (required, no default).** The
+`valueType: 'date' | 'iso'` input is **required**: no implicit value, to force an
+explicit choice rather than a silent default that wouldn't match the model's actual type. `writeValue`
+always accepts either `Date` **or** an ISO `"yyyy-MM-dd"` string (`"yyyy-MM-ddTHH:mm"` with
+`showTime`/`timeOnly`), auto-detected — whichever the app has on hand. What gets
+**emitted** (`valueChange`, `dateSelect`, hence what lands in the `FormControl`) strictly follows
+`valueType`, never a silent mix of the two shapes:
 
-- **`'date'`** — la valeur reste un `Date` de bout en bout, normalisé à minuit quand
-  aucune heure n'est affichée (`!showTime && !timeOnly`). Pensé pour un DTO round-trippé par
-  `class-transformer` (`@Type(() => Date)`) : le formulaire manipule directement le `Date` du DTO,
-  sans conversion à faire côté app — la sérialisation vers le JSON du backend reste la
-  responsabilité de `class-transformer`, pas du champ.
-- **`'iso'`** — la valeur est une string `"yyyy-MM-dd"` (`string[]` en `multiple`/`range`). Pour
-  un champ qui lit/écrit directement contre un `LocalDate` backend, sans DTO/`class-transformer`
-  entre les deux (ex. un filtre de recherche). Toujours construite à partir des composants locaux
-  du `Date` (`getFullYear()/getMonth()/getDate()`), jamais `date.toISOString()` (qui bascule en
-  UTC et peut décaler le jour selon le fuseau local).
+- **`'date'`** — the value stays a `Date` end to end, normalized to midnight when
+  no time is shown (`!showTime && !timeOnly`). Designed for a DTO round-tripped by
+  `class-transformer` (`@Type(() => Date)`): the form works directly with the DTO's `Date`,
+  no conversion needed on the app side — serializing to the backend's JSON stays
+  `class-transformer`'s responsibility, not the field's.
+- **`'iso'`** — the value is a `"yyyy-MM-dd"` string (`string[]` in `multiple`/`range`). For
+  a field reading/writing directly against a backend `LocalDate`, with no DTO/`class-transformer`
+  in between (e.g. a search filter). Always built from the `Date`'s local components
+  (`getFullYear()/getMonth()/getDate()`), never `date.toISOString()` (which switches to
+  UTC and can shift the day depending on the local timezone).
 
-`Date` reste de toute façon la représentation interne de tout le calcul de calendrier — seule la
-frontière `writeValue`/`commit` convertit, dans un sens ou dans l'autre selon `valueType`.
+`Date` remains the internal representation for all calendar computation either way — only the
+`writeValue`/`commit` boundary converts, in one direction or the other depending on `valueType`.
 
 <Canvas of={DatepickerStories.IsoValueType} />
 
@@ -48,62 +48,62 @@ frontière `writeValue`/`commit` convertit, dans un sens ou dans l'autre selon `
 
 <ArgTypes of={DatepickerStories} />
 
-## Sélection : single / multiple / range
+## Selection: single / multiple / range
 
-`selectionMode` définit la quantité sélectionnée. La valeur du modèle est un `Date`/string ISO
-(selon `valueType`) en `single`, un tableau en `multiple` (bascule au clic, le panneau reste
-ouvert) et un tableau `[début, fin]` en `range` (1er clic = début, 2ᵉ = fin, surbrillance de
-l'intervalle).
+`selectionMode` sets how much is selected. The model's value is a `Date`/ISO string
+(depending on `valueType`) in `single`, an array in `multiple` (toggles on click, the panel stays
+open) and a `[start, end]` array in `range` (1st click = start, 2nd = end, the
+interval is highlighted).
 
 <Canvas of={DatepickerStories.Multiple} />
 <Canvas of={DatepickerStories.Range} />
 
-## Vues & modes (jour → mois → année)
+## Views & modes (day → month → year)
 
-Un clic sur le **titre** de l'entête remonte d'un niveau : jour → sélection de mois → sélection
-d'année. L'input `view` fixe la granularité de base : `date` (défaut), `month`
-(**MonthPicker**) ou `year` (**YearPicker**). En mode mois/année, le clic sélectionne directement
-un mois / une année.
+Clicking the header's **title** moves up a level: day → month selection → year
+selection. The `view` input sets the base granularity: `date` (default), `month`
+(**MonthPicker**) or `year` (**YearPicker**). In month/year mode, clicking directly selects
+a month / a year.
 
 <Canvas of={DatepickerStories.MonthPicker} />
 <Canvas of={DatepickerStories.YearPicker} />
 
-## Plusieurs mois
+## Multiple months
 
-`numberOfMonths` affiche N panneaux mois côte à côte, séparés par un filet, avec les titres de
-mois alignés en face des flèches ← → (aux extrémités). Le changement de vue à tiroir reste
-réservé au mode mono-mois.
+`numberOfMonths` displays N month panels side by side, separated by a rule, with month
+titles aligned next to the ← → arrows (at the ends). The drill-down view switch stays
+reserved for single-month mode.
 
 <Canvas of={DatepickerStories.TwoMonths} />
 
-## Ouverture (placement)
+## Opening (placement)
 
-Le panneau s'ouvre sous le champ et **se retourne automatiquement au-dessus** quand la place
-manque en bas (CDK Overlay). `autoFlip="false"` verrouille l'ouverture vers le bas.
+The panel opens below the field and **flips above automatically** when there's no room
+below (CDK Overlay). `autoFlip="false"` locks the opening downward.
 
 <Canvas of={DatepickerStories.SmartPosition} />
 
-## Date & heure
+## Date & time
 
-`showTime` ajoute une ligne horaire sous forme de **steppers verticaux** (chevrons ↑/↓ autour de
-chaque unité HH : MM — pattern ARIA `spinbutton`, pilotables aux flèches clavier) ;
-`hourFormat="12"` ajoute un sélecteur AM/PM. `timeOnly` masque le calendrier. Quand `showTime` est
-actif, le panneau **reste ouvert** après le choix d'un jour (pour régler l'heure) même si `closeOnSelect`.
+`showTime` adds a time row as **vertical steppers** (↑/↓ chevrons around
+each HH : MM unit — `spinbutton` ARIA pattern, drivable with the arrow keys);
+`hourFormat="12"` adds an AM/PM selector. `timeOnly` hides the calendar. When `showTime` is
+active, the panel **stays open** after picking a day (to set the time) even with `closeOnSelect`.
 
 <Canvas of={DatepickerStories.WithTime} />
 <Canvas of={DatepickerStories.Time12h} />
 <Canvas of={DatepickerStories.StepperOnlyTime} />
 
-## Contraintes de sélection
+## Selection constraints
 
-`minDate` / `maxDate` bornent la plage ; `disabledDays` (0 = dimanche … 6 = samedi) et
-`disabledDates` (dates ponctuelles) neutralisent des cellules. `showButtonBar` ajoute les actions
-« Today » / « Clear ».
+`minDate` / `maxDate` bound the range; `disabledDays` (0 = Sunday … 6 = Saturday) and
+`disabledDates` (specific dates) neutralize cells. `showButtonBar` adds the
+"Today" / "Clear" actions.
 
-`minDate`, `maxDate` et chaque entrée de `disabledDates` acceptent indifféremment un `Date` **ou**
-une string ISO `"yyyy-MM-dd"` (les deux formes sont mixables dans `disabledDates`) — pratique
-quand les bornes viennent déjà d'un backend au même format que la valeur. Une string malformée
-dégrade silencieusement en « pas de contrainte » plutôt que de lever une erreur.
+`minDate`, `maxDate` and each `disabledDates` entry equally accept a `Date` **or**
+an ISO `"yyyy-MM-dd"` string (both shapes are mixable in `disabledDates`) — handy
+when the bounds already come from a backend in the same format as the value. A malformed
+string silently degrades to "no constraint" rather than throwing.
 
 <Canvas of={DatepickerStories.MinMax} />
 <Canvas of={DatepickerStories.MinMaxIso} />
@@ -111,52 +111,52 @@ dégrade silencieusement en « pas de contrainte » plutôt que de lever une err
 <Canvas of={DatepickerStories.DisabledDates} />
 <Canvas of={DatepickerStories.ButtonBar} />
 
-## Niveaux & états
+## Levels & states
 
 <Canvas of={DatepickerStories.Required} />
 <Canvas of={DatepickerStories.Error} />
 <Canvas of={DatepickerStories.Small} />
 <Canvas of={DatepickerStories.Disabled} />
 
-`showClear` ajoute une croix dans le champ (dès qu'une valeur est présente) pour réinitialiser
-la sélection. En mode `timeOnly`, l'icône du déclencheur devient une horloge.
+`showClear` adds a cross in the field (as soon as a value is present) to reset
+the selection. In `timeOnly` mode, the trigger's icon becomes a clock.
 
 <Canvas of={DatepickerStories.Clearable} />
 <Canvas of={DatepickerStories.TimeOnly} />
 
-## Saisie manuelle (`allowInput`)
+## Manual input (`allowInput`)
 
-Par défaut le champ est en lecture seule : la date se choisit uniquement dans le panneau.
-Activez `allowInput` pour autoriser la **frappe au clavier** dans le champ (mode `single`
-uniquement). Le texte est parsé au **blur** et sur **Entrée** ; une saisie invalide revient
-à la dernière valeur affichée. `↓` ouvre le panneau et entre dans la grille.
+By default the field is read-only: the date can only be picked from the panel.
+Enable `allowInput` to allow **keyboard typing** in the field (`single` mode
+only). The text is parsed on **blur** and on **Enter**; an invalid entry reverts
+to the last displayed value. `↓` opens the panel and enters the grid.
 
-Quand `showTime` est actif (hors `timeOnly`), le masque couvre aussi les segments heure/minute
-(et AM/PM en `hourFormat="12"`) : `allowInput` reste utilisable pour taper la date **et** l'heure
-d'une traite. `allowInput` est en revanche **sans effet en `timeOnly`** (pas de parseur/formatteur
-dédié à une heure seule) : le champ y reste toujours en lecture seule.
+When `showTime` is active (outside `timeOnly`), the mask also covers the hour/minute
+segments (and AM/PM in `hourFormat="12"`): `allowInput` remains usable to type the date **and** the
+time in one go. `allowInput` has, however, **no effect in `timeOnly`** (no parser/formatter
+dedicated to a time-only value): the field there always stays read-only.
 
-Quand `allowInput` est actif (et sans `dateFormat` custom), la valeur s'affiche au **format
-numérique** de la locale (ex. `08/07/2026`) pour un aller-retour fiable avec le parser.
+When `allowInput` is active (and with no custom `dateFormat`), the value displays in the
+locale's **numeric format** (e.g. `08/07/2026`) for a reliable round trip with the parser.
 
-Les séparateurs **"/" s'insèrent automatiquement pendant la frappe**, dès qu'un segment (jour,
-mois) est complet — même principe qu'un champ de date d'expiration de carte bancaire (`0812…` →
-`08/12…`). Le segment année reste volontairement libre (pas de "/" forcé après 2 ou 4 chiffres) :
-la validation stricte a lieu au parsing (blur/Entrée), pas dans ce masque cosmétique. Ce
-comportement partage son moteur avec [`ui-input-mask`](?path=/docs/components-ui-forms-ui-input-mask--docs)
-(`mask-engine.ts`) et se désactive automatiquement dès qu'un `parseDate` custom est fourni (un
-format non numérique rendrait l'auto-slash faux).
+The **"/" separators insert automatically while typing**, as soon as a segment (day,
+month) is complete — the same idea as a credit card expiry field (`0812…` →
+`08/12…`). The year segment stays deliberately free (no forced "/" after 2 or 4 digits):
+strict validation happens at parse time (blur/Enter), not in this cosmetic mask. This
+behavior shares its engine with [`ui-input-mask`](?path=/docs/components-ui-forms-ui-input-mask--docs)
+(`mask-engine.ts`) and disables itself automatically as soon as a custom `parseDate` is supplied (a
+non-numeric format would make the auto-slash wrong).
 
-> **L'ordre des champs suit la locale résolue** (`locale` ou, à défaut, `LOCALE_ID`). En
-> `fr-FR` c'est **jj/mm/aaaa** ; en `en-US` c'est **mm/dd/yyyy** — l'auto-formatage suit le même
-> ordre. Si `LOCALE_ID` n'est pas configuré, Angular tombe sur `en-US` : passez `locale="fr-FR"`
-> (ou configurez `LOCALE_ID`) pour saisir en JJ/MM/AAAA. Le **placeholder est dérivé
-> automatiquement** de cet ordre quand il n'est pas fourni, pour ne jamais afficher un format
-> trompeur.
+> **Field order follows the resolved locale** (`locale`, or `LOCALE_ID` failing that). In
+> `fr-FR` it's **dd/mm/yyyy**; in `en-US` it's **mm/dd/yyyy** — auto-formatting follows the same
+> order. If `LOCALE_ID` isn't configured, Angular falls back to `en-US`: pass `locale="fr-FR"`
+> (or configure `LOCALE_ID`) to type in DD/MM/YYYY. The **placeholder is derived
+> automatically** from this order when not supplied, so it never shows a misleading
+> format.
 
-Fournissez `parseDate` `(value: string) => Date | null` pour un parsing sur mesure (symétrique
-de `dateFormat`). Ces deux hooks travaillent en `Date` (affichage/saisie libre uniquement) — ils
-ne sont jamais round-trippés à travers la CVA, donc pas concernés par le contrat ISO.
+Provide `parseDate` `(value: string) => Date | null` for custom parsing (symmetric
+to `dateFormat`). These two hooks work in `Date` (display/free typing only) — they
+are never round-tripped through the CVA, so the ISO contract doesn't concern them.
 
 <Canvas of={DatepickerStories.EditableInput} />
 <Canvas of={DatepickerStories.AutoFormattedInputEnUs} />
@@ -167,19 +167,19 @@ ne sont jamais round-trippés à travers la CVA, donc pas concernés par le cont
 
 ## Templates
 
-Deux points d'extension via `<ng-template>` projetés, résolus par `contentChild` :
+Two extension points via projected `<ng-template>`s, resolved with `contentChild`:
 
-- **`#date`** — cellule de jour personnalisée. Contexte : `$implicit` = descripteur du jour
+- **`#date`** — custom day cell. Context: `$implicit` = day descriptor
   (`{ day, month, year, otherMonth, today, selected, disabled, rangeStart, rangeEnd, inRange }`)
-  et `selected` (booléen). Idéal pour des pastilles d'évènements, week-ends colorés, etc.
-- **`#buttonbar`** — barre de boutons personnalisée. Contexte : `todayCallback` et `clearCallback`
-  (fonctions à câbler sur `(click)`).
+  and `selected` (boolean). Ideal for event dots, colored weekends, etc.
+- **`#buttonbar`** — custom button bar. Context: `todayCallback` and `clearCallback`
+  (functions to wire to `(click)`).
 
 <Canvas of={DatepickerStories.DateTemplate} />
 <Canvas of={DatepickerStories.CustomButtonBar} />
 
 ```html
-<!-- Cellule de jour personnalisée -->
+<!-- Custom day cell -->
 <ui-datepicker [(ngModel)]="date" valueType="date">
   <ng-template #date let-d let-selected="selected">
     <span>{{ d.day }}</span>
@@ -187,104 +187,104 @@ Deux points d'extension via `<ng-template>` projetés, résolus par `contentChil
   </ng-template>
 </ui-datepicker>
 
-<!-- Barre de boutons personnalisée -->
+<!-- Custom button bar -->
 <ui-datepicker [(ngModel)]="range" valueType="date" selectionMode="range" showButtonBar>
   <ng-template #buttonbar let-todayCallback="todayCallback" let-clearCallback="clearCallback">
     <ui-button size="small" label="Today" (buttonClick)="todayCallback($event)" />
-    <ui-button size="small" level="error" icon="xmark" iconOnly ariaLabel="Effacer" (buttonClick)="clearCallback($event)" />
+    <ui-button size="small" level="error" icon="xmark" iconOnly ariaLabel="Clear" (buttonClick)="clearCallback($event)" />
   </ng-template>
 </ui-datepicker>
 ```
 
-## Formulaires
+## Forms
 
-Le composant est un `ControlValueAccessor` : il se branche sans code additionnel aux
-**Signal Forms** (`@angular/forms/signals`, directive `[formField]`, stables depuis Angular 22)
-via l'interop CVA native, ainsi qu'aux formulaires template-driven (`[(ngModel)]`) et réactifs
-(`[formControl]`).
+The component is a `ControlValueAccessor`: it wires up with no extra code to
+**Signal Forms** (`@angular/forms/signals`, `[formField]` directive, stable since Angular 22)
+via native CVA interop, as well as to template-driven (`[(ngModel)]`) and reactive
+(`[formControl]`) forms.
 
 <Canvas of={DatepickerStories.SignalForms} />
 
 ```html
-<!-- Signal Forms, DTO class-transformer (birth: Date) -->
-<ui-datepicker [formField]="birth" valueType="date" label="Date de naissance" />
+<!-- Signal Forms, class-transformer DTO (birth: Date) -->
+<ui-datepicker [formField]="birth" valueType="date" label="Birth date" />
 
-<!-- Reactive forms, DTO class-transformer (form.controls.birth: FormControl<Date | null>) -->
-<ui-datepicker formControlName="birth" valueType="date" label="Date de naissance" [maxDate]="today" required />
+<!-- Reactive forms, class-transformer DTO (form.controls.birth: FormControl<Date | null>) -->
+<ui-datepicker formControlName="birth" valueType="date" label="Birth date" [maxDate]="today" required />
 
-<!-- Reactive forms, valeur ISO directe (form.controls.birth: FormControl<string | null>) -->
-<ui-datepicker formControlName="birth" valueType="iso" label="Date de naissance" required />
+<!-- Reactive forms, direct ISO value (form.controls.birth: FormControl<string | null>) -->
+<ui-datepicker formControlName="birth" valueType="iso" label="Birth date" required />
 
-<!-- Date + heure, ngModel -->
-<ui-datepicker [(ngModel)]="appointment" valueType="date" label="Rendez-vous" showTime hourFormat="12" showButtonBar />
+<!-- Date + time, ngModel -->
+<ui-datepicker [(ngModel)]="appointment" valueType="date" label="Appointment" showTime hourFormat="12" showButtonBar />
 
-<!-- Inline (pas d'overlay) -->
+<!-- Inline (no overlay) -->
 <ui-datepicker [(ngModel)]="date" valueType="date" inline />
 ```
 
-## Accessibilité
+## Accessibility
 
 <table className="doc-table">
   <thead>
     <tr>
       <th>Point</th>
-      <th>Implémentation</th>
+      <th>Implementation</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><strong>Déclencheur</strong></td>
-      <td>Champ <code>ui-input</code> lié à un <code>label</code> natif. Ouverture au clic, ou clavier <kbd>Entrée</kbd>/<kbd>Espace</kbd>/<kbd>↓</kbd> ; <code>aria-haspopup="dialog"</code> + <code>aria-expanded</code>.</td>
+      <td><strong>Trigger</strong></td>
+      <td><code>ui-input</code> field linked to a native <code>label</code>. Opens on click, or keyboard <kbd>Enter</kbd>/<kbd>Space</kbd>/<kbd>↓</kbd>; <code>aria-haspopup="dialog"</code> + <code>aria-expanded</code>.</td>
     </tr>
     <tr>
-      <td><strong>Navigation grille</strong></td>
-      <td>Focus roving (tabindex géré) dans les trois grilles (jour, <code>MonthPicker</code>, <code>YearPicker</code>). Vue jour : <kbd>← ↑ → ↓</kbd> jour, <kbd>Début</kbd>/<kbd>Fin</kbd> semaine, <kbd>Page↑</kbd>/<kbd>Page↓</kbd> mois (+ <kbd>Maj</kbd> = année). Vue mois : <kbd>← ↑ → ↓</kbd> mois, <kbd>Page↑</kbd>/<kbd>Page↓</kbd> année (+ <kbd>Maj</kbd> = décennie). Vue année : <kbd>← ↑ → ↓</kbd> année dans la décennie affichée, <kbd>Page↑</kbd>/<kbd>Page↓</kbd> décennie (+ <kbd>Maj</kbd> = siècle). <kbd>Entrée</kbd>/<kbd>Espace</kbd> sélectionne partout.</td>
+      <td><strong>Grid navigation</strong></td>
+      <td>Roving focus (managed tabindex) across the three grids (day, <code>MonthPicker</code>, <code>YearPicker</code>). Day view: <kbd>← ↑ → ↓</kbd> day, <kbd>Home</kbd>/<kbd>End</kbd> week, <kbd>PageUp</kbd>/<kbd>PageDown</kbd> month (+ <kbd>Shift</kbd> = year). Month view: <kbd>← ↑ → ↓</kbd> month, <kbd>PageUp</kbd>/<kbd>PageDown</kbd> year (+ <kbd>Shift</kbd> = decade). Year view: <kbd>← ↑ → ↓</kbd> year within the shown decade, <kbd>PageUp</kbd>/<kbd>PageDown</kbd> decade (+ <kbd>Shift</kbd> = century). <kbd>Enter</kbd>/<kbd>Space</kbd> selects everywhere.</td>
     </tr>
     <tr>
-      <td><strong>Fermeture</strong></td>
-      <td><kbd>Échap</kbd>, clic extérieur ou sélection (hors <code>showTime</code>) ferme et rend le focus au déclencheur.</td>
+      <td><strong>Closing</strong></td>
+      <td><kbd>Escape</kbd>, an outside click, or a selection (outside <code>showTime</code>) closes and returns focus to the trigger.</td>
     </tr>
     <tr>
-      <td><strong>Sémantique</strong></td>
-      <td>Panneau <code>role="dialog"</code> ; grille <code>role="grid"</code> / <code>gridcell</code> avec <code>aria-selected</code>, <code>aria-current="date"</code> pour aujourd'hui, et un <code>aria-label</code> de date complète (« 8 juillet 2026 ») sur chaque jour — y compris avec la cellule <code>#date</code> custom.</td>
+      <td><strong>Semantics</strong></td>
+      <td>Panel <code>role="dialog"</code>; grid <code>role="grid"</code> / <code>gridcell</code> with <code>aria-selected</code>, <code>aria-current="date"</code> for today, and a full-date <code>aria-label</code> ("July 8, 2026") on each day — including with the custom <code>#date</code> cell.</td>
     </tr>
     <tr>
-      <td><strong>Titre du mois</strong></td>
-      <td><code>aria-live="polite"</code> sur le titre affiché, en mono-mois **et** en multi-mois : le changement de mois est annoncé dans les deux cas.</td>
+      <td><strong>Month title</strong></td>
+      <td><code>aria-live="polite"</code> on the displayed title, in single-month **and** multi-month: the month change is announced in both cases.</td>
     </tr>
     <tr>
-      <td><strong>En-têtes de semaine</strong></td>
-      <td><code>role="columnheader"</code> + <code>aria-label</code> du nom complet du jour (texte visible abrégé, ex. « lun »/« Lundi ») — plus <code>aria-hidden</code> qui les aurait rendus muets pour un lecteur d'écran.</td>
+      <td><strong>Week headers</strong></td>
+      <td><code>role="columnheader"</code> + <code>aria-label</code> with the day's full name (visible text abbreviated, e.g. "Mon"/"Monday") — plus <code>aria-hidden</code>, which would otherwise have made them silent for a screen reader.</td>
     </tr>
     <tr>
-      <td><strong>Plage (range)</strong></td>
-      <td>L'indicateur de continuité (<code>_in-range</code>/<code>_range-start</code>/<code>_range-end</code>) combine le fond coloré à une bordure haut/bas (token <code>actions.high.stroke.default</code>) : la plage reste identifiable sans dépendre de la seule couleur.</td>
+      <td><strong>Range</strong></td>
+      <td>The continuity indicator (<code>_in-range</code>/<code>_range-start</code>/<code>_range-end</code>) combines the colored background with a top/bottom border (<code>actions.high.stroke.default</code> token): the range stays identifiable without relying on color alone.</td>
     </tr>
     <tr>
-      <td><strong>Heure</strong></td>
-      <td>Unités en <code>role="spinbutton"</code> (<code>aria-valuenow</code>/<code>-valuemin</code>/<code>-valuemax</code>/<code>-valuetext</code>) : <code>&lt;input&gt;</code> natifs saisissables pour HH/MM (<kbd>↑</kbd>/<kbd>↓</kbd> et <kbd>Page↑</kbd>/<kbd>Page↓</kbd> incrémentent, <kbd>Entrée</kbd> valide), bascule pour AM/PM. Chevrons <code>tabindex="-1"</code> : une seule tabulation par unité.</td>
+      <td><strong>Time</strong></td>
+      <td>Units as <code>role="spinbutton"</code> (<code>aria-valuenow</code>/<code>-valuemin</code>/<code>-valuemax</code>/<code>-valuetext</code>): typeable native <code>&lt;input&gt;</code>s for HH/MM (<kbd>↑</kbd>/<kbd>↓</kbd> and <kbd>PageUp</kbd>/<kbd>PageDown</kbd> increment, <kbd>Enter</kbd> commits), a toggle for AM/PM. Chevrons carry <code>tabindex="-1"</code>: a single tab stop per unit.</td>
     </tr>
     <tr>
-      <td><strong>Désactivé</strong></td>
-      <td><code>disabled</code> natif (jour et champ) ; couleurs via tokens <code>-disabled</code>, jamais la seule opacité.</td>
+      <td><strong>Disabled</strong></td>
+      <td>Native <code>disabled</code> (day and field); colors via <code>-disabled</code> tokens, never opacity alone.</td>
     </tr>
   </tbody>
 </table>
 
-> **Périmètre / choix** : le champ déclencheur est en **lecture seule par défaut** (choix par le
-> calendrier uniquement) ; `allowInput` (mode `single`, hors `timeOnly`) l'ouvre à la **saisie
-> clavier avec masque** — voir [Saisie manuelle](#saisie-manuelle-allowinput). Le tiroir de vues
-> (jour → mois → année) et le focus roving clavier sont actifs en **mono-mois** — désormais aussi
-> dans les grilles `MonthPicker`/`YearPicker` ; en multi-mois les entêtes sont fixes avec flèches
-> aux extrémités. Les états interactifs (hover/focus/pressed) sont des **pseudo-classes CSS**
-> pilotées par les tokens, pas des props. Personnalisation via `panelStyleClass`, `#date`,
+> **Scope / choices**: the trigger field is **read-only by default** (picking via the
+> calendar only); `allowInput` (`single` mode, outside `timeOnly`) opens it to **masked
+> keyboard input** — see [Manual input](#manual-input-allowinput). The view drawer
+> (day → month → year) and roving keyboard focus are active in **single-month** — now also
+> in the `MonthPicker`/`YearPicker` grids; in multi-month the headers are fixed with arrows
+> at the ends. Interactive states (hover/focus/pressed) are **CSS pseudo-classes**
+> driven by tokens, not props. Customization via `panelStyleClass`, `#date`,
 > `#buttonbar`.
 
 ## Theming
 
-Le champ déclencheur réutilise le shell `ui-field` (voir groupe
-[Forms](?path=/docs/components-configuration-forms--docs)). Le **panneau** expose ses propres
-variables locales (structurelles, propres au composant) — à retarger dans `ui-datepicker.scss` ou à
-surcharger via `panelStyleClass`. Voir le [fonctionnement de la configuration](?path=/docs/components-configuration--docs).
+The trigger field reuses the `ui-field` shell (see the
+[Forms](?path=/docs/components-configuration-forms--docs) group). The **panel** exposes its own
+local variables (structural, specific to the component) — to retarget in `ui-datepicker.scss` or to
+override via `panelStyleClass`. See [how configuration works](?path=/docs/components-configuration--docs).
 
 <ConfigTable of="ui-datepicker" />
