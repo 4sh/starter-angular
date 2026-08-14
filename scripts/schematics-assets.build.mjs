@@ -23,7 +23,7 @@
  * Usage : node scripts/schematics-assets.build.mjs
  */
 
-import { readdirSync, existsSync, mkdirSync, copyFileSync, rmSync } from 'node:fs';
+import { readdirSync, readFileSync, writeFileSync, existsSync, mkdirSync, copyFileSync, rmSync } from 'node:fs';
 import { dirname, join, resolve, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -134,13 +134,27 @@ function main() {
   if (existsSync(designTokensSrc)) {
     tokenFiles += copyTree(designTokensSrc, join(tokensDest, 'design-tokens'), (n) => n.endsWith('.json'));
   }
-  for (const [src, dest] of [
-    [join(ROOT, 'tokens.config.json'), join(tokensDest, 'tokens.config.json')],
-    [join(ROOT, 'scripts/tokens.build.mjs'), join(tokensDest, 'tokens.build.mjs')],
-  ]) {
-    if (!existsSync(src)) continue;
-    mkdirSync(dirname(dest), { recursive: true });
-    copyFileSync(src, dest);
+  // `tokens.config.json` pointe ici vers `projects/ui-kit/styles/generated` —
+  // un chemin propre au monorepo. Côté consommateur, la fondation de styles
+  // vit sous `src/styles/ui-kit/generated` (arborescence validée avec le
+  // designer) : on réécrit `outputs[].destination` à la copie, pas de copie brute.
+  const tokensConfigSrc = join(ROOT, 'tokens.config.json');
+  if (existsSync(tokensConfigSrc)) {
+    const config = JSON.parse(readFileSync(tokensConfigSrc, 'utf8'));
+    for (const output of config.outputs ?? []) {
+      if (output.destination === 'projects/ui-kit/styles/generated') {
+        output.destination = 'src/styles/ui-kit/generated';
+      }
+    }
+    mkdirSync(tokensDest, { recursive: true });
+    writeFileSync(join(tokensDest, 'tokens.config.json'), JSON.stringify(config, null, 2) + '\n');
+    tokenFiles++;
+  }
+
+  const tokensBuildSrc = join(ROOT, 'scripts/tokens.build.mjs');
+  if (existsSync(tokensBuildSrc)) {
+    mkdirSync(tokensDest, { recursive: true });
+    copyFileSync(tokensBuildSrc, join(tokensDest, 'tokens.build.mjs'));
     tokenFiles++;
   }
 
