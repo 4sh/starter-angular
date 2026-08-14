@@ -16,6 +16,18 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-08-14
+
+Première version depuis la mise en package à porter de véritables changements de
+composants — les deux précédentes (`0.1.1`, `0.1.2`) publiaient un tarball
+inchangé. Elle est `MINOR` malgré la rupture qu'elle contient : tant que la
+version commence par `0.x`, l'API est déclarée instable et une `MINOR` peut
+casser, à condition de le documenter (voir [VERSIONING.md](./docs/VERSIONING.md)).
+
+⚠️ **Mise à jour non triviale** : les 53 entry points sont renommés (réorganisation
+par catégorie), donc **tous les imports de composants changent**. Voir la section
+`Changed`.
+
 ### Added
 - **Starter : installer les composants dans son code source plutôt que comme dépendance** (FSHSP-109). À la manière de shadcn/ui ou spartan-ng, un projet peut désormais **copier** les sources des composants chez lui et les posséder, au lieu de consommer `@4sh/ui-kit` en dépendance figée :
 
