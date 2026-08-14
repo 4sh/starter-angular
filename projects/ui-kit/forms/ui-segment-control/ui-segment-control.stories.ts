@@ -37,42 +37,42 @@ const meta: Meta<UiSegmentControl> = {
   argTypes: {
     options: {
       control: 'object',
-      description: 'Options affichées (primitives, objets, ou `SegmentControlOption`).',
+      description: 'Displayed options (primitives, objects, or `SegmentControlOption`).',
       table: { type: { summary: '(T | SegmentControlOption<T>)[]' }, defaultValue: { summary: '[]' } },
     },
     optionLabel: {
       control: 'text',
-      description: 'Nom du champ label quand les options sont des objets.',
+      description: 'Field name for the label when options are objects.',
       table: { type: { summary: 'string' } },
     },
     optionValue: {
       control: 'text',
-      description: 'Nom du champ valeur quand les options sont des objets.',
+      description: 'Field name for the value when options are objects.',
       table: { type: { summary: 'string' } },
     },
     optionDisabled: {
       control: 'text',
-      description: 'Nom du champ désactivé quand les options sont des objets.',
+      description: 'Field name for disabled when options are objects.',
       table: { type: { summary: 'string' } },
     },
     optionIcon: {
       control: 'text',
-      description: 'Nom du champ icône quand les options sont des objets.',
+      description: 'Field name for the icon when options are objects.',
       table: { type: { summary: 'string' } },
     },
     dataKey: {
       control: 'text',
-      description: 'Propriété comparée pour l’égalité des valeurs objet (sélection).',
+      description: 'Property compared for object value equality (selection).',
       table: { type: { summary: 'string' } },
     },
     multiple: {
       control: 'boolean',
-      description: 'Autorise la sélection de plusieurs valeurs (le modèle devient un tableau).',
+      description: 'Allows selecting multiple values (the model becomes an array).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     allowEmpty: {
       control: 'boolean',
-      description: 'La sélection peut être entièrement vidée.',
+      description: 'The selection can be fully cleared.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
     size: {
@@ -87,27 +87,27 @@ const meta: Meta<UiSegmentControl> = {
     },
     fluid: {
       control: 'boolean',
-      description: 'Occupe toute la largeur du parent (segments répartis à parts égales).',
+      description: 'Takes up the parent\'s full width (segments spread evenly).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     motion: {
       control: 'boolean',
-      description: 'Anime l’indicateur glissant (respecte reduced-motion quoi qu’il arrive).',
+      description: 'Animates the sliding indicator (respects reduced-motion regardless).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
     ariaLabel: {
       control: 'text',
-      description: 'Nom accessible du groupe (obligatoire sans label visible externe).',
+      description: 'Accessible name of the group (required without an external visible label).',
       table: { type: { summary: 'string' } },
     },
     ariaLabelledBy: {
       control: false,
-      description: 'id d’un élément externe qui labellise le groupe.',
+      description: 'id of an external element that labels the group.',
       table: { type: { summary: 'string' } },
     },
     disabled: {
       control: 'boolean',
-      description: 'Désactive tout le contrôle.',
+      description: 'Disables the whole control.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     readonly: {
@@ -117,17 +117,17 @@ const meta: Meta<UiSegmentControl> = {
     },
     invalid: {
       control: 'boolean',
-      description: 'Force le style erreur (automatique quand le contrôle attaché est invalide et touched/dirty).',
+      description: 'Forces the error style (automatic when the attached control is invalid and touched/dirty).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     selectionChange: {
       action: 'selectionChange',
-      description: 'Émis à la sélection avec la nouvelle valeur du modèle.',
+      description: 'Emitted on selection, with the new model value.',
       table: { disable: true },
     },
     optionClick: {
       action: 'optionClick',
-      description: 'Émis au clic sur un segment (même sans changement de valeur).',
+      description: 'Emitted on clicking a segment (even without a value change).',
       table: { disable: true },
     },
   },

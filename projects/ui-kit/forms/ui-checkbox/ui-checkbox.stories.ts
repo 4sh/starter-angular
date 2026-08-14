@@ -19,52 +19,52 @@ const meta: Meta<UiCheckbox> = {
   argTypes: {
     label: {
       control: { type: 'text' },
-      description: 'Label affiché à côté de la case (cliquable).',
+      description: 'Label shown next to the box (clickable).',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     ariaLabel: {
       control: { type: 'text' },
-      description: 'Nom accessible quand aucun label visible n’est fourni.',
+      description: 'Accessible name when no visible label is provided.',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     ariaLabelledBy: {
       control: false,
-      description: 'id d’un élément externe qui labellise la case.',
+      description: 'id of an external element that labels the box.',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     inputId: {
       control: { type: 'text' },
-      description: 'id de l’input natif (généré automatiquement sinon).',
+      description: 'id of the native input (auto-generated otherwise).',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'auto' } },
     },
     name: {
       control: { type: 'text' },
-      description: 'name de l’input natif.',
+      description: 'name of the native input.',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     trueValue: {
       control: false,
-      description: 'Valeur du modèle quand la case est cochée (défaut : true).',
+      description: 'Model value when the box is checked (default: true).',
       table: { type: { summary: 'T' }, defaultValue: { summary: 'true' } },
     },
     falseValue: {
       control: false,
-      description: 'Valeur du modèle quand la case est décochée (défaut : false).',
+      description: 'Model value when the box is unchecked (default: false).',
       table: { type: { summary: 'T' }, defaultValue: { summary: 'false' } },
     },
     indeterminate: {
       control: { type: 'boolean' },
-      description: 'État visuel indéterminé (« certains mais pas tous »). N’affecte pas le modèle.',
+      description: 'Indeterminate visual state (« some but not all »). Does not affect the model.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     required: {
       control: { type: 'boolean' },
-      description: 'Marqueur requis (*) sur le label + attribut natif required.',
+      description: 'Required marker (*) on the label + native required attribute.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     disabled: {
       control: { type: 'boolean' },
-      description: 'Désactive la case (attribut natif).',
+      description: 'Disables the box (native attribute).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     readonly: {
@@ -74,37 +74,37 @@ const meta: Meta<UiCheckbox> = {
     },
     invalid: {
       control: { type: 'boolean' },
-      description: 'Force le style erreur (automatique quand le contrôle attaché est invalide et touched/dirty).',
+      description: 'Forces the error style (automatic when the attached control is invalid and touched/dirty).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     tabindex: {
       control: { type: 'number' },
-      description: 'tabindex de l’input natif.',
+      description: 'tabindex of the native input.',
       table: { type: { summary: 'number' }, defaultValue: { summary: 'undefined' } },
     },
     checkIcon: {
       control: { type: 'text' },
-      description: 'Icône FontAwesome affichée quand cochée.',
+      description: 'FontAwesome icon shown when checked.',
       table: { type: { summary: 'string' }, defaultValue: { summary: '"check"' } },
     },
     indeterminateIcon: {
       control: { type: 'text' },
-      description: 'Icône FontAwesome affichée en état indéterminé.',
+      description: 'FontAwesome icon shown in the indeterminate state.',
       table: { type: { summary: 'string' }, defaultValue: { summary: '"minus"' } },
     },
     checkboxChange: {
       action: 'changed',
-      description: 'Émis au toggle utilisateur avec la nouvelle valeur du modèle.',
+      description: 'Emitted on user toggle, with the new model value.',
       table: { type: { summary: 'EventEmitter<T>' }, defaultValue: { summary: '—' } },
     },
     checkboxFocus: {
       action: 'focused',
-      description: 'Émis quand l’input natif reçoit le focus.',
+      description: 'Emitted when the native input receives focus.',
       table: { type: { summary: 'EventEmitter<FocusEvent>' }, defaultValue: { summary: '—' } },
     },
     checkboxBlur: {
       action: 'blurred',
-      description: 'Émis quand l’input natif perd le focus.',
+      description: 'Emitted when the native input loses focus.',
       table: { type: { summary: 'EventEmitter<FocusEvent>' }, defaultValue: { summary: '—' } },
     },
   },
