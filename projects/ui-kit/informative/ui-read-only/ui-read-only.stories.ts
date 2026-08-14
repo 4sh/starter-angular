@@ -101,7 +101,7 @@ const meta: Meta<UiReadOnly> = {
     },
   },
   args: {
-    label: 'Adresse e-mail',
+    label: 'Email address',
     value: 'jean.dupont@4sh.fr',
     fallback: '-',
     layout: 'vertical',
@@ -125,14 +125,14 @@ export const Horizontal: Story = {
 
 // Colonne de label fixe (alignement de plusieurs lignes)
 export const HorizontalFixedLabel: Story = {
-  name: 'Horizontal - colonne fixe',
+  name: 'Horizontal - fixed column',
   render: (args) => ({
     props: args,
     template: `
       <div style="display:flex; flex-direction:column; gap:12px; min-width:320px;">
-        <ui-read-only layout="horizontal" labelWidth="140px" labelAlign="right" label="Nom" value="Jean Dupont" />
+        <ui-read-only layout="horizontal" labelWidth="140px" labelAlign="right" label="Name" value="John Doe" />
         <ui-read-only layout="horizontal" labelWidth="140px" labelAlign="right" label="E-mail" value="jean.dupont@4sh.fr" />
-        <ui-read-only layout="horizontal" labelWidth="140px" labelAlign="right" label="Rôle" value="Design System Engineer" />
+        <ui-read-only layout="horizontal" labelWidth="140px" labelAlign="right" label="Role" value="Design System Engineer" />
       </div>
     `,
   }),
@@ -140,18 +140,18 @@ export const HorizontalFixedLabel: Story = {
 
 // Valeur vide → repli atténué
 export const Fallback: Story = {
-  args: { label: 'Téléphone', value: null },
+  args: { label: 'Phone', value: null },
 };
 
 // Valeur vide annoncée aux lecteurs d'écran (« - » reste décoratif)
 export const EmptyAccessible: Story = {
-  name: 'Repli accessible',
-  args: { label: 'Téléphone', value: null, emptyLabel: 'Non renseigné' },
+  name: 'Accessible collapse',
+  args: { label: 'Phone', value: null, emptyLabel: 'Not provided' },
 };
 
 // Contrôle total du layout via un système de grille (Gridaflex)
 export const GridLayout: Story = {
-  name: 'Grille (contrôle total)',
+  name: 'Grid (full control)',
   render: (args) => ({
     props: args,
     template: `
@@ -161,8 +161,8 @@ export const GridLayout: Story = {
           rowClass="flex-x flex-gap-x"
           labelClass="cell phone-24 desktop-6"
           valueClass="cell phone-24 desktop-18"
-          label="Libellé"
-          value="Colonne label 6/24, valeur 18/24 sur desktop - pleine largeur sur mobile" />
+          label="Label"
+          value="Label column 6/24, value 18/24 on desktop - full width on mobile" />
       </div>
     `,
   }),
@@ -170,16 +170,16 @@ export const GridLayout: Story = {
 
 // Alignement avec un champ de formulaire voisin (matchField, opt-in)
 export const NextToField: Story = {
-  name: 'À côté d’un champ',
+  name: 'Next to a field',
   render: (args) => ({
     props: args,
     template: `
       <div class="flex-x flex-gap-x" style="min-width:560px;">
         <div class="cell phone-24 desktop-12">
-          <ui-read-only matchField label="Référence" value="REF-2026-0042" />
+          <ui-read-only matchField label="Reference" value="REF-2026-0042" />
         </div>
         <div class="cell phone-24 desktop-12">
-          <ui-input label="Commentaire" placeholder="Saisir…" />
+          <ui-input label="Comment" placeholder="Type…" />
         </div>
       </div>
     `,
@@ -194,20 +194,20 @@ export const Small: Story = {
 // Valeur multiligne
 export const Multiline: Story = {
   args: {
-    label: 'Adresse',
-    value: '12 rue de la Paix\n75002 Paris\nFrance',
+    label: 'Address',
+    value: '12 Market Street\n75002 Paris\nFrance',
     multiline: true,
   },
 };
 
 // Contenu projeté (valeur riche : badge, lien…)
 export const ProjectedContent: Story = {
-  name: 'Contenu projeté',
+  name: 'Projected content',
   render: (args) => ({
     props: args,
     template: `
-      <ui-read-only label="Statut">
-        <ui-badge level="success" value="Actif" icon="check" />
+      <ui-read-only label="Status">
+        <ui-badge level="success" value="Active" icon="check" />
       </ui-read-only>
     `,
   }),
@@ -220,7 +220,7 @@ export const Inline: Story = {
     template: `
       <p style="max-width:420px; line-height:1.6;">
         Dernière connexion&nbsp;:
-        <ui-read-only inline layout="horizontal" label="le" value="24 juillet 2026" />
+        <ui-read-only inline layout="horizontal" label="le" value="24 July 2026" />
         depuis Paris.
       </p>
     `,
@@ -229,16 +229,16 @@ export const Inline: Story = {
 
 // Exemple composé : fiche récapitulative
 export const Summary: Story = {
-  name: 'Exemple - fiche récap',
+  name: 'Example - summary card',
   render: (args) => ({
     props: args,
     template: `
       <div style="display:flex; flex-direction:column; gap:16px; min-width:360px;">
-        <ui-read-only label="Nom complet" value="Jean Dupont" />
+        <ui-read-only label="Full name" value="John Doe" />
         <ui-read-only label="E-mail" value="jean.dupont@4sh.fr" />
-        <ui-read-only label="Téléphone" value="" />
-        <ui-read-only label="Statut">
-          <ui-badge level="success" value="Actif" icon="check" />
+        <ui-read-only label="Phone" value="" />
+        <ui-read-only label="Status">
+          <ui-badge level="success" value="Active" icon="check" />
         </ui-read-only>
       </div>
     `,

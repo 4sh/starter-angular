@@ -95,19 +95,19 @@ export const Checked: Story = {
     props: { ...args, model: 'a' },
     template: `<ui-radio [(ngModel)]="model" value="a" [label]="label" name="checked-demo" />`,
   }),
-  args: { label: 'Sélectionné' },
+  args: { label: 'Selected' },
 };
-export const Disabled: Story = { args: { value: 'a', label: 'Désactivé', disabled: true, name: 'disabled-demo' } };
-export const Invalid: Story = { args: { value: 'a', label: 'En erreur', invalid: true, name: 'invalid-demo' } };
+export const Disabled: Story = { args: { value: 'a', label: 'Disabled', disabled: true, name: 'disabled-demo' } };
+export const Invalid: Story = { args: { value: 'a', label: 'In error', invalid: true, name: 'invalid-demo' } };
 
 // Groupe — le vrai usage : même name + même modèle
 export const Groupe: Story = {
   render: () => ({
     props: { flavor: 'vanilla' },
     template: `
-      <div role="radiogroup" aria-label="Parfum" style="display: grid; gap: 8px; justify-items: start;">
+      <div role="radiogroup" aria-label="Flavor" style="display: grid; gap: 8px; justify-items: start;">
         <ui-radio [(ngModel)]="flavor" name="flavor" value="vanilla" label="Vanille" />
-        <ui-radio [(ngModel)]="flavor" name="flavor" value="chocolate" label="Chocolat" />
+        <ui-radio [(ngModel)]="flavor" name="flavor" value="chocolate" label="Chocolate" />
         <ui-radio [(ngModel)]="flavor" name="flavor" value="strawberry" label="Fraise" />
         <code>model = {{ flavor }}</code>
       </div>
@@ -124,9 +124,9 @@ export const Groupe: Story = {
   standalone: true,
   imports: [UiRadio, FormField],
   template: `
-    <div role="radiogroup" aria-label="Parfum" style="display: grid; gap: 8px; justify-items: start;">
+    <div role="radiogroup" aria-label="Flavor" style="display: grid; gap: 8px; justify-items: start;">
       <ui-radio [formField]="flavor" name="sf-flavor" value="vanilla" label="Vanille" />
-      <ui-radio [formField]="flavor" name="sf-flavor" value="chocolate" label="Chocolat" />
+      <ui-radio [formField]="flavor" name="sf-flavor" value="chocolate" label="Chocolate" />
       <ui-radio [formField]="flavor" name="sf-flavor" value="strawberry" label="Fraise" />
       <code>value = {{ flavor().value() }} · valid = {{ flavor().valid() }}</code>
     </div>
@@ -151,9 +151,9 @@ export const GroupeAvecDisabled: Story = {
     props: { plan: 'free' },
     template: `
       <div role="radiogroup" aria-label="Formule" style="display: grid; gap: 8px; justify-items: start;">
-        <ui-radio [(ngModel)]="plan" name="plan" value="free" label="Gratuit" />
+        <ui-radio [(ngModel)]="plan" name="plan" value="free" label="Free" />
         <ui-radio [(ngModel)]="plan" name="plan" value="pro" label="Pro" />
-        <ui-radio [(ngModel)]="plan" name="plan" value="enterprise" label="Enterprise (bientôt)" [disabled]="true" />
+        <ui-radio [(ngModel)]="plan" name="plan" value="enterprise" label="Enterprise (coming soon)" [disabled]="true" />
       </div>
     `,
   }),

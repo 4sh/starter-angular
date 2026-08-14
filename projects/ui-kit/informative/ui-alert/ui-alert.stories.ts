@@ -20,8 +20,8 @@ import { UiAlert } from '@4sh/ui-kit/informative/ui-alert';
       @if (visible()) {
         <ui-alert
           level="success"
-          title="Enregistré"
-          text="Ce message disparaît après 3 secondes."
+          title="Saved"
+          text="This message disappears after 3 seconds."
           [life]="3000"
           (closed)="visible.set(false)"
         />
@@ -57,11 +57,11 @@ class AlertLifeDemo {
         <ui-alert
           level="error"
           [closable]="false"
-          title="Le formulaire contient des erreurs"
-          text="Corrigez le champ signalé avant de continuer."
+          title="The form contains errors"
+          text="Fix the flagged field before continuing."
         />
       } @else if (submitted() && form.valid) {
-        <ui-alert level="success" title="Formulaire valide" text="Vous pouvez continuer." />
+        <ui-alert level="success" title="Valid form" text="You can continue." />
       }
 
       <ui-input
@@ -71,10 +71,10 @@ class AlertLifeDemo {
         placeholder="prenom.nom@exemple.fr"
         [required]="true"
         [invalid]="isFieldInvalid()"
-        errorText="Saisissez une adresse e-mail valide."
+        errorText="Enter a valid email address."
       />
 
-      <ui-button type="submit" label="Valider" />
+      <ui-button type="submit" label="Submit" />
     </form>
   `,
 })
@@ -184,30 +184,30 @@ type Story = StoryObj<UiAlert>;
 export const Basic: Story = {};
 
 // --- Level : la sévérité du message ---------------------------------
-export const Info: Story = { args: { level: 'default', title: 'Information', text: 'Un message informatif.' } };
-export const Highlight: Story = { args: { level: 'highlight', title: 'À noter', text: 'Une information mise en avant.' } };
-export const Success: Story = { args: { level: 'success', title: 'Succès', text: 'Opération réalisée.' } };
-export const Warning: Story = { args: { level: 'warning', title: 'Attention', text: 'Vérifiez les informations.' } };
-export const Error: Story = { args: { level: 'error', title: 'Erreur', text: "L'opération a échoué." } };
+export const Info: Story = { args: { level: 'default', title: 'Information', text: 'An informational message.' } };
+export const Highlight: Story = { args: { level: 'highlight', title: 'Note', text: 'Highlighted information.' } };
+export const Success: Story = { args: { level: 'success', title: 'Success', text: 'Operation completed.' } };
+export const Warning: Story = { args: { level: 'warning', title: 'Attention', text: 'Check the information.' } };
+export const Error: Story = { args: { level: 'error', title: 'Error', text: "The operation failed." } };
 
 /** Icon : icône personnalisée ou masquée. */
-export const CustomIcon: Story = { args: { level: 'highlight', icon: 'bell', title: 'Notification', text: 'Icône surchargée.' } };
-export const NoIcon: Story = { args: { level: 'success', icon: false, title: 'Sans icône', text: 'Icône masquée.' } };
+export const CustomIcon: Story = { args: { level: 'highlight', icon: 'bell', title: 'Notification', text: 'Icon overridden.' } };
+export const NoIcon: Story = { args: { level: 'success', icon: false, title: 'No icon', text: 'Icon hidden.' } };
 
 /** Variant : sous-niveau low (discret) vs high (soutenu). */
-export const SubLevelLow: Story = { args: { level: 'error', subLevel: 'low', title: 'Erreur', text: 'Variante low.' } };
+export const SubLevelLow: Story = { args: { level: 'error', subLevel: 'low', title: 'Error', text: 'Low variant.' } };
 
 /** Sizes : default et large. */
-export const Large: Story = { args: { level: 'success', size: 'large', title: 'Succès', text: 'Taille large.' } };
+export const Large: Story = { args: { level: 'success', size: 'large', title: 'Success', text: 'Large size.' } };
 
 /** Dynamic : plusieurs messages via un bloc `@for`, retirés à la fermeture. */
 export const Dynamic: Story = {
   render: () => ({
     props: {
       messages: [
-        { id: 1, level: 'success', title: 'Succès', text: 'Fichier importé.' },
-        { id: 2, level: 'warning', title: 'Attention', text: 'Quota bientôt atteint.' },
-        { id: 3, level: 'error', title: 'Erreur', text: 'Import du 2e fichier échoué.' },
+        { id: 1, level: 'success', title: 'Success', text: 'File imported.' },
+        { id: 2, level: 'warning', title: 'Attention', text: 'Quota almost reached.' },
+        { id: 3, level: 'error', title: 'Error', text: 'Second file import failed.' },
       ] as { id: number; level: string; title: string; text: string }[],
       remove(this: { messages: { id: number }[] }, id: number) {
         this.messages = this.messages.filter((m) => m.id !== id);

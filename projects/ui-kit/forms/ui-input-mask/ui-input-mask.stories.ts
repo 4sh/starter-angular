@@ -35,7 +35,7 @@ const meta: Meta<UiInputMask> = {
     valueChange: { action: 'valueChange', table: { disable: true } },
     inputBlur: { action: 'inputBlur', table: { disable: true } },
   },
-  args: { label: 'Téléphone', mask: '(999) 999-9999', ranges: '', slotChar: '_', size: 'default', level: 'default' },
+  args: { label: 'Phone', mask: '(999) 999-9999', ranges: '', slotChar: '_', size: 'default', level: 'default' },
 };
 
 export default meta;
@@ -51,10 +51,10 @@ const TEMPLATE = `<div style="width:240px"><ui-input-mask
 
 const story = (value = ''): Story['render'] => (args) => ({ props: { ...args, model: value }, template: TEMPLATE });
 
-export const Phone: Story = { render: story(), args: { label: 'Téléphone', mask: '(999) 999-9999' } };
+export const Phone: Story = { render: story(), args: { label: 'Phone', mask: '(999) 999-9999' } };
 export const Time: Story = {
   render: story(),
-  args: { label: 'Heure', mask: '99:99', ranges: '0-23 0-59', helperText: 'Format 24h', iconLeft: 'clock' },
+  args: { label: 'Time', mask: '99:99', ranges: '0-23 0-59', helperText: 'Format 24h', iconLeft: 'clock' },
 };
 export const Date: Story = {
   render: story(),
@@ -62,11 +62,11 @@ export const Date: Story = {
 };
 export const License: Story = { render: story(), args: { label: 'Immatriculation', mask: 'aa-999-aa' } };
 export const Prefilled: Story = { render: story('12/09/2024'), args: { label: 'Date', mask: '99/99/9999' } };
-export const Unmask: Story = { render: story(), args: { label: 'IBAN (brut)', mask: 'FR99 9999 9999 9999', unmask: true, helperText: 'Émet la valeur sans espaces.' } };
+export const Unmask: Story = { render: story(), args: { label: 'IBAN (brut)', mask: 'FR99 9999 9999 9999', unmask: true, helperText: 'Emits the value without spaces.' } };
 export const Small: Story = { render: story(), args: { label: 'Date', mask: '99/99/9999', size: 'small' } };
 export const Error: Story = {
   render: story('12/'),
-  args: { label: 'Date', mask: '99/99/9999', level: 'error', invalid: true, errorText: 'Date incomplète.' },
+  args: { label: 'Date', mask: '99/99/9999', level: 'error', invalid: true, errorText: 'Incomplete date.' },
 };
 export const Disabled: Story = { render: story('12/09/2024'), args: { label: 'Date', mask: '99/99/9999', disabled: true } };
 

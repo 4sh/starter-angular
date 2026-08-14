@@ -93,7 +93,7 @@ const meta: Meta<UiDatepicker> = {
     editableTime: true,
     showButtonBar: false,
     todayLabel: 'Today',
-    clearLabel: 'Effacer',
+    clearLabel: 'Clear',
     inline: false,
     showClear: false,
     autoFlip: true,
@@ -140,11 +140,11 @@ const sample = new Date(2026, 6, 8); // 8 July 2026
 export const Default: Story = { render: story() };
 export const WithValue: Story = { render: story(sample), args: { helperText: 'Pick a date.' } };
 export const Small: Story = { render: story(sample), args: { size: 'small' } };
-export const Required: Story = { render: story(), args: { required: true, helperText: 'Champ obligatoire.' } };
+export const Required: Story = { render: story(), args: { required: true, helperText: 'Required field.' } };
 
 export const Error: Story = {
   render: story(),
-  args: { level: 'error', invalid: true, errorText: 'Date invalide.' },
+  args: { level: 'error', invalid: true, errorText: 'Invalid date.' },
 };
 
 // Contrat en mode `'iso'` : la valeur (entrée ET sortie) est une string "yyyy-MM-dd" — pour un
@@ -152,12 +152,12 @@ export const Error: Story = {
 // les deux. Ouvrir le panneau Actions pour voir `valueChange` émettre une string après sélection.
 export const IsoValueType: Story = {
   render: story('2026-07-08'),
-  args: { valueType: 'iso', label: 'Date (mode ISO)', helperText: 'Valeur : string "yyyy-MM-dd" (au lieu de Date).' },
+  args: { valueType: 'iso', label: 'Date (ISO mode)', helperText: 'Valeur : string "yyyy-MM-dd" (au lieu de Date).' },
 };
 
 export const WithTime: Story = {
   render: story(new Date(2026, 6, 8, 14, 30)),
-  args: { showTime: true, label: 'Appointment', helperText: 'Heures et minutes saisissables au clavier.' },
+  args: { showTime: true, label: 'Appointment', helperText: 'Hours and minutes can be typed.' },
 };
 
 export const StepperOnlyTime: Story = {
@@ -257,7 +257,7 @@ export const AutoFormattedInputEnUs: Story = {
 export const AutoFormattedInputMonthPicker: Story = {
   render: story(),
   args: {
-    label: 'Mois',
+    label: 'Month',
     view: 'month',
     allowInput: true,
     showClear: true,
@@ -349,7 +349,7 @@ export const Range: Story = {
 // MonthPicker : le clic sur un mois sélectionne le mois (valeur = 1er du mois).
 export const MonthPicker: Story = {
   render: story(new Date(2027, 1, 1)),
-  args: { inline: true, view: 'month', label: 'Mois' },
+  args: { inline: true, view: 'month', label: 'Month' },
 };
 
 // YearPicker : le clic sur une année sélectionne l'année.
@@ -361,7 +361,7 @@ export const YearPicker: Story = {
 // Plusieurs mois côte à côte (numberOfMonths).
 export const TwoMonths: Story = {
   render: story(new Date(2026, 6, 8)),
-  args: { inline: true, numberOfMonths: 2, label: 'Deux mois' },
+  args: { inline: true, numberOfMonths: 2, label: 'Two months' },
 };
 
 // Barre de boutons personnalisée via le template #buttonbar (contexte todayCallback / clearCallback).
@@ -377,7 +377,7 @@ export const CustomButtonBar: Story = {
           </div>
           <div style="display:flex;gap:8px">
             <ui-button size="small" level="high" label="Today" (buttonClick)="todayCallback($event)" />
-            <ui-button size="small" level="error" icon="xmark" iconOnly ariaLabel="Effacer" (buttonClick)="clearCallback($event)" />
+            <ui-button size="small" level="error" icon="xmark" iconOnly ariaLabel="Clear" (buttonClick)="clearCallback($event)" />
           </div>
         </div>
       </ng-template>
@@ -392,7 +392,7 @@ export const SmartPosition: Story = {
     props: { ...args, model: null },
     template: `<div style="height:520px;display:flex;align-items:flex-end;justify-content:center">
       <div style="width:260px"><ui-datepicker
-        [(ngModel)]="model" valueType="date" label="Ouverture intelligente" [autoFlip]="autoFlip"
+        [(ngModel)]="model" valueType="date" label="Smart opening" [autoFlip]="autoFlip"
         helperText="Anchored at the bottom: the panel opens upwards when space is tight." /></div>
     </div>`,
   }),

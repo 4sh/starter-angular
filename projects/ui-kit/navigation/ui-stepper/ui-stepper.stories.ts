@@ -75,7 +75,7 @@ export default meta;
 type Story = StoryObj<UiStepper>;
 
 const LOREM =
-  'Renseignez les informations demandées puis passez à la suite. Vous pourrez revenir sur cette étape à tout moment.';
+  'Fill in the requested information then move on. You can come back to this step at any time.';
 
 // Fixed-width shell so the stepper reads like the Figma frame.
 const box = (inner: string, width = 685) => `<div style="max-width:${width}px">${inner}</div>`;
@@ -88,9 +88,9 @@ export const Basic: Story = {
     props: { ...args, active: 1 },
     template: box(`
       <ui-stepper [(value)]="active" [orientation]="orientation" [linear]="linear" [motion]="motion" [completedIcon]="completedIcon">
-        <ui-step-list ariaLabel="Création du compte">
-          <ui-step [value]="1">Compte</ui-step>
-          <ui-step [value]="2">Profil</ui-step>
+        <ui-step-list ariaLabel="Account creation">
+          <ui-step [value]="1">Account</ui-step>
+          <ui-step [value]="2">Profile</ui-step>
           <ui-step [value]="3">Confirmation</ui-step>
         </ui-step-list>
         <ui-step-panels>
@@ -112,7 +112,7 @@ export const Vertical: Story = {
     template: box(`
       <ui-stepper [(value)]="active" orientation="vertical" [motion]="motion" ariaLabel="Installation">
         <ui-step-item [value]="1">
-          <ui-step [value]="1">Prérequis</ui-step>
+          <ui-step [value]="1">Prerequisites</ui-step>
           <ui-step-panel [value]="1">Vérifiez que votre environnement est prêt. ${LOREM}</ui-step-panel>
         </ui-step-item>
         <ui-step-item [value]="2">
@@ -120,8 +120,8 @@ export const Vertical: Story = {
           <ui-step-panel [value]="2">Renseignez les paramètres du projet. ${LOREM}</ui-step-panel>
         </ui-step-item>
         <ui-step-item [value]="3">
-          <ui-step [value]="3">Terminé</ui-step>
-          <ui-step-panel [value]="3">Tout est prêt, vous pouvez démarrer.</ui-step-panel>
+          <ui-step [value]="3">Done</ui-step>
+          <ui-step-panel [value]="3">Everything is ready, you can start.</ui-step-panel>
         </ui-step-item>
       </ui-stepper>`, 480),
   }),
@@ -136,25 +136,25 @@ export const Linear: Story = {
     props: { ...args, active: 1 },
     template: box(`
       <ui-stepper [(value)]="active" [linear]="linear" [motion]="motion" completedIcon="check">
-        <ui-step-list ariaLabel="Commande">
-          <ui-step [value]="1">Panier</ui-step>
-          <ui-step [value]="2">Livraison</ui-step>
-          <ui-step [value]="3">Paiement</ui-step>
+        <ui-step-list ariaLabel="Order">
+          <ui-step [value]="1">Cart</ui-step>
+          <ui-step [value]="2">Delivery</ui-step>
+          <ui-step [value]="3">Payment</ui-step>
         </ui-step-list>
         <ui-step-panels>
           <ui-step-panel [value]="1">
-            <p>Vérifiez votre panier.</p>
+            <p>Check your cart.</p>
             <ui-button size="small" (buttonClick)="active = 2">Continuer</ui-button>
           </ui-step-panel>
           <ui-step-panel [value]="2">
-            <p>Choisissez le mode de livraison.</p>
+            <p>Choose the delivery method.</p>
             <div style="display:flex; gap:8px">
               <ui-button size="small" level="low" (buttonClick)="active = 1">Retour</ui-button>
               <ui-button size="small" (buttonClick)="active = 3">Continuer</ui-button>
             </div>
           </ui-step-panel>
           <ui-step-panel [value]="3">
-            <p>Finalisez le paiement.</p>
+            <p>Complete the payment.</p>
             <ui-button size="small" level="low" (buttonClick)="active = 2">Retour</ui-button>
           </ui-step-panel>
         </ui-step-panels>
@@ -170,10 +170,10 @@ export const StepsOnly: Story = {
     template: box(`
       <ui-stepper [(value)]="active" [motion]="motion" completedIcon="check">
         <ui-step-list ariaLabel="Progression">
-          <ui-step [value]="1">Devis</ui-step>
+          <ui-step [value]="1">Quote</ui-step>
           <ui-step [value]="2">Validation</ui-step>
           <ui-step [value]="3">Production</ui-step>
-          <ui-step [value]="4">Livraison</ui-step>
+          <ui-step [value]="4">Delivery</ui-step>
         </ui-step-list>
       </ui-stepper>`),
   }),
@@ -188,27 +188,27 @@ export const Template: Story = {
     template: box(`
       <ui-stepper [(value)]="active" [motion]="motion" completedIcon="check">
         <ui-step-list ariaLabel="Publication">
-          <ui-step [value]="1" icon="pen">Rédaction</ui-step>
-          <ui-step [value]="2" icon="eye">Relecture</ui-step>
+          <ui-step [value]="1" icon="pen">Drafting</ui-step>
+          <ui-step [value]="2" icon="eye">Review</ui-step>
           <ui-step [value]="3" icon="rocket">Publication</ui-step>
         </ui-step-list>
         <ui-step-panels>
           <ui-step-panel [value]="1">
             <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px">
-              <strong>Rédaction</strong> <ui-tag label="Terminé" level="success" size="small" />
+              <strong>Drafting</strong> <ui-tag label="Done" level="success" size="small" />
             </div>
             <p>${LOREM}</p>
           </ui-step-panel>
           <ui-step-panel [value]="2">
             <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px">
-              <strong>Relecture</strong> <ui-tag label="En cours" level="highlight" size="small" />
+              <strong>Review</strong> <ui-tag label="En cours" level="highlight" size="small" />
             </div>
             <p>${LOREM}</p>
-            <ui-button size="small" (buttonClick)="active = 3">Publier</ui-button>
+            <ui-button size="small" (buttonClick)="active = 3">Publish</ui-button>
           </ui-step-panel>
           <ui-step-panel [value]="3">
             <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px">
-              <strong>Publication</strong> <ui-tag label="À venir" level="warning" size="small" />
+              <strong>Publication</strong> <ui-tag label="Upcoming" level="warning" size="small" />
             </div>
             <p>${LOREM}</p>
           </ui-step-panel>
@@ -229,17 +229,17 @@ export const Controlled: Story = {
         <ui-button size="small" level="low" (buttonClick)="active = 3">3</ui-button>
       </div>
       <ui-stepper [(value)]="active" [motion]="motion">
-        <ui-step-list ariaLabel="Étapes contrôlées">
+        <ui-step-list ariaLabel="Controlled steps">
           <ui-step [value]="1">Un</ui-step>
-          <ui-step [value]="2">Deux</ui-step>
-          <ui-step [value]="3">Trois</ui-step>
+          <ui-step [value]="2">Two</ui-step>
+          <ui-step [value]="3">Three</ui-step>
         </ui-step-list>
         <ui-step-panels>
-          <ui-step-panel [value]="1">Contenu 1</ui-step-panel>
-          <ui-step-panel [value]="2">Contenu 2</ui-step-panel>
-          <ui-step-panel [value]="3">Contenu 3</ui-step-panel>
+          <ui-step-panel [value]="1">Content 1</ui-step-panel>
+          <ui-step-panel [value]="2">Content 2</ui-step-panel>
+          <ui-step-panel [value]="3">Content 3</ui-step-panel>
         </ui-step-panels>
       </ui-stepper>
-      <p style="margin-top:16px; font-size:13px">Étape active : <strong>{{ active }}</strong></p>`),
+      <p style="margin-top:16px; font-size:13px">Active step: <strong>{{ active }}</strong></p>`),
   }),
 };

@@ -38,7 +38,7 @@ const meta: Meta<UiInputNumber> = {
     valueChange: { action: 'valueChange', table: { disable: true } },
     inputBlur: { action: 'inputBlur', table: { disable: true } },
   },
-  args: { label: 'Quantité', size: 'default', level: 'default', step: 1, showButtons: true, allowDecimals: true, useGrouping: true },
+  args: { label: 'Quantity', size: 'default', level: 'default', step: 1, showButtons: true, allowDecimals: true, useGrouping: true },
 };
 
 export default meta;
@@ -55,19 +55,19 @@ const TEMPLATE = `<div style="width:220px"><ui-input-number
 
 const story = (value: number | null = null): Story['render'] => (args) => ({ props: { ...args, model: value }, template: TEMPLATE });
 
-export const Default: Story = { render: story(3), args: { label: 'Quantité' } };
-export const Empty: Story = { render: story(null), args: { label: 'Quantité', placeholder: '0' } };
-export const MinMax: Story = { render: story(5), args: { label: 'Note (0–10)', min: 0, max: 10, helperText: 'Bornée entre 0 et 10.' } };
-export const Step: Story = { render: story(10), args: { label: 'Prix', step: 5, unit: '€' } };
-export const Integer: Story = { render: story(2), args: { label: 'Personnes', allowDecimals: false, min: 1 } };
-export const WithUnit: Story = { render: story(70), args: { label: 'Poids', unit: 'kg' } };
+export const Default: Story = { render: story(3), args: { label: 'Quantity' } };
+export const Empty: Story = { render: story(null), args: { label: 'Quantity', placeholder: '0' } };
+export const MinMax: Story = { render: story(5), args: { label: 'Note (0–10)', min: 0, max: 10, helperText: 'Bounded between 0 and 10.' } };
+export const Step: Story = { render: story(10), args: { label: 'Price', step: 5, unit: '€' } };
+export const Integer: Story = { render: story(2), args: { label: 'People', allowDecimals: false, min: 1 } };
+export const WithUnit: Story = { render: story(70), args: { label: 'Weight', unit: 'kg' } };
 export const NoButtons: Story = { render: story(42), args: { label: 'Sans spinner', showButtons: false } };
 export const Small: Story = { render: story(3), args: { label: 'Compact', size: 'small' } };
-export const Error: Story = { render: story(150), args: { label: 'Âge', max: 120, level: 'error', errorText: 'Valeur trop élevée.' } };
-export const Disabled: Story = { render: story(3), args: { label: 'Quantité', disabled: true } };
+export const Error: Story = { render: story(150), args: { label: 'Age', max: 120, level: 'error', errorText: 'Value too high.' } };
+export const Disabled: Story = { render: story(3), args: { label: 'Quantity', disabled: true } };
 
 // Formatage Intl (appliqué au blur ; forme éditable au focus)
-export const Currency: Story = { render: story(1234.5), args: { label: 'Prix', locale: 'fr-FR', currency: 'EUR', step: 0.5, helperText: 'Focus pour éditer, blur pour formater.' } };
+export const Currency: Story = { render: story(1234.5), args: { label: 'Price', locale: 'fr-FR', currency: 'EUR', step: 0.5, helperText: 'Focus to edit, blur to format.' } };
 export const Grouped: Story = { render: story(1234567), args: { label: 'Population', locale: 'fr-FR', useGrouping: true } };
 
 // --- Signal Forms (@angular/forms/signals) ------------------------------

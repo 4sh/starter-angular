@@ -112,8 +112,8 @@ export const Basic: Story = {
   render: (args) => ({
     props: { ...args, visible: false },
     template: `
-      <ui-button label="Ouvrir le drawer" (buttonClick)="visible = true" />
-      <ui-drawer [(visible)]="visible" header="Titre du panneau">
+      <ui-button label="Open the drawer" (buttonClick)="visible = true" />
+      <ui-drawer [(visible)]="visible" header="Panel title">
         <p style="margin: 0;">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla congue
           sit amet quam ut vestibulum.
@@ -132,8 +132,8 @@ export const Position: Story = {
     template: `
       <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;">
         <ui-button label="Gauche" level="low" (buttonClick)="pos = 'left'; visible = true" />
-        <ui-button label="Droite" level="low" (buttonClick)="pos = 'right'; visible = true" />
-        <ui-button label="Haut" level="low" (buttonClick)="pos = 'top'; visible = true" />
+        <ui-button label="Right" level="low" (buttonClick)="pos = 'right'; visible = true" />
+        <ui-button label="Top" level="low" (buttonClick)="pos = 'top'; visible = true" />
         <ui-button label="Bas" level="low" (buttonClick)="pos = 'bottom'; visible = true" />
       </div>
 
@@ -150,8 +150,8 @@ export const FullScreen: Story = {
   render: (args) => ({
     props: { ...args, visible: false },
     template: `
-      <ui-button label="Ouvrir en plein écran" (buttonClick)="visible = true" />
-      <ui-drawer [(visible)]="visible" [fullScreen]="true" header="Plein écran">
+      <ui-button label="Open fullscreen" (buttonClick)="visible = true" />
+      <ui-drawer [(visible)]="visible" [fullScreen]="true" header="Fullscreen">
         <p style="margin: 0;">
           En mode plein écran, le panneau occupe tout le viewport et apparaît en fondu.
         </p>
@@ -167,11 +167,11 @@ export const Responsive: Story = {
   render: (args) => ({
     props: { ...args, visible: false },
     template: `
-      <ui-button label="Ouvrir le drawer responsive" (buttonClick)="visible = true" />
+      <ui-button label="Open the responsive drawer" (buttonClick)="visible = true" />
       <ui-drawer
         [(visible)]="visible"
         position="right"
-        header="Largeur responsive"
+        header="Responsive width"
         [drawerStyle]="{ width: 'min(90vw, 28rem)' }"
       >
         <p style="margin: 0;">
@@ -189,8 +189,8 @@ export const Template: Story = {
   render: (args) => ({
     props: { ...args, visible: false },
     template: `
-      <ui-button label="Ouvrir le profil" (buttonClick)="visible = true" />
-      <ui-drawer [(visible)]="visible" position="right" ariaLabel="Profil utilisateur">
+      <ui-button label="Open the profile" (buttonClick)="visible = true" />
+      <ui-drawer [(visible)]="visible" position="right" ariaLabel="User profile">
         <ng-template #header>
           <span style="display: inline-flex; align-items: center; gap: 8px;">
             <ui-icon name="circle-user" size="default" />
@@ -205,7 +205,7 @@ export const Template: Story = {
 
         <ng-template #footer>
           <ui-button label="Message" level="low" icon="envelope" (buttonClick)="visible = false" />
-          <ui-button label="Suivre" level="high" icon="user-plus" (buttonClick)="visible = false" />
+          <ui-button label="Follow" level="high" icon="user-plus" (buttonClick)="visible = false" />
         </ng-template>
       </ui-drawer>
     `,
@@ -219,14 +219,14 @@ export const Headless: Story = {
   render: (args) => ({
     props: { ...args, visible: false },
     template: `
-      <ui-button label="Ouvrir (headless)" (buttonClick)="visible = true" />
+      <ui-button label="Open (headless)" (buttonClick)="visible = true" />
       <ui-drawer [(visible)]="visible" position="left" ariaLabel="Navigation" [drawerStyle]="{ width: '18rem' }">
         <ng-template #headless>
           <nav style="display: flex; flex-direction: column; gap: 4px; padding: 16px;">
             <div style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; font-weight: 700;">
               <ui-icon name="bars" size="sm" /> Menu
             </div>
-            @for (item of ['Accueil', 'Projets', 'Équipe', 'Réglages']; track item) {
+            @for (item of ['Home', 'Projects', 'Team', 'Settings']; track item) {
               <a
                 href="#"
                 (click)="$event.preventDefault(); visible = false"
@@ -255,10 +255,10 @@ export const Contained: Story = {
           [focusTrap]="false"
           [motionDisabled]="true"
           position="left"
-          header="Panneau"
+          header="Panel"
           [drawerStyle]="{ width: '200px' }"
         >
-          <p style="margin: 0;">Aperçu d'un drawer embarqué dans un conteneur.</p>
+          <p style="margin: 0;">Preview of a drawer embedded in a container.</p>
         </ui-drawer>
       </div>
     `,

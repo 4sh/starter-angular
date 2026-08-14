@@ -6,20 +6,20 @@ import { UiMenuItem } from '@4sh/ui-kit/navigation/ui-menu';
 
 // A basic set of options driving the dropdown (activation logged via itemClick).
 const BASIC_MODEL: UiMenuItem[] = [
-  { label: 'Mettre à jour' },
-  { label: 'Supprimer' },
+  { label: 'Update' },
+  { label: 'Remove' },
   { separator: true },
   { label: 'Angular', url: 'https://angular.dev', target: '_blank' },
-  { label: 'Voir le profil', routerLink: '/profil' },
+  { label: 'View profile', routerLink: '/profil' },
 ];
 
 // Same options, each carrying an icon.
 const ICON_MODEL: UiMenuItem[] = [
-  { label: 'Mettre à jour', icon: 'refresh' },
-  { label: 'Supprimer', icon: 'trash' },
+  { label: 'Update', icon: 'refresh' },
+  { label: 'Remove', icon: 'trash' },
   { separator: true },
   { label: 'Angular', icon: 'arrow-up-right-from-square', url: 'https://angular.dev', target: '_blank' },
-  { label: 'Voir le profil', icon: 'user' },
+  { label: 'View profile', icon: 'user' },
 ];
 
 // Options with nested submenus (collapsible groups inside the panel).
@@ -27,21 +27,21 @@ const ICON_MODEL: UiMenuItem[] = [
 // force `toggleable: true` so this story actually demonstrates the collapse.
 const NESTED_MODEL: UiMenuItem[] = [
   {
-    label: 'Fichier',
+    label: 'File',
     icon: 'folder',
     toggleable: true,
     items: [
-      { label: 'Nouveau', icon: 'plus' },
-      { label: 'Ouvrir', icon: 'folder-open' },
-      { label: 'Imprimer', icon: 'print' },
+      { label: 'New', icon: 'plus' },
+      { label: 'Open', icon: 'folder-open' },
+      { label: 'Print', icon: 'print' },
     ],
   },
   {
-    label: 'Partager',
+    label: 'Share',
     icon: 'share-nodes',
     toggleable: true,
     items: [
-      { label: 'Copier le lien', icon: 'link' },
+      { label: 'Copy link', icon: 'link' },
       { label: 'Par e-mail', icon: 'envelope' },
     ],
   },
@@ -204,7 +204,7 @@ const meta: Meta<UiButtonSplit> = {
     },
   },
   args: {
-    label: 'Enregistrer',
+    label: 'Save',
     level: 'high',
     size: 'default',
     model: BASIC_MODEL,
@@ -222,7 +222,7 @@ export const Basic: Story = {};
 // Both the action button and the options support icons.
 export const Icons: Story = {
   args: {
-    label: 'Enregistrer',
+    label: 'Save',
     icon: 'floppy-disk',
     model: ICON_MODEL,
   },
@@ -232,7 +232,7 @@ export const Icons: Story = {
 // Options can nest into collapsible submenus.
 export const Nested: Story = {
   args: {
-    label: 'Fichier',
+    label: 'File',
     icon: 'folder',
     model: NESTED_MODEL,
   },
@@ -264,9 +264,9 @@ export const Disabled: Story = {
     props: { ...args },
     template: `
       <div style="display:flex; gap:16px; flex-wrap:wrap; align-items:flex-start">
-        <ui-button-split label="Tout désactivé" disabled [model]="model" menuAriaLabel="Options" />
-        <ui-button-split label="Action désactivée" buttonDisabled [model]="model" menuAriaLabel="Options" />
-        <ui-button-split label="Menu désactivé" menuButtonDisabled [model]="model" menuAriaLabel="Options" />
+        <ui-button-split label="All disabled" disabled [model]="model" menuAriaLabel="Options" />
+        <ui-button-split label="Disabled action" buttonDisabled [model]="model" menuAriaLabel="Options" />
+        <ui-button-split label="Disabled menu" menuButtonDisabled [model]="model" menuAriaLabel="Options" />
       </div>
     `,
   }),
@@ -291,5 +291,5 @@ export const Sizes: Story = {
 // --- Outlined ----------------------------------------------------------------
 // `variant` is forwarded to both the action button and the dropdown trigger.
 export const Outlined: Story = {
-  args: { label: 'Enregistrer', level: 'high', variant: 'outlined', model: BASIC_MODEL },
+  args: { label: 'Save', level: 'high', variant: 'outlined', model: BASIC_MODEL },
 };

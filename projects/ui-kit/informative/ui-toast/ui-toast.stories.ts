@@ -23,7 +23,7 @@ const DEMO_BOX =
   providers: [UiToastService],
   template: `
     <div [style]="box">
-      <ui-button label="Afficher un toast" (buttonClick)="show()" />
+      <ui-button label="Show a toast" (buttonClick)="show()" />
       <ui-toast-container position="top-right" [contained]="true" [life]="4000" />
     </div>
   `,
@@ -61,8 +61,8 @@ class ToastDemoPromise {
     this.busy = true;
     const id = this.toast.add({
       level: 'highlight',
-      title: 'Traitement…',
-      text: 'Enregistrement en cours.',
+      title: 'Processing…',
+      text: 'Saving.',
       icon: 'circle-notch',
       sticky: true,
       closable: false,
@@ -72,8 +72,8 @@ class ToastDemoPromise {
       this.toast.remove(id);
       this.toast.add({
         level: 'success',
-        title: 'Enregistré',
-        text: 'Vos données ont bien été sauvegardées.',
+        title: 'Saved',
+        text: 'Your data has been saved.',
       });
       this.busy = false;
     }, 1800);
@@ -86,7 +86,7 @@ class ToastDemoPromise {
   providers: [UiToastService],
   template: `
     <div [style]="box">
-      <ui-button label="Toast persistant" (buttonClick)="show()" />
+      <ui-button label="Persistent toast" (buttonClick)="show()" />
       <ui-toast-container position="top-right" [contained]="true" />
     </div>
   `,
@@ -97,8 +97,8 @@ class ToastDemoSticky {
   protected show(): void {
     this.toast.add({
       level: 'warning',
-      title: 'Action requise',
-      text: 'Ce message reste affiché jusqu’à fermeture manuelle.',
+      title: 'Action required',
+      text: 'This message stays until dismissed manually.',
       sticky: true,
     });
   }
@@ -110,7 +110,7 @@ class ToastDemoSticky {
   providers: [UiToastService],
   template: `
     <div [style]="box">
-      <button type="button" class="demo-trigger" (click)="show()">Afficher un toast personnalisé</button>
+      <button type="button" class="demo-trigger" (click)="show()">Show a custom toast</button>
       <ui-toast-container position="top-right" [contained]="true" [template]="tpl" />
       <ng-template #tpl let-message>
         <span style="font-weight:700;">{{ message.data?.name }}</span>
@@ -127,7 +127,7 @@ class ToastDemoCustom {
     this.toast.add({
       level: 'highlight',
       icon: 'user',
-      data: { name: 'Marie Dupont', action: 'a commenté votre document', time: 'À l’instant' },
+      data: { name: 'Mary Doe', action: 'commented on your document', time: 'Just now' },
     });
   }
 }
@@ -138,7 +138,7 @@ class ToastDemoCustom {
   providers: [UiToastService],
   template: `
     <div [style]="box">
-      <ui-button label="Afficher" (buttonClick)="show()" />
+      <ui-button label="Show" (buttonClick)="show()" />
       <ui-toast-container [position]="position()" [contained]="true" />
     </div>
   `,
@@ -162,7 +162,7 @@ class ToastDemoPosition {
   providers: [UiToastService],
   template: `
     <div [style]="box">
-      <ui-button label="Bannière" (buttonClick)="show()" />
+      <ui-button label="Banner" (buttonClick)="show()" />
       <ui-toast-container position="top-center" [contained]="true" [expanded]="true" />
     </div>
   `,
@@ -173,8 +173,8 @@ class ToastDemoExpanded {
   protected show(): void {
     this.toast.add({
       level: 'highlight',
-      title: 'Nouvelle version disponible',
-      text: 'Une mise à jour de l’application est prête à être installée.',
+      title: 'New version available',
+      text: 'An application update is ready to install.',
     });
   }
 }
@@ -185,14 +185,14 @@ class ToastDemoExpanded {
   providers: [UiToastService],
   template: `
     <div [style]="box">
-      <ui-button label="Supprimer l’élément" level="error" (buttonClick)="show()" />
+      <ui-button label="Remove the item" level="error" (buttonClick)="show()" />
       <ui-toast-container position="bottom-right" [contained]="true" [template]="tpl" />
       <ng-template #tpl let-message let-close="closeFn">
         <span style="font-weight:700;">{{ message.title }}</span>
         <span style="font-size:0.875rem;">{{ message.text }}</span>
         <div style="display:flex; gap:8px; margin-top:8px;">
-          <ui-button size="small" level="high" label="Annuler" (buttonClick)="undo(); close()" />
-          <ui-button size="small" level="low" label="Fermer" (buttonClick)="close()" />
+          <ui-button size="small" level="high" label="Cancel" (buttonClick)="undo(); close()" />
+          <ui-button size="small" level="low" label="Close" (buttonClick)="close()" />
         </div>
       </ng-template>
     </div>
@@ -205,13 +205,13 @@ class ToastDemoAction {
     this.toast.add({
       level: 'default',
       icon: 'trash',
-      title: 'Élément supprimé',
-      text: 'L’élément a été déplacé vers la corbeille.',
+      title: 'Item removed',
+      text: 'The item was moved to the trash.',
       sticky: true,
     });
   }
   protected undo(): void {
-    this.toast.add({ level: 'success', title: 'Restauré', text: 'L’élément a été restauré.' });
+    this.toast.add({ level: 'success', title: 'Restored', text: 'The item was restored.' });
   }
 }
 
@@ -222,8 +222,8 @@ class ToastDemoAction {
   template: `
     <div [style]="box">
       <div style="display:flex; gap:8px;">
-        <ui-button label="Ajouter 5 toasts" (buttonClick)="burst()" />
-        <ui-button level="low" label="Toast identique" (buttonClick)="duplicate()" />
+        <ui-button label="Add 5 toasts" (buttonClick)="burst()" />
+        <ui-button level="low" label="Identical toast" (buttonClick)="duplicate()" />
       </div>
       <ui-toast-container
         position="top-right"
@@ -247,7 +247,7 @@ class ToastDemoStacking {
   }
   protected duplicate(): void {
     // Same content each time → preventDuplicates keeps a single instance.
-    this.toast.add({ level: 'highlight', title: 'Doublon', text: 'Affiché une seule fois.' });
+    this.toast.add({ level: 'highlight', title: 'Duplicate', text: 'Shown only once.' });
   }
 }
 
@@ -381,11 +381,11 @@ export const Levels: Story = {
   render: () => ({
     template: `
       <div style="display:flex; flex-direction:column; gap:12px; width:360px;">
-        <ui-toast level="default" title="Information" text="Message d’information neutre." />
-        <ui-toast level="highlight" title="À noter" text="Information mise en avant." />
-        <ui-toast level="success" title="Succès" text="L’opération a réussi." />
-        <ui-toast level="warning" title="Attention" text="Vérifiez avant de continuer." />
-        <ui-toast level="error" title="Erreur" text="Une erreur est survenue." />
+        <ui-toast level="default" title="Information" text="Neutral information message." />
+        <ui-toast level="highlight" title="Note" text="Highlighted information." />
+        <ui-toast level="success" title="Success" text="The operation succeeded." />
+        <ui-toast level="warning" title="Attention" text="Check before continuing." />
+        <ui-toast level="error" title="Error" text="An error occurred." />
       </div>
     `,
   }),
@@ -396,9 +396,9 @@ export const SubLevelLow: Story = {
   render: () => ({
     template: `
       <div style="display:flex; flex-direction:column; gap:12px; width:360px;">
-        <ui-toast level="default" subLevel="low" title="Information" text="Variante subtile." />
-        <ui-toast level="success" subLevel="low" title="Succès" text="Variante subtile." />
-        <ui-toast level="error" subLevel="low" title="Erreur" text="Variante subtile." />
+        <ui-toast level="default" subLevel="low" title="Information" text="Subtle variant." />
+        <ui-toast level="success" subLevel="low" title="Success" text="Subtle variant." />
+        <ui-toast level="error" subLevel="low" title="Error" text="Subtle variant." />
       </div>
     `,
   }),

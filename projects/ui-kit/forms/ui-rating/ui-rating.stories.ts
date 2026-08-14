@@ -119,7 +119,7 @@ export const Default: Story = {
 };
 
 export const AllowHalf: Story = {
-  name: 'Demi-étoiles',
+  name: 'Half stars',
   args: { allowHalf: true },
   render: (args) => ({
     props: { ...args, model: 3.5 },
@@ -134,7 +134,7 @@ export const AllowHalf: Story = {
 
 // Read-only display of an average: no interaction, the value carries the halves.
 export const HalfReadonly: Story = {
-  name: 'Demi-étoiles (lecture seule)',
+  name: 'Half stars (read-only)',
   args: { allowHalf: true, readonly: true },
   render: (args) => ({
     props: { ...args, model: 4.5 },

@@ -66,7 +66,7 @@ export default meta;
 type Story = StoryObj<UiTabs>;
 
 const LOREM =
-  'Viennese et half to cortado viennese. Americano steamed caffeine filter luwak skinny half and id spoon. Redeye extraction variety shot instant qui cream roast lungo body shot mazagran.';
+  'Viennese and half to cortado viennese. Americano steamed caffeine filter luwak skinny half and id spoon. Redeye extraction variety shot instant qui cream roast lungo body shot mazagran.';
 
 // Fixed-width shell so the tabs read like the Figma frame.
 const box = (inner: string, width = 645) => `<div style="max-width:${width}px">${inner}</div>`;
@@ -78,9 +78,9 @@ export const Basic: Story = {
     template: box(`
       <ui-tabs [value]="'0'" [orientation]="orientation" [selectOnFocus]="selectOnFocus" [motion]="motion">
         <ui-tab-list ariaLabel="Sections">
-          <ui-tab [value]="'0'">Aperçu</ui-tab>
-          <ui-tab [value]="'1'">Activité</ui-tab>
-          <ui-tab [value]="'2'">Paramètres</ui-tab>
+          <ui-tab [value]="'0'">Preview</ui-tab>
+          <ui-tab [value]="'1'">Activity</ui-tab>
+          <ui-tab [value]="'2'">Settings</ui-tab>
         </ui-tab-list>
         <ui-tab-panels>
           <ui-tab-panel [value]="'0'">Aperçu , ${LOREM}</ui-tab-panel>
@@ -99,15 +99,15 @@ export const Dynamic: Story = {
     props: {
       ...args,
       items: [
-        { value: 'inbox', label: 'Boîte de réception', body: 'Vos messages entrants.' },
-        { value: 'sent', label: 'Envoyés', body: 'Les messages que vous avez envoyés.' },
-        { value: 'drafts', label: 'Brouillons', body: 'Vos brouillons non finalisés.' },
-        { value: 'trash', label: 'Corbeille', body: 'Éléments supprimés.' },
+        { value: 'inbox', label: 'Inbox', body: 'Your incoming messages.' },
+        { value: 'sent', label: 'Sent', body: 'The messages you sent.' },
+        { value: 'drafts', label: 'Drafts', body: 'Your unfinished drafts.' },
+        { value: 'trash', label: 'Trash', body: 'Items removed.' },
       ],
     },
     template: box(`
       <ui-tabs [value]="'inbox'" [motion]="motion">
-        <ui-tab-list ariaLabel="Dossiers">
+        <ui-tab-list ariaLabel="Folders">
           @for (item of items; track item.value) {
             <ui-tab [value]="item.value">{{ item.label }}</ui-tab>
           }
@@ -128,23 +128,23 @@ export const Controlled: Story = {
     props: { ...args, active: 'b' },
     template: box(`
       <div style="display:flex; gap:8px; margin-bottom:16px">
-        <ui-button size="small" level="low" (buttonClick)="active='a'">Aller à A</ui-button>
-        <ui-button size="small" level="low" (buttonClick)="active='b'">Aller à B</ui-button>
-        <ui-button size="small" level="low" (buttonClick)="active='c'">Aller à C</ui-button>
+        <ui-button size="small" level="low" (buttonClick)="active='a'">Go to A</ui-button>
+        <ui-button size="small" level="low" (buttonClick)="active='b'">Go to B</ui-button>
+        <ui-button size="small" level="low" (buttonClick)="active='c'">Go to C</ui-button>
       </div>
       <ui-tabs [(value)]="active" [motion]="motion">
-        <ui-tab-list ariaLabel="Sections contrôlées">
+        <ui-tab-list ariaLabel="Controlled sections">
           <ui-tab [value]="'a'">Section A</ui-tab>
           <ui-tab [value]="'b'">Section B</ui-tab>
           <ui-tab [value]="'c'">Section C</ui-tab>
         </ui-tab-list>
         <ui-tab-panels>
-          <ui-tab-panel [value]="'a'">Contenu A</ui-tab-panel>
-          <ui-tab-panel [value]="'b'">Contenu B</ui-tab-panel>
-          <ui-tab-panel [value]="'c'">Contenu C</ui-tab-panel>
+          <ui-tab-panel [value]="'a'">Content A</ui-tab-panel>
+          <ui-tab-panel [value]="'b'">Content B</ui-tab-panel>
+          <ui-tab-panel [value]="'c'">Content C</ui-tab-panel>
         </ui-tab-panels>
       </ui-tabs>
-      <p style="margin-top:16px; font-size:13px">Onglet actif : <strong>{{ active }}</strong></p>`),
+      <p style="margin-top:16px; font-size:13px">Active tab: <strong>{{ active }}</strong></p>`),
   }),
 };
 
@@ -160,7 +160,7 @@ export const Scrollable: Story = {
     },
     template: box(`
       <ui-tabs [(value)]="active" [scrollable]="scrollable" [showNavigators]="showNavigators" [motion]="motion">
-        <ui-tab-list ariaLabel="Nombreux onglets">
+        <ui-tab-list ariaLabel="Many tabs">
           @for (n of items; track n) {
             <ui-tab [value]="n">Onglet {{ n }}</ui-tab>
           }
@@ -182,15 +182,15 @@ export const SelectOnFocus: Story = {
     props: args,
     template: box(`
       <ui-tabs [value]="'0'" [selectOnFocus]="selectOnFocus" [motion]="motion">
-        <ui-tab-list ariaLabel="Activation au focus">
+        <ui-tab-list ariaLabel="Activate on focus">
           <ui-tab [value]="'0'">Premier</ui-tab>
-          <ui-tab [value]="'1'">Deuxième</ui-tab>
-          <ui-tab [value]="'2'">Troisième</ui-tab>
+          <ui-tab [value]="'1'">Second</ui-tab>
+          <ui-tab [value]="'2'">Third</ui-tab>
         </ui-tab-list>
         <ui-tab-panels>
           <ui-tab-panel [value]="'0'">Donnez le focus à la liste puis utilisez ←/→ : l'onglet s'active automatiquement.</ui-tab-panel>
-          <ui-tab-panel [value]="'1'">Deuxième panneau.</ui-tab-panel>
-          <ui-tab-panel [value]="'2'">Troisième panneau.</ui-tab-panel>
+          <ui-tab-panel [value]="'1'">Second panel.</ui-tab-panel>
+          <ui-tab-panel [value]="'2'">Third panel.</ui-tab-panel>
         </ui-tab-panels>
       </ui-tabs>`),
   }),
@@ -205,15 +205,15 @@ export const Lazy: Story = {
     props: args,
     template: box(`
       <ui-tabs [value]="'0'" [lazy]="lazy" [motion]="motion">
-        <ui-tab-list ariaLabel="Chargement paresseux">
-          <ui-tab [value]="'0'">Immédiat</ui-tab>
-          <ui-tab [value]="'1'">Paresseux</ui-tab>
+        <ui-tab-list ariaLabel="Lazy loading">
+          <ui-tab [value]="'0'">Immediate</ui-tab>
+          <ui-tab [value]="'1'">Lazy</ui-tab>
         </ui-tab-list>
         <ui-tab-panels>
-          <ui-tab-panel [value]="'0'">Rendu dès l'affichage initial.</ui-tab-panel>
+          <ui-tab-panel [value]="'0'">Rendered on initial display.</ui-tab-panel>
           <ui-tab-panel [value]="'1'">
             <ng-template #content>
-              <div>Ce contenu n'est construit qu'à l'activation de l'onglet.</div>
+              <div>This content is only built when the tab is activated.</div>
             </ng-template>
           </ui-tab-panel>
         </ui-tab-panels>
@@ -228,15 +228,15 @@ export const Disabled: Story = {
     props: args,
     template: box(`
       <ui-tabs [value]="'0'" [motion]="motion">
-        <ui-tab-list ariaLabel="Onglets avec état désactivé">
-          <ui-tab [value]="'0'">Actif</ui-tab>
-          <ui-tab [value]="'1'" [disabled]="true">Désactivé</ui-tab>
-          <ui-tab [value]="'2'">Disponible</ui-tab>
+        <ui-tab-list ariaLabel="Tabs with a disabled state">
+          <ui-tab [value]="'0'">Active</ui-tab>
+          <ui-tab [value]="'1'" [disabled]="true">Disabled</ui-tab>
+          <ui-tab [value]="'2'">Available</ui-tab>
         </ui-tab-list>
         <ui-tab-panels>
-          <ui-tab-panel [value]="'0'">Premier panneau.</ui-tab-panel>
-          <ui-tab-panel [value]="'1'">Panneau inaccessible.</ui-tab-panel>
-          <ui-tab-panel [value]="'2'">Troisième panneau.</ui-tab-panel>
+          <ui-tab-panel [value]="'0'">First panel.</ui-tab-panel>
+          <ui-tab-panel [value]="'1'">Panel unavailable.</ui-tab-panel>
+          <ui-tab-panel [value]="'2'">Third panel.</ui-tab-panel>
         </ui-tab-panels>
       </ui-tabs>`),
   }),
@@ -253,15 +253,15 @@ export const CustomIndicator: Story = {
         [value]="'0'" [motion]="motion"
         style="--ui-tabs-active-bar-color: var(--actions-success-surface-default); --ui-tabs-active-bar-size: 4px"
       >
-        <ui-tab-list ariaLabel="Indicateur personnalisé">
+        <ui-tab-list ariaLabel="Custom indicator">
           <ui-tab [value]="'0'">Design</ui-tab>
-          <ui-tab [value]="'1'">Développement</ui-tab>
-          <ui-tab [value]="'2'">Livraison</ui-tab>
+          <ui-tab [value]="'1'">Development</ui-tab>
+          <ui-tab [value]="'2'">Delivery</ui-tab>
         </ui-tab-list>
         <ui-tab-panels>
-          <ui-tab-panel [value]="'0'">Barre active plus épaisse, teinte succès.</ui-tab-panel>
-          <ui-tab-panel [value]="'1'">Deuxième panneau.</ui-tab-panel>
-          <ui-tab-panel [value]="'2'">Troisième panneau.</ui-tab-panel>
+          <ui-tab-panel [value]="'0'">Thicker active bar, success tint.</ui-tab-panel>
+          <ui-tab-panel [value]="'1'">Second panel.</ui-tab-panel>
+          <ui-tab-panel [value]="'2'">Third panel.</ui-tab-panel>
         </ui-tab-panels>
       </ui-tabs>`),
   }),
@@ -274,27 +274,27 @@ export const Template: Story = {
     props: args,
     template: box(`
       <ui-tabs [value]="'profile'" [motion]="motion">
-        <ui-tab-list ariaLabel="Compte">
-          <ui-tab [value]="'profile'" icon="user">Profil</ui-tab>
+        <ui-tab-list ariaLabel="Account">
+          <ui-tab [value]="'profile'" icon="user">Profile</ui-tab>
           <ui-tab [value]="'notifications'" icon="bell">Notifications</ui-tab>
-          <ui-tab [value]="'billing'" icon="credit-card">Facturation</ui-tab>
+          <ui-tab [value]="'billing'" icon="credit-card">Billing</ui-tab>
         </ui-tab-list>
         <ui-tab-panels>
           <ui-tab-panel [value]="'profile'">
             <div style="display:flex; align-items:center; gap:8px">
-              <strong>Profil</strong> <ui-tag label="Vérifié" level="success" size="small" />
+              <strong>Profile</strong> <ui-tag label="Verified" level="success" size="small" />
             </div>
             <p>${LOREM}</p>
           </ui-tab-panel>
           <ui-tab-panel [value]="'notifications'">
             <div style="display:flex; align-items:center; gap:8px">
-              <strong>Notifications</strong> <ui-tag label="3 nouvelles" level="highlight" size="small" />
+              <strong>Notifications</strong> <ui-tag label="3 new" level="highlight" size="small" />
             </div>
             <p>${LOREM}</p>
           </ui-tab-panel>
           <ui-tab-panel [value]="'billing'">
             <div style="display:flex; align-items:center; gap:8px">
-              <strong>Facturation</strong> <ui-tag label="Action requise" level="warning" size="small" />
+              <strong>Billing</strong> <ui-tag label="Action required" level="warning" size="small" />
             </div>
             <p>${LOREM}</p>
           </ui-tab-panel>
@@ -311,11 +311,11 @@ export const TabMenu: Story = {
     props: { ...args, route: 'dashboard' },
     template: box(`
       <ui-tabs [(value)]="route" [motion]="motion">
-        <ui-tab-list ariaLabel="Navigation principale">
+        <ui-tab-list ariaLabel="Main navigation">
           <ui-tab [value]="'dashboard'" icon="gauge">Tableau de bord</ui-tab>
-          <ui-tab [value]="'team'" icon="users">Équipe</ui-tab>
-          <ui-tab [value]="'projects'" icon="folder">Projets</ui-tab>
-          <ui-tab [value]="'reports'" icon="chart-line">Rapports</ui-tab>
+          <ui-tab [value]="'team'" icon="users">Team</ui-tab>
+          <ui-tab [value]="'projects'" icon="folder">Projects</ui-tab>
+          <ui-tab [value]="'reports'" icon="chart-line">Reports</ui-tab>
         </ui-tab-list>
       </ui-tabs>
 

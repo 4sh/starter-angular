@@ -67,10 +67,10 @@ export default meta;
 type Story = StoryObj<UiAvatar>;
 
 // Modes
-export const Icon: Story = { args: { icon: 'user', ariaLabel: 'Utilisateur' } };
+export const Icon: Story = { args: { icon: 'user', ariaLabel: 'User' } };
 export const Label: Story = { args: { label: 'UI' } };
 export const Image: Story = {
-  args: { image: SAMPLE_IMAGE, alt: 'Photo de profil' },
+  args: { image: SAMPLE_IMAGE, alt: 'Profile picture' },
 };
 
 // Tailles
@@ -78,7 +78,7 @@ export const Small: Story = { args: { label: 'UI', size: 'small' } };
 export const Large: Story = { args: { label: 'UI', size: 'large' } };
 
 // Forme
-export const Square: Story = { args: { image: SAMPLE_IMAGE, alt: 'Photo de profil', shape: 'square' } };
+export const Square: Story = { args: { image: SAMPLE_IMAGE, alt: 'Profile picture', shape: 'square' } };
 
 // Avec badge de statut (contenu projeté)
 export const WithBadge: Story = {
@@ -90,7 +90,7 @@ export const WithBadge: Story = {
         <ui-badge avatarBadge level="highlight" [value]="3" ariaLabel="3 notifications" />
       </ui-avatar>`,
   }),
-  args: { image: SAMPLE_IMAGE, alt: 'Photo de profil' },
+  args: { image: SAMPLE_IMAGE, alt: 'Profile picture' },
 };
 
 // Point de présence (badge « dot » vert)
@@ -102,10 +102,10 @@ export const PresenceDot: Story = {
         <ui-badge avatarBadge level="success" size="small" ariaLabel="En ligne" />
       </ui-avatar>`,
   }),
-  args: { label: 'UI', ariaLabel: 'Utilisateur — en ligne' },
+  args: { label: 'UI', ariaLabel: 'User — online' },
 };
 
 // Fallback : image cassée → repli sur les initiales
 export const BrokenImageFallback: Story = {
-  args: { image: './nope-missing.png', label: 'UI', ariaLabel: 'Utilisateur' },
+  args: { image: './nope-missing.png', label: 'UI', ariaLabel: 'User' },
 };

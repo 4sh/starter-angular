@@ -62,20 +62,20 @@ type Story = StoryObj<UiHelper>;
 // Niveaux de feedback
 export const Default: Story = { args: { level: 'default' } };
 export const Highlight: Story = { args: { level: 'highlight' } };
-export const Success: Story = { args: { level: 'success', message: 'Champ valide.' } };
-export const Warning: Story = { args: { level: 'warning', message: 'Vérifiez cette information.' } };
-export const Error: Story = { args: { level: 'error', message: 'Ce champ est obligatoire.' } };
+export const Success: Story = { args: { level: 'success', message: 'Valid field.' } };
+export const Warning: Story = { args: { level: 'warning', message: 'Check this information.' } };
+export const Error: Story = { args: { level: 'error', message: 'This field is required.' } };
 
 // Taille
-export const Small: Story = { args: { level: 'error', size: 'small', message: 'Ce champ est obligatoire.' } };
+export const Small: Story = { args: { level: 'error', size: 'small', message: 'This field is required.' } };
 
 // Sans icône
 export const NoIcon: Story = { args: { level: 'highlight', showIcon: false } };
 
 // Icône personnalisée
-export const CustomIcon: Story = { args: { level: 'highlight', icon: 'lightbulb', message: 'Astuce : utilisez un mot de passe fort.' } };
+export const CustomIcon: Story = { args: { level: 'highlight', icon: 'lightbulb', message: 'Tip: use a strong password.' } };
 
 // Feedback dynamique (annoncé aux lecteurs d'écran)
 export const LiveError: Story = {
-  args: { level: 'error', ariaLive: 'assertive', message: 'Adresse e-mail invalide.' },
+  args: { level: 'error', ariaLive: 'assertive', message: 'Invalid email address.' },
 };

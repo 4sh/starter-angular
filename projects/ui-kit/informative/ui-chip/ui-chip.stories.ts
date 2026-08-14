@@ -119,20 +119,20 @@ export const Removable: Story = { args: { label: 'Angular', removable: true } };
 
 // Niveaux
 export const Highlight: Story = { args: { label: 'Highlight', level: 'highlight' } };
-export const Success: Story = { args: { label: 'Actif', level: 'success', removable: true } };
-export const Warning: Story = { args: { label: 'En attente', level: 'warning', removable: true } };
-export const Error: Story = { args: { label: 'Rejeté', level: 'error', removable: true } };
+export const Success: Story = { args: { label: 'Active', level: 'success', removable: true } };
+export const Warning: Story = { args: { label: 'Pending', level: 'warning', removable: true } };
+export const Error: Story = { args: { label: 'Rejected', level: 'error', removable: true } };
 
 // Intensité soutenue
-export const SubLevelHigh: Story = { args: { label: 'Soutenu', level: 'highlight', subLevel: 'high' } };
+export const SubLevelHigh: Story = { args: { label: 'Strong', level: 'highlight', subLevel: 'high' } };
 
 // Tailles
 export const Small: Story = { args: { label: 'Compact', level: 'highlight', size: 'small', removable: true } };
 
 // Icon
-export const Icon: Story = { args: { label: 'Favori', level: 'highlight', icon: 'star' } };
+export const Icon: Story = { args: { label: 'Favorite', level: 'highlight', icon: 'star' } };
 export const IconRemovable: Story = {
-  args: { label: 'Filtre', level: 'highlight', icon: 'filter', removable: true },
+  args: { label: 'Filter', level: 'highlight', icon: 'filter', removable: true },
 };
 
 // Image (avatar-like)
@@ -147,12 +147,12 @@ export const Image: Story = {
 
 // Icon-only (accessible name required)
 export const IconOnly: Story = {
-  args: { label: undefined, icon: 'user', ariaLabel: 'Utilisateur', level: 'highlight' },
+  args: { label: undefined, icon: 'user', ariaLabel: 'User', level: 'highlight' },
 };
 
 // Disabled
 export const Disabled: Story = {
-  args: { label: 'Verrouillé', level: 'highlight', removable: true, disabled: true },
+  args: { label: 'Locked', level: 'highlight', removable: true, disabled: true },
 };
 
 // Template (custom projected content)

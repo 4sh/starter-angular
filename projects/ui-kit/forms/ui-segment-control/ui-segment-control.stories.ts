@@ -6,19 +6,19 @@ import { FormsModule, ReactiveFormsModule, FormControl, Validators } from '@angu
 import { FormField, form, required } from '@angular/forms/signals';
 import { UiSegmentControl, SegmentControlOption } from '@4sh/ui-kit/forms/ui-segment-control';
 
-const VIEW_OPTIONS = ['Liste', 'Grille', 'Tableau'];
+const VIEW_OPTIONS = ['List', 'Grille', 'Tableau'];
 
 const ICON_OPTIONS: SegmentControlOption<string>[] = [
-  { value: 'list', label: 'Liste', icon: 'list' },
+  { value: 'list', label: 'List', icon: 'list' },
   { value: 'grid', label: 'Grille', icon: 'table-cells' },
-  { value: 'chart', label: 'Graphe', icon: 'chart-simple' },
+  { value: 'chart', label: 'Graph', icon: 'chart-simple' },
 ];
 
 // Icon-only options: no label, so an `ariaLabel` is mandatory per segment.
 const ICON_ONLY_OPTIONS: SegmentControlOption<string>[] = [
-  { value: 'list', icon: 'list', ariaLabel: 'Liste' },
+  { value: 'list', icon: 'list', ariaLabel: 'List' },
   { value: 'grid', icon: 'table-cells', ariaLabel: 'Grille' },
-  { value: 'chart', icon: 'chart-simple', ariaLabel: 'Graphe' },
+  { value: 'chart', icon: 'chart-simple', ariaLabel: 'Graph' },
 ];
 
 const meta: Meta<UiSegmentControl> = {
@@ -133,7 +133,7 @@ const meta: Meta<UiSegmentControl> = {
   },
   args: {
     options: VIEW_OPTIONS,
-    ariaLabel: 'Mode d’affichage',
+    ariaLabel: 'Display mode',
     size: 'default',
     orientation: 'horizontal',
     multiple: false,
@@ -152,7 +152,7 @@ type Story = StoryObj<UiSegmentControl>;
 // --- Basic : sélection simple ([(ngModel)]) -----------------------------
 export const Basic: Story = {
   render: (args) => ({
-    props: { ...args, model: 'Liste' },
+    props: { ...args, model: 'List' },
     template: `
       <div style="display:grid; gap:12px; justify-items:start;">
         <ui-segment-control
@@ -174,7 +174,7 @@ export const Multiple: Story = {
     props: { model: ['grid'], opts: ICON_OPTIONS },
     template: `
       <div style="display:grid; gap:12px; justify-items:start;">
-        <ui-segment-control [(ngModel)]="model" [multiple]="true" [options]="opts" ariaLabel="Filtres d’affichage" />
+        <ui-segment-control [(ngModel)]="model" [multiple]="true" [options]="opts" ariaLabel="Display filters" />
         <code>model = {{ model | json }}</code>
       </div>
     `,
@@ -194,7 +194,7 @@ export const Template: Story = {
     },
     template: `
       <div style="display:grid; gap:12px; justify-items:start;">
-        <ui-segment-control [(ngModel)]="model" [options]="plans" [itemTemplate]="item" ariaLabel="Forfait" />
+        <ui-segment-control [(ngModel)]="model" [options]="plans" [itemTemplate]="item" ariaLabel="Plan" />
         <ng-template #item let-plan>
           <span style="display:flex; flex-direction:column; align-items:center; line-height:1.1;">
             <strong>{{ plan.label }}</strong>
@@ -226,7 +226,7 @@ export const IconsOnly: Story = {
   render: () => ({
     props: { model: 'grid', opts: ICON_ONLY_OPTIONS },
     template: `
-      <ui-segment-control [(ngModel)]="model" [options]="opts" ariaLabel="Mode d’affichage" />
+      <ui-segment-control [(ngModel)]="model" [options]="opts" ariaLabel="Display mode" />
     `,
   }),
 };
@@ -236,7 +236,7 @@ export const Vertical: Story = {
   render: () => ({
     props: { model: 'grid', opts: ICON_OPTIONS },
     template: `
-      <ui-segment-control [(ngModel)]="model" [options]="opts" orientation="vertical" ariaLabel="Mode d’affichage" />
+      <ui-segment-control [(ngModel)]="model" [options]="opts" orientation="vertical" ariaLabel="Display mode" />
     `,
   }),
 };
@@ -244,10 +244,10 @@ export const Vertical: Story = {
 // --- Fluid : pleine largeur --------------------------------------------
 export const Fluid: Story = {
   render: () => ({
-    props: { model: 'Liste', opts: VIEW_OPTIONS },
+    props: { model: 'List', opts: VIEW_OPTIONS },
     template: `
       <div style="width:420px;">
-        <ui-segment-control [(ngModel)]="model" [options]="opts" [fluid]="true" ariaLabel="Mode d’affichage" />
+        <ui-segment-control [(ngModel)]="model" [options]="opts" [fluid]="true" ariaLabel="Display mode" />
       </div>
     `,
   }),
@@ -258,18 +258,18 @@ export const Disabled: Story = {
   render: () => ({
     props: {
       whole: 'Grille',
-      partial: 'Liste',
+      partial: 'List',
       opts: VIEW_OPTIONS,
       mixed: [
-        { value: 'list', label: 'Liste' },
+        { value: 'list', label: 'List' },
         { value: 'grid', label: 'Grille' },
-        { value: 'chart', label: 'Graphe', disabled: true },
+        { value: 'chart', label: 'Graph', disabled: true },
       ],
     },
     template: `
       <div style="display:grid; gap:16px; justify-items:start;">
-        <ui-segment-control [(ngModel)]="whole" [options]="opts" [disabled]="true" ariaLabel="Groupe désactivé" />
-        <ui-segment-control [(ngModel)]="partial" [options]="mixed" ariaLabel="Option désactivée" />
+        <ui-segment-control [(ngModel)]="whole" [options]="opts" [disabled]="true" ariaLabel="Disabled group" />
+        <ui-segment-control [(ngModel)]="partial" [options]="mixed" ariaLabel="Disabled option" />
       </div>
     `,
   }),
@@ -280,7 +280,7 @@ export const Invalid: Story = {
   render: () => ({
     props: { model: null, opts: VIEW_OPTIONS },
     template: `
-      <ui-segment-control [(ngModel)]="model" [options]="opts" [invalid]="true" ariaLabel="Sélection requise" />
+      <ui-segment-control [(ngModel)]="model" [options]="opts" [invalid]="true" ariaLabel="Selection required" />
     `,
   }),
 };
@@ -292,13 +292,13 @@ export const Invalid: Story = {
   imports: [UiSegmentControl, FormField, CommonModule],
   template: `
     <div style="display:grid; gap:12px; justify-items:start;">
-      <ui-segment-control [formField]="color" [options]="options" ariaLabel="Couleur" />
+      <ui-segment-control [formField]="color" [options]="options" ariaLabel="Color" />
       <code>value = {{ color().value() | json }} · valid = {{ color().valid() }}</code>
     </div>
   `,
 })
 class SignalFormsDemo {
-  protected readonly options = ['Rouge', 'Vert', 'Bleu'];
+  protected readonly options = ['Rouge', 'Vert', 'Blue'];
   protected readonly model = signal<string | null>(null);
   protected readonly color = form(this.model, (path) => {
     required(path);
@@ -318,7 +318,7 @@ export const TemplateDriven: Story = {
     props: { model: 'Grille', opts: VIEW_OPTIONS },
     template: `
       <form #f="ngForm" style="display:grid; gap:12px; justify-items:start;">
-        <ui-segment-control [(ngModel)]="model" name="view" [options]="opts" ariaLabel="Mode d’affichage" />
+        <ui-segment-control [(ngModel)]="model" name="view" [options]="opts" ariaLabel="Display mode" />
         <code>model = {{ model }} · form.valid = {{ f.valid }}</code>
       </form>
     `,
@@ -329,10 +329,10 @@ export const TemplateDriven: Story = {
 export const ReactiveForms: Story = {
   name: 'Reactive Forms',
   render: () => ({
-    props: { control: new FormControl<string | null>('Liste', Validators.required), opts: VIEW_OPTIONS },
+    props: { control: new FormControl<string | null>('List', Validators.required), opts: VIEW_OPTIONS },
     template: `
       <div style="display:grid; gap:12px; justify-items:start;">
-        <ui-segment-control [formControl]="control" [options]="opts" ariaLabel="Mode d’affichage" />
+        <ui-segment-control [formControl]="control" [options]="opts" ariaLabel="Display mode" />
         <code>value = {{ control.value }} · valid = {{ control.valid }}</code>
         <button type="button" (click)="control.disabled ? control.enable() : control.disable()">
           Activer / désactiver

@@ -6,10 +6,10 @@ import { UiLink } from '@4sh/ui-kit/actions/ui-link';
 import { UiIcon } from '@4sh/ui-kit/base/ui-icon';
 
 const ITEMS = [
-  { icon: 'house', ariaLabel: 'Accueil', url: '#' },
-  { label: 'Électronique', url: '#' },
-  { label: 'Ordinateurs', url: '#' },
-  { label: 'Accessoires'  },
+  { icon: 'house', ariaLabel: 'Home', url: '#' },
+  { label: 'Electronics', url: '#' },
+  { label: 'Computers', url: '#' },
+  { label: 'Accessories'  },
 ];
 
 const meta: Meta<UiBreadcrumb> = {
@@ -29,7 +29,7 @@ const meta: Meta<UiBreadcrumb> = {
     separator: '/',
     maxItems: undefined,
     ariaLabel: 'Breadcrumb',
-    ellipsisAriaLabel: 'Afficher les éléments masqués',
+    ellipsisAriaLabel: 'Show hidden items',
     styleClass: undefined,
   },
   argTypes: {
@@ -93,10 +93,10 @@ export const Route: Story = {
   decorators: [applicationConfig({ providers: [provideRouter([{ path: '**', children: [] }])] })],
   args: {
     items: [
-      { icon: 'house', ariaLabel: 'Accueil', routerLink: '/' },
+      { icon: 'house', ariaLabel: 'Home', routerLink: '/' },
       { label: 'Catalogue', routerLink: '/catalogue' },
-      { label: 'Ordinateurs', routerLink: ['/catalogue', 'ordinateurs'] },
-      { label: 'Clavier sans fil' },
+      { label: 'Computers', routerLink: ['/catalogue', 'ordinateurs'] },
+      { label: 'Wireless keyboard' },
     ],
   },
 };
@@ -122,10 +122,10 @@ export const Ellipsis: Story = { args: { maxItems: 3 } };
 export const Links: Story = {
   args: {
     items: [
-      { icon: 'house', ariaLabel: 'Accueil', url: '#' },
+      { icon: 'house', ariaLabel: 'Home', url: '#' },
       { label: 'Documentation', url: 'https://angular.dev', target: '_blank' },
       { label: 'Retour', command: () => console.log('[ui-breadcrumb] command') },
-      { label: 'Archivé', url: '#', disabled: true },
+      { label: 'Archived', url: '#', disabled: true },
       { label: 'Page courante' },
     ],
   },

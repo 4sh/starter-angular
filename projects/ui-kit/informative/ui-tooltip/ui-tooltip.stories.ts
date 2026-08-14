@@ -121,7 +121,7 @@ const meta: Meta<TooltipArgs> = {
     },
   },
   args: {
-    uiTooltip: 'Enregistrer le document',
+    uiTooltip: 'Save the document',
     tooltipPosition: 'top',
     fitContent: true,
     tooltipEvent: 'both',
@@ -145,7 +145,7 @@ export const Default: Story = {
     props: args,
     template: `
       <ui-button
-        label="Survolez-moi"
+        label="Hover me"
         [uiTooltip]="uiTooltip"
         [tooltipPosition]="tooltipPosition"
         [fitContent]="fitContent"
@@ -169,10 +169,10 @@ export const Positions: Story = {
     props: args,
     template: `
       <div style="display:grid;grid-template-columns:repeat(2,auto);gap:48px;padding:64px;place-items:center;">
-        <ui-button label="Top" uiTooltip="Infobulle en haut" tooltipPosition="top" />
-        <ui-button label="Bottom" uiTooltip="Infobulle en bas" tooltipPosition="bottom" />
-        <ui-button label="Left" uiTooltip="Infobulle à gauche" tooltipPosition="left" />
-        <ui-button label="Right" uiTooltip="Infobulle à droite" tooltipPosition="right" />
+        <ui-button label="Top" uiTooltip="Tooltip at the top" tooltipPosition="top" />
+        <ui-button label="Bottom" uiTooltip="Tooltip at the bottom" tooltipPosition="bottom" />
+        <ui-button label="Left" uiTooltip="Tooltip on the left" tooltipPosition="left" />
+        <ui-button label="Right" uiTooltip="Tooltip on the right" tooltipPosition="right" />
       </div>
     `,
   }),
@@ -184,7 +184,7 @@ export const RichContent: Story = {
   render: (args) => ({
     props: args,
     template: `
-      <ui-button label="Profil" [uiTooltip]="tpl" [tooltipContext]="{ $implicit: 'Jane Doe' }"
+      <ui-button label="Profile" [uiTooltip]="tpl" [tooltipContext]="{ $implicit: 'Jane Doe' }"
         [tooltipPosition]="tooltipPosition" autoHide="false" />
       <ng-template #tpl let-name>
         <strong>{{ name }}</strong><br />Administratrice · en ligne
@@ -202,7 +202,7 @@ export const CustomStyle: Story = {
   render: (args) => ({
     props: args,
     template: `
-      <ui-button label="Style custom" uiTooltip="Infobulle mise en avant"
+      <ui-button label="Style custom" uiTooltip="Highlighted tooltip"
         tooltipStyleClass="tip-highlight" [tooltipPosition]="tooltipPosition" />
     `,
   }),
@@ -214,7 +214,7 @@ export const Interactive: Story = {
   render: (args) => ({
     props: args,
     template: `
-      <ui-button label="Interactive" uiTooltip="Vous pouvez survoler cette infobulle"
+      <ui-button label="Interactive" uiTooltip="You can hover this tooltip"
         autoHide="false" [tooltipPosition]="tooltipPosition" />
     `,
   }),

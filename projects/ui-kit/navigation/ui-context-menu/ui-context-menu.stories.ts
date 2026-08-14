@@ -83,7 +83,7 @@ export default meta;
 type Story = StoryObj<UiContextMenu>;
 
 // Shared demo target: a card-like zone inviting the right-click.
-const zone = (label = 'Clic droit dans cette zone') => `
+const zone = (label = 'Right click in this area') => `
   <div #zone tabindex="0" style="display:flex; align-items:center; justify-content:center; max-width:420px; height:160px;
     border:2px dashed var(--global-border-default); border-radius:12px; color:var(--global-text-default);
     font-family:var(--fontfamily-base); user-select:none">
@@ -92,9 +92,9 @@ const zone = (label = 'Clic droit dans cette zone') => `
 
 const BASIC_ITEMS: UiMenuItem[] = [
   { label: 'Copier', icon: 'copy' },
-  { label: 'Renommer', icon: 'pen' },
+  { label: 'Rename', icon: 'pen' },
   { separator: true },
-  { label: 'Supprimer', icon: 'trash' },
+  { label: 'Remove', icon: 'trash' },
 ];
 
 // --- Basic -------------------------------------------------------------
@@ -105,7 +105,7 @@ export const Basic: Story = {
     template: `
       ${zone()}
       <ui-context-menu [target]="zone" [items]="items" [level]="level" [size]="size" [submenus]="submenus" [motion]="motion"
-        ariaLabel="Actions du document" />
+        ariaLabel="Document actions" />
     `,
   }),
 };
@@ -117,13 +117,13 @@ export const Submenus: Story = {
     const items: UiMenuItem[] = [
       { label: 'Copier', icon: 'copy' },
       {
-        label: 'Partager',
+        label: 'Share',
         icon: 'share-nodes',
         items: [
-          { label: 'Envoyer par e-mail', icon: 'paper-plane' },
-          { label: 'Copier le lien', icon: 'link' },
+          { label: 'Send by email', icon: 'paper-plane' },
+          { label: 'Copy link', icon: 'link' },
           {
-            label: 'Réseaux',
+            label: 'Networks',
             icon: 'globe',
             items: [
               { label: 'Mastodon', icon: 'hashtag' },
@@ -133,7 +133,7 @@ export const Submenus: Story = {
         ],
       },
       {
-        label: 'Enregistrer sous',
+        label: 'Save as',
         icon: 'download',
         items: [
           { label: 'PDF', icon: 'file-pdf' },
@@ -141,14 +141,14 @@ export const Submenus: Story = {
         ],
       },
       { separator: true },
-      { label: 'Supprimer', icon: 'trash' },
+      { label: 'Remove', icon: 'trash' },
     ];
     return {
       props: { ...args, items },
       template: `
-        ${zone('Clic droit : sous-menus imbriqués')}
+        ${zone('Right click: nested submenus')}
         <ui-context-menu [target]="zone" [items]="items" [level]="level" [size]="size" [submenus]="submenus" [motion]="motion"
-          ariaLabel="Actions du fichier" />
+          ariaLabel="File actions" />
       `,
     };
   },
@@ -164,7 +164,7 @@ export const Global: Story = {
         Le menu est attaché au <strong>document</strong> : clic droit n'importe où dans la zone de prévisualisation.
       </p>
       <ui-context-menu global [items]="items" [level]="level" [size]="size" [submenus]="submenus" [motion]="motion"
-        ariaLabel="Actions globales" />
+        ariaLabel="Global actions" />
     `,
   }),
 };
@@ -174,15 +174,15 @@ export const Global: Story = {
 export const Template: Story = {
   render: (args) => {
     const items: UiMenuItem[] = [
-      { label: 'Aperçu', icon: 'eye' },
+      { label: 'Preview', icon: 'eye' },
       { label: 'Exporter', icon: 'file-export', title: 'PRO' },
       { separator: true },
-      { label: 'Supprimer', icon: 'trash' },
+      { label: 'Remove', icon: 'trash' },
     ];
     return {
       props: { ...args, items },
       template: `
-        ${zone('Clic droit : items personnalisés')}
+        ${zone('Right click: custom items')}
         <ui-context-menu [target]="zone" [items]="items" [level]="level" [size]="size" [submenus]="submenus" [motion]="motion"
           ariaLabel="Actions">
           <ng-template #item let-item>
@@ -204,17 +204,17 @@ export const Command: Story = {
   render: (args) => {
     const lastAction = signal('—');
     const items: UiMenuItem[] = [
-      { label: 'Épingler', icon: 'thumbtack', command: ({ item }) => lastAction.set(`« ${item.label} »`) },
-      { label: 'Archiver', icon: 'box-archive', command: ({ item }) => lastAction.set(`« ${item.label} »`) },
+      { label: 'Pin', icon: 'thumbtack', command: ({ item }) => lastAction.set(`« ${item.label} »`) },
+      { label: 'Archive', icon: 'box-archive', command: ({ item }) => lastAction.set(`« ${item.label} »`) },
       { separator: true },
       { label: 'Signaler', icon: 'flag', command: ({ item }) => lastAction.set(`« ${item.label} »`) },
     ];
     return {
       props: { ...args, items, lastAction },
       template: `
-        ${zone('Clic droit : commandes')}
+        ${zone('Right click: commands')}
         <ui-context-menu [target]="zone" [items]="items" [level]="level" [size]="size" [submenus]="submenus" [motion]="motion"
-          ariaLabel="Actions du message" />
+          ariaLabel="Message actions" />
         <p aria-live="polite" style="font-family:var(--fontfamily-base)">
           Dernière commande : <strong>{{ lastAction() }}</strong>
         </p>
@@ -228,15 +228,15 @@ export const Command: Story = {
 export const Router: Story = {
   render: (args) => {
     const items: UiMenuItem[] = [
-      { label: 'Accueil', icon: 'house', routerLink: '/', routerLinkActiveExact: true },
-      { label: 'Profil', icon: 'user', routerLink: '/profil' },
+      { label: 'Home', icon: 'house', routerLink: '/', routerLinkActiveExact: true },
+      { label: 'Profile', icon: 'user', routerLink: '/profil' },
       { separator: true },
       { label: 'Documentation Angular', icon: 'up-right-from-square', url: 'https://angular.dev', target: '_blank' },
     ];
     return {
       props: { ...args, items },
       template: `
-        ${zone('Clic droit : navigation')}
+        ${zone('Right click: navigation')}
         <ui-context-menu [target]="zone" [items]="items" [level]="level" [size]="size" [submenus]="submenus" [motion]="motion"
           ariaLabel="Navigation" />
       `,

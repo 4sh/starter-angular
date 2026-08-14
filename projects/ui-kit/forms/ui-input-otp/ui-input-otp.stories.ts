@@ -89,7 +89,7 @@ export const Basic: Story = {
         [disabled]="disabled"
         [readonly]="readonly"
         [invalid]="invalid"
-        ariaLabel="Code de vérification"
+        ariaLabel="Verification code"
       />
     `,
   }),
@@ -104,7 +104,7 @@ export const Controlled: Story = {
     props: { code: '' },
     template: `
       <div style="display: flex; flex-direction: column; gap: 1rem; align-items: center">
-        <ui-input-otp [(ngModel)]="code" ariaLabel="Code de vérification" />
+        <ui-input-otp [(ngModel)]="code" ariaLabel="Verification code" />
         <p style="margin: 0; font-size: .9rem; color: var(--form-low-content-default)">
           Valeur : <strong>{{ code || '—' }}</strong>
         </p>
@@ -153,7 +153,7 @@ export const Disabled: Story = {
   render: () => ({
     props: { code: '1234' },
     template: `
-      <ui-input-otp [(ngModel)]="code" [disabled]="true" ariaLabel="Code de vérification" />
+      <ui-input-otp [(ngModel)]="code" [disabled]="true" ariaLabel="Verification code" />
     `,
   }),
 };
@@ -172,7 +172,7 @@ export const Invalid: Story = {
     },
     template: `
       <div style="display: flex; flex-direction: column; gap: .75rem; align-items: center">
-        <ui-input-otp [formControl]="control" [integerOnly]="true" [length]="6" ariaLabel="Code de vérification" />
+        <ui-input-otp [formControl]="control" [integerOnly]="true" [length]="6" ariaLabel="Verification code" />
         @if (control.invalid && control.touched) {
           <p style="margin: 0; font-size: .85rem; color: var(--form-error-content-default)">
             Saisissez les 6 chiffres du code.
@@ -190,7 +190,7 @@ export const Invalid: Story = {
   imports: [UiInputOtp, FormField],
   template: `
     <div style="display: flex; flex-direction: column; gap: 1rem; align-items: center">
-      <ui-input-otp [formField]="field" ariaLabel="Code de vérification" />
+      <ui-input-otp [formField]="field" ariaLabel="Verification code" />
       <code>value = {{ field().value() || '—' }} · valid = {{ field().valid() }}</code>
     </div>
   `,
@@ -218,14 +218,14 @@ export const Template: Story = {
   render: () => ({
     props: { code: '' },
     template: `
-      <ui-input-otp [(ngModel)]="code" [integerOnly]="true" [length]="4" ariaLabel="Code de vérification">
+      <ui-input-otp [(ngModel)]="code" [integerOnly]="true" [length]="4" ariaLabel="Verification code">
         <ng-template #input let-value let-i="index" let-events="events" let-tabindex="tabindex">
           <input
             [value]="value"
             [attr.tabindex]="tabindex"
             maxlength="1"
             inputmode="numeric"
-            aria-label="Chiffre"
+            aria-label="Digit"
             style="
               width: 3rem; height: 3.25rem; margin: 0; padding: 0;
               border: none; border-bottom: 2px solid var(--form-high-stroke-default);
@@ -278,7 +278,7 @@ export const Sample: Story = {
           [(ngModel)]="code"
           [integerOnly]="true"
           [length]="6"
-          ariaLabel="Code d’authentification"
+          ariaLabel="Authentication code"
           (completed)="onComplete($event)"
         >
           <ng-template #input let-value let-i="index" let-events="events" let-tabindex="tabindex">
@@ -290,7 +290,7 @@ export const Sample: Story = {
               [attr.tabindex]="tabindex"
               maxlength="1"
               inputmode="numeric"
-              aria-label="Chiffre"
+              aria-label="Digit"
               style="
                 width: 2.75rem; height: 2.75rem; margin: 0; padding: 0;
                 border: 2px solid var(--form-high-stroke-default); border-radius: var(--radius-sm);

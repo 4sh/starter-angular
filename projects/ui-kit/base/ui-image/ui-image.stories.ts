@@ -296,7 +296,7 @@ export const Remote_Fill: Story = {
     args: {
         src: 'https://picsum.photos/id/1015/800/600',
         fill: true,
-        alt: 'Image distante en mode fill'
+        alt: 'Remote image in fill mode'
     }
 };
 
@@ -321,7 +321,7 @@ export const Error_With_Fallback: Story = {
         fallback: 'test-png.png',
         width: 200,
         height: 200,
-        alt: 'Erreur avec fallback local'
+        alt: 'Error with local fallback'
     }
 };
 
@@ -331,7 +331,7 @@ export const Error_Placeholder: Story = {
         src: './nope-missing.jpg',
         width: 200,
         height: 200,
-        alt: 'Erreur sans fallback'
+        alt: 'Error without fallback'
     }
 };
 
@@ -352,7 +352,7 @@ export const Error_SVG_Fallback: Story = {
         fallback: 'test-svg.svg',
         width: 200,
         height: 200,
-        alt: 'Erreur avec fallback SVG'
+        alt: 'Error with SVG fallback'
     }
 };
 

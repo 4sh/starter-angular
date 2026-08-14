@@ -40,20 +40,20 @@ const GROUPED_CITIES = [
     ],
   },
   {
-    label: 'Allemagne',
+    label: 'Germany',
     code: 'DE',
     items: [
       { name: 'Berlin', code: 'BER' },
       { name: 'Munich', code: 'MUC' },
-      { name: 'Hambourg', code: 'HAM' },
+      { name: 'Hamburg', code: 'HAM' },
     ],
   },
   {
-    label: 'Espagne',
+    label: 'Spain',
     code: 'ES',
     items: [
       { name: 'Madrid', code: 'MAD' },
-      { name: 'Barcelone', code: 'BCN' },
+      { name: 'Barcelona', code: 'BCN' },
     ],
   },
 ];
@@ -65,7 +65,7 @@ interface Language {
 }
 
 const LANGUAGES: Language[] = [
-  { label: 'Français', value: 'fr', icon: 'earth-europe' },
+  { label: 'French', value: 'fr', icon: 'earth-europe' },
   { label: 'English', value: 'en', icon: 'earth-americas' },
   { label: 'Español', value: 'es', icon: 'earth-europe' },
   { label: 'Deutsch', value: 'de', icon: 'earth-europe' },
@@ -253,8 +253,8 @@ const meta: Meta<UiSelect> = {
     lazyLoad: { action: 'lazyLoad', table: { disable: true } },
   },
   args: {
-    label: 'Ville',
-    placeholder: 'Sélectionner une ville',
+    label: 'City',
+    placeholder: 'Select a city',
     size: 'default',
     multiple: false,
     checkmark: false,
@@ -281,7 +281,7 @@ type Story = StoryObj<UiSelect>;
 // --- Basic : ngModel + options objets (optionLabel / optionValue) --------
 export const Basic: Story = {
   render: (args) => ({
-    props: { ...args, cities: CITIES, city: null, fruit: null, fruits: ['Pomme', 'Poire', 'Cerise'] },
+    props: { ...args, cities: CITIES, city: null, fruit: null, fruits: ['Apple', 'Pear', 'Cherry'] },
     template: `
       <div style="display:grid; gap:16px; width:280px;">
         <ui-select
@@ -294,7 +294,7 @@ export const Basic: Story = {
           [autoOptionFocus]="autoOptionFocus" [selectOnFocus]="selectOnFocus" [focusOnHover]="focusOnHover"
           [required]="required" [disabled]="disabled" [readonly]="readonly" [invalid]="invalid"
           (valueChange)="valueChange($event)" (opened)="opened($event)" (closed)="closed($event)" (cleared)="cleared($event)" />
-        <ui-select label="Fruit (primitives)" placeholder="Sélectionner un fruit" [(ngModel)]="fruit" [options]="fruits" />
+        <ui-select label="Fruit (primitives)" placeholder="Select a fruit" [(ngModel)]="fruit" [options]="fruits" />
         <code>city = {{ city | json }} · fruit = {{ fruit | json }}</code>
       </div>
     `,
@@ -308,12 +308,12 @@ export const Multiple: Story = {
     template: `
       <div style="display:grid; gap:16px; width:280px;">
         <ui-select
-          label="Villes" placeholder="Sélectionner des villes"
+          label="Cities" placeholder="Select cities"
           [(ngModel)]="model" [options]="cities" optionLabel="name" optionValue="code"
           [multiple]="true" [checkmark]="true" />
         <code>model = {{ model | json }}</code>
         <ui-select
-          label="Repli au-delà de 2 (maxSelectedLabels)" placeholder="Sélectionner des villes"
+          label="Collapses beyond 2 (maxSelectedLabels)" placeholder="Select cities"
           [(ngModel)]="limited" [options]="cities" optionLabel="name" optionValue="code"
           [multiple]="true" [checkmark]="true" [maxSelectedLabels]="2" />
         <code>limited = {{ limited | json }}</code>
@@ -328,7 +328,7 @@ export const Checkmark: Story = {
     props: { cities: CITIES, model: 'LYO' },
     template: `
       <div style="width:280px;">
-        <ui-select label="Ville" [(ngModel)]="model" [options]="cities" optionLabel="name" optionValue="code" [checkmark]="true" />
+        <ui-select label="City" [(ngModel)]="model" [options]="cities" optionLabel="name" optionValue="code" [checkmark]="true" />
       </div>
     `,
   }),
@@ -342,10 +342,10 @@ export const CheckboxSelection: Story = {
     template: `
       <div style="display:grid; gap:12px; width:280px;">
         <ui-select
-          label="Villes" placeholder="Sélectionner des villes"
+          label="Cities" placeholder="Select cities"
           [(ngModel)]="model" [options]="cities" optionLabel="name" optionValue="code"
           [multiple]="true" [checkbox]="true">
-          <ng-template #header>Villes disponibles</ng-template>
+          <ng-template #header>Available cities</ng-template>
           <ng-template #item let-city>
             <span style="display:flex; align-items:center; gap:8px;">
               <ui-icon name="location-dot" size="sm" />{{ city.name }}
@@ -366,7 +366,7 @@ export const Chips: Story = {
     template: `
       <div style="display:grid; gap:12px; width:240px;">
         <ui-select
-          label="Villes" placeholder="Sélectionner des villes"
+          label="Cities" placeholder="Select cities"
           [(ngModel)]="model" [options]="cities" optionLabel="name" optionValue="code"
           [multiple]="true" [checkmark]="true">
           <ng-template #selectedItem let-city let-remove="remove">
@@ -385,7 +385,7 @@ export const Clear: Story = {
     props: { cities: CITIES, model: 'PAR' },
     template: `
       <div style="width:280px;">
-        <ui-select label="Ville" [(ngModel)]="model" [options]="cities" optionLabel="name" optionValue="code" [showClear]="true" />
+        <ui-select label="City" [(ngModel)]="model" [options]="cities" optionLabel="name" optionValue="code" [showClear]="true" />
       </div>
     `,
   }),
@@ -398,9 +398,9 @@ export const Filter: Story = {
     template: `
       <div style="width:280px;">
         <ui-select
-          label="Ville" placeholder="Sélectionner une ville"
+          label="City" placeholder="Select a city"
           [(ngModel)]="model" [options]="cities" optionLabel="name" optionValue="code"
-          [filter]="true" filterPlaceholder="Rechercher une ville" />
+          [filter]="true" filterPlaceholder="Search for a city" />
       </div>
     `,
   }),
@@ -413,7 +413,7 @@ export const CustomOption: Story = {
     props: { cities: CITIES, model: null },
     template: `
       <div style="width:280px;">
-        <ui-select label="Ville" placeholder="Sélectionner une ville" [(ngModel)]="model" [options]="cities" optionLabel="name" optionValue="code">
+        <ui-select label="City" placeholder="Select a city" [(ngModel)]="model" [options]="cities" optionLabel="name" optionValue="code">
           <ng-template #item let-city let-selected="selected">
             <span style="display:flex; align-items:center; gap:8px; min-width:0;">
               <ui-icon [name]="selected ? 'city' : 'location-dot'" size="sm" />
@@ -436,7 +436,7 @@ export const SelectedValue: Story = {
     template: `
       <div style="display:grid; gap:12px; width:280px;">
         <ui-select
-          label="Langue" placeholder="Choisir une langue"
+          label="Language" placeholder="Choose a language"
           [(ngModel)]="model" [options]="languages" optionLabel="label" optionValue="value"
           [filter]="true" filterBy="label" [checkmark]="true">
           <ng-template #selectedItem let-lang>
@@ -465,10 +465,10 @@ export const Group: Story = {
     template: `
       <div style="display:grid; gap:16px; width:280px;">
         <ui-select
-          label="Ville (groupes simples)" placeholder="Sélectionner une ville"
+          label="City (simple groups)" placeholder="Select a city"
           [(ngModel)]="simple" [options]="groups" [group]="true" optionLabel="name" optionValue="code" />
         <ui-select
-          label="Ville (en-tête custom)" placeholder="Sélectionner une ville"
+          label="City (custom header)" placeholder="Select a city"
           [(ngModel)]="custom" [options]="groups" [group]="true" optionLabel="name" optionValue="code">
           <ng-template #group let-g>
             <span style="display:flex; align-items:center; gap:8px;">
@@ -489,9 +489,9 @@ export const CheckboxAndFilter: Story = {
     template: `
       <div style="display:grid; gap:12px; width:320px;">
         <ui-select
-          label="Villes" placeholder="Sélectionner des villes"
+          label="Cities" placeholder="Select cities"
           [(ngModel)]="model" [options]="groups" [group]="true" optionLabel="name" optionValue="code"
-          [multiple]="true" [checkbox]="true" [filter]="true" filterPlaceholder="Rechercher une ville" />
+          [multiple]="true" [checkbox]="true" [filter]="true" filterPlaceholder="Search for a city" />
         <code>model = {{ model | json }}</code>
       </div>
     `,
@@ -518,9 +518,9 @@ export const PanelWidth: Story = {
     props: { cities: LONG_CITIES, a: undefined, b: undefined, c: undefined },
     template: `
       <div style="display:grid; gap:16px; width:180px;">
-        <ui-select label="Défaut" placeholder="Ville" [(ngModel)]="a" [options]="cities" optionLabel="name" optionValue="code" />
-        <ui-select label="auto" placeholder="Ville" panelWidth="auto" [(ngModel)]="b" [options]="cities" optionLabel="name" optionValue="code" />
-        <ui-select label="320px" placeholder="Ville" panelWidth="320px" [(ngModel)]="c" [options]="cities" optionLabel="name" optionValue="code" />
+        <ui-select label="Default" placeholder="City" [(ngModel)]="a" [options]="cities" optionLabel="name" optionValue="code" />
+        <ui-select label="auto" placeholder="City" panelWidth="auto" [(ngModel)]="b" [options]="cities" optionLabel="name" optionValue="code" />
+        <ui-select label="320px" placeholder="City" panelWidth="320px" [(ngModel)]="c" [options]="cities" optionLabel="name" optionValue="code" />
       </div>
     `,
   }),
@@ -541,8 +541,8 @@ export const Disabled: Story = {
     },
     template: `
       <div style="display:grid; gap:16px; width:280px;">
-        <ui-select label="Champ désactivé" [(ngModel)]="whole" [options]="cities" optionLabel="name" optionValue="code" [disabled]="true" />
-        <ui-select label="Option désactivée" placeholder="Lyon est désactivée" [(ngModel)]="partial" [options]="mixed" optionLabel="name" optionValue="code" optionDisabled="inactive" />
+        <ui-select label="Disabled field" [(ngModel)]="whole" [options]="cities" optionLabel="name" optionValue="code" [disabled]="true" />
+        <ui-select label="Disabled option" placeholder="Lyon is disabled" [(ngModel)]="partial" [options]="mixed" optionLabel="name" optionValue="code" optionDisabled="inactive" />
       </div>
     `,
   }),
@@ -555,10 +555,10 @@ export const Invalid: Story = {
     template: `
       <div style="display:grid; gap:12px; width:280px;">
         <ui-select
-          label="Ville" placeholder="Sélection obligatoire"
+          label="City" placeholder="Selection required"
           [formControl]="control" [options]="cities" optionLabel="name" optionValue="code"
-          [required]="true" errorText="Veuillez sélectionner une ville." helperText="Choisissez votre ville de rattachement." />
-        <button type="button" (click)="control.markAsTouched()">Marquer touched</button>
+          [required]="true" errorText="Please select a city." helperText="Choose your home city." />
+        <button type="button" (click)="control.markAsTouched()">Mark as touched</button>
         <code>valid = {{ control.valid }}</code>
       </div>
     `,
@@ -573,7 +573,7 @@ export const Invalid: Story = {
   template: `
     <div style="display:grid; gap:12px; width:280px;">
       <ui-select
-        label="Ville" placeholder="Sélectionner une ville"
+        label="City" placeholder="Select a city"
         [formField]="city" [options]="cities" optionLabel="name" optionValue="code" />
       <code>value = {{ city().value() }} · valid = {{ city().valid() }}</code>
     </div>
@@ -600,11 +600,11 @@ export const FocusBehavior: Story = {
     props: { cities: CITIES, a: null, b: 'LYO', c: null },
     template: `
       <div style="display:grid; gap:16px; width:320px;">
-        <ui-select label="autoOptionFocus" helperText="La 1re option est focalisée à l'ouverture."
+        <ui-select label="autoOptionFocus" helperText="The first option is focused on open."
           [(ngModel)]="a" [options]="cities" optionLabel="name" optionValue="code" [autoOptionFocus]="true" />
-        <ui-select label="selectOnFocus" helperText="Les flèches sélectionnent en naviguant."
+        <ui-select label="selectOnFocus" helperText="Arrow keys select while navigating."
           [(ngModel)]="b" [options]="cities" optionLabel="name" optionValue="code" [selectOnFocus]="true" />
-        <ui-select label="focusOnHover désactivé" helperText="Le survol ne déplace plus le focus visuel."
+        <ui-select label="focusOnHover disabled" helperText="Hovering no longer moves the visual focus."
           [(ngModel)]="c" [options]="cities" optionLabel="name" optionValue="code" [focusOnHover]="false" />
       </div>
     `,
@@ -617,7 +617,7 @@ export const Editable: Story = {
     props: { model: null, suggestions: ['Angular', 'TypeScript', 'RxJS', 'Signals'] },
     template: `
       <div style="display:grid; gap:12px; width:280px;">
-        <ui-select label="Technologie" placeholder="Saisir ou sélectionner" [(ngModel)]="model" [options]="suggestions" [editable]="true" />
+        <ui-select label="Technology" placeholder="Type or select" [(ngModel)]="model" [options]="suggestions" [editable]="true" />
         <code>model = {{ model | json }}</code>
       </div>
     `,
@@ -630,7 +630,7 @@ export const Loading: Story = {
     props: { model: null },
     template: `
       <div style="width:280px;">
-        <ui-select label="Ville" placeholder="Chargement…" [(ngModel)]="model" [options]="[]" [loading]="true" emptyMessage="Chargement des villes…" />
+        <ui-select label="City" placeholder="Loading…" [(ngModel)]="model" [options]="[]" [loading]="true" emptyMessage="Loading cities…" />
       </div>
     `,
   }),
@@ -644,7 +644,7 @@ export const VirtualScroll: Story = {
     template: `
       <div style="width:280px;">
         <ui-select
-          label="Élément" placeholder="10 000 options"
+          label="Item" placeholder="10,000 options"
           [(ngModel)]="model" [options]="items"
           [virtualScroll]="true" [virtualScrollItemSize]="40" [filter]="true" />
       </div>
@@ -658,7 +658,7 @@ export const LazyVirtualScroll: Story = {
   render: () => {
     // Rows materialise as ranges render: unloaded rows show a placeholder label.
     const total = 10000;
-    const items: string[] = Array.from({ length: total }, () => 'Chargement…');
+    const items: string[] = Array.from({ length: total }, () => 'Loading…');
     return {
       props: {
         items,
@@ -666,7 +666,7 @@ export const LazyVirtualScroll: Story = {
         loadedCount: 0,
         onLazyLoad(this: { items: string[]; loadedCount: number }, range: { first: number; last: number }) {
           for (let i = range.first; i < Math.min(range.last + 10, total); i++) {
-            if (this.items[i] === 'Chargement…') {
+            if (this.items[i] === 'Loading…') {
               this.items[i] = `Élément ${i + 1}`;
               this.loadedCount++;
             }
@@ -677,7 +677,7 @@ export const LazyVirtualScroll: Story = {
       template: `
         <div style="display:grid; gap:12px; width:280px;">
           <ui-select
-            label="Élément" placeholder="Chargement paresseux"
+            label="Item" placeholder="Lazy loading"
             [(ngModel)]="model" [options]="items"
             [virtualScroll]="true" [virtualScrollItemSize]="40" [lazy]="true"
             (lazyLoad)="onLazyLoad($event)" />

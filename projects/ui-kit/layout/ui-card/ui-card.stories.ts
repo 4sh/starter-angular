@@ -72,7 +72,7 @@ type Story = StoryObj<UiCard>;
 
 // Carte simple : titre + sous-titre + contenu (via inputs string).
 export const Default: Story = {
-  args: { header: 'Card Title', subheader: 'Un sous-titre descriptif' },
+  args: { header: 'Card Title', subheader: 'A descriptive subtitle' },
   render: (args) => ({
     props: { ...args, lorem: LOREM },
     template: `
@@ -102,7 +102,7 @@ export const Complete: Story = {
       <ui-card [variant]="variant" style="width:340px">
         ${MEDIA}
         <span uiCardTitle>Card Title</span>
-        <span uiCardSubtitle>Sous-titre de la carte</span>
+        <span uiCardSubtitle>Card subtitle</span>
         {{ lorem }}
         <div uiCardFooter class="flex-x align-justify" style="flex:1;align-items:center">
           <div class="flex-x flex-gap-x" style="--flex-gap-x: var(--units-sm)">
@@ -126,7 +126,7 @@ export const WithMedia: Story = {
         {{ lorem }}
       </ui-card>`,
   }),
-  args: { header: 'Média en tête' },
+  args: { header: 'Leading media' },
 };
 
 // Pied de carte : actions alignées à droite, gouttière gérée par la grille
@@ -138,8 +138,8 @@ export const WithFooter: Story = {
       <ui-card [header]="header" [variant]="variant" style="width:340px">
         {{ lorem }}
         <div uiCardFooter class="flex-x flex-gap-x align-right" style="--flex-gap-x: var(--units-sm)">
-          <ui-button label="Annuler" level="low" size="small" />
-          <ui-button label="Valider" level="high" size="small" />
+          <ui-button label="Cancel" level="low" size="small" />
+          <ui-button label="Submit" level="high" size="small" />
         </div>
       </ui-card>`,
   }),
@@ -153,11 +153,11 @@ export const Outlined: Story = {
 };
 export const Elevated: Story = {
   ...Default,
-  args: { header: 'Elevated', subheader: 'Ombre portée', variant: 'elevated' },
+  args: { header: 'Elevated', subheader: 'Drop shadow', variant: 'elevated' },
 };
 export const Flat: Story = {
   ...Default,
-  args: { header: 'Flat', subheader: 'Sans bordure ni ombre', variant: 'flat' },
+  args: { header: 'Flat', subheader: 'No border, no shadow', variant: 'flat' },
 };
 
 // Slots riches : le titre accepte du contenu projeté (tag + texte). Le slot titre
@@ -191,5 +191,5 @@ export const ContentFlush: Story = {
         </div>
       </ui-card>`,
   }),
-  args: { header: 'Contenu full-bleed', variant: 'outlined' },
+  args: { header: 'Full-bleed content', variant: 'outlined' },
 };

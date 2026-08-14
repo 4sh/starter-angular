@@ -98,11 +98,11 @@ const story = (on = false): Story['render'] => (args) => ({ props: { ...args, mo
 export const Default: Story = { render: story(), args: { label: 'Notifications' } };
 export const Checked: Story = { render: story(true), args: { label: 'Notifications' } };
 export const Small: Story = { render: story(), args: { label: 'Compact', size: 'small' } };
-export const Required: Story = { render: story(), args: { label: 'Accepter les CGU', required: true } };
-export const Disabled: Story = { render: story(), args: { label: 'Indisponible', disabled: true } };
-export const DisabledChecked: Story = { render: story(true), args: { label: 'Verrouillé activé', disabled: true } };
-export const Readonly: Story = { render: story(), args: { label: 'Lecture seule', readonly: true } };
-export const Invalid: Story = { render: story(), args: { label: 'Champ obligatoire', invalid: true } };
+export const Required: Story = { render: story(), args: { label: 'Accept the terms', required: true } };
+export const Disabled: Story = { render: story(), args: { label: 'Unavailable', disabled: true } };
+export const DisabledChecked: Story = { render: story(true), args: { label: 'Locked on', disabled: true } };
+export const Readonly: Story = { render: story(), args: { label: 'Read-only', readonly: true } };
+export const Invalid: Story = { render: story(), args: { label: 'Required field', invalid: true } };
 
 // Sans label visible : nom accessible obligatoire
 export const NoLabel: Story = { render: story(), args: { label: undefined, ariaLabel: 'Mode sombre' } };

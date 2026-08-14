@@ -11,7 +11,7 @@ import { UiChip } from '@4sh/ui-kit/informative/ui-chip';
 const TECHNOS = [
   'Angular',
   'React',
-  'Vue',
+  'View',
   'Svelte',
   'Solid',
   'Qwik',
@@ -152,7 +152,7 @@ export const Basic: Story = {
     template: `
       <ui-input-tags
         label="Technologies"
-        placeholder="Ajouter…"
+        placeholder="Add…"
         [(ngModel)]="tags"
         style="width: 22rem"
       />
@@ -169,9 +169,9 @@ export const Delimiter: Story = {
     props: { tags: [] as string[] },
     template: `
       <ui-input-tags
-        label="Mots-clés"
-        placeholder="Séparez par des virgules…"
-        helperText="Essayez de coller « rouge, vert, bleu »."
+        label="Keywords"
+        placeholder="Separate with commas…"
+        helperText="Try pasting “red, green, blue”."
         delimiter=","
         [addOnPaste]="true"
         [(ngModel)]="tags"
@@ -188,8 +188,8 @@ export const AllowDuplicate: Story = {
     props: { a: ['Angular'], b: ['Angular'] },
     template: `
       <div style="display: flex; flex-direction: column; gap: 1.5rem; width: 22rem">
-        <ui-input-tags label="Sans doublon (défaut)" placeholder="Ajouter…" [(ngModel)]="a" />
-        <ui-input-tags label="Doublons autorisés" placeholder="Ajouter…" [allowDuplicate]="true" [(ngModel)]="b" />
+        <ui-input-tags label="No duplicates (default)" placeholder="Add…" [(ngModel)]="a" />
+        <ui-input-tags label="Duplicates allowed" placeholder="Add…" [allowDuplicate]="true" [(ngModel)]="b" />
       </div>
     `,
   }),
@@ -202,9 +202,9 @@ export const Max: Story = {
     template: `
       <ui-input-tags
         label="3 technologies max"
-        placeholder="Ajouter…"
+        placeholder="Add…"
         [max]="3"
-        helperText="Ajoutez-en jusqu’à 3."
+        helperText="Add up to 3."
         [(ngModel)]="tags"
         style="width: 22rem"
       />
@@ -221,7 +221,7 @@ export const Template: Story = {
   render: () => ({
     props: { tags: ['Angular', 'Svelte'] },
     template: `
-      <ui-input-tags label="Technologies" placeholder="Ajouter…" [(ngModel)]="tags" style="width: 24rem">
+      <ui-input-tags label="Technologies" placeholder="Add…" [(ngModel)]="tags" style="width: 24rem">
         <ng-template #item let-value let-remove="onRemove">
           <ui-chip
             [ariaLabel]="value"
@@ -250,8 +250,8 @@ export const Styled: Story = {
     props: { a: ['Angular', 'React'], b: ['Prod', 'Critique'] },
     template: `
       <div style="display: flex; flex-direction: column; gap: 1.5rem; width: 22rem">
-        <ui-input-tags label="Highlight (low)" chipLevel="highlight" placeholder="Ajouter…" [(ngModel)]="a" />
-        <ui-input-tags label="Error (high)" chipLevel="error" chipSubLevel="high" placeholder="Ajouter…" [(ngModel)]="b" />
+        <ui-input-tags label="Highlight (low)" chipLevel="highlight" placeholder="Add…" [(ngModel)]="a" />
+        <ui-input-tags label="Error (high)" chipLevel="error" chipSubLevel="high" placeholder="Add…" [(ngModel)]="b" />
       </div>
     `,
   }),
@@ -267,7 +267,7 @@ export const Typeahead: Story = {
     template: `
       <ui-input-tags
         label="Frameworks"
-        placeholder="Tapez pour rechercher…"
+        placeholder="Type to search…"
         [typeahead]="true"
         [suggestions]="results"
         (completeMethod)="complete($event)"
@@ -300,7 +300,7 @@ export const Events: Story = {
       <div style="width: 24rem">
         <ui-input-tags
           label="Technologies"
-          placeholder="Ajouter…"
+          placeholder="Add…"
           [(ngModel)]="tags"
           (tagAdd)="onAdd($event)"
           (tagRemove)="onRemove($event)"
@@ -327,9 +327,9 @@ export const Invalid: Story = {
     },
     template: `
       <ui-input-tags
-        label="Compétences"
-        placeholder="Au moins un tag…"
-        errorText="Ajoutez au moins une compétence."
+        label="Skills"
+        placeholder="At least one tag…"
+        errorText="Add at least one skill."
         [formControl]="control"
         style="width: 22rem"
       />
@@ -344,7 +344,7 @@ export const Invalid: Story = {
   imports: [UiInputTags, FormField, CommonModule],
   template: `
     <div style="width: 22rem; display: grid; gap: 12px; justify-items: start;">
-      <ui-input-tags [formField]="skills" label="Compétences" placeholder="Ajouter…" style="width: 100%" />
+      <ui-input-tags [formField]="skills" label="Skills" placeholder="Add…" style="width: 100%" />
       <code>value = {{ skills().value() | json }} · valid = {{ skills().valid() }}</code>
     </div>
   `,
@@ -378,8 +378,8 @@ export const Sizes: Story = {
     props: { a: ['Angular'], b: ['Angular'] },
     template: `
       <div style="display: flex; flex-direction: column; gap: 1.5rem; width: 22rem">
-        <ui-input-tags label="Default" size="default" placeholder="Ajouter…" [(ngModel)]="a" />
-        <ui-input-tags label="Small" size="small" placeholder="Ajouter…" [(ngModel)]="b" />
+        <ui-input-tags label="Default" size="default" placeholder="Add…" [(ngModel)]="a" />
+        <ui-input-tags label="Small" size="small" placeholder="Add…" [(ngModel)]="b" />
       </div>
     `,
   }),

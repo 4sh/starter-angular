@@ -85,19 +85,19 @@ type Story = StoryObj<UiSpinner>;
 export const Default: Story = {};
 
 // Avec libellé visible.
-export const WithLabel: Story = { args: { label: 'Chargement' } };
+export const WithLabel: Story = { args: { label: 'Loading' } };
 
 // Libellé à côté du marqueur.
-export const Horizontal: Story = { args: { label: 'Chargement', orientation: 'horizontal' } };
+export const Horizontal: Story = { args: { label: 'Loading', orientation: 'horizontal' } };
 
 // Taille compacte.
-export const Small: Story = { args: { size: 'small', label: 'Chargement' } };
+export const Small: Story = { args: { size: 'small', label: 'Loading' } };
 
 // Trait plus fin + rotation plus lente.
 export const Tuned: Story = { args: { strokeWidth: 2, animationDuration: '2s' } };
 
 // Marqueur remplacé par une icône FontAwesome (mise en rotation).
-export const IconMark: Story = { args: { icon: 'spinner', label: 'Chargement' } };
+export const IconMark: Story = { args: { icon: 'spinner', label: 'Loading' } };
 
 // Marqueur libre via template custom (ici trois points animés).
 export const CustomTemplate: Story = {
@@ -118,11 +118,11 @@ export const CustomTemplate: Story = {
       </style>
     `,
   }),
-  args: { label: 'Chargement' },
+  args: { label: 'Loading' },
 };
 
 // Sur fond sombre (le marqueur adopte la couleur de contenu du thème).
 export const OnDark: Story = {
-  args: { label: 'Chargement' },
+  args: { label: 'Loading' },
   parameters: { backgrounds: { default: 'dark' } },
 };

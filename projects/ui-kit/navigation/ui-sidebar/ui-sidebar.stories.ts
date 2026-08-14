@@ -99,10 +99,10 @@ type Story = StoryObj<SidebarArgs>;
 // --- Shared demo data -------------------------------------------------
 const PLAYGROUND_ITEMS: UiSidebarMenuItem[] = [
   { label: 'Tableau de bord', icon: 'gauge', active: true },
-  { label: 'Projets', icon: 'folder-open' },
-  { label: 'Calendrier', icon: 'calendar-days' },
+  { label: 'Projects', icon: 'folder-open' },
+  { label: 'Calendar', icon: 'calendar-days' },
   { label: 'Messages', icon: 'envelope', badge: '3', badgeLevel: 'highlight' },
-  { label: 'Paramètres', icon: 'gear' },
+  { label: 'Settings', icon: 'gear' },
 ];
 
 /**
@@ -121,7 +121,7 @@ export const Variants: Story = {
     backdrop: true,
     dismissable: true,
     contained: true,
-    ariaLabel: 'Navigation de démonstration',
+    ariaLabel: 'Demo navigation',
     tooltips: true,
   },
   render: (args) => ({
@@ -150,9 +150,9 @@ export const Variants: Story = {
           <div style="display:flex; gap:var(--units-sm); margin-bottom:var(--units-lg);">
             <ui-button [uiSidebarTrigger]="sb" level="low" size="small"
               [icon]="mode === 'overlay' ? 'bars' : (collapsed ? 'angles-right' : 'angles-left')"
-              [label]="mode === 'overlay' ? 'Ouvrir' : (collapsed ? 'Déplier' : 'Replier')" />
+              [label]="mode === 'overlay' ? 'Open' : (collapsed ? 'Expand' : 'Collapse')" />
           </div>
-          <h2 style="margin:0 0 var(--units-sm); color:var(--global-text-default);">Contenu</h2>
+          <h2 style="margin:0 0 var(--units-sm); color:var(--global-text-default);">Content</h2>
           <p style="color:var(--global-text-muted); max-width:52ch; line-height:1.6;">
             La barre pousse cet espace en mode statique, et flotte par-dessus en mode overlay.
             Testez le repli, le survol et les fonds via les contrôles Storybook.
@@ -166,23 +166,23 @@ export const Variants: Story = {
 // --- With Menu --------------------------------------------------------
 const WORKSPACE_NAV: UiSidebarMenuItem[] = [
   {
-    label: 'Espace de travail',
+    label: 'Workspace',
     items: [
-      { label: 'Vue d’ensemble', icon: 'house', active: true },
-      { label: 'Analytique', icon: 'chart-line' },
-      { label: 'Rapports', icon: 'file-lines', badge: '5', badgeLevel: 'highlight' },
+      { label: 'Overview', icon: 'house', active: true },
+      { label: 'Analytics', icon: 'chart-line' },
+      { label: 'Reports', icon: 'file-lines', badge: '5', badgeLevel: 'highlight' },
     ],
   },
   {
     label: 'Gestion',
     items: [
-      { label: 'Équipe', icon: 'users' },
-      { label: 'Facturation', icon: 'credit-card' },
-      { label: 'Intégrations', icon: 'plug' },
+      { label: 'Team', icon: 'users' },
+      { label: 'Billing', icon: 'credit-card' },
+      { label: 'Integrations', icon: 'plug' },
     ],
   },
   { separator: true },
-  { label: 'Aide & support', icon: 'circle-question' },
+  { label: 'Help & support', icon: 'circle-question' },
 ];
 
 /**
@@ -197,9 +197,9 @@ export const WithMenu: Story = {
       <div style="position:relative; display:flex; height:520px; overflow:hidden;
                   border:1px solid var(--global-border-subtle); border-radius:var(--radius-md);
                   background:var(--global-background-default);">
-        <ui-sidebar #sb collapsible [(collapsed)]="collapsed" ariaLabel="Navigation de l'espace de travail">
+        <ui-sidebar #sb collapsible [(collapsed)]="collapsed" ariaLabel="Workspace navigation">
           <ng-template #header let-collapsed="collapsed">
-            <button [uiSidebarTrigger]="sb" aria-label="Basculer la navigation"
+            <button [uiSidebarTrigger]="sb" aria-label="Toggle navigation"
               style="display:flex; align-items:center; gap:var(--units-sm); width:100%; padding:var(--units-xs);
                      border:none; border-radius:var(--radius-sm); background:var(--global-background-muted);
                      color:inherit; cursor:pointer; font:inherit; text-align:left;">
@@ -207,14 +207,14 @@ export const WithMenu: Story = {
               @if (!collapsed) {
                 <span style="display:flex; flex-direction:column; line-height:1.2; min-width:0;">
                   <strong>App</strong>
-                  <small style="color:var(--global-text-muted);">Espace Pro</small>
+                  <small style="color:var(--global-text-muted);">Pro workspace</small>
                 </span>
                 <ui-icon name="angles-up-down" size="sm" style="margin-left:auto;" />
               }
             </button>
           </ng-template>
 
-          <ui-sidebar-menu [items]="nav" tooltips ariaLabel="Sections principales" />
+          <ui-sidebar-menu [items]="nav" tooltips ariaLabel="Main sections" />
 
           <ng-template #footer let-collapsed="collapsed">
             <ui-icon name="circle-user" size="lg" />
@@ -231,8 +231,8 @@ export const WithMenu: Story = {
         <main style="flex:1 1 auto; min-width:0; padding:var(--units-xl); overflow:auto;">
           <ui-button [uiSidebarTrigger]="sb" level="low" size="small"
             [icon]="collapsed ? 'angles-right' : 'angles-left'"
-            [label]="collapsed ? 'Déplier' : 'Replier'" />
-          <h2 style="margin:var(--units-lg) 0 var(--units-sm); color:var(--global-text-default);">Vue d’ensemble</h2>
+            [label]="collapsed ? 'Expand' : 'Collapse'" />
+          <h2 style="margin:var(--units-lg) 0 var(--units-sm); color:var(--global-text-default);">Overview</h2>
           <p style="color:var(--global-text-muted); max-width:52ch; line-height:1.6;">
             Repliez la barre : les libellés, en-têtes de sections et badges disparaissent,
             ne laissant que la colonne d’icônes.
@@ -267,7 +267,7 @@ export const Responsive: Story = {
 
         <main style="flex:1 1 auto; min-width:0; padding:var(--units-xl); overflow:auto;">
           <ui-button [uiSidebarTrigger]="sb" level="low" size="small" icon="bars" label="Menu" />
-          <h2 style="margin:var(--units-lg) 0 var(--units-sm); color:var(--global-text-default);">Adaptatif</h2>
+          <h2 style="margin:var(--units-lg) 0 var(--units-sm); color:var(--global-text-default);">Adaptive</h2>
           <p style="color:var(--global-text-muted); max-width:52ch; line-height:1.6;">
             Sur écran large, un rail d’icônes borde le contenu. Sous 1024px, le bouton Menu
             ouvre un panneau offcanvas par-dessus, avec un fond assombri.
@@ -280,11 +280,11 @@ export const Responsive: Story = {
 
 // Primary icon rail (permanently collapsed → icon-only, labels via tooltip).
 const RAIL_NAV: UiSidebarMenuItem[] = [
-  { label: 'Accueil', icon: 'house', active: true },
-  { label: 'Base de données', icon: 'database' },
+  { label: 'Home', icon: 'house', active: true },
+  { label: 'Database', icon: 'database' },
   { label: 'Recherche', icon: 'magnifying-glass' },
-  { label: 'Journaux', icon: 'table-list' },
-  { label: 'Domaines', icon: 'globe' },
+  { label: 'Logs', icon: 'table-list' },
+  { label: 'Domains', icon: 'globe' },
   { label: 'API', icon: 'code' },
 ];
 
@@ -293,27 +293,27 @@ const SETTINGS_NAV: UiSidebarMenuItem[] = [
   {
     label: 'Configuration',
     items: [
-      { label: 'Général', active: true },
-      { label: 'Compute et disque' },
+      { label: 'General', active: true },
+      { label: 'Compute and storage' },
       { label: 'Infrastructure' },
-      { label: 'Intégrations' },
-      { label: 'Clés API' },
-      { label: 'Clés JWT' },
-      { label: 'Drains de logs' },
+      { label: 'Integrations' },
+      { label: 'API keys' },
+      { label: 'JWT keys' },
+      { label: 'Log drains' },
       { label: 'Add-ons' },
     ],
   },
   {
-    label: 'Intégrations',
+    label: 'Integrations',
     items: [
       { label: 'Data API', external: true },
       { label: 'Vault', badge: 'BETA' },
     ],
   },
   {
-    label: 'Facturation',
+    label: 'Billing',
     items: [
-      { label: 'Abonnement', external: true },
+      { label: 'Subscription', external: true },
       { label: 'Usage', external: true },
     ],
   },
@@ -334,7 +334,7 @@ export const DualSidebar: Story = {
                   border:1px solid var(--global-border-subtle); border-radius:var(--radius-md);
                   background:var(--global-background-default);">
         <!-- Rail d'icônes (navigation primaire) -->
-        <ui-sidebar [collapsed]="true" [collapsible]="false" ariaLabel="Navigation principale">
+        <ui-sidebar [collapsed]="true" [collapsible]="false" ariaLabel="Main navigation">
           <ng-template #header>
             <span style="display:inline-flex; align-items:center; justify-content:center;
                          width:36px; height:36px; border-radius:var(--radius-sm);
@@ -342,22 +342,22 @@ export const DualSidebar: Story = {
               <ui-icon name="bolt" size="default" />
             </span>
           </ng-template>
-          <ui-sidebar-menu [items]="rail" tooltips ariaLabel="Sections de l'application" />
+          <ui-sidebar-menu [items]="rail" tooltips ariaLabel="Application sections" />
           <ng-template #footer>
             <ui-icon name="gear" size="lg" />
           </ng-template>
         </ui-sidebar>
 
         <!-- Navigation secondaire (sections du module) -->
-        <ui-sidebar [collapsible]="false" ariaLabel="Réglages du projet">
+        <ui-sidebar [collapsible]="false" ariaLabel="Project settings">
           <ng-template #header>
-            <strong style="font-size:var(--size-typography-title-default);">Réglages</strong>
+            <strong style="font-size:var(--size-typography-title-default);">Settings</strong>
           </ng-template>
-          <ui-sidebar-menu [items]="settings" ariaLabel="Sections des réglages" />
+          <ui-sidebar-menu [items]="settings" ariaLabel="Settings sections" />
         </ui-sidebar>
 
         <main style="flex:1 1 auto; min-width:0; padding:var(--units-xl); overflow:auto;">
-          <h2 style="margin:0 0 var(--units-lg); color:var(--global-text-default);">Éditeur de table</h2>
+          <h2 style="margin:0 0 var(--units-lg); color:var(--global-text-default);">Table editor</h2>
           <div style="display:flex; flex-direction:column; gap:var(--units-md);">
             <div style="height:120px; border-radius:var(--radius-md); background:var(--global-background-muted);"></div>
             <div style="height:220px; border-radius:var(--radius-md); background:var(--global-background-muted);"></div>
@@ -376,30 +376,30 @@ const NESTED_NAV: UiSidebarMenuItem[] = [
     icon: 'box-archive',
     toggleable: true,
     items: [
-      { label: 'Produits', icon: 'tag' },
+      { label: 'Products', icon: 'tag' },
       {
         label: 'Collections',
         icon: 'layer-group',
         items: [
-          { label: 'Nouveautés', icon: 'sparkles' },
+          { label: 'What\'s new', icon: 'sparkles' },
           { label: 'Promotions', icon: 'percent', active: true },
           { label: 'Archives', icon: 'box' },
         ],
       },
-      { label: 'Fournisseurs', icon: 'truck' },
+      { label: 'Providers', icon: 'truck' },
     ],
   },
   {
-    label: 'Clients',
+    label: 'Customers',
     icon: 'users',
     toggleable: true,
     items: [
-      { label: 'Comptes', icon: 'address-card' },
+      { label: 'Accounts', icon: 'address-card' },
       { label: 'Segments', icon: 'chart-pie' },
     ],
   },
   { separator: true },
-  { label: 'Paramètres', icon: 'gear' },
+  { label: 'Settings', icon: 'gear' },
 ];
 
 /**
@@ -414,16 +414,16 @@ export const NestedMenu: Story = {
       <div style="display:flex; height:560px; overflow:hidden;
                   border:1px solid var(--global-border-subtle); border-radius:var(--radius-md);
                   background:var(--global-background-default);">
-        <ui-sidebar collapsible="false" ariaLabel="Navigation imbriquée">
+        <ui-sidebar collapsible="false" ariaLabel="Nested navigation">
           <ng-template #header>
             <ui-icon name="store" size="lg" />
-            <strong>Boutique</strong>
+            <strong>Shop</strong>
           </ng-template>
-          <ui-sidebar-menu [items]="nav" ariaLabel="Sections imbriquées" />
+          <ui-sidebar-menu [items]="nav" ariaLabel="Nested sections" />
         </ui-sidebar>
 
         <main style="flex:1 1 auto; min-width:0; padding:var(--units-xl); overflow:auto;">
-          <h2 style="margin:0 0 var(--units-sm); color:var(--global-text-default);">Arborescence profonde</h2>
+          <h2 style="margin:0 0 var(--units-sm); color:var(--global-text-default);">Deep tree</h2>
           <p style="color:var(--global-text-muted); max-width:52ch; line-height:1.6;">
             Cliquez sur « Catalogue » ou « Clients » pour déplier / replier les sous-menus.
             Les sous-arbres s’indentent et s’animent en hauteur.

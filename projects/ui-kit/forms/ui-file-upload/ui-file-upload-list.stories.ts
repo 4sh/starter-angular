@@ -71,7 +71,7 @@ export const Uploading: Story = {
 
 /** Échec : icône + message d'erreur, styles d'erreur via tokens. */
 export const ErrorState: Story = {
-  args: { file: sample('archive.zip', 52_000_000, 'error', { error: 'Fichier trop volumineux' }) },
+  args: { file: sample('archive.zip', 52_000_000, 'error', { error: 'File too large' }) },
 };
 
 /** Image avec vignette (object URL). */

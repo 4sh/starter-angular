@@ -15,17 +15,17 @@ interface Country {
 
 const COUNTRIES: Country[] = [
   { name: 'France', code: 'FR' },
-  { name: 'Allemagne', code: 'DE' },
-  { name: 'Espagne', code: 'ES' },
-  { name: 'Italie', code: 'IT' },
+  { name: 'Germany', code: 'DE' },
+  { name: 'Spain', code: 'ES' },
+  { name: 'Italy', code: 'IT' },
   { name: 'Portugal', code: 'PT' },
-  { name: 'Belgique', code: 'BE' },
-  { name: 'Suisse', code: 'CH' },
-  { name: 'Royaume-Uni', code: 'GB' },
-  { name: 'Irlande', code: 'IE' },
-  { name: 'Pays-Bas', code: 'NL' },
-  { name: 'Autriche', code: 'AT' },
-  { name: 'Grèce', code: 'GR' },
+  { name: 'Belgium', code: 'BE' },
+  { name: 'Switzerland', code: 'CH' },
+  { name: 'United Kingdom', code: 'GB' },
+  { name: 'Ireland', code: 'IE' },
+  { name: 'Netherlands', code: 'NL' },
+  { name: 'Austria', code: 'AT' },
+  { name: 'Greece', code: 'GR' },
 ];
 
 const COUNTRY_NAMES = COUNTRIES.map((c) => c.name);
@@ -40,23 +40,23 @@ const GROUPED_COUNTRIES: CountryGroup[] = [
     label: 'Europe',
     items: [
       { name: 'France', code: 'FR' },
-      { name: 'Allemagne', code: 'DE' },
-      { name: 'Espagne', code: 'ES' },
-      { name: 'Italie', code: 'IT' },
+      { name: 'Germany', code: 'DE' },
+      { name: 'Spain', code: 'ES' },
+      { name: 'Italy', code: 'IT' },
     ],
   },
   {
-    label: 'Amérique',
+    label: 'America',
     items: [
       { name: 'Canada', code: 'CA' },
-      { name: 'États-Unis', code: 'US' },
-      { name: 'Brésil', code: 'BR' },
+      { name: 'United States', code: 'US' },
+      { name: 'Brazil', code: 'BR' },
     ],
   },
   {
-    label: 'Asie',
+    label: 'Asia',
     items: [
-      { name: 'Japon', code: 'JP' },
+      { name: 'Japan', code: 'JP' },
       { name: 'Chine', code: 'CN' },
       { name: 'Inde', code: 'IN' },
     ],
@@ -295,8 +295,8 @@ export const Basic: Story = {
     props: { ...completer(COUNTRY_NAMES, (x) => x), model: null },
     template: `
       <ui-autocomplete
-        label="Pays"
-        placeholder="Tapez un pays…"
+        label="Country"
+        placeholder="Type a country…"
         [(ngModel)]="model"
         [suggestions]="results"
         (completeMethod)="complete($event)"
@@ -322,7 +322,7 @@ export const Dropdown: Story = {
       <div style="display: flex; flex-direction: column; gap: 1.5rem; width: 18rem">
         <ui-autocomplete
           label="Mode blank"
-          placeholder="Cliquez la flèche…"
+          placeholder="Click the arrow…"
           [dropdown]="true"
           dropdownMode="blank"
           [(ngModel)]="a"
@@ -331,7 +331,7 @@ export const Dropdown: Story = {
         />
         <ui-autocomplete
           label="Mode current"
-          placeholder="Tapez puis cliquez…"
+          placeholder="Type then click…"
           [dropdown]="true"
           dropdownMode="current"
           [(ngModel)]="b"
@@ -350,8 +350,8 @@ export const CustomOption: Story = {
     props: { ...completer(COUNTRIES, (c) => c.name), model: null },
     template: `
       <ui-autocomplete
-        label="Pays"
-        placeholder="Tapez un pays…"
+        label="Country"
+        placeholder="Type a country…"
         optionLabel="name"
         [dropdown]="true"
         [(ngModel)]="model"
@@ -387,7 +387,7 @@ export const Group: Story = {
       <div style="display: flex; flex-direction: column; gap: 1.5rem; width: 20rem">
         <ui-autocomplete
           label="Simple"
-          placeholder="Tapez un pays…"
+          placeholder="Type a country…"
           [group]="true"
           optionLabel="name"
           optionGroupLabel="label"
@@ -399,7 +399,7 @@ export const Group: Story = {
         />
         <ui-autocomplete
           label="Custom"
-          placeholder="Tapez un pays…"
+          placeholder="Type a country…"
           [group]="true"
           optionLabel="name"
           optionGroupLabel="label"
@@ -440,8 +440,8 @@ export const Multiple: Story = {
     template: `
       <div style="display: grid; gap: 1rem; width: 20rem">
         <ui-autocomplete
-          label="Pays"
-          placeholder="Tapez un pays…"
+          label="Country"
+          placeholder="Type a country…"
           [multiple]="true"
           optionLabel="name"
           dataKey="code"
@@ -452,8 +452,8 @@ export const Multiple: Story = {
         />
         <code>model = {{ model | json }}</code>
         <ui-autocomplete
-          label="Repli au-delà de 2 (maxSelectedLabels)"
-          placeholder="Tapez un pays…"
+          label="Collapses beyond 2 (maxSelectedLabels)"
+          placeholder="Type a country…"
           [multiple]="true"
           [maxSelectedLabels]="2"
           optionLabel="name"
@@ -465,9 +465,9 @@ export const Multiple: Story = {
         />
         <code>limited = {{ limited | json }}</code>
         <ui-autocomplete
-          label="Sélection forcée"
-          placeholder="Tapez puis quittez le champ…"
-          helperText="Une saisie non reconnue est effacée, la sélection reste."
+          label="Forced selection"
+          placeholder="Type then leave the field…"
+          helperText="Unrecognized input is cleared, the selection stays."
           [multiple]="true"
           [forceSelection]="true"
           optionLabel="name"
@@ -494,8 +494,8 @@ export const CustomSelectedItem: Story = {
     template: `
       <div style="display: grid; gap: 1rem; width: 20rem">
         <ui-autocomplete
-          label="Pays"
-          placeholder="Tapez un pays…"
+          label="Country"
+          placeholder="Type a country…"
           [multiple]="true"
           optionLabel="name"
           dataKey="code"
@@ -524,9 +524,9 @@ export const ForceSelection: Story = {
     props: { ...completer(COUNTRY_NAMES, (x) => x), model: null },
     template: `
       <ui-autocomplete
-        label="Pays (sélection forcée)"
-        placeholder="Tapez puis quittez le champ…"
-        helperText="Une saisie non reconnue est effacée."
+        label="Country (forced selection)"
+        placeholder="Type then leave the field…"
+        helperText="Unrecognized input is cleared."
         [forceSelection]="true"
         [dropdown]="true"
         [(ngModel)]="model"
@@ -545,7 +545,7 @@ export const ClearIcon: Story = {
     props: { ...completer(COUNTRY_NAMES, (x) => x), model: 'France' },
     template: `
       <ui-autocomplete
-        label="Pays"
+        label="Country"
         [showClear]="true"
         [dropdown]="true"
         [(ngModel)]="model"
@@ -566,8 +566,8 @@ export const Loading: Story = {
     props: { ...asyncCompleter(COUNTRY_NAMES, (x) => x), model: null },
     template: `
       <ui-autocomplete
-        label="Pays (recherche asynchrone)"
-        placeholder="Tapez un pays…"
+        label="Country (async search)"
+        placeholder="Type a country…"
         [loading]="loading"
         [(ngModel)]="model"
         [suggestions]="results"
@@ -604,7 +604,7 @@ export const Disabled: Story = {
     props: { ...completer(COUNTRY_NAMES, (x) => x), model: 'France' },
     template: `
       <ui-autocomplete
-        label="Pays"
+        label="Country"
         [disabled]="true"
         [dropdown]="true"
         [(ngModel)]="model"
@@ -628,9 +628,9 @@ export const Invalid: Story = {
     },
     template: `
       <ui-autocomplete
-        label="Pays"
-        placeholder="Champ requis"
-        errorText="Sélectionnez un pays."
+        label="Country"
+        placeholder="Required field"
+        errorText="Select a country."
         [dropdown]="true"
         [formControl]="control"
         [suggestions]="results"
@@ -649,8 +649,8 @@ export const Invalid: Story = {
   template: `
     <div style="width: 18rem; display: grid; gap: 12px; justify-items: start;">
       <ui-autocomplete
-        label="Pays"
-        placeholder="Tapez un pays…"
+        label="Country"
+        placeholder="Type a country…"
         [dropdown]="true"
         [formField]="country"
         [suggestions]="results()"
@@ -714,8 +714,8 @@ export const Objects: Story = {
     props: { ...completer(COUNTRIES, (c) => c.name), model: null },
     template: `
       <ui-autocomplete
-        label="Pays"
-        placeholder="Tapez un pays…"
+        label="Country"
+        placeholder="Type a country…"
         optionLabel="name"
         [dropdown]="true"
         [(ngModel)]="model"
@@ -737,8 +737,8 @@ export const VirtualScroll: Story = {
     props: { ...completer(MANY_ITEMS, (x) => x), model: null },
     template: `
       <ui-autocomplete
-        label="Grande liste"
-        placeholder="Tapez « Élément »…"
+        label="Large list"
+        placeholder="Type “Item”…"
         [dropdown]="true"
         [virtualScroll]="true"
         [virtualScrollItemSize]="40"

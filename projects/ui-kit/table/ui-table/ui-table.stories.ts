@@ -533,8 +533,8 @@ export const PaginationProgrammatic: Story = {
     props: { products: manyProducts },
     template: `
       <div style="display: flex; gap: 8px; margin-bottom: 8px">
-        <ui-button label="Reculer" level="low" size="small" (buttonClick)="t.first.set(t.first() > 5 ? t.first() - 5 : 0)" />
-        <ui-button label="Avancer" level="low" size="small" (buttonClick)="t.first.set(t.first() + 5)" />
+        <ui-button label="Back" level="low" size="small" (buttonClick)="t.first.set(t.first() > 5 ? t.first() - 5 : 0)" />
+        <ui-button label="Next" level="low" size="small" (buttonClick)="t.first.set(t.first() + 5)" />
       </div>
       <ui-table #t [value]="products" paginator [rows]="5">
         ${basicColumns}
@@ -885,7 +885,7 @@ export const ColumnToggle: Story = {
             optionLabel="header"
             [(ngModel)]="visibleColumns"
             ariaLabel="Visible columns"
-            placeholder="Colonnes"
+            placeholder="Columns"
           />
         </div>
       </div>

@@ -98,7 +98,7 @@ export const Basic: Story = {
   render: (args) => ({
     props: args,
     template: `
-      <ui-button label="Détails" icon="circle-info" (buttonClick)="op.toggle($event)" />
+      <ui-button label="Details" icon="circle-info" (buttonClick)="op.toggle($event)" />
       <ui-popover
         #op
         [dismissable]="dismissable"
@@ -108,12 +108,12 @@ export const Basic: Story = {
         [focusOnShow]="focusOnShow"
         [closeOnEscape]="closeOnEscape"
         [motion]="motion"
-        ariaLabel="Détails du produit"
+        ariaLabel="Product details"
         (shown)="shown()"
         (hidden)="hidden()"
       >
         <div style="display: flex; flex-direction: column; gap: 8px; max-width: 16rem;">
-          <strong>Nom de code : Atlas</strong>
+          <strong>Code name: Atlas</strong>
           <p style="margin: 0; font-size: .875rem; line-height: 1.4;">
             Un panneau flottant ancré au déclencheur, refermé au clic extérieur,
             à la touche Échap, ou via un nouvel appel de <code>toggle</code>.
@@ -141,9 +141,9 @@ export const Controlled: Story = {
           Ancre
         </span>
 
-        <ui-button size="small" label="Afficher" (buttonClick)="op.show($event, anchor)" />
+        <ui-button size="small" label="Show" (buttonClick)="op.show($event, anchor)" />
         <ui-button size="small" level="low" label="Masquer" (buttonClick)="op.hide()" />
-        <ui-button size="small" level="low" label="Basculer" (buttonClick)="op.toggle($event, anchor)" />
+        <ui-button size="small" level="low" label="Toggle" (buttonClick)="op.toggle($event, anchor)" />
       </div>
 
       <ui-popover
@@ -155,7 +155,7 @@ export const Controlled: Story = {
         [focusOnShow]="focusOnShow"
         [closeOnEscape]="closeOnEscape"
         [motion]="motion"
-        ariaLabel="Panneau contrôlé"
+        ariaLabel="Controlled panel"
         (shown)="shown()"
         (hidden)="hidden()"
       >
@@ -179,17 +179,17 @@ export const Positions: Story = {
         <ui-button size="small" level="low" label="Right" (buttonClick)="right.toggle($event)" />
       </div>
 
-      <ui-popover #top position="top" ariaLabel="En haut">
-        <span style="font-size: .875rem;">Panneau au-dessus du déclencheur.</span>
+      <ui-popover #top position="top" ariaLabel="Top">
+        <span style="font-size: .875rem;">Panel above the trigger.</span>
       </ui-popover>
       <ui-popover #bottom position="bottom" ariaLabel="En bas">
-        <span style="font-size: .875rem;">Panneau sous le déclencheur.</span>
+        <span style="font-size: .875rem;">Panel below the trigger.</span>
       </ui-popover>
-      <ui-popover #left position="left" ariaLabel="À gauche">
-        <span style="font-size: .875rem;">Panneau à gauche du déclencheur.</span>
+      <ui-popover #left position="left" ariaLabel="Left">
+        <span style="font-size: .875rem;">Panel to the left of the trigger.</span>
       </ui-popover>
-      <ui-popover #right position="right" ariaLabel="À droite">
-        <span style="font-size: .875rem;">Panneau à droite du déclencheur.</span>
+      <ui-popover #right position="right" ariaLabel="Right">
+        <span style="font-size: .875rem;">Panel to the right of the trigger.</span>
       </ui-popover>
     `,
   }),
@@ -201,8 +201,8 @@ export const Positions: Story = {
 export const RichContent: Story = {
   render: () => ({
     template: `
-      <ui-button label="Profil" icon="user" (buttonClick)="op.toggle($event)" />
-      <ui-popover #op position="bottom" ariaLabel="Carte de profil">
+      <ui-button label="Profile" icon="user" (buttonClick)="op.toggle($event)" />
+      <ui-popover #op position="bottom" ariaLabel="Profile card">
         <div style="display: flex; flex-direction: column; gap: 12px; max-width: 18rem;">
           <div style="display: flex; align-items: center; gap: 10px;">
             <ui-icon name="circle-user" size="lg" />
@@ -215,8 +215,8 @@ export const RichContent: Story = {
             Le premier élément focusable reçoit le focus à l'ouverture.
           </p>
           <div style="display: flex; justify-content: flex-end; gap: 8px;">
-            <ui-button size="small" level="low" label="Fermer" (buttonClick)="op.hide()" />
-            <ui-button size="small" label="Suivre" icon="user-plus" />
+            <ui-button size="small" level="low" label="Close" (buttonClick)="op.hide()" />
+            <ui-button size="small" label="Follow" icon="user-plus" />
           </div>
         </div>
       </ui-popover>

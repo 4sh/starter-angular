@@ -79,7 +79,7 @@ const meta: Meta<UiProgressBar> = {
     showValue: true,
     unit: '%',
     steps: 0,
-    ariaLabel: "Progression du téléchargement",
+    ariaLabel: "Download progress",
   },
 };
 
@@ -101,7 +101,7 @@ export const Small: Story = { args: { size: 'small' } };
   imports: [UiProgressBar, UiButton],
   template: `
     <div style="display:flex; flex-direction:column; gap:16px; max-width:420px;">
-      <ui-progress-bar [value]="value()" ariaLabel="Progression du transfert" />
+      <ui-progress-bar [value]="value()" ariaLabel="Transfer progress" />
       <div style="display:flex; gap:8px;">
         <ui-button label="-10" level="low" size="small" (buttonClick)="bump(-10)" />
         <ui-button label="+10" level="high" size="small" (buttonClick)="bump(10)" />
@@ -132,7 +132,7 @@ export const Dynamic: Story = {
   imports: [UiProgressBar],
   template: `
     <div style="display:flex; flex-direction:column; gap:20px; max-width:420px;">
-      <ui-progress-bar [value]="value" [valueTemplate]="pct" ariaLabel="Pourcentage" />
+      <ui-progress-bar [value]="value" [valueTemplate]="pct" ariaLabel="Percentage" />
       <ui-progress-bar
         [value]="value"
         [valueTemplate]="frac"
@@ -143,7 +143,7 @@ export const Dynamic: Story = {
         [value]="value"
         [valueTemplate]="bytes"
         color="var(--informative-warninghigh-surface-default)"
-        ariaLabel="Octets"
+        ariaLabel="Bytes"
       />
 
       <ng-template #pct let-v>{{ v }} %</ng-template>
@@ -164,7 +164,7 @@ export const Template: Story = {
 };
 
 // --- Indeterminate ---------------------------------------------------
-export const Indeterminate: Story = { args: { mode: 'indeterminate', ariaLabel: 'Chargement' } };
+export const Indeterminate: Story = { args: { mode: 'indeterminate', ariaLabel: 'Loading' } };
 
 // --- As Steps --------------------------------------------------------
-export const AsSteps: Story = { args: { value: 60, steps: 5, ariaLabel: 'Étape 3 sur 5' } };
+export const AsSteps: Story = { args: { value: 60, steps: 5, ariaLabel: 'Step 3 of 5' } };

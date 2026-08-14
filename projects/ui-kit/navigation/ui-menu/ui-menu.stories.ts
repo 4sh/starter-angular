@@ -95,17 +95,17 @@ const BASIC_ITEMS: UiMenuItem[] = [
   {
     label: 'Documents',
     items: [
-      { label: 'Nouveau', icon: 'plus' },
-      { label: 'Rechercher', icon: 'magnifying-glass' },
+      { label: 'New', icon: 'plus' },
+      { label: 'Search', icon: 'magnifying-glass' },
     ],
   },
   { separator: true },
   {
-    label: 'Profil',
+    label: 'Profile',
     items: [
-      { label: 'Paramètres', icon: 'gear' },
+      { label: 'Settings', icon: 'gear' },
       { label: 'Messages', icon: 'inbox' },
-      { label: 'Déconnexion', icon: 'right-from-bracket' },
+      { label: 'Sign out', icon: 'right-from-bracket' },
     ],
   },
 ];
@@ -126,7 +126,7 @@ export const Group: Story = {
     const sort = signal<'nom' | 'date'>('nom');
     const items = computed<UiMenuItem[]>(() => [
       {
-        label: 'Affichage',
+        label: 'Display',
         items: [
           {
             label: 'Grille',
@@ -134,7 +134,7 @@ export const Group: Story = {
             command: () => prefs.update((p) => ({ ...p, grille: !p.grille })),
           },
           {
-            label: 'Détails',
+            label: 'Details',
             icon: prefs().details ? 'square-check' : 'square',
             command: () => prefs.update((p) => ({ ...p, details: !p.details })),
           },
@@ -142,10 +142,10 @@ export const Group: Story = {
       },
       { separator: true },
       {
-        label: 'Trier par',
+        label: 'Sort by',
         items: [
           {
-            label: 'Nom',
+            label: 'Name',
             icon: sort() === 'nom' ? 'circle-dot' : 'circle',
             command: () => sort.set('nom'),
           },
@@ -159,7 +159,7 @@ export const Group: Story = {
     ]);
     return {
       props: { ...args, items },
-      template: box(`<ui-menu [items]="items()" [level]="level" [motion]="motion" ariaLabel="Options d'affichage" />`),
+      template: box(`<ui-menu [items]="items()" [level]="level" [motion]="motion" ariaLabel="Display options" />`),
     };
   },
 };
@@ -170,19 +170,19 @@ export const Group: Story = {
 const TOGGLEABLE_ITEMS: UiMenuItem[] = [
   {
     id: 'files',
-    label: 'Fichiers',
+    label: 'Files',
     icon: 'folder',
     toggleable: true, // top-level group: plain header by default, forced toggleable
     items: [
-      { label: 'Nouveau fichier', icon: 'file' },
+      { label: 'New file', icon: 'file' },
       {
         id: 'shared',
-        label: 'Partagés',
+        label: 'Shared',
         icon: 'users',
         toggleable: false, // nested group: toggleable by default, forced always open
         items: [
-          { label: 'Équipe design', icon: 'palette' },
-          { label: 'Équipe dev', icon: 'code' },
+          { label: 'Design team', icon: 'palette' },
+          { label: 'Dev team', icon: 'code' },
         ],
       },
       {
@@ -198,7 +198,7 @@ const TOGGLEABLE_ITEMS: UiMenuItem[] = [
   },
   { separator: true },
   {
-    label: 'Corbeille',
+    label: 'Trash',
     icon: 'trash',
   },
 ];
@@ -207,7 +207,7 @@ export const Toggleable: Story = {
   render: (args) => ({
     props: { ...args, items: TOGGLEABLE_ITEMS, keys: { files: true } },
     template: box(
-      `<ui-menu [items]="items" [expandedKeys]="keys" [level]="level" [motion]="motion" ariaLabel="Explorateur" />`,
+      `<ui-menu [items]="items" [expandedKeys]="keys" [level]="level" [motion]="motion" ariaLabel="Explorer" />`,
     ),
   }),
 };
@@ -231,21 +231,21 @@ export const Popup: Story = {
 export const Compact: Story = {
   render: (args) => {
     const items: UiMenuItem[] = [
-      { label: 'Renommer', icon: 'pen' },
-      { label: 'Dupliquer', icon: 'copy' },
+      { label: 'Rename', icon: 'pen' },
+      { label: 'Duplicate', icon: 'copy' },
       { separator: true },
-      { label: 'Supprimer', icon: 'trash' },
+      { label: 'Remove', icon: 'trash' },
     ];
     return {
       props: { ...args, items },
       template: `
         <div style="display:flex; justify-content:space-between; align-items:center; max-width:320px; padding:8px 12px; border:1px solid var(--global-border-default); border-radius:8px">
           <span>rapport-2026.pdf</span>
-          <ui-button level="low" size="small" icon="ellipsis" ariaLabel="Actions du fichier"
+          <ui-button level="low" size="small" icon="ellipsis" ariaLabel="File actions"
             (buttonClick)="menu.toggle($event)"
             [buttonProps]="{ 'aria-haspopup': 'menu', 'aria-controls': menu.uid }" />
         </div>
-        <ui-menu #menu popup size="small" [items]="items" [level]="level" [motion]="motion" ariaLabel="Actions du fichier" />
+        <ui-menu #menu popup size="small" [items]="items" [level]="level" [motion]="motion" ariaLabel="File actions" />
       `,
     };
   },
@@ -258,21 +258,21 @@ export const Template: Story = {
   render: (args) => {
     const items: UiMenuItem[] = [
       {
-        label: 'Espace de travail',
+        label: 'Workspace',
         items: [
           { label: 'Tableau de bord', icon: 'gauge' },
-          { label: 'Rapports', icon: 'chart-line', title: 'Fonction PRO' },
-          { label: 'Automatisations', icon: 'robot', title: 'Fonction PRO' },
+          { label: 'Reports', icon: 'chart-line', title: 'PRO feature' },
+          { label: 'Automations', icon: 'robot', title: 'PRO feature' },
         ],
       },
     ];
     return {
       props: { ...args, items },
       template: box(`
-        <ui-menu [items]="items" [level]="level" [motion]="motion" ariaLabel="Espace de travail">
+        <ui-menu [items]="items" [level]="level" [motion]="motion" ariaLabel="Workspace">
           <ng-template #start>
             <strong style="display:block">Acme Corp</strong>
-            <small>Espace « Produit »</small>
+            <small>“Product” workspace</small>
           </ng-template>
           <ng-template #submenuheader let-item>
             <ui-icon name="layer-group" size="sm" />
@@ -286,7 +286,7 @@ export const Template: Story = {
             }
           </ng-template>
           <ng-template #end>
-            <small>Connecté en tant que robin&#64;acme.dev</small>
+            <small>Signed in as robin&#64;acme.dev</small>
           </ng-template>
         </ui-menu>
       `),
@@ -303,10 +303,10 @@ export const Command: Story = {
       {
         label: 'Actions',
         items: [
-          { label: 'Enregistrer', icon: 'floppy-disk', command: ({ item }) => lastAction.set(`« ${item.label} »`) },
-          { label: 'Dupliquer', icon: 'copy', command: ({ item }) => lastAction.set(`« ${item.label} »`) },
-          { label: 'Supprimer', icon: 'trash', command: ({ item }) => lastAction.set(`« ${item.label} »`) },
-          { label: 'Action désactivée', icon: 'ban', disabled: true, command: () => lastAction.set('jamais appelé') },
+          { label: 'Save', icon: 'floppy-disk', command: ({ item }) => lastAction.set(`« ${item.label} »`) },
+          { label: 'Duplicate', icon: 'copy', command: ({ item }) => lastAction.set(`« ${item.label} »`) },
+          { label: 'Remove', icon: 'trash', command: ({ item }) => lastAction.set(`« ${item.label} »`) },
+          { label: 'Disabled action', icon: 'ban', disabled: true, command: () => lastAction.set('never called') },
         ],
       },
     ];
@@ -314,7 +314,7 @@ export const Command: Story = {
       props: { ...args, items, lastAction },
       template: box(`
         <ui-menu [items]="items" [level]="level" [motion]="motion" ariaLabel="Actions" />
-        <p aria-live="polite">Dernière commande : <strong>{{ lastAction() }}</strong></p>
+        <p aria-live="polite">Last order: <strong>{{ lastAction() }}</strong></p>
       `),
     };
   },
@@ -329,14 +329,14 @@ export const Router: Story = {
       {
         label: 'Navigation',
         items: [
-          { label: 'Accueil', icon: 'house', routerLink: '/', routerLinkActiveExact: true },
-          { label: 'Profil', icon: 'user', routerLink: '/profil' },
+          { label: 'Home', icon: 'house', routerLink: '/', routerLinkActiveExact: true },
+          { label: 'Profile', icon: 'user', routerLink: '/profil' },
           { label: 'Recherche', icon: 'magnifying-glass', routerLink: '/recherche', queryParams: { q: 'tokens' } },
         ],
       },
       { separator: true },
       {
-        label: 'Liens externes',
+        label: 'External links',
         items: [{ label: 'Documentation Angular', icon: 'up-right-from-square', url: 'https://angular.dev', target: '_blank' }],
       },
     ];
@@ -356,7 +356,7 @@ export const Controlled: Story = {
     const items: UiMenuItem[] = [
       {
         id: 'projets',
-        label: 'Projets',
+        label: 'Projects',
         icon: 'diagram-project',
         toggleable: true,
         items: [
@@ -366,12 +366,12 @@ export const Controlled: Story = {
       },
       {
         id: 'equipes',
-        label: 'Équipes',
+        label: 'Teams',
         icon: 'users',
         toggleable: true,
         items: [
           { label: 'Design', icon: 'palette' },
-          { label: 'Développement', icon: 'code' },
+          { label: 'Development', icon: 'code' },
         ],
       },
     ];
@@ -387,11 +387,11 @@ export const Controlled: Story = {
       template: box(
         `
         <div style="display:flex; gap:8px; margin-bottom:12px">
-          <ui-button size="small" level="low" label="Tout ouvrir" (buttonClick)="expandAll()" />
-          <ui-button size="small" level="low" label="Tout fermer" (buttonClick)="collapseAll()" />
+          <ui-button size="small" level="low" label="Open all" (buttonClick)="expandAll()" />
+          <ui-button size="small" level="low" label="Close all" (buttonClick)="collapseAll()" />
         </div>
         <ui-menu [items]="items" [expandedKeys]="keys()" (expandedKeysChange)="setKeys($event)"
-          [level]="level" [motion]="motion" ariaLabel="Espaces" />
+          [level]="level" [motion]="motion" ariaLabel="Workspaces" />
         <pre style="font-size:12px">expandedKeys = {{ keys() | json }}</pre>
       `,
         320,
@@ -404,6 +404,6 @@ export const Controlled: Story = {
 export const Low: Story = {
   render: (args) => ({
     props: { ...args, items: BASIC_ITEMS },
-    template: box(`<ui-menu [items]="items" level="low" [motion]="motion" ariaLabel="Menu secondaire" />`),
+    template: box(`<ui-menu [items]="items" level="low" [motion]="motion" ariaLabel="Secondary menu" />`),
   }),
 };

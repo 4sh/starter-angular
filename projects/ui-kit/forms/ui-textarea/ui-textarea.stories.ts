@@ -53,22 +53,22 @@ const TEMPLATE = `<div style="width:280px"><ui-textarea
 
 const story = (value = ''): Story['render'] => (args) => ({ props: { ...args, model: value }, template: TEMPLATE });
 
-export const Default: Story = { render: story(), args: { label: 'Message', placeholder: 'Votre message…' } };
-export const WithValue: Story = { render: story('Bonjour,\nvoici un message multiligne.'), args: { label: 'Message' } };
-export const WithHelper: Story = { render: story(), args: { label: 'Commentaire', placeholder: 'Votre avis…', helperText: 'Restez courtois et concis.' } };
-export const Success: Story = { render: story('Contenu validé'), args: { label: 'Bio', level: 'success', helperText: 'Parfait.' } };
+export const Default: Story = { render: story(), args: { label: 'Message', placeholder: 'Your message…' } };
+export const WithValue: Story = { render: story('Hello,\nhere is a multiline message.'), args: { label: 'Message' } };
+export const WithHelper: Story = { render: story(), args: { label: 'Comment', placeholder: 'Your feedback…', helperText: 'Stay polite and concise.' } };
+export const Success: Story = { render: story('Validated content'), args: { label: 'Bio', level: 'success', helperText: 'Parfait.' } };
 export const Small: Story = { render: story(), args: { label: 'Compact', size: 'small', placeholder: 'Placeholder' } };
-export const AutoResize: Story = { render: story('Cette zone grandit automatiquement\nà mesure que vous écrivez.'), args: { label: 'Auto-resize', autoResize: true } };
-export const ResizeBoth: Story = { render: story('Poignée sur les deux axes.'), args: { label: 'Resize libre', resize: 'both' } };
+export const AutoResize: Story = { render: story('This area grows automatically\nas you type.'), args: { label: 'Auto-resize', autoResize: true } };
+export const ResizeBoth: Story = { render: story('Handle on both axes.'), args: { label: 'Free resize', resize: 'both' } };
 export const Disabled: Story = { render: story('Non modifiable'), args: { label: 'Message', disabled: true } };
-export const Readonly: Story = { render: story('Lecture seule'), args: { label: 'Message', readonly: true } };
+export const Readonly: Story = { render: story('Read-only'), args: { label: 'Message', readonly: true } };
 
 // --- Character counter ---------------------------------------------------
 export const CharacterCount: Story = {
   render: () => ({
     props: { model: 'Un court message.' },
     template: `<div style="width:280px"><ui-textarea
-      [(ngModel)]="model" label="Commentaire" placeholder="280 caractères max"
+      [(ngModel)]="model" label="Comment" placeholder="280 characters max"
       [maxlength]="280" [showCount]="true" /></div>`,
   }),
 };
@@ -80,7 +80,7 @@ export const Required: Story = {
     props: { control: new FormControl('', Validators.required) },
     template: `<div style="width:280px"><ui-textarea
       [formControl]="control" label="Message" [required]="true"
-      helperText="Champ obligatoire." errorText="Ce champ est requis." /></div>`,
+      helperText="Required field." errorText="This field is required." /></div>`,
   }),
 };
 
@@ -90,8 +90,8 @@ export const Validation: Story = {
     template: `<div style="width:280px"><ui-textarea
       [formControl]="control" label="Bio" [required]="true"
       [showCount]="true" [maxlength]="160"
-      helperText="Entre 20 et 160 caractères."
-      errorText="Minimum 20 caractères." /></div>`,
+      helperText="Between 20 and 160 characters."
+      errorText="Minimum 20 characters." /></div>`,
   }),
 };
 
@@ -102,8 +102,8 @@ export const Validation: Story = {
   imports: [UiTextarea, FormField],
   template: `
     <div style="width:280px; display:grid; gap:12px; justify-items:start;">
-      <ui-textarea [formField]="field" label="Message" placeholder="Votre message…"
-                   helperText="3 caractères minimum." errorText="3 caractères minimum." />
+      <ui-textarea [formField]="field" label="Message" placeholder="Your message…"
+                   helperText="3 characters minimum." errorText="3 characters minimum." />
       <code>value = {{ field().value() }} · valid = {{ field().valid() }}</code>
     </div>
   `,

@@ -56,17 +56,17 @@ const TEMPLATE = `<div style="width:260px"><ui-input
 
 const story = (value = ''): Story['render'] => (args) => ({ props: { ...args, model: value }, template: TEMPLATE });
 
-export const Default: Story = { render: story(), args: { label: 'Nom', placeholder: 'Votre nom' } };
-export const WithValue: Story = { render: story('Robin'), args: { label: 'Nom' } };
-export const WithHelper: Story = { render: story(), args: { label: 'Email', placeholder: 'nom@exemple.fr', helperText: 'Nous ne partagerons jamais votre email.' } };
-export const Required: Story = { render: story(), args: { label: 'Nom', required: true } };
-export const Success: Story = { render: story('robin'), args: { label: "Nom d'utilisateur", level: 'success', helperText: 'Disponible.' } };
-export const Error: Story = { render: story('robin@'), args: { label: 'Email', level: 'error', helperText: 'Adresse e-mail invalide.' } };
-export const ErrorText: Story = { render: story('robin@'), args: { label: 'Email', invalid: true, helperText: 'Aide neutre.', errorText: 'Adresse e-mail invalide.' } };
+export const Default: Story = { render: story(), args: { label: 'Name', placeholder: 'Your name' } };
+export const WithValue: Story = { render: story('Robin'), args: { label: 'Name' } };
+export const WithHelper: Story = { render: story(), args: { label: 'Email', placeholder: 'nom@exemple.fr', helperText: 'We will never share your email.' } };
+export const Required: Story = { render: story(), args: { label: 'Name', required: true } };
+export const Success: Story = { render: story('robin'), args: { label: "Username", level: 'success', helperText: 'Available.' } };
+export const Error: Story = { render: story('robin@'), args: { label: 'Email', level: 'error', helperText: 'Invalid email address.' } };
+export const ErrorText: Story = { render: story('robin@'), args: { label: 'Email', invalid: true, helperText: 'Neutral helper.', errorText: 'Invalid email address.' } };
 export const Small: Story = { render: story(), args: { label: 'Compact', size: 'small', placeholder: 'Placeholder' } };
 export const WithUnit: Story = { render: story('50'), args: { label: 'Remise', unit: '%' } };
 export const Disabled: Story = { render: story('Non modifiable'), args: { label: 'Champ', disabled: true } };
-export const Readonly: Story = { render: story('Lecture seule'), args: { label: 'Champ', readonly: true } };
+export const Readonly: Story = { render: story('Read-only'), args: { label: 'Champ', readonly: true } };
 
 // Zone d'action droite : recherche → icône « effacer » visible seulement avec du texte, clic vide.
 export const Search: Story = {
@@ -75,10 +75,10 @@ export const Search: Story = {
     template: `<div style="width:260px"><ui-input
       [(ngModel)]="model"
       label="Recherche"
-      placeholder="Rechercher…"
+      placeholder="Search…"
       iconLeft="magnifying-glass"
       [iconRight]="model ? 'xmark' : undefined"
-      iconRightAriaLabel="Effacer la recherche"
+      iconRightAriaLabel="Clear search"
       (iconRightClick)="model = ''" /></div>`,
   }),
 };
@@ -92,7 +92,7 @@ export const Password: Story = {
       label="Mot de passe"
       [type]="revealed ? 'text' : 'password'"
       [iconRight]="revealed ? 'eye-slash' : 'eye'"
-      [iconRightAriaLabel]="revealed ? 'Masquer le mot de passe' : 'Afficher le mot de passe'"
+      [iconRightAriaLabel]="revealed ? 'Hide password' : 'Show password'"
       (iconRightClick)="revealed = !revealed" /></div>`,
   }),
 };
@@ -104,8 +104,8 @@ export const Password: Story = {
   imports: [UiInput, FormField],
   template: `
     <div style="width:260px; display:grid; gap:12px; justify-items:start;">
-      <ui-input [formField]="field" label="Nom" placeholder="Votre nom"
-                helperText="3 caractères minimum." errorText="3 caractères minimum." />
+      <ui-input [formField]="field" label="Name" placeholder="Your name"
+                helperText="3 characters minimum." errorText="3 characters minimum." />
       <code>value = {{ field().value() }} · valid = {{ field().valid() }}</code>
     </div>
   `,

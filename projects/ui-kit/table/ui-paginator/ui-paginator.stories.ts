@@ -153,7 +153,7 @@ export const Template: Story = {
         [showFirstLastIcon]="false"
         [showPageLinks]="false"
       >
-        <ng-template #start let-state>Lignes par page :</ng-template>
+        <ng-template #start let-state>Rows per page:</ng-template>
         <ng-template #end let-state>page {{ state.page + 1 }} / {{ state.pageCount }}</ng-template>
       </ui-paginator>
     `,

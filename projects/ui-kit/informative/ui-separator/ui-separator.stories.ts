@@ -98,7 +98,7 @@ export const Vertical: Story = {
     template: vBox(`
       <span>Gauche</span>
       <ui-separator orientation="vertical" [variant]="variant" [size]="size" />
-      <span>Droite</span>`),
+      <span>Right</span>`),
   }),
 };
 
@@ -108,6 +108,6 @@ export const VerticalDashed: Story = {
     template: vBox(`
       <span>Gauche</span>
       <ui-separator orientation="vertical" variant="dashed" [size]="size" />
-      <span>Droite</span>`),
+      <span>Right</span>`),
   }),
 };

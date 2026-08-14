@@ -60,7 +60,7 @@ const meta: Meta<UiEmptyState> = {
     },
   },
   args: {
-    title: 'Aucun résultat',
+    title: 'No results',
     description: 'Aucun élément ne correspond à votre recherche. Essayez d’élargir vos filtres.',
     icon: 'folder-open',
     iconType: 'solid',
@@ -87,7 +87,7 @@ export const Default: Story = {
         [ariaLabel]="ariaLabel"
       >
         <div uiEmptyStateActions>
-          <ui-button label="Créer un élément" level="high" icon="plus" />
+          <ui-button label="Create an item" level="high" icon="plus" />
         </div>
       </ui-empty-state>
     `,
@@ -128,14 +128,14 @@ export const MultipleActions: Story = {
         [size]="size"
       >
         <ng-container uiEmptyStateActions>
-          <ui-button label="Réessayer" level="high" icon="rotate-right" />
-          <ui-button label="Annuler" level="low" />
+          <ui-button label="Retry" level="high" icon="rotate-right" />
+          <ui-button label="Cancel" level="low" />
         </ng-container>
       </ui-empty-state>
     `,
   }),
   args: {
-    title: 'Impossible de charger les données',
+    title: 'Could not load the data',
     description: 'Une erreur est survenue. Vérifiez votre connexion puis réessayez.',
     icon: 'triangle-exclamation',
   },
@@ -151,7 +151,7 @@ export const WithIllustration: Story = {
         [description]="description"
         [size]="size"
       >
-        <svg uiEmptyStateMedia width="160" height="120" viewBox="0 0 160 120" role="img" aria-label="Boîte vide">
+        <svg uiEmptyStateMedia width="160" height="120" viewBox="0 0 160 120" role="img" aria-label="Empty box">
           <rect x="20" y="40" width="120" height="70" rx="8"
                 fill="var(--global-background-muted)"
                 stroke="var(--global-border-default)" stroke-width="2" />
@@ -159,13 +159,13 @@ export const WithIllustration: Story = {
                 stroke="var(--global-border-default)" stroke-width="2" />
         </svg>
         <div uiEmptyStateActions>
-          <ui-button label="Nouveau message" level="high" icon="pen" />
+          <ui-button label="New message" level="high" icon="pen" />
         </div>
       </ui-empty-state>
     `,
   }),
   args: {
-    title: 'Boîte de réception vide',
+    title: 'Empty inbox',
     description: 'Vous êtes à jour. Aucun nouveau message pour le moment.',
   },
 };
@@ -179,5 +179,5 @@ export const TextOnly: Story = {
 // Région nommée (landmark) : role="region" + aria-label.
 export const AsRegion: Story = {
   ...Default,
-  args: { ariaLabel: 'Résultats de recherche' },
+  args: { ariaLabel: 'Search results' },
 };

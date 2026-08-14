@@ -120,25 +120,25 @@ export const Checked: Story = {
     props: { ...args, model: true },
     template: `<ui-checkbox [(ngModel)]="model" [label]="label" />`,
   }),
-  args: { label: 'Cochée' },
+  args: { label: 'Checked' },
 };
 
 // États
-export const Indeterminate: Story = { args: { label: 'Indéterminée', indeterminate: true } };
-export const Required: Story = { args: { label: 'Obligatoire', required: true } };
-export const Disabled: Story = { args: { label: 'Désactivée', disabled: true } };
+export const Indeterminate: Story = { args: { label: 'Indeterminate', indeterminate: true } };
+export const Required: Story = { args: { label: 'Required', required: true } };
+export const Disabled: Story = { args: { label: 'Disabled', disabled: true } };
 export const DisabledChecked: Story = {
   render: (args) => ({
     props: { ...args, model: true },
     template: `<ui-checkbox [(ngModel)]="model" [label]="label" [disabled]="true" />`,
   }),
-  args: { label: 'Désactivée cochée' },
+  args: { label: 'Disabled checked' },
 };
-export const Readonly: Story = { args: { label: 'Lecture seule', readonly: true } };
-export const Invalid: Story = { args: { label: 'En erreur', invalid: true } };
+export const Readonly: Story = { args: { label: 'Read-only', readonly: true } };
+export const Invalid: Story = { args: { label: 'In error', invalid: true } };
 
 // Sans label visible (aria-label obligatoire)
-export const NoLabel: Story = { args: { ariaLabel: 'Sélectionner la ligne' } };
+export const NoLabel: Story = { args: { ariaLabel: 'Select row' } };
 
 // trueValue / falseValue personnalisés
 export const CustomValues: Story = {
@@ -160,7 +160,7 @@ export const CustomValues: Story = {
   imports: [UiCheckbox, FormField],
   template: `
     <div style="display: grid; gap: 8px; justify-items: start;">
-      <ui-checkbox [formField]="accepted" label="Accepter les CGU" />
+      <ui-checkbox [formField]="accepted" label="Accept the terms" />
       <code>value = {{ accepted().value() }} · valid = {{ accepted().valid() }}</code>
     </div>
   `,
@@ -185,14 +185,14 @@ export const Group: Story = {
     template: `
       <div style="display: grid; gap: 8px; justify-items: start;">
         <ui-checkbox
-          label="Tout sélectionner"
+          label="Select all"
           [indeterminate]="child1 !== child2"
           [ngModel]="child1 && child2"
           (checkboxChange)="child1 = $event; child2 = $event"
         />
         <div style="display: grid; gap: 8px; padding-left: 32px;">
-          <ui-checkbox [(ngModel)]="child1" label="Élément 1" />
-          <ui-checkbox [(ngModel)]="child2" label="Élément 2" />
+          <ui-checkbox [(ngModel)]="child1" label="Item 1" />
+          <ui-checkbox [(ngModel)]="child2" label="Item 2" />
         </div>
       </div>
     `,

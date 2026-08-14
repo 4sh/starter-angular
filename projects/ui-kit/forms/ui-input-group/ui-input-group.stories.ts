@@ -19,14 +19,14 @@ interface PhoneCode {
 
 const PHONE_CODES: PhoneCode[] = [
   { name: 'France', code: 'fr', dial: '+33' },
-  { name: 'Belgique', code: 'be', dial: '+32' },
-  { name: 'Suisse', code: 'ch', dial: '+41' },
+  { name: 'Belgium', code: 'be', dial: '+32' },
+  { name: 'Switzerland', code: 'ch', dial: '+41' },
   { name: 'Luxembourg', code: 'lu', dial: '+352' },
-  { name: 'Allemagne', code: 'de', dial: '+49' },
-  { name: 'Espagne', code: 'es', dial: '+34' },
-  { name: 'Italie', code: 'it', dial: '+39' },
-  { name: 'Royaume-Uni', code: 'gb', dial: '+44' },
-  { name: 'États-Unis', code: 'us', dial: '+1' },
+  { name: 'Germany', code: 'de', dial: '+49' },
+  { name: 'Spain', code: 'es', dial: '+34' },
+  { name: 'Italy', code: 'it', dial: '+39' },
+  { name: 'United Kingdom', code: 'gb', dial: '+44' },
+  { name: 'United States', code: 'us', dial: '+1' },
   { name: 'Canada', code: 'ca', dial: '+1' },
 ];
 
@@ -100,12 +100,12 @@ export const Basic: Story = {
     template: stack(`
       <ui-input-group [size]="size">
         <ui-input-group-addon><ui-icon name="user" size="sm" /></ui-input-group-addon>
-        <ui-input placeholder="Nom d'utilisateur" ariaLabel="Nom d'utilisateur" />
+        <ui-input placeholder="Username" ariaLabel="Username" />
       </ui-input-group>
 
       <ui-input-group [size]="size">
         <ui-input-group-addon>https://</ui-input-group-addon>
-        <ui-input placeholder="mon-site" ariaLabel="Adresse du site" />
+        <ui-input placeholder="mon-site" ariaLabel="Website address" />
         <ui-input-group-addon>.com</ui-input-group-addon>
       </ui-input-group>`),
   }),
@@ -120,7 +120,7 @@ export const Multiple: Story = {
       <ui-input-group [size]="size">
         <ui-input-group-addon><ui-icon name="clock" size="sm" /></ui-input-group-addon>
         <ui-input-group-addon><ui-icon name="star" size="sm" /></ui-input-group-addon>
-        <ui-input-number [(ngModel)]="price" placeholder="Prix" ariaLabel="Prix" />
+        <ui-input-number [(ngModel)]="price" placeholder="Price" ariaLabel="Price" />
         <ui-input-group-addon>€</ui-input-group-addon>
         <ui-input-group-addon>,00</ui-input-group-addon>
       </ui-input-group>`,
@@ -135,20 +135,20 @@ export const Button: Story = {
     props: args,
     template: stack(`
       <ui-input-group [size]="size">
-        <ui-button label="Rechercher" [size]="size" />
-        <ui-input placeholder="Mot-clé" ariaLabel="Mot-clé" />
-        <ui-input-group-addon>8 résultats</ui-input-group-addon>
+        <ui-button label="Search" [size]="size" />
+        <ui-input placeholder="Keyword" ariaLabel="Keyword" />
+        <ui-input-group-addon>8 results</ui-input-group-addon>
       </ui-input-group>
 
       <ui-input-group [size]="size">
-        <ui-input placeholder="Mot-clé" ariaLabel="Mot-clé" />
-        <ui-button icon="magnifying-glass" ariaLabel="Rechercher" level="low" variant="outlined" [size]="size" />
+        <ui-input placeholder="Keyword" ariaLabel="Keyword" />
+        <ui-button icon="magnifying-glass" ariaLabel="Search" level="low" variant="outlined" [size]="size" />
       </ui-input-group>
 
       <ui-input-group [size]="size">
-        <ui-button icon="check" ariaLabel="Valider le vote" level="success" [size]="size" />
+        <ui-button icon="check" ariaLabel="Confirm vote" level="success" [size]="size" />
         <ui-input placeholder="Vote" ariaLabel="Vote" />
-        <ui-button icon="xmark" ariaLabel="Annuler le vote" level="error" [size]="size" />
+        <ui-button icon="xmark" ariaLabel="Cancel vote" level="error" [size]="size" />
       </ui-input-group>`),
   }),
 };
@@ -160,26 +160,26 @@ export const CheckboxRadio: Story = {
     props: { ...args, checked1: false, checked2: false, priceMode: 'ttc', siteMode: undefined },
     template: stack(`
       <ui-input-group [size]="size">
-        <ui-input placeholder="Prix" ariaLabel="Prix" />
+        <ui-input placeholder="Price" ariaLabel="Price" />
         <ui-input-group-addon>
-          <ui-radio name="priceMode" value="ttc" ariaLabel="Prix TTC" [(ngModel)]="priceMode" />
+          <ui-radio name="priceMode" value="ttc" ariaLabel="Price incl. tax" [(ngModel)]="priceMode" />
         </ui-input-group-addon>
       </ui-input-group>
 
       <ui-input-group [size]="size">
         <ui-input-group-addon>
-          <ui-checkbox ariaLabel="Mémoriser le nom d'utilisateur" [(ngModel)]="checked1" />
+          <ui-checkbox ariaLabel="Remember username" [(ngModel)]="checked1" />
         </ui-input-group-addon>
-        <ui-input placeholder="Nom d'utilisateur" ariaLabel="Nom d'utilisateur" />
+        <ui-input placeholder="Username" ariaLabel="Username" />
       </ui-input-group>
 
       <ui-input-group [size]="size">
         <ui-input-group-addon>
-          <ui-checkbox ariaLabel="Site vérifié" [(ngModel)]="checked2" />
+          <ui-checkbox ariaLabel="Verified site" [(ngModel)]="checked2" />
         </ui-input-group-addon>
         <ui-input placeholder="Site" ariaLabel="Site" />
         <ui-input-group-addon>
-          <ui-radio name="siteMode" value="pro" ariaLabel="Site professionnel" [(ngModel)]="siteMode" />
+          <ui-radio name="siteMode" value="pro" ariaLabel="Business site" [(ngModel)]="siteMode" />
         </ui-input-group-addon>
       </ui-input-group>`),
   }),
@@ -194,8 +194,8 @@ export const Select: Story = {
       <ui-input-group [size]="size">
         <ui-input-group-addon><ui-icon name="location-dot" size="sm" /></ui-input-group-addon>
         <ui-select
-          placeholder="Choisir une ville"
-          ariaLabel="Ville"
+          placeholder="Choose a city"
+          ariaLabel="City"
           [(ngModel)]="city1"
           [options]="cities"
           optionLabel="label"
@@ -204,10 +204,10 @@ export const Select: Story = {
 
       <ui-input-group [size]="size">
         <ui-input-group-addon>www</ui-input-group-addon>
-        <ui-input placeholder="mon-site" ariaLabel="Adresse du site" />
+        <ui-input placeholder="mon-site" ariaLabel="Website address" />
         <ui-select
-          placeholder="Ville"
-          ariaLabel="Ville de rattachement"
+          placeholder="City"
+          ariaLabel="Home city"
           [(ngModel)]="city2"
           [options]="cities"
           optionLabel="label"
@@ -231,7 +231,7 @@ export const PhoneNumber: Story = {
         <ui-select
           style="max-width:120px"
           panelWidth="auto"
-          ariaLabel="Indicatif du pays"
+          ariaLabel="Country code"
           [(ngModel)]="dial"
           [options]="phoneCodes"
           optionLabel="dial">
@@ -249,7 +249,7 @@ export const PhoneNumber: Story = {
             </span>
           </ng-template>
         </ui-select>
-        <ui-input type="tel" placeholder="06 12 34 56 78" ariaLabel="Numéro de téléphone" />
+        <ui-input type="tel" placeholder="06 12 34 56 78" ariaLabel="Phone number" />
       </ui-input-group>`,
       340,
     ),
@@ -263,8 +263,8 @@ export const Small: Story = {
     template: stack(`
       <ui-input-group size="small">
         <ui-input-group-addon><ui-icon name="user" size="sm" /></ui-input-group-addon>
-        <ui-input size="small" placeholder="Nom d'utilisateur" ariaLabel="Nom d'utilisateur" />
-        <ui-button size="small" icon="magnifying-glass" ariaLabel="Rechercher" level="low" variant="outlined" />
+        <ui-input size="small" placeholder="Username" ariaLabel="Username" />
+        <ui-button size="small" icon="magnifying-glass" ariaLabel="Search" level="low" variant="outlined" />
       </ui-input-group>`),
   }),
 };

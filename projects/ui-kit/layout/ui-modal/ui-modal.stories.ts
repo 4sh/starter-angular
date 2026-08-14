@@ -140,15 +140,15 @@ export const Basic: Story = {
   render: (args) => ({
     props: { ...args, visible: false },
     template: `
-      <ui-button label="Afficher le dialogue" (buttonClick)="visible = true" />
-      <ui-modal [(visible)]="visible" header="Titre du dialogue" [dialogStyle]="{ width: '30rem' }">
+      <ui-button label="Show the dialog" (buttonClick)="visible = true" />
+      <ui-modal [(visible)]="visible" header="Dialog title" [dialogStyle]="{ width: '30rem' }">
         <p style="margin: 0;">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla congue
           sit amet quam ut vestibulum.
         </p>
         <ng-template #footer>
-          <ui-button label="Fermer" level="low" (buttonClick)="visible = false" />
-          <ui-button label="Valider" level="high" (buttonClick)="visible = false" />
+          <ui-button label="Close" level="low" (buttonClick)="visible = false" />
+          <ui-button label="Submit" level="high" (buttonClick)="visible = false" />
         </ng-template>
       </ui-modal>
     `,
@@ -160,8 +160,8 @@ export const Template: Story = {
   render: (args) => ({
     props: { ...args, visible: false },
     template: `
-      <ui-button label="Afficher le dialogue" (buttonClick)="visible = true" />
-      <ui-modal [(visible)]="visible" [dialogStyle]="{ width: '30rem' }" ariaLabel="Profil utilisateur">
+      <ui-button label="Show the dialog" (buttonClick)="visible = true" />
+      <ui-modal [(visible)]="visible" [dialogStyle]="{ width: '30rem' }" ariaLabel="User profile">
         <ng-template #header>
           <span style="display: inline-flex; align-items: center; gap: 8px;">
             <ui-icon name="circle-user" size="default" />
@@ -176,7 +176,7 @@ export const Template: Story = {
 
         <ng-template #footer>
           <ui-button label="Message" level="low" icon="envelope" (buttonClick)="visible = false" />
-          <ui-button label="Suivre" level="high" icon="user-plus" (buttonClick)="visible = false" />
+          <ui-button label="Follow" level="high" icon="user-plus" (buttonClick)="visible = false" />
         </ng-template>
       </ui-modal>
     `,
@@ -188,10 +188,10 @@ export const Draggable: Story = {
   render: (args) => ({
     props: { ...args, visible: false },
     template: `
-      <ui-button label="Afficher le dialogue" (buttonClick)="visible = true" />
+      <ui-button label="Show the dialog" (buttonClick)="visible = true" />
       <ui-modal
         [(visible)]="visible"
-        header="Déplaçable"
+        header="Draggable"
         [draggable]="true"
         [dialogStyle]="{ width: '30rem' }"
       >
@@ -200,7 +200,7 @@ export const Draggable: Story = {
           maintenu dans les limites du viewport.
         </p>
         <ng-template #footer>
-          <ui-button label="Fermer" level="low" (buttonClick)="visible = false" />
+          <ui-button label="Close" level="low" (buttonClick)="visible = false" />
         </ng-template>
       </ui-modal>
     `,
@@ -213,21 +213,21 @@ export const Position: Story = {
     props: { ...args, visible: false, pos: 'center' },
     template: `
       <div style="display: grid; grid-template-columns: repeat(3, auto); gap: 8px;">
-        <ui-button label="Haut gauche" size="small" level="low" (buttonClick)="pos = 'topleft'; visible = true" />
-        <ui-button label="Haut" size="small" level="low" (buttonClick)="pos = 'top'; visible = true" />
-        <ui-button label="Haut droite" size="small" level="low" (buttonClick)="pos = 'topright'; visible = true" />
+        <ui-button label="Top left" size="small" level="low" (buttonClick)="pos = 'topleft'; visible = true" />
+        <ui-button label="Top" size="small" level="low" (buttonClick)="pos = 'top'; visible = true" />
+        <ui-button label="Top right" size="small" level="low" (buttonClick)="pos = 'topright'; visible = true" />
         <ui-button label="Gauche" size="small" level="low" (buttonClick)="pos = 'left'; visible = true" />
-        <ui-button label="Centre" size="small" level="high" (buttonClick)="pos = 'center'; visible = true" />
-        <ui-button label="Droite" size="small" level="low" (buttonClick)="pos = 'right'; visible = true" />
+        <ui-button label="Center" size="small" level="high" (buttonClick)="pos = 'center'; visible = true" />
+        <ui-button label="Right" size="small" level="low" (buttonClick)="pos = 'right'; visible = true" />
         <ui-button label="Bas gauche" size="small" level="low" (buttonClick)="pos = 'bottomleft'; visible = true" />
         <ui-button label="Bas" size="small" level="low" (buttonClick)="pos = 'bottom'; visible = true" />
-        <ui-button label="Bas droite" size="small" level="low" (buttonClick)="pos = 'bottomright'; visible = true" />
+        <ui-button label="Bottom right" size="small" level="low" (buttonClick)="pos = 'bottomright'; visible = true" />
       </div>
 
       <ui-modal [(visible)]="visible" [position]="pos" [header]="'Position : ' + pos" [dialogStyle]="{ width: '26rem' }">
-        <p style="margin: 0;">Le dialogue s'ancre selon la position choisie.</p>
+        <p style="margin: 0;">The dialog anchors to the chosen position.</p>
         <ng-template #footer>
-          <ui-button label="Fermer" level="low" (buttonClick)="visible = false" />
+          <ui-button label="Close" level="low" (buttonClick)="visible = false" />
         </ng-template>
       </ui-modal>
     `,
@@ -239,10 +239,10 @@ export const Maximizable: Story = {
   render: (args) => ({
     props: { ...args, visible: false },
     template: `
-      <ui-button label="Afficher le dialogue" (buttonClick)="visible = true" />
+      <ui-button label="Show the dialog" (buttonClick)="visible = true" />
       <ui-modal
         [(visible)]="visible"
-        header="Agrandissable"
+        header="Expandable"
         [maximizable]="true"
         [dialogStyle]="{ width: '32rem' }"
       >
@@ -251,7 +251,7 @@ export const Maximizable: Story = {
           viewport, puis restaurer la taille initiale.
         </p>
         <ng-template #footer>
-          <ui-button label="Fermer" level="low" (buttonClick)="visible = false" />
+          <ui-button label="Close" level="low" (buttonClick)="visible = false" />
         </ng-template>
       </ui-modal>
     `,
@@ -263,10 +263,10 @@ export const Resizable: Story = {
   render: (args) => ({
     props: { ...args, visible: false },
     template: `
-      <ui-button label="Afficher le dialogue" (buttonClick)="visible = true" />
+      <ui-button label="Show the dialog" (buttonClick)="visible = true" />
       <ui-modal
         [(visible)]="visible"
-        header="Redimensionnable"
+        header="Resizable"
         [resizable]="true"
         [draggable]="true"
         [dialogStyle]="{ width: '32rem', height: '18rem' }"
@@ -276,7 +276,7 @@ export const Resizable: Story = {
           (tailles minimales respectées). L'en-tête permet aussi de le déplacer.
         </p>
         <ng-template #footer>
-          <ui-button label="Fermer" level="low" (buttonClick)="visible = false" />
+          <ui-button label="Close" level="low" (buttonClick)="visible = false" />
         </ng-template>
       </ui-modal>
     `,
@@ -288,7 +288,7 @@ export const Modal: Story = {
   render: (args) => ({
     props: { ...args, visible: false },
     template: `
-      <ui-button label="Afficher le dialogue" (buttonClick)="visible = true" />
+      <ui-button label="Show the dialog" (buttonClick)="visible = true" />
       <ui-modal
         [(visible)]="visible"
         header="Modal"
@@ -301,7 +301,7 @@ export const Modal: Story = {
           <code>dismissableMask</code>, un clic à l'extérieur ferme le dialogue.
         </p>
         <ng-template #footer>
-          <ui-button label="Fermer" level="low" (buttonClick)="visible = false" />
+          <ui-button label="Close" level="low" (buttonClick)="visible = false" />
         </ng-template>
       </ui-modal>
     `,
@@ -313,7 +313,7 @@ export const WithoutModal: Story = {
   render: (args) => ({
     props: { ...args, visible: false },
     template: `
-      <ui-button label="Afficher le dialogue" (buttonClick)="visible = true" />
+      <ui-button label="Show the dialog" (buttonClick)="visible = true" />
       <ui-modal
         [(visible)]="visible"
         header="Sans masque"
@@ -327,7 +327,7 @@ export const WithoutModal: Story = {
           panneau non bloquant (déplaçable ici).
         </p>
         <ng-template #footer>
-          <ui-button label="Fermer" level="low" (buttonClick)="visible = false" />
+          <ui-button label="Close" level="low" (buttonClick)="visible = false" />
         </ng-template>
       </ui-modal>
     `,
@@ -339,10 +339,10 @@ export const Confirmation: Story = {
   render: (args) => ({
     props: { ...args, visible: false },
     template: `
-      <ui-button label="Supprimer" level="error" icon="trash" (buttonClick)="visible = true" />
+      <ui-button label="Remove" level="error" icon="trash" (buttonClick)="visible = true" />
       <ui-modal
         [(visible)]="visible"
-        header="Confirmer la suppression"
+        header="Confirm deletion"
         [dismissableMask]="true"
         [dialogStyle]="{ width: '26rem' }"
       >
@@ -353,8 +353,8 @@ export const Confirmation: Story = {
           </p>
         </div>
         <ng-template #footer>
-          <ui-button label="Annuler" level="low" (buttonClick)="visible = false" />
-          <ui-button label="Supprimer" level="error" icon="trash" (buttonClick)="visible = false" />
+          <ui-button label="Cancel" level="low" (buttonClick)="visible = false" />
+          <ui-button label="Remove" level="error" icon="trash" (buttonClick)="visible = false" />
         </ng-template>
       </ui-modal>
     `,
@@ -370,8 +370,8 @@ export const LongContent: Story = {
       paras: Array.from({ length: 12 }),
     },
     template: `
-      <ui-button label="Afficher le dialogue" (buttonClick)="visible = true" />
-      <ui-modal [(visible)]="visible" header="Conditions d'utilisation" [dialogStyle]="{ width: '32rem' }">
+      <ui-button label="Show the dialog" (buttonClick)="visible = true" />
+      <ui-modal [(visible)]="visible" header="Terms of use" [dialogStyle]="{ width: '32rem' }">
         @for (p of paras; track $index) {
           <p style="margin: 0 0 12px;">
             {{ $index + 1 }}. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -397,10 +397,10 @@ export const Responsive: Story = {
       bps: { '960px': '75vw', '640px': '90vw' },
     },
     template: `
-      <ui-button label="Afficher le dialogue" (buttonClick)="visible = true" />
+      <ui-button label="Show the dialog" (buttonClick)="visible = true" />
       <ui-modal
         [(visible)]="visible"
-        header="Largeur responsive"
+        header="Responsive width"
         [breakpoints]="bps"
         [dialogStyle]="{ width: '50vw' }"
       >
@@ -410,7 +410,7 @@ export const Responsive: Story = {
           l'adaptation.
         </p>
         <ng-template #footer>
-          <ui-button label="Fermer" level="low" (buttonClick)="visible = false" />
+          <ui-button label="Close" level="low" (buttonClick)="visible = false" />
         </ng-template>
       </ui-modal>
     `,
@@ -433,13 +433,13 @@ export const Contained: Story = {
           [focusTrap]="false"
           [motionDisabled]="true"
           [closable]="false"
-          header="Titre du dialogue"
+          header="Dialog title"
           [dialogStyle]="{ width: '250px' }"
         >
-          <p style="margin: 0;">Aperçu d'une modale embarquée dans un conteneur.</p>
+          <p style="margin: 0;">Preview of a modal embedded in a container.</p>
           <ng-template #footer>
-            <ui-button label="Fermer" level="low" size="small" />
-            <ui-button label="Valider" level="high" size="small" />
+            <ui-button label="Close" level="low" size="small" />
+            <ui-button label="Submit" level="high" size="small" />
           </ng-template>
         </ui-modal>
       </div>

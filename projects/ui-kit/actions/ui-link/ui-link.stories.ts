@@ -104,24 +104,24 @@ type Story = StoryObj<UiLink>;
 
 // Cas de base
 export const Default: Story = { args: { label: 'Link', href: '#' } };
-export const Small: Story = { args: { label: 'En savoir plus', href: '#', size: 'small' } };
+export const Small: Story = { args: { label: 'Learn more', href: '#', size: 'small' } };
 
 // Icônes
 export const IconLeft: Story = { args: { label: 'Retour', href: '#', iconLeft: 'arrow-left' } };
 export const IconRight: Story = { args: { label: 'Continuer', href: '#', iconRight: 'arrow-right' } };
 export const External: Story = {
-  args: { label: 'Ouvrir le site', href: 'https://angular.dev', external: true, iconRight: 'arrow-up-right-from-square' },
+  args: { label: 'Open the site', href: 'https://angular.dev', external: true, iconRight: 'arrow-up-right-from-square' },
 };
-export const IconOnly: Story = { args: { href: '#', iconLeft: 'link', ariaLabel: 'Copier le lien' } };
+export const IconOnly: Story = { args: { href: '#', iconLeft: 'link', ariaLabel: 'Copy link' } };
 
 // Navigation interne (RouterLink) — router fourni au niveau de la story.
 export const RouterInternal: Story = {
   decorators: [applicationConfig({ providers: [provideRouter([{ path: '**', children: [] }])] })],
-  args: { label: 'Mon profil', routerLink: '/profil', iconRight: 'chevron-right' },
+  args: { label: 'My profile', routerLink: '/profil', iconRight: 'chevron-right' },
 };
 
 // États
-export const Disabled: Story = { args: { label: 'Lien désactivé', href: '#', disabled: true } };
+export const Disabled: Story = { args: { label: 'Disabled link', href: '#', disabled: true } };
 
 // Lien inline dans un paragraphe
 export const InlineInProse: Story = {

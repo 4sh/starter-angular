@@ -55,7 +55,7 @@ export const WithOverflow: Story = {
         <ui-avatar [size]="size" image="https://i.pravatar.cc/128?img=15" alt="Alice" />
         <ui-avatar [size]="size" image="https://i.pravatar.cc/128?img=16" alt="Bob" />
         <ui-avatar [size]="size" image="https://i.pravatar.cc/128?img=17" alt="Carol" />
-        <ui-avatar [size]="size" label="+5" ariaLabel="5 autres membres" />
+        <ui-avatar [size]="size" label="+5" ariaLabel="5 other members" />
       </ui-avatar-group>`,
   }),
 };
@@ -68,7 +68,7 @@ export const Mixed: Story = {
       <ui-avatar-group>
         <ui-avatar [size]="size" label="AL" ariaLabel="Alice" />
         <ui-avatar [size]="size" label="BO" ariaLabel="Bob" />
-        <ui-avatar [size]="size" icon="user" ariaLabel="Invité" />
+        <ui-avatar [size]="size" icon="user" ariaLabel="Guest" />
       </ui-avatar-group>`,
   }),
 };

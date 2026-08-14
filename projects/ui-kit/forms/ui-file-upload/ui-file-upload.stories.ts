@@ -101,7 +101,7 @@ export const Basic: Story = {
     mode: 'field',
     multiple: true,
     accept: 'image/*',
-    ariaLabel: 'Téléverser des fichiers',
+    ariaLabel: 'Upload files',
   },
 };
 
@@ -115,7 +115,7 @@ export const Auto: Story = {
       <ui-file-upload
         [mode]="mode" [size]="size" [multiple]="multiple" [accept]="accept"
         [auto]="true" [customUpload]="true" [hint]="hint"
-        ariaLabel="Téléversement automatique"
+        ariaLabel="Automatic upload"
         (uploadHandler)="onUploadHandler($event)"
       />
     `,
@@ -137,8 +137,8 @@ export const Advanced: Story = {
           accept="image/*,.pdf"
           [maxFileSize]="5242880"
           [fileLimit]="5"
-          hint="JPG, PNG, PDF · 5 fichiers max · 5 Mo par fichier"
-          ariaLabel="Téléverser des documents"
+          hint="JPG, PNG, PDF · 5 files max · 5 MB per file"
+          ariaLabel="Upload documents"
           (uploadHandler)="onUploadHandler($event)"
         />
       </div>
@@ -166,8 +166,8 @@ export const CustomUpload: Story = {
         <ui-file-upload
           mode="drag" [multiple]="true" [customUpload]="true"
           accept="image/*"
-          hint="Gestionnaire de téléversement personnalisé"
-          ariaLabel="Téléversement personnalisé"
+          hint="Custom upload handler"
+          ariaLabel="Custom upload"
           (uploadHandler)="onUploadHandler($event)"
         />
       </div>
@@ -188,8 +188,8 @@ export const ImagePreview: Story = {
         <ui-file-upload
           mode="drag" [multiple]="true" [customUpload]="true"
           accept="image/*"
-          hint="Images uniquement"
-          ariaLabel="Téléverser des images"
+          hint="Images only"
+          ariaLabel="Upload images"
           [contentTemplate]="grid"
           (uploadHandler)="onUploadHandler($event)"
         />
@@ -200,7 +200,7 @@ export const ImagePreview: Story = {
                 <li class="sb-preview-cell">
                   <img [src]="f.objectUrl" [alt]="f.name" />
                   <button type="button" class="sb-preview-remove"
-                          [attr.aria-label]="'Supprimer ' + f.name" (click)="remove(f)">✕</button>
+                          [attr.aria-label]="'Remove ' + f.name" (click)="remove(f)">✕</button>
                   <span class="sb-preview-name" [title]="f.name">{{ f.name }}</span>
                 </li>
               }
@@ -239,7 +239,7 @@ export const Template: Story = {
         <ui-file-upload
           mode="drag" [multiple]="true" [customUpload]="true"
           accept="image/*,.pdf"
-          ariaLabel="Téléverser des fichiers"
+          ariaLabel="Upload files"
           [toolbarTemplate]="toolbar"
           [fileTemplate]="file"
           (uploadHandler)="onUploadHandler($event)"
@@ -247,11 +247,11 @@ export const Template: Story = {
 
         <ng-template #toolbar let-files let-choose="choose" let-upload="upload" let-clear="clear">
           <div style="display:flex; gap:8px; flex-wrap:wrap">
-            <button type="button" class="sb-btn" (click)="choose()">Parcourir</button>
+            <button type="button" class="sb-btn" (click)="choose()">Browse</button>
             <button type="button" class="sb-btn" [disabled]="!files.length" (click)="upload()">
               Envoyer ({{ files.length }})
             </button>
-            <button type="button" class="sb-btn ghost" [disabled]="!files.length" (click)="clear()">Vider</button>
+            <button type="button" class="sb-btn ghost" [disabled]="!files.length" (click)="clear()">Clear</button>
           </div>
         </ng-template>
 
@@ -281,5 +281,5 @@ export const Template: Story = {
 
 /** Champ compact désactivé. */
 export const Disabled: Story = {
-  args: { mode: 'field', disabled: true, ariaLabel: 'Téléversement désactivé' },
+  args: { mode: 'field', disabled: true, ariaLabel: 'Upload disabled' },
 };

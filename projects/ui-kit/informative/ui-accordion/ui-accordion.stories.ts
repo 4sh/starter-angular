@@ -75,7 +75,7 @@ export default meta;
 type Story = StoryObj<UiAccordion>;
 
 const LOREM =
-  'Viennese et half to cortado viennese. Americano steamed caffeine filter luwak skinny half and id spoon. Redeye extraction variety shot instant qui cream roast lungo body shot mazagran.';
+  'Viennese and half to cortado viennese. Americano steamed caffeine filter luwak skinny half and id spoon. Redeye extraction variety shot instant qui cream roast lungo body shot mazagran.';
 
 // Fixed-width shell so the accordion reads like the Figma frame.
 const box = (inner: string) => `<div style="max-width: 640px">${inner}</div>`;
@@ -126,9 +126,9 @@ export const DisabledPanel: Story = {
     props: args,
     template: box(`
       <ui-accordion [value]="'0'" [multiple]="multiple" [motion]="motion">
-        <ui-accordion-panel value="0" header="Actif">${LOREM}</ui-accordion-panel>
-        <ui-accordion-panel value="1" header="Désactivé" [disabled]="true">${LOREM}</ui-accordion-panel>
-        <ui-accordion-panel value="2" header="Actif">${LOREM}</ui-accordion-panel>
+        <ui-accordion-panel value="0" header="Active">${LOREM}</ui-accordion-panel>
+        <ui-accordion-panel value="1" header="Disabled" [disabled]="true">${LOREM}</ui-accordion-panel>
+        <ui-accordion-panel value="2" header="Active">${LOREM}</ui-accordion-panel>
       </ui-accordion>`),
   }),
 };
@@ -141,13 +141,13 @@ export const RichHeader: Story = {
       <ui-accordion [value]="'0'" [multiple]="multiple" [motion]="motion">
         <ui-accordion-panel value="0">
           <span uiAccordionHeader style="display:inline-flex; align-items:center; gap:8px">
-            Facturation <ui-tag label="À jour" level="success" size="small" />
+            Facturation <ui-tag label="Up to date" level="success" size="small" />
           </span>
           ${LOREM}
         </ui-accordion-panel>
         <ui-accordion-panel value="1">
           <span uiAccordionHeader style="display:inline-flex; align-items:center; gap:8px">
-            Sécurité <ui-tag label="Action requise" level="warning" size="small" />
+            Sécurité <ui-tag label="Action required" level="warning" size="small" />
           </span>
           ${LOREM}
         </ui-accordion-panel>

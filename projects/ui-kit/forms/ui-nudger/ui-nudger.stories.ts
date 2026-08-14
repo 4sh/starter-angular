@@ -62,12 +62,12 @@ const meta: Meta<UiNudger> = {
     variant: 'filled',
     step: 1,
     defaultValue: 0,
-    ariaLabel: 'Quantité',
+    ariaLabel: 'Quantity',
     disabled: false,
     readonly: false,
     required: false,
     invalid: false,
-    decrementAriaLabel: 'Diminuer',
+    decrementAriaLabel: 'Decrease',
     incrementAriaLabel: 'Augmenter',
     decrementIcon: 'minus',
     incrementIcon: 'plus',
@@ -100,7 +100,7 @@ export const MinMax: Story = {
 
 export const Step: Story = {
   render: story(10),
-  args: { step: 5, ariaLabel: 'Prix' },
+  args: { step: 5, ariaLabel: 'Price' },
 };
 
 export const AtMin: Story = {
@@ -120,27 +120,27 @@ export const Small: Story = {
 
 export const LevelLow: Story = {
   render: story(3),
-  args: { level: 'low', ariaLabel: 'Niveau low' },
+  args: { level: 'low', ariaLabel: 'Low level' },
 };
 
 export const Outlined: Story = {
   render: story(3),
-  args: { variant: 'outlined', ariaLabel: 'Variante outlined' },
+  args: { variant: 'outlined', ariaLabel: 'Outlined variant' },
 };
 
 export const Disabled: Story = {
   render: story(3),
-  args: { disabled: true, ariaLabel: 'Désactivé' },
+  args: { disabled: true, ariaLabel: 'Disabled' },
 };
 
 export const Readonly: Story = {
   render: story(3),
-  args: { readonly: true, ariaLabel: 'Lecture seule' },
+  args: { readonly: true, ariaLabel: 'Read-only' },
 };
 
 export const Invalid: Story = {
   render: story(12),
-  args: { min: 0, max: 10, invalid: true, ariaLabel: 'En erreur' },
+  args: { min: 0, max: 10, invalid: true, ariaLabel: 'In error' },
 };
 
 // Formateur d'affichage personnalisé (unité).
@@ -148,7 +148,7 @@ export const Formatted: Story = {
   render: (args) => ({
     props: { ...args, model: 2, format: (v: number) => `${v} kg` },
     template: `<ui-nudger [(ngModel)]="model" [min]="0" [step]="1"
-        [formatValue]="format" ariaLabel="Poids" />`,
+        [formatValue]="format" ariaLabel="Weight" />`,
   }),
 };
 
@@ -159,7 +159,7 @@ export const Formatted: Story = {
   imports: [UiNudger, FormField],
   template: `
     <div style="display:grid; gap:12px; justify-items:start;">
-      <ui-nudger [formField]="quantity" [min]="0" [max]="10" ariaLabel="Quantité" />
+      <ui-nudger [formField]="quantity" [min]="0" [max]="10" ariaLabel="Quantity" />
       <code>value = {{ quantity().value() }} · valid = {{ quantity().valid() }}</code>
     </div>
   `,

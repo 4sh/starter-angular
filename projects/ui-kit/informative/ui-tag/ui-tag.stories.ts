@@ -89,7 +89,7 @@ export const WithIconRight: Story = { args: { level: 'error', iconRight: 'times-
 export const WithBothIcons: Story = {
   args: { level: 'highlight', iconLeft: 'circle-user', iconRight: 'times-circle' },
 };
-export const IconOnly: Story = { args: { level: 'warning', label: undefined, iconLeft: 'star', ariaLabel: 'Favori' } };
+export const IconOnly: Story = { args: { level: 'warning', label: undefined, iconLeft: 'star', ariaLabel: 'Favorite' } };
 
 // Forme
 export const Square: Story = { args: { level: 'highlight', rounded: false } };

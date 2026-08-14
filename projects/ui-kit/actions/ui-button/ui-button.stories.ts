@@ -233,42 +233,42 @@ export const OnColorOmitted: Story = {
 export const Small: Story = { args: { label: 'Small', level: 'high', size: 'small' } };
 
 // Icônes
-export const IconLeft: Story = { args: { label: 'Valider', level: 'success', icon: 'check', iconPos: 'left' } };
-export const IconRight: Story = { args: { label: 'Suivant', level: 'high', icon: 'arrow-right', iconPos: 'right' } };
-export const IconTop: Story = { args: { label: 'Ajouter', level: 'high', icon: 'plus', iconPos: 'top' } };
-export const IconBottom: Story = { args: { label: 'Télécharger', level: 'low', icon: 'download', iconPos: 'bottom' } };
-export const IconOnly: Story = { args: { level: 'high', icon: 'plus', ariaLabel: 'Ajouter' } };
+export const IconLeft: Story = { args: { label: 'Submit', level: 'success', icon: 'check', iconPos: 'left' } };
+export const IconRight: Story = { args: { label: 'Next', level: 'high', icon: 'arrow-right', iconPos: 'right' } };
+export const IconTop: Story = { args: { label: 'Add', level: 'high', icon: 'plus', iconPos: 'top' } };
+export const IconBottom: Story = { args: { label: 'Download', level: 'low', icon: 'download', iconPos: 'bottom' } };
+export const IconOnly: Story = { args: { level: 'high', icon: 'plus', ariaLabel: 'Add' } };
 export const IconOnlyForced: Story = {
-  args: { label: 'Ignoré', level: 'low', icon: 'gear', iconOnly: true, ariaLabel: 'Paramètres' },
+  args: { label: 'Skipped', level: 'low', icon: 'gear', iconOnly: true, ariaLabel: 'Settings' },
 };
 
 // Chargement
-export const Loading: Story = { args: { label: 'Enregistrement…', level: 'high', loading: true } };
+export const Loading: Story = { args: { label: 'Saving…', level: 'high', loading: true } };
 export const LoadingCustomIcon: Story = {
-  args: { label: 'Envoi…', level: 'success', loading: true, loadingIcon: 'spinner' },
+  args: { label: 'Sending…', level: 'success', loading: true, loadingIcon: 'spinner' },
 };
 
 // Layout
 export const Expanded: Story = {
-  args: { label: 'Pleine largeur', level: 'high', expanded: true },
+  args: { label: 'Full width', level: 'high', expanded: true },
   parameters: { layout: 'padded' },
 };
 export const Rounded: Story = { args: { label: 'Rounded', level: 'high', rounded: true } };
-export const RoundedIconOnly: Story = { args: { level: 'high', icon: 'plus', ariaLabel: 'Ajouter', rounded: true } };
+export const RoundedIconOnly: Story = { args: { level: 'high', icon: 'plus', ariaLabel: 'Add', rounded: true } };
 
 // États
 export const Disabled: Story = { args: { label: 'Disabled', level: 'high', disabled: true } };
 
 // Mode lien (rend un <a> stylé bouton)
-export const AsLink: Story = { args: { label: 'Voir la page', level: 'high', href: '#', icon: 'arrow-right', iconPos: 'right' } };
+export const AsLink: Story = { args: { label: 'View the page', level: 'high', href: '#', icon: 'arrow-right', iconPos: 'right' } };
 export const AsExternalLink: Story = {
   args: { label: 'Site externe', level: 'low', href: 'https://angular.dev', target: '_blank', icon: 'arrow-up-right-from-square', iconPos: 'right' },
 };
 export const AsRouterLink: Story = {
   decorators: [applicationConfig({ providers: [provideRouter([{ path: '**', children: [] }])] })],
-  args: { label: 'Mon profil', level: 'high', routerLink: '/profil' },
+  args: { label: 'My profile', level: 'high', routerLink: '/profil' },
 };
-export const AsLinkDisabled: Story = { args: { label: 'Lien désactivé', level: 'high', href: '#', disabled: true } };
+export const AsLinkDisabled: Story = { args: { label: 'Disabled link', level: 'high', href: '#', disabled: true } };
 
 // Contenu projeté (<ng-content>)
 export const ProjectedContent: Story = {

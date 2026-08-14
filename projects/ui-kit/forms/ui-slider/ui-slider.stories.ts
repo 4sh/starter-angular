@@ -154,7 +154,7 @@ export const Range: Story = {
     props: { model: [20, 80] },
     template: `
       <div style="width:280px; display:grid; gap:12px; justify-items:start;">
-        <ui-slider [(ngModel)]="model" [range]="true" ariaLabel="Intervalle" />
+        <ui-slider [(ngModel)]="model" [range]="true" ariaLabel="Range" />
         <code>model = {{ model | json }}</code>
       </div>
     `,
@@ -169,7 +169,7 @@ export const HandlesDistance: Story = {
     template: `
       <div style="width:280px; display:grid; gap:12px; justify-items:start;">
         <ui-slider [(ngModel)]="model" [range]="true" [step]="1" [minStepsBetweenHandles]="20"
-                   ariaLabel="Intervalle (écart min. 20)" />
+                   ariaLabel="Range (min. gap 20)" />
         <code>model = {{ model | json }}</code>
       </div>
     `,
@@ -213,7 +213,7 @@ export const Custom: Story = {
     props: { model: 60 },
     template: `
       <div style="width:280px; display:grid; gap:12px; justify-items:start;">
-        <ui-slider [(ngModel)]="model" ariaLabel="Valeur épaisse"
+        <ui-slider [(ngModel)]="model" ariaLabel="Thick value"
                    style="--ui-slider-thickness: 4px; --ui-slider-handle-size: 28px;" />
         <code>model = {{ model }}</code>
       </div>
@@ -253,8 +253,8 @@ export const States: Story = {
     props: { a: 30, b: 70 },
     template: `
       <div style="width:280px; display:grid; gap:24px;">
-        <ui-slider [(ngModel)]="a" [disabled]="true" ariaLabel="Désactivé" />
-        <ui-slider [(ngModel)]="b" [invalid]="true" ariaLabel="Erreur" />
+        <ui-slider [(ngModel)]="a" [disabled]="true" ariaLabel="Disabled" />
+        <ui-slider [(ngModel)]="b" [invalid]="true" ariaLabel="Error" />
       </div>
     `,
   }),
@@ -292,7 +292,7 @@ export const TemplateDriven: Story = {
     props: { model: 45 },
     template: `
       <form #f="ngForm" style="width:280px; display:grid; gap:12px; justify-items:start;">
-        <ui-slider [(ngModel)]="model" name="level" required ariaLabel="Niveau" />
+        <ui-slider [(ngModel)]="model" name="level" required ariaLabel="Level" />
         <code>model = {{ model }} · form.valid = {{ f.valid }}</code>
       </form>
     `,
@@ -306,7 +306,7 @@ export const ReactiveForms: Story = {
     props: { control: new FormControl<number>(60, Validators.required) },
     template: `
       <div style="width:280px; display:grid; gap:12px; justify-items:start;">
-        <ui-slider [formControl]="control" ariaLabel="Niveau" />
+        <ui-slider [formControl]="control" ariaLabel="Level" />
         <code>value = {{ control.value }} · valid = {{ control.valid }}</code>
         <button type="button" (click)="control.disabled ? control.enable() : control.disable()">
           Activer / désactiver
