@@ -241,7 +241,7 @@ pitfall, extension point). No paraphrasing of what the next line does.
 - **Inline** — to flag a non-obvious choice, at end of line (`// …`); never to describe the obvious.
 - **Sections** — short separators `// --- <Title> ---` to break up a long file.
 - **Mixins/functions** (partials in `projects/ui-kit/styles/utils/`) — 1 to 2 `///` lines: role + call example. No walls of text.
-- **Language**: comments in **English** — including a component's config `///` comments (below). English is the documentation's **source language**; a French translation is carried by a separate `///fr` marker, never by replacing the `///` (see FSHSP-87 / FSHSP-88).
+- **Language**: comments in **English**, including a component's config `///` comments (below) — the kit is published on the public npm registry (FSHSP-87).
 - **Never reference Figma**: keep the intent ("enlarged for readability"), not the origin ("Figma 3px"). The `.scss` must read without the mockup.
 
 #### A `///` on a config variable = the published doc
@@ -268,14 +268,8 @@ $card-radius: var(--radius-md);       /// Corner radius.
   (declaration, or a fallback read `var(--ui-x, <default>)`) — never on an internal dark-mode
   override, otherwise the doc shows the wrong default value.
 - Every config variable must have its `///`: `npm run docs:config` counts the missing ones.
-- **Bilingual** (FSHSP-88): `///` carries the English role (source language), `///fr` the
-  French translation, both at the end of the declaration. English alone is valid — the doc
-  falls back to it — French alone is not.
-
-  ```scss
-  $card-radius: var(--radius-md);        /// Corner radius.
-                                        ///fr Rayon des coins.
-  ```
+- **Written in English** — published documentation (FSHSP-87). Existing roles are still in
+  French: translate the ones you touch, never add a new French one.
 
 ### Shared structural constants — `ui-config`
 
@@ -333,27 +327,15 @@ $focus-ring-width: utils.$form-focus-ring-width; // ← replace the value here t
 
 ### Documentation (MDX)
 
-- **Language — English is the source, French is a translation** (FSHSP-87 / FSHSP-88).
-  Never write French in place of the English; a page or a role may exist in English only
-  (the doc falls back to it), never in French only.
-
-  What is bilingual, and by which mechanism:
-
-  | Content | Mechanism | Bilingual? |
-  |---|---|---|
-  | `.mdx` pages (component + global) | `<name>.mdx` (EN) + `<name>.fr.mdx`, rendered by `<LocalizedPage>` | **yes** |
-  | `argTypes` descriptions (`*.stories.ts`) | custom ArgTypes block (Storybook's own reads one static string) | **yes** |
-  | `///` roles in the `.scss` | `///` (EN) + `///fr`, extracted by `npm run docs:config` | **yes** |
-  | Labels of the doc blocks themselves (`config-table.js`…) | — | no, **English only** |
-  | Demo values in the stories (`label="Birth date"`…) | — | no, **English only** |
-  | The kit's input defaults (`closeAriaLabel`, `emptyMessage`…) | — | no, **English only** |
-  | `projects/ui-kit/README.md` | `README.md` + `README.fr.md` (already in place) | yes |
-
-  Deliberately excluded: the `CHANGELOG.md` history and `docs/figma-migration-global.md`
-  (internal runbook).
-- **Rule of thumb for anything new**: short text whose translation would cost a dedicated
-  mechanism → English only. Translate what is read to *understand a component*; do not build
-  machinery for a handful of UI labels.
+- **Language — English is the source** (FSHSP-87). Everything published to a consumer is
+  written in English: `.mdx` pages (component + global), `argTypes` descriptions in the
+  stories, the `///` roles in the `.scss`, and `projects/ui-kit/README.md` (the npmjs page).
+  Much of the existing content is still in French — translate what you touch, never add new
+  French. No bilingual mechanism: a single English source is simpler to keep in sync than
+  maintaining two languages, which was evaluated and dropped for that reason.
+- Deliberately excluded: the `CHANGELOG.md` history, `docs/figma-migration-global.md`
+  (internal runbook), and `projects/ui-kit/README.fr.md` — a French translation of the npmjs
+  page predating this convention (FSHSP-92), left as is and not actively maintained.
 - The kit's input defaults (`*AriaLabel`/`*Label`, see «&nbsp;No i18n catalog&nbsp;» below) are
   **public API of the package**, not documentation. They were switched to English (see the
   `CHANGELOG` `[Unreleased]` entry); changing one again is a consumer-facing change and needs

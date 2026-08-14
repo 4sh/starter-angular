@@ -88,7 +88,7 @@ Rules:
 - `classes = computed()`: `['ui-{name}']` + `_{modifier}` (`_` prefix), derived state via computed. Size `default` = no class (base); only emit non-default ones.
 - Figma boolean props `text`/`icon`/… → **presence** of an input (`hasIcon = computed(() => !!this.icon())`), not a dedicated boolean — see `ui-button`.
 - Internal comments: `/** @ignore */` on protected members.
-- **Code comments always in English** (JSDoc, inline comments in `.ts`/`.html`/`.scss`). User-facing documentation (stories/MDX, `///` roles) is **also in English** — it is the source language (FSHSP-87); French is a translation added via the FSHSP-88 mechanism, never written in place of the English.
+- **Code comments always in English** (JSDoc, inline comments in `.ts`/`.html`/`.scss`). User-facing documentation (stories/MDX, `///` roles, demo values) is **also in English** — the kit is published on the public npm registry (FSHSP-87). No bilingual mechanism: a French/English toolbar switcher was evaluated and dropped in favor of a single English source.
 - Icons: `ui-icon` component (`[name]`, `[size]`), decorative by default.
 
 ## SCSS conventions

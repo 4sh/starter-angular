@@ -175,22 +175,18 @@ Rules:
 
 `@4sh/ui-kit` is published on the **public** npm registry and its Storybook is online, so
 everything a consumer reads is written in **English**: the component and global `.mdx` pages,
-the `argTypes` descriptions in the stories, the `///` roles in the `.scss`, and
-`projects/ui-kit/README.md` (the npmjs page).
+the `argTypes` descriptions in the stories, the `///` roles in the `.scss`, the demo values in
+the stories, and `projects/ui-kit/README.md` (the npmjs page).
 
-French is a **translation**, not an alternative source: it is added through the bilingual
-mechanism of FSHSP-88 (locale selector in the Storybook toolbar), never by writing French in
-place of the English. English alone is always valid — the doc falls back to it; French alone
-never is.
+No bilingual mechanism: a French/English toolbar switcher was built and evaluated (FSHSP-88),
+then dropped — a single English source is simpler to keep in sync than two languages kept in
+parallel. Much of the existing content is still in French: translate what you touch, and
+never add a new French one.
 
-Three surfaces are bilingual: the `.mdx` pages (two files, `<name>.mdx` + `<name>.fr.mdx`),
-the `argTypes` descriptions, and the `///` roles (`///` = EN, `///fr` = FR). The doc blocks'
-own labels stay **English only** — translating them would cost a mechanism for a handful of
-short strings. The stories' demo values are **left in French for now**.
-
-Out of scope: the `CHANGELOG.md` history, `docs/figma-migration-global.md`, and the kit's
-French input defaults (`*AriaLabel`/`*Label`), which are public API of the package rather
-than documentation. See `AGENTS.md` for the full table.
+Out of scope: the `CHANGELOG.md` history, `docs/figma-migration-global.md`, the kit's input
+defaults (`*AriaLabel`/`*Label`, public API of the package rather than documentation — already
+switched to English, see the `CHANGELOG`), and `projects/ui-kit/README.fr.md` (a pre-existing
+French translation of the npmjs page from FSHSP-92, left as is).
 
 ### Categories
 
