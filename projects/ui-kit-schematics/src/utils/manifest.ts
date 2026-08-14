@@ -1,14 +1,17 @@
 /**
  * manifest — lecture/écriture de `ui-kit.json`, à la racine du projet
- * consommateur. Format défini dans FSHSP-109 : versionné par composant, pas
- * juste une version globale du kit, pour permettre un `update` sélectif.
+ * consommateur. Format défini dans FSHSP-109.
  *
- * ⚠️ Limite connue : la version stockée par composant est aujourd'hui celle
- * du PACKAGE `@4sh/ui-kit` entier au moment de la copie (le repo ne suit pas
- * de version par composant — un seul numéro dans `projects/ui-kit/package.json`,
- * voir `docs/VERSIONING.md`). `update` détecte donc « ce composant a été copié
- * depuis une version antérieure du kit », pas un changement ciblé sur LUI.
- * Un vrai suivi par composant est un chantier à part, pas traité ici.
+ * L'entrée par composant porte la version du PACKAGE `@4sh/ui-kit` au moment
+ * de la copie, pas une version propre au composant : le kit n'est versionné
+ * que globalement (`projects/ui-kit/package.json`, cf. `docs/VERSIONING.md`)
+ * et un versionnage par composant n'est pas prévu. `update` répond donc à
+ * « ce composant a été copié depuis une version antérieure du kit », ce qui
+ * suffit à le proposer à la mise à jour.
+ *
+ * L'entrée reste un objet par composant (et non une simple version globale) :
+ * c'est ce qui permet de mettre à jour composant par composant, et de savoir
+ * lesquels ont été copiés — indépendamment de la granularité des versions.
  */
 import type { Tree } from '@angular-devkit/schematics';
 
