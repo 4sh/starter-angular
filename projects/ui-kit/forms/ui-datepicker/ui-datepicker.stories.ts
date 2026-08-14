@@ -50,7 +50,7 @@ const meta: Meta<UiDatepicker> = {
     stepMinute: { control: { type: 'number', min: 1, max: 30 }, description: "Incrément des minutes aux chevrons / flèches clavier (la frappe reste exacte).", table: { type: { summary: 'number' }, defaultValue: { summary: '1' } } },
     editableTime: { control: 'boolean', description: 'Autorise la frappe des heures / minutes (AM/PM reste une bascule).', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } } },
     showButtonBar: { control: 'boolean', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
-    todayLabel: { control: 'text', description: 'Libellé du bouton « Aujourd\'hui » par défaut.', table: { type: { summary: 'string' }, defaultValue: { summary: '"Aujourd\'hui"' } } },
+    todayLabel: { control: 'text', description: 'Libellé du bouton de saisie du jour courant.', table: { type: { summary: 'string' }, defaultValue: { summary: '"Today"' } } },
     clearLabel: { control: 'text', description: 'Libellé du bouton d’effacement (et de la croix `showClear`).', table: { type: { summary: 'string' }, defaultValue: { summary: '"Clear"' } } },
     inline: { control: 'boolean', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
     showClear: { control: 'boolean', description: 'Affiche une croix pour effacer la valeur quand elle est renseignée.', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
@@ -73,7 +73,7 @@ const meta: Meta<UiDatepicker> = {
   },
   args: {
     label: 'Date',
-    placeholder: 'jj/mm/aaaa',
+    placeholder: 'dd/mm/yyyy',
     size: 'default',
     level: 'default',
     hourFormat: '24',
@@ -92,7 +92,7 @@ const meta: Meta<UiDatepicker> = {
     stepMinute: 1,
     editableTime: true,
     showButtonBar: false,
-    todayLabel: "Aujourd'hui",
+    todayLabel: 'Today',
     clearLabel: 'Effacer',
     inline: false,
     showClear: false,
@@ -138,7 +138,7 @@ const story =
 const sample = new Date(2026, 6, 8); // 8 July 2026
 
 export const Default: Story = { render: story() };
-export const WithValue: Story = { render: story(sample), args: { helperText: 'Sélectionnez une date.' } };
+export const WithValue: Story = { render: story(sample), args: { helperText: 'Pick a date.' } };
 export const Small: Story = { render: story(sample), args: { size: 'small' } };
 export const Required: Story = { render: story(), args: { required: true, helperText: 'Champ obligatoire.' } };
 
@@ -157,27 +157,27 @@ export const IsoValueType: Story = {
 
 export const WithTime: Story = {
   render: story(new Date(2026, 6, 8, 14, 30)),
-  args: { showTime: true, label: 'Rendez-vous', helperText: 'Heures et minutes saisissables au clavier.' },
+  args: { showTime: true, label: 'Appointment', helperText: 'Heures et minutes saisissables au clavier.' },
 };
 
 export const StepperOnlyTime: Story = {
   render: story(new Date(2026, 6, 8, 14, 30)),
-  args: { showTime: true, editableTime: false, label: 'Rendez-vous', helperText: 'Réglage aux chevrons / flèches uniquement.' },
+  args: { showTime: true, editableTime: false, label: 'Appointment', helperText: 'Adjust with the chevrons / arrow keys only.' },
 };
 
 export const Time12h: Story = {
   render: story(new Date(2026, 6, 8, 14, 30)),
-  args: { showTime: true, hourFormat: '12', label: 'Rendez-vous' },
+  args: { showTime: true, hourFormat: '12', label: 'Appointment' },
 };
 
 export const TimeOnly: Story = {
   render: story(new Date(2026, 6, 8, 9, 15)),
-  args: { timeOnly: true, showTime: true, label: 'Heure', placeholder: 'hh:mm' },
+  args: { timeOnly: true, showTime: true, label: 'Time', placeholder: 'hh:mm' },
 };
 
 export const ButtonBar: Story = {
   render: story(),
-  args: { showButtonBar: true, helperText: '« Aujourd\'hui » et « Effacer ».' },
+  args: { showButtonBar: true, helperText: 'The “Today” and “Clear” buttons.' },
 };
 
 // Plage restreinte : ±10 jours autour du 8 juillet 2026. `minDate`/`maxDate` en `Date`
@@ -188,7 +188,7 @@ export const MinMax: Story = {
     props: { ...args, model: sample, minDate: new Date(2026, 5, 28), maxDate: new Date(2026, 6, 18) },
     template: TEMPLATE,
   }),
-  args: { label: 'Date (plage limitée)', helperText: 'Du 28 juin au 18 juillet 2026.' },
+  args: { label: 'Date (limited range)', helperText: 'From 28 June to 18 July 2026.' },
 };
 
 // Même contrainte que `MinMax`, bornes passées en ISO plutôt qu'en `Date` — pratique
@@ -198,13 +198,13 @@ export const MinMaxIso: Story = {
     props: { ...args, model: sample, minDate: '2026-06-28', maxDate: '2026-07-18' },
     template: TEMPLATE,
   }),
-  args: { label: 'Date (bornes ISO)', helperText: 'minDate/maxDate passées en string "yyyy-MM-dd".' },
+  args: { label: 'Date (ISO bounds)', helperText: 'minDate/maxDate passed as "yyyy-MM-dd" strings.' },
 };
 
 // Week-ends (dimanche = 0, samedi = 6) désactivés.
 export const DisabledWeekends: Story = {
   render: (args) => ({ props: { ...args, model: null, disabledDays: [0, 6] }, template: TEMPLATE }),
-  args: { label: 'Jour ouvré', helperText: 'Week-ends indisponibles.' },
+  args: { label: 'Business day', helperText: 'Weekends unavailable.' },
 };
 
 // Dates ponctuelles désactivées, mixant `Date` et ISO pour montrer que les deux formes coexistent.
@@ -213,7 +213,7 @@ export const DisabledDates: Story = {
     props: { ...args, model: null, disabledDates: ['2026-07-08', new Date(2026, 6, 15), '2026-07-22'] },
     template: TEMPLATE,
   }),
-  args: { label: 'Jours indisponibles', helperText: '8, 15 et 22 juillet 2026 désactivés.' },
+  args: { label: 'Unavailable days', helperText: '8, 15 and 22 July 2026 disabled.' },
 };
 
 export const Disabled: Story = { render: story(sample), args: { disabled: true } };
@@ -232,9 +232,9 @@ export const EditableInput: Story = {
     label: 'Date',
     allowInput: true,
     showClear: true,
-    locale: 'fr-FR',
-    placeholder: '', // vide → placeholder auto dérivé de la locale (jj/mm/aaaa)
-    helperText: 'Tapez "08072026" au clavier : les "/" apparaissent seuls (jj/mm/aaaa).',
+    locale: 'en-US',
+    placeholder: '', // empty → placeholder auto-derived from the locale (dd/mm/yyyy)
+    helperText: 'Type "08072026": the "/" appear on their own (dd/mm/yyyy).',
   },
 };
 
@@ -261,9 +261,9 @@ export const AutoFormattedInputMonthPicker: Story = {
     view: 'month',
     allowInput: true,
     showClear: true,
-    locale: 'fr-FR',
+    locale: 'en-US',
     placeholder: '',
-    helperText: 'Tapez "072026" : auto-formaté en "07/2026" (mm/aaaa).',
+    helperText: 'Type "072026": auto-formatted to "07/2026" (mm/yyyy).',
   },
 };
 
@@ -272,13 +272,13 @@ export const AutoFormattedInputMonthPicker: Story = {
 export const EditableInputWithTime: Story = {
   render: story(sample),
   args: {
-    label: 'Rendez-vous',
+    label: 'Appointment',
     allowInput: true,
     showTime: true,
     showClear: true,
-    locale: 'fr-FR',
+    locale: 'en-US',
     placeholder: '',
-    helperText: 'Tapez "080720261430" pour "08/07/2026 14:30" (jj/mm/aaaa hh:mm).',
+    helperText: 'Type "080720261430" for "08/07/2026 14:30" (dd/mm/yyyy hh:mm).',
   },
 };
 
@@ -286,36 +286,37 @@ export const EditableInputWithTime: Story = {
 export const EditableInputWithTime12h: Story = {
   render: story(sample),
   args: {
-    label: 'Rendez-vous',
+    label: 'Appointment',
     allowInput: true,
     showTime: true,
     hourFormat: '12',
     showClear: true,
-    locale: 'fr-FR',
+    locale: 'en-US',
     placeholder: '',
-    helperText: 'Tapez "080720260200PM" pour "08/07/2026 02:00 PM" (jj/mm/aaaa hh:mm aa).',
+    helperText: 'Type "080720260200PM" for "08/07/2026 02:00 PM" (dd/mm/yyyy hh:mm aa).',
   },
 };
 
-// Formatteur/parseur custom (symétriques) : affichage "8 juil. 2026", saisie au même format.
+// Formatteur/parseur custom (symétriques) : affichage "Jul 8, 2026", saisie au même format.
 export const CustomFormat: Story = {
   render: (args) => ({
     props: {
       ...args,
       model: sample,
-      dateFormat: (d: Date) => new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }).format(d),
+      dateFormat: (d: Date) => new Intl.DateTimeFormat('en-US', { day: 'numeric', month: 'short', year: 'numeric' }).format(d),
       parseDate: (text: string): Date | null => {
-        const m = /^(\d{1,2})\s+([a-zéûî.]+)\.?\s+(\d{4})$/i.exec(text.trim());
+        // "Jul 8, 2026" : mois d'abord, comme ce qu'émet le formateur en-US ci-dessus.
+        const m = /^([a-z.]+)\.?\s+(\d{1,2}),?\s+(\d{4})$/i.exec(text.trim());
         if (!m) return null;
-        const months = ['janv', 'févr', 'mars', 'avr', 'mai', 'juin', 'juil', 'août', 'sept', 'oct', 'nov', 'déc'];
-        const idx = months.findIndex((mo) => m[2].toLowerCase().startsWith(mo));
+        const months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+        const idx = months.findIndex((mo) => m[1].toLowerCase().startsWith(mo));
         if (idx < 0) return null;
-        return new Date(Number(m[3]), idx, Number(m[1]));
+        return new Date(Number(m[3]), idx, Number(m[2]));
       },
     },
     template: TEMPLATE,
   }),
-  args: { label: 'Format personnalisé', allowInput: true, showClear: true, locale: 'fr-FR', helperText: 'Affichage « 8 juil. 2026 », parseDate symétrique.' },
+  args: { label: 'Custom format', allowInput: true, showClear: true, locale: 'en-US', helperText: 'Displays “Jul 8, 2026”, symmetric parseDate.' },
 };
 
 // Calendrier affiché en permanence (pas de champ déclencheur ni d'overlay).
@@ -342,7 +343,7 @@ export const Range: Story = {
     props: { ...args, model: [new Date(2026, 6, 8), new Date(2026, 6, 18)] },
     template: TEMPLATE,
   }),
-  args: { inline: true, selectionMode: 'range', label: 'Période' },
+  args: { inline: true, selectionMode: 'range', label: 'Period' },
 };
 
 // MonthPicker : le clic sur un mois sélectionne le mois (valeur = 1er du mois).
@@ -354,7 +355,7 @@ export const MonthPicker: Story = {
 // YearPicker : le clic sur une année sélectionne l'année.
 export const YearPicker: Story = {
   render: story(new Date(2026, 0, 1)),
-  args: { inline: true, view: 'year', label: 'Année' },
+  args: { inline: true, view: 'year', label: 'Year' },
 };
 
 // Plusieurs mois côte à côte (numberOfMonths).
@@ -367,7 +368,7 @@ export const TwoMonths: Story = {
 export const CustomButtonBar: Story = {
   render: () => ({
     props: { model: null },
-    template: `<div style="width:260px"><ui-datepicker [(ngModel)]="model" valueType="date" inline selectionMode="range" label="Période">
+    template: `<div style="width:260px"><ui-datepicker [(ngModel)]="model" valueType="date" inline selectionMode="range" label="Period">
       <ng-template #buttonbar let-todayCallback="todayCallback" let-clearCallback="clearCallback">
         <div style="display:flex;justify-content:space-between;width:100%;gap:8px">
           <div style="display:flex;gap:8px">
@@ -375,7 +376,7 @@ export const CustomButtonBar: Story = {
             <ui-button size="small" level="low" label="Flexible" />
           </div>
           <div style="display:flex;gap:8px">
-            <ui-button size="small" level="high" label="Aujourd'hui" (buttonClick)="todayCallback($event)" />
+            <ui-button size="small" level="high" label="Today" (buttonClick)="todayCallback($event)" />
             <ui-button size="small" level="error" icon="xmark" iconOnly ariaLabel="Effacer" (buttonClick)="clearCallback($event)" />
           </div>
         </div>
@@ -392,7 +393,7 @@ export const SmartPosition: Story = {
     template: `<div style="height:520px;display:flex;align-items:flex-end;justify-content:center">
       <div style="width:260px"><ui-datepicker
         [(ngModel)]="model" valueType="date" label="Ouverture intelligente" [autoFlip]="autoFlip"
-        helperText="Ancré en bas : le panneau s'ouvre vers le haut si la place manque." /></div>
+        helperText="Anchored at the bottom: the panel opens upwards when space is tight." /></div>
     </div>`,
   }),
   args: { autoFlip: true },
@@ -405,7 +406,7 @@ export const SmartPosition: Story = {
   imports: [UiDatepicker, FormField, CommonModule],
   template: `
     <div style="width:260px; display:grid; gap:12px; justify-items:start;">
-      <ui-datepicker [formField]="birth" valueType="date" label="Date de naissance" placeholder="jj/mm/aaaa" />
+      <ui-datepicker [formField]="birth" valueType="date" label="Birth date" placeholder="dd/mm/yyyy" />
       <code>value = {{ (birth().value() | date: 'dd/MM/yyyy') ?? 'null' }} · valid = {{ birth().valid() }}</code>
     </div>
   `,

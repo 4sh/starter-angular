@@ -28,7 +28,7 @@ const meta: Meta<UiBreadcrumb> = {
     size: 'default',
     separator: '/',
     maxItems: undefined,
-    ariaLabel: "Fil d'Ariane",
+    ariaLabel: 'Breadcrumb',
     ellipsisAriaLabel: 'Afficher les éléments masqués',
     styleClass: undefined,
   },
