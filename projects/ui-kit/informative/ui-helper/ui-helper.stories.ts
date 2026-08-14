@@ -16,35 +16,35 @@ const meta: Meta<UiHelper> = {
   argTypes: {
     message: {
       control: { type: 'text' },
-      description: "Message d'aide affiché.",
+      description: "Displayed helper message.",
       table: { type: { summary: 'string' }, defaultValue: { summary: '—' } },
     },
     level: {
       control: { type: 'select' },
       options: ['default', 'highlight', 'success', 'warning', 'error'],
-      description: 'Niveau de feedback : pilote la couleur et l’icône par défaut.',
+      description: 'Feedback level: drives the default color and icon.',
       table: { type: { summary: 'UiFeedbackLevel' }, defaultValue: { summary: '"default"' } },
     },
     size: {
       control: { type: 'inline-radio' },
       options: ['default', 'small'],
-      description: 'Taille du texte et de l’icône.',
+      description: 'Size of the text and icon.',
       table: { type: { summary: 'HelperSize' }, defaultValue: { summary: '"default"' } },
     },
     showIcon: {
       control: { type: 'boolean' },
-      description: 'Affiche l’icône de niveau.',
+      description: 'Shows the level icon.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
     icon: {
       control: { type: 'text' },
-      description: 'Surcharge le nom d’icône FontAwesome déduit du level.',
+      description: 'Overrides the FontAwesome icon name inferred from level.',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     ariaLive: {
       control: { type: 'inline-radio' },
       options: ['off', 'polite', 'assertive'],
-      description: 'Région live pour annoncer un feedback dynamique aux lecteurs d’écran.',
+      description: 'Live region to announce dynamic feedback to screen readers.',
       table: { type: { summary: 'HelperAriaLive' }, defaultValue: { summary: '"off"' } },
     },
   },

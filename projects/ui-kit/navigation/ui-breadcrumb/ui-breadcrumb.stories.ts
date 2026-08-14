@@ -36,44 +36,44 @@ const meta: Meta<UiBreadcrumb> = {
     items: {
       control: { type: 'object' },
       description:
-        "Entrées du fil d'Ariane (UiBreadcrumbItem[]) : label, icon, ariaLabel, url, target, rel, routerLink, queryParams, fragment, command, disabled, visible, styleClass.",
+        "Breadcrumb entries (UiBreadcrumbItem[]): label, icon, ariaLabel, url, target, rel, routerLink, queryParams, fragment, command, disabled, visible, styleClass.",
       table: { type: { summary: 'UiBreadcrumbItem[]' }, defaultValue: { summary: '[]' } },
     },
     size: {
       control: { type: 'inline-radio' },
       options: ['default', 'small'],
-      description: 'Densité du fil (taille des liens et du séparateur).',
+      description: 'Breadcrumb density (size of the links and separator).',
       table: { type: { summary: 'BreadcrumbSize' }, defaultValue: { summary: '"default"' } },
     },
     separator: {
       control: { type: 'text' },
-      description: 'Caractère(s) de séparation entre les éléments (le template #separator prend la main).',
+      description: 'Separator character(s) between items (the #separator template takes over).',
       table: { type: { summary: 'string' }, defaultValue: { summary: '"/"' } },
     },
     maxItems: {
       control: { type: 'number' },
       description:
-        "Nombre maximum d'éléments affichés (minimum 2). Au-delà, le milieu se replie derrière un bouton ellipsis : premier élément + « … » + éléments de fin. Non défini = jamais de repli.",
+        "Maximum number of displayed items (minimum 2). Beyond that, the middle collapses behind an ellipsis button: first item + « … » + trailing items. Undefined = never collapses.",
       table: { type: { summary: 'number' }, defaultValue: { summary: 'undefined' } },
     },
     ariaLabel: {
       control: { type: 'text' },
-      description: 'Nom accessible du landmark <nav>.',
+      description: 'Accessible name of the <nav> landmark.',
       table: { type: { summary: 'string' }, defaultValue: { summary: '"Fil d\'Ariane"' } },
     },
     ellipsisAriaLabel: {
       control: { type: 'text' },
-      description: "Nom accessible du bouton ellipsis qui révèle les éléments masqués.",
+      description: "Accessible name of the ellipsis button that reveals the hidden items.",
       table: { type: { summary: 'string' }, defaultValue: { summary: '"Show hidden items"' } },
     },
     styleClass: {
       control: { type: 'text' },
-      description: 'Classe(s) additionnelle(s) sur le <nav> racine.',
+      description: 'Additional class(es) on the root <nav>.',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     itemClick: {
       action: 'itemClick',
-      description: 'Émis au clic sur un élément ({ originalEvent, item }, jamais si disabled).',
+      description: 'Emitted on clicking an item ({ originalEvent, item }, never if disabled).',
       table: { type: { summary: 'EventEmitter<UiBreadcrumbItemCommandEvent>' }, defaultValue: { summary: '—' } },
     },
   },

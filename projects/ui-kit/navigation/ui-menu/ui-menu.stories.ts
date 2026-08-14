@@ -29,50 +29,50 @@ const meta: Meta<UiMenu> = {
   argTypes: {
     items: {
       control: false,
-      description: 'Modèle déclaratif du menu (`UiMenuItem[]`) : groupes, séparateurs, commandes, liens.',
+      description: 'Declarative menu model (`UiMenuItem[]`): groups, separators, commands, links.',
       table: { type: { summary: 'UiMenuItem[]' }, defaultValue: { summary: '[]' } },
     },
     popup: {
       control: false,
-      description: 'Mode popup : le panneau s’ouvre dans un overlay via `toggle(event)` / `show(event)`.',
+      description: 'Popup mode: the panel opens in an overlay via `toggle(event)` / `show(event)`.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     expandedKeys: {
       control: false,
       description:
-        'État ouvert/fermé des groupes repliables, indexé par l’`id` des items (`{ [id]: boolean }`). Two-way bindable.',
+        'Open/closed state of collapsible groups, indexed by item `id` (`{ [id]: boolean }`). Two-way bindable.',
       table: { type: { summary: 'Record<string, boolean>' }, defaultValue: { summary: '{}' } },
     },
     level: {
       control: { type: 'inline-radio' },
       options: ['high', 'low'],
-      description: 'Famille de couleur navigation utilisée (`navigation.high` ou `navigation.low`).',
+      description: 'Navigation color family used (`navigation.high` or `navigation.low`).',
       table: { type: { summary: "'high' | 'low'" }, defaultValue: { summary: "'high'" } },
     },
     size: {
       control: { type: 'inline-radio' },
       options: ['default', 'small'],
-      description: 'Densité : `small` pour un rendu compact (menus d’actions « … »).',
+      description: 'Density: `small` for a compact rendering (« … » action menus).',
       table: { type: { summary: "'default' | 'small'" }, defaultValue: { summary: "'default'" } },
     },
     motion: {
       control: { type: 'boolean' },
-      description: 'Anime l’ouverture du popup et le repli des sous-menus (reduced-motion respecté).',
+      description: 'Animates the popup opening and the submenus collapsing (reduced-motion respected).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
     autoFlip: {
       control: { type: 'boolean' },
-      description: 'Retourne le popup au-dessus du déclencheur quand la place manque en dessous.',
+      description: 'Flips the popup above the trigger when there\'s no room below.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
     ariaLabel: {
       control: { type: 'text' },
-      description: 'Nom accessible de la liste (`aria-label` sur `role="menu"`).',
+      description: 'Accessible name of the list (`aria-label` on `role="menu"`).',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     tabindex: {
       control: false,
-      description: 'Tabindex du tab stop roving du menu.',
+      description: 'Tabindex of the menu\'s roving tab stop.',
       table: { type: { summary: 'number' }, defaultValue: { summary: '0' } },
     },
   },

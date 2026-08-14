@@ -26,37 +26,37 @@ const meta: Meta<UiAccordion> = {
   argTypes: {
     multiple: {
       control: { type: 'boolean' },
-      description: 'Autorise plusieurs panneaux ouverts simultanément (la valeur devient un tableau).',
+      description: 'Allows several panels open at once (the value becomes an array).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     selectOnFocus: {
       control: { type: 'boolean' },
-      description: 'Ouvre un panneau dès que son en-tête reçoit le focus.',
+      description: 'Opens a panel as soon as its header receives focus.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     separator: {
       control: { type: 'boolean' },
-      description: 'Défaut de groupe : affiche le trait sous chaque en-tête (surchargeable par panneau).',
+      description: 'Group default: shows the rule under each header (overridable per panel).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
     control: {
       control: { type: 'boolean' },
-      description: 'Défaut de groupe : affiche le chevron sur chaque en-tête (surchargeable par panneau).',
+      description: 'Group default: shows the chevron on each header (overridable per panel).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
     motion: {
       control: { type: 'boolean' },
-      description: "Anime l'ouverture/fermeture (le préférence reduced-motion est toujours respectée).",
+      description: "Animates the open/close (the reduced-motion preference is always respected).",
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
     expandIcon: {
       control: { type: 'text' },
-      description: 'Icône (FontAwesome) affichée sur un panneau replié.',
+      description: 'FontAwesome icon shown on a collapsed panel.',
       table: { type: { summary: 'string' }, defaultValue: { summary: '"chevron-down"' } },
     },
     collapseIcon: {
       control: { type: 'text' },
-      description: 'Icône (FontAwesome) affichée sur un panneau déplié.',
+      description: 'FontAwesome icon shown on an expanded panel.',
       table: { type: { summary: 'string' }, defaultValue: { summary: '"chevron-up"' } },
     },
   },

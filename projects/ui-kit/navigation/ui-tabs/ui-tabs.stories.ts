@@ -23,32 +23,32 @@ const meta: Meta<UiTabs> = {
     orientation: {
       control: { type: 'inline-radio' },
       options: ['horizontal', 'vertical'],
-      description: 'Axe de la liste : onglets en haut (horizontal) ou sur le côté (vertical).',
+      description: 'List axis: tabs on top (horizontal) or on the side (vertical).',
       table: { type: { summary: "'horizontal' | 'vertical'" }, defaultValue: { summary: "'horizontal'" } },
     },
     scrollable: {
       control: { type: 'boolean' },
-      description: 'Active le défilement de la liste avec des boutons précédent / suivant.',
+      description: 'Enables scrolling the list with previous / next buttons.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     lazy: {
       control: { type: 'boolean' },
-      description: "Défaut de groupe : ne rend le contenu d'un onglet qu'à sa première activation.",
+      description: "Group default: only renders a tab's content the first time it's activated.",
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     selectOnFocus: {
       control: { type: 'boolean' },
-      description: 'Active un onglet dès que son bouton reçoit le focus (activation automatique).',
+      description: 'Activates a tab as soon as its button receives focus (automatic activation).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     showNavigators: {
       control: { type: 'boolean' },
-      description: 'Affiche les navigateurs précédent / suivant en mode scrollable.',
+      description: 'Shows the previous / next navigators in scrollable mode.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
     motion: {
       control: { type: 'boolean' },
-      description: "Anime l'indicateur actif et l'apparition des panneaux (reduced-motion respecté).",
+      description: "Animates the active indicator and the panels' appearance (reduced-motion respected).",
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
   },

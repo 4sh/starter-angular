@@ -19,48 +19,48 @@ const meta: Meta<UiInputOtp> = {
   argTypes: {
     length: {
       control: { type: 'number', min: 2, max: 8 },
-      description: 'Nombre de cellules (caractères) à saisir.',
+      description: 'Number of cells (characters) to enter.',
       table: { type: { summary: 'number' }, defaultValue: { summary: '4' } },
     },
     mask: {
       control: 'boolean',
-      description: 'Masque les caractères saisis (`type="password"`).',
+      description: 'Masks the entered characters (`type="password"`).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     integerOnly: {
       control: 'boolean',
-      description: 'N’accepte que des chiffres (`inputmode="numeric"`).',
+      description: 'Only accepts digits (`inputmode="numeric"`).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     size: {
       control: 'inline-radio',
       options: ['small', 'default', 'large'],
-      description: 'Taille des cellules.',
+      description: 'Cell size.',
       table: { type: { summary: "'small' | 'default' | 'large'" }, defaultValue: { summary: "'default'" } },
     },
     disabled: {
       control: 'boolean',
-      description: 'Désactive le contrôle (attribut natif sur chaque cellule).',
+      description: 'Disables the control (native attribute on each cell).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     readonly: {
       control: 'boolean',
-      description: 'Cellules en lecture seule (focalisables, non éditables).',
+      description: 'Read-only cells (focusable, not editable).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     invalid: {
       control: 'boolean',
-      description: 'Force le style d’erreur (auto quand le contrôle attaché est invalide + touché).',
+      description: 'Forces the error style (automatic when the attached control is invalid + touched).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     autofocus: {
       control: 'boolean',
-      description: 'Focalise la première cellule à l’initialisation.',
+      description: 'Focuses the first cell on initialization.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     ariaLabel: {
       control: 'text',
-      description: 'Nom accessible du groupe (obligatoire — pas de label visible).',
+      description: 'Accessible name of the group (required — no visible label).',
       table: { type: { summary: 'string' } },
     },
     valueChange: { action: 'valueChange', table: { category: 'Outputs' } },
