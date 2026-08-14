@@ -1,124 +1,124 @@
 import { Meta } from '@storybook/addon-docs/blocks';
 
-<Meta title="Spécifications/Design Tokens" />
+<Meta title="Specifications/Design Tokens" />
 
 # Design Tokens & Theming System
 
-Cette page récapitule le fonctionnement et l'usage des Design Tokens du projet.<br/>
-Notre architecture repose sur une source de vérité centralisée (Figma) et une génération automatisée.
+This page summarizes how the project's Design Tokens work and how to use them.<br/>
+Our architecture rests on a centralized source of truth (Figma) and automated generation.
 
-## 1. Cycle de vie des Tokens (Workflow)
+## 1. Token lifecycle (workflow)
 
-Il est essentiel de comprendre le flux de nos variables pour maintenir la cohérence du Design System :
+Understanding the flow of our variables is essential to keeping the Design System consistent:
 
-* **Source de vérité (Figma & JSON)** : Les variables sont extraites de fichiers JSON situés dans `src/design-tokens/`.
-* **Génération automatisée** : Un script `scripts/tokens.build.mjs` compile ces données en plusieurs formats cibles.
-* **Fichiers SCSS/CSS (`.scss`)** : Générés dans `projects/ui-kit/styles/generated/`, ce sont les variables (ex: `var(--...)`) que vous devez utiliser lorsque vous écrivez du style pour vos éléments de layout / composants.
+* **Source of truth (Figma & JSON)**: variables are extracted from JSON files located in `src/design-tokens/`.
+* **Automated generation**: a `scripts/tokens.build.mjs` script compiles this data into several target formats.
+* **SCSS/CSS files (`.scss`)**: generated into `projects/ui-kit/styles/generated/`, these are the variables (e.g. `var(--...)`) you should use when styling your layout elements / components.
 
 <div className="ai-instruction-block">
     <div className="ai-instruction-block-title">
-        INSTRUCTIONS POUR L'IA ET LES DÉVELOPPEURS
+        INSTRUCTIONS FOR AI AND DEVELOPERS
     </div>
     <ul>
-        <li><strong>Aucune création manuelle</strong> : Si un token exact manque dans le CSS, ne l'inventez pas en dur. Il doit d'abord être créé côté Figma/JSON. En attendant, déduisez et utilisez le fallback sémantique le plus proche.</li>
-        <li><strong>Ne jamais utiliser de valeurs en dur</strong> (ex: <code>#ffffff</code> ou <code>16px</code>).</li>
-        <li><strong>Préférez les variables CSS natives</strong> (<code>var(--...)</code>) aux variables SASS (<code>$my-var</code>) pour les couleurs afin de supporter le thème dynamique (Dark Mode).</li>
-        <li>Pour les espacements, dimensions, radius utilisez exclusivement les variables <code>--units-* / --spacing-* / --radius-*</code>.</li>
+        <li><strong>No manual creation</strong>: if an exact token is missing from the CSS, don't hardcode it. It must first be created on the Figma/JSON side. In the meantime, infer and use the closest semantic fallback.</li>
+        <li><strong>Never use hardcoded values</strong> (e.g. <code>#ffffff</code> or <code>16px</code>).</li>
+        <li><strong>Prefer native CSS variables</strong> (<code>var(--...)</code>) over SASS variables (<code>$my-var</code>) for colors, to support dynamic theming (Dark Mode).</li>
+        <li>For spacing, dimensions, radius, use exclusively the <code>--units-* / --spacing-* / --radius-*</code> variables.</li>
     </ul>
 </div>
 
 
-## 2. Familles de Tokens
+## 2. Token families
 
-Les tokens sont divisés en plusieurs fichiers dans `projects/ui-kit/styles/generated/` :
+Tokens are split across several files in `projects/ui-kit/styles/generated/`:
 
-- **`_tokens-semantics.scss`** : Couleurs liées à une fonction d'interface (ex: action, feedback, navigation).
-- **`_tokens-metrics.scss`** : Unités de mesure structurelles (espacement, arrondi, bordure).
-- **`_tokens-typography.scss`** : Styles de texte (familles, graisses, tailles).
-- **`_tokens-breakpoints.scss`** : Définition des points de rupture responsive.
+- **`_tokens-semantics.scss`**: colors tied to an interface function (e.g. action, feedback, navigation).
+- **`_tokens-metrics.scss`**: structural units of measure (spacing, radius, border).
+- **`_tokens-typography.scss`**: text styles (families, weights, sizes).
+- **`_tokens-breakpoints.scss`**: responsive breakpoint definitions.
 
-## 3. Tokens Sémantiques (Couleurs)
+## 3. Semantic tokens (colors)
 
-Utilisez ces tokens pour garantir la cohérence visuelle et le support automatique du **Dark Mode**.
+Use these tokens to guarantee visual consistency and automatic **Dark Mode** support.
 
-### Structure des Noms (Anatomie)
+### Name structure (anatomy)
 
-La nomenclature suit une logique de construction stricte : `[famille]-[niveau]-[propriété]-[état]`.
-Les tokens sémantiques sont générés **sans préfixe** : la famille ouvre directement le nom
-(`--actions-high-surface-default`), il n'y a pas de segment `token-` ou `semantics-`.
+The naming follows a strict construction logic: `[family]-[level]-[property]-[state]`.
+Semantic tokens are generated **with no prefix**: the family opens the name directly
+(`--actions-high-surface-default`) — there's no `token-` or `semantics-` segment.
 
-*(Le domaine `global` suit une anatomie volontairement plus courte, en trois segments —
-voir [Anatomie du domaine `global`](#anatomie-du-domaine-global) ci-dessous.)*
+*(The `global` domain follows a deliberately shorter, three-segment anatomy —
+see [Anatomy of the `global` domain](#anatomy-of-the-global-domain) below.)*
 
 <table className="doc-table">
     <thead>
     <tr>
         <th>Segment</th>
-        <th>Valeurs possibles</th>
-        <th>Rôle</th>
+        <th>Possible values</th>
+        <th>Role</th>
     </tr>
     </thead>
     <tbody>
     <tr>
-        <td><strong>1. Famille</strong></td>
+        <td><strong>1. Family</strong></td>
         <td><code>global</code>, <code>actions</code>, <code>form</code>, <code>informative</code>, <code>navigation</code>, <code>table</code></td>
-        <td>L'intention fonctionnelle. <code>global</code> = structurel (fondations), les autres = liées à un type de composant.</td>
+        <td>The functional intent. <code>global</code> = structural (foundations), the others relate to a component type.</td>
     </tr>
     <tr>
-        <td><strong>2. Niveau</strong></td>
+        <td><strong>2. Level</strong></td>
         <td><code>high</code>, <code>low</code>, <code>success</code>, <code>error</code>, <code>warning</code>...</td>
-        <td>La hiérarchie visuelle ou la variante sémantique.</td>
+        <td>The visual hierarchy or the semantic variant.</td>
     </tr>
     <tr>
-        <td><strong>3. Propriété</strong></td>
+        <td><strong>3. Property</strong></td>
         <td><code>surface</code>, <code>content</code>, <code>stroke</code></td>
-        <td>La cible CSS : <em>surface</em> (fond), <em>content</em> (texte/icône), <em>stroke</em> (bordure).</td>
+        <td>The CSS target: <em>surface</em> (background), <em>content</em> (text/icon), <em>stroke</em> (border).</td>
     </tr>
     <tr>
-        <td><strong>4. État</strong></td>
+        <td><strong>4. State</strong></td>
         <td><code>default</code>, <code>hover</code>, <code>focused</code>, <code>pressed</code>, <code>disabled</code>, <code>active</code>, <code>checked</code>, <code>odd</code>, <code>even</code></td>
-        <td>L'état d'interaction de l'élément (pseudo-classes CSS).</td>
+        <td>The element's interaction state (CSS pseudo-classes).</td>
     </tr>
     </tbody>
 </table>
 
-> **Casse** : le JSON est en camelCase, le générateur met en minuscules **sans séparateur**.
-> `informative.defaultHigh` donne donc `--informative-defaulthigh-*`, et non
-> `--informative-default-high-*`. En cas de doute, la source est
+> **Casing**: the JSON is in camelCase, the generator lowercases it **with no separator**.
+> `informative.defaultHigh` therefore becomes `--informative-defaulthigh-*`, not
+> `--informative-default-high-*`. When in doubt, the source is
 > `projects/ui-kit/styles/generated/_tokens-semantics.scss`.
 
-> **Hors anatomie** : la famille `effects` est **plate** (`--effects-default`,
-> `--effects-highlight`, `--effects-success`, `--effects-warning`, `--effects-error`) — pas de
-> niveau, ni de propriété, ni d'état. Ce sont les couleurs de diffusion qui alimentent les
-> ombres composites (voir §5).
+> **Outside the anatomy**: the `effects` family is **flat** (`--effects-default`,
+> `--effects-highlight`, `--effects-success`, `--effects-warning`, `--effects-error`) — no
+> level, property, or state. These are the emission colors feeding the composite
+> shadows (see §5).
 
-### Le segment `[niveau]` est souvent composé
+### The `[level]` segment is often composite
 
-C'est la principale source de tâtonnement quand on cherche un token : `[niveau]` n'est pas
-toujours un simple `high`/`low`. Il **fusionne** régulièrement le niveau avec un second axe, et
-la casse disparaissant à la génération (voir ci-dessus), le nom final peut surprendre.
+This is the main source of confusion when hunting for a token: `[level]` isn't
+always a plain `high`/`low`. It regularly **merges** the level with a second axis, and
+since the casing is lost during generation (see above), the final name can be surprising.
 
 <table className="doc-table">
     <thead>
     <tr>
-        <th>Second axe fusionné</th>
-        <th>Familles</th>
-        <th>Exemple</th>
+        <th>Merged second axis</th>
+        <th>Families</th>
+        <th>Example</th>
     </tr>
     </thead>
     <tbody>
     <tr>
-        <td><strong>Emphase</strong> (<code>High</code> / <code>Low</code>)</td>
+        <td><strong>Emphasis</strong> (<code>High</code> / <code>Low</code>)</td>
         <td><code>informative</code></td>
         <td><code>--informative-errorhigh-surface-default</code><br/>(<code>informative.errorHigh</code>)</td>
     </tr>
     <tr>
-        <td><strong>Variante d'apparence</strong> (<code>Outlined</code> / <code>Ghost</code>)</td>
+        <td><strong>Appearance variant</strong> (<code>Outlined</code> / <code>Ghost</code>)</td>
         <td><code>actions</code></td>
         <td><code>--actions-successoutlined-content-hover</code><br/>(<code>actions.successOutlined</code>)</td>
     </tr>
     <tr>
-        <td><strong>Polarité de fond</strong> — le niveau est <em>remplacé</em> par <code>on[Polarité]</code>, suivi de la variante, puis du niveau seulement là où il reste porteur de sens</td>
+        <td><strong>Background polarity</strong> — the level is <em>replaced</em> by <code>on[Polarity]</code>, followed by the variant, then the level only where it still carries meaning</td>
         <td><code>actions</code></td>
         <td><code>--actions-ondark-outlined-stroke-hover</code><br/><code>--actions-ondark-filled-error-content-default</code></td>
     </tr>
@@ -127,212 +127,213 @@ la casse disparaissant à la génération (voir ci-dessus), le nom final peut su
 
 <div className="ai-instruction-block">
     <div className="ai-instruction-block-title">
-        EXCEPTION À CONNAÎTRE : LES JEUX <code>onDark</code> / <code>onLight</code>
+        EXCEPTION TO KNOW ABOUT: THE <code>onDark</code> / <code>onLight</code> SETS
     </div>
     <p>
-        C'est la <strong>seule famille du DS dont les valeurs <code>modeLight</code> et
-        <code>modeDark</code> sont volontairement identiques</strong>. Elle sert à un composant
-        posé sur un fond de couleur (bandeau, carte teintée, image) : ce fond ne change pas avec
-        le thème, donc la polarité du composant ne doit pas basculer non plus. Ce n'est pas un
-        oubli de mode sombre, ne « corrigez » pas ces tokens pour les faire diverger.
+        This is the <strong>only family in the DS whose <code>modeLight</code> and
+        <code>modeDark</code> values are deliberately identical</strong>. It serves a component
+        sitting on a colored background (banner, tinted card, image): that background doesn't
+        change with the theme, so the component's polarity shouldn't switch either. This isn't a
+        missing dark-mode value — don't "fix" these tokens to make them diverge.
     </p>
     <p>
-        N'utilisez ces jeux <strong>que</strong> par-dessus une surface de couleur
-        maîtrisée. Sur le fond de page, ce sont les jeux normaux qui s'appliquent, eux bien
-        réactifs au thème. Choix de la polarité et domaine de validité :
+        Use these sets <strong>only</strong> on top of a controlled color surface. On the page
+        background, the normal sets apply instead, and those do react to the theme. Choosing the
+        polarity and its scope:
         <a href="?path=/docs/components-ui-actions-ui-button--docs"><code>ui-button</code> → onColor</a>.
     </p>
 </div>
 
-### Anatomie du domaine `global`
+### Anatomy of the `global` domain
 
-Le domaine `global` porte les couleurs **structurelles** de l'application (fonds de page,
-textes courants, séparateurs). Il n'a ni famille ni niveau : sa nomenclature est
-`global-[axe]-[occurrence]`, en trois segments.
+The `global` domain carries the application's **structural** colors (page
+backgrounds, body text, separators). It has neither a family nor a level: its naming is
+`global-[axis]-[occurrence]`, in three segments.
 
-Ce choix est délibéré. Les mots `high`/`low` des familles fonctionnelles désignent une
-**hiérarchie d'intention** (bouton primaire vs secondaire) ; appliqués à des neutres ils
-désignaient un **niveau de contraste**. Deux sens pour un même mot : l'axe a donc été
-remplacé par un vocabulaire d'emphase explicite, et l'axe `[propriété]` par les trois
-propriétés CSS qu'il cible réellement.
+This choice is deliberate. The words `high`/`low` in the functional families denote an
+**intent hierarchy** (primary vs. secondary button); applied to neutrals they denoted a
+**contrast level**. Two meanings for one word — so the axis was replaced with an
+explicit emphasis vocabulary, and the `[property]` axis with the three CSS properties
+it actually targets.
 
 <table className="doc-table">
     <thead>
     <tr>
         <th>Segment</th>
-        <th>Valeurs possibles</th>
-        <th>Rôle</th>
+        <th>Possible values</th>
+        <th>Role</th>
     </tr>
     </thead>
     <tbody>
     <tr>
-        <td><strong>1. Axe</strong></td>
+        <td><strong>1. Axis</strong></td>
         <td><code>background</code>, <code>text</code>, <code>border</code></td>
-        <td>La cible CSS, nommée d'après la propriété : <code>background-color</code>, <code>color</code>, <code>border-color</code>.</td>
+        <td>The CSS target, named after the property: <code>background-color</code>, <code>color</code>, <code>border-color</code>.</td>
     </tr>
     <tr>
         <td><strong>2. Occurrence</strong></td>
         <td>
-            <em>emphase</em> : <code>default</code>, <code>muted</code>, <code>subtle</code><br/>
-            <em>rôle</em> : <code>brand</code>, <code>focus</code>, <code>inverse</code>, <code>disabled</code>
+            <em>emphasis</em>: <code>default</code>, <code>muted</code>, <code>subtle</code><br/>
+            <em>role</em>: <code>brand</code>, <code>focus</code>, <code>inverse</code>, <code>disabled</code>
         </td>
-        <td>Soit le degré d'emphase du neutre, soit un rôle particulier. Deux familles de mots, au même niveau.</td>
+        <td>Either the neutral's emphasis degree, or a specific role. Two word families, at the same level.</td>
     </tr>
     <tr>
-        <td><strong>3. État</strong> <em>(optionnel)</em></td>
+        <td><strong>3. State</strong> <em>(optional)</em></td>
         <td><code>hover</code></td>
-        <td>Suffixé à l'occurrence (<code>default-hover</code>) et <strong>omis à l'état de repos</strong> — d'où les trois segments du cas courant.</td>
+        <td>Suffixed to the occurrence (<code>default-hover</code>) and <strong>omitted at rest</strong> — hence the three segments in the common case.</td>
     </tr>
     </tbody>
 </table>
 
 ```scss
 .ui-card {
-  background-color: var(--global-background-default);  // fond de la surface
-  color: var(--global-text-default);                   // texte principal
-  border-color: var(--global-border-subtle);           // bordure discrète
+  background-color: var(--global-background-default);  // surface background
+  color: var(--global-text-default);                   // main text
+  border-color: var(--global-border-subtle);           // subtle border
 
-  .ui-card-subtitle { color: var(--global-text-muted); }        // texte atténué
+  .ui-card-subtitle { color: var(--global-text-muted); }        // muted text
   &:focus-visible { box-shadow: 0 0 0 2px var(--global-border-focus); }
 }
 ```
 
-> L'inventaire exhaustif et les valeurs résolues (par thème, marque et mode) sont dans
-> [Foundations / Colors](?path=/docs/foundations-colors--docs), généré depuis
+> The full inventory and resolved values (per theme, brand and mode) are in
+> [Foundations / Colors](?path=/docs/foundations-colors--docs), generated from
 > `tokens.manifest.json`.
 
-### Référentiel des Familles Fonctionnelles
+### Functional families reference
 
-Utilisez ce tableau pour déterminer quelle `[famille]` utiliser en se basant strictement sur **l'intention fonctionnelle** du composant (les listes de composants ne sont données qu'à titre d'exemple non exhaustif).
+Use this table to determine which `[family]` to use, based strictly on the component's
+**functional intent** (the component lists are only non-exhaustive examples).
 
 <table className="doc-table">
     <thead>
     <tr>
-        <th>Famille</th>
-        <th>Usage Intentionnel (Heuristique)</th>
-        <th>Exemple de construction</th>
+        <th>Family</th>
+        <th>Intended usage (heuristic)</th>
+        <th>Construction example</th>
     </tr>
     </thead>
     <tbody>
     <tr>
         <td><strong><code>global</code></strong></td>
         <td>
-            <strong>Règle :</strong> Couleurs de fondation de l'application.<br/>
-            <em>Exemples : Fonds d'écran, surfaces générales, textes par défaut, séparateurs structurels.</em>
+            <strong>Rule:</strong> the application's foundation colors.<br/>
+            <em>Examples: screen backgrounds, general surfaces, default text, structural separators.</em>
         </td>
         <td><code>--global-high-surface-default</code></td>
     </tr>
     <tr>
         <td><strong><code>actions</code></strong></td>
         <td>
-            <strong>Règle :</strong> TOUT élément interactif qui déclenche un événement, une soumission ou une action.<br/>
-            <em>Exemples non exhaustifs : Boutons, liens, déclencheurs d'accordéon, pagination, etc.</em>
+            <strong>Rule:</strong> ANY interactive element that triggers an event, a submission or an action.<br/>
+            <em>Non-exhaustive examples: buttons, links, accordion triggers, pagination, etc.</em>
         </td>
         <td><code>--actions-high-surface-hover</code></td>
     </tr>
     <tr>
         <td><strong><code>form</code></strong></td>
         <td>
-            <strong>Règle :</strong> TOUT élément permettant à l'utilisateur de saisir, modifier ou sélectionner une donnée.<br/>
-            <em>Exemples non exhaustifs : Inputs texte, checkbox, radio, select, sliders, toggles, color pickers, etc.</em>
+            <strong>Rule:</strong> ANY element letting the user enter, edit or select data.<br/>
+            <em>Non-exhaustive examples: text inputs, checkbox, radio, select, sliders, toggles, color pickers, etc.</em>
         </td>
         <td><code>--form-high-stroke-focused</code></td>
     </tr>
     <tr>
         <td><strong><code>informative</code></strong></td>
         <td>
-            <strong>Règle :</strong> Retours visuels non interactifs affichant un statut, un feedback ou mettant en valeur une donnée.<br/>
-            <em>Exemples non exhaustifs : Alertes, badges, tags, toasts, tooltips, barres de progression, etc.</em>
+            <strong>Rule:</strong> non-interactive visual feedback displaying a status, a feedback, or highlighting a piece of data.<br/>
+            <em>Non-exhaustive examples: alerts, badges, tags, toasts, tooltips, progress bars, etc.</em>
         </td>
         <td><code>--informative-errorhigh-surface-default</code></td>
     </tr>
     <tr>
         <td><strong><code>navigation</code></strong></td>
         <td>
-            <strong>Règle :</strong> Éléments d'architecture servant exclusivement à guider l'utilisateur dans les vues de l'application.<br/>
-            <em>Exemples non exhaustifs : Menus, onglets, sidebars, fil d'Ariane, steppers, etc.</em>
+            <strong>Rule:</strong> architectural elements used exclusively to guide the user through the application's views.<br/>
+            <em>Non-exhaustive examples: menus, tabs, sidebars, breadcrumbs, steppers, etc.</em>
         </td>
         <td><code>--navigation-high-content-active</code></td>
     </tr>
     <tr>
         <td><strong><code>table</code></strong></td>
         <td>
-            <strong>Règle :</strong> Strictement réservé à l'affichage de données tabulaires complexes.<br/>
-            <em>Exemples : DataTables, grilles, en-têtes, lignes paires/impaires, cellules.</em>
+            <strong>Rule:</strong> strictly reserved for displaying complex tabular data.<br/>
+            <em>Examples: data tables, grids, headers, odd/even rows, cells.</em>
         </td>
         <td><code>--table-body-surface-odd</code></td>
     </tr>
     </tbody>
 </table>
 
-## 4. Tokens Métriques (Metrics)
+## 4. Metric tokens
 
 <table className="doc-table">
     <thead>
     <tr>
-        <th>Préfixe</th>
+        <th>Prefix</th>
         <th>Usage</th>
-        <th>Exemple</th>
-        <th style={{ textAlign: 'center' }}>Valeur Défaut</th>
+        <th>Example</th>
+        <th style={{ textAlign: 'center' }}>Default value</th>
     </tr>
     </thead>
     <tbody>
     <tr>
         <td><strong><code>--units-</code></strong></td>
-        <td>Espacements (margin, padding, gap)</td>
+        <td>Spacing (margin, padding, gap)</td>
         <td><code>--units-md</code></td>
         <td style={{ textAlign: 'center' }}><code>12px</code></td>
     </tr>
     <tr>
         <td><strong><code>--radius-</code></strong></td>
-        <td>Arrondis (border-radius)</td>
+        <td>Corner radius (border-radius)</td>
         <td><code>--radius-default</code></td>
         <td style={{ textAlign: 'center' }}><code>12px</code></td>
     </tr>
     <tr>
         <td><strong><code>--stroke-</code></strong></td>
-        <td>Épaisseur de bordure (border-width)</td>
+        <td>Border thickness (border-width)</td>
         <td><code>--stroke-default</code></td>
         <td style={{ textAlign: 'center' }}><code>1px</code></td>
     </tr>
     </tbody>
 </table>
 
-## 5. Styles composites (`styles.json`)
+## 5. Composite styles (`styles.json`)
 
-Certains tokens Figma sont **composites** (plusieurs propriétés en un style : ombres…). Ils
-vivent dans `src/design-tokens/styles.json` et sont générés différemment : le pipeline
-**compose** une valeur CSS prête à l'emploi et l'expose en **double** : variable + classe
-utilitaire : pour un usage aussi bien en SCSS qu'en HTML.
+Some Figma tokens are **composite** (several properties in one style: shadows…). They
+live in `src/design-tokens/styles.json` and are generated differently: the pipeline
+**composes** a ready-to-use CSS value and exposes it **twice**: as a variable and as a
+utility class, for use in both SCSS and HTML.
 
-- Sortie : `--shadow-{catégorie}-{taille}` (valeur `box-shadow`) + `.shadow-{catégorie}-{taille}`.
-- Config : output `format: "composite-styles"` dans `tokens.config.json`. Ajouter un type
-  composite = étendre la table `COMPOSERS` dans `scripts/tokens.build.mjs`.
-- Détail et aperçu : **Foundations → Shadows**.
+- Output: `--shadow-{category}-{size}` (a `box-shadow` value) + `.shadow-{category}-{size}`.
+- Config: `format: "composite-styles"` output in `tokens.config.json`. Adding a
+  composite type means extending the `COMPOSERS` table in `scripts/tokens.build.mjs`.
+- Details and preview: **Foundations → Shadows**.
 
-## 6. Exemples d'Implémentation
+## 6. Implementation examples
 
 ```scss
-// ✅ BON USAGE
-.mon-composant {
+// ✅ GOOD USAGE
+.my-component {
   background-color: var(--global-high-surface-default);
   padding: var(--units-md);
   border-radius: var(--radius-default);
 }
 
-// ❌ À ÉVITER
-.mon-composant {
-  background-color: white; // Ne gère pas le Dark Mode
-  padding: 12px;           // Valeur en dur interdite
+// ❌ TO AVOID
+.my-component {
+  background-color: white; // Doesn't support Dark Mode
+  padding: 12px;           // Hardcoded value is forbidden
 }
 ```
 
-## 7. Constantes structurelles partagées (`ui-config`)
+## 7. Shared structural constants (`ui-config`)
 
-En complément des tokens (thémables, runtime), les composants `ui-*` partagent des
-**constantes structurelles** SASS (focus ring, bordure, taille des contrôles, transition) :
-le *choix* du token pour un rôle donné, mutualisé et surchargeable à 3 niveaux
-(global UI → catégorie → composant).
+In addition to the tokens (themeable, runtime), `ui-*` components share
+**structural constants** in SASS (focus ring, border, control size, transition):
+the *choice* of token for a given role, shared and overridable at 3 levels
+(global UI → category → component).
 
-> Référentiel complet des variables, valeurs par défaut et mécanismes de surcharge :
-> **Spécifications → Configuration (ui-config)**.
+> Full reference of the variables, default values and override mechanisms:
+> **Specifications → Configuration (ui-config)**.
