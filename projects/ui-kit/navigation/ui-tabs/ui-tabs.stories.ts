@@ -4,7 +4,10 @@ import { UiTab, UiTabList, UiTabPanel, UiTabPanels, UiTabs } from '@4sh/ui-kit/n
 import { UiButton } from '@4sh/ui-kit/actions/ui-button';
 import { UiTag } from '@4sh/ui-kit/informative/ui-tag';
 
-const meta: Meta<UiTabs> = {
+// `prevAriaLabel` / `nextAriaLabel` are `ui-tab-list` inputs surfaced as playground controls.
+type TabsArgs = UiTabs & { prevAriaLabel: string; nextAriaLabel: string };
+
+const meta: Meta<TabsArgs> = {
   title: 'Components/ui/navigation/ui-tabs',
   component: UiTabs,
   decorators: [
@@ -51,6 +54,16 @@ const meta: Meta<UiTabs> = {
       description: "Anime l'indicateur actif et l'apparition des panneaux (reduced-motion respecté).",
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
+    prevAriaLabel: {
+      control: { type: 'text' },
+      description: 'Nom accessible du navigateur « précédent » (`ui-tab-list`), à traduire côté application.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: "'Défiler vers les onglets précédents'" } },
+    },
+    nextAriaLabel: {
+      control: { type: 'text' },
+      description: 'Nom accessible du navigateur « suivant » (`ui-tab-list`), à traduire côté application.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: "'Défiler vers les onglets suivants'" } },
+    },
   },
   args: {
     orientation: 'horizontal',
@@ -59,11 +72,13 @@ const meta: Meta<UiTabs> = {
     selectOnFocus: false,
     showNavigators: true,
     motion: true,
+    prevAriaLabel: 'Défiler vers les onglets précédents',
+    nextAriaLabel: 'Défiler vers les onglets suivants',
   },
 };
 
 export default meta;
-type Story = StoryObj<UiTabs>;
+type Story = StoryObj<TabsArgs>;
 
 const LOREM =
   'Viennese et half to cortado viennese. Americano steamed caffeine filter luwak skinny half and id spoon. Redeye extraction variety shot instant qui cream roast lungo body shot mazagran.';
@@ -160,7 +175,7 @@ export const Scrollable: Story = {
     },
     template: box(`
       <ui-tabs [(value)]="active" [scrollable]="scrollable" [showNavigators]="showNavigators" [motion]="motion">
-        <ui-tab-list ariaLabel="Nombreux onglets">
+        <ui-tab-list ariaLabel="Nombreux onglets" [prevAriaLabel]="prevAriaLabel" [nextAriaLabel]="nextAriaLabel">
           @for (n of items; track n) {
             <ui-tab [value]="n">Onglet {{ n }}</ui-tab>
           }

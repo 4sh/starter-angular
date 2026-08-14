@@ -16,6 +16,9 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+### Added
+- **`prevAriaLabel` / `nextAriaLabel` sur `ui-tab-list`** : les noms accessibles des navigateurs de défilement (mode `scrollable`) étaient écrits en dur dans le template, seuls libellés du kit qu'une application ne pouvait pas traduire. Ils deviennent des entrées, avec les textes actuels comme valeurs par défaut — aucun changement de rendu.
+
 ### Fixed
 - **`dropdownOverlayPositions` ne repositionnait jamais horizontalement le panneau** (`ui-select`, `ui-autocomplete`, `ui-input-tags`, `ui-datepicker`) : `originX`/`overlayX` restaient figés à `start`, donc un champ proche du bord droit ouvrait un panneau à moitié caché au lieu de le basculer à gauche. Ajout des positions `end`-alignées en repli, sur le même principe déjà utilisé par `ui-tooltip`/`ui-popover`/`ui-context-menu` (FSHSP-112).
 
