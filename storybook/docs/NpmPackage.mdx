@@ -2,10 +2,10 @@ import { Meta } from '@storybook/addon-docs/blocks';
 
 <Meta title="Package npm" />
 
-# Package npm — `@4sh/ui-kit`
+# npm package — `@4sh/ui-kit`
 
-Les composants de ce Design System sont publiés sous forme d'**un seul package
-npm**, consommable par n'importe quelle application Angular.
+This Design System's components are published as **a single npm
+package**, consumable by any Angular application.
 
 ```bash
 npm install @4sh/ui-kit
@@ -13,12 +13,12 @@ npm install @4sh/ui-kit
 
 <div className="sb-callout">
 
-**Pas de risque d'oubli d'installation.** `@4sh/ui-kit` est un **package unique**
-avec des *secondary entry points* — pas une collection de packages séparés. Tous
-les entry points sont présents dès `npm install`, et les dépendances entre eux
-se résolvent automatiquement : importer `UiDatepicker` tire tout ce dont il a
-besoin (son socle de formulaire, ses icônes…) sans que vous ayez quoi que ce
-soit à déclarer.
+**No risk of forgetting to install something.** `@4sh/ui-kit` is a **single
+package** with *secondary entry points* — not a collection of separate
+packages. Every entry point is present as soon as you run `npm install`, and
+dependencies between them resolve automatically: importing `UiDatepicker`
+pulls in everything it needs (its form base, its icons…) without you having
+to declare anything.
 
 </div>
 
@@ -33,31 +33,31 @@ import { UiDatepicker } from '@4sh/ui-kit/forms/ui-datepicker';
 export class Booking { date = signal<Date | null>(null); }
 ```
 
-Le nom de l'entry point est celui du composant : la page de doc de chaque
-composant, dans la barre latérale, donne l'import exact à recopier.
+The entry point's name is the component's name: each component's doc page,
+in the sidebar, gives the exact import to copy.
 
 ---
 
-## Le mode d'emploi complet vit dans le README du package
+## The full instructions live in the package's README
 
-Installation, liste des entry points, feuille de styles à charger, providers
-attendus par `ui-image` et `BrandService`, construction de votre propre champ
-sur `@4sh/ui-kit/forms` : tout est décrit **une seule fois**, dans le README
-livré avec le package — c'est aussi ce qu'affiche la page npmjs.
+Installation, the list of entry points, the stylesheet to load, the providers
+expected by `ui-image` and `BrandService`, building your own field
+on top of `@4sh/ui-kit/forms`: everything is described **once**, in the README
+shipped with the package — it's also what the npmjs page shows.
 
 | | |
 |---|---|
-| Page du package | <a href="https://www.npmjs.com/package/@4sh/ui-kit" target="_blank" rel="noopener noreferrer">npmjs.com/package/@4sh/ui-kit</a> |
-| README (anglais) | <a href="https://github.com/4sh/starter-angular/blob/main/projects/ui-kit/README.md" target="_blank" rel="noopener noreferrer">projects/ui-kit/README.md</a> |
-| README (français) | <a href="https://github.com/4sh/starter-angular/blob/main/projects/ui-kit/README.fr.md" target="_blank" rel="noopener noreferrer">projects/ui-kit/README.fr.md</a> |
-| Dépôt | <a href="https://github.com/4sh/starter-angular" target="_blank" rel="noopener noreferrer">github.com/4sh/starter-angular</a> |
+| Package page | <a href="https://www.npmjs.com/package/@4sh/ui-kit" target="_blank" rel="noopener noreferrer">npmjs.com/package/@4sh/ui-kit</a> |
+| README (English) | <a href="https://github.com/4sh/starter-angular/blob/main/projects/ui-kit/README.md" target="_blank" rel="noopener noreferrer">projects/ui-kit/README.md</a> |
+| README (French) | <a href="https://github.com/4sh/starter-angular/blob/main/projects/ui-kit/README.fr.md" target="_blank" rel="noopener noreferrer">projects/ui-kit/README.fr.md</a> |
+| Repository | <a href="https://github.com/4sh/starter-angular" target="_blank" rel="noopener noreferrer">github.com/4sh/starter-angular</a> |
 
 <div className="sb-callout">
 
-**Pourquoi un simple renvoi ?** Ces informations étaient auparavant recopiées
-ici, dans le README anglais et dans le README français. Trois copies d'une même
-page d'installation divergent — c'est ainsi que le nombre d'entry points annoncé
-avait fini par être faux à deux endroits sur trois. La page publique du package
-fait foi ; cette page ne garde que ce qui lui est propre.
+**Why just a pointer?** This information used to be copied here, in the
+English README and in the French README. Three copies of the same
+installation page drift apart — that's how the advertised entry-point count
+ended up wrong in two places out of three. The package's public page is the
+source of truth; this page only keeps what's specific to it.
 
 </div>
