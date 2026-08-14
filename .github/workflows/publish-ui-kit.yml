@@ -1,5 +1,11 @@
 name: Publish @4sh/ui-kit to npm
 
+# Publishes TWO packages in lockstep, from the same approved job:
+#   @4sh/ui-kit            — the compiled components
+#   @4sh/ui-kit-schematics — the raw sources the starter copies (FSHSP-109)
+# They always carry the same version (stamped from the kit at assembly time),
+# because the kit's ng-add facade requests `^<kit version>` of the companion.
+
 # Manual trigger only: publishing is irreversible (a name+version can never be
 # reused, and `npm unpublish` is limited to 72h), so it never fires on a push.
 #
@@ -64,9 +70,30 @@ jobs:
       - name: Build the package
         run: npm run ui-kit:build
 
-      - name: Show what would be published
+      - name: Build the schematics package
+        run: npm run schematics:build
+
+      # Les deux packages partent ensemble et portent le MÊME numéro : la façade
+      # de `@4sh/ui-kit` demande le compagnon en `^<version du kit>` (voir
+      # projects/ui-kit/schematics/index.cjs). Un décalage ici casserait
+      # `ng add` chez le consommateur, sans que rien ne le signale côté kit.
+      - name: Check both packages carry the same version
+        run: |
+          kit=$(node -p "require('./dist/ui-kit/package.json').version")
+          companion=$(node -p "require('./dist/ui-kit-schematics/package.json').version")
+          echo "kit=$kit companion=$companion"
+          if [ "$kit" != "$companion" ]; then
+            echo "::error::Version mismatch: @4sh/ui-kit is $kit but @4sh/ui-kit-schematics is $companion."
+            exit 1
+          fi
+
+      - name: Show what would be published (@4sh/ui-kit)
         run: npm publish --dry-run
         working-directory: dist/ui-kit
+
+      - name: Show what would be published (@4sh/ui-kit-schematics)
+        run: npm publish --dry-run
+        working-directory: dist/ui-kit-schematics
 
   publish:
     name: Publish to npm
@@ -161,7 +188,30 @@ jobs:
       - name: Build the package
         run: npm run ui-kit:build
 
-      - name: Publish
+      - name: Build the schematics package
+        run: npm run schematics:build
+
+      # ORDER MATTERS — the companion goes FIRST.
+      #
+      # The two packages are published from the same approved job, but npm has
+      # no notion of a transaction: the second publish can fail on its own. The
+      # order decides what a half-published release leaves behind.
+      #
+      #   companion then kit (this order) — if the companion fails, the kit is
+      #     never published and nothing on the registry references a missing
+      #     package. If the kit then fails, the orphan companion version is
+      #     inert: no released kit points at it.
+      #   kit then companion — a companion failure would strand a published kit
+      #     whose facade requests `^<version>` of something that does not exist,
+      #     breaking `ng add` for everyone, with no way to unpublish after 72h.
+      #
+      # Both failure modes are recoverable, but only one of them is invisible to
+      # consumers. Do not swap these two steps.
+      - name: Publish @4sh/ui-kit-schematics
+        run: npm publish --provenance
+        working-directory: dist/ui-kit-schematics
+
+      - name: Publish @4sh/ui-kit
         # No NODE_AUTH_TOKEN: npm exchanges the job's OIDC token for a
         # short-lived publish right (Trusted Publishing). `--provenance` stays
         # explicit even though OIDC implies it, so a fallback token publish

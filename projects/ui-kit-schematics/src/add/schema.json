@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "UiKitAdd",
+  "title": "ng generate @4sh/ui-kit-schematics:add",
+  "type": "object",
+  "properties": {
+    "components": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": [],
+      "description": "Composants à copier (ex. ui-button ui-select). Omis → sélection interactive."
+    },
+    "all": {
+      "type": "boolean",
+      "default": false,
+      "description": "Copie tous les composants disponibles, sans prompt."
+    }
+  }
+}

@@ -4,11 +4,23 @@ This project follows [Semantic Versioning](https://semver.org/) adapted to a Des
 
 Format: `MAJOR.MINOR.PATCH`
 
-## Scope: only the published package is versioned
+## Scope: one version number, two published packages
 
 SemVer applies to **`projects/ui-kit/package.json`** only — that is the artifact
 published as `@4sh/ui-kit`, the one a consumer's `package.json` pins a version
 against.
+
+`@4sh/ui-kit-schematics` (the raw sources the starter copies, see
+[`PUBLISHING.md`](./PUBLISHING.md)) is published from the same repo, at the same
+time, carrying **the same number** — stamped from the kit's at assembly time
+rather than maintained separately. It has no version of its own to bump: the
+number written in `projects/ui-kit-schematics/package.json` is a development
+placeholder and is overwritten by the build.
+
+That lockstep is not cosmetic. The kit's `ng-add` requests the companion as
+`^<kit version>`, so the two moving independently would break `ng add` for
+consumers. It also means the table below is read against the **kit**: a change
+confined to the schematics still ships under the kit's next version.
 
 The root `package.json` (demo app + Storybook tooling) is **not** versioned in
 step with it. Nothing depends on it: it is never published, `private: true`, and
@@ -21,15 +33,16 @@ to keep it. It can drift, stay put, or get dropped entirely; nothing consumes it
 
 | Bump | When |
 |---|---|
-| **MAJOR** | Breaking change: rename/removal of a token, removal of a component, API change of an input, entry point renamed/removed, new `peerDependency` or a raised floor on an existing one |
-| **MINOR** | New component, new token, new non-breaking variant, new entry point |
-| **PATCH** | Visual fix, bug fix, adjustment of an existing token value without rename |
+| **MAJOR** | Breaking change: rename/removal of a token, removal of a component, API change of an input, entry point renamed/removed, new `peerDependency` or a raised floor on an existing one, a schematic option removed or renamed |
+| **MINOR** | New component, new token, new non-breaking variant, new entry point, a new schematic or a new option on an existing one |
+| **PATCH** | Visual fix, bug fix, adjustment of an existing token value without rename, fix inside a schematic that leaves its options untouched |
 
 As long as the version starts with `0.x.y`, the API is considered unstable: `MINOR` releases may contain breaking changes documented in the CHANGELOG. Moving to `1.0.0` freezes the public API.
 
 ## No release without a tarball change
 
-**If `projects/ui-kit` did not change, there is no release** — no version bump,
+**If neither `projects/ui-kit` nor `projects/ui-kit-schematics` changed, there is
+no release** — no version bump,
 no tag, no CHANGELOG entry, no publish. A change scoped to Storybook (stories,
 MDX, `storybook/` config), the demo app, CI, or documentation ships by merging to
 `main` like any other change: Storybook and the demo app redeploy on every push to `main`

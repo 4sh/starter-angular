@@ -1,0 +1,36 @@
+@charset "utf-8";
+
+// -----------------------------------------------------------------------------
+// Feuille de styles globale du projet.
+//
+// Les composants du kit sont *headless* : ils lisent des custom properties CSS
+// et ne codent en dur ni couleur, ni taille, ni espacement. Charger ce fichier
+// UNE fois, globalement, est ce qui leur donne leur apparence — sans lui, ils
+// s'affichent sans style.
+//
+// Ce fichier vous appartient : ajoutez-y vos propres couches (layout, pages,
+// vendors…). Seul `ui-kit/` est verrouillé — voir le README du kit.
+//
+// NON inclus : les déclarations `@font-face`. Les tokens ne font que *nommer*
+// les familles (`--fontfamily-base`) ; déclarez vos propres fichiers de police
+// et surchargez `--fontfamily-*` pour les pointer.
+// -----------------------------------------------------------------------------
+
+// 🔒 Tokens générés — régénérés par `npm run tokens:build`, jamais édités à la main.
+@use "ui-kit/generated/tokens";
+
+// ✏️ Couche de base : reset html/body, typographie, presets de motion.
+// Copiée une fois, à ajuster librement.
+@use "base/base";
+@use "base/typography";
+@use "base/motion";
+
+// 🔒 Classes utilitaires globales (.text-center, .no-margin…).
+@use "ui-kit/utils/helpers";
+
+// -----------------------------------------------------------------------------
+// VOS COUCHES
+// -----------------------------------------------------------------------------
+
+// @use "layout/content";
+// @use "pages/home";

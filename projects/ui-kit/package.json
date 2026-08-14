@@ -27,6 +27,10 @@
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
+  "schematics": "./collection.json",
+  "ng-add": {
+    "save": "devDependencies"
+  },
   "peerDependencies": {
     "@angular/cdk": "^22.0.0",
     "@angular/common": "^22.0.0",

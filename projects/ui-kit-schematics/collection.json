@@ -1,0 +1,20 @@
+{
+  "$schema": "../../node_modules/@angular-devkit/schematics/collection-schema.json",
+  "schematics": {
+    "ng-add": {
+      "description": "Installe les dépendances runtime du kit et copie la fondation de styles + la chaîne de génération des tokens.",
+      "factory": "./src/ng-add/index#ngAdd",
+      "schema": "./src/ng-add/schema.json"
+    },
+    "add": {
+      "description": "Copie un ou plusieurs composants ui-* (et leurs dépendances) dans le projet consommateur.",
+      "factory": "./src/add/index#add",
+      "schema": "./src/add/schema.json"
+    },
+    "update": {
+      "description": "Compare les composants déjà copiés à la version installée du kit et propose de les mettre à jour.",
+      "factory": "./src/update/index#update",
+      "schema": "./src/update/schema.json"
+    }
+  }
+}

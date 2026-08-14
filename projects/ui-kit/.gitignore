@@ -1,0 +1,3 @@
+# Schémas de la façade de schematics : copiés depuis projects/ui-kit-schematics/
+# par `npm run schematics:assets` (source de vérité unique). Jamais commités.
+/schematics/schema-*.json

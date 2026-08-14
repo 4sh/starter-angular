@@ -5,6 +5,35 @@ Versionnage : voir [`VERSIONING.md`](./VERSIONING.md).
 
 ---
 
+## Deux packages, publiés ensemble
+
+| Package | Contenu | Source |
+|---|---|---|
+| `@4sh/ui-kit` | les composants **compilés** (`.mjs` + `.d.ts`) | `projects/ui-kit` |
+| `@4sh/ui-kit-schematics` | les **sources brutes** que le starter recopie chez le consommateur, et les schematics qui les copient | `projects/ui-kit-schematics` |
+
+Le second existe parce que `ng-packagr` *inline* template et SCSS dans le `.mjs`
+publié : les sources que `ng generate @4sh/ui-kit:add` doit copier n'existent
+nulle part dans le tarball du kit (FSHSP-109).
+
+**Les deux portent toujours le même numéro de version, et se publient dans le
+même job.** Le `ng-add` de `@4sh/ui-kit` réclame le compagnon en
+`^<version du kit>` ([`projects/ui-kit/schematics/index.cjs`](../projects/ui-kit/schematics/index.cjs)) :
+publier l'un sans l'autre casse `ng add` chez le consommateur. La version du
+compagnon est d'ailleurs **estampillée depuis celle du kit** au moment de
+l'assemblage (`scripts/schematics-package.build.mjs`) — il n'y a pas de numéro à
+tenir à jour à deux endroits, et le job `verify` vérifie la parité avant toute
+publication.
+
+> ⚠️ **Ordre de publication : le compagnon d'abord, le kit ensuite.** npm ne
+> connaît pas la transaction ; si la seconde publication échoue, l'ordre décide
+> de ce qui reste. Un compagnon orphelin est inerte (aucun kit publié ne le
+> référence) ; un kit publié sans son compagnon est cassé pour tout le monde, et
+> irréparable passé 72 h. Le workflow applique cet ordre, avec le raisonnement
+> en commentaire — ne pas l'inverser.
+
+---
+
 ## Authentification : Trusted Publishing (OIDC), aucun token
 
 La publication s'authentifie par **Trusted Publishing** : GitHub Actions présente
@@ -23,6 +52,10 @@ workflow déclarés sur la page du package, et délivre un droit de publication
 | Secret GitHub | **aucun** |
 
 ### Configurer (une seule fois, sur npmjs)
+
+**À faire pour *chacun* des deux packages** — la déclaration est portée par le
+package, pas par l'organisation. Les valeurs sont identiques de part et d'autre
+(même dépôt, même workflow, même environment) ; seule la page change.
 
 Page du package → *Settings* → section **Trusted Publisher** :
 
@@ -43,6 +76,15 @@ Réglage modifiable après coup si le staging devenait utile.
 Le réglage n'est possible qu'une fois le package **déjà présent** sur le
 registre : la `0.1.0` a donc été publiée par token, et c'est ce token que la
 bascule supprime.
+
+> 🔴 **`@4sh/ui-kit-schematics` n'existe pas encore sur le registre.** Il retombe
+> donc exactement dans ce cas : sa *première* publication ne peut pas passer par
+> Trusted Publishing, faute de page de package sur laquelle le déclarer. Il faut
+> la faire **une fois** avec un token (voir « Publier depuis un poste »), puis
+> déclarer aussitôt le Trusted Publisher et **révoquer le token**. Tant que ce
+> n'est pas fait, lancer le workflow en `dry_run: false` publiera le kit et
+> échouera sur le compagnon — d'où l'ordre inverse retenu, qui fait échouer le
+> compagnon *avant* que le kit ne parte.
 
 ### Pourquoi c'est strictement mieux qu'un token
 
@@ -211,6 +253,15 @@ provenance, puisqu'il n'est produit par aucun workflow vérifiable.
 - **On publie `dist/ui-kit/`, pas le dépôt.** Le `package.json` de
   `projects/ui-kit/` est un modèle : `ng-packagr` le recopie dans `dist/` en y
   injectant `exports`, `module` et `typings`.
+- **`ng-packagr` estampille `"type": "module"`** sur le package publié. C'est
+  pourquoi la façade de schematics est en `.cjs`, avec l'extension écrite
+  explicitement dans `collection.json` : la résolution CommonJS sans extension
+  n'essaie que `.js`/`.json`/`.node`, jamais `.cjs`. Un `.js` y serait lu comme
+  de l'ESM et le chargeur de schematics échouerait.
+- **Le numéro de version du compagnon dans `projects/ui-kit-schematics/package.json`
+  n'est pas celui qui est publié** : il est écrasé par celui du kit à
+  l'assemblage. Le modifier n'a aucun effet ; c'est `projects/ui-kit/package.json`
+  qui fait foi pour les deux.
 - **Une version publiée est définitive.** `npm unpublish` n'est possible que dans
   les 72 h et sous conditions, et un couple nom+version ne peut **jamais** être
   réutilisé. En cas d'erreur, on publie un correctif (`0.1.1`), on ne réécrit pas.
@@ -231,3 +282,17 @@ npm install /chemin/vers/4sh-ui-kit-<version>.tgz    # dans le projet consommate
 Contenu et résolution des imports strictement identiques à une vraie
 publication. Pour du développement en parallèle :
 `npm install ../starter-angular/dist/ui-kit`.
+
+Pour éprouver le **starter** (`ng add`, `ng generate …:add`), il faut les deux
+packages, le kit ne sachant que déléguer :
+
+```bash
+npm run schematics:pack     # → 4sh-ui-kit-schematics-<version>.tgz
+npm run ui-kit:pack         # → 4sh-ui-kit-<version>.tgz
+
+# dans le projet consommateur — le compagnon d'abord, sinon `ng add` le
+# réinstallerait depuis le registre où il n'est pas encore publié
+npm install -D /chemin/vers/4sh-ui-kit-schematics-<version>.tgz
+npm install -D /chemin/vers/4sh-ui-kit-<version>.tgz
+ng generate @4sh/ui-kit:add
+```
