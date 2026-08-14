@@ -5,12 +5,12 @@ import * as SeparatorStories from './ui-separator.stories';
 
 # ui-separator
 
-Trait de séparation **visuel et sémantique** entre deux contenus. Composant headless :
-il rend un élément `role="separator"` dont la règle provient des design tokens
-(`--global-border-default` pour le trait, `--stroke-*` pour l'épaisseur).
+**Visual and semantic** dividing line between two pieces of content. Headless component:
+it renders a `role="separator"` element whose rule comes from the design tokens
+(`--global-border-default` for the line, `--stroke-*` for the thickness).
 
-Un `label` optionnel transforme la règle en séparateur **avec libellé** ; `labelAlign`
-place le texte au début, au centre ou à la fin.
+An optional `label` turns the rule into a separator **with a label**; `labelAlign`
+places the text at the start, center or end.
 
 <Canvas of={SeparatorStories.Default} />
 
@@ -18,12 +18,12 @@ place le texte au début, au centre ou à la fin.
 
 <ArgTypes of={SeparatorStories} />
 
-## Style & épaisseur
+## Style & thickness
 
 <Canvas of={SeparatorStories.Dashed} />
 <Canvas of={SeparatorStories.Small} />
 
-## Avec libellé
+## With a label
 
 <Canvas of={SeparatorStories.LabelStart} />
 <Canvas of={SeparatorStories.LabelCenter} />
@@ -31,54 +31,54 @@ place le texte au début, au centre ou à la fin.
 
 ## Vertical
 
-Le séparateur vertical prend la hauteur de son parent (`align-self: stretch`) : le placer
-dans un conteneur flex qui lui donne une hauteur.
+The vertical separator takes its parent's height (`align-self: stretch`): place it
+in a flex container that gives it a height.
 
 <Canvas of={SeparatorStories.Vertical} />
 <Canvas of={SeparatorStories.VerticalDashed} />
 
-## Accessibilité
+## Accessibility
 
 <table className="doc-table">
   <thead>
     <tr>
       <th>Point</th>
-      <th>Implémentation</th>
+      <th>Implementation</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><strong>Rôle</strong></td>
-      <td><code>role="separator"</code> + <code>aria-orientation</code> (horizontal / vertical) : annoncé comme une rupture thématique, non focusable.</td>
+      <td><strong>Role</strong></td>
+      <td><code>role="separator"</code> + <code>aria-orientation</code> (horizontal / vertical): announced as a thematic break, not focusable.</td>
     </tr>
     <tr>
-      <td><strong>Libellé</strong></td>
-      <td>La règle <code>separator</code> n'expose pas son texte comme nom : le libellé est reporté sur <code>aria-label</code> (surchargé par <code>ariaLabel</code>). Les traits sont décoratifs (<code>aria-hidden</code>).</td>
+      <td><strong>Label</strong></td>
+      <td>The <code>separator</code> rule doesn't expose its text as a name: the label is reported via <code>aria-label</code> (overridden by <code>ariaLabel</code>). The lines are decorative (<code>aria-hidden</code>).</td>
     </tr>
     <tr>
-      <td><strong>Décoratif</strong></td>
-      <td>Sans libellé, le séparateur reste une rupture sémantique. S'il n'est que décoratif dans un contexte déjà structuré, préférer un <code>aria-hidden</code> côté parent.</td>
+      <td><strong>Decorative</strong></td>
+      <td>With no label, the separator remains a semantic break. If it is purely decorative in an already-structured context, prefer an <code>aria-hidden</code> on the parent.</td>
     </tr>
   </tbody>
 </table>
 
 ```html
-<!-- Règle simple pleine largeur -->
+<!-- Simple full-width rule -->
 <ui-separator />
 
-<!-- Séparateur « OU » centré -->
-<ui-separator label="OU" labelAlign="center" />
+<!-- Centered "OR" separator -->
+<ui-separator label="OR" labelAlign="center" />
 
-<!-- Vertical entre deux actions d'une barre -->
+<!-- Vertical between two actions in a toolbar -->
 <div style="display:flex; align-items:stretch; height:24px">
-  <button>Éditer</button>
+  <button>Edit</button>
   <ui-separator orientation="vertical" />
-  <button>Supprimer</button>
+  <button>Delete</button>
 </div>
 ```
 
 ## Theming
 
-Aucune variable locale surchargeable par instance : le trait vient de `--global-border-default`,
-son épaisseur de `--stroke-default`/`--stroke-sm` (`size="small"`), le libellé des tokens
-typographiques `global.*`. Voir le [fonctionnement de la configuration](?path=/docs/components-configuration--docs).
+No local variable overridable per instance: the line comes from `--global-border-default`,
+its thickness from `--stroke-default`/`--stroke-sm` (`size="small"`), the label from the
+`global.*` typography tokens. See how the [configuration works](?path=/docs/components-configuration--docs).

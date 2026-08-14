@@ -6,11 +6,11 @@ import { ConfigTable } from '../../../../storybook/blocks/config-table';
 
 # ui-spinner
 
-Indicateur de chargement **indéterminé** headless. Rend par défaut un cercle SVG
-lissé, coloré par les tokens (`--global-text-default`, surchargeable via
-`--ui-spinner-color`). Le marqueur animé est **entièrement remplaçable** : image,
-icône FontAwesome, ou template libre. La motion respecte `prefers-reduced-motion`
-et l'interrupteur global `data-motion="off"`.
+Headless **indeterminate** loading indicator. Renders a smooth SVG circle by
+default, colored by the tokens (`--global-text-default`, overridable via
+`--ui-spinner-color`). The animated marker is **fully replaceable**: image,
+FontAwesome icon, or free template. Motion respects `prefers-reduced-motion`
+and the global `data-motion="off"` switch.
 
 <Canvas of={SpinnerStories.WithLabel} />
 
@@ -18,77 +18,77 @@ et l'interrupteur global `data-motion="off"`.
 
 <ArgTypes of={SpinnerStories} />
 
-## Marqueur remplaçable
+## Replaceable marker
 
-Le marqueur est choisi par **présence d'input**, dans cet ordre de priorité :
+The marker is chosen by **input presence**, in this priority order:
 
-1. `spinnerTemplate`: contenu libre (`TemplateRef`)
-2. `image`: URL d'image (affichée telle quelle : un GIF/SVG animé porte sa propre motion)
-3. `icon`: nom FontAwesome (mis en rotation par le composant)
-4. *défaut*: cercle SVG intégré (`strokeWidth` / `fill` / `animationDuration`)
+1. `spinnerTemplate`: free content (`TemplateRef`)
+2. `image`: image URL (shown as-is: an animated GIF/SVG carries its own motion)
+3. `icon`: FontAwesome name (rotated by the component)
+4. *default*: built-in SVG circle (`strokeWidth` / `fill` / `animationDuration`)
 
 <Canvas of={SpinnerStories.IconMark} />
 <Canvas of={SpinnerStories.CustomTemplate} />
 <Canvas of={SpinnerStories.Tuned} />
 
-## Tailles & disposition
+## Sizes & layout
 
 <Canvas of={SpinnerStories.Small} />
 <Canvas of={SpinnerStories.Horizontal} />
 
-## Éviter le flash
+## Avoiding the flash
 
-Pour une attente très courte, un spinner qui clignote une fraction de seconde
-dégrade l'UX. `delay` (ms) diffère l'apparition : si le contenu arrive avant la
-fin du délai, le spinner n'est jamais monté.
+For a very short wait, a spinner that flashes for a fraction of a second
+degrades the UX. `delay` (ms) defers its appearance: if the content arrives
+before the delay elapses, the spinner is never mounted.
 
 ```html
-<!-- N'apparaît que si le chargement dépasse 300 ms -->
-<ui-spinner [delay]="300" label="Chargement" />
+<!-- Only appears if loading exceeds 300 ms -->
+<ui-spinner [delay]="300" label="Loading" />
 ```
 
-## Accessibilité
+## Accessibility
 
 <table className="doc-table">
   <thead>
     <tr>
       <th>Point</th>
-      <th>Implémentation</th>
+      <th>Implementation</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><strong>Région live</strong></td>
-      <td>La racine est un <code>role="status"</code> <code>aria-live="polite"</code> <code>aria-busy="true"</code> : l'apparition du chargement est annoncée sans voler le focus.</td>
+      <td><strong>Live region</strong></td>
+      <td>The root is a <code>role="status"</code> <code>aria-live="polite"</code> <code>aria-busy="true"</code>: the loading state is announced without stealing focus.</td>
     </tr>
     <tr>
-      <td><strong>Nom accessible</strong></td>
-      <td>Le <code>label</code> visible est lu tel quel ; sinon <code>ariaLabel</code> ; sinon repli sur « Chargement ». Il y a donc toujours un nom.</td>
+      <td><strong>Accessible name</strong></td>
+      <td>The visible <code>label</code> is read as-is; otherwise <code>ariaLabel</code>; otherwise falls back to "Loading". There is always a name.</td>
     </tr>
     <tr>
-      <td><strong>Marqueur décoratif</strong></td>
-      <td>Le SVG / l'icône / l'image portent <code>aria-hidden</code> : le sens vient du texte, jamais de la seule animation.</td>
+      <td><strong>Decorative marker</strong></td>
+      <td>The SVG / icon / image carry <code>aria-hidden</code>: meaning comes from the text, never from the animation alone.</td>
     </tr>
     <tr>
-      <td><strong>Motion réduite</strong></td>
-      <td><code>prefers-reduced-motion: reduce</code> et <code>data-motion="off"</code> figent la rotation et affichent un anneau plein atténué (le texte reste le vecteur d'information).</td>
+      <td><strong>Reduced motion</strong></td>
+      <td><code>prefers-reduced-motion: reduce</code> and <code>data-motion="off"</code> freeze the rotation and show a dimmed full ring (the text remains the information carrier).</td>
     </tr>
   </tbody>
 </table>
 
 ```html
-<!-- Zone en cours de chargement -->
+<!-- Loading area -->
 <div [attr.aria-busy]="loading">
   @if (loading) {
-    <ui-spinner label="Chargement des résultats" />
+    <ui-spinner label="Loading results" />
   } @else {
-    <!-- contenu -->
+    <!-- content -->
   }
 </div>
 ```
 
 ## Theming
 
-Toutes les valeurs proviennent des design tokens. Points de réglage exposés (par instance, via custom properties CSS) :
+All values come from the design tokens. Exposed adjustment points (per instance, via CSS custom properties):
 
 <ConfigTable of="ui-spinner" />

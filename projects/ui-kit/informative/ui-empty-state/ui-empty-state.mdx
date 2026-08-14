@@ -6,8 +6,8 @@ import { ConfigTable } from '../../../../storybook/blocks/config-table';
 
 # ui-empty-state
 
-Communique l'**absence de contenu** (liste vide, aucun résultat de recherche, boîte
-à jour…) et propose une issue.
+Communicates the **absence of content** (empty list, no search results, an
+up-to-date inbox…) and offers a way out.
 
 <Canvas of={EmptyStateStories.Default} />
 
@@ -15,33 +15,33 @@ Communique l'**absence de contenu** (liste vide, aucun résultat de recherche, b
 
 <ArgTypes of={EmptyStateStories} />
 
-Le **visuel** et les **actions** se projettent via des directives marqueurs :
+The **visual** and the **actions** are projected via marker directives:
 
 ```html
-<ui-empty-state title="Boîte vide" description="Vous êtes à jour.">
-  <!-- Visuel : illustration / image / SVG (remplace le raccourci `icon`) -->
+<ui-empty-state title="Empty inbox" description="You're all caught up.">
+  <!-- Visual: illustration / image / SVG (replaces the `icon` shorthand) -->
   <img uiEmptyStateMedia src="/illustrations/empty.svg" alt="" />
   <!-- Actions -->
   <div uiEmptyStateActions>
-    <ui-button label="Nouveau message" level="high" icon="pen" />
+    <ui-button label="New message" level="high" icon="pen" />
   </div>
 </ui-empty-state>
 ```
 
-Un **corps libre** (contenu par défaut) peut aussi être projeté entre la description
-et les actions pour des cas riches (mini-formulaire, liste de suggestions…).
+A **free body** (default content) can also be projected between the description
+and the actions for rich cases (mini form, list of suggestions…).
 
-## Visuel : icône ou illustration
+## Visual: icon or illustration
 
-Deux voies, exclusives (une illustration projetée l'emporte sur le raccourci `icon`) :
+Two paths, mutually exclusive (a projected illustration wins over the `icon` shorthand):
 
-- **Raccourci `icon`** : un nom FontAwesome, rendu en grand via `ui-icon` (décoratif).
-- **Slot `uiEmptyStateMedia`** : une illustration, image ou SVG sur mesure.
+- **`icon` shorthand**: a FontAwesome name, rendered large via `ui-icon` (decorative).
+- **`uiEmptyStateMedia` slot**: a custom illustration, image or SVG.
 
 <Canvas of={EmptyStateStories.WithIllustration} />
 
-La zone visuelle est **affichée par défaut** ; `showMedia = false` la masque sans
-retirer le visuel du markup (état vide texte seul).
+The visual area is **shown by default**; `showMedia = false` hides it without
+removing the visual from the markup (text-only empty state).
 
 <Canvas of={EmptyStateStories.TextOnly} />
 
@@ -50,39 +50,39 @@ retirer le visuel du markup (état vide texte seul).
 <Canvas of={EmptyStateStories.WithoutAction} />
 <Canvas of={EmptyStateStories.MultipleActions} />
 
-## Tailles
+## Sizes
 
 <Canvas of={EmptyStateStories.Small} />
 
-## Accessibilité
+## Accessibility
 
 <table className="doc-table">
   <thead>
     <tr>
       <th>Point</th>
-      <th>Implémentation</th>
+      <th>Implementation</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><strong>Visuel décoratif</strong></td>
-      <td>L'icône raccourci est décorative (<code>aria-hidden</code> via <code>ui-icon</code>) : le sens vient du titre et de la description, jamais du seul visuel. Une illustration projetée porte son propre <code>alt</code>/<code>aria-label</code> (ou <code>alt=""</code> si purement décorative).</td>
+      <td><strong>Decorative visual</strong></td>
+      <td>The shorthand icon is decorative (<code>aria-hidden</code> via <code>ui-icon</code>): meaning comes from the title and description, never from the visual alone. A projected illustration carries its own <code>alt</code>/<code>aria-label</code> (or <code>alt=""</code> if purely decorative).</td>
     </tr>
     <tr>
-      <td><strong>Région (landmark)</strong></td>
-      <td>Renseigner <code>ariaLabel</code> (ou <code>ariaLabelledBy</code>) ajoute <code>role="region"</code> pour exposer l'état vide comme repère navigable. Sans nom, aucun rôle n'est imposé (évite un landmark anonyme).</td>
+      <td><strong>Region (landmark)</strong></td>
+      <td>Setting <code>ariaLabel</code> (or <code>ariaLabelledBy</code>) adds <code>role="region"</code> to expose the empty state as a navigable landmark. With no name, no role is imposed (avoids an anonymous landmark).</td>
     </tr>
     <tr>
-      <td><strong>Titre</strong></td>
-      <td>Rendu en paragraphe stylé (pas de niveau de titre imposé) pour ne pas perturber le plan du document ; reliez-le à votre propre <code>&lt;h*&gt;</code> via <code>ariaLabelledBy</code> si l'état vide constitue une section.</td>
+      <td><strong>Title</strong></td>
+      <td>Rendered as a styled paragraph (no imposed heading level) so it doesn't disturb the document outline; link it to your own <code>&lt;h*&gt;</code> via <code>ariaLabelledBy</code> if the empty state forms a section.</td>
     </tr>
     <tr>
-      <td><strong>Apparition dynamique</strong></td>
-      <td>Si l'état vide remplace un contenu en cours de chargement, l'annoncer via une région live côté conteneur (ex. <code>aria-live="polite"</code>) plutôt que de voler le focus.</td>
+      <td><strong>Dynamic appearance</strong></td>
+      <td>If the empty state replaces content that was loading, announce it via a live region on the container (e.g. <code>aria-live="polite"</code>) rather than stealing focus.</td>
     </tr>
     <tr>
       <td><strong>Actions</strong></td>
-      <td>Les actions sont de vrais <code>ui-button</code> / liens natifs (focus clavier, nom accessible). La couleur n'est jamais le seul vecteur de sens.</td>
+      <td>Actions are real <code>ui-button</code>s / native links (keyboard focus, accessible name). Color is never the sole carrier of meaning.</td>
     </tr>
   </tbody>
 </table>
@@ -91,10 +91,10 @@ retirer le visuel du markup (état vide texte seul).
 
 ## Theming
 
-Toutes les valeurs proviennent des design tokens. Points de réglage exposés par
-instance (custom properties CSS) :
+All values come from the design tokens. Adjustment points exposed per
+instance (CSS custom properties):
 
 <ConfigTable of="ui-empty-state" />
 
-Les constantes structurelles (gap, largeur de texte max, densités) sont locales au
-composant : voir l'en-tête de `ui-empty-state.scss`.
+Structural constants (gap, max text width, densities) are local to the
+component: see the header of `ui-empty-state.scss`.

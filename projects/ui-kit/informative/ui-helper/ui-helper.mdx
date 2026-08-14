@@ -12,9 +12,9 @@ import { ConfigTable } from '../../../../storybook/blocks/config-table';
 
 <ArgTypes of={HelperStories} />
 
-## Niveaux
+## Levels
 
-Chaque niveau associe une couleur sémantique et une icône FontAwesome par défaut (surchargeable
+Each level pairs a semantic color with a default FontAwesome icon (overridable
 via `icon`).
 
 <Canvas of={HelperStories.Highlight} />
@@ -22,33 +22,33 @@ via `icon`).
 <Canvas of={HelperStories.Warning} />
 <Canvas of={HelperStories.Error} />
 
-## Taille & icône
+## Size & icon
 
 <Canvas of={HelperStories.Small} />
 <Canvas of={HelperStories.NoIcon} />
 <Canvas of={HelperStories.CustomIcon} />
 
-## Accessibilité
+## Accessibility
 
 <table className="doc-table">
   <thead>
     <tr>
       <th>Point</th>
-      <th>Implémentation</th>
+      <th>Implementation</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td><strong>Message</strong></td>
-      <td>Le texte porte l'information ; l'icône est <strong>décorative</strong> (<code>aria-hidden</code> via <code>ui-icon</code>). La couleur n'est jamais le seul vecteur de sens (texte + icône).</td>
+      <td>The text carries the information; the icon is <strong>decorative</strong> (<code>aria-hidden</code> via <code>ui-icon</code>). Color is never the sole carrier of meaning (text + icon).</td>
     </tr>
     <tr>
-      <td><strong>Association au champ</strong></td>
-      <td>Relier au champ de formulaire via <code>aria-describedby</code> pointant sur l'<code>id</code> du helper.</td>
+      <td><strong>Field association</strong></td>
+      <td>Link it to the form field via <code>aria-describedby</code> pointing to the helper's <code>id</code>.</td>
     </tr>
     <tr>
-      <td><strong>Feedback dynamique</strong></td>
-      <td><code>ariaLive="polite"</code> (ou <code>"assertive"</code> pour une erreur bloquante) pour que les changements soient annoncés.</td>
+      <td><strong>Dynamic feedback</strong></td>
+      <td><code>ariaLive="polite"</code> (or <code>"assertive"</code> for a blocking error) so changes are announced.</td>
     </tr>
   </tbody>
 </table>
@@ -56,9 +56,9 @@ via `icon`).
 <Canvas of={HelperStories.LiveError} />
 
 ```html
-<!-- Helper d'erreur relié à un champ -->
+<!-- Error helper tied to a field -->
 <input id="email" aria-describedby="email-help" aria-invalid="true" />
-<ui-helper id="email-help" level="error" ariaLive="assertive" message="Adresse e-mail invalide." />
+<ui-helper id="email-help" level="error" ariaLive="assertive" message="Invalid email address." />
 ```
 
 ## Theming

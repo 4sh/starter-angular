@@ -12,7 +12,7 @@ import { ConfigTable } from '../../../../storybook/blocks/config-table';
 
 <ArgTypes of={BadgeStories} />
 
-## Niveaux & intensité
+## Levels & intensity
 
 <Canvas of={BadgeStories.Highlight} />
 <Canvas of={BadgeStories.Success} />
@@ -20,51 +20,51 @@ import { ConfigTable } from '../../../../storybook/blocks/config-table';
 <Canvas of={BadgeStories.Error} />
 <Canvas of={BadgeStories.SubLevelLow} />
 
-## Tailles
+## Sizes
 
 <Canvas of={BadgeStories.Small} />
 <Canvas of={BadgeStories.Large} />
 
-## Contenu
+## Content
 
 <Canvas of={BadgeStories.LongValue} />
 <Canvas of={BadgeStories.WithIcon} />
 <Canvas of={BadgeStories.IconOnly} />
 <Canvas of={BadgeStories.Dot} />
 
-## Accessibilité
+## Accessibility
 
 <table className="doc-table">
   <thead>
     <tr>
       <th>Point</th>
-      <th>Implémentation</th>
+      <th>Implementation</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><strong>Contenu textuel</strong></td>
-      <td>La <code>value</code> est du texte lu dans le flux. L'icône est décorative (<code>aria-hidden</code> via <code>ui-icon</code>) ; la couleur n'est jamais le seul vecteur de sens.</td>
+      <td><strong>Text content</strong></td>
+      <td>The <code>value</code> is text read in-flow. The icon is decorative (<code>aria-hidden</code> via <code>ui-icon</code>); color is never the sole carrier of meaning.</td>
     </tr>
     <tr>
-      <td><strong>Compteur ambigu</strong></td>
-      <td>Renseigner <code>ariaLabel</code> pour lever l'ambiguïté (ex. « 3 » → « 3 messages non lus »).</td>
+      <td><strong>Ambiguous counter</strong></td>
+      <td>Set <code>ariaLabel</code> to remove ambiguity (e.g. "3" → "3 unread messages").</td>
     </tr>
     <tr>
       <td><strong>Icon-only</strong></td>
-      <td><code>ariaLabel</code> obligatoire (un warning est émis en dev sinon).</td>
+      <td><code>ariaLabel</code> mandatory (a warning fires in dev otherwise).</td>
     </tr>
     <tr>
-      <td><strong>Point</strong></td>
-      <td>Décoratif : le sens vient du contexte parent (ex. bouton « Notifications » qui porte déjà son libellé).</td>
+      <td><strong>Dot</strong></td>
+      <td>Decorative: meaning comes from the parent context (e.g. a "Notifications" button that already carries its label).</td>
     </tr>
   </tbody>
 </table>
 
 ```html
-<!-- Compteur relié à un contexte -->
-<button aria-label="Messages, 3 non lus">
-  Messages <ui-badge level="error" [value]="3" ariaLabel="3 non lus" />
+<!-- Counter tied to a context -->
+<button aria-label="Messages, 3 unread">
+  Messages <ui-badge level="error" [value]="3" ariaLabel="3 unread" />
 </button>
 ```
 
