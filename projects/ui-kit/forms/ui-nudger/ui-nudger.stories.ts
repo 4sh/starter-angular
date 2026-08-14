@@ -68,7 +68,7 @@ const meta: Meta<UiNudger> = {
     required: false,
     invalid: false,
     decrementAriaLabel: 'Decrease',
-    incrementAriaLabel: 'Augmenter',
+    incrementAriaLabel: 'Increase',
     decrementIcon: 'minus',
     incrementIcon: 'plus',
   },

@@ -213,15 +213,15 @@ export const ProjectedContent: Story = {
   }),
 };
 
-// Mode inline (s'insère dans le flux de texte)
+// Inline mode (fits into the text flow)
 export const Inline: Story = {
   render: (args) => ({
     props: args,
     template: `
       <p style="max-width:420px; line-height:1.6;">
-        Dernière connexion&nbsp;:
-        <ui-read-only inline layout="horizontal" label="le" value="24 July 2026" />
-        depuis Paris.
+        Last connection&nbsp;:
+        <ui-read-only inline layout="horizontal" label="on" value="24 July 2026" />
+        from Paris.
       </p>
     `,
   }),

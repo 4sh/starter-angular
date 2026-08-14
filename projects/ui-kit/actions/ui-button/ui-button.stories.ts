@@ -276,7 +276,7 @@ export const ProjectedContent: Story = {
     props: args,
     template: `
       <ui-button [level]="level" [icon]="icon" [iconPos]="iconPos">
-        Contenu <strong>projeté</strong>
+        Projected <strong>content</strong>
       </ui-button>
     `,
   }),

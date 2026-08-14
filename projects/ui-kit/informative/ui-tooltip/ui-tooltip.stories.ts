@@ -50,9 +50,9 @@ const meta: Meta<TooltipArgs> = {
     docs: {
       description: {
         component:
-          'Directive `[uiTooltip]` : infobulle headless (CDK Overlay) attachée à un élément déclencheur. ' +
-          'Placement, retournement dans le viewport et repositionnement au scroll délégués au CDK. ' +
-          'Adaptée aux signals de ce design system.',
+          '`[uiTooltip]` directive: headless tooltip (CDK Overlay) attached to a trigger element. ' +
+          'Placement, viewport flip and repositioning on scroll are delegated to the CDK. ' +
+          'Adapted to this design system\'s signals.',
       },
     },
   },

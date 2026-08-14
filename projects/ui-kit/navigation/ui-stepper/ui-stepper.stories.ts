@@ -113,11 +113,11 @@ export const Vertical: Story = {
       <ui-stepper [(value)]="active" orientation="vertical" [motion]="motion" ariaLabel="Installation">
         <ui-step-item [value]="1">
           <ui-step [value]="1">Prerequisites</ui-step>
-          <ui-step-panel [value]="1">Vérifiez que votre environnement est prêt. ${LOREM}</ui-step-panel>
+          <ui-step-panel [value]="1">Check that your environment is ready. ${LOREM}</ui-step-panel>
         </ui-step-item>
         <ui-step-item [value]="2">
           <ui-step [value]="2">Configuration</ui-step>
-          <ui-step-panel [value]="2">Renseignez les paramètres du projet. ${LOREM}</ui-step-panel>
+          <ui-step-panel [value]="2">Fill in the project settings. ${LOREM}</ui-step-panel>
         </ui-step-item>
         <ui-step-item [value]="3">
           <ui-step [value]="3">Done</ui-step>

@@ -115,8 +115,8 @@ export const Basic: Story = {
         <div style="display: flex; flex-direction: column; gap: 8px; max-width: 16rem;">
           <strong>Code name: Atlas</strong>
           <p style="margin: 0; font-size: .875rem; line-height: 1.4;">
-            Un panneau flottant ancré au déclencheur, refermé au clic extérieur,
-            à la touche Échap, ou via un nouvel appel de <code>toggle</code>.
+            A floating panel anchored to the trigger, closed by a click outside,
+            the Escape key, or another call to <code>toggle</code>.
           </p>
         </div>
       </ui-popover>
@@ -160,8 +160,8 @@ export const Controlled: Story = {
         (hidden)="hidden()"
       >
         <p style="margin: 0; max-width: 15rem; font-size: .875rem; line-height: 1.4;">
-          Le panneau reste ancré à l'élément passé en second argument,
-          quel que soit le bouton qui pilote son état.
+          The panel stays anchored to the element passed as the second argument,
+          whichever button drives its state.
         </p>
       </ui-popover>
     `,
@@ -212,7 +212,7 @@ export const RichContent: Story = {
             </div>
           </div>
           <p style="margin: 0; font-size: .875rem; line-height: 1.4;">
-            Le premier élément focusable reçoit le focus à l'ouverture.
+            The first focusable element receives focus on open.
           </p>
           <div style="display: flex; justify-content: flex-end; gap: 8px;">
             <ui-button size="small" level="low" label="Close" (buttonClick)="op.hide()" />

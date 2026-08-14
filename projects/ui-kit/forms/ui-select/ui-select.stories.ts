@@ -73,7 +73,7 @@ const LANGUAGES: Language[] = [
   { label: '中文', value: 'zh', icon: 'earth-asia' },
 ];
 
-const MANY_ITEMS = Array.from({ length: 10000 }, (_, i) => `Élément ${i + 1}`);
+const MANY_ITEMS = Array.from({ length: 10000 }, (_, i) => `Item ${i + 1}`);
 
 const meta: Meta<UiSelect> = {
   title: 'Components/ui/forms/ui-select',
@@ -226,7 +226,7 @@ const meta: Meta<UiSelect> = {
       control: 'text',
       description:
         'Largeur du panneau. Par défaut il reprend celle du champ ; `auto` le dimensionne sur son contenu (sans jamais passer sous la largeur du champ) ; une taille CSS (ex. `260px`) la fixe.',
-      table: { type: { summary: 'string' }, defaultValue: { summary: 'largeur du champ' } },
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'field width' } },
     },
     label: { control: 'text', description: 'Label du champ (rendu via `ui-label`).', table: { type: { summary: 'string' } } },
     helperText: { control: 'text', description: 'Texte d’aide sous le champ.', table: { type: { summary: 'string' } } },
@@ -667,7 +667,7 @@ export const LazyVirtualScroll: Story = {
         onLazyLoad(this: { items: string[]; loadedCount: number }, range: { first: number; last: number }) {
           for (let i = range.first; i < Math.min(range.last + 10, total); i++) {
             if (this.items[i] === 'Loading…') {
-              this.items[i] = `Élément ${i + 1}`;
+              this.items[i] = `Item ${i + 1}`;
               this.loadedCount++;
             }
           }
@@ -681,7 +681,7 @@ export const LazyVirtualScroll: Story = {
             [(ngModel)]="model" [options]="items"
             [virtualScroll]="true" [virtualScrollItemSize]="40" [lazy]="true"
             (lazyLoad)="onLazyLoad($event)" />
-          <code>lignes chargées : {{ loadedCount }}</code>
+          <code>rows loaded: {{ loadedCount }}</code>
         </div>
       `,
     };

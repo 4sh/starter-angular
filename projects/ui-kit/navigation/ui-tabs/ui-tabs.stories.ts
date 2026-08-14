@@ -83,9 +83,9 @@ export const Basic: Story = {
           <ui-tab [value]="'2'">Settings</ui-tab>
         </ui-tab-list>
         <ui-tab-panels>
-          <ui-tab-panel [value]="'0'">Aperçu , ${LOREM}</ui-tab-panel>
-          <ui-tab-panel [value]="'1'">Activité , ${LOREM}</ui-tab-panel>
-          <ui-tab-panel [value]="'2'">Paramètres , ${LOREM}</ui-tab-panel>
+          <ui-tab-panel [value]="'0'">Preview , ${LOREM}</ui-tab-panel>
+          <ui-tab-panel [value]="'1'">Activity , ${LOREM}</ui-tab-panel>
+          <ui-tab-panel [value]="'2'">Settings , ${LOREM}</ui-tab-panel>
         </ui-tab-panels>
       </ui-tabs>`),
   }),
@@ -188,7 +188,7 @@ export const SelectOnFocus: Story = {
           <ui-tab [value]="'2'">Third</ui-tab>
         </ui-tab-list>
         <ui-tab-panels>
-          <ui-tab-panel [value]="'0'">Donnez le focus à la liste puis utilisez ←/→ : l'onglet s'active automatiquement.</ui-tab-panel>
+          <ui-tab-panel [value]="'0'">Give focus to the list then use ←/→: the tab activates automatically.</ui-tab-panel>
           <ui-tab-panel [value]="'1'">Second panel.</ui-tab-panel>
           <ui-tab-panel [value]="'2'">Third panel.</ui-tab-panel>
         </ui-tab-panels>
@@ -319,9 +319,9 @@ export const TabMenu: Story = {
         </ui-tab-list>
       </ui-tabs>
 
-      <!-- Emplacement d'un <router-outlet /> , simulé ici. -->
+      <!-- Placeholder for a <router-outlet />, simulated here. -->
       <div style="margin-top:16px; padding:16px; border:1px dashed var(--global-border-default); border-radius:8px; font-size:14px">
-        Route active : <strong>/{{ route }}</strong>
+        Active route: <strong>/{{ route }}</strong>
       </div>`),
   }),
 };

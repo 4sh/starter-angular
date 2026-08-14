@@ -152,7 +152,7 @@ export const Error: Story = {
 // les deux. Ouvrir le panneau Actions pour voir `valueChange` émettre une string après sélection.
 export const IsoValueType: Story = {
   render: story('2026-07-08'),
-  args: { valueType: 'iso', label: 'Date (ISO mode)', helperText: 'Valeur : string "yyyy-MM-dd" (au lieu de Date).' },
+  args: { valueType: 'iso', label: 'Date (ISO mode)', helperText: 'Value: "yyyy-MM-dd" string (instead of Date).' },
 };
 
 export const WithTime: Story = {

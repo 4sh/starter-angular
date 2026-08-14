@@ -129,9 +129,9 @@ export const InlineInProse: Story = {
     props: args,
     template: `
       <p style="max-width: 42ch; line-height: 1.6;">
-        Ce composant est fait pour poser un
+        This component is made to drop a
         <ui-link [label]="label" [href]="href" [size]="size" />
-        au fil du texte, exactement comme un lien classique.
+        inline with text, exactly like a regular link.
       </p>
     `,
   }),

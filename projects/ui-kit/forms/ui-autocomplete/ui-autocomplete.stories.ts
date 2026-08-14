@@ -63,7 +63,7 @@ const GROUPED_COUNTRIES: CountryGroup[] = [
   },
 ];
 
-const MANY_ITEMS = Array.from({ length: 10000 }, (_, i) => `Élément ${i + 1}`);
+const MANY_ITEMS = Array.from({ length: 10000 }, (_, i) => `Item ${i + 1}`);
 
 const norm = (text: string): string =>
   text
@@ -724,7 +724,7 @@ export const Objects: Story = {
         style="width: 20rem"
       />
       <p style="margin-top: 1rem; font-size: .85rem; color: var(--form-low-content-default)">
-        Modèle : {{ model | json }}
+        Model: {{ model | json }}
       </p>
     `,
   }),

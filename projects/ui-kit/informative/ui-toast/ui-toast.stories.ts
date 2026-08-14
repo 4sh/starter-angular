@@ -36,7 +36,7 @@ class ToastDemoBasic {
     this.count++;
     this.toast.add({
       title: 'Notification',
-      text: `Ceci est le toast n°${this.count}.`,
+      text: `This is toast #${this.count}.`,
     });
   }
 }
@@ -151,7 +151,7 @@ class ToastDemoPosition {
     this.toast.add({
       level: 'success',
       title: 'Position',
-      text: `Ancré en « ${this.position()} ».`,
+      text: `Anchored at « ${this.position()} ».`,
     });
   }
 }
@@ -291,9 +291,9 @@ const meta: Meta<ToastArgs> = {
     docs: {
       description: {
         component:
-          'Notification transitoire. `UiToast` est la carte présentational (tokens `informative`) ; ' +
-          '`UiToastService` pousse les messages (`add`/`clear`/`remove`) et `ui-toast-container` les affiche, ' +
-          'positionne la pile, anime l’entrée/sortie (système de motion) et gère l’auto-fermeture (pausée au survol).',
+          'Transient notification. `UiToast` is the presentational card (`informative` tokens); ' +
+          '`UiToastService` pushes messages (`add`/`clear`/`remove`) and `ui-toast-container` displays them, ' +
+          'positions the stack, animates the enter/exit (motion system) and manages the auto-dismiss (paused on hover).',
       },
     },
   },

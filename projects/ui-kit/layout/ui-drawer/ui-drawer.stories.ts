@@ -137,8 +137,8 @@ export const Position: Story = {
         <ui-button label="Bas" level="low" (buttonClick)="pos = 'bottom'; visible = true" />
       </div>
 
-      <ui-drawer [(visible)]="visible" [position]="pos" [header]="'Position : ' + pos">
-        <p style="margin: 0;">Le panneau glisse depuis le bord « {{ pos }} ».</p>
+      <ui-drawer [(visible)]="visible" [position]="pos" [header]="'Position: ' + pos">
+        <p style="margin: 0;">The panel slides in from the « {{ pos }} » edge.</p>
       </ui-drawer>
     `,
   }),
@@ -153,7 +153,7 @@ export const FullScreen: Story = {
       <ui-button label="Open fullscreen" (buttonClick)="visible = true" />
       <ui-drawer [(visible)]="visible" [fullScreen]="true" header="Fullscreen">
         <p style="margin: 0;">
-          En mode plein écran, le panneau occupe tout le viewport et apparaît en fondu.
+          In fullscreen mode, the panel takes up the whole viewport and fades in.
         </p>
       </ui-drawer>
     `,
@@ -161,8 +161,8 @@ export const FullScreen: Story = {
 };
 
 // --- Responsive -------------------------------------------------------
-// Largeur responsive : `min(90vw, …)` garde le panneau dans l'écran sur mobile
-// tout en gardant une largeur confortable sur grand écran (via `drawerStyle`).
+// Responsive width: `min(90vw, …)` keeps the panel on screen on mobile
+// while keeping a comfortable width on large screens (via `drawerStyle`).
 export const Responsive: Story = {
   render: (args) => ({
     props: { ...args, visible: false },
@@ -175,8 +175,8 @@ export const Responsive: Story = {
         [drawerStyle]="{ width: 'min(90vw, 28rem)' }"
       >
         <p style="margin: 0;">
-          La largeur s'adapte : plein écran moins une gouttière sur mobile, plafonnée à
-          28rem sur grand écran. Redimensionnez la fenêtre pour observer l'adaptation.
+          The width adapts: fullscreen minus a gutter on mobile, capped at 28rem on
+          large screens. Resize the window to see the adaptation.
         </p>
       </ui-drawer>
     `,
@@ -199,8 +199,8 @@ export const Template: Story = {
         </ng-template>
 
         <p style="margin: 0;">
-          En-tête, contenu et pied sont fournis via des templates projetés
-          (<code>#header</code>, <code>#footer</code>) pour un contenu riche.
+          Header, content and footer are provided via projected templates
+          (<code>#header</code>, <code>#footer</code>) for rich content.
         </p>
 
         <ng-template #footer>
@@ -240,9 +240,9 @@ export const Headless: Story = {
   }),
 };
 
-// --- Contained (embarqué + déjà ouvert) -------------------------------
-// Panneau scopé à un conteneur positionné (`contained`) et ouvert d'emblée :
-// pas de blocage du scroll, pas de capture de focus — pensé pour l'aperçu.
+// --- Contained (embedded + already open) ------------------------------
+// Panel scoped to a positioned container (`contained`) and open by default:
+// no scroll lock, no focus capture — meant for embedding a preview.
 export const Contained: Story = {
   render: (args) => ({
     props: { ...args },

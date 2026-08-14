@@ -804,7 +804,7 @@ export const Templates: Story = {
         </ng-template>
         <ng-template #footer>
           <tr>
-            <td colspan="3">{{ products.length }} produits au total</td>
+            <td colspan="3">{{ products.length }} products total</td>
           </tr>
         </ng-template>
       </ui-table>

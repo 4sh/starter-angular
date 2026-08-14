@@ -98,7 +98,7 @@ type Story = StoryObj<SidebarArgs>;
 
 // --- Shared demo data -------------------------------------------------
 const PLAYGROUND_ITEMS: UiSidebarMenuItem[] = [
-  { label: 'Tableau de bord', icon: 'gauge', active: true },
+  { label: 'Dashboard', icon: 'gauge', active: true },
   { label: 'Projects', icon: 'folder-open' },
   { label: 'Calendar', icon: 'calendar-days' },
   { label: 'Messages', icon: 'envelope', badge: '3', badgeLevel: 'highlight' },
@@ -106,9 +106,9 @@ const PLAYGROUND_ITEMS: UiSidebarMenuItem[] = [
 ];
 
 /**
- * Playground interactif. Combinez `side`, `mode`, `collapsible`, `collapsed`,
- * `openOnHover` et `backdrop`. La barre est embarquée (`contained`) dans une
- * région bornée pour l'aperçu.
+ * Interactive playground. Combine `side`, `mode`, `collapsible`, `collapsed`,
+ * `openOnHover` and `backdrop`. The bar is embedded (`contained`) in a
+ * bounded region for the preview.
  */
 export const Variants: Story = {
   args: {
@@ -154,8 +154,8 @@ export const Variants: Story = {
           </div>
           <h2 style="margin:0 0 var(--units-sm); color:var(--global-text-default);">Content</h2>
           <p style="color:var(--global-text-muted); max-width:52ch; line-height:1.6;">
-            La barre pousse cet espace en mode statique, et flotte par-dessus en mode overlay.
-            Testez le repli, le survol et les fonds via les contrôles Storybook.
+            The bar pushes this space in static mode, and floats above it in overlay mode.
+            Try the collapse, hover and backgrounds via the Storybook controls.
           </p>
         </main>
       </div>
@@ -174,7 +174,7 @@ const WORKSPACE_NAV: UiSidebarMenuItem[] = [
     ],
   },
   {
-    label: 'Gestion',
+    label: 'Management',
     items: [
       { label: 'Team', icon: 'users' },
       { label: 'Billing', icon: 'credit-card' },
@@ -186,9 +186,9 @@ const WORKSPACE_NAV: UiSidebarMenuItem[] = [
 ];
 
 /**
- * Chrome applicatif complet : sélecteur d’espace de travail en en-tête,
- * navigation groupée, carte utilisateur en pied. Repliable en rail d’icônes
- * via le déclencheur.
+ * Full application chrome: workspace selector in the header,
+ * grouped navigation, user card in the footer. Collapsible to an icon rail
+ * via the trigger.
  */
 export const WithMenu: Story = {
   render: () => ({
@@ -234,8 +234,8 @@ export const WithMenu: Story = {
             [label]="collapsed ? 'Expand' : 'Collapse'" />
           <h2 style="margin:var(--units-lg) 0 var(--units-sm); color:var(--global-text-default);">Overview</h2>
           <p style="color:var(--global-text-muted); max-width:52ch; line-height:1.6;">
-            Repliez la barre : les libellés, en-têtes de sections et badges disparaissent,
-            ne laissant que la colonne d’icônes.
+            Collapse the bar: labels, section headers and badges disappear,
+            leaving only the icon column.
           </p>
         </main>
       </div>
@@ -244,10 +244,10 @@ export const WithMenu: Story = {
 };
 
 /**
- * Sous 1024px, la barre devient un offcanvas avec fond ; au-dessus, elle reste
- * en rail d’icônes qui pousse le contenu. La bascule utilise l’échelle de
- * breakpoints du design system. Redimensionnez l’aperçu pour observer le
- * changement.
+ * Under 1024px, the bar becomes an offcanvas with a backdrop; above it, it stays
+ * an icon rail that pushes the content. The switch uses the design system's
+ * breakpoint scale. Resize the preview to see the
+ * change.
  */
 export const Responsive: Story = {
   render: () => ({
@@ -269,8 +269,8 @@ export const Responsive: Story = {
           <ui-button [uiSidebarTrigger]="sb" level="low" size="small" icon="bars" label="Menu" />
           <h2 style="margin:var(--units-lg) 0 var(--units-sm); color:var(--global-text-default);">Adaptive</h2>
           <p style="color:var(--global-text-muted); max-width:52ch; line-height:1.6;">
-            Sur écran large, un rail d’icônes borde le contenu. Sous 1024px, le bouton Menu
-            ouvre un panneau offcanvas par-dessus, avec un fond assombri.
+            On large screens, an icon rail borders the content. Under 1024px, the Menu button
+            opens an offcanvas panel on top, with a dimmed background.
           </p>
         </main>
       </div>
@@ -320,11 +320,11 @@ const SETTINGS_NAV: UiSidebarMenuItem[] = [
 ];
 
 /**
- * Chrome à deux niveaux façon console d'administration : un **rail d'icônes**
- * permanent (replié, libellés en info-bulle) comme navigation primaire, accolé à
- * une **barre de navigation secondaire** listant les sections d'un module — le
- * tout bordant le contenu principal. Deux `ui-sidebar` statiques côte à côte, pas
- * d'offcanvas.
+ * Two-level admin-console-style chrome: a permanent **icon rail**
+ * (collapsed, tooltip labels) as primary navigation, next to a
+ * **secondary navigation bar** listing a module's sections — the
+ * whole thing bordering the main content. Two static `ui-sidebar` side by side, no
+ * offcanvas.
  */
 export const DualSidebar: Story = {
   render: () => ({
@@ -333,7 +333,7 @@ export const DualSidebar: Story = {
       <div style="display:flex; height:640px; overflow:hidden;
                   border:1px solid var(--global-border-subtle); border-radius:var(--radius-md);
                   background:var(--global-background-default);">
-        <!-- Rail d'icônes (navigation primaire) -->
+        <!-- Icon rail (primary navigation) -->
         <ui-sidebar [collapsed]="true" [collapsible]="false" ariaLabel="Main navigation">
           <ng-template #header>
             <span style="display:inline-flex; align-items:center; justify-content:center;
@@ -348,7 +348,7 @@ export const DualSidebar: Story = {
           </ng-template>
         </ui-sidebar>
 
-        <!-- Navigation secondaire (sections du module) -->
+        <!-- Secondary navigation (module sections) -->
         <ui-sidebar [collapsible]="false" ariaLabel="Project settings">
           <ng-template #header>
             <strong style="font-size:var(--size-typography-title-default);">Settings</strong>
@@ -370,9 +370,9 @@ export const DualSidebar: Story = {
 
 // --- Nested Menu ------------------------------------------------------
 const NESTED_NAV: UiSidebarMenuItem[] = [
-  { label: 'Tableau de bord', icon: 'gauge', active: true },
+  { label: 'Dashboard', icon: 'gauge', active: true },
   {
-    label: 'Catalogue',
+    label: 'Catalog',
     icon: 'box-archive',
     toggleable: true,
     items: [
@@ -403,9 +403,9 @@ const NESTED_NAV: UiSidebarMenuItem[] = [
 ];
 
 /**
- * Les entrées deviennent des groupes repliables révélant un sous-arbre imbriqué.
- * L’état actif est suivi : un groupe contenant l’élément actif se déplie
- * automatiquement (ici « Promotions » sous « Collections »).
+ * Entries become collapsible groups revealing a nested subtree.
+ * The active state is tracked: a group containing the active item expands
+ * automatically (here « Promotions » under « Collections »).
  */
 export const NestedMenu: Story = {
   render: () => ({
@@ -425,8 +425,8 @@ export const NestedMenu: Story = {
         <main style="flex:1 1 auto; min-width:0; padding:var(--units-xl); overflow:auto;">
           <h2 style="margin:0 0 var(--units-sm); color:var(--global-text-default);">Deep tree</h2>
           <p style="color:var(--global-text-muted); max-width:52ch; line-height:1.6;">
-            Cliquez sur « Catalogue » ou « Clients » pour déplier / replier les sous-menus.
-            Les sous-arbres s’indentent et s’animent en hauteur.
+            Click « Catalog » or « Customers » to expand / collapse the submenus.
+            Subtrees indent and animate in height.
           </p>
         </main>
       </div>

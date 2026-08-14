@@ -141,7 +141,7 @@ export const Step: Story = {
     props: { model: 20 },
     template: `
       <div style="width:280px; display:grid; gap:12px; justify-items:start;">
-        <ui-slider [(ngModel)]="model" [step]="10" ariaLabel="Valeur (pas de 10)" />
+        <ui-slider [(ngModel)]="model" [step]="10" ariaLabel="Value (step of 10)" />
         <code>model = {{ model }}</code>
       </div>
     `,
@@ -182,15 +182,15 @@ export const Controlled: Story = {
     props: { model: 50 },
     template: `
       <div style="width:280px; display:grid; gap:16px;">
-        <ui-input-number [(ngModel)]="model" [min]="0" [max]="100" ariaLabel="Valeur" />
-        <ui-slider [(ngModel)]="model" [min]="0" [max]="100" ariaLabel="Valeur" />
+        <ui-input-number [(ngModel)]="model" [min]="0" [max]="100" ariaLabel="Value" />
+        <ui-slider [(ngModel)]="model" [min]="0" [max]="100" ariaLabel="Value" />
       </div>
     `,
   }),
   decorators: [moduleMetadata({ imports: [UiInputNumber] })],
 };
 
-// --- Value Change : sliderChange (continu) vs slideEnd (fin) ------------
+// --- Value Change : sliderChange (continuous) vs slideEnd (fin) ------------
 export const ValueChange: Story = {
   name: 'Value Change',
   render: () => ({
@@ -199,9 +199,9 @@ export const ValueChange: Story = {
       <div style="width:280px; display:grid; gap:12px; justify-items:start;">
         <ui-slider [(ngModel)]="model"
                    (sliderChange)="live = $event" (slideEnd)="committed = $event"
-                   ariaLabel="Valeur" />
-        <code>sliderChange (continu) = {{ live }}</code>
-        <code>slideEnd (au relâcher) = {{ committed }}</code>
+                   ariaLabel="Value" />
+        <code>sliderChange (continuous) = {{ live }}</code>
+        <code>slideEnd (on release) = {{ committed }}</code>
       </div>
     `,
   }),
@@ -227,7 +227,7 @@ export const Marks: Story = {
     props: { model: 60 },
     template: `
       <div style="width:280px; display:grid; gap:12px; justify-items:start;">
-        <ui-slider [(ngModel)]="model" [step]="10" [marks]="true" ariaLabel="Valeur" />
+        <ui-slider [(ngModel)]="model" [step]="10" [marks]="true" ariaLabel="Value" />
         <code>model = {{ model }}</code>
       </div>
     `,
@@ -309,7 +309,7 @@ export const ReactiveForms: Story = {
         <ui-slider [formControl]="control" ariaLabel="Level" />
         <code>value = {{ control.value }} · valid = {{ control.valid }}</code>
         <button type="button" (click)="control.disabled ? control.enable() : control.disable()">
-          Activer / désactiver
+          Enable / disable
         </button>
       </div>
     `,

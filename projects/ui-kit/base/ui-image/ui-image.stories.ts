@@ -161,7 +161,7 @@ const meta: Meta<StorybookWrapper> = {
         brandName: 'common',
         priority: false,
         fill: false,
-        width: 200 // Valeur par défaut pour voir quelque chose
+        width: 200 // Default value so something is visible
     }
 };
 

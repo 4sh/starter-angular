@@ -147,7 +147,7 @@ export const RichHeader: Story = {
         </ui-accordion-panel>
         <ui-accordion-panel value="1">
           <span uiAccordionHeader style="display:inline-flex; align-items:center; gap:8px">
-            Sécurité <ui-tag label="Action required" level="warning" size="small" />
+            Security <ui-tag label="Action required" level="warning" size="small" />
           </span>
           ${LOREM}
         </ui-accordion-panel>

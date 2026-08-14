@@ -226,8 +226,8 @@ export const PhoneNumber: Story = {
     template: stack(
       `
       <ui-input-group [size]="size">
-        <!-- Zone d'indicatif compacte : panelWidth="auto" décorrèle la largeur de
-             la liste de celle du champ, sinon les pays seraient tronqués. -->
+        <!-- Compact dial-code zone: panelWidth="auto" decouples the list's width
+             from the field's, otherwise countries would be truncated. -->
         <ui-select
           style="max-width:120px"
           panelWidth="auto"

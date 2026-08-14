@@ -129,7 +129,7 @@ export const IntegerOnly: Story = {
   render: () => ({
     props: { code: '' },
     template: `
-      <ui-input-otp [(ngModel)]="code" [integerOnly]="true" [length]="6" ariaLabel="Code numérique" />
+      <ui-input-otp [(ngModel)]="code" [integerOnly]="true" [length]="6" ariaLabel="Numeric code" />
     `,
   }),
 };
@@ -175,7 +175,7 @@ export const Invalid: Story = {
         <ui-input-otp [formControl]="control" [integerOnly]="true" [length]="6" ariaLabel="Verification code" />
         @if (control.invalid && control.touched) {
           <p style="margin: 0; font-size: .85rem; color: var(--form-error-content-default)">
-            Saisissez les 6 chiffres du code.
+            Enter the 6 digits of the code.
           </p>
         }
       </div>

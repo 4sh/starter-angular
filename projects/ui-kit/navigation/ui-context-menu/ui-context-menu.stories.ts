@@ -161,7 +161,7 @@ export const Global: Story = {
     props: { ...args, items: BASIC_ITEMS },
     template: `
       <p style="font-family:var(--fontfamily-base)">
-        Le menu est attaché au <strong>document</strong> : clic droit n'importe où dans la zone de prévisualisation.
+        The menu is attached to the <strong>document</strong>: right click anywhere in the preview area.
       </p>
       <ui-context-menu global [items]="items" [level]="level" [size]="size" [submenus]="submenus" [motion]="motion"
         ariaLabel="Global actions" />
@@ -216,7 +216,7 @@ export const Command: Story = {
         <ui-context-menu [target]="zone" [items]="items" [level]="level" [size]="size" [submenus]="submenus" [motion]="motion"
           ariaLabel="Message actions" />
         <p aria-live="polite" style="font-family:var(--fontfamily-base)">
-          Dernière commande : <strong>{{ lastAction() }}</strong>
+          Last command: <strong>{{ lastAction() }}</strong>
         </p>
       `,
     };

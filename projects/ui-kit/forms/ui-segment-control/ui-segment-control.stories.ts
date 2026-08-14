@@ -335,7 +335,7 @@ export const ReactiveForms: Story = {
         <ui-segment-control [formControl]="control" [options]="opts" ariaLabel="Display mode" />
         <code>value = {{ control.value }} · valid = {{ control.valid }}</code>
         <button type="button" (click)="control.disabled ? control.enable() : control.disable()">
-          Activer / désactiver
+          Enable / disable
         </button>
       </div>
     `,

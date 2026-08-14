@@ -170,8 +170,8 @@ export const Template: Story = {
         </ng-template>
 
         <p style="margin: 0;">
-          En-tête et pied sont fournis via des templates projetés (<code>#header</code>,
-          <code>#footer</code>), pour un contenu riche.
+          Header and footer are provided via projected templates (<code>#header</code>,
+          <code>#footer</code>), for rich content.
         </p>
 
         <ng-template #footer>
@@ -196,8 +196,8 @@ export const Draggable: Story = {
         [dialogStyle]="{ width: '30rem' }"
       >
         <p style="margin: 0;">
-          Saisissez l'en-tête et faites glisser pour déplacer le dialogue. Il reste
-          maintenu dans les limites du viewport.
+          Grab the header and drag to move the dialog. It stays
+          within the viewport's bounds.
         </p>
         <ng-template #footer>
           <ui-button label="Close" level="low" (buttonClick)="visible = false" />
@@ -247,8 +247,8 @@ export const Maximizable: Story = {
         [dialogStyle]="{ width: '32rem' }"
       >
         <p style="margin: 0;">
-          Utilisez le bouton d'agrandissement de l'en-tête pour occuper tout le
-          viewport, puis restaurer la taille initiale.
+          Use the header's maximize button to take up the whole
+          viewport, then restore the initial size.
         </p>
         <ng-template #footer>
           <ui-button label="Close" level="low" (buttonClick)="visible = false" />
@@ -272,8 +272,8 @@ export const Resizable: Story = {
         [dialogStyle]="{ width: '32rem', height: '18rem' }"
       >
         <p style="margin: 0;">
-          Saisissez la poignée du coin bas-droit pour redimensionner le dialogue
-          (tailles minimales respectées). L'en-tête permet aussi de le déplacer.
+          Grab the bottom-right corner handle to resize the dialog
+          (minimum sizes respected). The header can also move it.
         </p>
         <ng-template #footer>
           <ui-button label="Close" level="low" (buttonClick)="visible = false" />
@@ -297,8 +297,8 @@ export const Modal: Story = {
         [dialogStyle]="{ width: '30rem' }"
       >
         <p style="margin: 0;">
-          Le masque assombrit et bloque l'arrière-plan (scroll figé). Avec
-          <code>dismissableMask</code>, un clic à l'extérieur ferme le dialogue.
+          The mask dims and blocks the background (scroll locked). With
+          <code>dismissableMask</code>, a click outside closes the dialog.
         </p>
         <ng-template #footer>
           <ui-button label="Close" level="low" (buttonClick)="visible = false" />
@@ -316,15 +316,15 @@ export const WithoutModal: Story = {
       <ui-button label="Show the dialog" (buttonClick)="visible = true" />
       <ui-modal
         [(visible)]="visible"
-        header="Sans masque"
+        header="Without mask"
         [modal]="false"
         [draggable]="true"
         position="topright"
         [dialogStyle]="{ width: '26rem' }"
       >
         <p style="margin: 0;">
-          Sans masque, l'arrière-plan reste interactif et scrollable. Idéal pour un
-          panneau non bloquant (déplaçable ici).
+          Without a mask, the background stays interactive and scrollable. Ideal for a
+          non-blocking panel (draggable here).
         </p>
         <ng-template #footer>
           <ui-button label="Close" level="low" (buttonClick)="visible = false" />
@@ -349,7 +349,7 @@ export const Confirmation: Story = {
         <div style="display: flex; gap: 12px; align-items: flex-start;">
           <ui-icon name="triangle-exclamation" size="lg" />
           <p style="margin: 0;">
-            Cette action est irréversible. Voulez-vous vraiment supprimer cet élément ?
+            This action is irreversible. Do you really want to remove this item?
           </p>
         </div>
         <ng-template #footer>
@@ -405,9 +405,9 @@ export const Responsive: Story = {
         [dialogStyle]="{ width: '50vw' }"
       >
         <p style="margin: 0;">
-          Largeur fluide par palier via <code>breakpoints</code> : 50vw par défaut,
-          75vw sous 960px, 90vw sous 640px. Redimensionnez la fenêtre pour observer
-          l'adaptation.
+          Fluid width by tier via <code>breakpoints</code>: 50vw by default,
+          75vw under 960px, 90vw under 640px. Resize the window to see
+          the adaptation.
         </p>
         <ng-template #footer>
           <ui-button label="Close" level="low" (buttonClick)="visible = false" />
