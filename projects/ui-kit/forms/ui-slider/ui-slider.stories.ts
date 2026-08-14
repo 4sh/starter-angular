@@ -23,43 +23,43 @@ const meta: Meta<UiSlider> = {
   argTypes: {
     min: {
       control: 'number',
-      description: 'Valeur minimale.',
+      description: 'Minimum value.',
       table: { type: { summary: 'number' }, defaultValue: { summary: '0' } },
     },
     max: {
       control: 'number',
-      description: 'Valeur maximale.',
+      description: 'Maximum value.',
       table: { type: { summary: 'number' }, defaultValue: { summary: '100' } },
     },
     step: {
       control: 'number',
-      description: 'Granularité d’incrément (drag + clavier).',
+      description: 'Increment granularity (drag + keyboard).',
       table: { type: { summary: 'number' }, defaultValue: { summary: '1' } },
     },
     range: {
       control: 'boolean',
-      description: 'Deux poignées définissant un intervalle (le modèle devient un tableau).',
+      description: 'Two handles defining a range (the model becomes an array).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     minStepsBetweenHandles: {
       control: 'number',
-      description: 'Nombre minimal de pas conservés entre les deux poignées (mode range).',
+      description: 'Minimum number of steps kept between the two handles (range mode).',
       table: { type: { summary: 'number' }, defaultValue: { summary: '0' } },
     },
     marks: {
       control: 'boolean',
-      description: 'Affiche un repère par pas le long de la piste.',
+      description: 'Shows a tick per step along the track.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     orientation: {
       control: 'inline-radio',
       options: ['horizontal', 'vertical'],
-      description: 'Orientation du curseur (pilote aussi les flèches clavier).',
+      description: 'Slider orientation (also drives the arrow keys).',
       table: { type: { summary: 'SliderOrientation' }, defaultValue: { summary: "'horizontal'" } },
     },
     disabled: {
       control: 'boolean',
-      description: 'Désactive le contrôle.',
+      description: 'Disables the control.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     readonly: {
@@ -69,32 +69,32 @@ const meta: Meta<UiSlider> = {
     },
     required: {
       control: 'boolean',
-      description: 'Marque le champ comme requis (validation native).',
+      description: 'Marks the field as required (native validation).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     invalid: {
       control: 'boolean',
-      description: 'Force le style erreur (automatique quand le contrôle attaché est invalide et touched/dirty).',
+      description: 'Forces the error style (automatic when the attached control is invalid and touched/dirty).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     ariaLabel: {
       control: 'text',
-      description: 'Nom accessible appliqué aux poignées.',
+      description: 'Accessible name applied to the handles.',
       table: { type: { summary: 'string' } },
     },
     ariaLabelledBy: {
       control: false,
-      description: 'id d’un élément externe qui labellise les poignées.',
+      description: 'id of an external element that labels the handles.',
       table: { type: { summary: 'string' } },
     },
     sliderChange: {
       action: 'sliderChange',
-      description: 'Émis en continu pendant le déplacement (drag, clavier, clic piste).',
+      description: 'Emitted continuously while moving (drag, keyboard, track click).',
       table: { category: 'Events', type: { summary: 'number | number[]' } },
     },
     slideEnd: {
       action: 'slideEnd',
-      description: 'Émis une fois le glissement terminé.',
+      description: 'Emitted once the drag ends.',
       table: { category: 'Events', type: { summary: 'number | number[]' } },
     },
   },
