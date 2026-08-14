@@ -6,15 +6,15 @@ import { ConfigTable } from '../../../../storybook/blocks/config-table';
 
 # ui-link
 
-Lien **textuel inline** : un vrai `<a>`, destiné au fil du texte (paragraphes) et à la
-navigation. Stylé avec la famille sobre `actions.low.content.*` (tokens light **et** dark).
+**Inline text** link: a real `<a>`, meant for the flow of text (paragraphs) and
+navigation. Styled with the subdued `actions.low.content.*` family (light **and** dark tokens).
 
-> **Choisir par la sémantique, pas par l'apparence.**
-> - Ce qui **navigue** (URL / route) → `ui-link`, ou `ui-button` avec `href`/`routerLink`
->   quand il faut l'apparence d'un bouton.
-> - Ce qui **déclenche une action** (submit, ouvrir un modal…) → `ui-button`.
+> **Choose by semantics, not by appearance.**
+> - What **navigates** (URL / route) → `ui-link`, or `ui-button` with `href`/`routerLink`
+>   when the appearance of a button is needed.
+> - What **triggers an action** (submit, open a modal…) → `ui-button`.
 
-Accepte une destination externe (`href`) **ou** interne (`routerLink`, directive Angular).
+Accepts an external destination (`href`) **or** an internal one (`routerLink`, Angular directive).
 
 <Canvas of={LinkStories.Default} />
 
@@ -22,114 +22,114 @@ Accepte une destination externe (`href`) **ou** interne (`routerLink`, directive
 
 <ArgTypes of={LinkStories} />
 
-## Anatomie
+## Anatomy
 
 <table className="doc-table">
   <thead>
     <tr>
-      <th>Élément</th>
+      <th>Element</th>
       <th>Description</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td><strong>Structure</strong></td>
-      <td>racine <code>&lt;a&gt;</code> + <code>ui-icon</code> optionnelle à gauche/droite + label / contenu projeté.</td>
+      <td>root <code>&lt;a&gt;</code> + optional <code>ui-icon</code> on the left/right + label / projected content.</td>
     </tr>
     <tr>
       <td><strong>Destination</strong></td>
-      <td><code>href</code> (externe) · <code>routerLink</code> (interne) · <code>target</code> · <code>rel</code> · <code>external</code> (raccourci <code>_blank</code> + rel sûr).</td>
+      <td><code>href</code> (external) · <code>routerLink</code> (internal) · <code>target</code> · <code>rel</code> · <code>external</code> (<code>_blank</code> + safe rel shorthand).</td>
     </tr>
     <tr>
       <td><strong>Size</strong></td>
       <td><code>default</code> · <code>small</code></td>
     </tr>
     <tr>
-      <td><strong>Icône</strong></td>
-      <td><code>iconLeft</code> / <code>iconRight</code> (noms FontAwesome). Sans <code>label</code> ⇒ mode <em>icon-only</em>.</td>
+      <td><strong>Icon</strong></td>
+      <td><code>iconLeft</code> / <code>iconRight</code> (FontAwesome names). No <code>label</code> ⇒ <em>icon-only</em> mode.</td>
     </tr>
   </tbody>
 </table>
 
-## Tailles
+## Sizes
 
 <Canvas of={LinkStories.Small} />
 
-## Icônes
+## Icons
 
-L'icône est positionnée via `iconLeft` / `iconRight` (présence du nom = icône affichée,
-idiome Angular équivalent aux booléens `Icon Left`/`Icon Right` de Figma).
+The icon is positioned via `iconLeft` / `iconRight` (the name's presence = icon shown,
+the Angular idiom equivalent to Figma's `Icon Left`/`Icon Right` booleans).
 
 <Canvas of={LinkStories.IconLeft} />
 <Canvas of={LinkStories.IconRight} />
 <Canvas of={LinkStories.IconOnly} />
 
-## Lien externe
+## External link
 
-`external` force `target="_blank"` et pose un `rel="noopener noreferrer"` sûr.
+`external` forces `target="_blank"` and sets a safe `rel="noopener noreferrer"`.
 
 <Canvas of={LinkStories.External} />
 
-## Navigation interne (RouterLink)
+## Internal navigation (RouterLink)
 
-`routerLink` bascule sur la directive Angular pour la navigation SPA (le comportement
-natif de l'ancre — Cmd/Ctrl+clic, etc. — est préservé).
+`routerLink` switches to the Angular directive for SPA navigation (the anchor's
+native behavior — Cmd/Ctrl+click, etc. — is preserved).
 
 <Canvas of={LinkStories.RouterInternal} />
 
 ```html
-<ui-link label="Mon profil" [routerLink]="['/profil']" iconRight="chevron-right" />
+<ui-link label="My profile" [routerLink]="['/profile']" iconRight="chevron-right" />
 ```
 
-## Dans un paragraphe
+## In a paragraph
 
 <Canvas of={LinkStories.InlineInProse} />
 
-## États
+## States
 
 <Canvas of={LinkStories.Disabled} />
 
-## Accessibilité
+## Accessibility
 
 <table className="doc-table">
   <thead>
     <tr>
-      <th>Règle</th>
-      <th>Détail</th>
+      <th>Rule</th>
+      <th>Detail</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><strong>Sémantique</strong></td>
-      <td><code>&lt;a&gt;</code> natif. Un lien navigue ; pour une action, utiliser <code>ui-button</code>.</td>
+      <td><strong>Semantics</strong></td>
+      <td>Native <code>&lt;a&gt;</code>. A link navigates; for an action, use <code>ui-button</code>.</td>
     </tr>
     <tr>
-      <td><strong>Soulignement</strong></td>
-      <td>Souligné par défaut : la couleur n'est jamais le seul repère d'un lien inline. Retiré en mode <em>icon-only</em>.</td>
+      <td><strong>Underline</strong></td>
+      <td>Underlined by default: color is never the sole cue of an inline link. Removed in <em>icon-only</em> mode.</td>
     </tr>
     <tr>
       <td><strong>Labeling</strong></td>
-      <td><code>aria-label</code> posé quand utile (icon-only). Un warning dev signale un lien icon-only sans nom accessible.</td>
+      <td><code>aria-label</code> set when useful (icon-only). A dev-mode warning flags an icon-only link with no accessible name.</td>
     </tr>
     <tr>
-      <td><strong>Externe</strong></td>
-      <td><code>external</code> / <code>target="_blank"</code> ⇒ <code>rel="noopener noreferrer"</code> automatique.</td>
+      <td><strong>External</strong></td>
+      <td><code>external</code> / <code>target="_blank"</code> ⇒ automatic <code>rel="noopener noreferrer"</code>.</td>
     </tr>
     <tr>
-      <td><strong>États</strong></td>
-      <td><code>:focus-visible</code> visible et distinct du <code>hover</code>. <code>disabled</code> : href/routerLink retirés, <code>aria-disabled</code>, hors tabulation (<code>tabindex=-1</code>).</td>
+      <td><strong>States</strong></td>
+      <td><code>:focus-visible</code> visible and distinct from <code>hover</code>. <code>disabled</code>: href/routerLink removed, <code>aria-disabled</code>, out of tab order (<code>tabindex=-1</code>).</td>
     </tr>
     <tr>
-      <td><strong>Contexte</strong></td>
-      <td><code>ariaCurrent</code> pose <code>aria-current</code> sur l'ancre (ex : <code>"page"</code> pour l'élément courant d'un fil d'Ariane — utilisé par <code>ui-breadcrumb</code>).</td>
+      <td><strong>Context</strong></td>
+      <td><code>ariaCurrent</code> sets <code>aria-current</code> on the anchor (e.g. <code>"page"</code> for a breadcrumb's current item — used by <code>ui-breadcrumb</code>).</td>
     </tr>
   </tbody>
 </table>
 
 ## Theming
 
-Variables locales en tête de `ui-link.scss`. Voir le groupe partagé
-[Actions](?path=/docs/components-configuration-actions--docs) et le
-[fonctionnement de la configuration](?path=/docs/components-configuration--docs).
+Local variables at the top of `ui-link.scss`. See the shared
+[Actions](?path=/docs/components-configuration-actions--docs) group and
+[how configuration works](?path=/docs/components-configuration--docs).
 
 <ConfigTable of="ui-link" />

@@ -12,19 +12,19 @@ import { ConfigTable } from '../../../../storybook/blocks/config-table';
 
 <ArgTypes of={ButtonStories} />
 
-## Anatomie
+## Anatomy
 
 <table className="doc-table">
   <thead>
     <tr>
-      <th>Élément</th>
+      <th>Element</th>
       <th>Description</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td><strong>Structure</strong></td>
-      <td><code>root &lt;button&gt;</code> + <code>ui-icon</code> (positionnable) + label / contenu projeté.</td>
+      <td><code>root &lt;button&gt;</code> + <code>ui-icon</code> (positionable) + label / projected content.</td>
     </tr>
     <tr>
       <td><strong>Level</strong></td>
@@ -32,73 +32,73 @@ import { ConfigTable } from '../../../../storybook/blocks/config-table';
     </tr>
     <tr>
       <td><strong>Variant</strong></td>
-      <td><code>filled</code> (défaut, plein) · <code>outlined</code> (bordure) · <code>ghost</code> (texte seul) — chacun compose avec <code>level</code> via son propre jeu de tokens.</td>
+      <td><code>filled</code> (default, solid) · <code>outlined</code> (border) · <code>ghost</code> (text only) — each composes with <code>level</code> via its own token set.</td>
     </tr>
     <tr>
       <td><strong>onColor</strong></td>
-      <td><code>dark</code> · <code>light</code> · absent (défaut). Luminosité du <strong>fond de couleur</strong> sur lequel le bouton est posé. Orthogonal à <code>level</code> et <code>variant</code>.</td>
+      <td><code>dark</code> · <code>light</code> · absent (default). Brightness of the <strong>colored background</strong> the button sits on. Orthogonal to <code>level</code> and <code>variant</code>.</td>
     </tr>
     <tr>
       <td><strong>Size</strong></td>
       <td><code>default</code> · <code>small</code></td>
     </tr>
     <tr>
-      <td><strong>Icône</strong></td>
-      <td><code>icon</code> (nom FontAwesome) + <code>iconPos</code> (<code>left</code> · <code>right</code> · <code>top</code> · <code>bottom</code>). <code>iconOnly</code> force le carré.</td>
+      <td><strong>Icon</strong></td>
+      <td><code>icon</code> (FontAwesome name) + <code>iconPos</code> (<code>left</code> · <code>right</code> · <code>top</code> · <code>bottom</code>). <code>iconOnly</code> forces the square shape.</td>
     </tr>
     <tr>
       <td><strong>State</strong></td>
-      <td><code>loading</code> (spinner personnalisable via <code>loadingIcon</code>, désactive le bouton).</td>
+      <td><code>loading</code> (spinner customizable via <code>loadingIcon</code>, disables the button).</td>
     </tr>
     <tr>
       <td><strong>Layout</strong></td>
-      <td><code>expanded</code> = pleine largeur.</td>
+      <td><code>expanded</code> = full width.</td>
     </tr>
     <tr>
       <td><strong>Type</strong></td>
-      <td>texte+icône, contenu projeté (<code>&lt;ng-content&gt;</code>), ou <em>icon-only</em> (sans <code>label</code>)</td>
+      <td>text+icon, projected content (<code>&lt;ng-content&gt;</code>), or <em>icon-only</em> (no <code>label</code>)</td>
     </tr>
     <tr>
-      <td><strong>Mode lien</strong></td>
-      <td><code>href</code> ou <code>routerLink</code> ⇒ l'hôte rend un <code>&lt;a&gt;</code> (+ <code>target</code> / <code>rel</code>).</td>
+      <td><strong>Link mode</strong></td>
+      <td><code>href</code> or <code>routerLink</code> ⇒ the host renders an <code>&lt;a&gt;</code> (+ <code>target</code> / <code>rel</code>).</td>
     </tr>
   </tbody>
 </table>
 
-## Accessibilité
+## Accessibility
 
 <table className="doc-table">
   <thead>
     <tr>
-      <th>Règle</th>
-      <th>Détail</th>
+      <th>Rule</th>
+      <th>Detail</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><strong>Sémantique</strong></td>
-      <td><code>&lt;button&gt;</code> natif, <code>type</code> explicite.</td>
+      <td><strong>Semantics</strong></td>
+      <td>Native <code>&lt;button&gt;</code>, explicit <code>type</code>.</td>
     </tr>
     <tr>
       <td><strong>Labeling</strong></td>
-      <td><code>aria-label</code> posé <strong>uniquement</strong> quand utile (icon-only) : jamais en doublon du texte visible. En mode icon-only, un <code>label</code> fourni sert de nom accessible (masqué visuellement). Un warning dev signale un bouton icon-only sans nom accessible.</td>
+      <td><code>aria-label</code> set <strong>only</strong> when useful (icon-only): never duplicating the visible text. In icon-only mode, a provided <code>label</code> serves as the accessible name (visually hidden). A dev-mode warning flags an icon-only button with no accessible name.</td>
     </tr>
     <tr>
-      <td><strong>Icônes</strong></td>
-      <td>Icône interne décorative (<code>aria-hidden</code>). Spinner de chargement prioritaire.</td>
+      <td><strong>Icons</strong></td>
+      <td>Internal icon is decorative (<code>aria-hidden</code>). Loading spinner takes priority.</td>
     </tr>
     <tr>
-      <td><strong>Événements</strong></td>
-      <td><code>buttonClick</code> / <code>buttonFocus</code> / <code>buttonBlur</code> exposent le <code>&lt;button&gt;</code> encapsulé. Méthode publique <code>focus()</code> pour le pilotage programmatique.</td>
+      <td><strong>Events</strong></td>
+      <td><code>buttonClick</code> / <code>buttonFocus</code> / <code>buttonBlur</code> expose the wrapped <code>&lt;button&gt;</code>. Public <code>focus()</code> method for programmatic control.</td>
     </tr>
     <tr>
-      <td><strong>États</strong></td>
-      <td><code>:focus-visible</code> visible et distinct du <code>hover</code>. <code>disabled</code> natif (pas d'<code>aria-disabled</code> redondant). <code>loading</code> gère implicitement <code>aria-busy</code> et désactive le bouton.</td>
+      <td><strong>States</strong></td>
+      <td><code>:focus-visible</code> visible and distinct from <code>hover</code>. Native <code>disabled</code> (no redundant <code>aria-disabled</code>). <code>loading</code> implicitly manages <code>aria-busy</code> and disables the button.</td>
     </tr>
   </tbody>
 </table>
 
-## Niveaux
+## Levels
 
 <Canvas of={ButtonStories.Low} />
 <Canvas of={ButtonStories.Success} />
@@ -107,80 +107,79 @@ import { ConfigTable } from '../../../../storybook/blocks/config-table';
 
 ## Variants
 
-Au-delà du `level` (couleur), `variant` pilote l'apparence. `outlined` et `ghost`
-composent avec le `level` choisi : chaque couple a **son propre jeu de tokens**
-(`--actions-<level><variant>-*`, ex. `--actions-successoutlined-surface-hover`),
-au même contrat que le jeu `filled` — 5 états × `content` / `surface` / `stroke`.
+Beyond `level` (color), `variant` drives the appearance. `outlined` and `ghost`
+compose with the chosen `level`: each pair has **its own token set**
+(`--actions-<level><variant>-*`, e.g. `--actions-successoutlined-surface-hover`),
+under the same contract as the `filled` set — 5 states × `content` / `surface` / `stroke`.
 
 <table className="doc-table">
   <thead>
     <tr>
       <th>Variant</th>
-      <th>Repos</th>
-      <th>Survol / focus / pression</th>
-      <th>Bordure</th>
+      <th>Rest</th>
+      <th>Hover / focus / press</th>
+      <th>Border</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td><code>filled</code></td>
-      <td>fond plein</td>
-      <td>fond plein qui fonce</td>
-      <td>teintée</td>
+      <td>solid background</td>
+      <td>solid background, darkens</td>
+      <td>tinted</td>
     </tr>
     <tr>
       <td><code>outlined</code></td>
-      <td>fond transparent</td>
-      <td>fond <strong>légèrement teinté</strong> (<code>{'*.50'}</code> → <code>{'*.100'}</code> en clair, <code>{'*.800'}</code> → <code>{'*.700'}</code> en sombre)</td>
-      <td>teintée à tous les états</td>
+      <td>transparent background</td>
+      <td><strong>lightly tinted</strong> background (<code>{'*.50'}</code> → <code>{'*.100'}</code> in light, <code>{'*.800'}</code> → <code>{'*.700'}</code> in dark)</td>
+      <td>tinted at every state</td>
     </tr>
     <tr>
       <td><code>ghost</code></td>
-      <td>fond transparent</td>
-      <td>même fond teinté que <code>outlined</code></td>
-      <td>aucune — <strong>sauf au focus</strong>, où elle porte l'anneau</td>
+      <td>transparent background</td>
+      <td>same tinted background as <code>outlined</code></td>
+      <td>none — <strong>except on focus</strong>, where it carries the ring</td>
     </tr>
   </tbody>
 </table>
 
-`outlined` et `ghost` ne diffèrent donc que par la bordure : c'est le token qui
-porte la transparence (`stroke-default` de `ghost` = `transparent`), pas le CSS.
-Le niveau `low` est volontairement un cran plus discret que les autres (texte et
-bordure une graduation plus claire).
+`outlined` and `ghost` therefore only differ by the border: it's the token that
+carries the transparency (`ghost`'s `stroke-default` = `transparent`), not the CSS.
+The `low` level is deliberately a notch more subtle than the others (text and
+border one shade lighter).
 
 <Canvas of={ButtonStories.Outlined} />
 <Canvas of={ButtonStories.Ghost} />
 
-Les 5 niveaux, par variante :
+The 5 levels, per variant:
 
 <Canvas of={ButtonStories.OutlinedLevels} />
 <Canvas of={ButtonStories.GhostLevels} />
 
-## Bouton posé sur un fond de couleur (`onColor`)
+## Button on a colored background (`onColor`)
 
-Les jeux ci-dessus sont calculés pour le **fond de page**. Posé sur un bandeau, une
-carte teintée ou une image, le bouton n'a plus assez de contraste — et `level` ne
-peut pas le savoir :
+The sets above are computed for the **page background**. Sitting on a banner, a
+tinted card or an image, the button no longer has enough contrast — and `level`
+can't know that:
 
 <Canvas of={ButtonStories.OnColorOmitted} />
 
-`onColor` déclare la **luminosité du fond** — la seule chose que l'appelant
-connaisse de façon fiable — et le bouton épingle son chrome en conséquence. C'est
-un **troisième axe**, orthogonal : il se combine avec n'importe quel `level` et
-n'importe quel `variant`.
+`onColor` declares the **background's brightness** — the only thing the caller
+reliably knows — and the button pins its chrome accordingly. This is a
+**third, orthogonal axis**: it combines with any `level` and any `variant`.
 
 ```html
-<ui-button label="Découvrir" variant="outlined" onColor="dark" />   <!-- bandeau sombre/saturé -->
-<ui-button label="Découvrir" variant="outlined" onColor="light" />  <!-- bandeau clair -->
+<ui-button label="Discover" variant="outlined" onColor="dark" />   <!-- dark/saturated banner -->
+<ui-button label="Discover" variant="outlined" onColor="light" />  <!-- light banner -->
 ```
 
-Un principe unique suffit à tout déduire : **`onColor` épingle la polarité de la
-surface, et le contenu suit sa propre surface.**
+A single principle is enough to infer everything: **`onColor` pins the surface's
+polarity, and the content follows its own surface.**
 
 <table className="doc-table">
   <thead>
     <tr>
-      <th>Polarité</th>
+      <th>Polarity</th>
       <th><code>outlined</code> / <code>ghost</code></th>
       <th><code>filled</code></th>
     </tr>
@@ -188,13 +187,13 @@ surface, et le contenu suit sa propre surface.**
   <tbody>
     <tr>
       <td><code>onColor="dark"</code></td>
-      <td>fond transparent, bordure et texte <strong>blancs</strong>, teinte assombrissante au survol</td>
-      <td>pastille <strong>blanche</strong> opaque, label au ton clair du <code>level</code></td>
+      <td>transparent background, <strong>white</strong> border and text, darkening tint on hover</td>
+      <td>opaque <strong>white</strong> pill, label in the <code>level</code>'s light tone</td>
     </tr>
     <tr>
       <td><code>onColor="light"</code></td>
-      <td>fond transparent, bordure et texte <strong>sombres</strong>, teinte éclaircissante au survol</td>
-      <td>pastille <strong>sombre</strong> opaque, label au ton sombre du <code>level</code></td>
+      <td>transparent background, <strong>dark</strong> border and text, lightening tint on hover</td>
+      <td>opaque <strong>dark</strong> pill, label in the <code>level</code>'s dark tone</td>
     </tr>
   </tbody>
 </table>
@@ -202,26 +201,26 @@ surface, et le contenu suit sa propre surface.**
 <Canvas of={ButtonStories.OnColorDark} />
 <Canvas of={ButtonStories.OnColorLight} />
 
-Deux propriétés à connaître :
+Two properties worth knowing:
 
-- Le `level` **survit** en `filled` : une pastille blanche « Supprimer » reste rouge,
-  « Valider » reste verte. En `outlined`/`ghost` le fond porte déjà la couleur, les
-  jeux y sont donc niveau-indépendants.
-- Ces jeux sont **insensibles au thème** : un bandeau violet est violet en clair
-  comme en sombre, donc `onColor` ne doit pas basculer avec `data-theme`. C'est la
-  seule famille de tokens du DS dont les valeurs `modeLight` et `modeDark` sont
-  volontairement identiques.
+- `level` **survives** in `filled`: a white "Remove" pill stays red,
+  "Confirm" stays green. In `outlined`/`ghost` the background already carries the
+  color, so those sets are level-independent there.
+- These sets are **theme-insensitive**: a purple banner is purple in light
+  as well as dark, so `onColor` must not switch with `data-theme`. It's the
+  only token family in the DS whose `modeLight` and `modeDark` values are
+  deliberately identical.
 
-### Quelle polarité choisir
+### Which polarity to choose
 
-Le critère est la luminosité du fond, pas sa teinte. Les deux polarités
-**partitionnent la palette** : chaque graduation relève de l'une ou de l'autre.
+The criterion is the background's brightness, not its hue. The two polarities
+**partition the palette**: every shade falls under one or the other.
 
 <table className="doc-table">
   <thead>
     <tr>
-      <th>Fond sur lequel le bouton est posé</th>
-      <th>Polarité</th>
+      <th>Background the button sits on</th>
+      <th>Polarity</th>
     </tr>
   </thead>
   <tbody>
@@ -230,34 +229,34 @@ Le critère est la luminosité du fond, pas sa teinte. Les deux polarités
       <td><code>onColor="dark"</code></td>
     </tr>
     <tr>
-      <td>tout ce qui est plus clair (dont <code>success</code> / <code>warning</code> par défaut, en <code>{'*.500'}</code>)</td>
+      <td>anything lighter (including <code>success</code> / <code>warning</code> by default, at <code>{'*.500'}</code>)</td>
       <td><code>onColor="light"</code></td>
     </tr>
     <tr>
       <td><code>{'*.50'}</code> → <code>{'*.200'}</code></td>
-      <td>rien : le rendu par défaut passe déjà</td>
+      <td>none: the default rendering already works</td>
     </tr>
   </tbody>
 </table>
 
-> Piège à connaître : les surfaces par défaut de `success` (`green.500`) et
-> `warning` (`orange.500`) sont **claires** — un bandeau success attend
-> `onColor="light"`, pas `dark`. Le blanc n'y atteint que 2,5:1.
+> Trap worth knowing: the default surfaces of `success` (`green.500`) and
+> `warning` (`orange.500`) are **light** — a success banner expects
+> `onColor="light"`, not `dark`. White only reaches 2.5:1 there.
 
-> Un seul fond de la palette échappe aux deux polarités : `secondary.900` de la
-> marque 3 (olive, 4,18:1 en blanc et 4,24:1 en sombre). Sur un fond de
-> mi-luminance de ce genre, il faut un voile (scrim) ou un autre fond — aucun
-> token ne peut le rattraper.
+> Exactly one background in the palette escapes both polarities: brand 3's
+> `secondary.900` (olive, 4.18:1 in white and 4.24:1 in dark). On a
+> mid-luminance background like that one, a scrim or a different background is
+> needed — no token can fix it.
 
-## Tailles
+## Sizes
 
 <Canvas of={ButtonStories.Small} />
 
-## Icônes
+## Icons
 
-L'icône est unique et positionnable via `icon` + `iconPos`. Un bouton
-sans `label` (avec une icône) bascule automatiquement en mode icon-only ; `iconOnly`
-permet de le forcer.
+The icon is single and positionable via `icon` + `iconPos`. A button
+with no `label` (and an icon) automatically switches to icon-only mode; `iconOnly`
+lets you force it.
 
 <Canvas of={ButtonStories.IconLeft} />
 <Canvas of={ButtonStories.IconRight} />
@@ -266,7 +265,7 @@ permet de le forcer.
 <Canvas of={ButtonStories.IconOnly} />
 <Canvas of={ButtonStories.IconOnlyForced} />
 
-## Chargement
+## Loading
 
 <Canvas of={ButtonStories.Loading} />
 <Canvas of={ButtonStories.LoadingCustomIcon} />
@@ -275,34 +274,34 @@ permet de le forcer.
 
 <Canvas of={ButtonStories.Expanded} />
 
-`rounded` donne une forme pilule (coins entièrement arrondis) ; combiné à `iconOnly`, le bouton
-devient un cercle parfait. Dans un `ui-button-split`, le hook `--ui-button-radius` posé par
-l'hôte reste prioritaire : les coins collés du split ne sont pas cassés par `rounded`.
+`rounded` gives a pill shape (fully rounded corners); combined with `iconOnly`, the button
+becomes a perfect circle. Inside a `ui-button-split`, the `--ui-button-radius` hook set by
+the host still takes priority: the split's joined corners aren't broken by `rounded`.
 
 <Canvas of={ButtonStories.Rounded} />
 <Canvas of={ButtonStories.RoundedIconOnly} />
 
-## Contenu projeté
+## Projected content
 
-Au-delà de `label`, on peut projeter du contenu riche via `<ng-content>`.
+Beyond `label`, rich content can be projected via `<ng-content>`.
 
 <Canvas of={ButtonStories.ProjectedContent} />
 
-## Mode lien
+## Link mode
 
-Quand un bouton doit **naviguer** (route interne ou URL), renseigner `href` ou
-`routerLink` : l'hôte rend alors un **vrai `<a>`** stylé comme un bouton. Le
-comportement natif de l'ancre est préservé (Cmd/Ctrl+clic, clic-molette, « ouvrir /
-copier le lien »), contrairement à une navigation déclenchée en JS dans un `(click)`.
+When a button must **navigate** (internal route or URL), set `href` or
+`routerLink`: the host then renders a **real `<a>`** styled as a button. The
+anchor's native behavior is preserved (Cmd/Ctrl+click, middle-click, "open /
+copy link"), unlike navigation triggered in JS from a `(click)`.
 
-> Règle : on choisit l'élément par la **sémantique** (naviguer ⇒ `<a>`, agir ⇒
-> `<button>`), pas par l'apparence. Pour un lien **inline** dans du texte, préférer
+> Rule: pick the element by **semantics** (navigate ⇒ `<a>`, act ⇒
+> `<button>`), not by appearance. For an **inline** link within text, prefer
 > [`ui-link`](?path=/docs/components-ui-actions-ui-link--docs).
 
 ```html
-<ui-button label="Voir la page" href="/tarifs" icon="arrow-right" iconPos="right" />
-<ui-button label="Mon profil" [routerLink]="['/profil']" />
-<ui-button label="Site externe" href="https://angular.dev" target="_blank" />
+<ui-button label="View the page" href="/pricing" icon="arrow-right" iconPos="right" />
+<ui-button label="My profile" [routerLink]="['/profile']" />
+<ui-button label="External site" href="https://angular.dev" target="_blank" />
 ```
 
 <Canvas of={ButtonStories.AsLink} />
@@ -310,14 +309,14 @@ copier le lien »), contrairement à une navigation déclenchée en JS dans un `
 <Canvas of={ButtonStories.AsRouterLink} />
 <Canvas of={ButtonStories.AsLinkDisabled} />
 
-## États
+## States
 
 <Canvas of={ButtonStories.Disabled} />
 
 ## Theming
 
-Variables locales en tête de `ui-button.scss`. Voir le groupe partagé
-[Actions](?path=/docs/components-configuration-actions--docs) et le
-[fonctionnement de la configuration](?path=/docs/components-configuration--docs).
+Local variables at the top of `ui-button.scss`. See the shared
+[Actions](?path=/docs/components-configuration-actions--docs) group and
+[how configuration works](?path=/docs/components-configuration--docs).
 
 <ConfigTable of="ui-button" />

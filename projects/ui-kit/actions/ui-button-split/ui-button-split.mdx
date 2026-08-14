@@ -6,12 +6,12 @@ import { ConfigTable } from '../../../../storybook/blocks/config-table';
 
 # ui-button-split
 
-Un **bouton d'action** principal accolé à un **déclencheur déroulant** qui révèle
-une collection d'options additionnelles. La logique de composition réutilise
-[`ui-button`](?path=/docs/components-ui-actions-ui-button--docs) (les deux boutons,
-tokens `actions.*`) et [`ui-menu`](?path=/docs/components-ui-navigation-ui-menu--docs)
-(le panneau, tokens `navigation.*`). Les options sont pilotées par un modèle
-déclaratif `UiMenuItem[]` — le même que celui du menu.
+A main **action button** joined to a **dropdown trigger** that reveals
+a collection of additional options. The composition logic reuses
+[`ui-button`](?path=/docs/components-ui-actions-ui-button--docs) (both buttons,
+`actions.*` tokens) and [`ui-menu`](?path=/docs/components-ui-navigation-ui-menu--docs)
+(the panel, `navigation.*` tokens). Options are driven by a
+declarative `UiMenuItem[]` model — the same one the menu uses.
 
 <Canvas of={ButtonSplitStories.Basic} />
 
@@ -21,42 +21,42 @@ déclaratif `UiMenuItem[]` — le même que celui du menu.
 
 ## Basic
 
-Le bouton d'action déclenche l'action par défaut (`buttonClick`) ; le déclencheur
-ouvre un menu d'options additionnelles défini par la propriété `model`, basée sur
-le modèle `UiMenuItem`.
+The action button triggers the default action (`buttonClick`); the trigger
+opens a menu of additional options defined by the `model` property, based on
+the `UiMenuItem` model.
 
 ```html
-<ui-button-split label="Enregistrer" [model]="options" (buttonClick)="save()" (itemClick)="onOption($event)" />
+<ui-button-split label="Save" [model]="options" (buttonClick)="save()" (itemClick)="onOption($event)" />
 ```
 
 ## Icons
 
-Les boutons comme les options du menu supportent l'affichage d'icônes.
+Both the buttons and the menu options support showing icons.
 
 ```html
-<ui-button-split label="Enregistrer" icon="floppy-disk" [model]="optionsWithIcons" />
+<ui-button-split label="Save" icon="floppy-disk" [model]="optionsWithIcons" />
 ```
 
 <Canvas of={ButtonSplitStories.Icons} />
 
 ## Nested
 
-Les options peuvent s'imbriquer en sous-menus (groupes repliables), toujours via le
-modèle `UiMenuItem` (un item avec `items` devient un groupe).
+Options can nest into submenus (collapsible groups), still via the
+`UiMenuItem` model (an item with `items` becomes a group).
 
 <Canvas of={ButtonSplitStories.Nested} />
 
 ## Level
 
-La propriété `level` définit le type de bouton.
+The `level` property defines the button type.
 
 <Canvas of={ButtonSplitStories.Level} />
 
 ## Disabled
 
-Avec l'attribut `disabled`, le composant est inactif et non focusable. Les états
-désactivés du bouton et du déclencheur se gèrent aussi indépendamment : le bouton
-d'action est désactivé via `buttonDisabled`, le déclencheur du menu via
+With the `disabled` attribute, the component is inactive and not focusable. The
+disabled states of the button and the trigger can also be managed independently: the
+action button is disabled via `buttonDisabled`, the menu trigger via
 `menuButtonDisabled`.
 
 <Canvas of={ButtonSplitStories.Disabled} />
@@ -67,84 +67,84 @@ d'action est désactivé via `buttonDisabled`, le déclencheur du menu via
 
 ## Variant
 
-La propriété `variant` est forwardée aux deux boutons internes (action + déclencheur).
+The `variant` property is forwarded to both internal buttons (action + trigger).
 
 <Canvas of={ButtonSplitStories.Outlined} />
 
-## Anatomie
+## Anatomy
 
 <table className="doc-table">
   <thead>
     <tr>
-      <th>Élément</th>
+      <th>Element</th>
       <th>Description</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td><strong>Structure</strong></td>
-      <td><code>ui-button</code> (action) + <code>ui-button</code> (déclencheur icon-only, chevron) accolés + <code>ui-menu</code> en popup.</td>
+      <td><code>ui-button</code> (action) + <code>ui-button</code> (icon-only trigger, chevron) joined + <code>ui-menu</code> as a popup.</td>
     </tr>
     <tr>
       <td><strong>Level</strong></td>
-      <td><code>high</code> · <code>low</code> · <code>success</code> · <code>warning</code> · <code>error</code> (appliqué aux deux boutons)</td>
+      <td><code>high</code> · <code>low</code> · <code>success</code> · <code>warning</code> · <code>error</code> (applied to both buttons)</td>
     </tr>
     <tr>
       <td><strong>Variant</strong></td>
-      <td><code>filled</code> (défaut, plein) · <code>outlined</code> · <code>ghost</code> (appliqué aux deux boutons)</td>
+      <td><code>filled</code> (default, solid) · <code>outlined</code> · <code>ghost</code> (applied to both buttons)</td>
     </tr>
     <tr>
       <td><strong>onColor</strong></td>
-      <td><code>dark</code> · <code>light</code> · absent (défaut) — luminosité du fond de couleur sur lequel le contrôle est posé, forwardée aux deux boutons (voir <a href="?path=/docs/components-ui-actions-ui-button--docs"><code>ui-button</code></a>)</td>
+      <td><code>dark</code> · <code>light</code> · absent (default) — brightness of the colored background the control sits on, forwarded to both buttons (see <a href="?path=/docs/components-ui-actions-ui-button--docs"><code>ui-button</code></a>)</td>
     </tr>
     <tr>
       <td><strong>Size</strong></td>
-      <td><code>default</code> · <code>small</code> (boutons + densité du menu)</td>
+      <td><code>default</code> · <code>small</code> (buttons + menu density)</td>
     </tr>
     <tr>
       <td><strong>Model</strong></td>
-      <td><code>model: UiMenuItem[]</code> — options : <code>command</code>, <code>routerLink</code>/<code>url</code>, sous-menus <code>items</code>, séparateurs, icônes.</td>
+      <td><code>model: UiMenuItem[]</code> — options: <code>command</code>, <code>routerLink</code>/<code>url</code>, <code>items</code> submenus, separators, icons.</td>
     </tr>
     <tr>
-      <td><strong>Désactivation</strong></td>
-      <td><code>disabled</code> (les deux) · <code>buttonDisabled</code> (action) · <code>menuButtonDisabled</code> (déclencheur)</td>
+      <td><strong>Disabling</strong></td>
+      <td><code>disabled</code> (both) · <code>buttonDisabled</code> (action) · <code>menuButtonDisabled</code> (trigger)</td>
     </tr>
   </tbody>
 </table>
 
-## Accessibilité
+## Accessibility
 
 <table className="doc-table">
   <thead>
     <tr>
-      <th>Règle</th>
-      <th>Détail</th>
+      <th>Rule</th>
+      <th>Detail</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><strong>Sémantique</strong></td>
-      <td>Deux <code>&lt;button&gt;</code> natifs. Le déclencheur porte <code>aria-haspopup="menu"</code>, <code>aria-controls</code> vers le panneau et <code>aria-expanded</code> reflétant l'état ouvert.</td>
+      <td><strong>Semantics</strong></td>
+      <td>Two native <code>&lt;button&gt;</code>s. The trigger carries <code>aria-haspopup="menu"</code>, <code>aria-controls</code> pointing to the panel, and <code>aria-expanded</code> reflecting the open state.</td>
     </tr>
     <tr>
       <td><strong>Labeling</strong></td>
-      <td>Le déclencheur est icon-only : <code>menuButtonAriaLabel</code> fournit son nom accessible (défaut « More options »). Renseigner <code>menuAriaLabel</code> pour nommer la liste.</td>
+      <td>The trigger is icon-only: <code>menuButtonAriaLabel</code> provides its accessible name (default « More options »). Set <code>menuAriaLabel</code> to name the list.</td>
     </tr>
     <tr>
-      <td><strong>Clavier</strong></td>
-      <td>Menu ouvert : navigation roving <kbd>↑</kbd>/<kbd>↓</kbd>, <kbd>Début</kbd>/<kbd>Fin</kbd>, <kbd>Échap</kbd> ferme et rend le focus au déclencheur (hérité de <code>ui-menu</code>).</td>
+      <td><strong>Keyboard</strong></td>
+      <td>Menu open: roving navigation <kbd>↑</kbd>/<kbd>↓</kbd>, <kbd>Home</kbd>/<kbd>End</kbd>, <kbd>Escape</kbd> closes and returns focus to the trigger (inherited from <code>ui-menu</code>).</td>
     </tr>
     <tr>
-      <td><strong>États</strong></td>
-      <td><code>:focus-visible</code> visible et distinct du <code>hover</code>. <code>disabled</code> natif sur chaque bouton (pas seulement visuel).</td>
+      <td><strong>States</strong></td>
+      <td><code>:focus-visible</code> visible and distinct from <code>hover</code>. Native <code>disabled</code> on each button (not just visual).</td>
     </tr>
   </tbody>
 </table>
 
 ## Theming
 
-Variables locales en tête de `ui-button-split.scss`. Voir le groupe partagé
-[Actions](?path=/docs/components-configuration-actions--docs) et le
-[fonctionnement de la configuration](?path=/docs/components-configuration--docs).
+Local variables at the top of `ui-button-split.scss`. See the shared
+[Actions](?path=/docs/components-configuration-actions--docs) group and
+[how configuration works](?path=/docs/components-configuration--docs).
 
 <ConfigTable of="ui-button-split" />
