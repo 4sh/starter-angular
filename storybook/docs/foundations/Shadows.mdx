@@ -2,18 +2,18 @@ import { Meta } from "@storybook/addon-docs/blocks";
 
 <Meta title="Foundations/Shadows" />
 
-# Ombres & effets
+# Shadows & effects
 
-Les ombres sont exposées comme **styles composites** prêts à l'emploi, générés depuis
-`src/design-tokens/styles.json` : une variable CSS `--shadow-{catégorie}-{taille}` (valeur
-`box-shadow` complète) **et** une classe utilitaire `.shadow-{catégorie}-{taille}`.
+Shadows are exposed as ready-to-use **composite styles**, generated from
+`src/design-tokens/styles.json`: a CSS variable `--shadow-{category}-{size}` (full
+`box-shadow` value) **and** a utility class `.shadow-{category}-{size}`.
 
-- **Catégories** : `default`, `highlight`, `success`, `warning`, `error` (couleur = token `--effects-*`, donc theme-aware).
-- **Tailles** : `sm`, `md`, `lg`.
+- **Categories**: `default`, `highlight`, `success`, `warning`, `error` (color = `--effects-*` token, theme-aware).
+- **Sizes**: `sm`, `md`, `lg`.
 
 ```scss
-/* SCSS (composant) */
-.ma-carte { box-shadow: var(--shadow-default-md); }
+/* SCSS (component) */
+.my-card { box-shadow: var(--shadow-default-md); }
 ```
 
 ```html
@@ -41,14 +41,14 @@ export const Box = ({ cat, size }) => (
   </div>
 ))}
 
-## Styles disponibles
+## Available styles
 
 <table className="doc-table">
   <thead>
     <tr>
-      <th>Catégorie</th>
-      <th>Variable CSS</th>
-      <th>Classe utilitaire</th>
+      <th>Category</th>
+      <th>CSS variable</th>
+      <th>Utility class</th>
     </tr>
   </thead>
   <tbody>
@@ -62,9 +62,9 @@ export const Box = ({ cat, size }) => (
   </tbody>
 </table>
 
-## Couleurs d'effet
+## Effect colors
 
-Chaque ombre tire sa couleur d'un token sémantique `--effects-*` (clair/sombre géré au runtime).
+Each shadow draws its color from a semantic `--effects-*` token (light/dark handled at runtime).
 
 export const Eff = ({ name }) => (
   <tr>
@@ -83,16 +83,16 @@ export const Eff = ({ name }) => (
   </tbody>
 </table>
 
-## Tokens bruts (bas niveau)
+## Raw tokens (low level)
 
-Les géométries proviennent de `metrics` : `--shadow-{sm|md|lg}-{positionx|positiony|blur|spread}`.
-En général, préférez les styles composites ci-dessus ; ces tokens bruts servent à composer une
-ombre sur mesure.
+The geometry comes from `metrics`: `--shadow-{sm|md|lg}-{positionx|positiony|blur|spread}`.
+Generally, prefer the composite styles above; these raw tokens are for composing a
+custom shadow.
 
 <table className="doc-table">
   <thead>
     <tr>
-      <th>Taille</th>
+      <th>Size</th>
       <th>position X</th>
       <th>position Y</th>
       <th>blur</th>

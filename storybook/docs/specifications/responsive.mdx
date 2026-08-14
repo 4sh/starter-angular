@@ -1,22 +1,22 @@
 import { Meta } from '@storybook/addon-docs/blocks';
 
-<Meta title="Spécifications/Responsive Design" />
+<Meta title="Specifications/Responsive Design" />
 
 # Responsive Design
 
-Le projet utilise **[Gridaflex](https://www.npmjs.com/package/gridaflex)** (v1.0.0) comme système de mise en page responsive. Gridaflex est un système **flexbox** à axes X / Y sur un moteur `gap` moderne (jamais de marges négatives), reprenant l'API XY de Foundation, modernisée.
+The project uses **[Gridaflex](https://www.npmjs.com/package/gridaflex)** (v1.0.0) as its responsive layout system. Gridaflex is a **flexbox** system with X / Y axes on a modern `gap` engine (never negative margins), building on Foundation's XY API, modernized.
 
-> Préfixe des classes : `flex-` : ce n'est **pas** CSS Grid.
+> Class prefix: `flex-` — this is **not** CSS Grid.
 
-## 1. Points de Rupture (Breakpoints)
+## 1. Breakpoints
 
-Les paliers sont définis dans les design tokens (`src/design-tokens/responsive.json` → générés dans `projects/ui-kit/styles/generated/_tokens-breakpoint.scss`) puis injectés dans Gridaflex via `src/styles/src/vendors/gridaflex-settings.scss`.
+The tiers are defined in the design tokens (`src/design-tokens/responsive.json` → generated into `projects/ui-kit/styles/generated/_tokens-breakpoint.scss`) then injected into Gridaflex via `src/styles/src/vendors/gridaflex-settings.scss`.
 
 <table className="doc-table">
     <thead>
     <tr>
-        <th>Nom</th>
-        <th>Valeur</th>
+        <th>Name</th>
+        <th>Value</th>
         <th>Usage</th>
     </tr>
     </thead>
@@ -24,46 +24,46 @@ Les paliers sont définis dans les design tokens (`src/design-tokens/responsive.
     <tr>
         <td><strong><code>phone</code></strong></td>
         <td><code>0px</code></td>
-        <td>Mobiles (mobile-first)</td>
+        <td>Mobile (mobile-first)</td>
     </tr>
     <tr>
         <td><strong><code>tablet-portrait</code></strong></td>
         <td><code>600px</code></td>
-        <td>Tablettes portrait</td>
+        <td>Tablets, portrait</td>
     </tr>
     <tr>
         <td><strong><code>tablet-landscape</code></strong></td>
         <td><code>900px</code></td>
-        <td>Tablettes paysage / Petits laptops</td>
+        <td>Tablets, landscape / small laptops</td>
     </tr>
     <tr>
         <td><strong><code>desktop</code></strong></td>
         <td><code>1200px</code></td>
-        <td>Écrans standards</td>
+        <td>Standard screens</td>
     </tr>
     <tr>
         <td><strong><code>medium-desktop</code></strong></td>
         <td><code>1440px</code></td>
-        <td>Écrans larges (taille de référence Figma)</td>
+        <td>Large screens (Figma reference size)</td>
     </tr>
     <tr>
         <td><strong><code>big-desktop</code></strong></td>
         <td><code>1800px</code></td>
-        <td>Très grands écrans</td>
+        <td>Very large screens</td>
     </tr>
     </tbody>
 </table>
 
-## 2. Modèle mental Gridaflex
+## 2. Gridaflex mental model
 
-1. Un **conteneur** optionnel `.flex-container` centre et limite la largeur.
-2. Un **groupe** définit l'axe : `.flex-x` (horizontal) ou `.flex-y` (vertical).
-3. Les **cellules** `.cell` se placent dans le groupe et reçoivent une taille responsive `[breakpoint]-[n]` (n de 1 à **24** dans ce projet, cf. `$flex-columns: 24`).
-4. Les **gouttières** sont posées **sur le groupe** : `.flex-gap-x` (horizontal), `.flex-gap-y` (vertical), `.flex-gap-xy` (les deux).
+1. An optional **container** `.flex-container` centers and bounds the width.
+2. A **group** defines the axis: `.flex-x` (horizontal) or `.flex-y` (vertical).
+3. **Cells** `.cell` sit inside the group and receive a responsive size `[breakpoint]-[n]` (n from 1 to **24** in this project, see `$flex-columns: 24`).
+4. **Gutters** are set **on the group**: `.flex-gap-x` (horizontal), `.flex-gap-y` (vertical), `.flex-gap-xy` (both).
 
-> Règle d'or : la **taille** (`desktop-8`) va sur la **cellule** ; la **gouttière** (`flex-gap-x`) va sur le **groupe**. Ne pas inverser.
+> Golden rule: **size** (`desktop-8`) goes on the **cell**; **gutter** (`flex-gap-x`) goes on the **group**. Don't swap them.
 
-### Squelette canonique
+### Canonical skeleton
 
 ```html
 <div class="flex-container">
@@ -74,41 +74,41 @@ Les paliers sont définis dans les design tokens (`src/design-tokens/responsive.
 </div>
 ```
 
-- Mobile-first : `phone-*` s'applique partout, puis surchargé vers le haut.
-- Les fractions sont **gap-aware** : 3× `desktop-8` (3 × 8 = 24 colonnes) tiennent exactement, gouttière comprise.
+- Mobile-first: `phone-*` applies everywhere, then overridden upward.
+- Fractions are **gap-aware**: 3× `desktop-8` (3 × 8 = 24 columns) fit exactly, gutter included.
 
-## 3. Utilisation dans SASS/SCSS
+## 3. Usage in SASS/SCSS
 
-Pour appliquer des styles conditionnels, utilisez le mixin `breakpoint()` exposé par l'API Sass de Gridaflex.
+To apply conditional styles, use the `breakpoint()` mixin exposed by Gridaflex's Sass API.
 
-### Syntaxe Standard (Up)
+### Standard syntax (Up)
 
-Applique les styles à partir du palier spécifié et au-dessus.
+Applies the styles from the specified tier and above.
 
 ```scss
 @use 'gridaflex' as flex;
 
-.mon-element {
-  width: 100%; // Mobile par défaut
+.my-element {
+  width: 100%; // Mobile by default
 
   @include flex.breakpoint(tablet-portrait) {
-    width: 50%; // Tablettes et +
+    width: 50%; // Tablets and up
   }
 }
 ```
 
-### Variantes utiles
+### Useful variants
 
 ```scss
 @use 'gridaflex' as flex;
 
-// Plage exacte (uniquement entre tablet-portrait et tablet-landscape)
+// Exact range (only between tablet-portrait and tablet-landscape)
 @include flex.breakpoint(tablet-portrait only) { … }
 
-// Vers le bas (desktop et en-dessous)
+// Downward (desktop and below)
 @include flex.breakpoint(desktop down) { … }
 
-// Valeur brute (convertie en em)
+// Raw value (converted to em)
 @include flex.breakpoint(768px) { … }
 
 // Orientation / HiDPI
@@ -116,78 +116,78 @@ Applique les styles à partir du palier spécifié et au-dessus.
 @include flex.breakpoint(retina) { … }
 ```
 
-### API sémantique (mixins, sans classes utilitaires)
+### Semantic API (mixins, no utility classes)
 
 ```scss
 @use 'gridaflex' as flex;
 
-.galerie {
+.gallery {
   @include flex.xy-flex;                       // display:flex + wrap
-  @include flex.xy-flex-margin(xy);            // gouttière sur les 2 axes
-  @include flex.xy-flex-layout(3, '.item');    // 3 items par ligne
+  @include flex.xy-flex-margin(xy);            // gutter on both axes
+  @include flex.xy-flex-layout(3, '.item');    // 3 items per row
 }
 
 .sidebar {
-  @include flex.xy-cell(1 of 4);               // 25 %, gap-aware
+  @include flex.xy-cell(1 of 4);               // 25%, gap-aware
   @include flex.breakpoint(desktop) {
-    @include flex.xy-cell(8);                  // 8 / 24 colonnes en desktop
+    @include flex.xy-cell(8);                  // 8 / 24 columns on desktop
   }
 }
 ```
 
-## 4. Cheatsheet des classes utilitaires
+## 4. Utility class cheatsheet
 
 <table className="doc-table">
     <thead>
     <tr>
-        <th>Besoin</th>
-        <th>Classe(s)</th>
-        <th>Posée sur</th>
+        <th>Need</th>
+        <th>Class(es)</th>
+        <th>Applied to</th>
     </tr>
     </thead>
     <tbody>
-    <tr><td>Conteneur centré</td><td><code>flex-container</code> (+ <code>.fluid</code>, <code>.full</code>)</td><td>wrapper</td></tr>
-    <tr><td>Groupe horizontal / vertical</td><td><code>flex-x</code> / <code>flex-y</code></td><td>groupe</td></tr>
-    <tr><td>Gouttière (gap)</td><td><code>flex-gap-x</code> / <code>flex-gap-y</code> / <code>flex-gap-xy</code></td><td>groupe</td></tr>
-    <tr><td>Padding interne</td><td><code>flex-padding-x</code> / <code>-y</code> / <code>-xy</code></td><td>groupe</td></tr>
-    <tr><td>Cellule</td><td><code>cell</code></td><td>cellule</td></tr>
-    <tr><td>Taille responsive</td><td><code>[bp]-[1..24]</code> (ex. <code>desktop-8</code>)</td><td>cellule</td></tr>
-    <tr><td>Largeur auto / au contenu</td><td><code>auto</code> / <code>shrink</code> (ou <code>[bp]-auto</code> / <code>[bp]-shrink</code>)</td><td>cellule</td></tr>
-    <tr><td>Décalage</td><td><code>[bp]-offset-[n]</code></td><td>cellule</td></tr>
-    <tr><td>Block grid (N par ligne)</td><td><code>[bp]-up-[n]</code></td><td>groupe</td></tr>
-    <tr><td>Supprimer la gouttière</td><td><code>[bp]-gap-collapse</code> / <code>[bp]-padding-collapse</code></td><td>groupe</td></tr>
-    <tr><td>Réordonner</td><td><code>[bp]-order-[n]</code></td><td>cellule</td></tr>
-    <tr><td>Alignement parent</td><td><code>align-left/right/center/justify/spaced</code>, <code>align-top/middle/bottom/stretch</code>, <code>align-center-middle</code></td><td>groupe</td></tr>
-    <tr><td>Alignement cellule</td><td><code>align-self-top/middle/bottom/stretch</code></td><td>cellule</td></tr>
-    <tr><td>Visibilité responsive</td><td><code>show-for-[bp]</code>, <code>hide-for-[bp]</code>, <code>*-only</code>, <code>hide</code>, <code>invisible</code>, <code>visible</code></td><td>élément</td></tr>
+    <tr><td>Centered container</td><td><code>flex-container</code> (+ <code>.fluid</code>, <code>.full</code>)</td><td>wrapper</td></tr>
+    <tr><td>Horizontal / vertical group</td><td><code>flex-x</code> / <code>flex-y</code></td><td>group</td></tr>
+    <tr><td>Gutter (gap)</td><td><code>flex-gap-x</code> / <code>flex-gap-y</code> / <code>flex-gap-xy</code></td><td>group</td></tr>
+    <tr><td>Inner padding</td><td><code>flex-padding-x</code> / <code>-y</code> / <code>-xy</code></td><td>group</td></tr>
+    <tr><td>Cell</td><td><code>cell</code></td><td>cell</td></tr>
+    <tr><td>Responsive size</td><td><code>[bp]-[1..24]</code> (e.g. <code>desktop-8</code>)</td><td>cell</td></tr>
+    <tr><td>Auto / content width</td><td><code>auto</code> / <code>shrink</code> (or <code>[bp]-auto</code> / <code>[bp]-shrink</code>)</td><td>cell</td></tr>
+    <tr><td>Offset</td><td><code>[bp]-offset-[n]</code></td><td>cell</td></tr>
+    <tr><td>Block grid (N per row)</td><td><code>[bp]-up-[n]</code></td><td>group</td></tr>
+    <tr><td>Remove the gutter</td><td><code>[bp]-gap-collapse</code> / <code>[bp]-padding-collapse</code></td><td>group</td></tr>
+    <tr><td>Reorder</td><td><code>[bp]-order-[n]</code></td><td>cell</td></tr>
+    <tr><td>Parent alignment</td><td><code>align-left/right/center/justify/spaced</code>, <code>align-top/middle/bottom/stretch</code>, <code>align-center-middle</code></td><td>group</td></tr>
+    <tr><td>Cell alignment</td><td><code>align-self-top/middle/bottom/stretch</code></td><td>cell</td></tr>
+    <tr><td>Responsive visibility</td><td><code>show-for-[bp]</code>, <code>hide-for-[bp]</code>, <code>*-only</code>, <code>hide</code>, <code>invisible</code>, <code>visible</code></td><td>element</td></tr>
     </tbody>
 </table>
 
-## 5. Surcharge ponctuelle via variables CSS
+## 5. One-off override via CSS variables
 
-Pour ajuster une gouttière sur une seule instance, sans toucher à la config :
+To adjust a gutter on a single instance, without touching the config:
 
 ```html
 <div class="flex-x flex-gap-x"  style="--flex-gap-x: 8px">…</div>
 <div class="flex-x flex-gap-xy" style="--flex-gap-x: 8px; --flex-gap-y: 16px">…</div>
 ```
 
-## 6. Configuration projet
+## 6. Project configuration
 
-La configuration Gridaflex est centralisée dans `src/styles/src/vendors/gridaflex-settings.scss` et alimentée par les design tokens responsive :
+Gridaflex's configuration is centralized in `src/styles/src/vendors/gridaflex-settings.scss` and fed by the responsive design tokens:
 
-- **`$flex-columns: 24`** : la grille est sur 24 colonnes (et non 12 par défaut).
-- **`$breakpoints`** : synchronisés avec les tokens (`phone`, `tablet-portrait`, `tablet-landscape`, `desktop`, `medium-desktop`, `big-desktop`).
-- **`$flex-margin-gutters`** : gouttières par breakpoint (16px sur phone, 24px à partir de tablet-portrait).
-- **`$gutters` / `$padding-gutters`** : clé `default: 16px` (utilisée par `flex-gap-x/y/xy`).
+- **`$flex-columns: 24`**: the grid is on 24 columns (rather than the default 12).
+- **`$breakpoints`**: synced with the tokens (`phone`, `tablet-portrait`, `tablet-landscape`, `desktop`, `medium-desktop`, `big-desktop`).
+- **`$flex-margin-gutters`**: gutters per breakpoint (16px on phone, 24px from tablet-portrait up).
+- **`$gutters` / `$padding-gutters`**: `default: 16px` key (used by `flex-gap-x/y/xy`).
 
-> Toute modification de ces réglages doit passer par les design tokens, jamais en dur dans un composant.
+> Any change to these settings must go through the design tokens, never hardcoded in a component.
 
-## 7. Erreurs à ne pas commettre
+## 7. Mistakes to avoid
 
-- ❌ Mettre la **taille** (`desktop-8`) sur le groupe, ou la **gouttière** (`flex-gap-x`) sur la cellule.
-- ❌ Utiliser des marges négatives ou `overflow-x: hidden` pour « corriger » des débordements : inutile, le moteur `gap` n'en crée pas.
-- ❌ Confondre avec **CSS Grid** (`grid-template-*`) : c'est du **flexbox**.
-- ❌ Inventer un breakpoint ou une taille hors de la config (n va de 1 à 24 dans ce projet).
-- ❌ Utiliser les alias dépréciés `grid-*` / `flex-margin-*` / `xy-grid-*` (compat Foundation) en code neuf : préférer `flex-*` / `flex-gap-*` / `xy-flex-*`.
-- ❌ Placer `@use 'gridaflex/src/settings' with (…)` après `@use 'gridaflex/src/classes'` : la config serait ignorée.
+- ❌ Putting the **size** (`desktop-8`) on the group, or the **gutter** (`flex-gap-x`) on the cell.
+- ❌ Using negative margins or `overflow-x: hidden` to "fix" overflow: unnecessary, the `gap` engine never creates any.
+- ❌ Confusing this with **CSS Grid** (`grid-template-*`): this is **flexbox**.
+- ❌ Inventing a breakpoint or a size outside the config (n ranges from 1 to 24 in this project).
+- ❌ Using the deprecated `grid-*` / `flex-margin-*` / `xy-grid-*` aliases (Foundation compat) in new code: prefer `flex-*` / `flex-gap-*` / `xy-flex-*`.
+- ❌ Placing `@use 'gridaflex/src/settings' with (…)` after `@use 'gridaflex/src/classes'`: the config would be ignored.

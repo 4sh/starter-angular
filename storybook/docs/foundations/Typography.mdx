@@ -2,21 +2,21 @@ import { Meta } from "@storybook/addon-docs/blocks";
 
 <Meta title="Foundations/Typography" />
 
-# Typographie
+# Typography
 
-Système de classes utilitaires basé sur les tokens (tailles **responsives** automatiques).
-Définition : `projects/ui-kit/styles/base/_typography.scss`.
+Utility class system based on the tokens (automatic **responsive** sizes).
+Definition: `projects/ui-kit/styles/base/_typography.scss`.
 
-## Familles de polices
+## Font families
 
-Voici les polices configurées via les design tokens. Chaque famille a un rôle précis dans l'identité visuelle du projet.
+Here are the fonts configured via the design tokens. Each family has a precise role in the project's visual identity.
 
 <div className="sb-unstyled">
   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px', margin: '20px 0' }}>
 
     {/* Title Font */}
     <div style={{ padding: '24px', border: '1px solid var(--sb-border)', borderRadius: '12px', background: 'var(--sb-bg)' }}>
-      <div style={{ fontSize: '12px', color: 'var(--sb-text-subtle)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px' }}>Titres & En-têtes</div>
+      <div style={{ fontSize: '12px', color: 'var(--sb-text-subtle)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px' }}>Titles & Headings</div>
       <div style={{ fontSize: '32px', fontFamily: 'var(--fontfamily-title)', fontWeight: 700, lineHeight: 1, marginBottom: '12px', color: 'var(--sb-text)' }}>
         DM Sans
       </div>
@@ -32,7 +32,7 @@ Voici les polices configurées via les design tokens. Chaque famille a un rôle 
 
     {/* Base Font */}
     <div style={{ padding: '24px', border: '1px solid var(--sb-border)', borderRadius: '12px', background: 'var(--sb-bg)' }}>
-      <div style={{ fontSize: '12px', color: 'var(--sb-text-subtle)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px' }}>Corps de texte & UI</div>
+      <div style={{ fontSize: '12px', color: 'var(--sb-text-subtle)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px' }}>Body text & UI</div>
       <div style={{ fontSize: '32px', fontFamily: 'var(--fontfamily-base)', fontWeight: 400, lineHeight: 1, marginBottom: '12px', color: 'var(--sb-text)' }}>
         Inter
       </div>
@@ -48,7 +48,7 @@ Voici les polices configurées via les design tokens. Chaque famille a un rôle 
 
     {/* Monospace Font */}
     <div style={{ padding: '24px', border: '1px solid var(--sb-border)', borderRadius: '12px', background: 'var(--sb-bg)' }}>
-      <div style={{ fontSize: '12px', color: 'var(--sb-text-subtle)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px' }}>Code & Technique</div>
+      <div style={{ fontSize: '12px', color: 'var(--sb-text-subtle)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px' }}>Code & Technical</div>
       <div style={{ fontSize: '32px', fontFamily: 'var(--fontfamily-monospace)', fontWeight: 400, lineHeight: 1, marginBottom: '12px', color: 'var(--sb-text)' }}>
         Roboto Mono
       </div>
@@ -70,14 +70,14 @@ Voici les polices configurées via les design tokens. Chaque famille a un rôle 
 <table className="doc-table">
   <thead>
     <tr>
-      <th>Famille</th>
+      <th>Family</th>
       <th>Classes</th>
-      <th>Tailles</th>
+      <th>Sizes</th>
     </tr>
   </thead>
   <tbody>
-    <tr><td>Titres</td><td><code>.title-&#123;size&#125;</code></td><td>sm · md · default · lg · xl · 2xl</td></tr>
-    <tr><td>Textes</td><td><code>.text-&#123;weight&#125;-&#123;size&#125;</code></td><td>weight: light · regular · bold · italic : size: sm · md · default · lg · xl</td></tr>
+    <tr><td>Titles</td><td><code>.title-&#123;size&#125;</code></td><td>sm · md · default · lg · xl · 2xl</td></tr>
+    <tr><td>Text</td><td><code>.text-&#123;weight&#125;-&#123;size&#125;</code></td><td>weight: light · regular · bold · italic : size: sm · md · default · lg · xl</td></tr>
     <tr><td>Accent</td><td><code>.accent-&#123;size&#125;</code></td><td>sm · default · lg</td></tr>
   </tbody>
 </table>
@@ -89,13 +89,13 @@ export const Row = ({ cls, sample }) => (
   </div>
 );
 
-## Titres
+## Titles
 
 export const TITLES = ['sm','md','default','lg','xl','2xl'];
 
-{TITLES.map((s) => <Row key={s} cls={`.title-${s}`} sample="Titre de section" />)}
+{TITLES.map((s) => <Row key={s} cls={`.title-${s}`} sample="Section title" />)}
 
-## Textes
+## Text
 
 export const TWEIGHTS = ['light','regular','bold','italic'];
 export const TSIZES = ['sm','md','default','lg','xl'];
@@ -111,4 +111,4 @@ export const TSIZES = ['sm','md','default','lg','xl'];
 
 export const ASIZES = ['sm','default','lg'];
 
-{ASIZES.map((s) => <Row key={s} cls={`.accent-${s}`} sample="Texte d'accentuation" />)}
+{ASIZES.map((s) => <Row key={s} cls={`.accent-${s}`} sample="Accent text" />)}

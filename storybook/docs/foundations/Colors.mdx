@@ -4,12 +4,12 @@ import manifest from "../../../projects/ui-kit/styles/generated/tokens.manifest.
 
 <Meta title="Foundations/Colors" />
 
-# Couleurs
+# Colors
 
-Cette page est **générée à partir des tokens** (`projects/ui-kit/styles/generated/tokens.manifest.json`,
-produit par `npm run tokens:build`). Ajoute / retire un token dans `design-tokens/*.json` →
-la doc se met à jour automatiquement. Les noms listés sont les **variables CSS générées**
-(copiables). Le switch mode/marque n'affecte **que les aperçus et valeurs** (scope local).
+This page is **generated from the tokens** (`projects/ui-kit/styles/generated/tokens.manifest.json`,
+produced by `npm run tokens:build`). Add / remove a token in `design-tokens/*.json` →
+the doc updates automatically. The names listed are the **generated CSS variables**
+(copyable). The mode/brand switch only affects **the previews and values** (local scope).
 
 export const COLORS = manifest.tokens.filter((t) => t.type === 'color');
 export const GROUPED = (() => {
@@ -135,7 +135,7 @@ export const ColorsExplorer = () => {
           <div className="grp"><span>Mode</span>
             {[['light','Light'],['dark','Dark']].map(([v,l]) => <button key={v} className={theme===v?'is-active':''} onClick={() => setTheme(v)}>{l}</button>)}
           </div>
-          <div className="grp"><span>Marque</span>
+          <div className="grp"><span>Brand</span>
             {[['brand1','Brand 1'],['brand2','Brand 2'],['brand3','Brand 3']].map(([v,l]) => <button key={v} className={brand===v?'is-active':''} onClick={() => setBrand(v)}>{l}</button>)}
           </div>
         </div>
@@ -151,7 +151,7 @@ export const ColorsExplorer = () => {
         <div className="tfm-table-wrap">
         <table className="tfm-table">
           <thead>
-            <tr><th style={{ width: 56 }}></th><th>Token (variable CSS)</th><th>Valeurs</th><th style={{ width: 90 }}></th></tr>
+            <tr><th style={{ width: 56 }}></th><th>Token (CSS variable)</th><th>Values</th><th style={{ width: 90 }}></th></tr>
           </thead>
           <tbody>
             {names.map((n) => (
@@ -167,13 +167,13 @@ export const ColorsExplorer = () => {
                     </div>
                   ) : '…'}
                 </td>
-                <td><button className="tfm-copy" onClick={() => copy(n)}>{copied === n ? '✓ copié' : 'copier'}</button></td>
+                <td><button className="tfm-copy" onClick={() => copy(n)}>{copied === n ? '✓ copied' : 'copy'}</button></td>
               </tr>
             ))}
           </tbody>
         </table>
         </div>
-        <p style={{ fontSize: 12, opacity: .6, marginTop: 12 }}>{names.length} token(s) · catégorie <code>{sub}</code></p>
+        <p style={{ fontSize: 12, opacity: .6, marginTop: 12 }}>{names.length} token(s) · category <code>{sub}</code></p>
       </div>
     </div>
   );
