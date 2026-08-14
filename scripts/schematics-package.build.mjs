@@ -15,7 +15,7 @@
  */
 
 import { execSync } from 'node:child_process';
-import { cpSync, copyFileSync, existsSync, mkdirSync } from 'node:fs';
+import { cpSync, copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -37,7 +37,17 @@ run(`npx tsc -p ${join(PKG, 'tsconfig.json')}`);
 // 3. Fichiers statiques copiés tels quels à côté du JS compilé.
 mkdirSync(DEST, { recursive: true });
 copyFileSync(join(PKG, 'collection.json'), join(DEST, 'collection.json'));
-copyFileSync(join(PKG, 'package.json'), join(DEST, 'package.json'));
+
+// Version alignée sur celle du kit, au moment de l'assemblage. La façade de
+// `@4sh/ui-kit` demande le compagnon en `^<version du kit>` (voir
+// projects/ui-kit/schematics/index.cjs) : une version propre au compagnon
+// pourrait ne pas satisfaire cette plage, et `ng add` échouerait à
+// l'installation. Le numéro écrit dans `projects/ui-kit-schematics/package.json`
+// n'est donc qu'un repère de développement — c'est celui du kit qui est publié.
+const companionPkg = JSON.parse(readFileSync(join(PKG, 'package.json'), 'utf8'));
+const kitVersion = JSON.parse(readFileSync(join(ROOT, 'projects/ui-kit/package.json'), 'utf8')).version;
+companionPkg.version = kitVersion;
+writeFileSync(join(DEST, 'package.json'), JSON.stringify(companionPkg, null, 2) + '\n');
 for (const name of ['README.md', 'README.fr.md']) {
   const src = join(PKG, name);
   if (existsSync(src)) copyFileSync(src, join(DEST, name));

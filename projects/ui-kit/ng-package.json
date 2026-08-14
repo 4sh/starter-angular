@@ -19,6 +19,21 @@
       "output": "."
     },
     {
+      "glob": "collection.json",
+      "input": ".",
+      "output": "."
+    },
+    {
+      "glob": "**/*.cjs",
+      "input": "schematics",
+      "output": "schematics"
+    },
+    {
+      "glob": "schema-*.json",
+      "input": "schematics",
+      "output": "schematics"
+    },
+    {
       "glob": "README.fr.md",
       "input": ".",
       "output": "."

@@ -134,6 +134,23 @@ function main() {
   // peerDependencies runtime à répercuter chez le consommateur (ng-add).
   copyFileSync(join(KIT, 'package.json'), join(ASSETS, 'ui-kit-package.json'));
 
+  // Schémas de la FAÇADE (`projects/ui-kit/collection.json`, qui donne au
+  // consommateur un nom unique — voir projects/ui-kit/schematics/index.cjs).
+  // La façade ne fait que déléguer, mais doit déclarer les mêmes options que
+  // le compagnon : c'est elle que la CLI lit pour typer les arguments
+  // (`--components` doit arriver en tableau, pas en chaîne). On les COPIE
+  // depuis le compagnon plutôt que de les réécrire : une option ajoutée d'un
+  // seul côté serait silencieusement ignorée par l'autre.
+  const facadeSchemas = [
+    ['src/ng-add/schema.json', 'schema-ng-add.json'],
+    ['src/add/schema.json', 'schema-add.json'],
+    ['src/update/schema.json', 'schema-update.json'],
+  ];
+  const facadeDir = join(ROOT, 'projects/ui-kit/schematics');
+  for (const [from, to] of facadeSchemas) {
+    copyFileSync(join(ROOT, 'projects/ui-kit-schematics', from), join(facadeDir, to));
+  }
+
   // Chaîne de génération des tokens — embarquée entière (décision validée avec
   // le designer, FSHSP-109) : `generated/` doit rester régénérable chez le
   // consommateur, pas figé une fois pour toutes.
