@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "UiKitUpdate",
+  "title": "ng generate @4sh/ui-kit-schematics:update",
+  "type": "object",
+  "properties": {
+    "yes": {
+      "type": "boolean",
+      "default": false,
+      "description": "Applique toutes les mises à jour sans confirmation composant par composant."
+    }
+  }
+}

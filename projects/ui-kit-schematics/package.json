@@ -1,0 +1,31 @@
+{
+  "name": "@4sh/ui-kit-schematics",
+  "version": "0.1.0",
+  "description": "Schematics Angular pour copier les sources brutes de @4sh/ui-kit (façon shadcn/spartan-ng) dans un projet consommateur.",
+  "homepage": "https://4sh.github.io/starter-angular/?path=/docs/introduction--docs",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/4sh/starter-angular.git",
+    "directory": "projects/ui-kit-schematics"
+  },
+  "bugs": {
+    "url": "https://github.com/4sh/starter-angular/issues"
+  },
+  "author": "4SH",
+  "license": "Apache-2.0",
+  "keywords": ["angular", "schematics", "design-system", "ui-kit"],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "schematics": "./collection.json",
+  "peerDependencies": {
+    "@angular-devkit/core": "^22.0.0",
+    "@angular-devkit/schematics": "^22.0.0"
+  },
+  "dependencies": {
+    "@inquirer/prompts": "^7.0.0",
+    "diff": "^5.2.0"
+  },
+  "sideEffects": false
+}

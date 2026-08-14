@@ -1,0 +1,154 @@
+#!/usr/bin/env node
+/**
+ * schematics-assets.build.mjs — copie les sources BRUTES du kit (jamais
+ * compilées) vers `projects/ui-kit-schematics/assets/`, pour que le
+ * schematic `add` puisse les recopier telles quelles chez le consommateur.
+ *
+ * Pourquoi un script séparé du build `ng-packagr` : `ng build ui-kit` inline
+ * le template et le SCSS de chaque composant dans le `.mjs` publié (voir
+ * FSHSP-109) — les sources n'existent nulle part ailleurs qu'ici, sur le
+ * disque, avant ce build. Ce script les fige donc en amont, indépendamment.
+ *
+ * Deux natures d'unité copiée :
+ *   - un COMPOSANT   : `projects/ui-kit/{catégorie}/ui-{nom}/` (a un
+ *     `ng-package.json`) → `assets/components/{catégorie}/ui-{nom}/`
+ *   - une base PARTAGÉE (transverse à une catégorie, ex. `forms/src` qui
+ *     porte `BaseFormField`) → `assets/shared/{catégorie}/`
+ * Seuls `*.ts`, `*.html`, `*.scss` sont copiés — jamais `*.stories.ts`,
+ * `*.spec.ts`, `*.mdx` (contrat repris de `components.check.mjs`).
+ *
+ * La fondation de styles (`styles/base`, `styles/utils`, `styles/settings`,
+ * `styles/generated`) part elle aussi dans `assets/styles/`, pour `ng-add`.
+ *
+ * Usage : node scripts/schematics-assets.build.mjs
+ */
+
+import { readdirSync, existsSync, mkdirSync, copyFileSync, rmSync } from 'node:fs';
+import { dirname, join, resolve, relative } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const KIT = join(ROOT, 'projects/ui-kit');
+const ASSETS = join(ROOT, 'projects/ui-kit-schematics/assets');
+
+const SOURCE_EXTENSIONS = new Set(['.ts', '.html', '.scss']);
+const EXCLUDED_SUFFIXES = ['.stories.ts', '.spec.ts', '.mdx'];
+
+function isSourceFile(name) {
+  const ext = name.slice(name.lastIndexOf('.'));
+  if (!SOURCE_EXTENSIONS.has(ext)) return false;
+  return !EXCLUDED_SUFFIXES.some((suffix) => name.endsWith(suffix));
+}
+
+/** Copie récursivement les fichiers source (.ts/.html/.scss) d'un dossier vers un autre. */
+function copySourceTree(srcDir, destDir) {
+  return copyTree(srcDir, destDir, isSourceFile);
+}
+
+/** Copie récursivement TOUS les fichiers d'un dossier — pour des arborescences de confiance
+ * (pipeline de tokens) où le filtre par extension `.ts/.html/.scss` ne s'applique pas (JSON…). */
+function copyTree(srcDir, destDir, filter = () => true) {
+  let count = 0;
+  for (const entry of readdirSync(srcDir, { withFileTypes: true })) {
+    const srcPath = join(srcDir, entry.name);
+    if (entry.isDirectory()) {
+      count += copyTree(srcPath, join(destDir, entry.name), filter);
+      continue;
+    }
+    if (!filter(entry.name)) continue;
+    mkdirSync(destDir, { recursive: true });
+    copyFileSync(srcPath, join(destDir, entry.name));
+    count++;
+  }
+  return count;
+}
+
+/**
+ * Découvre les entry points `ui-*` (composants) et les dossiers `src/`
+ * transverses (bases partagées) sous chaque catégorie de `projects/ui-kit`.
+ * Même logique de reconnaissance qu'`components.check.mjs` : un `ui-*` avec
+ * `ng-package.json` est un composant ; tout `src/` frère est une base
+ * partagée de la catégorie qui le contient.
+ */
+function discover(dir, category = null) {
+  const components = [];
+  const sharedDirs = [];
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    if (!entry.isDirectory()) continue;
+    const full = join(dir, entry.name);
+    if (entry.name === 'styles') continue; // géré à part
+    if (entry.name === 'src' && category) {
+      sharedDirs.push({ category, dir: full });
+      continue;
+    }
+    if (entry.name.startsWith('ui-') && existsSync(join(full, 'ng-package.json'))) {
+      components.push({ category: category ?? entry.name, name: entry.name, dir: full });
+      continue;
+    }
+    // Catégorie de premier niveau (actions/, forms/, base/…) : on descend.
+    if (!category) {
+      const { components: nested, sharedDirs: nestedShared } = discover(full, entry.name);
+      components.push(...nested);
+      sharedDirs.push(...nestedShared);
+    }
+  }
+  return { components, sharedDirs };
+}
+
+function main() {
+  rmSync(ASSETS, { recursive: true, force: true });
+
+  const { components, sharedDirs } = discover(KIT);
+
+  let componentCount = 0;
+  for (const { category, name, dir } of components) {
+    copySourceTree(dir, join(ASSETS, 'components', category, name));
+    componentCount++;
+  }
+
+  let sharedCount = 0;
+  for (const { category, dir } of sharedDirs) {
+    copySourceTree(dir, join(ASSETS, 'shared', category));
+    sharedCount++;
+  }
+
+  // Fondation de styles — arborescence déjà validée avec le designer (FSHSP-109).
+  const STYLE_DIRS = ['base', 'utils', 'settings', 'generated'];
+  let styleFiles = 0;
+  for (const name of STYLE_DIRS) {
+    const src = join(KIT, 'styles', name);
+    if (!existsSync(src)) continue;
+    styleFiles += copySourceTree(src, join(ASSETS, 'styles', name));
+  }
+
+  // package.json du kit — source de vérité pour `kitVersion` et les
+  // peerDependencies runtime à répercuter chez le consommateur (ng-add).
+  copyFileSync(join(KIT, 'package.json'), join(ASSETS, 'ui-kit-package.json'));
+
+  // Chaîne de génération des tokens — embarquée entière (décision validée avec
+  // le designer, FSHSP-109) : `generated/` doit rester régénérable chez le
+  // consommateur, pas figé une fois pour toutes.
+  let tokenFiles = 0;
+  const tokensDest = join(ASSETS, 'tokens-pipeline');
+  const designTokensSrc = join(ROOT, 'src/design-tokens');
+  if (existsSync(designTokensSrc)) {
+    tokenFiles += copyTree(designTokensSrc, join(tokensDest, 'design-tokens'), (n) => n.endsWith('.json'));
+  }
+  for (const [src, dest] of [
+    [join(ROOT, 'tokens.config.json'), join(tokensDest, 'tokens.config.json')],
+    [join(ROOT, 'scripts/tokens.build.mjs'), join(tokensDest, 'tokens.build.mjs')],
+  ]) {
+    if (!existsSync(src)) continue;
+    mkdirSync(dirname(dest), { recursive: true });
+    copyFileSync(src, dest);
+    tokenFiles++;
+  }
+
+  console.log(
+    `[schematics-assets] ${componentCount} composant(s), ${sharedCount} base(s) partagée(s), ` +
+      `${styleFiles} fichier(s) de style, ${tokenFiles} fichier(s) de pipeline de tokens ` +
+      `→ ${relative(ROOT, ASSETS)}`,
+  );
+}
+
+main();

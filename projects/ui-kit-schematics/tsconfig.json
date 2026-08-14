@@ -1,0 +1,22 @@
+/* Pas d'ng-packagr ici : un package de schematics se compile en tsc classique
+   (CommonJS), incompatible avec le pipeline Ivy/AOT de la librairie ui-kit —
+   voir FSHSP-109. `dest`/`outDir` reprend le même dossier `dist/` racine que
+   ui-kit pour rester cohérent avec le reste du repo. */
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../dist/ui-kit-schematics",
+    "rootDir": ".",
+    "module": "commonjs",
+    "moduleResolution": "node10",
+    "ignoreDeprecations": "6.0",
+    "target": "ES2022",
+    "declaration": true,
+    "declarationMap": false,
+    "sourceMap": true,
+    "types": ["node"],
+    "paths": {}
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["src/**/*.spec.ts"]
+}
