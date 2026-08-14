@@ -72,7 +72,7 @@ jobs:
     steps:
       # fetch-depth 0 : `build-storybook` calls `build-info.mjs` (`git describe
       # --tags`), which needs tags a shallow checkout would not fetch. Same
-      # reasoning as `deploy-storybook.yml`.
+      # reasoning as `deploy-pages.yml`.
       - name: Checkout repository
         uses: actions/checkout@v7
         with:

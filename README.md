@@ -15,8 +15,13 @@ npm package (one secondary entry point per component) — see
 [`projects/ui-kit/README.md`](projects/ui-kit/README.md). This repo holds both the
 package and the demo application that consumes it.
 
-**Storybook** (published catalogue):
-<https://4sh.github.io/starter-angular/?path=/docs/introduction--docs>
+Both are published to GitHub Pages on every push to `main`
+([`deploy-pages.yml`](.github/workflows/deploy-pages.yml)):
+
+- **Storybook** (published catalogue):
+  <https://4sh.github.io/starter-angular/?path=/docs/introduction--docs>
+- **Demo application** (the kit in a real app):
+  <https://4sh.github.io/starter-angular/demo/>
 
 ---
 ## Stack

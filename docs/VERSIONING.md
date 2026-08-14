@@ -32,8 +32,8 @@ As long as the version starts with `0.x.y`, the API is considered unstable: `MIN
 **If `projects/ui-kit` did not change, there is no release** — no version bump,
 no tag, no CHANGELOG entry, no publish. A change scoped to Storybook (stories,
 MDX, `storybook/` config), the demo app, CI, or documentation ships by merging to
-`main` like any other change: Storybook redeploys on every push to `main`
-([`deploy-storybook.yml`](../.github/workflows/deploy-storybook.yml)), completely
+`main` like any other change: Storybook and the demo app redeploy on every push to `main`
+([`deploy-pages.yml`](../.github/workflows/deploy-pages.yml)), completely
 independently of [`publish-ui-kit.yml`](../.github/workflows/publish-ui-kit.yml),
 which only ever runs on manual dispatch. There is nothing to gate.
 

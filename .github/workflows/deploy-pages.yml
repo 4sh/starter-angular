@@ -1,0 +1,101 @@
+name: Deploy Storybook and demo app to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+# GitHub Pages accepts a single artifact, so both builds are merged into one
+# directory before upload:
+#   /starter-angular/      → Storybook (historical URL, must not move)
+#   /starter-angular/demo/ → Angular demo application
+env:
+  PAGES_BASE: /starter-angular/
+  DEMO_BASE: /starter-angular/demo/
+
+jobs:
+  build:
+    name: Build Storybook and demo app
+    runs-on: ubuntu-latest
+    steps:
+      # fetch-depth 0 : `npm run build-storybook` calls `build-info.mjs`, which
+      # runs `git describe --tags` to find the last published version. A
+      # shallow checkout (the default) fetches no tags, so the "ahead of
+      # X.Y.Z" part of the label would silently disappear.
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Read Node.js version from .nvmrc
+        id: nvmrc
+        run: echo "NODE_VERSION=$(cat .nvmrc)" >> $GITHUB_OUTPUT
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ steps.nvmrc.outputs.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v6
+
+      - name: Build Storybook
+        run: npm run build-storybook
+
+      - name: Fix base href for GitHub Pages
+        run: |
+          sed -i -e 's|<head>|<head><base href="'"$PAGES_BASE"'">|' storybook-static/index.html
+          sed -i -e 's|<head>|<head><base href="'"$PAGES_BASE"'">|' storybook-static/iframe.html
+
+      - name: Build demo application
+        run: npm run build -- --configuration production --base-href "$DEMO_BASE"
+
+      - name: Assemble the Pages artifact
+        run: |
+          mkdir -p public
+          cp -r storybook-static/. public/
+          mkdir -p public/demo
+          cp -r dist/demo/browser/. public/demo/
+
+      # GitHub Pages serves static files only, with no rewrite rule, and honours
+      # exactly one 404.html — the one at the site root. So this single file has
+      # to cover both surfaces: it is the demo's SPA shell (a deep link such as
+      # /starter-angular/demo/orders loads it, and the Angular router resolves
+      # the route client-side thanks to the <base href>), guarded by a redirect
+      # that sends anything outside /demo/ back to the Storybook home.
+      - name: SPA fallback for the demo, Storybook home for the rest
+        run: |
+          cp dist/demo/browser/index.html public/404.html
+          sed -i -e 's|<head>|<head><script>if(!location.pathname.startsWith("'"$DEMO_BASE"'"))location.replace("'"$PAGES_BASE"'");</script>|' public/404.html
+
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: public
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
