@@ -4,7 +4,10 @@ import { UiTab, UiTabList, UiTabPanel, UiTabPanels, UiTabs } from '@4sh/ui-kit/n
 import { UiButton } from '@4sh/ui-kit/actions/ui-button';
 import { UiTag } from '@4sh/ui-kit/informative/ui-tag';
 
-const meta: Meta<UiTabs> = {
+// `prevAriaLabel` / `nextAriaLabel` are `ui-tab-list` inputs surfaced as playground controls.
+type TabsArgs = UiTabs & { prevAriaLabel: string; nextAriaLabel: string };
+
+const meta: Meta<TabsArgs> = {
   title: 'Components/ui/navigation/ui-tabs',
   component: UiTabs,
   decorators: [
@@ -75,7 +78,7 @@ const meta: Meta<UiTabs> = {
 };
 
 export default meta;
-type Story = StoryObj<UiTabs>;
+type Story = StoryObj<TabsArgs>;
 
 const LOREM =
   'Viennese et half to cortado viennese. Americano steamed caffeine filter luwak skinny half and id spoon. Redeye extraction variety shot instant qui cream roast lungo body shot mazagran.';
