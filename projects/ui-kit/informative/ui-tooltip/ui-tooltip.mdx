@@ -6,15 +6,15 @@ import { ConfigTable } from '../../../../storybook/blocks/config-table';
 
 # ui-tooltip
 
-Directive `[uiTooltip]` fournissant une **infobulle** (advisory) sur n'importe quel élément
-déclencheur. Le comportement est **headless** et s'appuie sur **Angular CDK Overlay** : le
-placement, le **retournement automatique** quand l'espace manque dans le viewport, et le
-repositionnement au scroll sont délégués au `FlexibleConnectedPositionStrategy` (aucune
-géométrie manuelle). Adaptée aux signals.
+`[uiTooltip]` directive providing an **advisory tooltip** on any trigger
+element. The behavior is **headless** and relies on **Angular CDK Overlay**:
+placement, **auto-flip** when there's no room in the viewport, and
+repositioning on scroll are delegated to `FlexibleConnectedPositionStrategy` (no
+manual geometry). Adapted to signals.
 
-Le panneau visuel (bulle + flèche) est **100 % piloté par les design tokens** de la catégorie
-`informative` (`--informative-defaulthigh-*`). Personnalisation ponctuelle via `tooltipStyleClass`
-et contenu riche via `TemplateRef`.
+The visual panel (bubble + arrow) is **100% driven by design tokens** from the
+`informative` category (`--informative-defaulthigh-*`). One-off customization via `tooltipStyleClass`
+and rich content via `TemplateRef`.
 
 <Canvas of={TooltipStories.Default} />
 
@@ -22,112 +22,113 @@ et contenu riche via `TemplateRef`.
 
 <ArgTypes of={TooltipStories} />
 
-> Le contenu se lie via l'alias de la directive : `[uiTooltip]="…"`. Il accepte une chaîne,
-> du HTML (avec `escape=false`, assaini par Angular) ou un `TemplateRef` (contexte via
+> Content binds via the directive's alias: `[uiTooltip]="…"`. It accepts a string,
+> HTML (with `escape=false`, sanitized by Angular) or a `TemplateRef` (context via
 > `[tooltipContext]`).
 
 ## Placement
 
-Quatre côtés d'ancrage (`top` par défaut). Par défaut (`fitContent=true`), le CDK bascule vers
-un côté de repli si l'infobulle sortirait du viewport, et la flèche suit le côté effectif.
-Passez `fitContent=false` pour **verrouiller** le côté choisi (aucun repli).
+Four anchor sides (`top` by default). By default (`fitContent=true`), the CDK flips to
+a fallback side if the tooltip would overflow the viewport, and the arrow follows
+the effective side. Pass `fitContent=false` to **lock** the chosen side (no fallback).
 
-> **`appendTo`** : le CDK attache l'overlay à un conteneur au niveau `<body>`. C'est volontaire : cela évite le rognage par un ancêtre
-> `overflow`/`transform` et les conflits de `z-index`. Il n'y a donc pas de prop `appendTo`.
+> **`appendTo`**: the CDK attaches the overlay to a container at the `<body>` level. This is
+> deliberate: it avoids clipping by an ancestor's
+> `overflow`/`transform` and `z-index` conflicts. There is therefore no `appendTo` prop.
 
 <Canvas of={TooltipStories.Positions} />
 
-## Contenu riche
+## Rich content
 
 <Canvas of={TooltipStories.RichContent} />
 
-## Interactivité & personnalisation
+## Interactivity & customization
 
-`autoHide=false` garde l'infobulle ouverte tant qu'on la survole (contenu sélectionnable /
-cliquable). Pour un rendu ponctuel différent, posez `tooltipStyleClass` sur le panneau et
-ciblez cette classe depuis une feuille de style globale.
+`autoHide=false` keeps the tooltip open while hovering it (selectable /
+clickable content). For a one-off different look, set `tooltipStyleClass` on the panel and
+target that class from a global stylesheet.
 
 <Canvas of={TooltipStories.Interactive} />
 <Canvas of={TooltipStories.CustomStyle} />
 
-## Bonnes pratiques
+## Best practices
 
-- **Déclencheur natif / focusable** : posez la directive sur un `<button>`, un `ui-button`,
-  un lien ou un champ. `tooltipEvent="both"` (défaut) affiche aussi au **focus clavier**.
-- **Concision** : une infobulle porte une aide brève, jamais une information essentielle ni
-  un contenu interactif indispensable (utilisez un popover/dialog pour cela).
-- **Délais** : `showDelay` (150 ms) évite le clignotement au survol de passage ; `hideDelay`
-  laisse le temps d'atteindre une infobulle interactive.
+- **Native / focusable trigger**: put the directive on a `<button>`, a `ui-button`,
+  a link or a field. `tooltipEvent="both"` (default) also shows it on **keyboard focus**.
+- **Conciseness**: a tooltip carries brief help, never essential information or
+  indispensable interactive content (use a popover/dialog for that).
+- **Delays**: `showDelay` (150 ms) avoids flickering on a passing hover; `hideDelay`
+  gives time to reach an interactive tooltip.
 
-## Accessibilité
+## Accessibility
 
 <table className="doc-table">
   <thead>
     <tr>
       <th>Point</th>
-      <th>Implémentation</th>
+      <th>Implementation</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>Association</td>
-      <td>`aria-describedby` posé sur le déclencheur pendant l'affichage, pointant l'`id` du panneau (`role="tooltip"`).</td>
+      <td>`aria-describedby` set on the trigger while shown, pointing to the panel's `id` (`role="tooltip"`).</td>
     </tr>
     <tr>
-      <td>Clavier</td>
-      <td>Affichage au focus (`tooltipEvent="both"`/`focus`) ; masquage à `Échap` (`hideOnEscape`, WCAG 1.4.13 « dismissible »).</td>
+      <td>Keyboard</td>
+      <td>Shows on focus (`tooltipEvent="both"`/`focus`); hides on `Escape` (`hideOnEscape`, WCAG 1.4.13 "dismissible").</td>
     </tr>
     <tr>
-      <td>Survolable</td>
-      <td>`autoHide=false` permet de survoler l'infobulle sans qu'elle disparaisse (WCAG « hoverable »).</td>
+      <td>Hoverable</td>
+      <td>`autoHide=false` lets you hover the tooltip without it disappearing (WCAG "hoverable").</td>
     </tr>
     <tr>
-      <td>Flèche décorative</td>
-      <td>`aria-hidden` sur la flèche ; jamais porteuse de sens.</td>
+      <td>Decorative arrow</td>
+      <td>`aria-hidden` on the arrow; never carries meaning.</td>
     </tr>
     <tr>
-      <td>Mouvement réduit</td>
-      <td>La transition d'apparition est neutralisée sous `prefers-reduced-motion: reduce`.</td>
+      <td>Reduced motion</td>
+      <td>The appearance transition is neutralized under `prefers-reduced-motion: reduce`.</td>
     </tr>
     <tr>
-      <td>Contraste</td>
-      <td>Surface/contenu issus des tokens `informative` (conformes WCAG AA en clair et sombre).</td>
+      <td>Contrast</td>
+      <td>Surface/content from the `informative` tokens (WCAG AA-compliant in light and dark).</td>
     </tr>
   </tbody>
 </table>
 
-## Exemples
+## Examples
 
 ```html
-<!-- Texte simple -->
-<button uiTooltip="Enregistrer le document">Enregistrer</button>
+<!-- Plain text -->
+<button uiTooltip="Save the document">Save</button>
 
-<!-- Côté + délais -->
-<ui-button label="Aide" uiTooltip="Détails…" tooltipPosition="right" [showDelay]="300" />
+<!-- Side + delays -->
+<ui-button label="Help" uiTooltip="Details…" tooltipPosition="right" [showDelay]="300" />
 
-<!-- Contenu riche (TemplateRef) -->
-<button [uiTooltip]="tip" [tooltipContext]="{ $implicit: user }" [autoHide]="false">Profil</button>
+<!-- Rich content (TemplateRef) -->
+<button [uiTooltip]="tip" [tooltipContext]="{ $implicit: user }" [autoHide]="false">Profile</button>
 <ng-template #tip let-u><strong>{{ u.name }}</strong><br />{{ u.role }}</ng-template>
 
-<!-- HTML brut (assaini) -->
-<span [uiTooltip]="'<b>Gras</b> autorisé'" [escape]="false">Info</span>
+<!-- Raw HTML (sanitized) -->
+<span [uiTooltip]="'<b>Bold</b> allowed'" [escape]="false">Info</span>
 ```
 
 ## Theming
 
-Le panneau consomme **directement** les design tokens de la catégorie `informative`
-(comme `ui-badge`) — surface / contenu / bordure via `--informative-defaulthigh-*`, rayon
-`--radius-default`, rembourrage `--units-*`, ombre `--shadow-default-md`. Aucun hook CSS
-spécifique au composant : basculer un thème/mode suffit à re-teinter l'infobulle.
+The panel consumes the `informative` category's design tokens **directly**
+(like `ui-badge`) — surface / content / border via `--informative-defaulthigh-*`, radius
+`--radius-default`, padding `--units-*`, shadow `--shadow-default-md`. No CSS hook
+specific to the component: switching a theme/mode is enough to retint the tooltip.
 
-Deux constantes structurelles restent **locales** (`ui-tooltip.scss`), propres à ce composant :
+Two structural constants stay **local** (`ui-tooltip.scss`), specific to this component:
 
 <ConfigTable of="ui-tooltip" />
 
-**Rendu ponctuel** : `tooltipStyleClass` ajoute une classe sur le panneau ; ciblez-la depuis une
-feuille de style **globale**. Le panneau utilisant des styles scopés, le plus fiable est de
-**re-mapper les tokens sémantiques** sur cette classe plutôt que d'écraser les propriétés
-(la substitution de variable évite tout conflit de spécificité, et la flèche suit) :
+**One-off styling**: `tooltipStyleClass` adds a class on the panel; target it from a
+**global** stylesheet. Since the panel uses scoped styles, the most reliable approach is to
+**remap the semantic tokens** onto that class rather than overriding the properties
+(variable substitution avoids any specificity conflict, and the arrow follows):
 
 ```css
 .tip-highlight {
@@ -137,7 +138,7 @@ feuille de style **globale**. Le panneau utilisant des styles scopés, le plus f
 }
 ```
 
-Pour des variantes sémantiques récurrentes (`highlight`, `success`, …), la voie idiomatique
-serait d'ajouter un input `level` générant des modifiers `._{level}` façon `ui-badge` (non
-implémenté ici, hors périmètre Figma).
-Voir aussi [Components/Configuration](?path=/docs/components-configuration--docs).
+For recurring semantic variants (`highlight`, `success`, …), the idiomatic path
+would be to add a `level` input generating `._{level}` modifiers the way `ui-badge` does (not
+implemented here, out of Figma's scope).
+See also [Components/Configuration](?path=/docs/components-configuration--docs).
