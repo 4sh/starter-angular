@@ -1,0 +1,22 @@
+// -----------------------------------------------------------------------------
+// Variables SCSS du projet.
+//
+// ⚠️ Ne remettez PAS ici les valeurs du design system (couleurs, espacements,
+// rayons, typographie) : elles vivent dans les design tokens, exposées en
+// custom properties CSS (`var(--units-md)`, `var(--global-text-default)`) et
+// régénérées par `npm run tokens:build` depuis `src/design-tokens/*.json`.
+// Une valeur dupliquée ici sortirait du thème dès le premier rebranding.
+//
+// Ce fichier est là pour ce que les tokens ne couvrent pas : chemins d'assets,
+// constantes propres au projet.
+// -----------------------------------------------------------------------------
+
+/** Chemins des images */
+$path-img: "../assets/images/" !default;
+$path-jpg: "#{$path-img}jpg/" !default;
+$path-png: "#{$path-img}png/" !default;
+$path-svg: "#{$path-img}svg/" !default;
+
+/** Chemins des polices */
+$path-font: "../assets/fonts/" !default;
+$path-icon: "#{$path-font}icon/" !default;

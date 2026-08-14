@@ -121,6 +121,15 @@ function main() {
     styleFiles += copySourceTree(src, join(ASSETS, 'styles', name));
   }
 
+  // `utils.scss` est un fichier RACINE de `styles/`, pas un membre de `utils/` :
+  // les boucles ci-dessus le rataient. C'est pourtant la barrel que chaque
+  // `.scss` de composant résout (`@use 'utils'`, 57 occurrences) — sans lui,
+  // rien de ce que copie `add` ne compile chez le consommateur.
+  // `index.scss` n'est volontairement PAS copié : le scaffold `main.scss`
+  // reprend son rôle côté consommateur (deux entrées globales prêteraient à confusion).
+  copyFileSync(join(KIT, 'styles/utils.scss'), join(ASSETS, 'styles/utils.scss'));
+  styleFiles++;
+
   // package.json du kit — source de vérité pour `kitVersion` et les
   // peerDependencies runtime à répercuter chez le consommateur (ng-add).
   copyFileSync(join(KIT, 'package.json'), join(ASSETS, 'ui-kit-package.json'));

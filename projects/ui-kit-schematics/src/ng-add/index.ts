@@ -5,6 +5,7 @@
  * La copie des composants eux-mêmes est le rôle du schematic `add` (FSHSP-109).
  */
 import { chain, Rule, SchematicContext, Tree } from '@angular-devkit/schematics';
+import { updateWorkspace } from '@schematics/angular/utility/workspace';
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Schema } from './schema';
@@ -48,12 +49,71 @@ function copyStylesFoundationRule(): Rule {
     copyAll(join(root, 'utils'), 'src/styles/ui-kit/utils', true);
     copyAll(join(root, 'settings'), 'src/styles/ui-kit/settings', true);
     copyAll(join(root, 'generated'), 'src/styles/ui-kit/generated', true);
+    // La barrel `utils.scss` : c'est elle que résout le `@use 'utils'` en tête
+    // de chaque `.scss` de composant, via l'includePath `src/styles/ui-kit`.
+    const utilsBarrel = readFileSync(join(root, 'utils.scss'), 'utf8');
+    if (tree.exists('src/styles/ui-kit/utils.scss')) tree.overwrite('src/styles/ui-kit/utils.scss', utilsBarrel);
+    else tree.create('src/styles/ui-kit/utils.scss', utilsBarrel);
     // ✏️ copié UNE FOIS, éditable ensuite.
     copyAll(join(root, 'base'), 'src/styles/base', false);
 
     context.logger.info('✔ Fondation de styles copiée (src/styles/ui-kit/, src/styles/base/).');
     return tree;
   };
+}
+
+/** Scaffolds `main.scss` / `variables.scss` : le point d'entrée global du projet.
+ * Créés une seule fois — ce sont des fichiers du consommateur dès la première
+ * copie, jamais réécrasés ensuite (FSHSP-109). */
+function createStyleScaffolds(): Rule {
+  return (tree: Tree, context: SchematicContext) => {
+    const filesDir = join(__dirname, 'files');
+    for (const name of ['main.scss', 'variables.scss']) {
+      const targetPath = `src/styles/${name}`;
+      if (tree.exists(targetPath)) continue;
+      tree.create(targetPath, readFileSync(join(filesDir, name), 'utf8'));
+    }
+    context.logger.info('✔ Scaffolds src/styles/main.scss et src/styles/variables.scss créés.');
+    return tree;
+  };
+}
+
+/**
+ * Câble la feuille globale dans `angular.json` : `styles` + les `includePaths`
+ * dont dépendent les `@use` sans chemin relatif (`utils`, `generated/tokens`…).
+ * Passe par `updateWorkspace` plutôt qu'un `JSON.parse`/`stringify` maison :
+ * l'API préserve commentaires et mise en forme du fichier existant.
+ */
+function updateAngularJson(): Rule {
+  return updateWorkspace((workspace) => {
+    for (const project of workspace.projects.values()) {
+      for (const targetName of ['build', 'test'] as const) {
+        const target = project.targets.get(targetName);
+        if (!target) continue;
+        const options = (target.options ??= {});
+
+        const styles = ((options['styles'] as string[] | undefined) ?? []).slice();
+        for (const entry of [
+          'src/styles/main.scss',
+          'node_modules/@fortawesome/fontawesome-free/css/all.css',
+          'node_modules/@angular/cdk/overlay-prebuilt.css',
+        ]) {
+          if (!styles.includes(entry)) styles.push(entry);
+        }
+        options['styles'] = styles;
+
+        const preprocessor = (options['stylePreprocessorOptions'] ?? {}) as { includePaths?: string[] };
+        const includePaths = (preprocessor.includePaths ?? []).slice();
+        // `src/styles/ui-kit` résout `@use 'utils'` et `generated/tokens` ;
+        // `src/styles` résout `base/base` et les couches du projet.
+        for (const path of ['src/styles/ui-kit', 'src/styles', 'node_modules']) {
+          if (!includePaths.includes(path)) includePaths.push(path);
+        }
+        options['stylePreprocessorOptions'] = { ...preprocessor, includePaths };
+        options['inlineStyleLanguage'] ??= 'scss';
+      }
+    }
+  });
 }
 
 function copyTokensPipeline(): Rule {
@@ -95,6 +155,14 @@ function addRuntimeDependencies(): Rule {
     for (const [name, version] of Object.entries(peerDependencies)) {
       addDependency(tree, name, version, 'dependencies');
     }
+    // FontAwesome n'est pas une peerDependency du kit (elle n'est pas importée
+    // par le TypeScript : `ui-icon` ne pose que des classes CSS), mais la
+    // feuille `all.css` est référencée dans `angular.json` juste après — sans
+    // le package, aucune icône ne s'affiche. Version alignée sur celle de la
+    // démo (`package.json` racine du starter).
+    addDependency(tree, '@fortawesome/fontawesome-free', '^7.0.0', 'dependencies');
+    // `style-dictionary` : moteur de `tokens.build.mjs`, copié juste avant.
+    addDependency(tree, 'style-dictionary', '^5.0.0', 'devDependencies');
     addNpmScript(tree, 'tokens:build', 'node scripts/tokens.build.mjs');
     // `postinstall` : concaténé s'il existe déjà, jamais écrasé.
     const json = readPackageJson(tree);
@@ -122,5 +190,12 @@ function createManifest(): Rule {
 }
 
 export function ngAdd(_options: Schema): Rule {
-  return chain([copyStylesFoundationRule(), copyTokensPipeline(), addRuntimeDependencies(), createManifest()]);
+  return chain([
+    copyStylesFoundationRule(),
+    createStyleScaffolds(),
+    copyTokensPipeline(),
+    addRuntimeDependencies(),
+    updateAngularJson(),
+    createManifest(),
+  ]);
 }

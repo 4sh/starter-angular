@@ -21,7 +21,8 @@
   "schematics": "./collection.json",
   "peerDependencies": {
     "@angular-devkit/core": "^22.0.0",
-    "@angular-devkit/schematics": "^22.0.0"
+    "@angular-devkit/schematics": "^22.0.0",
+    "@schematics/angular": "^22.0.0"
   },
   "dependencies": {
     "@inquirer/prompts": "^7.0.0",
