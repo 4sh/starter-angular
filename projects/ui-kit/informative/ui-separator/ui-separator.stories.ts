@@ -16,13 +16,13 @@ const meta: Meta<UiSeparator> = {
   argTypes: {
     label: {
       control: { type: 'text' },
-      description: 'Texte optionnel : transforme la règle en séparateur avec libellé.',
+      description: 'Optional text: turns the rule into a labeled separator.',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     orientation: {
       control: { type: 'inline-radio' },
       options: ['horizontal', 'vertical'],
-      description: 'Orientation de la règle (Figma : Axe).',
+      description: 'Rule orientation (Figma: Axis).',
       table: { type: { summary: 'SeparatorOrientation' }, defaultValue: { summary: '"horizontal"' } },
     },
     variant: {
@@ -34,18 +34,18 @@ const meta: Meta<UiSeparator> = {
     size: {
       control: { type: 'inline-radio' },
       options: ['default', 'small'],
-      description: 'Épaisseur du trait (default 2px, small 1px).',
+      description: 'Line thickness (default 2px, small 1px).',
       table: { type: { summary: 'SeparatorSize' }, defaultValue: { summary: '"default"' } },
     },
     labelAlign: {
       control: { type: 'inline-radio' },
       options: ['start', 'center', 'end'],
-      description: 'Position du libellé (Figma : Label Align — Default/Middle/End).',
+      description: 'Label position (Figma: Label Align — Default/Middle/End).',
       table: { type: { summary: 'SeparatorLabelAlign' }, defaultValue: { summary: '"start"' } },
     },
     ariaLabel: {
       control: { type: 'text' },
-      description: 'Nom accessible explicite (défaut : le label).',
+      description: 'Explicit accessible name (default: the label).',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
   },

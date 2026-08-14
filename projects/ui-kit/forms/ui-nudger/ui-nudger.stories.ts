@@ -25,20 +25,20 @@ const meta: Meta<UiNudger> = {
     level: {
       control: 'inline-radio',
       options: ['high', 'low', 'success', 'warning', 'error'],
-      description: 'Famille de couleur des deux boutons.',
+      description: 'Color family of both buttons.',
       table: { defaultValue: { summary: '"high"' } },
     },
     variant: {
       control: 'select',
       options: ['filled', 'outlined', 'ghost'],
-      description: 'Apparence appliquée aux deux boutons.',
+      description: 'Appearance applied to both buttons.',
       table: { type: { summary: 'ButtonVariant' }, defaultValue: { summary: '"filled"' } },
     },
     onColor: {
       control: { type: 'inline-radio' },
       options: [null, 'dark', 'light'],
       description:
-        'Luminosité du fond de couleur sur lequel le nudger est posé, forwardée aux deux boutons (voir ui-button.onColor).',
+        'Brightness of the background color the nudger sits on, forwarded to both buttons (see ui-button.onColor).',
       table: { type: { summary: "'dark' | 'light' | null" }, defaultValue: { summary: 'null' } },
     },
     min: { control: 'number', table: { type: { summary: 'number' } } },

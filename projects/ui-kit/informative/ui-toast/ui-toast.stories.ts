@@ -300,39 +300,39 @@ const meta: Meta<ToastArgs> = {
   argTypes: {
     title: {
       control: { type: 'text' },
-      description: 'Ligne de titre (en gras).',
+      description: 'Title line (bold).',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     text: {
       control: { type: 'text' },
-      description: 'Ligne de contenu secondaire.',
+      description: 'Secondary content line.',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     level: {
       control: { type: 'inline-radio' },
       options: ['default', 'highlight', 'success', 'warning', 'error'],
-      description: 'Niveau sémantique (couleurs + icône par défaut).',
+      description: 'Semantic level (colors + default icon).',
       table: { type: { summary: 'UiFeedbackLevel' }, defaultValue: { summary: '"default"' } },
     },
     subLevel: {
       control: { type: 'inline-radio' },
       options: ['high', 'low'],
-      description: 'Intensité (`high` = plein, `low` = subtil).',
+      description: 'Intensity (`high` = solid, `low` = subtle).',
       table: { type: { summary: 'UiSubLevel' }, defaultValue: { summary: '"high"' } },
     },
     icon: {
       control: { type: 'text' },
-      description: 'Nom FontAwesome, `false` pour masquer, ou `true` pour l’icône du niveau.',
+      description: 'FontAwesome name, `false` to hide, or `true` for the level\'s icon.',
       table: { type: { summary: 'string | boolean' }, defaultValue: { summary: 'true' } },
     },
     closable: {
       control: { type: 'boolean' },
-      description: 'Afficher le bouton de fermeture.',
+      description: 'Show the close button.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
     expanded: {
       control: { type: 'boolean' },
-      description: 'Étire la carte sur toute la largeur de la pile (mode bannière).',
+      description: 'Stretches the card across the stack\'s full width (banner mode).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
   },
@@ -429,7 +429,7 @@ export const Position: StoryObj = {
     position: {
       control: { type: 'select' },
       options: [...UI_TOAST_POSITIONS],
-      description: 'Ancrage de la pile dans le viewport.',
+      description: 'Anchoring of the stack in the viewport.',
       table: { type: { summary: 'UiToastPosition' }, defaultValue: { summary: '"top-right"' } },
     },
   },

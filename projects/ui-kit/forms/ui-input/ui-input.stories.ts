@@ -18,8 +18,8 @@ const meta: Meta<UiInput> = {
   },
   argTypes: {
     label: { control: 'text', table: { type: { summary: 'string' } } },
-    helperText: { control: 'text', description: "Texte d'aide (via ui-helper).", table: { type: { summary: 'string' } } },
-    errorText: { control: 'text', description: "Message affiché à la place de l'aide quand en erreur.", table: { type: { summary: 'string' } } },
+    helperText: { control: 'text', description: "Helper text (via ui-helper).", table: { type: { summary: 'string' } } },
+    errorText: { control: 'text', description: "Message shown instead of the helper text when in error.", table: { type: { summary: 'string' } } },
     placeholder: { control: 'text', table: { type: { summary: 'string' } } },
     type: {
       control: 'select',
@@ -28,7 +28,7 @@ const meta: Meta<UiInput> = {
     },
     size: { control: 'inline-radio', options: ['default', 'small'], table: { type: { summary: 'FieldSize' }, defaultValue: { summary: '"default"' } } },
     level: { control: 'inline-radio', options: ['default', 'success', 'error'], table: { type: { summary: 'FieldLevel' }, defaultValue: { summary: '"default"' } } },
-    unit: { control: 'text', description: 'Unité suffixe.', table: { type: { summary: 'string' } } },
+    unit: { control: 'text', description: 'Suffix unit.', table: { type: { summary: 'string' } } },
     iconLeft: { control: 'text', table: { type: { summary: 'string' } } },
     iconRight: { control: 'text', table: { type: { summary: 'string' } } },
     required: { control: 'boolean', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },

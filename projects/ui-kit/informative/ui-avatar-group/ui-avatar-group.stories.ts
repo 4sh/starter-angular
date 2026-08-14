@@ -22,7 +22,7 @@ const meta: Meta<GroupStoryArgs> = {
     size: {
       control: { type: 'inline-radio' },
       options: ['tiny', 'small', 'default', 'large'],
-      description: 'Taille appliquée aux avatars projetés (démo).',
+      description: 'Size applied to the projected avatars (demo).',
       table: { type: { summary: 'AvatarSize' }, defaultValue: { summary: '"default"' } },
     },
   },

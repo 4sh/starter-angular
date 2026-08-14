@@ -24,40 +24,40 @@ const meta: Meta<UiProgressBar> = {
   argTypes: {
     value: {
       control: { type: 'range', min: 0, max: 100, step: 1 },
-      description: 'Progression courante (0–100, bornée). Ignorée en mode `indeterminate`.',
+      description: 'Current progress (0–100, clamped). Ignored in `indeterminate` mode.',
       table: { type: { summary: 'number' }, defaultValue: { summary: '0' } },
     },
     mode: {
       control: { type: 'inline-radio' },
       options: ['determinate', 'indeterminate'],
-      description: '`determinate` suit une valeur ; `indeterminate` boucle sans valeur.',
+      description: '`determinate` follows a value; `indeterminate` loops without one.',
       table: { type: { summary: 'UiProgressBarMode' }, defaultValue: { summary: '"determinate"' } },
     },
     size: {
       control: { type: 'inline-radio' },
       options: ['default', 'small'],
-      description: 'Taille (hauteur de la piste).',
+      description: 'Size (track height).',
       table: { type: { summary: 'UiProgressBarSize' }, defaultValue: { summary: '"default"' } },
     },
     valuePosition: {
       control: { type: 'inline-radio' },
       options: ['right', 'bottom', 'inside'],
-      description: 'Emplacement du libellé : à droite, sous la barre, ou dans le remplissage (`inside`).',
+      description: 'Label placement: to the right, below the bar, or inside the fill (`inside`).',
       table: { type: { summary: 'UiProgressBarValuePosition' }, defaultValue: { summary: '"right"' } },
     },
     showValue: {
       control: { type: 'boolean' },
-      description: 'Afficher le libellé de valeur (déterminé, hors mode steps).',
+      description: 'Show the value label (determinate, outside steps mode).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
     unit: {
       control: { type: 'text' },
-      description: 'Unité concaténée à la valeur numérique.',
+      description: 'Unit concatenated to the numeric value.',
       table: { type: { summary: 'string' }, defaultValue: { summary: '"%"' } },
     },
     steps: {
       control: { type: 'number' },
-      description: 'Si > 0, découpe la barre en N segments discrets (masque le libellé).',
+      description: 'If > 0, splits the bar into N discrete segments (hides the label).',
       table: { type: { summary: 'number' }, defaultValue: { summary: '0' } },
     },
     color: {
@@ -67,7 +67,7 @@ const meta: Meta<UiProgressBar> = {
     },
     ariaLabel: {
       control: { type: 'text' },
-      description: 'Nom accessible de la barre de progression.',
+      description: 'Accessible name of the progress bar.',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
   },

@@ -107,61 +107,61 @@ const meta: Meta<UiAlert> = {
   argTypes: {
     title: {
       control: { type: 'text' },
-      description: 'Ligne de titre (gras).',
+      description: 'Title line (bold).',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     text: {
       control: { type: 'text' },
-      description: 'Corps du message.',
+      description: 'Message body.',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     level: {
       control: { type: 'select' },
       options: ['default', 'highlight', 'success', 'warning', 'error'],
-      description: 'Niveau de feedback (famille de couleur + icône par défaut).',
+      description: 'Feedback level (color family + default icon).',
       table: { type: { summary: 'UiFeedbackLevel' }, defaultValue: { summary: '"default"' } },
     },
     subLevel: {
       control: { type: 'inline-radio' },
       options: ['high', 'low'],
-      description: 'Intensité : high (soutenu) ou low (discret).',
+      description: 'Intensity: high (strong) or low (subtle).',
       table: { type: { summary: 'UiSubLevel' }, defaultValue: { summary: '"high"' } },
     },
     size: {
       control: { type: 'inline-radio' },
       options: ['default', 'large'],
-      description: 'Taille de rendu.',
+      description: 'Rendered size.',
       table: { type: { summary: 'UiAlertSize' }, defaultValue: { summary: '"default"' } },
     },
     icon: {
       control: { type: 'text' },
       description:
-        "Icône de tête : nom FontAwesome pour surcharger, `false` pour masquer, `true` pour l'icône par défaut du niveau.",
+        "Leading icon: FontAwesome name to override, `false` to hide, `true` for the level's default icon.",
       table: { type: { summary: 'string | boolean' }, defaultValue: { summary: 'true' } },
     },
     closable: {
       control: { type: 'boolean' },
-      description: 'Affiche le bouton de fermeture.',
+      description: 'Shows the close button.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
     closeIcon: {
       control: { type: 'text' },
-      description: 'Nom FontAwesome du bouton de fermeture.',
+      description: 'FontAwesome name of the close button.',
       table: { type: { summary: 'string' }, defaultValue: { summary: '"times-circle"' } },
     },
     closeAriaLabel: {
       control: { type: 'text' },
-      description: 'Nom accessible du bouton de fermeture.',
+      description: 'Accessible name of the close button.',
       table: { type: { summary: 'string' }, defaultValue: { summary: '"Close"' } },
     },
     life: {
       control: { type: 'number' },
-      description: 'Délai (ms) avant auto-disparition. `0` = jamais.',
+      description: 'Delay (ms) before auto-dismissing. `0` = never.',
       table: { type: { summary: 'number' }, defaultValue: { summary: '0' } },
     },
     ariaLabel: {
       control: { type: 'text' },
-      description: 'Nom accessible de la région alerte.',
+      description: 'Accessible name of the alert region.',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     closed: { action: 'closed', table: { category: 'Events' } },

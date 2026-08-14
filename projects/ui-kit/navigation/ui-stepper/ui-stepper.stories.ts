@@ -39,27 +39,27 @@ const meta: Meta<UiStepper> = {
     orientation: {
       control: { type: 'inline-radio' },
       options: ['horizontal', 'vertical'],
-      description: 'Axe de la progression : en-têtes en haut (horizontal) ou empilés (vertical).',
+      description: 'Progress axis: headers on top (horizontal) or stacked (vertical).',
       table: { type: { summary: "'horizontal' | 'vertical'" }, defaultValue: { summary: "'horizontal'" } },
     },
     linear: {
       control: { type: 'boolean' },
-      description: "Empêche de sauter en avant : les étapes situées après l'étape active sont désactivées.",
+      description: "Prevents skipping ahead: steps after the active one are disabled.",
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     lazy: {
       control: { type: 'boolean' },
-      description: "Défaut de groupe : ne rend le contenu d'un panneau qu'à sa première activation.",
+      description: "Group default: only renders a panel's content the first time it's activated.",
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     motion: {
       control: { type: 'boolean' },
-      description: "Anime l'apparition du panneau actif (reduced-motion respecté).",
+      description: "Animates the active panel's appearance (reduced-motion respected).",
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
     completedIcon: {
       control: { type: 'text' },
-      description: 'Icône affichée dans le marqueur des étapes terminées (sinon le numéro).',
+      description: 'Icon shown in the marker of completed steps (otherwise the number).',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
   },

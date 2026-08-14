@@ -12,17 +12,17 @@ const meta: Meta<UiMotionDemo> = {
     preset: {
       control: { type: 'select' },
       options: UI_MOTION_PRESETS,
-      description: "Préréglage d'entrée/sortie (classes `ui-motion-<preset>-enter|leave`).",
+      description: "Enter/exit preset (`ui-motion-<preset>-enter|leave` classes).",
       table: { type: { summary: 'UiMotionPreset' }, defaultValue: { summary: '"fade"' } },
     },
     duration: {
       control: { type: 'text' },
-      description: 'Surcharge locale de la durée (ex. `400ms`). Vide = durée par défaut du token.',
+      description: 'Local duration override (e.g. `400ms`). Empty = the token\'s default duration.',
       table: { type: { summary: 'string' } },
     },
     disabled: {
       control: { type: 'boolean' },
-      description: "Désactive l'animation pour cet élément (apparition instantanée).",
+      description: "Disables the animation for this element (instant appearance).",
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
   },

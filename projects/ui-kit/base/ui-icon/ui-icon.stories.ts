@@ -10,12 +10,12 @@ const meta: Meta<UiIcon> = {
   argTypes: {
     name: {
       control: { type: 'text' },
-      description: "Nom de l'icône pour la famille sélectionnée (ex. circle-user)",
+      description: "Icon name for the selected family (e.g. circle-user)",
       table: { type: { summary: 'string' } },
     },
     family: {
       control: { type: 'text' },
-      description: "Clé de la famille d'icônes (défaut : famille configurée, sinon fontawesome).",
+      description: "Icon family key (default: configured family, otherwise fontawesome).",
       table: { type: { summary: 'string' }, defaultValue: { summary: 'fontawesome' } },
     },
     size: {

@@ -16,28 +16,28 @@ const meta: Meta<UiLabel> = {
   argTypes: {
     label: {
       control: { type: 'text' },
-      description: 'Texte du label (ou contenu projeté via <ng-content>).',
+      description: 'Label text (or content projected via <ng-content>).',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     required: {
       control: { type: 'boolean' },
-      description: 'Affiche le marqueur requis (*).',
+      description: 'Shows the required marker (*).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     size: {
       control: { type: 'inline-radio' },
       options: ['default', 'small'],
-      description: 'Taille du texte.',
+      description: 'Text size.',
       table: { type: { summary: 'LabelSize' }, defaultValue: { summary: '"default"' } },
     },
     for: {
       control: { type: 'text' },
-      description: 'Attribut for — id de l’élément de formulaire labellisé.',
+      description: 'for attribute — id of the labeled form element.',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     disabled: {
       control: { type: 'boolean' },
-      description: 'Style désactivé (cascadé par le composant de formulaire parent).',
+      description: 'Disabled style (cascaded by the parent form component).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
   },

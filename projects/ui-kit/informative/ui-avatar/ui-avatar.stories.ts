@@ -20,22 +20,22 @@ const meta: Meta<UiAvatar> = {
   argTypes: {
     image: {
       control: { type: 'text' },
-      description: 'Source de l’image (mode Image, priorité la plus haute).',
+      description: 'Image source (Image mode, highest priority).',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     alt: {
       control: { type: 'text' },
-      description: 'Texte alternatif de l’image (nom accessible en mode Image).',
+      description: 'Alt text of the image (accessible name in Image mode).',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     label: {
       control: { type: 'text' },
-      description: 'Initiales / court texte (mode Label, si pas d’image).',
+      description: 'Initials / short text (Label mode, if no image).',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     icon: {
       control: { type: 'text' },
-      description: 'Nom FontAwesome (mode Icon, fallback par défaut).',
+      description: 'FontAwesome name (Icon mode, default fallback).',
       table: { type: { summary: 'string' }, defaultValue: { summary: '"user"' } },
     },
     size: {
@@ -52,7 +52,7 @@ const meta: Meta<UiAvatar> = {
     },
     ariaLabel: {
       control: { type: 'text' },
-      description: 'Nom accessible explicite (recommandé en mode Image et Icon).',
+      description: 'Explicit accessible name (recommended in Image and Icon modes).',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
   },

@@ -16,7 +16,7 @@ const meta: Meta<UiBadge> = {
   argTypes: {
     value: {
       control: { type: 'text' },
-      description: 'Contenu textuel (compteur ou court label). Absent + sans icône = point.',
+      description: 'Text content (counter or short label). Absent + no icon = dot.',
       table: { type: { summary: 'string | number' }, defaultValue: { summary: 'undefined' } },
     },
     level: {
@@ -28,7 +28,7 @@ const meta: Meta<UiBadge> = {
     subLevel: {
       control: { type: 'inline-radio' },
       options: ['high', 'low'],
-      description: 'Intensité : high (soutenu) ou low (discret).',
+      description: 'Intensity: high (strong) or low (subtle).',
       table: { type: { summary: 'UiSubLevel' }, defaultValue: { summary: '"high"' } },
     },
     size: {
@@ -39,12 +39,12 @@ const meta: Meta<UiBadge> = {
     },
     icon: {
       control: { type: 'text' },
-      description: "Nom FontAwesome de l'icône (optionnel, précède le texte).",
+      description: "FontAwesome name of the icon (optional, precedes the text).",
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     ariaLabel: {
       control: { type: 'text' },
-      description: 'Nom accessible (recommandé si icon-only ou compteur ambigu).',
+      description: 'Accessible name (recommended if icon-only or an ambiguous counter).',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
   },

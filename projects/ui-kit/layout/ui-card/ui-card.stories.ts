@@ -34,34 +34,34 @@ const meta: Meta<UiCard> = {
   argTypes: {
     header: {
       control: { type: 'text' },
-      description: 'Titre (raccourci du slot `uiCardTitle`).',
+      description: 'Title (shorthand for the `uiCardTitle` slot).',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     subheader: {
       control: { type: 'text' },
-      description: 'Sous-titre (raccourci du slot `uiCardSubtitle`).',
+      description: 'Subtitle (shorthand for the `uiCardSubtitle` slot).',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     variant: {
       control: { type: 'inline-radio' },
       options: ['outlined', 'elevated', 'flat'],
-      description: 'Traitement de la surface : bordure, ombre, ou aucun.',
+      description: 'Surface treatment: border, shadow, or none.',
       table: { type: { summary: 'CardVariant' }, defaultValue: { summary: '"outlined"' } },
     },
     contentFlush: {
       control: { type: 'boolean' },
       description:
-        'Retire la gouttière horizontale du contenu (pleine largeur) : le consommateur gère la mise en page interne. Regouttiérer avec `padding-inline: var(--ui-card-padding)`.',
+        'Removes the content\'s horizontal gutter (full width): the consumer manages the internal layout. Re-add it with `padding-inline: var(--ui-card-padding)`.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     ariaLabel: {
       control: { type: 'text' },
-      description: 'Nom accessible (transforme la carte en région `role="region"`).',
+      description: 'Accessible name (turns the card into a `role="region"`).',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     ariaLabelledBy: {
       control: { type: 'text' },
-      description: 'Id de l’élément qui nomme la carte (région).',
+      description: 'Id of the element that names the card (region).',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
   },

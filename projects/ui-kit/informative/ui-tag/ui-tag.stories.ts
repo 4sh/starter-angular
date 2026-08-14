@@ -16,7 +16,7 @@ const meta: Meta<UiTag> = {
   argTypes: {
     label: {
       control: { type: 'text' },
-      description: 'Texte du tag.',
+      description: 'Tag text.',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     level: {
@@ -28,7 +28,7 @@ const meta: Meta<UiTag> = {
     subLevel: {
       control: { type: 'inline-radio' },
       options: ['high', 'low'],
-      description: 'Intensité : high (soutenu) ou low (discret).',
+      description: 'Intensity: high (strong) or low (subtle).',
       table: { type: { summary: 'UiSubLevel' }, defaultValue: { summary: '"high"' } },
     },
     size: {
@@ -39,22 +39,22 @@ const meta: Meta<UiTag> = {
     },
     iconLeft: {
       control: { type: 'text' },
-      description: "Nom FontAwesome de l'icône de gauche (optionnelle).",
+      description: "FontAwesome name of the left icon (optional).",
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     iconRight: {
       control: { type: 'text' },
-      description: "Nom FontAwesome de l'icône de droite (optionnelle).",
+      description: "FontAwesome name of the right icon (optional).",
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     rounded: {
       control: { type: 'boolean' },
-      description: 'Forme pilule (défaut) ; rectangle arrondi si false.',
+      description: 'Pill shape (default); rounded rectangle if false.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
     ariaLabel: {
       control: { type: 'text' },
-      description: 'Nom accessible (recommandé si le tag n’a pas de texte).',
+      description: 'Accessible name (recommended if the tag has no text).',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
   },

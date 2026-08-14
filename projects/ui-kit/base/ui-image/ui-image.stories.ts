@@ -100,17 +100,17 @@ const meta: Meta<StorybookWrapper> = {
     argTypes: {
         name: {
             control: 'text',
-            description: 'Nom du fichier image local (clé dans assets-map.json, résolution thème/marque)',
+            description: 'Local image file name (key in assets-map.json, theme/brand resolution)',
             table: { defaultValue: { summary: 'undefined' } },
         },
         src: {
             control: 'text',
-            description: 'URL distante/absolue (via NgOptimizedImage) — prioritaire sur `name`',
+            description: 'Remote/absolute URL (via NgOptimizedImage) — takes priority over `name`',
             table: { defaultValue: { summary: 'undefined' } },
         },
         fallback: {
             control: 'text',
-            description: "Nom d'asset local affiché si l'image principale échoue (placeholder tokenisé sinon)",
+            description: "Local asset name shown if the main image fails (tokenized placeholder otherwise)",
             table: { defaultValue: { summary: 'undefined' } },
         },
         width: {
@@ -120,7 +120,7 @@ const meta: Meta<StorybookWrapper> = {
         },
         widthUnit: {
             control: 'text',
-            description: 'Unité CSS pour la largeur (px, %, rem…)',
+            description: 'CSS unit for the width (px, %, rem…)',
             table: { defaultValue: { summary: "'px'" } },
         },
         height: {
@@ -130,17 +130,17 @@ const meta: Meta<StorybookWrapper> = {
         },
         heightUnit: {
             control: 'text',
-            description: 'Unité CSS pour la hauteur (px, %, rem…)',
+            description: 'CSS unit for the height (px, %, rem…)',
             table: { defaultValue: { summary: "'px'" } },
         },
         alt: {
             control: 'text',
-            description: "Texte alternatif pour l'accessibilité",
+            description: "Alt text for accessibility",
             table: { defaultValue: { summary: 'undefined' } },
         },
         priority: {
             control: 'boolean',
-            description: 'Active le chargement prioritaire (LCP)',
+            description: 'Enables priority loading (LCP)',
             table: { defaultValue: { summary: 'false' } },
         },
         fill: {
@@ -151,7 +151,7 @@ const meta: Meta<StorybookWrapper> = {
         brandName: {
             control: 'select',
             options: ['common', 'themeone', 'themetwo', 'themethree'],
-            description: 'Simule la marque active (dossier racine des assets)',
+            description: 'Simulates the active brand (assets root folder)',
             table: { defaultValue: { summary: "'common'" } },
         },
     },

@@ -41,7 +41,7 @@ const meta: Meta<UiFileUpload> = {
     mode: {
       control: { type: 'inline-radio' },
       options: ['field', 'drag'],
-      description: 'Disposition : champ compact ou zone de glisser-déposer.',
+      description: 'Layout: compact field or drag-and-drop zone.',
       table: { type: { summary: 'UiFileUploadMode' }, defaultValue: { summary: '"field"' } },
     },
     size: {
@@ -51,7 +51,7 @@ const meta: Meta<UiFileUpload> = {
     },
     multiple: {
       control: { type: 'boolean' },
-      description: 'Autorise la sélection de plusieurs fichiers.',
+      description: 'Allows selecting multiple files.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     accept: {
@@ -61,12 +61,12 @@ const meta: Meta<UiFileUpload> = {
     },
     auto: {
       control: { type: 'boolean' },
-      description: 'Téléverse chaque fichier dès sa sélection.',
+      description: 'Uploads each file as soon as it\'s selected.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     customUpload: {
       control: { type: 'boolean' },
-      description: "Délègue le téléversement à la sortie `uploadHandler`.",
+      description: "Delegates uploading to the `uploadHandler` output.",
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     disabled: {
@@ -75,7 +75,7 @@ const meta: Meta<UiFileUpload> = {
     },
     hint: {
       control: { type: 'text' },
-      description: 'Petit texte indicatif sous la zone (types acceptés, taille max).',
+      description: 'Small hint text under the zone (accepted types, max size).',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
   },

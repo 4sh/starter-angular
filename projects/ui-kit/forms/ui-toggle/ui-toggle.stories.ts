@@ -20,12 +20,12 @@ const meta: Meta<UiToggle> = {
   argTypes: {
     label: {
       control: { type: 'text' },
-      description: 'Texte du label (clic dessus = bascule).',
+      description: 'Label text (clicking it toggles).',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     ariaLabel: {
       control: { type: 'text' },
-      description: 'Nom accessible si aucun label visible.',
+      description: 'Accessible name if no visible label.',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     size: {
@@ -37,12 +37,12 @@ const meta: Meta<UiToggle> = {
     labelPosition: {
       control: { type: 'inline-radio' },
       options: ['before', 'after'],
-      description: 'Côté du label (gauche = before / droite = after). Les deux côtés sont cliquables.',
+      description: 'Label side (left = before / right = after). Both sides are clickable.',
       table: { type: { summary: 'ToggleLabelPosition' }, defaultValue: { summary: '"after"' } },
     },
     handle: {
       control: false,
-      description: 'Template personnalisé du curseur (contexte `{ checked }`).',
+      description: 'Custom thumb template (`{ checked }` context).',
       table: { type: { summary: 'TemplateRef<ToggleHandleContext>' } },
     },
     required: {
@@ -52,7 +52,7 @@ const meta: Meta<UiToggle> = {
     },
     disabled: {
       control: { type: 'boolean' },
-      description: 'Désactive le switch (attribut natif).',
+      description: 'Disables the switch (native attribute).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     readonly: {
@@ -62,12 +62,12 @@ const meta: Meta<UiToggle> = {
     },
     invalid: {
       control: { type: 'boolean' },
-      description: 'Force le style erreur (auto si le contrôle est invalide et touché/modifié).',
+      description: 'Forces the error style (automatic if the control is invalid and touched/dirty).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     tabindex: {
       control: { type: 'number' },
-      description: 'tabindex forwardé sur l’input natif.',
+      description: 'tabindex forwarded to the native input.',
       table: { type: { summary: 'number' }, defaultValue: { summary: 'undefined' } },
     },
     toggleChange: { action: 'toggleChange', table: { disable: true } },
