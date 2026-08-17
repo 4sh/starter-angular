@@ -19,6 +19,13 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 ### Added
 - **`@4sh/ui-kit-schematics` embarque son `LICENSE` et ses README** (EN + FR). Le package déclarait `Apache-2.0` sans en fournir le texte, alors que la licence (§4a) demande qu'une redistribution en joigne une copie — d'autant plus ici que ce package existe pour que son contenu soit recopié ailleurs. Sa page npmjs, jusque-là vide, redirige maintenant vers `@4sh/ui-kit` : le compagnon ne s'installe jamais directement.
 
+### Fixed
+- **Les sources copiées n'importent plus depuis `node_modules`** (FSHSP-119). Un composant copié résolvait ses dépendances dans `node_modules/@4sh/ui-kit`, c'est-à-dire le code compilé : modifier le `ui-icon` copié n'avait aucun effet sur les composants qui l'utilisent, ce qui annulait la raison d'être du starter. Les 139 imports `@4sh/ui-kit/*` des sources sont désormais réadressés vers les copies voisines au moment de la copie.
+
+  Un import passant par un barrel est résolu jusqu'au fichier qui porte réellement le symbole, et **scindé** si ses symboles sont dispersés (`{ UiIcon, UiIconType }` → `ui-icon.ts` + `ui-icon-families.ts`). Un symbole introuvable interrompt la copie en le nommant, plutôt que d'écrire un chemin faux.
+
+  Effets de bord corrigés au passage : les dépendances copiées n'étaient utilisées par personne (copies mortes, suivies par `update` pour rien), le bundle embarquait le composant deux fois, et du code applicatif dépendait d'une `devDependency` — ce qui cassait en `npm ci --omit=dev`.
+
 ### Changed
 - ⚠️ **L'arborescence copiée est aplatie, et les fichiers transverses sortent de `components/`** (FSHSP-121). La copie reproduisait la structure d'`ng-packagr` (`ui-checkbox/src/lib/ui-checkbox.ts`, plus un barrel `src/public-api.ts`) : `src/` et `lib/` délimitent la surface publiée d'une librairie, et une fois le fichier chez le consommateur ils n'encadrent plus rien — ils enfouissaient chaque composant de deux niveaux. Elles disparaissent, le barrel avec :
 

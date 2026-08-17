@@ -1,13 +1,15 @@
 /**
  * copy — recopie une unité (`AssetUnit`) dans l'arbre du projet consommateur,
- * aplatie (FSHSP-121), avec en-tête de traçabilité (origine + version +
- * licence) sur chaque fichier.
+ * aplatie (FSHSP-121), imports réadressés vers les copies voisines (FSHSP-119),
+ * avec en-tête de traçabilité (origine + version + licence) sur chaque fichier.
  */
 import type { Tree } from '@angular-devkit/schematics';
+import { SchematicsException } from '@angular-devkit/schematics';
 import { readFileSync } from 'node:fs';
 import type { AssetUnit } from './component-registry';
 import { flattenedRelPath, unitSourceFiles } from './component-registry';
 import { BARREL_FILENAME } from './export-map';
+import { rewriteKitImports } from './rewrite-imports';
 
 const HEADER_STYLE: Record<string, (lines: string[]) => string> = {
   '.ts': (lines) => lines.map((l) => `// ${l}`).join('\n') + '\n',
@@ -38,6 +40,7 @@ export interface RenderedFile {
  * sans rien écrire — réutilisé par `copyUnit` et par le diff d'`update`. */
 export function renderUnitFiles(unit: AssetUnit, kitVersion: string): RenderedFile[] {
   const files: RenderedFile[] = [];
+  const unresolved: string[] = [];
 
   for (const absSrc of unitSourceFiles(unit)) {
     // Le barrel est une surface de publication de librairie : il n'a rien à
@@ -48,10 +51,25 @@ export function renderUnitFiles(unit: AssetUnit, kitVersion: string): RenderedFi
     const ext = absSrc.slice(absSrc.lastIndexOf('.'));
     const targetPath = `${unit.targetDir}/${relPath}`;
 
-    files.push({
-      targetPath,
-      content: traceabilityHeader(unit, relPath, kitVersion, ext) + readFileSync(absSrc, 'utf8'),
-    });
+    let source = readFileSync(absSrc, 'utf8');
+    if (ext === '.ts') {
+      const result = rewriteKitImports(source, targetPath);
+      source = result.content;
+      unresolved.push(...result.unresolved.map((item) => `${relPath} → ${item}`));
+    }
+
+    files.push({ targetPath, content: traceabilityHeader(unit, relPath, kitVersion, ext) + source });
+  }
+
+  if (unresolved.length) {
+    // Laisser passer produirait un projet qui ne compile pas, avec une cause
+    // très difficile à remonter jusqu'ici. On échoue sur place, en nommant.
+    throw new SchematicsException(
+      `${unit.name} : ${unresolved.length} import(s) du kit non réadressé(s) —\n  ` +
+        unresolved.join('\n  ') +
+        `\nCorriger la table d'exports (utils/export-map.ts) ou le mapping ` +
+        `(utils/component-registry.ts#resolveSpecifier) avant de publier.`,
+    );
   }
 
   return files;
