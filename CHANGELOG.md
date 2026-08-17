@@ -54,7 +54,13 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
   Les bases partagées atterrissaient dans `components/ui/{catégorie}/_shared/`, c'est-à-dire des services (`theme.service`) et des utilitaires (`mask-engine`) rangés sous `components/`. Elles vivent maintenant dans `ui-core/`, en conservant leur regroupement par domaine. Les fichiers propres à un composant (`date-utils`, `ui-alert.types`, `ui-toast.service`…) restent à côté de lui : ils ne servent qu'à lui.
 
   **Mise à jour non triviale** pour un projet déjà installé en `0.2.0` : les chemins des fichiers copiés changent tous, donc `update` ne reconnaîtra pas les anciens. Déplacer les fichiers existants avant de lancer la commande, ou repartir d'un `add` propre.
-- **L'en-tête de traçabilité des fichiers copiés par `ng generate @4sh/ui-kit:add` porte la mention de licence** (`Apache-2.0 — Copyright 2026 4SH.`) en plus de son origine et de sa version. Une fois copié, le fichier vit dans le dépôt du consommateur, où plus rien n'indiquait sous quels termes il est fourni. Conséquence attendue : le premier `ng generate @4sh/ui-kit:update` suivant cette version affiche un diff d'une ligne en tête de chaque fichier installé.
+- **L'en-tête de traçabilité des fichiers copiés tient sur une ligne et porte la mention de licence** :
+
+  ```ts
+  // @4sh/ui-kit@0.2.0 — Apache-2.0 — Copyright 2026 4SH.
+  ```
+
+  Il reprenait la catégorie, le nom du composant et le chemin du fichier — trois informations que le fichier copié porte déjà dans son emplacement. Ne reste que la version d'origine, et la licence : une fois copié, le fichier vit dans le dépôt du consommateur, où plus rien n'indiquait sous quels termes il est fourni. Conséquence attendue : le premier `ng generate @4sh/ui-kit-schematics:update` suivant cette version affiche un diff d'une ligne en tête de chaque fichier installé.
 
 ## [0.2.0] - 2026-08-14
 
