@@ -6,4 +6,6 @@ export interface Schema {
   all?: boolean;
   /** Pose la fondation seule, sans copier de composant. */
   skipComponents?: boolean;
+  /** Copie la doc des composants (story + MDX) et la chaîne qui l'alimente. */
+  withStorybook?: boolean;
 }

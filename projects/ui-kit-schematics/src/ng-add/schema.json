@@ -23,6 +23,11 @@
       "type": "boolean",
       "default": false,
       "description": "Pose la fondation seule. Les composants se copient ensuite avec `ng generate @4sh/ui-kit-schematics:add`."
+    },
+    "withStorybook": {
+      "type": "boolean",
+      "default": false,
+      "description": "Copie la story et le MDX de chaque composant, plus la chaîne de doc (docs.config.mjs, bloc ConfigTable). La configuration Storybook elle-même reste à poser."
     }
   }
 }

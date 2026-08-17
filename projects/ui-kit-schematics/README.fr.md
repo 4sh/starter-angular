@@ -37,8 +37,22 @@ jamais une fusion automatique.
 | `ng add @4sh/ui-kit-schematics` | fondation **et** composants, d'un coup |
 | `ng add @4sh/ui-kit-schematics --skip-components` | fondation seule, composants choisis plus tard |
 | `ng add @4sh/ui-kit-schematics --skip-install` | ne pas lancer `npm install` (projet qui pilote son lockfile) |
+| `ng add @4sh/ui-kit-schematics --with-storybook` | copier aussi la story et le MDX de chaque composant (voir ci-dessous) |
 | `ng generate @4sh/ui-kit-schematics:add` | copier d'autres composants (interactif, ou `--components`, ou `--all`) |
 | `ng generate @4sh/ui-kit-schematics:update` | diff des composants copiés face aux sources publiées |
+
+### Documenter ses copies : `--with-storybook`
+
+Désactivé par défaut. Activé, chaque composant arrive avec sa story et sa page
+MDX, et le projet reçoit la chaîne qui garde leurs tables *Theming* justes :
+`scripts/docs.config.mjs` lit les rôles `///` de vos `.scss`, si bien que les
+tables décrivent **vos** valeurs — la raison même de copier les sources. Le choix
+est retenu dans `ui-kit.json`, et `update` s'y tient.
+
+Ce que cela ne fait **pas** encore : installer Storybook ni écrire sa
+configuration. Pointez votre `storybook/main.js` sur
+`src/app/shared/components/**/*.mdx` et `**/*.stories.ts`, et lancez
+`npm run docs:config` avant de le démarrer.
 
 ### `@4sh/ui-kit` n'est délibérément **pas** installé
 

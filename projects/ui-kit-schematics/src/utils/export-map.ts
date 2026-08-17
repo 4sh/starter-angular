@@ -80,6 +80,10 @@ export function buildExportMap(unit: AssetUnit): Map<string, string> {
       continue;
     }
     if (!absPath.endsWith('.ts')) continue;
+    // Une story exporte des symboles (`export const High: Story`) qui ne sont
+    // pas de l'API : les indexer ferait réadresser un import du kit vers un
+    // fichier de doc si les deux noms se croisaient (FSHSP-125).
+    if (absPath.endsWith('.stories.ts')) continue;
 
     // Chemin aplati, sans extension — c'est ce qu'un import doit désigner.
     const flattened = flattenedRelPath(unit, absPath).replace(/\.ts$/, '');

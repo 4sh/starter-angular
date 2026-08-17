@@ -14,6 +14,10 @@
       "type": "boolean",
       "default": false,
       "description": "Copie tous les composants disponibles, sans prompt."
+    },
+    "withStorybook": {
+      "type": "boolean",
+      "description": "Copie aussi la story et le MDX de chaque composant. Omis → choix mémorisé dans ui-kit.json."
     }
   }
 }

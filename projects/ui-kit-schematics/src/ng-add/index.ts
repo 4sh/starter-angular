@@ -18,7 +18,7 @@ import { join } from 'node:path';
 import type { Schema } from './schema';
 import { addDependency, addNpmScript, readPackageJson } from '../utils/package-json';
 import { emptyManifest, MANIFEST_PATH, writeManifest } from '../utils/manifest';
-import { stylesFoundationDir } from '../utils/component-registry';
+import { CONFIG_TABLE_PATH, docsPipelineDir, stylesFoundationDir } from '../utils/component-registry';
 import { readKitManifestInfo } from '../utils/kit-manifest';
 import { add } from '../add';
 
@@ -146,6 +146,32 @@ function copyTokensPipeline(): Rule {
   };
 }
 
+/**
+ * Chaîne de doc (FSHSP-125), pendant de `copyTokensPipeline` : le bloc
+ * `<ConfigTable>` qu'importe chaque MDX copié, et le script qui lui produit son
+ * manifeste depuis les `///` des `.scss` du projet.
+ *
+ * Sans elle, la section « Theming » de chaque page décrirait les valeurs du kit
+ * au jour de la copie, pas celles du projet — or c'est précisément ce que ce
+ * système existe pour éviter. Le script est copié tel quel : il reconnaît seul
+ * la disposition d'un projet consommateur.
+ */
+function copyDocsPipeline(): Rule {
+  return (tree: Tree, context: SchematicContext) => {
+    const dir = docsPipelineDir();
+    for (const [name, targetPath] of [
+      ['docs.config.mjs', 'scripts/docs.config.mjs'],
+      ['config-table.js', CONFIG_TABLE_PATH],
+    ] as const) {
+      if (tree.exists(targetPath)) continue; // éditable : jamais réécrasé
+      tree.create(targetPath, readFileSync(join(dir, name), 'utf8'));
+    }
+    addNpmScript(tree, 'docs:config', 'node scripts/docs.config.mjs');
+    context.logger.info(`✔ Chaîne de doc copiée (scripts/docs.config.mjs, ${CONFIG_TABLE_PATH}).`);
+    return tree;
+  };
+}
+
 function addRuntimeDependencies(): Rule {
   return (tree: Tree, context: SchematicContext) => {
     const { peerDependencies } = readKitManifestInfo();
@@ -179,11 +205,11 @@ function addRuntimeDependencies(): Rule {
   };
 }
 
-function createManifest(): Rule {
+function createManifest(withStorybook: boolean): Rule {
   return (tree: Tree, context: SchematicContext) => {
     if (tree.exists(MANIFEST_PATH)) return tree; // ré-exécution de `ng add` : on ne réinitialise pas
     const { version } = readKitManifestInfo();
-    writeManifest(tree, emptyManifest(version));
+    writeManifest(tree, emptyManifest(version, withStorybook));
     context.logger.info(`✔ ${MANIFEST_PATH} créé (kitVersion: ${version}).`);
     return tree;
   };
@@ -207,13 +233,18 @@ function installRuntimeDependencies(): Rule {
 }
 
 export function ngAdd(options: Schema): Rule {
+  const withStorybook = options.withStorybook ?? false;
+
   const foundation = [
     copyStylesFoundationRule(),
     createStyleScaffolds(),
     copyTokensPipeline(),
+    // La chaîne de doc ne sert qu'aux MDX copiés : sans eux, ce sont deux
+    // fichiers morts dans le dépôt du consommateur.
+    ...(withStorybook ? [copyDocsPipeline()] : []),
     addRuntimeDependencies(),
     updateAngularJson(),
-    createManifest(),
+    createManifest(withStorybook),
   ];
 
   // En queue de chaîne : la tâche s'exécute après application de l'arbre, donc
@@ -237,5 +268,9 @@ export function ngAdd(options: Schema): Rule {
     ]);
   }
 
-  return chain([...foundation, add({ components: options.components, all: options.all }), ...install]);
+  return chain([
+    ...foundation,
+    add({ components: options.components, all: options.all, withStorybook }),
+    ...install,
+  ]);
 }
