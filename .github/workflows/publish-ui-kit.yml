@@ -1,10 +1,11 @@
 name: Publish @4sh/ui-kit to npm
 
 # Publishes TWO packages in lockstep, from the same approved job:
-#   @4sh/ui-kit            — the compiled components
+#   @4sh/ui-kit            — the compiled components (library mode)
 #   @4sh/ui-kit-schematics — the raw sources the starter copies (FSHSP-109)
-# They always carry the same version (stamped from the kit at assembly time),
-# because the kit's ng-add facade requests `^<kit version>` of the companion.
+# They always carry the same version (stamped from the kit at assembly time):
+# the companion embeds a copy of the kit's sources, and that shared number is what
+# identifies which kit a copied file came from (FSHSP-122).
 
 # Manual trigger only: publishing is irreversible (a name+version can never be
 # reused, and `npm unpublish` is limited to 72h), so it never fires on a push.
@@ -73,10 +74,10 @@ jobs:
       - name: Build the schematics package
         run: npm run schematics:build
 
-      # Les deux packages partent ensemble et portent le MÊME numéro : la façade
-      # de `@4sh/ui-kit` demande le compagnon en `^<version du kit>` (voir
-      # projects/ui-kit/schematics/index.cjs). Un décalage ici casserait
-      # `ng add` chez le consommateur, sans que rien ne le signale côté kit.
+      # Les deux packages partent ensemble et portent le MÊME numéro : c'est lui
+      # qui identifie de quel kit vient un fichier copié (en-tête de traçabilité
+      # + ui-kit.json, dont `update` se sert pour ses diffs). Un décalage ici
+      # rendrait cette provenance fausse, sans que rien ne le signale.
       - name: Check both packages carry the same version
         run: |
           kit=$(node -p "require('./dist/ui-kit/package.json').version")
@@ -197,16 +198,19 @@ jobs:
       # no notion of a transaction: the second publish can fail on its own. The
       # order decides what a half-published release leaves behind.
       #
-      #   companion then kit (this order) — if the companion fails, the kit is
-      #     never published and nothing on the registry references a missing
-      #     package. If the kit then fails, the orphan companion version is
-      #     inert: no released kit points at it.
-      #   kit then companion — a companion failure would strand a published kit
-      #     whose facade requests `^<version>` of something that does not exist,
-      #     breaking `ng add` for everyone, with no way to unpublish after 72h.
+      # Since FSHSP-122 neither package references the other at install time, so
+      # a partial release no longer breaks anyone — it used to strand a published
+      # kit whose facade required a companion that did not exist, making `ng add`
+      # fail for everyone. What is left at stake is narrower:
       #
-      # Both failure modes are recoverable, but only one of them is invisible to
-      # consumers. Do not swap these two steps.
+      #   companion then kit (this order) — an orphan companion ships sources
+      #     whose header announces a kit version absent from the registry.
+      #   kit then companion — an orphan kit leaves the starter path copying the
+      #     PREVIOUS version's sources, silently, while library mode moved on.
+      #
+      # The first is the more legible failure: the version it names simply is not
+      # there yet, rather than a starter quietly one release behind. Either way
+      # the fix is to publish the missing half, or a patch. Do not swap these.
       - name: Publish @4sh/ui-kit-schematics
         run: npm publish --provenance
         working-directory: dist/ui-kit-schematics
