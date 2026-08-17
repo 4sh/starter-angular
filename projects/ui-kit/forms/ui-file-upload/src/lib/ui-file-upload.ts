@@ -17,7 +17,6 @@ import {
 import { NgTemplateOutlet } from '@angular/common';
 import { UiIcon } from '@4sh/ui-kit/base/ui-icon';
 import { UiButton } from '@4sh/ui-kit/actions/ui-button';
-import { UiLink } from '@4sh/ui-kit/actions/ui-link';
 import { UiFileUploadList } from './ui-file-upload-list';
 import { formatLabel } from '@4sh/ui-kit/forms';
 import {
@@ -50,7 +49,7 @@ let nextInstanceId = 0;
  */
 @Component({
   selector: 'ui-file-upload',
-  imports: [NgTemplateOutlet, UiIcon, UiButton, UiLink, UiFileUploadList],
+  imports: [NgTemplateOutlet, UiIcon, UiButton, UiFileUploadList],
   templateUrl: './ui-file-upload.html',
   styleUrl: './ui-file-upload.scss',
 })
