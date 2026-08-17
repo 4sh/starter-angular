@@ -27,6 +27,21 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
   Effets de bord corrigés au passage : les dépendances copiées n'étaient utilisées par personne (copies mortes, suivies par `update` pour rien), le bundle embarquait le composant deux fois, et du code applicatif dépendait d'une `devDependency` — ce qui cassait en `npm ci --omit=dev`.
 
 ### Changed
+- ⚠️ **Le parcours starter s'installe en une commande, et n'installe plus `@4sh/ui-kit`** (FSHSP-122) :
+
+  ```bash
+  ng add @4sh/ui-kit-schematics    # fondation + sélection des composants, enchaînées
+  ```
+
+  Auparavant il en fallait deux (`ng add @4sh/ui-kit` pour la fondation, puis `ng generate @4sh/ui-kit:add` pour les composants), et le kit restait dans `node_modules` : l'auto-complétion de l'IDE proposait ses imports alors que le projet doit utiliser ses copies locales. Les deux problèmes avaient la même cause — la porte d'entrée. Au moment du `ng add`, le compagnon n'était pas encore installé, d'où une `RunSchematicTask` différée, dans laquelle un prompt interactif ne tient pas.
+
+  En entrant par le compagnon, le kit n'est plus installé du tout : plus rien à auto-importer, et le prompt fonctionne dans la foulée de la fondation. La version copiée est lue dans le compagnon lui-même, plus dans le `package.json` du consommateur.
+
+  `--skip-components` pose la fondation seule, pour choisir les composants plus tard.
+
+  **Le mode librairie est inchangé** : `npm i @4sh/ui-kit` puis `import { UiButton } from '@4sh/ui-kit/actions/ui-button'`. Seule la voie « sources copiées » change. `ng add @4sh/ui-kit` installe désormais le kit en `dependencies` (et non plus en `devDependencies`, qui n'avait de sens que pour piloter la CLI) et affiche laquelle des deux voies a été prise.
+
+  **Migration** depuis `0.2.0` : désinstaller `@4sh/ui-kit` du projet (`npm rm @4sh/ui-kit`), les sources copiées n'en dépendant plus.
 - ⚠️ **L'arborescence copiée est aplatie, et les fichiers transverses sortent de `components/`** (FSHSP-121). La copie reproduisait la structure d'`ng-packagr` (`ui-checkbox/src/lib/ui-checkbox.ts`, plus un barrel `src/public-api.ts`) : `src/` et `lib/` délimitent la surface publiée d'une librairie, et une fois le fichier chez le consommateur ils n'encadrent plus rien — ils enfouissaient chaque composant de deux niveaux. Elles disparaissent, le barrel avec :
 
   ```

@@ -12,7 +12,7 @@ import { listComponents } from '../utils/component-registry';
 import { resolveDependencies } from '../utils/dependency-graph';
 import { copyUnit } from '../utils/copy';
 import { emptyManifest, readManifest, today, writeManifest } from '../utils/manifest';
-import { installedKitVersion } from '../utils/package-json';
+import { kitVersion as readKitVersion } from '../utils/kit-manifest';
 
 /**
  * Sélection interactive : checkbox `@inquirer/prompts`, qui supporte déjà
@@ -49,7 +49,7 @@ export function add(options: Schema): Rule {
       return tree;
     }
 
-    const kitVersion = installedKitVersion(tree);
+    const kitVersion = readKitVersion();
     const units = resolveDependencies(selected);
     const manifest = readManifest(tree) ?? emptyManifest(kitVersion);
 

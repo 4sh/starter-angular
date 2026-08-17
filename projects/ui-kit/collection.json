@@ -2,19 +2,8 @@
   "$schema": "../../node_modules/@angular-devkit/schematics/collection-schema.json",
   "schematics": {
     "ng-add": {
-      "description": "Prépare le projet : installe @4sh/ui-kit-schematics puis lance sa fondation (styles, tokens, angular.json).",
-      "factory": "./schematics/index.cjs#ngAdd",
-      "schema": "./schematics/schema-ng-add.json"
-    },
-    "add": {
-      "description": "Copie un ou plusieurs composants ui-* (et leurs dépendances) dans le projet.",
-      "factory": "./schematics/index.cjs#add",
-      "schema": "./schematics/schema-add.json"
-    },
-    "update": {
-      "description": "Compare les composants déjà copiés à la version installée du kit et propose de les mettre à jour.",
-      "factory": "./schematics/index.cjs#update",
-      "schema": "./schematics/schema-update.json"
+      "description": "Installe le kit en mode librairie. Pour copier les sources : ng add @4sh/ui-kit-schematics.",
+      "factory": "./schematics/index.cjs#ngAdd"
     }
   }
 }
