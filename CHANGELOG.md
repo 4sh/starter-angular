@@ -20,6 +20,17 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 - **`@4sh/ui-kit-schematics` embarque son `LICENSE` et ses README** (EN + FR). Le package déclarait `Apache-2.0` sans en fournir le texte, alors que la licence (§4a) demande qu'une redistribution en joigne une copie — d'autant plus ici que ce package existe pour que son contenu soit recopié ailleurs. Sa page npmjs, jusque-là vide, redirige maintenant vers `@4sh/ui-kit` : le compagnon ne s'installe jamais directement.
 
 ### Changed
+- ⚠️ **L'arborescence copiée est aplatie, et les fichiers transverses sortent de `components/`** (FSHSP-121). La copie reproduisait la structure d'`ng-packagr` (`ui-checkbox/src/lib/ui-checkbox.ts`, plus un barrel `src/public-api.ts`) : `src/` et `lib/` délimitent la surface publiée d'une librairie, et une fois le fichier chez le consommateur ils n'encadrent plus rien — ils enfouissaient chaque composant de deux niveaux. Elles disparaissent, le barrel avec :
+
+  ```
+  src/app/shared/
+  ├── components/ui/{catégorie}/{ui-nom}/{ui-nom}.ts      ← uniquement des composants
+  └── ui-core/{forms|motion|overlay|theming|types}/       ← directives de base, services, utilitaires, types
+  ```
+
+  Les bases partagées atterrissaient dans `components/ui/{catégorie}/_shared/`, c'est-à-dire des services (`theme.service`) et des utilitaires (`mask-engine`) rangés sous `components/`. Elles vivent maintenant dans `ui-core/`, en conservant leur regroupement par domaine. Les fichiers propres à un composant (`date-utils`, `ui-alert.types`, `ui-toast.service`…) restent à côté de lui : ils ne servent qu'à lui.
+
+  **Mise à jour non triviale** pour un projet déjà installé en `0.2.0` : les chemins des fichiers copiés changent tous, donc `update` ne reconnaîtra pas les anciens. Déplacer les fichiers existants avant de lancer la commande, ou repartir d'un `add` propre.
 - **L'en-tête de traçabilité des fichiers copiés par `ng generate @4sh/ui-kit:add` porte la mention de licence** (`Apache-2.0 — Copyright 2026 4SH.`) en plus de son origine et de sa version. Une fois copié, le fichier vit dans le dépôt du consommateur, où plus rien n'indiquait sous quels termes il est fourni. Conséquence attendue : le premier `ng generate @4sh/ui-kit:update` suivant cette version affiche un diff d'une ligne en tête de chaque fichier installé.
 
 ## [0.2.0] - 2026-08-14
