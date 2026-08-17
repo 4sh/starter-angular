@@ -116,8 +116,3 @@ export function rewriteKitImports(content: string, fileTargetPath: string): Rewr
 
   return { content: rewritten, unresolved };
 }
-
-/** À appeler entre deux copies dans un même process de test. */
-export function clearExportMapCache(): void {
-  exportMapCache.clear();
-}

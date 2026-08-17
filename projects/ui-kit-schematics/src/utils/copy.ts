@@ -6,6 +6,7 @@
 import type { Tree } from '@angular-devkit/schematics';
 import { SchematicsException } from '@angular-devkit/schematics';
 import { readFileSync } from 'node:fs';
+import { basename } from 'node:path';
 import type { AssetUnit } from './component-registry';
 import { flattenedRelPath, unitSourceFiles } from './component-registry';
 import { BARREL_FILENAME } from './export-map';
@@ -42,14 +43,31 @@ export function renderUnitFiles(unit: AssetUnit, kitVersion: string): RenderedFi
   const files: RenderedFile[] = [];
   const unresolved: string[] = [];
 
+  // L'aplatissement retire `src/` et `lib/` : deux sources distinctes peuvent
+  // donc viser la même destination (`src/foo.ts` et `src/lib/foo.ts`). Sans ce
+  // relevé, la seconde écraserait la première en silence — le seul chemin de
+  // perte muette d'un module qui échoue bruyamment partout ailleurs.
+  const claimedBy = new Map<string, string>();
+
   for (const absSrc of unitSourceFiles(unit)) {
     // Le barrel est une surface de publication de librairie : il n'a rien à
     // faire chez le consommateur, où les imports désignent les fichiers.
-    if (absSrc.endsWith(BARREL_FILENAME)) continue;
+    // Comparaison sur le nom EXACT : un `endsWith` écarterait aussi un
+    // `ui-table-public-api.ts`, qui est un fichier de composant ordinaire.
+    if (basename(absSrc) === BARREL_FILENAME) continue;
 
     const relPath = flattenedRelPath(unit, absSrc);
     const ext = absSrc.slice(absSrc.lastIndexOf('.'));
     const targetPath = `${unit.targetDir}/${relPath}`;
+
+    const previous = claimedBy.get(targetPath);
+    if (previous) {
+      throw new SchematicsException(
+        `${unit.name} : après aplatissement, « ${previous} » et « ${absSrc} » visent tous deux ` +
+          `${targetPath}. Renommer l'un des deux dans le kit — la copie ne peut pas trancher.`,
+      );
+    }
+    claimedBy.set(targetPath, absSrc);
 
     let source = readFileSync(absSrc, 'utf8');
     if (ext === '.ts') {

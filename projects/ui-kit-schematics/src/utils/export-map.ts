@@ -15,6 +15,7 @@
  * plutôt que de produire un import silencieusement faux.
  */
 import { readFileSync } from 'node:fs';
+import { basename } from 'node:path';
 import type { AssetUnit } from './component-registry';
 import { unitSourceFiles, flattenedRelPath } from './component-registry';
 
@@ -71,7 +72,10 @@ export function buildExportMap(unit: AssetUnit): Map<string, string> {
   const map = new Map<string, string>();
 
   for (const absPath of unitSourceFiles(unit)) {
-    if (absPath.endsWith(BARREL_FILENAME)) {
+    // Nom EXACT, comme dans `copy.ts` : sur un `endsWith`, un
+    // `ui-table-public-api.ts` serait pris pour un barrel et ferait échouer
+    // `assertBarrelIsTrivial` sur sa première déclaration.
+    if (basename(absPath) === BARREL_FILENAME) {
       assertBarrelIsTrivial(unit, absPath);
       continue;
     }

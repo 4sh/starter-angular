@@ -11,6 +11,7 @@
  * laquelle un prompt interactif ne tenait pas — d'où la commande unique.
  */
 import { chain, Rule, SchematicContext, Tree } from '@angular-devkit/schematics';
+import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
 import { updateWorkspace } from '@schematics/angular/utility/workspace';
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
@@ -188,6 +189,23 @@ function createManifest(): Rule {
   };
 }
 
+/**
+ * Programme le `npm install` des dépendances que `addRuntimeDependencies` vient
+ * d'inscrire.
+ *
+ * Sans lui, `angular.json` référence `node_modules/@angular/cdk/overlay-prebuilt.css`
+ * et la feuille FontAwesome alors que ni l'un ni l'autre n'est installé : le
+ * projet ne compile pas, et l'erreur (`Could not resolve`) ne dit rien de sa
+ * cause. C'est le seul install du parcours — `ng add` n'installe que le package
+ * qu'on lui nomme, pas ce que son schematic ajoute ensuite au `package.json`.
+ */
+function installRuntimeDependencies(): Rule {
+  return (tree: Tree, context: SchematicContext) => {
+    context.addTask(new NodePackageInstallTask());
+    return tree;
+  };
+}
+
 export function ngAdd(options: Schema): Rule {
   const foundation = [
     copyStylesFoundationRule(),
@@ -197,6 +215,11 @@ export function ngAdd(options: Schema): Rule {
     updateAngularJson(),
     createManifest(),
   ];
+
+  // En queue de chaîne : la tâche s'exécute après application de l'arbre, donc
+  // une fois `package.json` écrit. `--skip-install` la retire, pour un projet qui
+  // pilote son lockfile lui-même (CI, monorepo).
+  const install = options.skipInstall ? [] : [installRuntimeDependencies()];
 
   // La fondation seule ne rend aucun composant disponible : enchaîner la copie
   // est ce qui fait de `ng add` une commande complète. `--skip-components` reste
@@ -210,8 +233,9 @@ export function ngAdd(options: Schema): Rule {
           'Fondation posée. Composants à copier ensuite : `ng generate @4sh/ui-kit-schematics:add`.',
         );
       },
+      ...install,
     ]);
   }
 
-  return chain([...foundation, add({ components: options.components, all: options.all })]);
+  return chain([...foundation, add({ components: options.components, all: options.all }), ...install]);
 }
