@@ -34,6 +34,7 @@ against newer sources — never an automatic merge.
 |---|---|
 | `ng add @4sh/ui-kit-schematics` | foundation **and** components, in one go |
 | `ng add @4sh/ui-kit-schematics --skip-components` | foundation only, pick components later |
+| `ng add @4sh/ui-kit-schematics --skip-install` | skip `npm install` (project drives its own lockfile) |
 | `ng generate @4sh/ui-kit-schematics:add` | copy more components (interactive, or `--components`, or `--all`) |
 | `ng generate @4sh/ui-kit-schematics:update` | diff copied components against the published sources |
 
@@ -45,18 +46,11 @@ in the copied sources, and not in your editor's auto-import either.
 
 ## The other way: use it as a library
 
-If you would rather consume compiled components and not own any source:
+If you would rather consume compiled components and own no source, install
+**[`@4sh/ui-kit`](https://www.npmjs.com/package/@4sh/ui-kit)** instead and follow
+its own README — nothing is copied, and you track the kit's releases.
 
-```bash
-npm i @4sh/ui-kit
-```
-
-```ts
-import { UiButton } from '@4sh/ui-kit/actions/ui-button';
-```
-
-Nothing is copied, nothing is yours to edit — you follow the kit's releases. The
-two modes do not combine: pick the one that fits the project.
+The two modes do not combine: pick the one that fits the project.
 
 ---
 

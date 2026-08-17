@@ -36,6 +36,7 @@ jamais une fusion automatique.
 |---|---|
 | `ng add @4sh/ui-kit-schematics` | fondation **et** composants, d'un coup |
 | `ng add @4sh/ui-kit-schematics --skip-components` | fondation seule, composants choisis plus tard |
+| `ng add @4sh/ui-kit-schematics --skip-install` | ne pas lancer `npm install` (projet qui pilote son lockfile) |
 | `ng generate @4sh/ui-kit-schematics:add` | copier d'autres composants (interactif, ou `--components`, ou `--all`) |
 | `ng generate @4sh/ui-kit-schematics:update` | diff des composants copiés face aux sources publiées |
 
@@ -47,18 +48,11 @@ locales — ni dans les sources copiées, ni dans l'auto-complétion de votre é
 
 ## L'autre voie : l'utiliser comme librairie
 
-Si vous préférez consommer les composants compilés, sans posséder aucune source :
+Si vous préférez consommer les composants compilés, sans posséder aucune source,
+installez **[`@4sh/ui-kit`](https://www.npmjs.com/package/@4sh/ui-kit)** et suivez
+son propre README — rien n'est copié, et vous suivez les releases du kit.
 
-```bash
-npm i @4sh/ui-kit
-```
-
-```ts
-import { UiButton } from '@4sh/ui-kit/actions/ui-button';
-```
-
-Rien n'est copié, rien n'est à vous : vous suivez les releases du kit. Les deux
-modes ne se combinent pas — choisissez celui qui correspond au projet.
+Les deux modes ne se combinent pas : choisissez celui qui correspond au projet.
 
 ---
 

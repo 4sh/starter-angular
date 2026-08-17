@@ -24,6 +24,24 @@ your application is the one used (never a second copy of Angular):
 `@angular/core`, `@angular/common`, `@angular/forms`, `@angular/router`,
 `@angular/cdk`, `@angular/platform-browser` and `rxjs`.
 
+### Or copy the sources instead
+
+This package gives you **compiled** components: you import them and follow the
+kit's releases. If you would rather have the sources *in your own repository*, to
+read and edit them — the shadcn/spartan-ng approach — that is the other mode, and
+it goes through the companion package:
+
+```bash
+ng add @4sh/ui-kit-schematics
+```
+
+It copies the components you pick into `src/app/shared/`, and deliberately does
+**not** install `@4sh/ui-kit`: absent from `node_modules`, nothing can import its
+compiled code instead of your copies. See
+**[`@4sh/ui-kit-schematics`](https://www.npmjs.com/package/@4sh/ui-kit-schematics)**.
+
+The two modes do not combine — pick the one that fits the project.
+
 ---
 
 ## À la carte imports (secondary entry points)
