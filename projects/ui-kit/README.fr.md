@@ -10,6 +10,53 @@ natif (signals + Angular CDK), style piloté par les design tokens.
 
 ---
 
+## Deux modes de consommation
+
+À choisir **avant** d'installer : la décision conditionne toute la suite.
+
+| | **dépendance** | **starter** |
+|---|---|---|
+| Installation | `npm install @4sh/ui-kit` | `ng add @4sh/ui-kit` |
+| Ce qui arrive dans votre dépôt | rien — les composants compilés restent dans `node_modules` | les *sources* des composants, dans `src/app/shared/components/ui/` |
+| Imports | `@4sh/ui-kit/actions/ui-button` | votre propre chemin (`./shared/components/ui/actions/ui-button`) |
+| Styles | `node_modules/@4sh/ui-kit/styles.css`, chargée globalement | copiés dans `src/styles/`, avec la chaîne de génération des tokens (`npm run tokens:build`) |
+| Personnalisation | inputs + variables CSS | modifier le code lui-même |
+| Mise à jour | bump de version | `ng generate @4sh/ui-kit:update` — diff par composant, appliquer ou ignorer |
+
+**dépendance** est le mode par défaut : rien à maintenir, une seule version à
+suivre, et la garantie que tous les projets affichent le même kit. **starter** —
+l'approche de shadcn/ui ou spartan-ng — échange cette garantie contre la
+possession du code : à choisir quand le projet doit s'écarter du Design System,
+en assumant que les mises à jour deviennent semi-manuelles.
+
+Les deux modes documentent les mêmes composants : le Storybook ci-dessus reste la
+référence dans les deux cas. **La suite de cette page décrit le mode
+`dépendance`.**
+
+### Mode starter
+
+```bash
+ng add @4sh/ui-kit                    # fondation : styles, tokens, angular.json
+ng generate @4sh/ui-kit:add           # sélection interactive (a = tout)
+ng generate @4sh/ui-kit:add --all     # sans prompt
+ng generate @4sh/ui-kit:update        # diff par composant, appliquer ou ignorer
+```
+
+`ng add` copie la fondation de styles, la chaîne de génération des tokens
+(`src/design-tokens/`, `tokens.config.json`, `scripts/tokens.build.mjs` — le
+projet peut donc rebrander sans attendre une release du kit), câble
+`angular.json` et installe les dépendances runtime. `add` résout les dépendances
+entre composants (`ui-select` entraîne `ui-icon`, `ui-field`, `ui-spinner`…) par
+analyse des imports ; chaque fichier copié porte son origine en en-tête, et
+`ui-kit.json` recense ce qui est installé.
+
+Dans ce mode, `@4sh/ui-kit` reste une **devDependency** : il ne sert qu'à piloter
+la CLI. Les sources viennent du package compagnon
+[`@4sh/ui-kit-schematics`](https://www.npmjs.com/package/@4sh/ui-kit-schematics),
+tiré automatiquement — ne l'installez jamais vous-même.
+
+---
+
 ## Installation
 
 ```bash

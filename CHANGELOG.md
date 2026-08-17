@@ -17,6 +17,7 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 ## [Unreleased]
 
 ### Added
+- **Les README du kit (EN + FR) présentent les deux modes de consommation** (FSHSP-116) : section « Deux modes de consommation » avant l'installation — tableau comparatif *dépendance* / *starter* (ce qui arrive dans le dépôt, imports, styles, personnalisation, mise à jour) puis les commandes `ng add` / `add` / `update`. FSHSP-109 avait livré le mode starter sans qu'il apparaisse nulle part sur la page npm, où le README est la seule documentation.
 - **`@4sh/ui-kit-schematics` embarque son `LICENSE` et ses README** (EN + FR). Le package déclarait `Apache-2.0` sans en fournir le texte, alors que la licence (§4a) demande qu'une redistribution en joigne une copie — d'autant plus ici que ce package existe pour que son contenu soit recopié ailleurs. Sa page npmjs, jusque-là vide, redirige maintenant vers `@4sh/ui-kit` : le compagnon ne s'installe jamais directement.
 
 ### Changed
