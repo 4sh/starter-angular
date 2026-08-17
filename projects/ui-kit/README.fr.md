@@ -155,6 +155,47 @@ les mêmes fonctions, mixins et constantes partagées.
 > Sass distincte, tout CSS qui y serait exposé serait dupliqué dans chaque
 > composant. Les classes utilitaires globales sont dans `styles.css`.
 
+### Thème, marque et surcharges
+
+Le clair/sombre et la marque sont des **attributs sur `<html>`** — rien à importer,
+`styles.css` porte déjà tous les modes :
+
+| Attribut | Valeurs | Absent signifie |
+|---|---|---|
+| `data-theme` | `dark` | clair |
+| `data-brand` | `brand2`, `brand3` | marque 1 |
+
+```html
+<html data-theme="dark" data-brand="brand2">
+```
+
+À poser comme vous voulez (un service, du SSR, un flag de build) : le kit ne fait que
+les lire.
+
+Pour changer une valeur, trois niveaux, du plus large au plus étroit :
+
+```scss
+// src/styles/main.scss — chargé après styles.css
+@use 'presets/component-vars';                     // 2. les valeurs d'un composant
+
+:root { --units-lg: 20px; }                        // 1. un token : tout le kit suit
+:root[data-theme='dark'] { --global-background-default: #101014; }
+
+.toolbar ui-button { --ui-button-height-small: 24px; }   // 3. une zone de l'écran
+```
+
+1. **Un token** (`--units-*`, `--radius-*`, `--actions-*`…) — doit venir **après**
+   `styles.css`, qui les déclare. Pour une valeur propre à un mode, viser le même
+   sélecteur (`:root[data-theme='dark']`).
+2. **Les valeurs d'un composant** — copier `@4sh/ui-kit/styles/component-vars.scss`
+   dans votre `styles/presets/` : toutes les variables `--ui-*` à leur valeur livrée,
+   prêtes à retoucher. L'ordre de chargement n'importe pas ici, le kit ne fait que
+   *lire* ces noms.
+3. **Une zone** — la même variable `--ui-*` sur n'importe quel sélecteur ou élément.
+
+Référence complète (chaque variable, son rôle, sa valeur mesurée) : Storybook →
+*Spécifications → Thème & Système de Tokens*.
+
 ---
 
 ## `@4sh/ui-kit/forms` — socle des champs

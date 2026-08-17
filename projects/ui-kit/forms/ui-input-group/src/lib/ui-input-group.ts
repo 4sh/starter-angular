@@ -59,8 +59,8 @@ export class UiInputGroup {
     const items = this.items();
     const last = items.length - 1;
     items.forEach((el, index) => {
-      const start = index === 0 ? 'var(--ui-input-group-radius)' : '0';
-      const end = index === last ? 'var(--ui-input-group-radius)' : '0';
+      const start = index === 0 ? 'var(--_radius)' : '0';
+      const end = index === last ? 'var(--_radius)' : '0';
       const radius = `${start} ${end} ${end} ${start}`;
       // Radius hooks exposed by the children (custom properties inherit
       // across the component boundary — no ::ng-deep).
@@ -68,7 +68,7 @@ export class UiInputGroup {
       el.style.setProperty('--ui-button-radius', radius);
       el.style.setProperty('--ui-input-group-item-radius', radius);
       el.style.position = 'relative'; // lets the focused item paint above its neighbours
-      el.style.marginInlineStart = index === 0 ? '' : 'var(--ui-input-group-overlap)';
+      el.style.marginInlineStart = index === 0 ? '' : 'var(--_overlap)';
       // Add-ons and buttons keep their natural width; the controls take the rest.
       const fixed = el.matches('ui-input-group-addon, ui-button');
       el.style.flex = fixed ? '0 0 auto' : '1 1 0';

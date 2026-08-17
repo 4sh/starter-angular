@@ -7,18 +7,17 @@
 // and prev/next navigators. The active indicator is an absolutely-placed
 // bar that glides under (horizontal) or beside (vertical) the active tab,
 // timed by the motion system. Colour/size are themable via the exposed
-// `--ui-tabs-active-bar-*` custom properties (Custom Indicator).
+// `--ui-tabs-indicator-*` custom properties (Custom Indicator).
 // =====================================================================
 
 // --- Config ---------------------------------------------------
-$bar-thickness: var(--stroke-default);             /// Épaisseur de la barre d'onglet actif.
-$track-thickness: var(--stroke-sm);                /// Épaisseur de la piste sous les onglets.
-$nav-size: utils.rem-calc(40);                     /// Taille des boutons de défilement.
-$focus-ring-width: utils.$action-focus-ring-width; /// Épaisseur de l'anneau de focus.
+$track-thickness: var(--ui-tabs-track-thickness, var(--stroke-sm));                    /// Épaisseur de la piste sous les onglets.
+$nav-size: var(--ui-tabs-nav-size, #{utils.rem-calc(40)});                             /// Taille des boutons de défilement.
+$focus-ring-width: var(--ui-tabs-focus-ring-width, #{utils.$action-focus-ring-width}); /// Épaisseur de l'anneau de focus.
 
-// Themable indicator.
-$bar-color: var(--ui-tabs-active-bar-color, var(--navigation-high-stroke-active)); /// Couleur de la barre active, surchargeable par instance.
-$bar-size: var(--ui-tabs-active-bar-size, #{$bar-thickness});                      /// Épaisseur de la barre active, surchargeable par instance.
+// `--ui-tabs-active-bar-*` : anciens noms, honorés une version (repli).
+$bar-color: var(--ui-tabs-indicator-color, var(--ui-tabs-active-bar-color, var(--navigation-high-stroke-active)));   /// Couleur de la barre d'onglet actif.
+$bar-size: var(--ui-tabs-indicator-thickness, var(--ui-tabs-active-bar-size, var(--stroke-default)));                /// Épaisseur de la barre d'onglet actif.
 
 :host {
   display: flex;

@@ -9,30 +9,41 @@
 /// Géométrie et typo des tags, des options et du panneau, par taille.
 $sizes: (
   'default': (
-    tag-height: utils.rem-calc(24),
-    option-height: utils.rem-calc(40),
-    option-padding-x: var(--units-default),
-    font-size: var(--size-typography-text-default),
-    tag-font-size: var(--size-typography-text-md),
-    scroll-height: utils.rem-calc(200),
+    tag-height: var(--ui-input-tags-tag-height, #{utils.rem-calc(24)}),
+    option-height: var(--ui-input-tags-option-height, #{utils.rem-calc(40)}),
+    option-padding-x: var(--ui-input-tags-option-padding-x, var(--units-default)),
+    font-size: var(--ui-input-tags-font-size, var(--size-typography-text-default)),
+    tag-font-size: var(--ui-input-tags-tag-font-size, var(--size-typography-text-md)),
+    scroll-height: var(--ui-input-tags-scroller-max-height, #{utils.rem-calc(200)}),
   ),
   'small': (
-    tag-height: utils.rem-calc(20),
-    option-height: utils.rem-calc(32),
-    option-padding-x: var(--units-md),
-    font-size: var(--size-typography-text-md),
-    tag-font-size: var(--size-typography-text-sm),
-    scroll-height: utils.rem-calc(180),
+    tag-height: var(--ui-input-tags-tag-height-small, #{utils.rem-calc(20)}),
+    option-height: var(--ui-input-tags-option-height-small, #{utils.rem-calc(32)}),
+    option-padding-x: var(--ui-input-tags-option-padding-x-small, var(--units-md)),
+    font-size: var(--ui-input-tags-font-size-small, var(--size-typography-text-md)),
+    tag-font-size: var(--ui-input-tags-tag-font-size-small, var(--size-typography-text-sm)),
+    scroll-height: var(--ui-input-tags-scroller-max-height-small, #{utils.rem-calc(180)}),
   ),
 );
 $size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default` de `$sizes`.
 $size-small: map.get($sizes, 'small');     /// Raccourci vers l'entrée `small` de `$sizes`.
 
-$panel-padding: var(--units-xs);      /// Inset du panneau de suggestions.
-$panel-gap: var(--units-xs);          /// Espacement entre les groupes du panneau.
-$option-radius: var(--radius-sm);     /// Rayon d'une option.
-$tag-gap: var(--units-xs);            /// Espacement entre les tags saisis.
-$input-min-width: utils.rem-calc(80); /// Largeur minimale de la zone de saisie restante.
+$panel-padding: var(--ui-input-tags-panel-padding, var(--units-xs));                       /// Inset du panneau de suggestions.
+$panel-gap: var(--ui-input-tags-panel-gap, var(--units-xs));                               /// Espacement entre les groupes du panneau.
+$panel-max-width: var(--ui-input-tags-panel-max-width, calc(100vw - var(--units-lg)));     /// Largeur maximale du panneau de suggestions.
+
+$option-radius: var(--ui-input-tags-option-radius, var(--radius-sm));                      /// Rayon d'une option.
+$option-gap: var(--ui-input-tags-option-gap, var(--units-sm));                             /// Espacement entre la coche et le libellé d'une option.
+
+$group-height: var(--ui-input-tags-group-height, #{utils.rem-calc(32)});                   /// Hauteur d'un en-tête de groupe du panneau.
+$group-font-size: var(--ui-input-tags-group-font-size, var(--size-typography-text-md));    /// Taille du texte d'un en-tête de groupe.
+
+$tag-gap: var(--ui-input-tags-tag-gap, var(--units-xs));                                   /// Espacement entre les tags saisis.
+$tag-radius: var(--ui-input-tags-tag-radius, var(--radius-full));                          /// Rayon d'un tag.
+$tag-gap-custom: var(--ui-input-tags-tag-gap-custom, var(--units-2xs));                    /// Espacement interne d'un tag rendu via un template `#item`.
+$focus-ring-width: var(--ui-input-tags-focus-ring-width, #{utils.$form-focus-ring-width}); /// Épaisseur de l'anneau de focus d'un tag.
+
+$input-min-width: var(--ui-input-tags-input-min-width, #{utils.rem-calc(80)});             /// Largeur minimale de la zone de saisie restante.
 
 .ui-input-tags {
   display: block;
@@ -65,17 +76,17 @@ $input-min-width: utils.rem-calc(80); /// Largeur minimale de la zone de saisie 
     display: inline-flex;
     align-items: center;
     max-width: 100%;
-    border-radius: var(--radius-full);
+    border-radius: $tag-radius;
     @include utils.control-transition(box-shadow);
 
     &:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 utils.$form-focus-ring-width rgb(from var(--form-high-stroke-focused) r g b / 50%);
+      box-shadow: 0 0 0 $focus-ring-width rgb(from var(--form-high-stroke-focused) r g b / 50%);
     }
 
     // Custom-template wrapper baseline (matches the default chip height).
     &._custom {
-      gap: var(--units-2xs);
+      gap: $tag-gap-custom;
       min-height: map.get($size-default, tag-height);
       color: var(--form-high-content-default);
       font-family: var(--fontfamily-base);
@@ -100,7 +111,7 @@ $input-min-width: utils.rem-calc(80); /// Largeur minimale de la zone de saisie 
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  max-width: calc(100vw - var(--units-lg));
+  max-width: $panel-max-width;
   padding: $panel-padding;
 
   .ui-input-tags-scroller {
@@ -122,7 +133,7 @@ $input-min-width: utils.rem-calc(80); /// Largeur minimale de la zone de saisie 
   .ui-input-tags-option {
     display: flex;
     align-items: center;
-    gap: var(--units-sm);
+    gap: $option-gap;
     box-sizing: border-box;
     height: map.get($size-default, option-height);
     flex-shrink: 0;
@@ -171,11 +182,11 @@ $input-min-width: utils.rem-calc(80); /// Largeur minimale de la zone de saisie 
     display: flex;
     align-items: center;
     box-sizing: border-box;
-    height: utils.rem-calc(32);
+    height: $group-height;
     flex-shrink: 0;
     padding: 0 map.get($size-default, option-padding-x);
     font-family: var(--fontfamily-base);
-    font-size: var(--size-typography-text-md);
+    font-size: $group-font-size;
     font-weight: var(--weight-bold);
     color: var(--form-low-content-default);
 

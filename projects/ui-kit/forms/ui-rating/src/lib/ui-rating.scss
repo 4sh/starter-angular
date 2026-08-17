@@ -4,7 +4,19 @@
 // ui-rating : co-located styles. All values come from design tokens.
 // =====================================================================
 
-$focus-ring-width: utils.$form-focus-ring-width; /// Épaisseur de l'anneau de focus.
+$focus-ring-width: var(--ui-rating-focus-ring-width, #{utils.$form-focus-ring-width}); /// Épaisseur de l'anneau de focus.
+
+$gap: var(--ui-rating-gap, var(--units-2xs));       /// Espacement entre étoiles.
+$gap-sm: var(--ui-rating-gap-sm, var(--units-2xs)); /// Espacement entre étoiles, taille `sm`.
+$gap-md: var(--ui-rating-gap-md, var(--units-2xs)); /// Espacement entre étoiles, taille `md`.
+$gap-lg: var(--ui-rating-gap-lg, var(--units-2xs)); /// Espacement entre étoiles, taille `lg`.
+$gap-xl: var(--ui-rating-gap-xl, var(--units-2xs)); /// Espacement entre étoiles, taille `xl`.
+
+$icon-padding: var(--ui-rating-icon-padding, var(--units-2xs)); /// Inset de la zone de clic d'une étoile.
+$icon-radius: var(--ui-rating-icon-radius, var(--radius-full)); /// Rayon de la zone de clic d'une étoile.
+
+$icon-color: var(--ui-rating-icon-color, var(--form-low-content-default));            /// Couleur d'une étoile vide.
+$icon-fill-color: var(--ui-rating-icon-fill-color, var(--form-high-content-checked)); /// Couleur de la portion remplie d'une étoile.
 
 .ui-rating {
   position: relative;
@@ -25,14 +37,14 @@ $focus-ring-width: utils.$form-focus-ring-width; /// Épaisseur de l'anneau de f
 
   &-stars {
     display: flex;
-    gap: var(--units-2xs); // base gap
+    gap: $gap;
   }
 
-  &._size-sm &-stars { gap: var(--units-2xs); }
-  &._size-md &-stars { gap: var(--units-2xs); }
-  &._size-default &-stars { gap: var(--units-2xs); }
-  &._size-lg &-stars { gap: var(--units-2xs); }
-  &._size-xl &-stars { gap: var(--units-2xs); }
+  &._size-sm &-stars { gap: $gap-sm; }
+  &._size-md &-stars { gap: $gap-md; }
+  &._size-default &-stars { gap: $gap; }
+  &._size-lg &-stars { gap: $gap-lg; }
+  &._size-xl &-stars { gap: $gap-xl; }
 
   &._vertical &-stars {
     flex-direction: column;
@@ -42,16 +54,16 @@ $focus-ring-width: utils.$form-focus-ring-width; /// Épaisseur de l'anneau de f
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: var(--units-2xs); // hit area
+    padding: $icon-padding;
     cursor: pointer;
-    border-radius: var(--radius-full);
+    border-radius: $icon-radius;
     pointer-events: auto;
 
     &-stack {
       position: relative;
       display: flex;
       line-height: 1;
-      color: var(--form-low-content-default);
+      color: $icon-color;
       @include utils.control-transition(color);
     }
 
@@ -66,7 +78,7 @@ $focus-ring-width: utils.$form-focus-ring-width; /// Épaisseur de l'anneau de f
     &-fill {
       position: absolute;
       inset: 0;
-      color: var(--form-high-content-checked);
+      color: $icon-fill-color;
       clip-path: inset(0 calc((1 - var(--ui-rating-fill, 1)) * 100%) 0 0);
       @include utils.control-transition(color);
     }

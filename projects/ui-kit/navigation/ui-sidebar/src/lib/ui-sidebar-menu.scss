@@ -15,24 +15,24 @@ $levels: high, low; /// Niveaux générant les modifiers `._<niveau>`.
 /// Hauteur, padding et typo d'un item, par taille.
 $sizes: (
   'default': (
-    item-height: utils.rem-calc(40),
-    item-padding-x: var(--units-md),
-    font-size: var(--size-typography-text-default),
-    header-font-size: var(--size-typography-text-sm),
+    item-height: var(--ui-sidebar-item-height, #{utils.rem-calc(40)}),
+    item-padding-x: var(--ui-sidebar-item-padding-x, var(--units-md)),
+    font-size: var(--ui-sidebar-font-size, var(--size-typography-text-default)),
+    header-font-size: var(--ui-sidebar-header-font-size, var(--size-typography-text-sm)),
   ),
   'small': (
-    item-height: utils.rem-calc(32),
-    item-padding-x: var(--units-sm),
-    font-size: var(--size-typography-text-md),
-    header-font-size: var(--size-typography-text-sm),
+    item-height: var(--ui-sidebar-item-height-small, #{utils.rem-calc(32)}),
+    item-padding-x: var(--ui-sidebar-item-padding-x-small, var(--units-sm)),
+    font-size: var(--ui-sidebar-font-size-small, var(--size-typography-text-md)),
+    header-font-size: var(--ui-sidebar-header-font-size-small, var(--size-typography-text-sm)),
   ),
 );
-$size-default: map.get($sizes, 'default');  /// Raccourci vers l'entrée `default` de `$sizes`.
-$item-radius: var(--radius-sm);             /// Rayon d'un item.
-$group-indent: var(--units-lg);             /// Retrait des items d'un sous-groupe.
-$separator-width: var(--stroke-sm);         /// Épaisseur d'un séparateur.
-$focus-ring-width: utils.$focus-ring-width; /// Épaisseur de l'anneau de focus.
-$icon-slot: utils.rem-calc(20);             /// Largeur réservée à l'icône d'un item.
+$size-default: map.get($sizes, 'default');                                         /// Raccourci vers l'entrée `default` de `$sizes`.
+$item-radius: var(--ui-sidebar-item-radius, var(--radius-sm));                     /// Rayon d'un item.
+$group-indent: var(--ui-sidebar-group-indent, var(--units-lg));                    /// Retrait des items d'un sous-groupe.
+$separator-width: var(--ui-sidebar-separator-width, var(--stroke-sm));             /// Épaisseur d'un séparateur.
+$focus-ring-width: var(--ui-sidebar-focus-ring-width, #{utils.$focus-ring-width}); /// Épaisseur de l'anneau de focus.
+$icon-slot: var(--ui-sidebar-icon-slot-size, #{utils.rem-calc(20)});               /// Largeur réservée à l'icône d'un item.
 
 @mixin menu-size($size) {
   // Exposed so the collapsed rail can size square icon buttons from the same value.

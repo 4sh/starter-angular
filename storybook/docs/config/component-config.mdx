@@ -32,6 +32,12 @@ composant.
       <td style={{ padding: 8 }}>À la compilation (SASS)</td>
       <td style={{ padding: 8 }}><code>projects/ui-kit/styles/settings/_ui-config.scss</code></td>
     </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><strong>Hooks <code>--ui-*</code></strong></td>
+      <td style={{ padding: 8 }}>La même valeur structurelle, mais retouchable <strong>sans recompiler le SCSS</strong> — le seul levier disponible en mode package</td>
+      <td style={{ padding: 8 }}>À l'exécution (CSS)</td>
+      <td style={{ padding: 8 }}><code>@4sh/ui-kit/styles/component-vars.scss</code></td>
+    </tr>
   </tbody>
 </table>
 
@@ -174,12 +180,66 @@ Rebinder une variable dans un projet ne demande donc aucune reprise de doc.
       <td style={{ padding: 8 }}><strong>Un seul composant</strong> (ex : anneau plus épais sur le radio uniquement)</td>
       <td style={{ padding: 8 }}>Remplacer la valeur de la variable locale en tête du <code>.scss</code> du composant.</td>
     </tr>
+    <tr style={{ borderBottom: '1px solid rgba(128,128,128,.15)' }}>
+      <td style={{ padding: 8 }}><strong>Sans accès au SCSS</strong> (mode package) ou <strong>une seule zone de l'écran</strong></td>
+      <td style={{ padding: 8 }}>Poser le hook <code>--ui-*</code> de la valeur : sur <code>:root</code> pour tout le projet, sur un sélecteur pour cette zone. Voir ci-dessous.</td>
+    </tr>
   </tbody>
 </table>
 
-> Deux leviers, c'est tout. Les composants font <code>@use 'utils'</code> (qui expose
-> `ui-config`) et lisent chaque valeur dans une variable **locale** ; éditer `_ui-config.scss`
-> se répercute donc partout, et remplacer la variable locale n'affecte que le composant.
+> Les deux premiers leviers sont des leviers de **compilation** : ils supposent d'avoir le SCSS
+> du kit sous la main — donc le mode schematics, où le code des composants est copié dans le
+> projet. En mode package le SCSS est déjà compilé : c'est le rôle des hooks.
+
+<br/>
+
+## Mode package : les hooks `--ui-*`
+
+En mode package, `_ui-config.scss` et les variables locales des composants sont **déjà
+compilés** : les rebinder est impossible. Chaque valeur structurelle est donc lue *à travers*
+une custom property, dont le défaut est le réglage livré :
+
+```scss
+// dans ui-button.scss
+$radius: var(--ui-button-radius, var(--radius-sm));   // ← le hook, puis le défaut
+$sizes: ('small': (height: var(--ui-button-height-small, var(--size-components-sm)), …));
+```
+
+Le composant ne **déclare** jamais ces noms : il ne fait que les lire. Les poser n'importe où
+au-dessus suffit donc à gagner, du plus large au plus ciblé :
+
+```scss
+:root                  { --ui-button-height-small: 24px; }  /* tous les boutons small */
+.toolbar ui-button     { --ui-button-height-small: 24px; }   /* cette zone seulement */
+```
+
+Trois règles pour choisir le bon levier :
+
+- **Une couleur** se retouche par son **design token** (`--actions-high-surface-default`), pas
+  par un hook : le token suit le clair/sombre et les 3 marques, et son contraste est vérifié.
+  Les rares hooks de couleur exposés (voile de masque, marqueur de chargement, reflet de
+  squelette, remplissage de notation) sont là pour repeindre **un exemplaire**, pas pour
+  rethémer.
+- **Une valeur partagée par tout le kit** (espacement, rayon, taille de contrôle) se retouche
+  par son token `--units-*` / `--radius-*` / `--size-components-*` : inutile de poser 40 hooks.
+- **Le hook** sert quand un seul composant, une seule taille ou une seule zone doit dévier.
+
+`@4sh/ui-kit/styles/component-vars.scss` rassemble **tous** les hooks réglables, déclarés à la valeur
+livrée, groupés par catégorie → composant → type de propriété, valeurs alignées. On copie le
+fichier dans le projet, on le charge après `styles.css`, et on change ce qu'on veut. Tel quel il
+ne change rien : il redéclare les défauts. Il est téléchargeable depuis
+**Spécifications → Thème & Système de Tokens**.
+
+Le fichier est **généré** depuis les `.scss` (`npm run docs:config`), et ses valeurs sont lues
+dans le CSS réellement compilé — donc jamais périmées. Quelques hooks n'y figurent pas, parce
+qu'un réglage global n'a pas de sens pour eux : ceux dont le défaut dépend de la variante rendue
+(`--ui-button-radius` vaut un autre rayon en `rounded`) et ceux que le composant se pose
+lui-même. La colonne « Hook exposé » de chaque composant les donne quand même.
+
+Chaque section « Theming » de composant affiche le hook de chaque valeur dans sa colonne
+**« Hook exposé »**. Une poignée de custom properties `--ui-*` n'y figure pas : celles que le
+composant se pose **à lui-même** pour piloter ses sous-éléments (les surcharger revient à lutter
+contre lui) : `component-vars.scss` ne les propose pas.
 
 <br/>
 

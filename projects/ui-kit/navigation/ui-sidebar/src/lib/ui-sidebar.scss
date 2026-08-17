@@ -14,18 +14,21 @@
 // =====================================================================
 
 // --- Config (local) ---------------------------------------------------
-$z-index: 1000;                                   /// Plan d'empilement du panneau.
-$stroke-width: var(--stroke-sm);                  /// Épaisseur de bordure du panneau.
-$region-padding: var(--units-md);                 /// Inset des régions (en-tête, corps, pied).
-$close-size: 32px;                                /// Taille de la cible tactile du bouton de fermeture.
-$focus-ring-width: utils.$focus-ring-width;       /// Épaisseur de l'anneau de focus.
-$backdrop-background: var(--primitives-black-50); /// Fond du voile en mode superposé.
-$width-default: utils.rem-calc(280);              /// Largeur du panneau déployé.
-$rail-width-default: utils.rem-calc(72);          /// Largeur du rail d'icônes replié.
+$z-index: var(--ui-sidebar-z-index, 1000);                                               /// Plan d'empilement du panneau.
+$stroke-width: var(--ui-sidebar-stroke-width, var(--stroke-sm));                         /// Épaisseur de bordure du panneau.
+$region-padding: var(--ui-sidebar-region-padding, var(--units-md));                      /// Inset des régions (en-tête, corps, pied).
+$close-size: var(--ui-sidebar-close-size, #{utils.rem-calc(32)});                        /// Taille de la cible tactile du bouton de fermeture.
+$focus-ring-width: var(--ui-sidebar-focus-ring-width, #{utils.$focus-ring-width});       /// Épaisseur de l'anneau de focus.
+$backdrop-background: var(--ui-sidebar-backdrop-background, var(--primitives-black-50)); /// Fond du voile en présentation superposée.
+$width-default: utils.rem-calc(280);                                                     /// Largeur livrée du panneau déployé (défaut du hook `--ui-sidebar-width`).
+$rail-width-default: utils.rem-calc(72);                                                 /// Largeur livrée du rail replié (défaut du hook `--ui-sidebar-rail-width`).
 
+// The two widths are read by the panel AND its positioner, so they must live on
+// a variable. Declaring the public name here would shadow a consumer override,
+// hence the private mirror: the hook stays the winning value.
 :host {
-  --ui-sidebar-width: #{$width-default};                                            /// Largeur du panneau déployé.
-  --ui-sidebar-rail-width: #{$rail-width-default};                                  /// Largeur du rail d’icônes replié.
+  --_width: var(--ui-sidebar-width, #{$width-default});                          /// Largeur du panneau déployé.
+  --_rail-width: var(--ui-sidebar-rail-width, #{$rail-width-default});           /// Largeur du rail d’icônes replié.
   display: contents;
 }
 
@@ -34,7 +37,7 @@ $rail-width-default: utils.rem-calc(72);          /// Largeur du rail d'icônes 
   position: fixed;
   inset: 0;
   z-index: $z-index;
-  background-color: var(--ui-sidebar-backdrop-background, #{$backdrop-background}); /// Fond du voile en présentation superposée.
+  background-color: $backdrop-background;
 
   &._contained {
     position: absolute;
@@ -64,12 +67,12 @@ $rail-width-default: utils.rem-calc(72);          /// Largeur du rail d'icônes 
 .ui-sidebar-rail {
   position: relative;
   flex: 0 0 auto;
-  inline-size: var(--ui-sidebar-width);
+  inline-size: var(--_width);
   align-self: stretch;
   @include utils.motion-transition(inline-size);
 
   &._collapsed {
-    inline-size: var(--ui-sidebar-rail-width);
+    inline-size: var(--_rail-width);
   }
 
   @include utils.motion-reduce {
@@ -83,7 +86,7 @@ $rail-width-default: utils.rem-calc(72);          /// Largeur du rail d'icônes 
   display: flex;
   flex-direction: column;
   min-height: 0;
-  inline-size: var(--ui-sidebar-width);
+  inline-size: var(--_width);
   overflow: hidden; // collapsed rail clips over-wide header/footer content
   background-color: var(--global-background-default);
   color: var(--global-text-default);
@@ -92,7 +95,7 @@ $rail-width-default: utils.rem-calc(72);          /// Largeur du rail d'icônes 
   @include utils.motion-transition(inline-size, box-shadow);
 
   &._collapsed {
-    inline-size: var(--ui-sidebar-rail-width);
+    inline-size: var(--_rail-width);
   }
 
   // Border faces the content area (opposite the docked edge).
@@ -142,8 +145,8 @@ $rail-width-default: utils.rem-calc(72);          /// Largeur du rail d'icônes 
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    inline-size: utils.rem-calc($close-size);
-    block-size: utils.rem-calc($close-size);
+    inline-size: $close-size;
+    block-size: $close-size;
     padding: 0;
     border: none;
     border-radius: var(--radius-default);

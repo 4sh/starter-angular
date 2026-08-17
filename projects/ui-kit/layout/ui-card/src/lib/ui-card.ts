@@ -70,7 +70,7 @@ export class UiCard {
    * Removes the horizontal gutter of the default content region so it bleeds to
    * the card edges — lets the consumer own the inner layout (e.g. a full-bleed
    * media/color band + a padded paragraph). Re-apply the gutter on inner blocks
-   * with `padding-inline: var(--ui-card-padding)`.
+   * with `padding-inline: var(--ui-card-gutter)`.
    */
   contentFlush = input(false, { transform: booleanAttribute });
   /** Accessible name for the card region (use when the card conveys a landmark). */

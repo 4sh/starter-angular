@@ -5,10 +5,10 @@
 // =====================================================================
 
 // --- Config (local, component-scoped) ---------------------------------
-$popover-arrow-size: utils.rem-calc(8);  /// Diamètre de la flèche — synchronisé avec `ARROW_GAP` dans le `.ts`
-$popover-arrow-half: utils.rem-calc(4);  /// Demi-largeur de la flèche, pour son positionnement.
-$popover-padding: var(--units-md);       /// Espacement interne du contenu projeté
-$popover-max-width: utils.rem-calc(320); /// Largeur maximale avant retour à la ligne (le CDK garde le panneau dans le viewport)
+$popover-arrow-size: var(--ui-popover-arrow-size, #{utils.rem-calc(8)});     /// Diamètre de la flèche — synchronisé avec `ARROW_GAP` dans le `.ts`
+$popover-arrow-half: calc(#{$popover-arrow-size} / 2);                       /// Demi-largeur de la flèche, dérivée de sa taille.
+$popover-padding: var(--ui-popover-padding, var(--units-md));                /// Espacement interne du contenu projeté
+$popover-max-width: var(--ui-popover-max-width, #{utils.rem-calc(320)});     /// Largeur maximale avant retour à la ligne (le CDK garde le panneau dans le viewport)
 
 $popover-surface: var(--global-background-default); /// Fond du panneau.
 $popover-stroke: var(--global-border-default);      /// Couleur de bordure du panneau.
@@ -52,33 +52,33 @@ $popover-stroke: var(--global-border-default);      /// Couleur de bordure du pa
 
   // Panel above the trigger : arrow on the bottom edge, pointing down.
   &._top &-arrow {
-    bottom: -$popover-arrow-half;
+    bottom: calc(-1 * #{$popover-arrow-half});
     left: 50%;
-    margin-left: -$popover-arrow-half;
+    margin-left: calc(-1 * #{$popover-arrow-half});
     border-top: 0;
     border-left: 0;
   }
   // Panel below : arrow on top, pointing up.
   &._bottom &-arrow {
-    top: -$popover-arrow-half;
+    top: calc(-1 * #{$popover-arrow-half});
     left: 50%;
-    margin-left: -$popover-arrow-half;
+    margin-left: calc(-1 * #{$popover-arrow-half});
     border-right: 0;
     border-bottom: 0;
   }
   // Panel on the left of the trigger : arrow on the right edge, pointing right.
   &._left &-arrow {
-    right: -$popover-arrow-half;
+    right: calc(-1 * #{$popover-arrow-half});
     top: 50%;
-    margin-top: -$popover-arrow-half;
+    margin-top: calc(-1 * #{$popover-arrow-half});
     border-bottom: 0;
     border-left: 0;
   }
   // Panel on the right : arrow on the left edge, pointing left.
   &._right &-arrow {
-    left: -$popover-arrow-half;
+    left: calc(-1 * #{$popover-arrow-half});
     top: 50%;
-    margin-top: -$popover-arrow-half;
+    margin-top: calc(-1 * #{$popover-arrow-half});
     border-top: 0;
     border-right: 0;
   }

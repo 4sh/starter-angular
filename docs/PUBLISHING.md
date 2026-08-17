@@ -314,6 +314,11 @@ Contenu et résolution des imports strictement identiques à une vraie
 publication. Pour du développement en parallèle :
 `npm install ../starter-angular/dist/ui-kit`.
 
+Côté branchement dans le projet consommateur (feuille à charger, `data-theme` /
+`data-brand`, surcharge des tokens et des variables de composant), tout est dans
+[`projects/ui-kit/README.md`](../projects/ui-kit/README.md#theme-brand-and-overrides) —
+c'est ce fichier que voit l'utilisateur sur npmjs.
+
 Pour éprouver le **starter** (`ng add`, `ng generate …:add`), il faut les deux
 packages, le kit ne sachant que déléguer :
 

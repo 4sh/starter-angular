@@ -15,32 +15,36 @@
 $levels: default, highlight, success, warning, error; /// Niveaux sémantiques générant les modifiers `._<niveau>`.
 $sublevels: high, low;                                /// Intensités générant les modifiers `._<intensité>`.
 
+$gap: var(--ui-badge-gap, var(--units-xs));                    /// Espacement icône ↔ libellé.
+$radius: var(--ui-badge-radius, var(--radius-full));           /// Rayon des coins.
+$stroke-width: var(--ui-badge-stroke-width, var(--stroke-sm)); /// Épaisseur de la bordure.
+
 /// Hauteur, padding, typo et diamètre du point, par taille.
 $sizes: (
   'default': (
-    height: 28px,
-    padding-x: var(--units-md),
-    font-size: var(--size-typography-text-default),
-    dot: 10px,
+    height: var(--ui-badge-height, #{utils.rem-calc(28)}),
+    padding-x: var(--ui-badge-padding-x, var(--units-md)),
+    font-size: var(--ui-badge-font-size, var(--size-typography-text-default)),
+    dot: var(--ui-badge-dot-size, #{utils.rem-calc(10)}),
   ),
   'small': (
-    height: 22px,
-    padding-x: var(--units-md),
-    font-size: var(--size-typography-text-md),
-    dot: 8px,
+    height: var(--ui-badge-height-small, #{utils.rem-calc(22)}),
+    padding-x: var(--ui-badge-padding-x-small, var(--units-md)),
+    font-size: var(--ui-badge-font-size-small, var(--size-typography-text-md)),
+    dot: var(--ui-badge-dot-size-small, #{utils.rem-calc(8)}),
   ),
   'large': (
-    height: 32px,
-    padding-x: var(--units-lg),
-    font-size: var(--size-typography-text-lg),
-    dot: 12px,
+    height: var(--ui-badge-height-large, #{utils.rem-calc(32)}),
+    padding-x: var(--ui-badge-padding-x-large, var(--units-lg)),
+    font-size: var(--ui-badge-font-size-large, var(--size-typography-text-lg)),
+    dot: var(--ui-badge-dot-size-large, #{utils.rem-calc(12)}),
   ),
 );
 $size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default` de `$sizes`.
 
 @mixin badge-size($size) {
-  height: utils.rem-calc(map.get($size, height));
-  min-width: utils.rem-calc(map.get($size, height));
+  height: map.get($size, height);
+  min-width: map.get($size, height);
   padding: 0 map.get($size, padding-x);
   font-size: map.get($size, font-size);
 }
@@ -50,10 +54,10 @@ $size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--units-xs);
+  gap: $gap;
   box-sizing: border-box;
-  border: var(--stroke-sm) solid transparent;
-  border-radius: var(--radius-full);
+  border: $stroke-width solid transparent;
+  border-radius: $radius;
   font-family: var(--fontfamily-base);
   font-weight: var(--weight-bold);
   line-height: 1;
@@ -84,8 +88,8 @@ $size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default
     }
 
     #{$sel} {
-      width: utils.rem-calc(map.get($size, dot));
-      height: utils.rem-calc(map.get($size, dot));
+      width: map.get($size, dot);
+      height: map.get($size, dot);
       min-width: 0;
       padding: 0;
     }

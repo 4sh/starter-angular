@@ -12,29 +12,34 @@
 /// Dimensions par taille (spécifique lien)
 $sizes: (
   'default': (
-    font-size: var(--size-typography-text-default),
+    font-size: var(--ui-link-font-size, var(--size-typography-text-default)),
   ),
   'small': (
-    font-size: var(--size-typography-text-md),
+    font-size: var(--ui-link-font-size-small, var(--size-typography-text-md)),
   ),
 );
-$size-default: map.get($sizes, 'default');         /// Raccourci vers l'entrée `default` de `$sizes`.
-$focus-ring-width: utils.$action-focus-ring-width; /// Épaisseur de l'anneau de focus
+$size-default: map.get($sizes, 'default');                                             /// Raccourci vers l'entrée `default` de `$sizes`.
+$focus-ring-width: var(--ui-link-focus-ring-width, #{utils.$action-focus-ring-width}); /// Épaisseur de l'anneau de focus
+
+$gap: var(--ui-link-gap, var(--units-sm));                           /// Espacement icône ↔ libellé.
+$radius: var(--ui-link-radius, var(--radius-2xs));                   /// Rayon de la zone de focus.
+$underline-thickness: var(--ui-link-underline-thickness, from-font); /// Épaisseur du soulignement.
+$underline-offset: var(--ui-link-underline-offset, 0.15em);          /// Décalage du soulignement.
 
 .ui-link {
   // --- Base ----------------------------------------------------------
   display: inline-flex;
   align-items: center;
-  gap: var(--units-sm);
+  gap: $gap;
   font-family: var(--fontfamily-base);
   font-weight: var(--weight-bold);
   font-size: map.get($size-default, font-size);
   line-height: 1.4;
   color: var(--actions-low-content-default);
   text-decoration: none;
-  text-decoration-thickness: from-font;
-  text-underline-offset: 0.15em;
-  border-radius: var(--radius-2xs);
+  text-decoration-thickness: $underline-thickness;
+  text-underline-offset: $underline-offset;
+  border-radius: $radius;
   cursor: pointer;
   @include utils.control-transition(color, text-decoration-color, box-shadow);
 

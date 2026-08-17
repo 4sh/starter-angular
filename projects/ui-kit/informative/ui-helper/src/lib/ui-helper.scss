@@ -20,17 +20,19 @@ $levels: (
   'error': var(--informative-errorlow-content-default),
 );
 
+$gap: var(--ui-helper-gap, var(--units-xs)); /// Espacement icône ↔ message.
+
 /// Taille de texte, par taille.
 $sizes: (
-  'default': var(--size-typography-text-default),
-  'small': var(--size-typography-text-md),
+  'default': var(--ui-helper-font-size, var(--size-typography-text-default)),
+  'small': var(--ui-helper-font-size-small, var(--size-typography-text-md)),
 );
 
 .ui-helper {
   // --- Base ----------------------------------------------------------
   display: inline-flex;
   align-items: center;
-  gap: var(--units-xs);
+  gap: $gap;
   font-family: var(--fontfamily-base);
   font-weight: var(--weight-regular);
   line-height: 1.3;

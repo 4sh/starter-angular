@@ -9,31 +9,41 @@
 /// Géométrie et typo des options, des en-têtes de groupe et hauteur de défilement, par taille.
 $sizes: (
   'default': (
-    option-height: utils.rem-calc(40),
-    option-padding-x: var(--units-default),
-    font-size: var(--size-typography-text-default),
-    group-height: utils.rem-calc(32),
-    group-font-size: var(--size-typography-text-md),
-    scroll-height: utils.rem-calc(312),
+    option-height: var(--ui-autocomplete-option-height, #{utils.rem-calc(40)}),
+    option-padding-x: var(--ui-autocomplete-option-padding-x, var(--units-default)),
+    font-size: var(--ui-autocomplete-font-size, var(--size-typography-text-default)),
+    group-height: var(--ui-autocomplete-group-height, #{utils.rem-calc(32)}),
+    group-font-size: var(--ui-autocomplete-group-font-size, var(--size-typography-text-md)),
+    scroll-height: var(--ui-autocomplete-scroller-max-height, #{utils.rem-calc(312)}),
   ),
   'small': (
-    option-height: utils.rem-calc(32),
-    option-padding-x: var(--units-md),
-    font-size: var(--size-typography-text-md),
-    group-height: utils.rem-calc(24),
-    group-font-size: var(--size-typography-text-sm),
-    scroll-height: utils.rem-calc(256),
+    option-height: var(--ui-autocomplete-option-height-small, #{utils.rem-calc(32)}),
+    option-padding-x: var(--ui-autocomplete-option-padding-x-small, var(--units-md)),
+    font-size: var(--ui-autocomplete-font-size-small, var(--size-typography-text-md)),
+    group-height: var(--ui-autocomplete-group-height-small, #{utils.rem-calc(24)}),
+    group-font-size: var(--ui-autocomplete-group-font-size-small, var(--size-typography-text-sm)),
+    scroll-height: var(--ui-autocomplete-scroller-max-height-small, #{utils.rem-calc(256)}),
   ),
 );
 $size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default` de `$sizes`.
 $size-small: map.get($sizes, 'small');     /// Raccourci vers l'entrée `small` de `$sizes`.
 
-$panel-padding: var(--units-xs);  /// Inset du panneau de suggestions.
-$panel-gap: var(--units-xs);      /// Espacement entre les groupes du panneau.
-$option-radius: var(--radius-sm); /// Rayon d'une option.
-$option-gap: var(--units-sm);     /// Espacement entre l'icône et le libellé d'une option.
-$tag-gap: var(--units-xs);            /// Espacement entre les valeurs sélectionnées (mode `multiple`).
-$input-min-width: utils.rem-calc(80); /// Largeur minimale de la zone de saisie restante (mode `multiple`).
+$panel-padding: var(--ui-autocomplete-panel-padding, var(--units-xs));                   /// Inset du panneau de suggestions.
+$panel-gap: var(--ui-autocomplete-panel-gap, var(--units-xs));                           /// Espacement entre les groupes du panneau.
+$panel-max-width: var(--ui-autocomplete-panel-max-width, calc(100vw - var(--units-lg))); /// Largeur maximale du panneau, gouttière laissée au viewport.
+$header-padding-y: var(--ui-autocomplete-header-padding-y, var(--units-xs));             /// Inset vertical des zones d'en-tête et de pied projetées.
+$header-padding-x: var(--ui-autocomplete-header-padding-x, var(--units-sm));             /// Inset horizontal des zones d'en-tête et de pied projetées.
+
+$option-radius: var(--ui-autocomplete-option-radius, var(--radius-sm)); /// Rayon d'une option.
+$option-gap: var(--ui-autocomplete-option-gap, var(--units-sm));        /// Espacement entre l'icône et le libellé d'une option.
+
+$tag-gap: var(--ui-autocomplete-tag-gap, var(--units-xs));                       /// Espacement entre les valeurs sélectionnées (mode `multiple`).
+$tag-radius: var(--ui-autocomplete-tag-radius, var(--radius-full));              /// Rayon d'une valeur sélectionnée (mode `multiple`).
+$input-min-width: var(--ui-autocomplete-input-min-width, #{utils.rem-calc(80)}); /// Largeur minimale de la zone de saisie restante (mode `multiple`).
+
+$clear-size: var(--ui-autocomplete-clear-size, var(--size-components-2xs));                  /// Taille du bouton d'effacement.
+$clear-radius: var(--ui-autocomplete-clear-radius, var(--radius-full));                      /// Rayon du bouton d'effacement.
+$focus-ring-width: var(--ui-autocomplete-focus-ring-width, #{utils.$form-focus-ring-width}); /// Épaisseur de l'anneau de focus (valeur sélectionnée, bouton d'effacement).
 
 .ui-autocomplete {
   display: block;
@@ -58,12 +68,12 @@ $input-min-width: utils.rem-calc(80); /// Largeur minimale de la zone de saisie 
     display: inline-flex;
     align-items: center;
     max-width: 100%;
-    border-radius: var(--radius-full);
+    border-radius: $tag-radius;
     @include utils.control-transition(box-shadow);
 
     &:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 utils.$form-focus-ring-width rgb(from var(--form-high-stroke-focused) r g b / 50%);
+      box-shadow: 0 0 0 $focus-ring-width rgb(from var(--form-high-stroke-focused) r g b / 50%);
     }
   }
 
@@ -83,13 +93,13 @@ $input-min-width: utils.rem-calc(80); /// Largeur minimale de la zone de saisie 
     align-items: center;
     justify-content: center;
     box-sizing: border-box;
-    width: var(--size-components-2xs);
-    height: var(--size-components-2xs);
+    width: $clear-size;
+    height: $clear-size;
     flex-shrink: 0;
     margin: 0;
     padding: 0;
     border: none;
-    border-radius: var(--radius-full);
+    border-radius: $clear-radius;
     background: none;
     color: var(--form-low-content-default);
     cursor: pointer;
@@ -100,7 +110,7 @@ $input-min-width: utils.rem-calc(80); /// Largeur minimale de la zone de saisie 
     &:focus-visible {
       outline: none;
       color: var(--form-high-content-focused);
-      box-shadow: 0 0 0 utils.$form-focus-ring-width rgb(from var(--form-high-stroke-focused) r g b / 50%);
+      box-shadow: 0 0 0 $focus-ring-width rgb(from var(--form-high-stroke-focused) r g b / 50%);
     }
     &:disabled { cursor: not-allowed; color: var(--form-high-content-disabled); }
   }
@@ -133,13 +143,13 @@ $input-min-width: utils.rem-calc(80); /// Largeur minimale de la zone de saisie 
   flex-direction: column;
   gap: $panel-gap;
   box-sizing: border-box;
-  max-width: calc(100vw - var(--units-lg));
+  max-width: $panel-max-width;
   padding: $panel-padding;
 
   // --- Header / footer (projected templates) --------------------------
   .ui-autocomplete-header,
   .ui-autocomplete-footer {
-    padding: var(--units-xs) var(--units-sm);
+    padding: $header-padding-y $header-padding-x;
     font-family: var(--fontfamily-base);
     font-size: map.get($size-default, group-font-size);
     color: var(--form-high-content-default);

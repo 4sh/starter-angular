@@ -15,24 +15,25 @@
 /// Typo de la valeur et largeur minimale stabilisant le rendu, par taille.
 $sizes: (
   'default': (
-    font-size: var(--size-typography-title-xl),
-    min-width: 40px,
+    font-size: var(--ui-nudger-value-font-size, var(--size-typography-title-xl)),
+    min-width: var(--ui-nudger-value-min-width, #{utils.rem-calc(40px)}),
   ),
   'small': (
-    font-size: var(--size-typography-title-lg),
-    min-width: 32px,
+    font-size: var(--ui-nudger-value-font-size-small, var(--size-typography-title-lg)),
+    min-width: var(--ui-nudger-value-min-width-small, #{utils.rem-calc(32px)}),
   ),
 );
-$size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default` de `$sizes`.
+$size-default: map.get($sizes, 'default');        /// Raccourci vers l'entrée `default` de `$sizes`.
+$gap: var(--ui-nudger-gap, var(--units-default)); /// Espacement entre les boutons et l'affichage de la valeur.
 
 .ui-nudger {
   display: inline-flex;
   align-items: center;
-  gap: var(--units-default);
+  gap: $gap;
 
   // --- Value display -------------------------------------------------
   &-value {
-    min-width: utils.rem-calc(map.get($size-default, min-width));
+    min-width: map.get($size-default, min-width);
     font-family: var(--fontfamily-title);
     font-weight: var(--weight-bold);
     font-size: map.get($size-default, font-size);
@@ -48,7 +49,7 @@ $size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default
   @each $name, $size in $sizes {
     @if $name != 'default' {
       &._#{$name} .ui-nudger-value {
-        min-width: utils.rem-calc(map.get($size, min-width));
+        min-width: map.get($size, min-width);
         font-size: map.get($size, font-size);
       }
     }

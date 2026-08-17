@@ -5,10 +5,13 @@
 // `ui-field`; here we style the native <input> + affixes via shared mixins.
 // =====================================================================
 
+$font-size-small: var(--ui-input-font-size-small, var(--size-typography-text-md));    /// Taille de police du contrôle et de l'unité, variante `small`.
+$unit-font-size: var(--ui-input-unit-font-size, var(--size-typography-text-default)); /// Taille de police de l'unité affichée dans le champ.
+
 .ui-input {
   &-native {
     @include utils.field-native-input;
-    &._small { font-size: var(--size-typography-text-md); }
+    &._small { font-size: $font-size-small; }
   }
 
   &-icon { @include utils.field-affix; }
@@ -16,11 +19,11 @@
   &-unit {
     @include utils.field-affix;
     font-family: var(--fontfamily-base);
-    font-size: var(--size-typography-text-default);
+    font-size: $unit-font-size;
     white-space: nowrap;
     user-select: none;
 
-    &._small { font-size: var(--size-typography-text-md); }
+    &._small { font-size: $font-size-small; }
   }
 
   &-action { @include utils.field-action; }

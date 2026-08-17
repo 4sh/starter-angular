@@ -8,11 +8,11 @@
 // =====================================================================
 
 // --- Config (local) ---------------------------------------------------
-$toast-z-index: 1100;                       /// Plan d'empilement, au-dessus des overlays CDK.
-$toast-width: utils.rem-calc(360);          /// Largeur d'un toast empilé.
-$toast-width-expanded: utils.rem-calc(480); /// Largeur en mode bannière.
-$toast-edge-gap: var(--units-lg);           /// Marge par rapport aux bords du viewport.
-$toast-stack-gap: var(--units-sm);          /// Espacement entre les toasts empilés.
+$toast-z-index: var(--ui-toast-z-index, 1100);                                 /// Plan d'empilement, au-dessus des overlays CDK.
+$toast-width: var(--ui-toast-width, #{utils.rem-calc(360)});                   /// Largeur d'un toast empilé.
+$toast-width-expanded: var(--ui-toast-width-expanded, #{utils.rem-calc(480)}); /// Largeur en mode bannière.
+$toast-edge-gap: var(--ui-toast-edge-gap, var(--units-lg));                    /// Marge par rapport aux bords du viewport.
+$toast-stack-gap: var(--ui-toast-stack-gap, var(--units-sm));                  /// Espacement entre les toasts empilés.
 
 .ui-toast-region {
   position: fixed;

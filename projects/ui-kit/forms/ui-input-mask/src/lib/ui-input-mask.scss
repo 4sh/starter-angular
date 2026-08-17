@@ -5,10 +5,12 @@
 // Box/label/helper/states come from `ui-field`.
 // =====================================================================
 
+$font-size-small: var(--ui-input-mask-font-size-small, var(--size-typography-text-md)); /// Taille de police du contrôle, variante `small`.
+
 .ui-input-mask {
   &-native {
     @include utils.field-native-input;
-    &._small { font-size: var(--size-typography-text-md); }
+    &._small { font-size: $font-size-small; }
   }
 
   &-icon { @include utils.field-affix; }

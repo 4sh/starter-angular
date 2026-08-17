@@ -17,9 +17,38 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 ## [Unreleased]
 
 ### Added
+- **Les composants sont personnalisables en mode package, via des custom properties `--ui-*` exposées.** Jusqu'ici le seul levier de personnalisation était le rebinding SCSS (`_ui-config.scss`, variables locales) : inaccessible quand le kit est consommé en dépendance, puisque son SCSS est déjà compilé. Un projet ne pouvait retoucher que les design tokens — donc rien de propre à un composant, ni à une seule de ses tailles. Chaque valeur **structurelle** des 54 composants est maintenant lue à travers un hook dont le défaut est le réglage livré :
+
+  ```scss
+  // avant : valeur compilée, hors d'atteinte
+  height: var(--size-components-sm);
+  // après : surchargeable, même défaut
+  height: var(--ui-button-height-small, var(--size-components-sm));
+  ```
+
+  **579 hooks** exposés, nommés `--ui-{famille}[-{partie}]-{propriété}[-{modifieur}]` (modifieur en dernier, comme les tokens). Le composant ne déclare jamais ces noms : les poser sur `:root` (tout le projet), sur un sélecteur (une zone) ou sur l'élément suffit à gagner.
+
+  ```scss
+  :root              { --ui-button-height-small: 24px; }
+  .toolbar ui-button { --ui-button-height-small: 24px; }
+  ```
+
+  Les **couleurs** restent volontairement sur les tokens sémantiques (clair/sombre × 3 marques × contraste WCAG) : seuls quelques hooks de couleur existent, là où repeindre **un exemplaire** est un cas d'usage réel (voile de masque, marqueur de chargement, reflet de squelette, remplissage de notation).
+
+  Aucun défaut ne change : la migration a été vérifiée fichier par fichier en comparant le CSS compilé avant/après, hook réduit à son défaut.
+- **`@4sh/ui-kit/styles/component-vars.scss`** — livré avec le package : un fichier prêt à copier où les **581 hooks** réglables sont déclarés à la valeur livrée par le starter, groupés par catégorie → composant → type de propriété (dimensions, espacements, bordures, typographie, couleurs), valeurs alignées sur une seule colonne. On le copie dans le projet, on le charge après `styles.css`, on change les valeurs voulues ; tel quel il ne change rien. Également téléchargeable depuis Storybook (*Spécifications → Thème & Système de Tokens*).
+
+  Généré par `npm run docs:config`, **valeurs lues dans le CSS réellement compilé par Sass** : une expression comme `rem-calc(44px - 2 * $gutter)` y figure résolue (`2.25rem`), jamais sous sa forme SCSS. Les 17 hooks pour lesquels un réglage global n'a pas de sens (valeur dépendante de la variante rendue, propriété que le composant se pose lui-même) en sont volontairement absents — la colonne « Hook exposé » de chaque composant les donne.
+
+  Le mot **« thème »** reste réservé au couple marque + clair/sombre (`ThemeService`, `BrandService`) : cette couche-ci s'appelle **hooks**, du nom des custom properties qu'elle règle, pour éviter trois sens différents du même mot.
 - **`@4sh/ui-kit-schematics` embarque son `LICENSE` et ses README** (EN + FR). Le package déclarait `Apache-2.0` sans en fournir le texte, alors que la licence (§4a) demande qu'une redistribution en joigne une copie — d'autant plus ici que ce package existe pour que son contenu soit recopié ailleurs. Sa page npmjs, jusque-là vide, redirige maintenant vers `@4sh/ui-kit` : le compagnon ne s'installe jamais directement.
 
 ### Changed
+- **`ui-icon` : l'échelle et la surcharge d'exemplaire sont deux niveaux distincts.** `--ui-icon-size` était répété dans les cinq entrées de l'échelle ; il est désormais lu une seule fois, au-dessus d'une variable interne que chaque taille alimente. Comportement inchangé : `--ui-icon-size-{sm,md,default,lg,xl}` retouche un **pas de l'échelle** (donc toutes les icônes de cette taille), `--ui-icon-size` force **un exemplaire** quel que soit son `size` — c'est par là qu'un composant dimensionne l'icône qu'il projette.
+- **`ui-checkbox` et `ui-select` exposent la taille de leur marqueur** (`--ui-checkbox-icon-size`, `--ui-select-checkbox-icon-size`). Rétrécir la case (`--ui-checkbox-box-size`) laissait la coche à la taille de l'échelle d'icônes, donc débordante. Le défaut de ces deux hooks pointe sur le pas d'échelle utilisé, si bien que retoucher l'échelle continue de traverser.
+- **`--ui-card-padding` ne se relit plus sous ce nom : le miroir relisible est `--ui-card-gutter`.** Une custom property ne pouvant pas se référencer elle-même, le nom déclaré par la carte et le nom surchargeable devaient être distincts. `--ui-card-padding` devient le **point de surcharge** (gouttière de la carte), `--ui-card-gutter` la valeur à **relire** pour regouttiérer un contenu `contentFlush` : `padding-inline: var(--ui-card-gutter)`.
+- **`--ui-sidebar-width`, `--ui-sidebar-rail-width`, `--ui-empty-state-media-size`, `--ui-empty-state-media-color`, `--ui-input-group-radius`, `--ui-input-group-overlap` et `--ui-skeleton-shine` sont désormais réellement surchargeables.** Ces sept custom properties étaient documentées comme des points de surcharge, mais le composant les **déclarait** sur son propre élément : une valeur posée par le consommateur sur `:root` était systématiquement écrasée (et, pour `--ui-skeleton-shine`, écrasée en mode sombre uniquement). Les déclarations passent sur un miroir privé, le nom public reste lu en amont. Mêmes valeurs par défaut.
+- **`ui-tab-list` : `--ui-tabs-active-bar-color` / `--ui-tabs-active-bar-size` deviennent `--ui-tabs-indicator-color` / `--ui-tabs-indicator-thickness`** (le mot `active` se lisait comme un état alors que la convention met le modifieur en dernier). Les anciens noms restent honorés une version, en repli.
 - **L'en-tête de traçabilité des fichiers copiés par `ng generate @4sh/ui-kit:add` porte la mention de licence** (`Apache-2.0 — Copyright 2026 4SH.`) en plus de son origine et de sa version. Une fois copié, le fichier vit dans le dépôt du consommateur, où plus rien n'indiquait sous quels termes il est fourni. Conséquence attendue : le premier `ng generate @4sh/ui-kit:update` suivant cette version affiche un diff d'une ligne en tête de chaque fichier installé.
 
 ## [0.2.0] - 2026-08-14
