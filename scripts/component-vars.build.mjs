@@ -353,8 +353,11 @@ for (const col of TOKENS_CONFIG.collections) {
 
 function parseHook(hook, family) {
   const rest = hook.replace(/^--ui-/, '');
-  if (!rest.startsWith(`${family}-`)) return { conforms: false, part: null, property: null, modifier: null };
-  let segs = rest.slice(family.length + 1).split('-');
+  // A shared constant has no family: its whole name is `part` + `property`.
+  if (family !== null && !rest.startsWith(`${family}-`)) {
+    return { conforms: false, part: null, property: null, modifier: null };
+  }
+  let segs = (family === null ? rest : rest.slice(family.length + 1)).split('-');
   const mods = [];
   while (segs.length > 1 && MODIFIERS.has(segs.at(-1))) mods.unshift(segs.pop());
   let property = null;
@@ -377,8 +380,27 @@ function parseHook(hook, family) {
 const SINGLE_VAR = /^var\(\s*(--[\w-]+)\s*\)$/;
 const NUMBER = /^(-?\d*\.?\d+)(px|rem|em|ch|%|s|ms|deg)?$/;
 
+/**
+ * Peels the `--ui-*` layers off a default chain to reach the value Figma has to hold.
+ * A component default now often routes through a shared constant
+ * (`var(--ui-form-field-height, var(--size-components-default))`): Figma only stores
+ * one value, and the meaningful one is the token at the end of the chain.
+ */
+function throughHooks(raw) {
+  let out = raw;
+  for (let guard = 0; guard < 6; guard++) {
+    const m = out?.match(/^var\(\s*(--ui-[\w-]+)\s*,/);
+    if (!m) return out;
+    const end = closingParen(out, 3);
+    if (end === -1 || end !== out.length - 1) return out; // not a single wrapping var()
+    out = out.slice(4 + m[1].length + 1, end).trim();
+  }
+  return out;
+}
+
 /** Figma value of a CSS default: token alias, literal, or not representable. */
-function figmaValue(raw, expectedType) {
+function figmaValue(rawInput, expectedType) {
+  const raw = throughHooks(rawInput);
   if (!raw) return { type: 'NONE', reason: "hook sans défaut : point de surcharge pur, le composant ne pose rien." };
 
   const single = raw.match(SINGLE_VAR);
@@ -435,6 +457,28 @@ function figmaValue(raw, expectedType) {
 const problems = [];
 const undocumented = [];
 const hooks = [];
+
+/**
+ * Shared constants of `_ui-config.scss` (`--ui-focus-ring-width`,
+ * `--ui-form-control-size`…). They belong to no component: they sit between the token
+ * and the component hook, and reach every consumer because components interpolate
+ * them. Their role comes from the `///` there, via the manifest's `shared` section.
+ */
+for (const [scssVar, entry] of Object.entries(manifest.shared ?? {})) {
+  const hook = entry.default?.cssVar;
+  if (!hook?.startsWith('--ui-')) continue;
+  meta.set(hook, {
+    role: entry.role,
+    component: 'ui-config',
+    category: 'shared',
+    entryPoint: '@4sh/ui-kit/styles',
+    family: null,
+    file: 'projects/ui-kit/styles/settings/_ui-config.scss',
+    scssVar,
+    isMapEntry: false,
+    group: entry.group,
+  });
+}
 
 /** family → { component, category, entryPoint, family, file } */
 const familyIndex = new Map();

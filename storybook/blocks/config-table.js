@@ -318,6 +318,58 @@ function table(caption, rows, values, withHook) {
   );
 }
 
+/**
+ * <SharedConfigTable group="global-ui" /> — les constantes mutualisées de
+ * `_ui-config.scss` pour un groupe. Même contrat que ConfigTable : le rôle vient du
+ * `///`, la valeur est mesurée, et la colonne « Hook exposé » donne le nom à poser
+ * pour retoucher toute la catégorie sans recompiler.
+ */
+export function SharedConfigTable({ group, prefix, exclude }) {
+  const rows = React.useMemo(() => {
+    const skip = exclude ?? [];
+    return Object.entries(manifest.shared ?? {})
+      .filter(([name, entry]) => entry.group === group)
+      .filter(([name]) => (prefix ? name.startsWith(`$${prefix}`) : true))
+      .filter(([name]) => !skip.some((p) => name.startsWith(`$${p}`)))
+      .map(([name, entry]) => ({ name, role: entry.role, default: entry.default }));
+  }, [group, prefix, exclude && exclude.join('|')]);
+
+  const names = React.useMemo(() => {
+    const all = [];
+    for (const row of rows) collectCssVars(row.default, all);
+    return [...new Set(all)].sort();
+  }, [rows]);
+
+  const [scopeRef, values] = useResolvedVars(names);
+
+  if (!rows.length) {
+    return el(
+      'p',
+      null,
+      el('strong', null, `SharedConfigTable : aucune constante pour le groupe « ${group} ». `),
+      'Lance ',
+      el('code', null, 'npm run docs:config'),
+      '.'
+    );
+  }
+
+  return el(
+    'div',
+    { ref: scopeRef },
+    el(
+      'p',
+      { style: { margin: '0 0 12px', fontSize: 12, color: 'var(--sb-text-subtle)' } },
+      el(
+        'span',
+        { title: ORIGIN_TOOLTIP, style: { cursor: 'help', borderBottom: '1px dotted currentColor' } },
+        'ⓘ générée depuis ',
+        el('code', null, manifest.$source.shared)
+      )
+    ),
+    table(null, rows, values, true)
+  );
+}
+
 export function ConfigTable({ of, only, hooks = true, label }) {
   const component = manifest.components[of];
 

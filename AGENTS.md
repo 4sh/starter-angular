@@ -315,6 +315,15 @@ $stroke-width: var(--ui-button-stroke-width, #{utils.$control-stroke-width}); //
   `--radius-full` when `_rounded`) is excluded from the theme file: declaring one value there
   would flatten the others. So is a hook the component declares itself. The generator classifies
   this on its own — nothing to annotate.
+- **`_ui-config.scss` carries hooks too**, named `--ui-<scss name>` (`$form-control-size` →
+  `--ui-form-control-size`). They sit between the token and the component hook, and reach every
+  consumer for free since components *interpolate* them:
+  `var(--ui-checkbox-box-size, var(--ui-form-control-size, var(--size-components-2xs)))`. Use
+  this layer when a value is shared by a category and the token it points at is used elsewhere
+  too (`--size-components-2xs` also feeds `ui-tag`, so retuning the token would overshoot).
+  ⚠️ A constant that **references another constant** (`$form-focus-ring-width: $focus-ring-width`)
+  takes **no hook of its own**: it inherits the referenced one, and hooking both makes
+  `docs.config.mjs`'s binding resolver recurse forever.
 
 ### Shared structural constants — `ui-config`
 

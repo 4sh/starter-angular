@@ -190,6 +190,9 @@ To change a value, three levels, from the broadest to the narrowest:
 2. **A component's values** — copy `@4sh/ui-kit/styles/component-vars.scss` into your
    `styles/presets/`: every `--ui-*` variable at its shipped value, ready to retune.
    Load order is irrelevant here, the kit only *reads* these names.
+   Values shared by a whole family live in the same file under `--ui-form-*` /
+   `--ui-control-*` / `--ui-overlay-panel-*`: one declaration moves every consumer,
+   and a component-level variable still wins over it.
 3. **One area** — the same `--ui-*` on any selector or element.
 
 Full reference (every variable, its role and its measured value): Storybook →

@@ -10,10 +10,10 @@
         "Mode 1"
       ],
       "counts": {
-        "tokens": 561,
-        "alias": 439,
-        "literal": 122,
-        "skipped": 39,
+        "tokens": 575,
+        "alias": 455,
+        "literal": 120,
+        "skipped": 42,
         "derivedDescriptions": 197
       },
       "aliasTargets": [
@@ -42,6 +42,16 @@
         {
           "cssVar": "--ui-avatar-badge-z-index",
           "component": "ui-avatar",
+          "reason": "sans équivalent variable Figma (durée, easing, curseur, plan d’empilement, ratio)."
+        },
+        {
+          "cssVar": "--ui-control-transition-duration",
+          "component": "ui-config",
+          "reason": "sans équivalent variable Figma (durée, easing, curseur, plan d’empilement, ratio)."
+        },
+        {
+          "cssVar": "--ui-control-transition-easing",
+          "component": "ui-config",
           "reason": "sans équivalent variable Figma (durée, easing, curseur, plan d’empilement, ratio)."
         },
         {
@@ -128,6 +138,11 @@
           "cssVar": "--ui-motion-easing",
           "component": "système de motion",
           "reason": "poignée transverse (motion / panneaux flottants) : à poser sur l’élément visé — un composant qui a son propre réglage l’emporte."
+        },
+        {
+          "cssVar": "--ui-overlay-panel-shadow",
+          "component": "ui-config",
+          "reason": "`--shadow-default-md` n'est pas un token du pipeline : rien à aliaser."
         },
         {
           "cssVar": "--ui-overlay-shadow",
@@ -1474,7 +1489,7 @@
     "overlap": {
       "$value": "{metrics.units.md}",
       "$type": "dimension",
-      "$description": "Chevauchement horizontal entre avatars empilés.",
+      "$description": "Chevauchement des avatars d'un groupe.",
       "$extensions": {
         "com.figma": {
           "resolvedType": "FLOAT",
@@ -1487,8 +1502,34 @@
         },
         "com.4sh.ui-kit": {
           "cssVar": "--ui-avatar-group-overlap",
-          "component": "ui-avatar-group",
-          "entryPoint": "@4sh/ui-kit/informative/ui-avatar-group",
+          "component": "ui-config",
+          "entryPoint": "@4sh/ui-kit/styles",
+          "descriptionSource": "scss",
+          "perInstance": true,
+          "note": "2 défauts selon la variante rendue : en déclarer un seul écraserait les autres."
+        }
+      }
+    }
+  },
+  "avatar-square": {
+    "radius": {
+      "$value": "{metrics.radius.md}",
+      "$type": "dimension",
+      "$description": "Rayon des coins d'un avatar carré.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "CORNER_RADIUS"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-avatar-square-radius)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-avatar-square-radius",
+          "component": "ui-config",
+          "entryPoint": "@4sh/ui-kit/styles",
           "descriptionSource": "scss"
         }
       }
@@ -2602,8 +2643,8 @@
     },
     "icon": {
       "size": {
-        "$value": "var(--ui-icon-size-md, var(--size-typography-icon-md))",
-        "$type": "string",
+        "$value": "{responsive.size.typography.icon.md}",
+        "$type": "dimension",
         "$description": "Taille du marqueur (coche / indéterminé).",
         "$extensions": {
           "com.figma": {
@@ -3112,6 +3153,30 @@
           "cssVar": "--ui-chip-stroke-width",
           "component": "ui-chip",
           "entryPoint": "@4sh/ui-kit/informative/ui-chip",
+          "descriptionSource": "scss"
+        }
+      }
+    }
+  },
+  "control": {
+    "stroke-width": {
+      "$value": "{metrics.stroke.default}",
+      "$type": "dimension",
+      "$description": "Bordure de la boîte de champ (suit `--ui-control-stroke-width`).",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "STROKE_FLOAT"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-control-stroke-width)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-control-stroke-width",
+          "component": "ui-config",
+          "entryPoint": "@4sh/ui-kit/styles",
           "descriptionSource": "scss"
         }
       }
@@ -6022,6 +6087,232 @@
       }
     }
   },
+  "focus-ring-width": {
+    "$value": "{metrics.units.2xs}",
+    "$type": "dimension",
+    "$description": "Anneau de focus des actions (suit `--ui-focus-ring-width`).",
+    "$extensions": {
+      "com.figma": {
+        "resolvedType": "FLOAT",
+        "scopes": [
+          "STROKE_FLOAT"
+        ],
+        "codeSyntax": {
+          "WEB": "var(--ui-focus-ring-width)"
+        }
+      },
+      "com.4sh.ui-kit": {
+        "cssVar": "--ui-focus-ring-width",
+        "component": "ui-config",
+        "entryPoint": "@4sh/ui-kit/styles",
+        "descriptionSource": "scss"
+      }
+    }
+  },
+  "form-control": {
+    "gap": {
+      "$value": "{metrics.units.sm}",
+      "$type": "dimension",
+      "$description": "Espace entre un contrôle et son libellé.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "GAP"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-form-control-gap)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-form-control-gap",
+          "component": "ui-config",
+          "entryPoint": "@4sh/ui-kit/styles",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "size": {
+      "$value": "{responsive.size.components.2xs}",
+      "$type": "dimension",
+      "$description": "Côté d'un contrôle carré (case à cocher, radio).",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "WIDTH_HEIGHT"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-form-control-size)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-form-control-size",
+          "component": "ui-config",
+          "entryPoint": "@4sh/ui-kit/styles",
+          "descriptionSource": "scss"
+        }
+      }
+    }
+  },
+  "form-field": {
+    "gap": {
+      "$value": "{metrics.units.sm}",
+      "$type": "dimension",
+      "$description": "Espace entre le contrôle et ses affixes.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "GAP"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-form-field-gap)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-form-field-gap",
+          "component": "ui-config",
+          "entryPoint": "@4sh/ui-kit/styles",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "height": {
+      "$value": "{responsive.size.components.default}",
+      "$type": "dimension",
+      "$description": "Hauteur de la boîte de champ.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "WIDTH_HEIGHT"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-form-field-height)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-form-field-height",
+          "component": "ui-config",
+          "entryPoint": "@4sh/ui-kit/styles",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "height-small": {
+      "$value": "{responsive.size.components.sm}",
+      "$type": "dimension",
+      "$description": "Hauteur de la boîte de champ, variante `small`.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "WIDTH_HEIGHT"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-form-field-height-small)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-form-field-height-small",
+          "component": "ui-config",
+          "entryPoint": "@4sh/ui-kit/styles",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "padding-x": {
+      "$value": "{metrics.units.md}",
+      "$type": "dimension",
+      "$description": "Inset horizontal de la boîte de champ.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "GAP"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-form-field-padding-x)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-form-field-padding-x",
+          "component": "ui-config",
+          "entryPoint": "@4sh/ui-kit/styles",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "radius": {
+      "$value": "{metrics.radius.sm}",
+      "$type": "dimension",
+      "$description": "Rayon des coins de la boîte de champ.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "CORNER_RADIUS"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-form-field-radius)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-form-field-radius",
+          "component": "ui-config",
+          "entryPoint": "@4sh/ui-kit/styles",
+          "descriptionSource": "scss"
+        }
+      }
+    }
+  },
+  "form-textarea": {
+    "min-height": {
+      "$value": "{responsive.size.components.sm}",
+      "$type": "dimension",
+      "$description": "Hauteur minimale d'une boîte multiligne.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "WIDTH_HEIGHT"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-form-textarea-min-height)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-form-textarea-min-height",
+          "component": "ui-config",
+          "entryPoint": "@4sh/ui-kit/styles",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "min-height-small": {
+      "$value": "{responsive.size.components.sm}",
+      "$type": "dimension",
+      "$description": "Hauteur minimale d'une boîte multiligne, variante `small`.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "WIDTH_HEIGHT"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-form-textarea-min-height-small)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-form-textarea-min-height-small",
+          "component": "ui-config",
+          "entryPoint": "@4sh/ui-kit/styles",
+          "descriptionSource": "scss"
+        }
+      }
+    }
+  },
   "helper": {
     "font-size": {
       "$value": "{responsive.size.typography.text.default}",
@@ -8233,6 +8524,52 @@
       }
     }
   },
+  "overlay-panel": {
+    "padding": {
+      "$value": "{metrics.units.sm}",
+      "$type": "dimension",
+      "$description": "Gouttière interne des panneaux flottants.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "GAP"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-overlay-panel-padding)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-overlay-panel-padding",
+          "component": "ui-config",
+          "entryPoint": "@4sh/ui-kit/styles",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "radius": {
+      "$value": "{metrics.radius.default}",
+      "$type": "dimension",
+      "$description": "Rayon des coins des panneaux flottants.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "CORNER_RADIUS"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-overlay-panel-radius)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-overlay-panel-radius",
+          "component": "ui-config",
+          "entryPoint": "@4sh/ui-kit/styles",
+          "descriptionSource": "scss"
+        }
+      }
+    }
+  },
   "overlay": {
     "radius": {
       "$value": "{metrics.radius.default}",
@@ -9543,8 +9880,8 @@
   "select": {
     "checkbox-icon": {
       "size": {
-        "$value": "var(--ui-icon-size-sm, var(--size-typography-icon-sm))",
-        "$type": "string",
+        "$value": "{responsive.size.typography.icon.sm}",
+        "$type": "dimension",
         "$description": "Taille de la coche dans la case (mode `checkbox`).",
         "$extensions": {
           "com.figma": {

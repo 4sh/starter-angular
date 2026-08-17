@@ -44,6 +44,16 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 - **`@4sh/ui-kit-schematics` embarque son `LICENSE` et ses README** (EN + FR). Le package déclarait `Apache-2.0` sans en fournir le texte, alors que la licence (§4a) demande qu'une redistribution en joigne une copie — d'autant plus ici que ce package existe pour que son contenu soit recopié ailleurs. Sa page npmjs, jusque-là vide, redirige maintenant vers `@4sh/ui-kit` : le compagnon ne s'installe jamais directement.
 
 ### Changed
+- **Les constantes partagées de `_ui-config.scss` sont retouchables sans recompiler.** Ma migration n'avait hookifié que les variables *locales* de chaque composant : il n'existait aucun levier de **catégorie** en mode package. Changer la taille de tous les contrôles de formulaire demandait soit de poser un hook par composant, soit de retoucher `--size-components-2xs`, qui déborde (il alimente aussi `ui-tag`, `ui-select`, `ui-autocomplete`, `ui-datepicker`).
+
+  **16 constantes** exposées, nommées d'après leur variable SCSS (`$form-control-size` → `--ui-form-control-size`). Les composants les *interpolant*, la cascade se construit d'elle-même :
+
+  ```css
+  var(--ui-checkbox-box-size, var(--ui-form-control-size, var(--size-components-2xs)))
+  /*      ↑ composant             ↑ catégorie                ↑ token                 */
+  ```
+
+  Une constante qui **référence une autre constante** (`$form-focus-ring-width: $focus-ring-width`) ne prend pas de nom propre : elle hérite de celui qu'elle vise, si bien que `--ui-focus-ring-width` couvre à lui seul les anneaux de focus du kit. Les quatre tailles d'avatar restent des nombres bruts (elles passent par `rem-calc()`), déjà atteignables par `--ui-avatar-size*`.
 - **`ui-icon` : l'échelle et la surcharge d'exemplaire sont deux niveaux distincts.** `--ui-icon-size` était répété dans les cinq entrées de l'échelle ; il est désormais lu une seule fois, au-dessus d'une variable interne que chaque taille alimente. Comportement inchangé : `--ui-icon-size-{sm,md,default,lg,xl}` retouche un **pas de l'échelle** (donc toutes les icônes de cette taille), `--ui-icon-size` force **un exemplaire** quel que soit son `size` — c'est par là qu'un composant dimensionne l'icône qu'il projette.
 - **`ui-checkbox` et `ui-select` exposent la taille de leur marqueur** (`--ui-checkbox-icon-size`, `--ui-select-checkbox-icon-size`). Rétrécir la case (`--ui-checkbox-box-size`) laissait la coche à la taille de l'échelle d'icônes, donc débordante. Le défaut de ces deux hooks pointe sur le pas d'échelle utilisé, si bien que retoucher l'échelle continue de traverser.
 - **`--ui-card-padding` ne se relit plus sous ce nom : le miroir relisible est `--ui-card-gutter`.** Une custom property ne pouvant pas se référencer elle-même, le nom déclaré par la carte et le nom surchargeable devaient être distincts. `--ui-card-padding` devient le **point de surcharge** (gouttière de la carte), `--ui-card-gutter` la valeur à **relire** pour regouttiérer un contenu `contentFlush` : `padding-inline: var(--ui-card-gutter)`.

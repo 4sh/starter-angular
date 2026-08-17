@@ -191,6 +191,9 @@ Pour changer une valeur, trois niveaux, du plus large au plus étroit :
    dans votre `styles/presets/` : toutes les variables `--ui-*` à leur valeur livrée,
    prêtes à retoucher. L'ordre de chargement n'importe pas ici, le kit ne fait que
    *lire* ces noms.
+   Les valeurs partagées par toute une famille sont dans le même fichier, en
+   `--ui-form-*` / `--ui-control-*` / `--ui-overlay-panel-*` : une seule déclaration
+   déplace tous les consommateurs, et une variable de composant reste prioritaire.
 3. **Une zone** — la même variable `--ui-*` sur n'importe quel sélecteur ou élément.
 
 Référence complète (chaque variable, son rôle, sa valeur mesurée) : Storybook →

@@ -44,6 +44,19 @@ Un hook ne remplace pas un token : dans la grande majorité des cas il **pointe*
 token. Retoucher un espacement pour tout le kit = viser le token ; retoucher la hauteur du
 seul bouton `small` = viser le hook.
 
+La couche « hooks » a elle-même deux étages, que la cascade CSS enchaîne toute seule :
+
+```css
+var(--ui-checkbox-box-size, var(--ui-form-control-size, var(--size-components-2xs)))
+/*      ↑ le composant          ↑ la catégorie             ↑ le token               */
+```
+
+Les hooks de **catégorie** viennent de `_ui-config.scss` et portent son nom
+(`$form-control-size` → `--ui-form-control-size`). Ils servent quand une valeur est partagée
+par une famille de composants **et** que le token qu'elle vise sert ailleurs : ici
+`--size-components-2xs` alimente aussi `ui-tag`, donc retoucher le token dépasserait la cible,
+alors que `--ui-form-control-size` ne touche que la case à cocher et le radio.
+
 ## Pipeline
 
 ```
