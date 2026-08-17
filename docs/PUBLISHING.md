@@ -77,14 +77,22 @@ Le réglage n'est possible qu'une fois le package **déjà présent** sur le
 registre : la `0.1.0` a donc été publiée par token, et c'est ce token que la
 bascule supprime.
 
-> 🔴 **`@4sh/ui-kit-schematics` n'existe pas encore sur le registre.** Il retombe
-> donc exactement dans ce cas : sa *première* publication ne peut pas passer par
-> Trusted Publishing, faute de page de package sur laquelle le déclarer. Il faut
-> la faire **une fois** avec un token (voir « Publier depuis un poste »), puis
-> déclarer aussitôt le Trusted Publisher et **révoquer le token**. Tant que ce
-> n'est pas fait, lancer le workflow en `dry_run: false` publiera le kit et
-> échouera sur le compagnon — d'où l'ordre inverse retenu, qui fait échouer le
-> compagnon *avant* que le kit ne parte.
+> ℹ️ **`@4sh/ui-kit-schematics` est tombé dans le même cas** (FSHSP-109) : sa
+> *première* publication ne pouvait pas passer par Trusted Publishing, faute de
+> page de package sur laquelle le déclarer. Un lancement du workflow l'a vérifié
+> — échec en `ENEEDAUTH` sur la première étape, l'ordre compagnon→kit ayant
+> empêché le kit de partir seul.
+>
+> Elle a donc été faite **depuis un poste** (voir « Publier depuis un poste »), en
+> session `npm login` interactive plutôt qu'avec un token de CI, pour la `0.2.0`
+> du 17/08/2026 — les deux packages à la main ce jour-là, puisqu'un compagnon
+> déjà publié aurait fait échouer la CI en `403` sur sa propre étape. Deux
+> conséquences, propres à cette version : la `0.2.0` ne porte **aucune
+> attestation de provenance**, et son tag `v0.2.0` a été poussé à la main, le job
+> `release` n'ayant pas tourné.
+>
+> Amorçage terminé : les deux packages existent, et les versions suivantes
+> repassent entièrement par la CI.
 
 ### Pourquoi c'est strictement mieux qu'un token
 
@@ -216,8 +224,9 @@ irréversible, et affiche les notes de release telles qu'elles seront rendues.
 Le workflow publie avec `--provenance` : npmjs affiche un lien vérifiable entre
 le tarball et le commit + workflow qui l'a produit. Trusted Publishing la rend
 implicite, mais le drapeau reste explicite — il ne coûte rien et documente
-l'intention. Les attestations SLSA de la `0.1.0` et de la `0.1.1` sont
-consultables via `npm view @4sh/ui-kit dist --json`.
+l'intention. Les attestations SLSA sont consultables via
+`npm view @4sh/ui-kit dist --json` — présentes pour toutes les versions publiées
+par la CI, absentes de la `0.2.0`, publiée depuis un poste (voir plus haut).
 
 ---
 
@@ -227,13 +236,35 @@ La voie normale reste la CI : elle publie depuis un environnement reproductible,
 sous approbation, avec provenance. Mais si l'OIDC était indisponible, c'est
 **ici** qu'il faut se replier — pas dans un token de CI.
 
+Les **deux** packages doivent partir, dans le même ordre que la CI — compagnon
+d'abord (voir l'avertissement en haut de page).
+
 ```bash
 npm login                      # compte 4sh-package-admin, code 2FA à la saisie
+npm whoami                     # doit répondre un nom de compte, pas une erreur
+
 npm run ui-kit:build
-cd dist/ui-kit
-npm publish --dry-run          # toujours, d'abord
-npm publish --provenance=false # pas de provenance hors CI : rien à attester
+npm run schematics:build
+
+# parité de version : c'est le contrôle que le job `verify` fait à ta place
+node -p "require('./dist/ui-kit/package.json').version + ' / ' + require('./dist/ui-kit-schematics/package.json').version"
+
+npm publish ./dist/ui-kit-schematics --dry-run   # toujours, d'abord
+npm publish ./dist/ui-kit --dry-run
+
+npm publish ./dist/ui-kit-schematics --provenance=false
+npm publish ./dist/ui-kit --provenance=false     # pas de provenance hors CI
+
+npm logout
 ```
+
+Ne pas se fier au seul `npm login` : une session expirée laisse un jeton dans
+`~/.npmrc` et npm répond alors un `404` sur le `PUT` — il masque le refus
+d'autorisation plutôt que de révéler l'existence d'un package scopé. D'où le
+`npm whoami` avant de publier. En cas de doute, `npm logout` purge le jeton mort.
+
+Le job `release` n'ayant pas tourné, il reste à poser le tag à la main :
+`git tag vX.Y.Z && git push origin vX.Y.Z`.
 
 `npm login` ouvre une **session interactive**, pas un secret partagé : elle est
 liée au poste, expire, et se ferme avec `npm logout`. C'est ce qui distingue ce
@@ -290,8 +321,8 @@ packages, le kit ne sachant que déléguer :
 npm run schematics:pack     # → 4sh-ui-kit-schematics-<version>.tgz
 npm run ui-kit:pack         # → 4sh-ui-kit-<version>.tgz
 
-# dans le projet consommateur — le compagnon d'abord, sinon `ng add` le
-# réinstallerait depuis le registre où il n'est pas encore publié
+# dans le projet consommateur — le compagnon d'abord, sinon `ng add` tirerait
+# la version publiée sur le registre au lieu de celle qu'on veut éprouver
 npm install -D /chemin/vers/4sh-ui-kit-schematics-<version>.tgz
 npm install -D /chemin/vers/4sh-ui-kit-<version>.tgz
 ng generate @4sh/ui-kit:add

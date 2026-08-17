@@ -1,25 +1,30 @@
 /**
  * copy — recopie une unité (`AssetUnit`) dans l'arbre du projet consommateur,
- * avec en-tête de traçabilité (origine + version) sur chaque fichier.
+ * avec en-tête de traçabilité (origine + version + licence) sur chaque fichier.
  */
 import type { Tree } from '@angular-devkit/schematics';
 import { readFileSync, readdirSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import type { AssetUnit } from './component-registry';
 
-const HEADER_STYLE: Record<string, (body: string) => string> = {
-  '.ts': (body) => `// ${body}\n`,
-  '.scss': (body) => `// ${body}\n`,
-  '.html': (body) => `<!-- ${body} -->\n`,
+const HEADER_STYLE: Record<string, (lines: string[]) => string> = {
+  '.ts': (lines) => lines.map((l) => `// ${l}`).join('\n') + '\n',
+  '.scss': (lines) => lines.map((l) => `// ${l}`).join('\n') + '\n',
+  '.html': (lines) => `<!--\n${lines.map((l) => `  ${l}`).join('\n')}\n-->\n`,
 };
 
 function traceabilityHeader(unit: AssetUnit, relPath: string, kitVersion: string, ext: string): string {
   const make = HEADER_STYLE[ext];
   if (!make) return '';
-  const body =
-    `Copié depuis @4sh/ui-kit@${kitVersion} (${unit.kind === 'component' ? unit.category + '/' + unit.name : 'base partagée ' + unit.name}, ${relPath}). ` +
-    `Géré par ui-kit.json — voir \`ng generate @4sh/ui-kit-schematics:update\`.`;
-  return make(body);
+  const origin = unit.kind === 'component' ? `${unit.category}/${unit.name}` : `base partagée ${unit.name}`;
+  return make([
+    `Copié depuis @4sh/ui-kit@${kitVersion} (${origin}, ${relPath}). ` +
+      `Géré par ui-kit.json — voir \`ng generate @4sh/ui-kit-schematics:update\`.`,
+    // Le fichier quitte le package pour vivre dans le dépôt du consommateur :
+    // sans cette ligne, plus rien n'y rattache les termes sous lesquels il est
+    // fourni (Apache-2.0 §4b — conserver les mentions dans les copies).
+    `Apache-2.0 — Copyright 2026 4SH.`,
+  ]);
 }
 
 function walk(dir: string): string[] {
