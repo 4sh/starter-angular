@@ -340,7 +340,7 @@ via l'interop CVA native, ainsi qu'aux formulaires template-driven (`[(ngModel)]
   <tbody>
     <tr>
       <td><strong>Déclencheur</strong></td>
-      <td>Champ <code>ui-input</code> lié à un <code>label</code> natif. Ouverture au clic, ou clavier <kbd>Entrée</kbd>/<kbd>Espace</kbd>/<kbd>↓</kbd> ; <code>aria-haspopup="dialog"</code> + <code>aria-expanded</code>.</td>
+      <td>Champ <code>ui-input</code> lié à un <code>label</code> natif. Ouverture au clic, ou clavier <kbd>Entrée</kbd>/<kbd>Espace</kbd>/<kbd>↓</kbd> ; <code>role="combobox"</code> + <code>aria-haspopup="dialog"</code> + <code>aria-expanded</code> — le rôle est nécessaire pour qu'<code>aria-expanded</code> soit pris en compte (interdit sur le <code>textbox</code> implicite), donc pour que l'existence du calendrier et son état soient annoncés.</td>
     </tr>
     <tr>
       <td><strong>Navigation grille</strong></td>
