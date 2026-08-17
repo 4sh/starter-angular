@@ -16,6 +16,12 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+### Added
+- **`@4sh/ui-kit-schematics` embarque son `LICENSE` et ses README** (EN + FR). Le package déclarait `Apache-2.0` sans en fournir le texte, alors que la licence (§4a) demande qu'une redistribution en joigne une copie — d'autant plus ici que ce package existe pour que son contenu soit recopié ailleurs. Sa page npmjs, jusque-là vide, redirige maintenant vers `@4sh/ui-kit` : le compagnon ne s'installe jamais directement.
+
+### Changed
+- **L'en-tête de traçabilité des fichiers copiés par `ng generate @4sh/ui-kit:add` porte la mention de licence** (`Apache-2.0 — Copyright 2026 4SH.`) en plus de son origine et de sa version. Une fois copié, le fichier vit dans le dépôt du consommateur, où plus rien n'indiquait sous quels termes il est fourni. Conséquence attendue : le premier `ng generate @4sh/ui-kit:update` suivant cette version affiche un diff d'une ligne en tête de chaque fichier installé.
+
 ## [0.2.0] - 2026-08-14
 
 Première version depuis la mise en package à porter de véritables changements de
