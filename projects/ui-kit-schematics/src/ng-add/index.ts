@@ -81,35 +81,18 @@ function createStyleScaffolds(): Rule {
 }
 
 /**
- * Plancher du budget `anyComponentStyle` (FSHSP-127).
+ * `anyComponentStyle` floor (FSHSP-127). `ng new` ships 8kB, which applies to
+ * EACH component's compiled CSS — `ui-button` alone emits 55.7kB, so a copied
+ * source tree cannot build for production.
  *
- * `ng new` est `strict` par défaut : 4 kB d'avertissement, **8 kB d'erreur**, et
- * ce seuil s'applique à CHAQUE composant, sur le CSS compilé. Les composants du
- * kit encodent leurs variantes en SCSS co-localisé — `ui-button` sort à 55,7 kB,
- * `ui-datepicker` à 13,9, `ui-chip` à 13,7, `ui-select` à 12,6 — donc un projet
- * en sources copiées ne peut pas produire de build de production. `ng serve`
- * marche (les budgets ne vivent qu'en configuration `production`), et c'est la
- * CI qui tombe, sur un fichier que le consommateur n'a pas écrit.
- *
- * 128 kB, et pas au ras des 55,7 : les axes de `ui-button` sont multiplicatifs,
- * un level de plus coûte 10,5 kB et une variante 17,2 kB. Or ajouter un level
- * est exactement ce que le mode starter promet — `ui-button.scss` le documente
- * en tête. Un plafond serré casserait le build sur le geste attendu.
- *
- * À assumer : ce budget n'est pas scopable à un fichier (les types possibles
- * sont `all`, `allScript`, `any`, `anyScript`, `anyComponentStyle`, `bundle`,
- * `initial` ; `name` ne cible qu'un bundle JS). Le desserrer pour nos composants
- * le desserre aussi pour ceux du consommateur : il perd le garde-fou d'`ng new`
- * sur son propre code. C'est un pare-chocs contre l'accident grossier, pas un
- * garde-fou de performance — le vrai sujet est le poids de `ui-button`
- * (FSHSP-129), que ce plancher ne fait que rendre supportable.
- *
- * L'unité est celle d'Angular : `BYTES_IN_KILOBYTE = 1000`.
+ * 128kB, not just above 55.7: `ui-button`'s axes are multiplicative (+10.5kB per
+ * level, +17.2kB per variant) and adding one is what starter mode is for.
+ * Angular's unit, not the SI one: `BYTES_IN_KILOBYTE = 1000`.
  */
 const ANY_COMPONENT_STYLE_FLOOR = '128kB';
 const ANY_COMPONENT_STYLE_FLOOR_BYTES = 128_000;
 
-/** Un budget d'`angular.json`, réduit aux champs que l'on lit ici. */
+/** An `angular.json` budget, narrowed to the fields read here. */
 interface Budget {
   type?: string;
   maximumWarning?: string;
@@ -117,9 +100,8 @@ interface Budget {
 }
 
 /**
- * Traduit un seuil (`8kB`, `1MB`, `500`) en octets, avec la grammaire exacte
- * d'Angular (`bundle-calculator.js`). `null` pour ce qu'on ne sait pas comparer
- * — dont les pourcentages, qui n'ont de sens que relativement à une `baseline`.
+ * Threshold to bytes, using Angular's own grammar (`bundle-calculator.js`).
+ * `null` for what cannot be compared — percentages need a `baseline`.
  */
 function budgetBytes(value: string | undefined): number | null {
   const matches = value?.trim().match(/^(\d+(?:\.\d+)?)[ \t]*(k?b|mb|gb)?$/i);
@@ -129,19 +111,12 @@ function budgetBytes(value: string | undefined): number | null {
 }
 
 /**
- * Relève le budget `anyComponentStyle` là où il existe, dans toutes les
- * configurations de la cible (`production` chez `ng new`, mais un projet peut en
- * nommer d'autres).
+ * Raises the `anyComponentStyle` budget wherever it exists, across every
+ * configuration (`production` for `ng new`, but a project may name others).
  *
- * Trois précautions, chacune pour ne pas défaire un choix du consommateur :
- * on n'AJOUTE jamais de budget absent (sans seuil, rien ne casse — lui en poser
- * un serait imposer une politique qu'il n'a pas demandée) ; on ne descend jamais
- * un seuil déjà plus haut que le nôtre ; et on ne touche pas à un seuil exprimé
- * en pourcentage, qu'on ne sait pas comparer.
- *
- * `maximumWarning` est retiré quand on intervient : le laisser à 4 kB ferait
- * remonter une quinzaine de composants du kit à chaque build, et un
- * avertissement qu'on apprend à ignorer ne protège plus de rien.
+ * Never ADDS a missing budget, never LOWERS a higher one, never touches a
+ * percentage: each would undo a choice the project made. `maximumWarning` is
+ * dropped — at 4kB some fifteen kit components would warn on every build.
  */
 function relaxAnyComponentStyleBudget(target: workspaces.TargetDefinition): void {
   for (const configuration of Object.values(target.configurations ?? {})) {
@@ -155,11 +130,11 @@ function relaxAnyComponentStyleBudget(target: workspaces.TargetDefinition): void
 
       const error = budgetBytes(budget.maximumError);
       if (error !== null && error >= ANY_COMPONENT_STYLE_FLOOR_BYTES) return entry;
-      if (budget.maximumError !== undefined && error === null) return entry; // pourcentage : pas comparable
+      if (budget.maximumError !== undefined && error === null) return entry; // percentage: not comparable
 
       changed = true;
-      // Le `maximumWarning` est omis, pas mis à `undefined` : la clé doit
-      // disparaître du JSON écrit, pas y figurer sans valeur.
+      // Destructured out rather than set to `undefined`: the key must be absent
+      // from the written JSON, not present without a value.
       const { maximumWarning, ...rest } = budget;
       const warning = budgetBytes(maximumWarning);
       const next: Budget = { ...rest, maximumError: ANY_COMPONENT_STYLE_FLOOR };
@@ -180,7 +155,7 @@ function relaxAnyComponentStyleBudget(target: workspaces.TargetDefinition): void
 function updateAngularJson(): Rule {
   return updateWorkspace((workspace) => {
     for (const project of workspace.projects.values()) {
-      // Les budgets ne concernent que `build` : `test` n'en déclare pas.
+      // Budgets live on `build` only — `test` declares none.
       const build = project.targets.get('build');
       if (build) relaxAnyComponentStyleBudget(build);
 
