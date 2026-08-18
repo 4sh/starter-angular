@@ -4,19 +4,27 @@
 // ui-separator : co-located styles. All values come from design tokens.
 // =====================================================================
 
+// --- Config -----------------------------------------------------------
+$gap: var(--ui-separator-gap, var(--units-sm));                                /// Espacement filet ↔ libellé.
+$stroke-width: var(--ui-separator-stroke-width, var(--stroke-default));        /// Épaisseur du filet.
+$stroke-width-small: var(--ui-separator-stroke-width-small, var(--stroke-sm)); /// Épaisseur du filet en taille `small`.
+
+$font-size: var(--ui-separator-font-size, var(--size-typography-text-default));        /// Taille du libellé.
+$font-size-small: var(--ui-separator-font-size-small, var(--size-typography-text-md)); /// Taille du libellé en taille `small`.
+
 .ui-separator {
   // --- Base ----------------------------------------------------------
-  --_thickness: var(--stroke-default);
+  --_thickness: #{$stroke-width};
   --_style: solid;
 
   display: flex;
   align-items: center;
-  gap: var(--units-sm);
+  gap: $gap;
   box-sizing: border-box;
 
   // --- Variants (line style / thickness) -------------
   &._dashed { --_style: dashed; }
-  &._small { --_thickness: var(--stroke-sm); }
+  &._small { --_thickness: #{$stroke-width-small}; }
 
   // --- Sub-elements --------------------------------------------------
   &-line {
@@ -28,12 +36,12 @@
     flex: 0 0 auto;
     color: var(--global-text-default);
     font-family: var(--fontfamily-base);
-    font-size: var(--size-typography-text-default);
+    font-size: $font-size;
     line-height: 1;
     white-space: nowrap;
   }
 
-  &._small &-label { font-size: var(--size-typography-text-md); }
+  &._small &-label { font-size: $font-size-small; }
 
   // --- Horizontal (default) --------------------------
   // Fills the available width; the rule is a top border.

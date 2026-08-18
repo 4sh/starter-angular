@@ -332,6 +332,11 @@ Contenu et résolution des imports strictement identiques à une vraie
 publication. Pour du développement en parallèle :
 `npm install ../starter-angular/dist/ui-kit`.
 
+Côté branchement dans le projet consommateur (feuille à charger, `data-theme` /
+`data-brand`, surcharge des tokens et des variables de composant), tout est dans
+[`projects/ui-kit/README.md`](../projects/ui-kit/README.md#theme-brand-and-overrides) —
+c'est ce fichier que voit l'utilisateur sur npmjs.
+
 Pour éprouver le **starter**, le compagnon suffit — il porte les sources *et* les
 schematics, et le parcours n'installe pas le kit :
 
@@ -340,13 +345,16 @@ npm run schematics:pack     # → 4sh-ui-kit-schematics-<version>.tgz
 
 # dans le projet consommateur
 npm install -D /chemin/vers/4sh-ui-kit-schematics-<version>.tgz
-npx ng generate @4sh/ui-kit-schematics:ng-add --components ui-button ui-checkbox
+npx ng generate @4sh/ui-kit-schematics:ng-add --all
 ```
 
 On passe par `ng generate …:ng-add` plutôt que `ng add` : la commande publiée
 `ng add @4sh/ui-kit-schematics` irait chercher le package sur le registre, pas le
-tarball local. La règle exécutée est exactement la même. Et `--components` évite
-le prompt interactif, ce qui rend l'essai scriptable — l'omettre le rétablit.
+tarball local. La règle exécutée est exactement la même. Et `--all` évite le
+prompt interactif, ce qui rend l'essai scriptable — l'omettre le rétablit, et
+c'est là qu'on coche à la barre d'espace. Pour n'essayer que quelques
+composants sans prompt : `ng generate @4sh/ui-kit-schematics:add --components
+ui-button --components ui-checkbox`, l'option ne vivant plus que sur `add`.
 
 Vérifications qui valent la peine, une fois la commande passée :
 

@@ -14,22 +14,29 @@
 // Do not re-add `padding` here: it would shrink every control back inside.
 // =====================================================================
 
-$height: utils.$form-field-height;                                 /// Hauteur de la boîte de champ.
-$height-small: utils.$form-field-height-small;                     /// Hauteur de la boîte de champ, variante `small`.
-$radius: utils.$form-field-radius;                                 /// Rayon de bordure de la boîte.
-$padding-x: utils.$form-field-padding-x;                           /// Inset horizontal du champ, porté par le contrôle projeté.
-$gap: utils.$form-field-gap;                                       /// Espace entre le contrôle et ses affixes.
-$stroke-width: utils.$form-field-stroke-width;                     /// Épaisseur de bordure de la boîte.
-$focus-ring-width: utils.$form-field-focus-ring-width;             /// Épaisseur de l'anneau de focus.
-$textarea-min-height: utils.$form-textarea-min-height;             /// Hauteur minimale de la boîte multiligne (`ui-textarea`).
-$textarea-min-height-small: utils.$form-textarea-min-height-small; /// Hauteur minimale de la boîte multiligne, variante `small`.
+$gap: var(--ui-field-gap, var(--units-xs));               /// Gouttière verticale entre le libellé, la boîte et le pied.
+$gap-small: var(--ui-field-gap-small, var(--units-xs));   /// Gouttière verticale, variante `small`.
+$footer-gap: var(--ui-field-footer-gap, var(--units-sm)); /// Espace entre le message et le compteur, dans le pied.
+
+$height: var(--ui-field-height, #{utils.$form-field-height});                   /// Hauteur de la boîte de champ.
+$height-small: var(--ui-field-height-small, #{utils.$form-field-height-small}); /// Hauteur de la boîte de champ, variante `small`.
+$radius: utils.$form-field-radius;                                             /// Rayon de bordure de la boîte.
+$box-gap: var(--ui-field-box-gap, #{utils.$form-field-gap});                    /// Espace entre le contrôle et ses affixes.
+$stroke-width: var(--ui-field-stroke-width, #{utils.$form-field-stroke-width}); /// Épaisseur de bordure de la boîte.
+
+$focus-ring-width: var(--ui-field-focus-ring-width, #{utils.$form-field-focus-ring-width}); /// Épaisseur de l'anneau de focus.
+$focus-ring-opacity: var(--ui-field-focus-ring-opacity, 50%);                               /// Opacité de l'anneau de focus.
+
+$padding-y-auto-height: var(--ui-field-padding-y-auto-height, var(--units-xs));                                   /// Inset vertical de la boîte à hauteur automatique (valeurs enveloppées de `ui-select`).
+$min-height-multiline: var(--ui-field-min-height-multiline, #{utils.$form-textarea-min-height});                   /// Hauteur minimale de la boîte multiligne (`ui-textarea`).
+$min-height-multiline-small: var(--ui-field-min-height-multiline-small, #{utils.$form-textarea-min-height-small}); /// Hauteur minimale de la boîte multiligne, variante `small`.
 
 .ui-field {
   display: flex;
   flex-direction: column;
-  gap: var(--units-xs);
+  gap: $gap;
 
-  &._small { gap: var(--units-xs); }
+  &._small { gap: $gap-small; }
 
   // --- Box -----------------------------------------------------------
   // Border colour routed through local vars, overridden per level below.
@@ -40,7 +47,7 @@ $textarea-min-height-small: utils.$form-textarea-min-height-small; /// Hauteur m
 
     display: flex;
     align-items: center;
-    gap: $gap;
+    gap: $box-gap;
     box-sizing: border-box;
     height: $height;
     padding: 0;
@@ -57,7 +64,7 @@ $textarea-min-height-small: utils.$form-textarea-min-height-small; /// Hauteur m
   &-box:hover:not(:focus-within) { border-color: var(--_stroke-hover); }
   &-box:focus-within {
     border-color: var(--_stroke-focus);
-    box-shadow: 0 0 0 $focus-ring-width rgb(from var(--_stroke-focus) r g b / 50%);
+    box-shadow: 0 0 0 $focus-ring-width rgb(from var(--_stroke-focus) r g b / #{$focus-ring-opacity});
   }
 
   // --- Levels (border palette) ---------------------------------------
@@ -84,7 +91,7 @@ $textarea-min-height-small: utils.$form-textarea-min-height-small; /// Hauteur m
   &._auto-height &-box {
     height: auto;
     min-height: $height;
-    padding-block: var(--units-xs);
+    padding-block: $padding-y-auto-height;
   }
   &._auto-height._small &-box { min-height: $height-small; }
 
@@ -92,15 +99,15 @@ $textarea-min-height-small: utils.$form-textarea-min-height-small; /// Hauteur m
   &._multiline &-box {
     align-items: stretch;
     height: auto;
-    min-height: $textarea-min-height;
+    min-height: $min-height-multiline;
   }
-  &._multiline._small &-box { min-height: $textarea-min-height-small; }
+  &._multiline._small &-box { min-height: $min-height-multiline-small; }
 
   // --- Footer (message + optional counter) ---------------------------
   &-footer {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
-    gap: var(--units-sm);
+    gap: $footer-gap;
   }
 }

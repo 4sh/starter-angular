@@ -25,22 +25,31 @@ $levels: high, low, success, warning, error; /// Familles de couleur générées
 $variants: outlined, ghost;                  /// Variantes composées avec `$levels` (`filled` = jeu nu, sans classe)
 $polarities: dark, light;                    /// Luminosités de fond gérées par `onColor` (jeux épinglés, insensibles au thème)
 
+$radius: var(--ui-button-radius, var(--radius-sm));                                     /// Rayon des coins, reformable par un hôte (`ui-button-split`).
+$radius-rounded: var(--ui-button-radius, var(--ui-button-radius-rounded, var(--radius-full))); /// Rayon des coins en présentation `rounded`.
+$gap: var(--ui-button-gap, var(--units-sm));                                             /// Espacement icône ↔ libellé.
+$stroke-width: var(--ui-button-stroke-width, #{utils.$control-stroke-width});            /// Épaisseur de la bordure.
+$focus-ring-width: var(--ui-button-focus-ring-width, #{utils.$action-focus-ring-width}); /// Épaisseur de l'anneau de focus.
+
+$icon-stacked-gap: var(--ui-button-icon-stacked-gap, var(--units-xs));                   /// Espacement icône ↔ libellé quand l'icône est empilée (`iconPos` top / bottom).
+$icon-stacked-padding-y: var(--ui-button-icon-stacked-padding-y, var(--units-md));       /// Inset vertical en icône empilée (la hauteur passe en `auto`).
+$icon-stacked-padding-x: var(--ui-button-icon-stacked-padding-x, var(--units-default));  /// Inset horizontal en icône empilée.
+
 // `default` = base styles; other keys become `._<name>` modifiers.
 /// Dimensions par taille (spécifique bouton)
 $sizes: (
   'default': (
-    height: var(--size-components-default),
-    padding-x: var(--units-default),
-    font-size: var(--size-typography-text-default),
+    height: var(--ui-button-height, var(--size-components-default)),
+    padding-x: var(--ui-button-padding-x, var(--units-default)),
+    font-size: var(--ui-button-font-size, var(--size-typography-text-default)),
   ),
   'small': (
-    height: var(--size-components-sm),
-    padding-x: var(--units-md),
-    font-size: var(--size-typography-text-md),
+    height: var(--ui-button-height-small, var(--size-components-sm)),
+    padding-x: var(--ui-button-padding-x-small, var(--units-md)),
+    font-size: var(--ui-button-font-size-small, var(--size-typography-text-md)),
   ),
 );
 $size-default: map.get($sizes, 'default');         /// Raccourci vers l'entrée `default` de `$sizes`.
-$focus-ring-width: utils.$action-focus-ring-width; /// Épaisseur de l'anneau de focus
 
 // A $sizes height is either a token reference (`var(...)`, passed through as-is)
 // or a raw px number, which goes through rem-calc.
@@ -100,11 +109,9 @@ $focus-ring-width: utils.$action-focus-ring-width; /// Épaisseur de l'anneau de
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--units-sm);
-  border: utils.$control-stroke-width solid transparent;
-  // Radius hook: a host can reshape the corners (e.g. glued buttons in
-  // ui-button-split) by setting `--ui-button-radius` on the <ui-button> host.
-  border-radius: var(--ui-button-radius, var(--radius-sm)); /// Rayon exposé pour reformer les coins (utilisé par `ui-button-split`).
+  gap: $gap;
+  border: $stroke-width solid transparent;
+  border-radius: $radius;
   font-family: var(--fontfamily-base);
   font-weight: var(--weight-bold);
   line-height: 1.2;
@@ -138,15 +145,15 @@ $focus-ring-width: utils.$action-focus-ring-width; /// Épaisseur de l'anneau de
 
   // Pill shape. Keeps the `--ui-button-radius` hook so a host (ui-button-split)
   // can still reshape glued corners.
-  &._rounded { border-radius: var(--ui-button-radius, var(--radius-full)); }
+  &._rounded { border-radius: $radius-rounded; }
 
   // iconPos top | bottom
   &._icon-top,
   &._icon-bottom {
     flex-direction: column;
-    gap: var(--units-xs);
+    gap: $icon-stacked-gap;
     height: auto;
-    padding: var(--units-md) var(--units-default);
+    padding: $icon-stacked-padding-y $icon-stacked-padding-x;
   }
 
   // Icon-only: square (width = size height), no horizontal padding.

@@ -200,6 +200,48 @@ shared functions, mixins and constants.
 > CSS exposed there would be duplicated into every component. The global utility
 > classes live in `styles.css`.
 
+### Theme, brand and overrides
+
+Light/dark and brand are **attributes on `<html>`** — nothing to import, `styles.css`
+already carries every mode:
+
+| Attribute | Values | Absent means |
+|---|---|---|
+| `data-theme` | `dark` | light |
+| `data-brand` | `brand2`, `brand3` | brand 1 |
+
+```html
+<html data-theme="dark" data-brand="brand2">
+```
+
+Set them however suits you (a service, SSR, a build flag): the kit only reads them.
+
+To change a value, three levels, from the broadest to the narrowest:
+
+```scss
+// src/styles/main.scss — loaded after styles.css
+@use 'presets/component-vars';                     // 2. one component's values
+
+:root { --units-lg: 20px; }                        // 1. a token: the whole kit follows
+:root[data-theme='dark'] { --global-background-default: #101014; }
+
+.toolbar ui-button { --ui-button-height-small: 24px; }   // 3. one area of the screen
+```
+
+1. **A token** (`--units-*`, `--radius-*`, `--actions-*`…) — must come **after**
+   `styles.css`, which declares them. For a mode-specific value, match the same
+   selector (`:root[data-theme='dark']`).
+2. **A component's values** — copy `@4sh/ui-kit/styles/component-vars.scss` into your
+   `styles/presets/`: every `--ui-*` variable at its shipped value, ready to retune.
+   Load order is irrelevant here, the kit only *reads* these names.
+   Values shared by a whole family live in the same file under `--ui-form-*` /
+   `--ui-control-*` / `--ui-overlay-panel-*`: one declaration moves every consumer,
+   and a component-level variable still wins over it.
+3. **One area** — the same `--ui-*` on any selector or element.
+
+Full reference (every variable, its role and its measured value): Storybook →
+*Spécifications → Thème & Système de Tokens*.
+
 ---
 
 ## `@4sh/ui-kit/forms` — form field foundation

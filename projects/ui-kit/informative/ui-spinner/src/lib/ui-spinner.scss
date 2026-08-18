@@ -10,18 +10,18 @@
 /// Diamètre et typo du libellé, par taille.
 $sizes: (
   'default': (
-    box: 32px,
-    font-size: var(--size-typography-text-md),
+    box: var(--ui-spinner-size, #{utils.rem-calc(32)}),
+    font-size: var(--ui-spinner-font-size, var(--size-typography-text-md)),
   ),
   'small': (
-    box: 20px,
-    font-size: var(--size-typography-text-sm),
+    box: var(--ui-spinner-size-small, #{utils.rem-calc(20)}),
+    font-size: var(--ui-spinner-font-size-small, var(--size-typography-text-sm)),
   ),
 );
 $size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default` de `$sizes`.
 
 @function box($size) {
-  @return var(--ui-spinner-size, #{utils.rem-calc(map.get($size, box))});          /// Taille brute de la boîte du marqueur.
+  @return map.get($size, box);
 }
 
 .ui-spinner {

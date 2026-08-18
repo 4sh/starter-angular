@@ -15,36 +15,48 @@
 $levels: default, highlight, success, warning, error; /// Niveaux sémantiques générant les modifiers `._<niveau>`.
 $sublevels: high, low;                                /// Intensités générant les modifiers `._<intensité>`.
 
+$radius: var(--ui-chip-radius, var(--radius-full));                                           /// Rayon des coins.
+$radius-square: var(--ui-chip-radius-square, var(--radius-sm));                               /// Rayon des coins en présentation `square`.
+$stroke-width: var(--ui-chip-stroke-width, var(--stroke-sm));                                 /// Épaisseur de la bordure.
+$padding-inline-end-removable: var(--ui-chip-padding-inline-end-removable, var(--units-2xs)); /// Inset de fin resserré quand le chip porte une action de suppression.
+
+$image-radius: var(--ui-chip-image-radius, var(--radius-full));             /// Rayon du visuel.
+$image-radius-square: var(--ui-chip-image-radius-square, var(--radius-xs)); /// Rayon du visuel en présentation `square`.
+$image-offset: var(--ui-chip-image-offset, var(--units-2xs));               /// Débord du visuel dans l'inset de début.
+
+$remove-padding: var(--ui-chip-remove-padding, var(--units-2xs)); /// Inset du bouton de suppression.
+$remove-radius: var(--ui-chip-remove-radius, var(--radius-full)); /// Rayon des coins du bouton de suppression.
+
 /// Hauteur, gouttières, typo et taille du visuel, par taille.
 $sizes: (
   'default': (
-    height: 32px,
-    gap: var(--units-xs),
-    padding-x: var(--units-sm),
-    font-size: var(--size-typography-text-default),
-    visual: 24px,
+    height: var(--ui-chip-height, #{utils.rem-calc(32)}),
+    gap: var(--ui-chip-gap, var(--units-xs)),
+    padding-x: var(--ui-chip-padding-x, var(--units-sm)),
+    font-size: var(--ui-chip-font-size, var(--size-typography-text-default)),
+    visual: var(--ui-chip-image-size, #{utils.rem-calc(24)}),
   ),
   'small': (
-    height: 24px,
-    gap: var(--units-2xs),
-    padding-x: var(--units-sm),
-    font-size: var(--size-typography-text-md),
-    visual: 18px,
+    height: var(--ui-chip-height-small, #{utils.rem-calc(24)}),
+    gap: var(--ui-chip-gap-small, var(--units-2xs)),
+    padding-x: var(--ui-chip-padding-x-small, var(--units-sm)),
+    font-size: var(--ui-chip-font-size-small, var(--size-typography-text-md)),
+    visual: var(--ui-chip-image-size-small, #{utils.rem-calc(18)}),
   ),
 );
-$size-default: map.get($sizes, 'default');  /// Raccourci vers l'entrée `default` de `$sizes`.
-$focus-ring-width: utils.$focus-ring-width; /// Épaisseur de l'anneau de focus.
+$size-default: map.get($sizes, 'default');                                      /// Raccourci vers l'entrée `default` de `$sizes`.
+$focus-ring-width: var(--ui-chip-focus-ring-width, #{utils.$focus-ring-width}); /// Épaisseur de l'anneau de focus.
 
 @mixin chip-size($size) {
-  height: utils.rem-calc(map.get($size, height));
-  min-width: utils.rem-calc(map.get($size, height));
+  height: map.get($size, height);
+  min-width: map.get($size, height);
   gap: map.get($size, gap);
   padding: 0 map.get($size, padding-x);
   font-size: map.get($size, font-size);
 
   .ui-chip-image {
-    width: utils.rem-calc(map.get($size, visual));
-    height: utils.rem-calc(map.get($size, visual));
+    width: map.get($size, visual);
+    height: map.get($size, visual);
   }
 }
 
@@ -55,8 +67,8 @@ $focus-ring-width: utils.$focus-ring-width; /// Épaisseur de l'anneau de focus.
   justify-content: center;
   box-sizing: border-box;
   max-width: 100%;
-  border: var(--stroke-sm) solid transparent;
-  border-radius: var(--radius-full);
+  border: $stroke-width solid transparent;
+  border-radius: $radius;
   font-family: var(--fontfamily-base);
   font-weight: var(--weight-regular);
   line-height: 1;
@@ -69,8 +81,8 @@ $focus-ring-width: utils.$focus-ring-width; /// Épaisseur de l'anneau de focus.
 
   &-image {
     flex: none;
-    margin-inline-start: calc(-1 * var(--units-2xs));
-    border-radius: var(--radius-full);
+    margin-inline-start: calc(-1 * #{$image-offset});
+    border-radius: $image-radius;
     object-fit: cover;
   }
 
@@ -89,9 +101,9 @@ $focus-ring-width: utils.$focus-ring-width; /// Épaisseur de l'anneau de focus.
     align-items: center;
     justify-content: center;
     margin: 0;
-    padding: var(--units-2xs);
+    padding: $remove-padding;
     border: 0;
-    border-radius: var(--radius-full);
+    border-radius: $remove-radius;
     background: transparent;
     color: inherit;
     line-height: 0;
@@ -103,7 +115,7 @@ $focus-ring-width: utils.$focus-ring-width; /// Épaisseur de l'anneau de focus.
 
   // --- Layout tweaks ---------------------------------
   &._removable {
-    padding-inline-end: var(--units-2xs) !important;
+    padding-inline-end: $padding-inline-end-removable !important;
   }
 
   // --- Selectable (choice / filter chip) -------------
@@ -118,8 +130,8 @@ $focus-ring-width: utils.$focus-ring-width; /// Épaisseur de l'anneau de focus.
 
   // --- Shape -----------------------------------------
   &._square {
-    border-radius: var(--radius-sm);
-    .ui-chip-image { border-radius: var(--radius-xs); }
+    border-radius: $radius-square;
+    .ui-chip-image { border-radius: $image-radius-square; }
   }
 
   &._disabled { cursor: not-allowed; }

@@ -8,12 +8,17 @@
 // =====================================================================
 
 // Shared defaults (ui-config) — replace a value here to detune ONLY this component.
-$box-size: utils.$form-control-size;             /// Diamètre du cercle radio
-$focus-ring-width: utils.$form-focus-ring-width; /// Épaisseur de l'anneau de focus
-$gap: utils.$form-control-gap;                   /// Espace entre le cercle et le label
+$box-size: var(--ui-radio-box-size, #{utils.$form-control-size});                     /// Diamètre du cercle radio
+$focus-ring-width: var(--ui-radio-focus-ring-width, #{utils.$form-focus-ring-width}); /// Épaisseur de l'anneau de focus
+$gap: var(--ui-radio-gap, #{utils.$form-control-gap});                                /// Espace entre le cercle et le label
 
 // Component-specific (radio only).
-$dot-size: var(--units-md); /// Diamètre du point sélectionné (spécifique radio)
+$dot-size: var(--ui-radio-dot-size, var(--units-md)); /// Diamètre du point sélectionné (spécifique radio)
+$box-radius: var(--ui-radio-box-radius, var(--radius-full));                 /// Rayon des coins du cercle.
+$dot-radius: var(--ui-radio-dot-radius, var(--radius-full));                 /// Rayon des coins du point sélectionné.
+$stroke-width: var(--ui-radio-stroke-width, #{utils.$control-stroke-width}); /// Épaisseur de la bordure du cercle.
+$font-size: var(--ui-radio-font-size, var(--size-typography-text-default)); /// Taille de police du label.
+$label-gap: var(--ui-radio-label-gap, var(--units-2xs));                    /// Espacement libellé ↔ marqueur requis.
 
 .ui-radio {
   display: inline-flex;
@@ -56,8 +61,8 @@ $dot-size: var(--units-md); /// Diamètre du point sélectionné (spécifique ra
     width: 100%;
     height: 100%;
     background-color: var(--_surface);
-    border: utils.$control-stroke-width solid var(--_stroke);
-    border-radius: var(--radius-full);
+    border: $stroke-width solid var(--_stroke);
+    border-radius: $box-radius;
     @include utils.control-transition(background-color, border-color, box-shadow);
   }
 
@@ -71,7 +76,7 @@ $dot-size: var(--units-md); /// Diamètre du point sélectionné (spécifique ra
     width: $dot-size;
     height: $dot-size;
     background-color: var(--_content);
-    border-radius: var(--radius-full);
+    border-radius: $dot-radius;
     transform: scale(0);
     @include utils.control-transition(transform);
   }
@@ -84,9 +89,9 @@ $dot-size: var(--units-md); /// Diamètre du point sélectionné (spécifique ra
   &-label {
     display: inline-flex;
     align-items: center;
-    gap: var(--units-2xs);
+    gap: $label-gap;
     font-family: var(--fontfamily-base);
-    font-size: var(--size-typography-text-default);
+    font-size: $font-size;
     color: var(--ui-label-color, var(--form-high-content-default));
     cursor: inherit;
     user-select: none;

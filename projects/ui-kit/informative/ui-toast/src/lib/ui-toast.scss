@@ -16,7 +16,7 @@ $levels: default, highlight, success, warning, error; /// Niveaux sémantiques g
 $sublevels: high, low;                                /// Intensités générant les modifiers `._<intensité>`.
 
 // Reused structural constant (kit-wide focus ring). Local alias, never copied.
-$focus-ring-width: utils.$focus-ring-width; /// Épaisseur de l'anneau de focus.
+$focus-ring-width: var(--ui-toast-focus-ring-width, #{utils.$focus-ring-width}); /// Épaisseur de l'anneau de focus.
 
 .ui-toast {
   // --- Base ----------------------------------------------------------

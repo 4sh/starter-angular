@@ -5,29 +5,60 @@
 // ui-file-upload : co-located styles. All values come from design tokens.
 //
 // Extend:
-//   • Size → add entries to $field-height / $zone-min (+ the size type).
+//   • Size → add entries to $field-height / $zone-min and the matching
+//     `-small` config values (+ the size type).
 // =====================================================================
 
 // --- Config ----------------------------------------------------------
-$stroke: utils.$form-field-stroke-width;   /// Épaisseur de bordure de la zone de dépôt.
-$radius: utils.$form-field-radius;         /// Rayon de la zone de dépôt.
-$focus-ring: utils.$form-focus-ring-width; /// Épaisseur de l'anneau de focus.
+$stroke-width: var(--ui-file-upload-stroke-width, #{utils.$form-field-stroke-width});      /// Épaisseur de bordure de la zone de dépôt.
+$radius: var(--ui-file-upload-radius, #{utils.$form-field-radius});                       /// Rayon de la zone de dépôt.
+$focus-ring-width: var(--ui-file-upload-focus-ring-width, #{utils.$form-focus-ring-width}); /// Épaisseur de l'anneau de focus.
+$gap: var(--ui-file-upload-gap, var(--units-default));                                    /// Espacement entre la zone, la barre d'outils et la liste.
 
 /// Hauteur de la zone en présentation compacte, par taille.
 $field-height: (
-  'default': utils.$form-field-height,
-  'small': utils.$form-field-height-small,
+  'default': var(--ui-file-upload-field-height, #{utils.$form-field-height}),
+  'small': var(--ui-file-upload-field-height-small, #{utils.$form-field-height-small}),
 );
+
+$field-gap: var(--ui-file-upload-field-gap, var(--units-sm));             /// Espacement libellé ↔ bouton de sélection.
+$field-padding-x: var(--ui-file-upload-field-padding-x, var(--units-md)); /// Inset horizontal du libellé en présentation compacte.
+$placeholder-opacity: var(--ui-file-upload-placeholder-opacity, 0.75);    /// Opacité du texte indicatif tant qu'aucun fichier n'est choisi.
+
+$field-font-size: var(--ui-file-upload-field-font-size, var(--size-typography-text-default));        /// Taille du libellé en présentation compacte.
+$field-font-size-small: var(--ui-file-upload-field-font-size-small, var(--size-typography-text-md)); /// Taille du libellé en présentation compacte, taille `small`.
+
+$browse-padding-x: var(--ui-file-upload-browse-padding-x, var(--units-default));                      /// Inset horizontal du bouton de sélection.
+$browse-padding-x-small: var(--ui-file-upload-browse-padding-x-small, var(--units-md));               /// Inset horizontal du bouton de sélection, taille `small`.
+$browse-font-size: var(--ui-file-upload-browse-font-size, var(--size-typography-text-default));       /// Taille du libellé du bouton de sélection.
+$browse-font-size-small: var(--ui-file-upload-browse-font-size-small, var(--size-typography-text-md)); /// Taille du libellé du bouton de sélection, taille `small`.
+
 /// Hauteur minimale de la zone de dépôt, par taille.
 $zone-min: (
-  'default': 112px,
-  'small': 94px,
+  'default': var(--ui-file-upload-zone-min-height, 112px),
+  'small': var(--ui-file-upload-zone-min-height-small, 94px),
 );
+
+$zone-padding: var(--ui-file-upload-zone-padding, var(--units-default));      /// Inset de la zone de dépôt.
+$zone-gap: var(--ui-file-upload-zone-gap, var(--units-lg));                   /// Espacement icône ↔ contenu de la zone de dépôt.
+$zone-gap-small: var(--ui-file-upload-zone-gap-small, var(--units-sm));       /// Espacement icône ↔ contenu de la zone de dépôt, taille `small`.
+$zone-content-gap: var(--ui-file-upload-zone-content-gap, var(--units-xs));   /// Espacement titre ↔ indication.
+$zone-title-gap: var(--ui-file-upload-zone-title-gap, var(--units-2xs));      /// Espacement entre les fragments du titre de la zone.
+
+$zone-title-font-size: var(--ui-file-upload-zone-title-font-size, var(--size-typography-text-default));        /// Taille du titre de la zone de dépôt.
+$zone-title-font-size-small: var(--ui-file-upload-zone-title-font-size-small, var(--size-typography-text-md)); /// Taille du titre de la zone de dépôt, taille `small`.
+$zone-hint-font-size: var(--ui-file-upload-zone-hint-font-size, var(--size-typography-text-md));               /// Taille de l'indication sous le titre.
+$zone-hint-font-size-small: var(--ui-file-upload-zone-hint-font-size-small, var(--size-typography-text-sm));   /// Taille de l'indication sous le titre, taille `small`.
+
+$toolbar-gap: var(--ui-file-upload-toolbar-gap, var(--units-sm));                            /// Espacement entre les actions de la barre d'outils.
+$content-gap: var(--ui-file-upload-content-gap, var(--units-sm));                            /// Espacement entre les lignes de fichier.
+$messages-gap: var(--ui-file-upload-messages-gap, var(--units-2xs));                         /// Espacement entre les messages.
+$message-font-size: var(--ui-file-upload-message-font-size, var(--size-typography-text-md)); /// Taille d'un message.
 
 .ui-file-upload {
   display: flex;
   flex-direction: column;
-  gap: var(--units-default);
+  gap: $gap;
   width: 100%;
   font-family: var(--fontfamily-base);
 
@@ -51,12 +82,12 @@ $zone-min: (
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--units-sm);
+    gap: $field-gap;
     height: map.get($field-height, 'default');
-    padding-left: var(--units-md);
+    padding-left: $field-padding-x;
     overflow: hidden;
     background-color: var(--form-high-surface-default);
-    border: $stroke solid var(--form-high-stroke-default);
+    border: $stroke-width solid var(--form-high-stroke-default);
     border-radius: $radius;
     color: var(--form-high-content-default);
     cursor: pointer;
@@ -76,12 +107,12 @@ $zone-min: (
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    font-size: var(--size-typography-text-default);
+    font-size: $field-font-size;
     font-weight: var(--weight-regular);
 
-    &._placeholder { color: var(--form-high-content-default); opacity: 0.75; }
+    &._placeholder { color: var(--form-high-content-default); opacity: $placeholder-opacity; }
   }
-  &._small &-field-text { font-size: var(--size-typography-text-md); }
+  &._small &-field-text { font-size: $field-font-size-small; }
 
   // Browse "button" (styled span — the label owns the click) ----------
   &-browse {
@@ -89,13 +120,13 @@ $zone-min: (
     align-items: center;
     align-self: stretch;
     flex: none;
-    padding: 0 var(--units-default);
+    padding: 0 $browse-padding-x;
     background-color: var(--actions-high-surface-default);
     color: var(--actions-high-content-default);
-    font-size: var(--size-typography-text-default);
+    font-size: $browse-font-size;
     font-weight: var(--weight-bold);
   }
-  &._small &-browse { padding: 0 var(--units-md); font-size: var(--size-typography-text-md); }
+  &._small &-browse { padding: 0 $browse-padding-x-small; font-size: $browse-font-size-small; }
   &-field:hover &-browse { background-color: var(--actions-high-surface-hover); }
 
   // =================================================================
@@ -106,11 +137,11 @@ $zone-min: (
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: var(--units-lg);
+    gap: $zone-gap;
     min-height: map.get($zone-min, 'default');
-    padding: var(--units-default);
+    padding: $zone-padding;
     background-color: var(--form-high-surface-default);
-    border: $stroke dashed var(--form-high-stroke-default);
+    border: $stroke-width dashed var(--form-high-stroke-default);
     border-radius: $radius;
     color: var(--form-high-content-default);
     text-align: center;
@@ -122,7 +153,7 @@ $zone-min: (
       border-color: var(--form-high-stroke-hover);
     }
   }
-  &._small &-zone { gap: var(--units-sm); min-height: map.get($zone-min, 'small'); }
+  &._small &-zone { gap: $zone-gap-small; min-height: map.get($zone-min, 'small'); }
 
   // Active drag-over highlight (solid border + focused surface).
   &._dragging &-zone {
@@ -137,7 +168,7 @@ $zone-min: (
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--units-xs);
+    gap: $zone-content-gap;
   }
 
   &-zone-title {
@@ -145,11 +176,11 @@ $zone-min: (
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    gap: var(--units-2xs);
-    font-size: var(--size-typography-text-default);
+    gap: $zone-title-gap;
+    font-size: $zone-title-font-size;
     font-weight: var(--weight-regular);
   }
-  &._small &-zone-title { font-size: var(--size-typography-text-md); }
+  &._small &-zone-title { font-size: $zone-title-font-size-small; }
 
   // "Click to upload" styled as a link (the whole zone is the trigger).
   &-zone-link {
@@ -161,9 +192,9 @@ $zone-min: (
 
   &-zone-hint {
     color: var(--global-text-muted);
-    font-size: var(--size-typography-text-md);
+    font-size: $zone-hint-font-size;
   }
-  &._small &-zone-hint { font-size: var(--size-typography-text-sm); }
+  &._small &-zone-hint { font-size: $zone-hint-font-size-small; }
 
   // =================================================================
   // Focus ring (native input drives it) — sibling of the label
@@ -172,7 +203,7 @@ $zone-min: (
   &-input:focus-visible ~ &-zone {
     outline: none;
     border-color: var(--form-high-stroke-focused);
-    box-shadow: 0 0 0 $focus-ring var(--form-high-stroke-focused);
+    box-shadow: 0 0 0 $focus-ring-width var(--form-high-stroke-focused);
   }
 
   // =================================================================
@@ -181,13 +212,13 @@ $zone-min: (
   &-toolbar {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--units-sm);
+    gap: $toolbar-gap;
   }
 
   &-content {
     display: flex;
     flex-direction: column;
-    gap: var(--units-sm);
+    gap: $content-gap;
     width: 100%;
     margin: 0;
     padding: 0;
@@ -196,11 +227,11 @@ $zone-min: (
     li { display: block; }
   }
 
-  &-messages { display: flex; flex-direction: column; gap: var(--units-2xs); }
+  &-messages { display: flex; flex-direction: column; gap: $messages-gap; }
   &-message {
     margin: 0;
     color: var(--informative-errorhigh-content-default);
-    font-size: var(--size-typography-text-md);
+    font-size: $message-font-size;
   }
 
   // =================================================================

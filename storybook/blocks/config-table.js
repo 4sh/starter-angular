@@ -107,6 +107,8 @@ function useResolvedVars(names) {
 // Texte brut : une infobulle native ne rend ni markdown ni HTML.
 const ORIGIN_TOOLTIP =
   'Table générée par « npm run docs:config ». Le contrat, c’est le nom de la variable et son rôle. ' +
+  'La colonne « Hook exposé » donne la custom property à poser pour retoucher la valeur sans forker ' +
+  'le SCSS (mode package) : sur :root pour tous les exemplaires, sur un sélecteur pour une seule zone. ' +
   'La colonne « Défaut (starter) » n’est que le réglage livré par ce starter : la rebinder ne demande ' +
   'aucune reprise de doc. La valeur résolue est mesurée dans le thème, la marque et le viewport actifs.';
 
@@ -176,8 +178,27 @@ function chain(steps) {
   );
 }
 
+/** Un binding `var(--ui-x, défaut)` : le hook exposé au consommateur, sinon null. */
+function hookOf(resolved) {
+  return resolved?.cssVar?.startsWith('--ui-') ? resolved.cssVar : null;
+}
+
+/**
+ * Cellule « Hook exposé » : le point de surcharge en mode package. Le composant ne
+ * déclare jamais ce nom, donc le poser n'importe où au-dessus (`:root`, un
+ * sélecteur, l'élément) suffit à gagner.
+ */
+function hookCell(resolved) {
+  const hook = hookOf(resolved);
+  if (!hook) return el('td', { style: { color: 'var(--sb-text-subtle)' } }, '—');
+  return el('td', null, el('code', null, hook));
+}
+
 /** Cellule « Défaut (starter) ». */
-function defaultCell(resolved) {
+function defaultCell(row) {
+  // Derrière un hook, le réglage livré est son FALLBACK : c'est lui qu'on décrit
+  // (badge + chaîne d'indirections), le nom du hook ayant sa propre colonne.
+  const resolved = hookOf(row) ? (row.fallback ?? row) : row;
   const kind = resolved.steps.some((s) => s.via === 'shared') ? 'shared' : resolved.kind;
   // Map : lister les clés plutôt que le mot « map », que le badge dit déjà.
   const inlineItems =
@@ -193,11 +214,7 @@ function defaultCell(resolved) {
       : el(
           'code',
           null,
-          resolved.cssVar
-            ? // Un hook `var(--x, défaut)` : montrer le défaut, c'est lui qui s'applique
-              // tant que la custom property n'est pas posée par le consommateur.
-              `var(${resolved.cssVar}${resolved.fallback ? `, ${resolved.fallback.cssVar ? `var(${resolved.fallback.cssVar})` : resolved.fallback.literal}` : ''})`
-            : (resolved.literal ?? 'map')
+          resolved.cssVar ? `var(${resolved.cssVar})` : (resolved.literal ?? 'map')
         );
 
   return el('td', null, head, badge(kind), chain(resolved.steps));
@@ -229,12 +246,12 @@ function valueCell(resolved, values) {
 }
 
 /** Lignes filles d'une map : une par entrée (`default.height → 44px`). */
-function mapRows(name, resolved, values, prefix = '') {
+function mapRows(name, resolved, values, withHook, prefix = '') {
   const rows = [];
   for (const entry of resolved.entries ?? []) {
     const path = `${prefix}${entry.key}`;
     if (entry.value?.kind === 'map') {
-      rows.push(...mapRows(name, entry.value, values, `${path}.`));
+      rows.push(...mapRows(name, entry.value, values, withHook, `${path}.`));
       continue;
     }
     rows.push(
@@ -247,6 +264,7 @@ function mapRows(name, resolved, values, prefix = '') {
           el('code', null, `${path}`)
         ),
         el('td', { style: { color: 'var(--sb-text-subtle)' } }, '↳ entrée de map'),
+        ...(withHook ? [entry.value ? hookCell(entry.value) : el('td', null, '—')] : []),
         entry.value ? defaultCell(entry.value) : el('td', null, '—'),
         entry.value ? valueCell(entry.value, values) : el('td', null, '—')
       )
@@ -255,7 +273,11 @@ function mapRows(name, resolved, values, prefix = '') {
   return rows;
 }
 
-function table(caption, rows, values) {
+/**
+ * `withHook` : la table des `$var` porte la colonne du hook exposé. La table des
+ * custom properties ne l'a pas — son nom de variable EST déjà le hook.
+ */
+function table(caption, rows, values, withHook) {
   return el(
     'div',
     null,
@@ -269,9 +291,10 @@ function table(caption, rows, values) {
         el(
           'tr',
           null,
-          el('th', { style: { width: 230 } }, 'Variable'),
+          el('th', { style: { width: 200 } }, 'Variable'),
           el('th', null, 'Rôle'),
-          el('th', { style: { width: 240 } }, 'Défaut (starter)'),
+          ...(withHook ? [el('th', { style: { width: 250 } }, 'Hook exposé')] : []),
+          el('th', { style: { width: 200 } }, 'Défaut (starter)'),
           el('th', { style: { width: 130 } }, 'Valeur résolue')
         )
       ),
@@ -284,13 +307,66 @@ function table(caption, rows, values) {
             { key: row.name },
             el('td', null, el('code', null, row.name)),
             el('td', null, inlineCode(row.role)),
+            ...(withHook ? [hookCell(row.default)] : []),
             defaultCell(row.default),
             valueCell(row.default, values)
           ),
-          ...mapRows(row.name, row.default, values),
+          ...mapRows(row.name, row.default, values, withHook),
         ])
       )
     )
+  );
+}
+
+/**
+ * <SharedConfigTable group="global-ui" /> — les constantes mutualisées de
+ * `_ui-config.scss` pour un groupe. Même contrat que ConfigTable : le rôle vient du
+ * `///`, la valeur est mesurée, et la colonne « Hook exposé » donne le nom à poser
+ * pour retoucher toute la catégorie sans recompiler.
+ */
+export function SharedConfigTable({ group, prefix, exclude }) {
+  const rows = React.useMemo(() => {
+    const skip = exclude ?? [];
+    return Object.entries(manifest.shared ?? {})
+      .filter(([name, entry]) => entry.group === group)
+      .filter(([name]) => (prefix ? name.startsWith(`$${prefix}`) : true))
+      .filter(([name]) => !skip.some((p) => name.startsWith(`$${p}`)))
+      .map(([name, entry]) => ({ name, role: entry.role, default: entry.default }));
+  }, [group, prefix, exclude && exclude.join('|')]);
+
+  const names = React.useMemo(() => {
+    const all = [];
+    for (const row of rows) collectCssVars(row.default, all);
+    return [...new Set(all)].sort();
+  }, [rows]);
+
+  const [scopeRef, values] = useResolvedVars(names);
+
+  if (!rows.length) {
+    return el(
+      'p',
+      null,
+      el('strong', null, `SharedConfigTable : aucune constante pour le groupe « ${group} ». `),
+      'Lance ',
+      el('code', null, 'npm run docs:config'),
+      '.'
+    );
+  }
+
+  return el(
+    'div',
+    { ref: scopeRef },
+    el(
+      'p',
+      { style: { margin: '0 0 12px', fontSize: 12, color: 'var(--sb-text-subtle)' } },
+      el(
+        'span',
+        { title: ORIGIN_TOOLTIP, style: { cursor: 'help', borderBottom: '1px dotted currentColor' } },
+        'ⓘ générée depuis ',
+        el('code', null, manifest.$source.shared)
+      )
+    ),
+    table(null, rows, values, true)
   );
 }
 
@@ -347,9 +423,9 @@ export function ConfigTable({ of, only, hooks = true, label }) {
     ),
     // `label` : à passer quand une page documente plusieurs composants, pour
     // qu'on sache à quel `.scss` chaque table appartient.
-    vars.length ? table(label ? el('code', null, label) : null, vars, values) : null,
+    vars.length ? table(label ? el('code', null, label) : null, vars, values, true) : null,
     hookRows.length
-      ? table(label ? ['Custom properties exposées — ', el('code', { key: label }, label)] : 'Custom properties exposées', hookRows, values)
+      ? table(label ? ['Custom properties exposées — ', el('code', { key: label }, label)] : 'Custom properties exposées', hookRows, values, false)
       : null
   );
 }

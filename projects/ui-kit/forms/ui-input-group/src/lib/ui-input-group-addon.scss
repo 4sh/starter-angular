@@ -7,12 +7,14 @@
 // `--ui-input-group-item-radius` (inherits across the component boundary).
 // =====================================================================
 
-$height: utils.$form-field-height;             /// Hauteur de la cellule, alignée sur la boîte de champ.
-$height-small: utils.$form-field-height-small; /// Hauteur de la cellule, variante `small`.
-$radius: utils.$form-field-radius;             /// Rayon des coins quand la cellule est utilisée hors d'un groupe.
-$padding-x: utils.$form-field-padding-x;       /// Inset horizontal du contenu.
-$gap: utils.$form-field-gap;                   /// Espace entre deux contenus de la cellule.
-$stroke-width: utils.$form-field-stroke-width; /// Épaisseur de bordure.
+$height: var(--ui-input-group-addon-height, #{utils.$form-field-height});                      /// Hauteur de la cellule, alignée sur la boîte de champ.
+$height-small: var(--ui-input-group-addon-height-small, #{utils.$form-field-height-small});    /// Hauteur de la cellule, variante `small`.
+$radius: utils.$form-field-radius;                                                             /// Rayon des coins quand la cellule est utilisée hors d'un groupe.
+$padding-x: var(--ui-input-group-addon-padding-x, #{utils.$form-field-padding-x});             /// Inset horizontal du contenu.
+$gap: var(--ui-input-group-addon-gap, #{utils.$form-field-gap});                               /// Espace entre deux contenus de la cellule.
+$stroke-width: var(--ui-input-group-addon-stroke-width, #{utils.$form-field-stroke-width});    /// Épaisseur de bordure.
+$font-size: var(--ui-input-group-addon-font-size, var(--size-typography-text-default));        /// Taille du texte de la cellule.
+$font-size-small: var(--ui-input-group-addon-font-size-small, var(--size-typography-text-md)); /// Taille du texte, variante `small`.
 
 :host { display: flex; }
 
@@ -30,7 +32,7 @@ $stroke-width: utils.$form-field-stroke-width; /// Épaisseur de bordure.
   background-color: var(--global-background-muted);
   color: var(--global-text-muted);
   font-family: var(--fontfamily-base);
-  font-size: var(--size-typography-text-default);
+  font-size: $font-size;
   line-height: 1.2;
   white-space: nowrap;
   user-select: none;
@@ -38,6 +40,6 @@ $stroke-width: utils.$form-field-stroke-width; /// Épaisseur de bordure.
   &._small {
     min-width: $height-small;
     min-height: $height-small;
-    font-size: var(--size-typography-text-md);
+    font-size: $font-size-small;
   }
 }

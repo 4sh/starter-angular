@@ -6,8 +6,10 @@
 // the shared ui-config constant so it can be tuned kit-wide.
 // =====================================================================
 
+$overlap: var(--ui-avatar-group-overlap, #{utils.$avatar-group-overlap}); /// Chevauchement horizontal entre avatars empilés.
+
 .ui-avatar-group {
-  --_overlap: #{utils.$avatar-group-overlap}; /// Chevauchement horizontal entre avatars empilés.
+  --_overlap: #{$overlap};
 
   display: inline-flex;
   align-items: center;

@@ -15,33 +15,41 @@
 /// Diamètre et typo des initiales, par taille.
 $sizes: (
   'tiny': (
-    diameter: utils.$avatar-size-tiny,
-    font: var(--size-typography-title-sm),
+    diameter: var(--ui-avatar-size-tiny, #{utils.rem-calc(utils.$avatar-size-tiny)}),
+    font: var(--ui-avatar-font-size-tiny, var(--size-typography-title-sm)),
   ),
   'small': (
-    diameter: utils.$avatar-size-small,
-    font: var(--size-typography-title-md),
+    diameter: var(--ui-avatar-size-small, #{utils.rem-calc(utils.$avatar-size-small)}),
+    font: var(--ui-avatar-font-size-small, var(--size-typography-title-md)),
   ),
   'default': (
-    diameter: utils.$avatar-size-default,
-    font: var(--size-typography-title-default),
+    diameter: var(--ui-avatar-size, #{utils.rem-calc(utils.$avatar-size-default)}),
+    font: var(--ui-avatar-font-size, var(--size-typography-title-default)),
   ),
   'large': (
-    diameter: utils.$avatar-size-large,
-    font: var(--size-typography-title-xl),
+    diameter: var(--ui-avatar-size-large, #{utils.rem-calc(utils.$avatar-size-large)}),
+    font: var(--ui-avatar-font-size-large, var(--size-typography-title-xl)),
   ),
 );
 $size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default` de `$sizes`.
 
+$radius: var(--ui-avatar-radius, var(--radius-full));                           /// Rayon des coins (forme ronde par défaut).
+$radius-square: var(--ui-avatar-radius-square, #{utils.$avatar-square-radius}); /// Rayon des coins en présentation `square`.
+$stroke-width: var(--ui-avatar-stroke-width, var(--stroke-default));            /// Épaisseur du liseré.
+
+$badge-offset-x: var(--ui-avatar-badge-offset-x, 25%);  /// Débord horizontal du badge de statut.
+$badge-offset-y: var(--ui-avatar-badge-offset-y, -25%); /// Débord vertical du badge de statut.
+$badge-z-index: var(--ui-avatar-badge-z-index, 1);      /// Plan d'empilement du badge de statut.
+
 @mixin avatar-size($size) {
-  width: utils.rem-calc(map.get($size, diameter));
-  height: utils.rem-calc(map.get($size, diameter));
+  width: map.get($size, diameter);
+  height: map.get($size, diameter);
   font-size: map.get($size, font);
 }
 
 .ui-avatar {
   // --- Base ----------------------------------------------------------
-  --_radius: var(--radius-full);
+  --_radius: #{$radius};
 
   position: relative;
   display: inline-flex;
@@ -49,7 +57,7 @@ $size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default
   justify-content: center;
   flex-shrink: 0;
   box-sizing: border-box;
-  border: var(--stroke-default) solid var(--global-border-default);
+  border: $stroke-width solid var(--global-border-default);
   border-radius: var(--_radius);
   background-color: var(--informative-defaultlow-surface-default);
   color: var(--informative-defaultlow-content-default);
@@ -61,7 +69,7 @@ $size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default
   @include avatar-size($size-default);
 
   // --- Shape -----------------------------------------
-  &._square { --_radius: #{utils.$avatar-square-radius}; }
+  &._square { --_radius: #{$radius-square}; }
 
   // --- Sub-elements --------------------------------------------------
   &-image {
@@ -81,8 +89,8 @@ $size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default
     top: 0;
     right: 0;
     display: inline-flex;
-    transform: translate(25%, -25%);
-    z-index: 1;
+    transform: translate($badge-offset-x, $badge-offset-y);
+    z-index: $badge-z-index;
   }
 
   // --- Sizes -----------------------------------------

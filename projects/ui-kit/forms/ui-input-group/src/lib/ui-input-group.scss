@@ -8,14 +8,14 @@
 // them.
 // =====================================================================
 
-$radius: utils.$form-field-radius;            /// Rayon des coins extérieurs du groupe.
-$overlap: utils.$form-field-stroke-width;     /// Recouvrement de deux items voisins (= largeur de bordure, évite le doublement du trait partagé).
+$radius: var(--ui-input-group-radius, #{utils.$form-field-radius});         /// Rayon des coins extérieurs du groupe.
+$overlap: var(--ui-input-group-overlap, #{utils.$form-field-stroke-width}); /// Recouvrement de deux items voisins (= largeur de bordure, évite le doublement du trait partagé).
 
 :host { display: block; }
 
 .ui-input-group {
-  --ui-input-group-radius: #{$radius}; /// Rayon exposé pour reformer les coins extérieurs.
-  --ui-input-group-overlap: calc(-1 * #{$overlap});
+  --_radius: #{$radius}; // miroir privé : le nom public reste surchargeable depuis l’extérieur
+  --_overlap: calc(-1 * #{$overlap});
 
   display: flex;
   align-items: stretch;

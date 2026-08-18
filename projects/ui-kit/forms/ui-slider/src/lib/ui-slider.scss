@@ -5,11 +5,16 @@
 // =====================================================================
 
 // --- Config ---------------------------------------
-$track-thickness: utils.rem-calc(8);             /// Épaisseur de la piste
-$handle-size: utils.rem-calc(22);                /// Diamètre des poignées
-$mark-size: utils.rem-calc(6);                   /// Taille des repères (agrandie pour la lisibilité).
-$vertical-length: 12rem;                         /// Longueur de la piste en orientation verticale
-$focus-ring-width: utils.$form-focus-ring-width; /// Épaisseur de l'anneau de focus des poignées
+$track-thickness: var(--ui-slider-thickness, #{utils.rem-calc(8)});                    /// Épaisseur de la piste
+$handle-size: var(--ui-slider-handle-size, #{utils.rem-calc(22)});                     /// Diamètre des poignées
+$mark-size: var(--ui-slider-mark-size, #{utils.rem-calc(6)});                          /// Taille des repères (agrandie pour la lisibilité).
+$vertical-length: var(--ui-slider-length, 12rem);                                      /// Longueur de la piste en orientation verticale
+$focus-ring-width: var(--ui-slider-focus-ring-width, #{utils.$form-focus-ring-width}); /// Épaisseur de l'anneau de focus des poignées
+
+$track-radius: var(--ui-slider-track-radius, var(--radius-full));                          /// Rayon de la piste et de la portion remplie.
+$handle-radius: var(--ui-slider-handle-radius, var(--radius-full));                        /// Rayon des poignées.
+$handle-stroke-width: var(--ui-slider-handle-stroke-width, #{utils.$control-stroke-width}); /// Épaisseur de bordure des poignées.
+$mark-radius: var(--ui-slider-mark-radius, var(--radius-full));                            /// Rayon des repères.
 
 .ui-slider {
   position: relative;
@@ -25,8 +30,8 @@ $focus-ring-width: utils.$form-focus-ring-width; /// Épaisseur de l'anneau de f
   &-track {
     position: relative;
     width: 100%;
-    height: var(--ui-slider-thickness, #{$track-thickness});
-    border-radius: var(--radius-full);
+    height: $track-thickness;
+    border-radius: $track-radius;
     background-color: var(--global-background-muted);
   }
 
@@ -35,7 +40,7 @@ $focus-ring-width: utils.$form-focus-ring-width; /// Épaisseur de l'anneau de f
     position: absolute;
     top: 0;
     height: 100%;
-    border-radius: var(--radius-full);
+    border-radius: $track-radius;
     background-color: var(--actions-high-surface-default);
     @include utils.control-transition(background-color);
   }
@@ -44,12 +49,12 @@ $focus-ring-width: utils.$form-focus-ring-width; /// Épaisseur de l'anneau de f
   &-handle {
     position: absolute;
     top: 50%;
-    width: var(--ui-slider-handle-size, #{$handle-size});
-    height: var(--ui-slider-handle-size, #{$handle-size});
+    width: $handle-size;
+    height: $handle-size;
     transform: translate(-50%, -50%);
     box-sizing: border-box;
-    border: utils.$control-stroke-width solid var(--actions-high-stroke-default);
-    border-radius: var(--radius-full);
+    border: $handle-stroke-width solid var(--actions-high-stroke-default);
+    border-radius: $handle-radius;
     background-color: var(--actions-high-surface-default);
     cursor: grab;
     @include utils.control-transition(background-color, border-color, box-shadow);
@@ -83,7 +88,7 @@ $focus-ring-width: utils.$form-focus-ring-width; /// Épaisseur de l'anneau de f
     width: $mark-size;
     height: $mark-size;
     transform: translate(-50%, -50%);
-    border-radius: var(--radius-full);
+    border-radius: $mark-radius;
     background-color: var(--informative-defaulthigh-surface-default);
 
     &._active {
@@ -96,11 +101,11 @@ $focus-ring-width: utils.$form-focus-ring-width; /// Épaisseur de l'anneau de f
     flex-direction: column;
     width: auto;
     min-width: $handle-size;
-    height: var(--ui-slider-length, #{$vertical-length});
+    height: $vertical-length;
     min-height: 0;
 
     .ui-slider-track {
-      width: var(--ui-slider-thickness, #{$track-thickness});
+      width: $track-thickness;
       height: 100%;
     }
 

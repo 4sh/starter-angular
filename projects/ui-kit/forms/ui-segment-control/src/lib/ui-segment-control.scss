@@ -9,33 +9,44 @@
 // =====================================================================
 
 // --- Config (extension points) ---------------------------------------
+$gutter: var(--ui-segment-control-padding, var(--units-xs)); /// Gouttière interne autour des segments (coins de l'indicateur concentriques au track)
+$gutter-size: 4px;                                           /// Miroir numérique de la gouttière, pour le calcul des tailles.
+
 /// Hauteur / padding / taille de police par taille
 $sizes: (
   'default': (
-    height: 44px,
-    padding-x: var(--units-default),
-    font-size: var(--size-typography-text-default),
-    min: 44px,
+    height: var(--ui-segment-control-min-height, #{utils.rem-calc(44px)}),
+    option-h: var(--ui-segment-control-option-min-height, #{utils.rem-calc(44px - 2 * $gutter-size)}),
+    option-w: var(--ui-segment-control-option-min-width, #{utils.rem-calc(44px - 2 * $gutter-size)}),
+    padding-x: var(--ui-segment-control-option-padding-x, var(--units-default)),
+    font-size: var(--ui-segment-control-font-size, var(--size-typography-text-default)),
   ),
   'small': (
-    height: 40px,
-    padding-x: var(--units-md),
-    font-size: var(--size-typography-text-md),
-    min: 40px,
+    height: var(--ui-segment-control-min-height-small, #{utils.rem-calc(40px)}),
+    option-h: var(--ui-segment-control-option-min-height-small, #{utils.rem-calc(40px - 2 * $gutter-size)}),
+    option-w: var(--ui-segment-control-option-min-width-small, #{utils.rem-calc(40px - 2 * $gutter-size)}),
+    padding-x: var(--ui-segment-control-option-padding-x-small, var(--units-md)),
+    font-size: var(--ui-segment-control-font-size-small, var(--size-typography-text-md)),
   ),
 );
-$size-default: map.get($sizes, 'default');         /// Raccourci vers l'entrée `default` de `$sizes`.
-$stroke-width: utils.$control-stroke-width;        /// Épaisseur de la bordure de la piste
-$focus-ring-width: utils.$action-focus-ring-width; /// Épaisseur de l'anneau de focus des segments
-$gutter: var(--units-xs);                          /// Gouttière interne autour des segments (coins de l'indicateur concentriques au track)
-$gutter-size: 4px;                                 /// Miroir numérique de la gouttière, pour le calcul des tailles.
+$size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default` de `$sizes`.
+
+$stroke-width: var(--ui-segment-control-stroke-width, #{utils.$control-stroke-width});            /// Épaisseur de la bordure de la piste
+$focus-ring-width: var(--ui-segment-control-focus-ring-width, #{utils.$action-focus-ring-width}); /// Épaisseur de l'anneau de focus des segments
+
+$radius: var(--ui-segment-control-radius, var(--radius-md)); /// Rayon des coins de la piste.
+$gap: var(--ui-segment-control-gap, 0);                      /// Espacement entre les segments.
+
+$thumb-radius: var(--ui-segment-control-thumb-radius, var(--radius-sm));   /// Rayon des coins de l'indicateur glissant.
+$option-radius: var(--ui-segment-control-option-radius, var(--radius-sm)); /// Rayon des coins d'un segment.
+$option-gap: var(--ui-segment-control-option-gap, var(--units-sm));        /// Espacement icône ↔ libellé dans un segment.
 
 @mixin segment-size($size) {
-  min-height: utils.rem-calc(map.get($size, height));
+  min-height: map.get($size, height);
 
   .ui-segment-control-option {
-    min-height: utils.rem-calc(map.get($size, height) - 2 * $gutter-size);
-    min-width: utils.rem-calc(map.get($size, min) - 2 * $gutter-size);
+    min-height: map.get($size, option-h);
+    min-width: map.get($size, option-w);
     padding: 0 map.get($size, padding-x);
     font-size: map.get($size, font-size);
   }
@@ -48,8 +59,8 @@ $gutter-size: 4px;                                 /// Miroir numérique de la g
   align-items: stretch;
   box-sizing: border-box;
   padding: $gutter;
-  gap: 0;
-  border-radius: var(--radius-md);
+  gap: $gap;
+  border-radius: $radius;
   // Border as an inset shadow → no layout box, so the thumb offset math
   // (offsetLeft/offsetTop) stays exact regardless of border width.
   box-shadow: inset 0 0 0 $stroke-width var(--global-border-default);
@@ -75,7 +86,7 @@ $gutter-size: 4px;                                 /// Miroir numérique de la g
   top: 0;
   left: 0;
   z-index: 0;
-  border-radius: var(--radius-sm);
+  border-radius: $thumb-radius;
   background-color: var(--actions-high-surface-default);
   pointer-events: none;
   @include utils.motion-transition(transform, width, height);
@@ -120,10 +131,10 @@ $gutter-size: 4px;                                 /// Miroir numérique de la g
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--units-sm);
+  gap: $option-gap;
   box-sizing: border-box;
   border: 0;
-  border-radius: var(--radius-sm);
+  border-radius: $option-radius;
   background-color: transparent;
   color: var(--actions-low-content-default);
   font-family: inherit;
@@ -146,7 +157,7 @@ $gutter-size: 4px;                                 /// Miroir numérique de la g
     outline: none;
     box-shadow: 0 0 0 $focus-ring-width var(--actions-low-stroke-focused);
   }
-  
+
   &._selected {
     color: var(--actions-high-content-default);
     font-weight: var(--weight-bold);

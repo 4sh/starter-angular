@@ -1,27 +1,37 @@
+// Font-size per `size`, keyed on the dedicated icon scale (not the text one).
+/// Taille du glyphe pour chaque valeur de `size`.
+$icon-sizes: (
+  'sm': var(--ui-icon-size-sm, var(--size-typography-icon-sm)),
+  'md': var(--ui-icon-size-md, var(--size-typography-icon-md)),
+  'default': var(--ui-icon-size-default, var(--size-typography-icon-default)),
+  'lg': var(--ui-icon-size-lg, var(--size-typography-icon-lg)),
+  'xl': var(--ui-icon-size-xl, var(--size-typography-icon-xl)),
+);
+
+$min-size: var(--ui-icon-min-size, 1em);       /// Plancher de la boîte du glyphe (largeur et hauteur).
+$aspect-ratio: var(--ui-icon-aspect-ratio, 1); /// Ratio de la boîte du glyphe.
+
 :host {
   display: inline-flex;
   line-height: 0;
 }
 
-// Font-size per `size`, keyed on the dedicated icon scale (not the text one).
-$icon-sizes: (
-  'sm': var(--size-typography-icon-sm),
-  'md': var(--size-typography-icon-md),
-  'default': var(--size-typography-icon-default),
-  'lg': var(--size-typography-icon-lg),
-  'xl': var(--size-typography-icon-xl),
-);
-
 .ui-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 1em;
-  min-height: 1em;
-  aspect-ratio: 1;
+  min-width: $min-size;
+  min-height: $min-size;
+  aspect-ratio: $aspect-ratio;
   color: inherit;
 
+  // Two levels, and the reason `--ui-icon-size` is read once instead of inside each
+  // size: the `size` input picks a step of the scale (`--_scale`), and a parent can
+  // force ONE icon past that scale (`--ui-icon-size`) — that's how a component sizes
+  // the icon it projects.
+  font-size: var(--ui-icon-size, var(--_scale)); /// Taille imposée à un exemplaire, quel que soit son `size`.
+
   @each $name, $value in $icon-sizes {
-    &._#{$name} { font-size: var(--ui-icon-size, #{$value}); }       /// Taille de police, surchargeable par instance.
+    &._#{$name} { --_scale: #{$value}; }
   }
 }
