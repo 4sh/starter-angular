@@ -23,6 +23,12 @@ application that consumes it.
 Both sites are redeployed on every push to `main`
 ([`deploy-pages.yml`](.github/workflows/deploy-pages.yml)).
 
+> **This page is for whoever works on the design system itself** — adding a `ui-*`
+> component, editing the tokens, cutting a release. **To use the kit in an application you
+> do not need this repo**: everything is in the README shipped with the package,
+> [`projects/ui-kit/README.md`](projects/ui-kit/README.md) ·
+> [Français](projects/ui-kit/README.fr.md).
+
 ---
 
 ## Stack
@@ -41,50 +47,35 @@ Both sites are redeployed on every push to `main`
 
 ## Using the kit in an application
 
-**You do not need this repo.** The kit is published on the public npm registry and
-consumed in one of two modes:
+The kit is published on the public npm registry, in one of two modes:
 
 ```bash
 npm install @4sh/ui-kit         # dependency — compiled components, updated by version bump
 ng add @4sh/ui-kit-schematics   # starter — component sources copied into your project, yours to edit
 ```
 
-Starter mode goes through the companion package, and deliberately leaves
-`@4sh/ui-kit` out of `node_modules`: the one command lays the foundation and
-copies the components you pick, `--with-storybook` brings their documentation
-along, and `ng generate @4sh/ui-kit-schematics:update` replays their diff after a
-kit release.
-
-Everything a consumer needs — choosing between the two modes, the list of entry
-points, the stylesheet to load, the providers expected by `ui-image` and
-`BrandService`, building your own field on `@4sh/ui-kit/forms` — is documented
-**once**, in the README shipped with the package (which is also what the npmjs
-page displays):
-
-**[`projects/ui-kit/README.md`](projects/ui-kit/README.md)** ·
-[Français](projects/ui-kit/README.fr.md)
-
-The API of each component, the tokens, the themes and the responsive rules are in
-the [Storybook](https://4sh.github.io/starter-angular/?path=/docs/introduction--docs).
+Which one to pick, the entry points, the stylesheet to load, the required providers,
+building your own field: **[`projects/ui-kit/README.md`](projects/ui-kit/README.md)** ·
+[Français](projects/ui-kit/README.fr.md) — documented once, and that page *is* the npmjs
+one. Each component's API is in the
+[Storybook](https://4sh.github.io/starter-angular/?path=/docs/introduction--docs).
 
 ---
 
 ## Working in this repo
 
-Only needed to build the design system itself: add or modify a `ui-*` component,
-edit the tokens, cut a release.
+Node `v24.15.0` ([`.nvmrc`](.nvmrc)). Four commands cover the work itself:
 
 ```bash
-npm install                 # install + postinstall: tokens:build, ui-kit:build, docs:config
-npm start                   # Storybook          → http://localhost:6006
-npm run serve               # demo application   → http://localhost:4200
-npm run tokens:build        # regenerate the token CSS variables
-npm run ui-kit:build        # build the package into dist/ui-kit
-npm run lint                # ESLint --fix
-npm test                    # unit tests on the kit
-npm run docs:config:check   # ← run this before committing documentation
+npm install            # install + postinstall: tokens:build, ui-kit:build, docs:config
+npm start              # Storybook          → http://localhost:6006
+npm run serve          # demo application   → http://localhost:4200
+npm run tokens:build   # regenerate the token CSS variables
 ```
 
+> Under IntelliJ, an `npm start` run configuration ships with the repo
+> ([`.idea/runConfigurations/`](.idea/runConfigurations/npm_start.xml)).
+>
 > `npm start`, `npm run serve` and the builds all run `ui-kit:build` first: the demo app
 > consumes the kit through its **built** output (`dist/ui-kit`, mapped by the
 > `@4sh/ui-kit/*` `paths` of `tsconfig.json`), exactly like an external consumer would.
@@ -92,19 +83,38 @@ npm run docs:config:check   # ← run this before committing documentation
 > `projects/ui-kit/styles/generated/` and `storybook/generated/` are **generated**
 > (gitignored), rebuilt by `tokens:build` and `docs:config`.
 
-**`docs:config:check` is the guardrail on everything this repo states by hand.** Six
-places claim to describe `projects/ui-kit/` — the two package READMEs, `Overview.mdx`,
-[`docs/components-index.md`](docs/components-index.md) and two announced counts — and
-nothing in the code forces them to follow when a component lands. It also fails on an
-off-convention `--ui-*` name, a hook with no `///` (public, yet invisible in the doc), an
-alias pointing at a token that does not exist, and the figures quoted in
-[`figma/README.md`](figma/README.md). Run by
-[`pr-checks.yml`](.github/workflows/pr-checks.yml) on every pull request.
+### Verifying
 
-Conventions to follow before writing code — repo layout, naming, CSS/SCSS rules
-(no BEM), component creation recipe, Storybook file organization, token workflow —
-are all in **[`AGENTS.md`](AGENTS.md)**. It is the single source of truth for
-them, for humans as much as for AI agents.
+[`pr-checks.yml`](.github/workflows/pr-checks.yml) runs lint, types, unit tests, the doc
+guardrail and a Storybook build on every pull request — **you do not have to replay them
+locally**. Two are worth the detour anyway, because they save a round-trip:
+
+```bash
+npm run lint               # ESLint --fix — repairs instead of reporting
+npm run docs:config:check  # the hand-written doc vs the code
+```
+
+`docs:config:check` is the guardrail on everything this repo states by hand: six places
+claim to describe `projects/ui-kit/`, and nothing in the code forces them to follow when a
+component lands. Full list of what it rejects: [`AGENTS.md`](AGENTS.md#commands).
+
+---
+
+## Contributing
+
+Conventions to follow before writing code — repo layout, naming, CSS/SCSS rules (no BEM),
+component creation recipe, Storybook file organization, token workflow — are all in
+**[`AGENTS.md`](AGENTS.md)**. It is the single source of truth for them, for humans as
+much as for AI agents.
+
+| | |
+|---|---|
+| Branch | `feat/` · `fix/` · `chore/` · `breaking/` — the prefix drives the SemVer bump |
+| Commit | `FSHSP-XXX type(scope): imperative description` — Jira key **first**, English, imperative |
+| CHANGELOG | every user-visible change under `## [Unreleased]`; a doc-, CI- or Storybook-only change does not belong there |
+
+Details: [`.claude/rules/git-conventions.md`](.claude/rules/git-conventions.md) for git,
+[`docs/VERSIONING.md`](docs/VERSIONING.md) for the release flow.
 
 ---
 
