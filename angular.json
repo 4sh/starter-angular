@@ -21,6 +21,37 @@
             },
             "production": {
               "aot": true,
+              // Aucun budget ici jusqu'à FSHSP-128 — d'où le fait que FSHSP-127
+              // (un projet en sources copiées ne peut pas builder, faute du
+              // budget `anyComponentStyle` d'`ng new`) ait été découvert par un
+              // utilisateur externe et non dans ce dépôt.
+              "budgets": [
+                {
+                  // Valeurs d'`ng new` NON strict, pas les 500 kB / 1 MB du mode
+                  // strict : `demo` est une vitrine qui instancie les 54
+                  // composants, elle sort à 1,24 MB et le fera toujours. Un
+                  // plafond strict mesurerait l'exhaustivité de la vitrine, pas
+                  // la santé du kit, et demanderait un bump à chaque composant
+                  // ajouté. Reste un pare-chocs contre la dérive franche.
+                  "type": "initial",
+                  "maximumWarning": "2MB",
+                  "maximumError": "5MB"
+                },
+                {
+                  // EXACTEMENT le seuil que le schematic écrit chez le
+                  // consommateur (`ANY_COMPONENT_STYLE_FLOOR`), et pas les 8 kB
+                  // d'`ng new` : ce que `demo` doit refléter, c'est un projet
+                  // APRÈS `ng add`. À 8 kB on reproduirait un état qui n'existe
+                  // chez personne, pour un build rouge en permanence (5
+                  // composants dépassent, `ui-button` en tête à 55,7 kB).
+                  //
+                  // Les deux valeurs doivent bouger ensemble. Ce que ce budget
+                  // attrape : un composant du kit qui dépasserait ce que le
+                  // consommateur tolère casse le build du starter d'abord.
+                  "type": "anyComponentStyle",
+                  "maximumError": "128kB"
+                }
+              ],
               "extractLicenses": true,
               "namedChunks": false,
               "optimization": true,
