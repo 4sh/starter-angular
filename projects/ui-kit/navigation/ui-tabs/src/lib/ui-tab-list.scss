@@ -16,8 +16,8 @@ $nav-size: var(--ui-tabs-nav-size, #{utils.rem-calc(40)});                      
 $focus-ring-width: var(--ui-tabs-focus-ring-width, #{utils.$action-focus-ring-width}); /// Épaisseur de l'anneau de focus.
 
 // `--ui-tabs-active-bar-*` : anciens noms, honorés une version (repli).
-$bar-color: var(--ui-tabs-indicator-color, var(--ui-tabs-active-bar-color, var(--navigation-high-stroke-active)));   /// Couleur de la barre d'onglet actif.
-$bar-size: var(--ui-tabs-indicator-thickness, var(--ui-tabs-active-bar-size, var(--stroke-default)));                /// Épaisseur de la barre d'onglet actif.
+$bar-color: var(--ui-tabs-indicator-color, var(--ui-tabs-active-bar-color, var(--navigation-highoutlined-stroke-active)));   /// Couleur de la barre d'onglet actif.
+$bar-size: var(--ui-tabs-indicator-thickness, var(--ui-tabs-active-bar-size, var(--stroke-default)));                        /// Épaisseur de la barre d'onglet actif.
 
 :host {
   display: flex;
@@ -97,17 +97,17 @@ $bar-size: var(--ui-tabs-indicator-thickness, var(--ui-tabs-active-bar-size, var
   width: $nav-size;
   align-self: stretch;
   border: 0;
-  background-color: var(--navigation-high-surface-default);
-  color: var(--navigation-high-content-default);
+  background-color: var(--navigation-highoutlined-surface-default);
+  color: var(--navigation-highoutlined-content-default);
   cursor: pointer;
   @include utils.control-transition(color, background-color);
 
   &:hover:not(:disabled) {
-    background-color: var(--navigation-high-surface-hover);
-    color: var(--navigation-high-content-hover);
+    background-color: var(--navigation-highoutlined-surface-hover);
+    color: var(--navigation-highoutlined-content-hover);
   }
   &:disabled {
-    color: var(--navigation-high-content-disabled);
+    color: var(--navigation-highoutlined-content-disabled);
     cursor: default;
   }
 }

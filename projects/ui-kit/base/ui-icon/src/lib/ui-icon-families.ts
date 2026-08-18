@@ -1,4 +1,11 @@
-import { EnvironmentProviders, InjectionToken, makeEnvironmentProviders, Provider } from '@angular/core';
+import {
+  Directive,
+  EnvironmentProviders,
+  InjectionToken,
+  input,
+  makeEnvironmentProviders,
+  Provider,
+} from '@angular/core';
 
 /** Visual variant of an icon, interpreted by each family (filled vs outlined). */
 export type UiIconType = 'solid' | 'outline';
@@ -39,4 +46,31 @@ export function provideUiIconFamilies(
     providers.push({ provide: UI_ICON_DEFAULT_FAMILY, useValue: options.default });
   }
   return makeEnvironmentProviders(providers);
+}
+
+/**
+ * uiIconFamily — default icon family for a whole subtree.
+ *
+ * Every descendant `ui-icon` left without an explicit `family` renders with this
+ * one — including the icons a kit component instantiates internally (the
+ * datepicker chevrons, the select checkmarks…), which no input exposes. Resolution
+ * goes through the element injector, so it also reaches content relocated into a
+ * CDK overlay: an overlay panel keeps the injector chain of the template that
+ * declared it, not of its DOM position.
+ *
+ * `family` on a single icon still wins, and a nested directive wins over an outer
+ * one. Register the family itself with `provideUiIconFamilies()`.
+ *
+ * @example
+ * ```html
+ * <form uiIconFamily="material">…</form>
+ * <ui-datepicker uiIconFamily="material" [(ngModel)]="date" valueType="date" />
+ * ```
+ */
+@Directive({
+  selector: '[uiIconFamily]',
+})
+export class UiIconFamilyScope {
+  /** Registered family key applied to descendant icons. Empty/unset = no scope. */
+  readonly uiIconFamily = input<string>();
 }

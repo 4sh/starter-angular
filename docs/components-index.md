@@ -11,7 +11,7 @@
 
 ## forms
 - ✅ `ui-field` — Shell partagé des champs (label + boîte + helper + états) via projection
-- ✅ `ui-input` — Champ texte (CVA ; label + helper, icônes, unité, zone d'action, niveaux)
+- ✅ `ui-input` — Champ texte (CVA ; label + helper, icônes, unité, zone d'action, niveaux, templates d'icône `#iconLeft`/`#iconRight`)
 - ✅ `ui-input-number` — Champ numérique (min/max/step, spinner, clamp, `role="spinbutton"`)
 - ✅ `ui-input-mask` — Champ masqué (tokens 9/a/*, littéraux auto, unmask)
 - ✅ `ui-input-otp` — Saisie de code à usage unique / OTP (CVA ; rangée de cellules `<input maxlength=1>` backant une **chaîne** jointe, `length` cellules, `mask` (password), `integerOnly` (chiffres, `inputmode=numeric`), tailles `small`/`default`/`large`, avance auto + `Retour arrière` recule + collage réparti, `role="group"` + tabindex roving (`Tab` entre/sort, `←`/`→` naviguent), template `#input` (contexte `value`/`index`/`tabindex`/`events`), events `valueChange`/`completed` ; Signal Forms/Reactive/Template-driven)
@@ -25,7 +25,7 @@
 - ✅ `ui-toggle` — Interrupteur on/off (`role="switch"`, CVA, trueValue/falseValue, erreur auto)
 - ⬜ `ui-toggle-button` — Choix exclusif stylisé
 - ✅ `ui-segment-control` — Sélection segmentée (CVA ; simple/`multiple`, options primitives/objets + mapping de champs, indicateur glissant motion, tailles, `fluid`, `orientation` horizontal/vertical, template de segment, clavier roving radiogroup/group, erreur auto)
-- ✅ `ui-datepicker` — Sélecteur de date/heure (CVA, overlay CDK ou inline, min/max, jours désactivés, showTime 12/24h, inline, focus roving clavier)
+- ✅ `ui-datepicker` — Sélecteur de date/heure (CVA, overlay CDK ou inline, min/max, jours désactivés, showTime 12/24h, inline, focus roving clavier, templates `#date`/`#buttonbar`/`#icon`)
 - ✅ `ui-nudger` — Incrémenteur numérique `[−] valeur [+]` (CVA ; deux `ui-button` icon-only, min/max/step, bornes dérivées désactivant le bouton, tailles, niveaux, **variants** filled/outlined/ghost/contrast, `formatValue`, valeur en région live)
 - ✅ `ui-rating` — Notation étoiles (CVA, clavier natif range, focus)
 - ✅ `ui-file-upload` — Téléversement de fichiers (headless ; modes `field`/`drag` + glisser-déposer, `multiple`, validation `accept`/`maxFileSize`/`fileLimit`, `auto`, `customUpload` + `uploadHandler`, upload XHR avec suivi de progression, templates `file`/`content`/`toolbar`, région d'erreurs live, aperçus image révoqués ; compose `ui-file-upload-list`)
@@ -70,5 +70,5 @@
 - ✅ `ui-paginator` — Pagination autonome (miroir Figma `_paginator-button-*` : `<button>` natifs token-stylés, carrés arrondis 40px `--radius-default`, contrôles `actions.low`, page courante `actions.high` + `aria-current="page"`, icônes `ui-icon`, `ui-select` lignes/page (`rowsPerPageOptions` = booléen Figma `selectPage`) ; two-way `first`/`rows`, `totalRecords`, fenêtre `pageLinks`, **mode compact `ellipsis`** (`1 2 3 … 30 31 32`, `boundaryCount`), **rapport de page** `showCurrentPageReport`/`currentPageReportTemplate`, barre modulable `showFirstLastIcon`/`showPageLinks`, **templates** `#start`/`#end`/`#report` (contenus embarqués, contexte état de pagination) + `#firsticon`/`#previcon`/`#nexticon`/`#lasticon`/`#pagelink`, `disabled`, output `pageChange`, labels a11y surchargeables ; consommée par `ui-table`)
 
 ## root
-- ✅ `ui-icon` — Icône FontAwesome (size sm|md|default|lg|xl, type solid|outline, accessible)
+- ✅ `ui-icon` — Icône (size sm|md|default|lg|xl, type solid|outline, accessible) ; n'importe quelle police via `provideUiIconFamilies()` — FontAwesome par défaut, `family` par icône, directive `uiIconFamily` par sous-arbre (icônes internes des composants comprises, overlays CDK inclus)
 - ✅ `ui-image` — Image (deux sources : `name` asset local résolu thème/marque via assets-map, ou `src` URL distante prioritaire via `NgOptimizedImage` ; SVG local inliné (`httpResource` + cache partagé), SVG distant jamais inliné ; `fallback` local sur erreur + placeholder tokenisé + output `loadFailed` ; `fill`/`width`/`height`, `priority` LCP)

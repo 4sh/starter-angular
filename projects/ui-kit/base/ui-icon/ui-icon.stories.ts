@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/angular';
 import { applicationConfig, moduleMetadata } from '@storybook/angular';
-import { UiIcon, provideUiIconFamilies } from '@4sh/ui-kit/base/ui-icon';
+import { UiIcon, UiIconFamilyScope, provideUiIconFamilies } from '@4sh/ui-kit/base/ui-icon';
 
 const meta: Meta<UiIcon> = {
   title: 'Components/ui/ui-icon',
@@ -35,6 +35,11 @@ const meta: Meta<UiIcon> = {
     ariaLabel: { control: { type: 'text' }, table: { type: { summary: 'string' } } },
   },
 };
+/** Famille de démonstration : remappe quelques noms sur d'autres glyphes FontAwesome,
+ *  pour rendre la bascule visible sans charger une seconde police. */
+const DEMO_GLYPHS: Record<string, string> = { star: 'certificate', bell: 'bullhorn' };
+const demoFamily = { classes: (name: string) => `fa-solid fa-${DEMO_GLYPHS[name] ?? name}` };
+
 export default meta;
 type Story = StoryObj<UiIcon>;
 
@@ -56,4 +61,31 @@ export const CustomFamily: Story = {
     }),
   ],
   args: { name: 'star', size: 'xl', family: 'brand' },
+};
+
+/**
+ * Famille appliquée à tout un **sous-arbre** via la directive `uiIconFamily` : chaque `ui-icon`
+ * descendant sans `family` explicite bascule — y compris les icônes qu'un composant du kit
+ * instancie en interne (chevrons, coches…) et celles relocalisées dans un overlay CDK.
+ *
+ * (La famille « demo » simule une autre bibliothèque en remappant quelques noms sur des glyphes
+ * FontAwesome, pour un rendu visible sans charger de police supplémentaire.)
+ */
+export const ScopedFamily: Story = {
+  decorators: [
+    applicationConfig({ providers: [provideUiIconFamilies({ demo: demoFamily })] }),
+    moduleMetadata({ imports: [UiIcon, UiIconFamilyScope] }),
+  ],
+  render: () => ({
+    template: `<div style="display:flex; gap:48px; align-items:center">
+      <div style="display:flex; gap:16px">
+        <ui-icon name="star" size="xl" />
+        <ui-icon name="bell" size="xl" />
+      </div>
+      <div uiIconFamily="demo" style="display:flex; gap:16px">
+        <ui-icon name="star" size="xl" />
+        <ui-icon name="bell" size="xl" />
+      </div>
+    </div>`,
+  }),
 };

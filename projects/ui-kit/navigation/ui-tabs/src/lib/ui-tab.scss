@@ -27,8 +27,8 @@ $focus-ring-width: var(--ui-tabs-focus-ring-width, #{utils.$action-focus-ring-wi
   margin: 0;
   padding: 0 var(--units-default);
   border: 0;
-  background-color: var(--navigation-high-surface-default);
-  color: var(--navigation-high-content-default);
+  background-color: var(--navigation-highoutlined-surface-default);
+  color: var(--navigation-highoutlined-content-default);
   font-family: var(--fontfamily-base);
   font-weight: var(--weight-bold);
   font-size: var(--size-typography-text-default);
@@ -38,8 +38,8 @@ $focus-ring-width: var(--ui-tabs-focus-ring-width, #{utils.$action-focus-ring-wi
   @include utils.control-transition(color, background-color, box-shadow);
 
   &:hover:not(:disabled) {
-    background-color: var(--navigation-high-surface-hover);
-    color: var(--navigation-high-content-hover);
+    background-color: var(--navigation-highoutlined-surface-hover);
+    color: var(--navigation-highoutlined-content-hover);
   }
 
   &:focus-visible {
@@ -48,8 +48,8 @@ $focus-ring-width: var(--ui-tabs-focus-ring-width, #{utils.$action-focus-ring-wi
   }
 
   &:disabled {
-    background-color: var(--navigation-high-surface-disabled);
-    color: var(--navigation-high-content-disabled);
+    background-color: var(--navigation-highoutlined-surface-disabled);
+    color: var(--navigation-highoutlined-content-disabled);
     cursor: not-allowed;
   }
 }
@@ -61,8 +61,8 @@ $focus-ring-width: var(--ui-tabs-focus-ring-width, #{utils.$action-focus-ring-wi
 
 // Active tab
 :host._active .ui-tab-button {
-  background-color: var(--navigation-high-surface-active);
-  color: var(--navigation-high-content-active);
+  background-color: var(--navigation-highoutlined-surface-active);
+  color: var(--navigation-highoutlined-content-active);
 }
 
 // Vertical axis: tabs stack and fill the list width, left-aligned.

@@ -5,6 +5,7 @@ import {
   UI_ICON_DEFAULT_FAMILY,
   UI_ICON_FAMILIES,
   UiIconFamily,
+  UiIconFamilyScope,
   UiIconType,
 } from './ui-icon-families';
 
@@ -15,8 +16,9 @@ export type { UiIconType };
  * ui-icon — renders an icon from a configurable font family.
  *
  * FontAwesome is the built-in default. Register other families (Material Symbols,
- * Bootstrap Icons, a custom font…) with `provideUiIconFamilies()` and pick one per
- * icon via `family`, or change the app-wide default.
+ * Bootstrap Icons, a custom font…) with `provideUiIconFamilies()`, then pick one per
+ * icon via `family`, per subtree via the `uiIconFamily` directive, or app-wide via
+ * the provider's `default` option.
  *
  * Accessible: decorative by default (aria-hidden); pass `decorative=false` + `ariaLabel`
  * when the icon conveys meaning on its own.
@@ -42,15 +44,20 @@ export class UiIcon {
 
   private readonly registered = inject(UI_ICON_FAMILIES, { optional: true });
   private readonly configuredDefault = inject(UI_ICON_DEFAULT_FAMILY, { optional: true });
+  /** Nearest enclosing `uiIconFamily` directive, if any (see {@link UiIconFamilyScope}). */
+  private readonly familyScope = inject(UiIconFamilyScope, { optional: true });
 
   /** Built-in families + registered ones (registered win on key clash). */
   private readonly families = computed<Record<string, UiIconFamily>>(() =>
     Object.assign({}, UI_ICON_BUILTIN_FAMILIES, ...(this.registered ?? [])),
   );
 
-  /** @ignore Resolved family, falling back to FontAwesome on unknown key. */
+  /**
+   * @ignore Resolved family, falling back to FontAwesome on unknown key.
+   * Precedence: own `family` → nearest `uiIconFamily` subtree → app-wide default.
+   */
   private readonly resolvedFamily = computed(() => {
-    const key = this.family() ?? this.configuredDefault ?? 'fontawesome';
+    const key = this.family() ?? this.familyScope?.uiIconFamily() ?? this.configuredDefault ?? 'fontawesome';
     const family = this.families()[key];
     if (!family && isDevMode()) {
       console.warn(`[ui-icon] Unknown icon family "${key}". Falling back to "fontawesome".`);

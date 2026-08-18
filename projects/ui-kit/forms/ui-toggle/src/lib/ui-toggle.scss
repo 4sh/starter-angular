@@ -107,7 +107,7 @@ $sizes: (
 
   // --- Hover -----------------------------------------------------------
   &:hover:not(._disabled):not(._readonly) &-track {
-    background-color: var(--form-low-content-hover);
+    background-color: var(--form-high-content-hover);
   }
   &._checked:hover:not(._disabled):not(._readonly) &-track {
     background-color: var(--form-high-content-hover);

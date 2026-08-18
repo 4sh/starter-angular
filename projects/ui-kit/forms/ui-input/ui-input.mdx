@@ -42,6 +42,38 @@ renseigne `iconRightAriaLabel` ; le clic émet `iconRightClick`.
 <Canvas of={InputStories.Password} />
 <Canvas of={InputStories.WithUnit} />
 
+## Icônes : template ponctuel, ou famille de zone
+
+`iconLeft` / `iconRight` prennent un **nom** d'icône ; deux leviers permettent d'aller au-delà,
+selon l'échelle visée.
+
+**Une icône → un `<ng-template>`.** Les deux zones acceptent `#iconLeft` / `#iconRight`, qui
+remplacent le markup rendu : icône d'une autre famille, SVG de marque, contenu libre. La zone
+d'action droite garde son `<button>` accessible (`iconRightAriaLabel` + `iconRightClick`) : seul
+son contenu change. Contexte reçu : `$implicit` = le nom configuré sur cette zone, `size` = la
+taille calée sur le champ, `disabled` = l'état du champ.
+
+<Canvas of={InputStories.IconTemplate} />
+
+```html
+<ui-input [(ngModel)]="theme" label="Thème" iconRight="sun" iconRightAriaLabel="Inverser le thème">
+  <ng-template #iconRight let-name let-size="size">
+    <ui-icon [name]="name" family="material" [size]="size" />
+  </ng-template>
+</ui-input>
+```
+
+**Une zone → la directive `uiIconFamily`.** Elle bascule d'un coup toutes les icônes descendantes,
+sans en viser une en particulier — voir
+[`ui-icon`](?path=/docs/components-ui-ui-icon--docs) pour les trois échelles et le critère
+de choix.
+
+<Canvas of={InputStories.ScopedIconFamily} />
+
+> Les templates sont aussi câblables **par code** (`iconLeftTemplate` / `iconRightTemplate`) : c'est
+> par là qu'un composant composite forwarde le sien — `ui-datepicker` expose ainsi `#icon` sur son
+> déclencheur.
+
 ## Formulaires
 
 Le composant est un `ControlValueAccessor` : il se branche sans code additionnel aux

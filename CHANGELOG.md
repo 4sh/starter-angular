@@ -17,6 +17,17 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 ## [Unreleased]
 
 ### Added
+- **Les icônes des composants sont surchargeables à deux échelles** (FSHSP-113). `ui-icon` savait déjà rendre n'importe quelle police (`UiIconFamily` + `provideUiIconFamilies()`), mais aucun composant ne forwardait cette notion : les champs exposent le *nom* de leur icône, jamais sa famille, et la majorité des icônes d'un composant sont **internes** — les dix chevrons du panneau de `ui-datepicker`, la coche et la loupe de `ui-select`. Basculer la famille par défaut au niveau applicatif envoyait ces noms FontAwesome codés en dur à la police cible, qui ne les connaît pas, et les icônes internes disparaissaient.
+
+  **Directive `uiIconFamily`, granularité sous-arbre.** Posée sur un champ, une section ou la racine, elle re-déclare la famille par défaut dans son *element injector* : tous les `ui-icon` descendants la voient, icônes internes comprises, sans `provideUiIconFamilies` global. Elle traverse les **overlays CDK** (panneaux de `ui-datepicker`, `ui-select`, `ui-autocomplete`) — la relocalisation DOM ne change pas la chaîne d'injecteurs — et vaut aussi pour les composants non-formulaire (menu, paginator, modal, tabs).
+
+  ```html
+  <form uiIconFamily="material">…</form>
+  ```
+
+  **Templates d'icône, granularité une icône.** `ui-input` expose `#iconLeft` et `#iconRight` (contexte : nom configuré, taille du champ, état `disabled`), sur le modèle déjà en place ailleurs dans le kit (`#onIcon`/`#offIcon` de `ui-rating`, `#item` de `ui-select`). La zone d'action droite garde son `<button>` accessible : seul son contenu est remplacé. `ui-datepicker` forwarde le sien vers le déclencheur sous `#icon`, ce qui permet de changer la seule icône calendrier en gardant FontAwesome sur ses dix chevrons.
+
+  Les deux leviers se choisissent selon l'échelle visée, pas selon une hiérarchie : un template vise une icône et peut en changer le markup entier (SVG de marque) ; la directive vise une zone et atteint ce qu'aucun input n'expose. Sans rien préciser, la famille par défaut s'applique et le markup rendu est inchangé.
 - **Un projet en sources copiées a désormais son propre Storybook** (FSHSP-125) : `ng add @4sh/ui-kit-schematics --with-storybook` copie, à côté de chaque composant, sa story et sa page MDX, pose la configuration Storybook (`storybook/`, cibles `angular.json`, devDependencies, scripts npm) et la chaîne qui alimente la doc (`scripts/docs.config.mjs`, bloc `<ConfigTable>`). Un `npm run storybook` suffit ensuite. Jusqu'ici le projet possédait son code mais aucune doc : il lui restait un Storybook hébergé qui décrit *nos* composants, pas ses copies éditées.
 
   Deux choses font que cette doc appartient au projet. Les tables *Theming* sont lues sur ses propres `.scss` au build, donc elles décrivent ses valeurs, rebranding compris. Et les globs couvrent tout `src/app/shared/components/**` : une story écrite à côté d'un composant maison apparaît sans toucher à la configuration.
@@ -67,6 +78,13 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
   Effets de bord corrigés au passage : les dépendances copiées n'étaient utilisées par personne (copies mortes, suivies par `update` pour rien), le bundle embarquait le composant deux fois, et du code applicatif dépendait d'une `devDependency` — ce qui cassait en `npm ci --omit=dev`.
 
 ### Changed
+- **`ui-tabs` passe sur les jetons `navigation.highOutlined.*`**, pour s'aligner sur le composant du UI Kit Figma. Les onglets lisaient `navigation.high.*`, la déclinaison *pleine* : l'onglet actif était une pastille remplie (`surface.active` = `primary.500`, libellé blanc) **doublée** de la barre d'indicateur — deux marqueurs pour le même état, là où la maquette n'en montre qu'un.
+
+  En `highOutlined`, `surface.active` est transparent et `content.active` prend la couleur d'accent : l'onglet actif se lit par son libellé coloré et la barre, comme dans Figma. Le survol passe de `primary.700` à `primary.500` sur le libellé (le fond `primary.100` est inchangé), et `default` / `disabled` sont identiques dans les deux déclinaisons.
+
+  Les navigateurs de défilement de `ui-tab-list` suivent la même bascule, pour que la bande reste d'une seule pièce. Aucun changement de code ni d'API : seuls les noms de variables CSS changent. Les hooks exposés (`--ui-tabs-indicator-color`, `--ui-tabs-active-bar-color`) gardent leur nom ; seul leur défaut suit — désormais `var(--navigation-highoutlined-stroke-active)`.
+
+  **En sombre**, `content.active` vaut `white.base` face à `grey.50` pour les onglets inactifs : l'écart est imperceptible, la barre d'indicateur porte seule la distinction. C'est la valeur du jeton Figma, conservée telle quelle.
 - ⚠️ **Le parcours starter s'installe en une commande, et n'installe plus `@4sh/ui-kit`** (FSHSP-122) :
 
   ```bash
