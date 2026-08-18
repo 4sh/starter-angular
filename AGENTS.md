@@ -269,6 +269,62 @@ $card-radius: var(--radius-md);       /// Rayon des coins.
   override, otherwise the doc shows the wrong default value.
 - Every config variable must have its `///`: `npm run docs:config` counts the missing ones.
 
+#### Every structural value is read through a `--ui-*` hook
+
+In **package mode** the kit's SCSS is already compiled, so `_ui-config.scss` and a component's
+local variables are out of reach. Each structural value is therefore read *through* a custom
+property whose fallback is the shipped default — the hook goes on the **config variable**, never
+on the usage sites:
+
+```scss
+// --- Config ---
+$radius: var(--ui-button-radius, var(--radius-sm));                     /// Rayon des coins.
+$stroke-width: var(--ui-button-stroke-width, #{utils.$control-stroke-width}); /// Épaisseur de la bordure.
+
+.ui-button { border-radius: $radius; border: $stroke-width solid transparent; }
+```
+
+- **Naming**: `--ui-{family}[-{part}]-{property}[-{modifier}]`, modifier **last** (same rule as
+  the tokens: `actions-high-surface-hover`). `{family}` is the entry-point folder minus `ui-`, so
+  a sub-component uses its family (`ui-tab-list.scss` → `--ui-tabs-*`). The property vocabulary
+  and the modifier list live in `scripts/component-vars.build.mjs`; `npm run docs:config` **fails**
+  on a hook that doesn't parse, so extend the vocabulary there rather than inventing a name.
+- **Inside a map**, every value carries its own hook (`height: var(--ui-button-height-small, …)`).
+- **What gets one**: dimensions, spacings, gaps, radii, stroke/focus-ring widths, font sizes,
+  durations, offsets, z-index — anything structural, including raw `px`/`rem` literals.
+- **What doesn't**: SCSS lists/maps that generate classes (`$levels`, `$variants` — build-time,
+  no custom property can carry them), and **colours**, which stay on the semantic tokens (theme ×
+  3 brands × WCAG). Exception: a colour whose per-instance repaint is a real use case (mask
+  backdrop, loading marker, skeleton shine, rating fill).
+- **A component must never declare a name it also exposes**: a custom property cannot reference
+  itself, and a declaration on the element beats an inherited override. When a value must live on
+  a variable (read by a sub-component, re-read by the consumer), declare a **private mirror** and
+  read the public hook in its fallback:
+  ```scss
+  :host { --_width: var(--ui-sidebar-width, #{$width-default}); } /// Largeur du panneau déployé.
+  ```
+  The `///` stays on the mirror: that is what publishes the public hook's role.
+- Never a value hardcoded inline in a rule when it is structural: promote it to a config variable
+  with its hook and its `///`.
+- `npm run docs:config` regenerates `projects/ui-kit/styles/component-vars.scss` (the consumer's copy-me
+  theme) and `figma/component-vars.json` from these hooks. Both are committed;
+  `docs:config:check` fails when they are stale, when a hook doesn't parse, or when a hook has
+  no `///`. Values in both files are read from the **compiled CSS**, not from the SCSS text — so
+  `rem-calc(44px - 2 * $gutter)` lands as `2.25rem`, not as an unevaluated expression.
+- A hook whose default **differs per variant** (`--ui-button-radius` is `--radius-sm`, or
+  `--radius-full` when `_rounded`) is excluded from the theme file: declaring one value there
+  would flatten the others. So is a hook the component declares itself. The generator classifies
+  this on its own — nothing to annotate.
+- **`_ui-config.scss` carries hooks too**, named `--ui-<scss name>` (`$form-control-size` →
+  `--ui-form-control-size`). They sit between the token and the component hook, and reach every
+  consumer for free since components *interpolate* them:
+  `var(--ui-checkbox-box-size, var(--ui-form-control-size, var(--size-components-2xs)))`. Use
+  this layer when a value is shared by a category and the token it points at is used elsewhere
+  too (`--size-components-2xs` also feeds `ui-tag`, so retuning the token would overshoot).
+  ⚠️ A constant that **references another constant** (`$form-focus-ring-width: $focus-ring-width`)
+  takes **no hook of its own**: it inherits the referenced one, and hooking both makes
+  `docs.config.mjs`'s binding resolver recurse forever.
+
 ### Shared structural constants — `ui-config`
 
 Structural values common to components (focus ring width, form control size,
@@ -351,6 +407,13 @@ $focus-ring-width: utils.$form-focus-ring-width; // ← replace the value here t
 2. Replicate the **`actions/ui-button` pattern**: file structure, signals + `computed()` for the classes, co-located SCSS
 3. Create the story + the `.mdx` **co-located** in `projects/ui-kit/<category>/ui-<name>/` (outside `src/`; global doc only → `storybook/docs/`) — pick `<category>` from `storybook/docs/Overview.mdx`'s sections, or ask if the component doesn't fit an existing one
 4. Check off the component in `components-index.md`
+
+> File **placement** does not drive the Storybook sidebar tree — the `title` does
+> (`<Meta title="…">`, or the story's `title:`). Placement only decides what ships: a
+> co-located `.stories.ts`/`.mdx` sits outside the entry point's `src/`, which is where
+> `ng-packagr` starts from, so it never reaches `@4sh/ui-kit`. It does travel in
+> `@4sh/ui-kit-schematics` (FSHSP-125), which copies it next to the component so a
+> starter project documents its own copies.
 
 ### Create a business component (domain)
 

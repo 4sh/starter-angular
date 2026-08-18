@@ -13,18 +13,20 @@
 /// Épaisseur et rayon de la piste, par taille.
 $sizes: (
   'default': (
-    track-height: 8px,
-    radius: var(--radius-xs),
+    track-height: var(--ui-progress-bar-track-height, #{utils.rem-calc(8)}),
+    radius: var(--ui-progress-bar-track-radius, var(--radius-xs)),
   ),
   'small': (
-    track-height: 4px,
-    radius: var(--radius-2xs),
+    track-height: var(--ui-progress-bar-track-height-small, #{utils.rem-calc(4)}),
+    radius: var(--ui-progress-bar-track-radius-small, var(--radius-2xs)),
   ),
 );
 $size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default` de `$sizes`.
 
+$fill-color: var(--ui-progress-bar-color, var(--informative-highlighthigh-surface-default)); /// Couleur de la barre de progression.
+
 // Component-specific (local): one indeterminate cycle duration.
-$indeterminate-duration: 1.6s; /// Durée d'un cycle en mode indéterminé.
+$indeterminate-duration: var(--ui-progress-bar-indeterminate-duration, 1.6s); /// Durée d'un cycle en mode indéterminé.
 
 // --- Host: block, fills its container --------------------------------
 :host {
@@ -44,7 +46,7 @@ $indeterminate-duration: 1.6s; /// Durée d'un cycle en mode indéterminé.
     display: flex;
     flex: 1 1 auto;
     overflow: hidden;
-    height: utils.rem-calc(map.get($size-default, track-height));
+    height: map.get($size-default, track-height);
     border-radius: map.get($size-default, radius);
     background-color: var(--global-border-default);
   }
@@ -53,7 +55,7 @@ $indeterminate-duration: 1.6s; /// Durée d'un cycle en mode indéterminé.
   &-value {
     height: 100%;
     border-radius: inherit;
-    background-color: var(--ui-progress-bar-color, var(--informative-highlighthigh-surface-default));
+    background-color: $fill-color;
     @include utils.motion-transition(width);
   }
 
@@ -65,7 +67,7 @@ $indeterminate-duration: 1.6s; /// Durée d'un cycle en mode indéterminé.
     background-color: var(--global-border-default);
 
     &._active {
-      background-color: var(--ui-progress-bar-color, var(--informative-highlighthigh-surface-default));
+      background-color: $fill-color;
     }
   }
 
@@ -124,7 +126,7 @@ $indeterminate-duration: 1.6s; /// Durée d'un cycle en mode indéterminé.
   @each $name, $size in $sizes {
     @if $name != 'default' {
       &._#{$name} .ui-progress-bar-track {
-        height: utils.rem-calc(map.get($size, track-height));
+        height: map.get($size, track-height);
         border-radius: map.get($size, radius);
       }
     }

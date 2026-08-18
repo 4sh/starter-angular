@@ -8,9 +8,16 @@
 // =====================================================================
 
 // Shared defaults (ui-config) — replace a value here to detune ONLY this component.
-$box-size: utils.$form-control-size;             /// Taille de la boîte à cocher
-$focus-ring-width: utils.$form-focus-ring-width; /// Épaisseur de l'anneau de focus
-$gap: utils.$form-control-gap;                   /// Espace entre la boîte et le label
+$box-size: var(--ui-checkbox-box-size, #{utils.$form-control-size});                     /// Taille de la boîte à cocher
+$focus-ring-width: var(--ui-checkbox-focus-ring-width, #{utils.$form-focus-ring-width}); /// Épaisseur de l'anneau de focus
+$gap: var(--ui-checkbox-gap, #{utils.$form-control-gap});                                /// Espace entre la boîte et le label
+
+$box-radius: var(--ui-checkbox-box-radius, var(--radius-xs));                    /// Rayon des coins de la boîte.
+$stroke-width: var(--ui-checkbox-stroke-width, #{utils.$control-stroke-width});  /// Épaisseur de la bordure de la boîte.
+$icon-size: var(--ui-checkbox-icon-size, var(--ui-icon-size-md, var(--size-typography-icon-md))); /// Taille du marqueur (coche / indéterminé).
+
+$font-size: var(--ui-checkbox-font-size, var(--size-typography-text-default)); /// Taille de police du label.
+$label-gap: var(--ui-checkbox-label-gap, var(--units-2xs));                    /// Espacement libellé ↔ marqueur requis.
 
 .ui-checkbox {
   display: inline-flex;
@@ -53,8 +60,8 @@ $gap: utils.$form-control-gap;                   /// Espace entre la boîte et l
     width: 100%;
     height: 100%;
     background-color: var(--_surface);
-    border: utils.$control-stroke-width solid var(--_stroke);
-    border-radius: var(--radius-xs);
+    border: $stroke-width solid var(--_stroke);
+    border-radius: $box-radius;
     @include utils.control-transition(background-color, border-color, box-shadow);
   }
 
@@ -65,6 +72,7 @@ $gap: utils.$form-control-gap;                   /// Espace entre la boîte et l
 
   // --- Check / indeterminate mark -------------------------------------
   &-icon {
+    --ui-icon-size: #{$icon-size};
     color: var(--_content);
     opacity: 0;
     transform: scale(0.6);
@@ -81,9 +89,9 @@ $gap: utils.$form-control-gap;                   /// Espace entre la boîte et l
   &-label {
     display: inline-flex;
     align-items: center;
-    gap: var(--units-2xs);
+    gap: $label-gap;
     font-family: var(--fontfamily-base);
-    font-size: var(--size-typography-text-default);
+    font-size: $font-size;
     color: var(--ui-label-color, var(--form-high-content-default));
     cursor: inherit;
     user-select: none;

@@ -15,17 +15,22 @@
 $levels: default, highlight, success, warning, error; /// Niveaux sémantiques générant les modifiers `._<niveau>`.
 $sublevels: high, low;                                /// Intensités générant les modifiers `._<intensité>`.
 
+$padding-x: var(--ui-tag-padding-x, var(--units-sm));          /// Inset horizontal.
+$radius: var(--ui-tag-radius, var(--radius-full));             /// Rayon des coins.
+$radius-square: var(--ui-tag-radius-square, var(--radius-sm)); /// Rayon des coins en présentation `square`.
+$stroke-width: var(--ui-tag-stroke-width, var(--stroke-sm));   /// Épaisseur de la bordure.
+
 /// Hauteur, gouttière et typo, par taille.
 $sizes: (
   'default': (
-    height: var(--size-components-2xs),
-    gap: var(--units-sm),
-    font-size: var(--size-typography-text-default),
+    height: var(--ui-tag-height, var(--size-components-2xs)),
+    gap: var(--ui-tag-gap, var(--units-sm)),
+    font-size: var(--ui-tag-font-size, var(--size-typography-text-default)),
   ),
   'small': (
-    height: 22px,
-    gap: var(--units-xs),
-    font-size: var(--size-typography-text-md),
+    height: var(--ui-tag-height-small, 22px),
+    gap: var(--ui-tag-gap-small, var(--units-xs)),
+    font-size: var(--ui-tag-font-size-small, var(--size-typography-text-md)),
   ),
 );
 $size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default` de `$sizes`.
@@ -43,9 +48,9 @@ $size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  padding: 0 var(--units-sm);
-  border: var(--stroke-sm) solid transparent;
-  border-radius: var(--radius-full);
+  padding: 0 $padding-x;
+  border: $stroke-width solid transparent;
+  border-radius: $radius;
   font-family: var(--fontfamily-base);
   font-weight: var(--weight-regular);
   line-height: 1;
@@ -58,7 +63,7 @@ $size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default
   &-label { display: inline-block; }
 
   // --- Shape -----------------------------------------
-  &._square { border-radius: var(--radius-sm); }
+  &._square { border-radius: $radius-square; }
 
   // --- Sizes -------------------------------------
   @each $name, $size in $sizes {

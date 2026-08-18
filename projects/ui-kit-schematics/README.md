@@ -18,7 +18,9 @@ ng add @4sh/ui-kit-schematics
 ```
 
 One command: it lays the foundation (styles, design tokens, `angular.json`), then
-asks which components to copy and copies them, dependencies included.
+asks which components to copy and copies them, dependencies included. The prompt
+is a checkbox list — <kbd>space</kbd> to pick, <kbd>a</kbd> for all,
+<kbd>i</kbd> to invert.
 
 ```
 src/app/shared/
@@ -35,8 +37,36 @@ against newer sources — never an automatic merge.
 | `ng add @4sh/ui-kit-schematics` | foundation **and** components, in one go |
 | `ng add @4sh/ui-kit-schematics --skip-components` | foundation only, pick components later |
 | `ng add @4sh/ui-kit-schematics --skip-install` | skip `npm install` (project drives its own lockfile) |
+| `ng add @4sh/ui-kit-schematics --with-storybook` | also copy each component's story and MDX (see below) |
 | `ng generate @4sh/ui-kit-schematics:add` | copy more components (interactive, or `--components`, or `--all`) |
 | `ng generate @4sh/ui-kit-schematics:update` | diff copied components against the published sources |
+
+### Your own Storybook: `--with-storybook`
+
+Off by default. Turned on, you get a working Storybook of the components you
+copied:
+
+```bash
+npm run storybook
+```
+
+Each component arrives with its story and its MDX page, next to its sources. The
+config lands in `storybook/` — `main.js`, `preview.ts`, the manager theme, the
+brand switcher, and the shared *Foundations* / *Specifications* / *Configuration*
+pages. The `storybook` and `build-storybook` targets are added to `angular.json`,
+the devDependencies to `package.json`.
+
+Two things make the doc *yours* rather than a snapshot of ours. The *Theming*
+tables are read off your own `.scss` at build time (`scripts/docs.config.mjs`
+collects the `///` roles), so they describe your values, rebranding included. And
+the globs cover `src/app/shared/components/**` whole: a story you write next to
+your own component shows up with no config change.
+
+The choice is recorded in `ui-kit.json`, and `update` honours it.
+
+Not carried over: the `parameters.design` links to our Figma file — you cannot
+open it, so it is stripped at copy time. Put your own `node-id` back if you have
+one.
 
 ### `@4sh/ui-kit` is deliberately **not** installed
 

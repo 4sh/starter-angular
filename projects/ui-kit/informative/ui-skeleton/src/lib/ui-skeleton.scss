@@ -14,19 +14,19 @@
 /// Dimensions et rayon de base, par forme.
 $shapes: (
   'text': (
-    width: 224px,
-    height: 20px,
-    radius: var(--radius-xl),
+    width: var(--ui-skeleton-text-width, #{utils.rem-calc(224)}),
+    height: var(--ui-skeleton-text-height, #{utils.rem-calc(20)}),
+    radius: var(--ui-skeleton-text-radius, var(--radius-xl)),
   ),
   'circle': (
-    width: 100px,
-    height: 100px,
-    radius: var(--radius-full),
+    width: var(--ui-skeleton-circle-width, #{utils.rem-calc(100)}),
+    height: var(--ui-skeleton-circle-height, #{utils.rem-calc(100)}),
+    radius: var(--ui-skeleton-circle-radius, var(--radius-full)),
   ),
   'rectangle': (
-    width: 100px,
-    height: 100px,
-    radius: var(--radius-default),
+    width: var(--ui-skeleton-rectangle-width, #{utils.rem-calc(100)}),
+    height: var(--ui-skeleton-rectangle-height, #{utils.rem-calc(100)}),
+    radius: var(--ui-skeleton-rectangle-radius, var(--radius-default)),
   ),
 );
 
@@ -34,17 +34,21 @@ $shapes: (
 /// Surcharges de la variante `small`, par forme.
 $small: (
   'text': (
-    height: 12px,
+    height: var(--ui-skeleton-text-height-small, #{utils.rem-calc(12)}),
   ),
   'circle': (
-    width: 64px,
-    height: 64px,
+    width: var(--ui-skeleton-circle-width-small, #{utils.rem-calc(64)}),
+    height: var(--ui-skeleton-circle-height-small, #{utils.rem-calc(64)}),
   ),
   'rectangle': (
-    width: 64px,
-    height: 64px,
+    width: var(--ui-skeleton-rectangle-width-small, #{utils.rem-calc(64)}),
+    height: var(--ui-skeleton-rectangle-height-small, #{utils.rem-calc(64)}),
   ),
 );
+
+// The mode-dependent default travels through a private variable, so the public
+// hook keeps winning in dark mode instead of being shadowed by the override.
+$shine: var(--ui-skeleton-shine, var(--_shine, rgba(255, 255, 255, 0.6))); /// Teinte du reflet glissant de l’animation `wave`.
 
 :host {
   display: contents;
@@ -66,7 +70,7 @@ $small: (
     background: linear-gradient(
       90deg,
       transparent 0%,
-      var(--ui-skeleton-shine, rgba(255, 255, 255, 0.6)) 50%,                         /// Teinte du reflet glissant de l’animation `wave`.
+      $shine 50%,
       transparent 100%
     );
     will-change: transform;
@@ -76,8 +80,8 @@ $small: (
   // --- Shapes (base = `default` size) --------------------------------
   @each $name, $s in $shapes {
     &._#{$name} {
-      width: utils.rem-calc(map.get($s, width));
-      height: utils.rem-calc(map.get($s, height));
+      width: map.get($s, width);
+      height: map.get($s, height);
       border-radius: map.get($s, radius);
     }
   }
@@ -91,9 +95,9 @@ $small: (
   @each $name, $s in $small {
     &._#{$name}._small {
       @if map.has-key($s, width) {
-        width: utils.rem-calc(map.get($s, width));
+        width: map.get($s, width);
       }
-      height: utils.rem-calc(map.get($s, height));
+      height: map.get($s, height);
     }
   }
 
@@ -114,7 +118,7 @@ $small: (
 
 :host-context([data-theme='dark']),
 :host-context(.dark) {
-  --ui-skeleton-shine: rgba(255, 255, 255, 0.09);
+  --_shine: rgba(255, 255, 255, 0.09);
 }
 
 // --- Keyframes -------------------------------------------------------

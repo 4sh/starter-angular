@@ -12,24 +12,24 @@
 /// Densités de padding (`default`/`small`/`large`).
 $sizes: (
   'default': (
-    cell-padding: var(--units-default),
-    head-padding: var(--units-md) var(--units-default),
+    cell-padding: var(--ui-table-cell-padding, var(--units-default)),
+    head-padding: var(--ui-table-head-padding, var(--units-md) var(--units-default)),
   ),
   'small': (
-    cell-padding: var(--units-sm) var(--units-md),
-    head-padding: var(--units-sm) var(--units-md),
+    cell-padding: var(--ui-table-cell-padding-small, var(--units-sm) var(--units-md)),
+    head-padding: var(--ui-table-head-padding-small, var(--units-sm) var(--units-md)),
   ),
   'large': (
-    cell-padding: var(--units-xl) var(--units-default),
-    head-padding: var(--units-default),
+    cell-padding: var(--ui-table-cell-padding-large, var(--units-xl) var(--units-default)),
+    head-padding: var(--ui-table-head-padding-large, var(--units-default)),
   ),
 );
-$size-default: map.get($sizes, 'default');  /// Raccourci vers l'entrée `default` de `$sizes`.
-$stroke-width: var(--stroke-sm);            /// Épaisseur des traits de séparation / gridlines.
-$focus-ring-width: utils.$focus-ring-width; /// Anneau de focus (lignes, en-têtes).
-$resizer-hit-width: var(--units-sm);        /// Largeur de la zone de saisie du redimensionneur.
-$drop-indicator-width: var(--stroke-lg);    /// Épaisseur de l'indicateur de dépose (row reorder).
-$loading-padding-y: var(--units-3xl);       /// Hauteur d'air de la ligne d'attente (`loading`).
+$size-default: map.get($sizes, 'default');                                       /// Raccourci vers l'entrée `default` de `$sizes`.
+$stroke-width: var(--ui-table-stroke-width, var(--stroke-sm));                   /// Épaisseur des traits de séparation / gridlines.
+$focus-ring-width: var(--ui-table-focus-ring-width, #{utils.$focus-ring-width}); /// Anneau de focus (lignes, en-têtes).
+$resizer-hit-width: var(--ui-table-resizer-hit-width, var(--units-sm));          /// Largeur de la zone de saisie du redimensionneur.
+$drop-indicator-width: var(--ui-table-drop-indicator-width, var(--stroke-lg));   /// Épaisseur de l'indicateur de dépose (row reorder).
+$loading-padding-y: var(--ui-table-loading-padding-y, var(--units-3xl));         /// Hauteur d'air de la ligne d'attente (`loading`).
 
 ui-table {
   display: block;

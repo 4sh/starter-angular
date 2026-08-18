@@ -98,13 +98,13 @@ importer dans le composant hôte.
 Par défaut le contenu porte la gouttière de la carte. `contentFlush` la **retire**
 pour laisser le consommateur maîtriser sa mise en page : bande média / couleur
 edge-to-edge, tableau pleine largeur… La gouttière reste disponible via la variable
-CSS `--ui-card-padding` (à ré-appliquer sur les blocs qui doivent rester en retrait).
+CSS `--ui-card-gutter` (à ré-appliquer sur les blocs qui doivent rester en retrait).
 
 ```html
 <ui-card header="Titre" [contentFlush]="true">
   <div class="flex-y" style="--flex-gap-y: var(--units-md)">
     <div class="banniere"></div> <!-- pleine largeur -->
-    <p style="padding-inline: var(--ui-card-padding)">Paragraphe regouttiéré…</p>
+    <p style="padding-inline: var(--ui-card-gutter)">Paragraphe regouttiéré…</p>
   </div>
 </ui-card>
 ```

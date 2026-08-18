@@ -12,26 +12,37 @@
 /// Géométrie, typo et vignette d'une ligne de fichier, par taille.
 $sizes: (
   'default': (
-    radius: var(--radius-lg),
-    padding-y: var(--units-md),
-    padding-x: var(--units-default),
-    gap: var(--units-md),
-    media: 40px,
-    name-size: var(--size-typography-title-sm),
-    meta-size: var(--size-typography-text-sm),
+    radius: var(--ui-file-upload-item-radius, var(--radius-lg)),
+    padding-y: var(--ui-file-upload-item-padding-y, var(--units-md)),
+    padding-x: var(--ui-file-upload-item-padding-x, var(--units-default)),
+    gap: var(--ui-file-upload-item-gap, var(--units-md)),
+    media: var(--ui-file-upload-item-media-size, #{utils.rem-calc(40px)}),
+    name-size: var(--ui-file-upload-item-name-font-size, var(--size-typography-title-sm)),
+    meta-size: var(--ui-file-upload-item-meta-font-size, var(--size-typography-text-sm)),
   ),
   'small': (
-    radius: var(--radius-md),
-    padding-y: var(--units-sm),
-    padding-x: var(--units-md),
-    gap: var(--units-sm),
-    media: 32px,
-    name-size: var(--size-typography-text-md),
-    meta-size: var(--size-typography-text-sm),
+    radius: var(--ui-file-upload-item-radius-small, var(--radius-md)),
+    padding-y: var(--ui-file-upload-item-padding-y-small, var(--units-sm)),
+    padding-x: var(--ui-file-upload-item-padding-x-small, var(--units-md)),
+    gap: var(--ui-file-upload-item-gap-small, var(--units-sm)),
+    media: var(--ui-file-upload-item-media-size-small, #{utils.rem-calc(32px)}),
+    name-size: var(--ui-file-upload-item-name-font-size-small, var(--size-typography-text-md)),
+    meta-size: var(--ui-file-upload-item-meta-font-size-small, var(--size-typography-text-sm)),
   ),
 );
-$size-default: map.get($sizes, 'default');     /// Raccourci vers l'entrée `default` de `$sizes`.
-$stroke-width: utils.$form-field-stroke-width; /// Épaisseur de bordure d'une ligne.
+$size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default` de `$sizes`.
+
+$stroke-width: var(--ui-file-upload-item-stroke-width, #{utils.$form-field-stroke-width}); /// Épaisseur de bordure d'une ligne.
+$media-gap: var(--ui-file-upload-item-media-gap, var(--units-sm));                        /// Espacement vignette ↔ informations.
+$infos-gap: var(--ui-file-upload-item-infos-gap, var(--units-2xs));                       /// Espacement nom ↔ métadonnées.
+$thumb-radius: var(--ui-file-upload-item-thumb-radius, var(--radius-sm));                /// Rayon de la vignette d'aperçu.
+
+$remove-padding: var(--ui-file-upload-item-remove-padding, var(--units-2xs));                    /// Inset du bouton de retrait.
+$remove-radius: var(--ui-file-upload-item-remove-radius, var(--radius-sm));                      /// Rayon du bouton de retrait.
+$focus-ring-width: var(--ui-file-upload-item-focus-ring-width, #{utils.$form-focus-ring-width}); /// Épaisseur de l'anneau de focus du bouton de retrait.
+
+$progress-height: var(--ui-file-upload-item-progress-height, var(--stroke-default));   /// Épaisseur de la barre de progression.
+$progress-color: var(--ui-file-upload-item-progress-color, var(--global-text-default)); /// Couleur de la portion remplie de la barre de progression.
 
 @mixin row-size($s) {
   border-radius: map.get($s, radius);
@@ -39,8 +50,8 @@ $stroke-width: utils.$form-field-stroke-width; /// Épaisseur de bordure d'une l
   gap: map.get($s, gap);
 
   .ui-file-upload-list-media {
-    width: utils.rem-calc(map.get($s, media));
-    height: utils.rem-calc(map.get($s, media));
+    width: map.get($s, media);
+    height: map.get($s, media);
   }
   .ui-file-upload-list-name { font-size: map.get($s, name-size); }
   .ui-file-upload-list-meta { font-size: map.get($s, meta-size); }
@@ -50,7 +61,7 @@ $stroke-width: utils.$form-field-stroke-width; /// Épaisseur de bordure d'une l
   position: relative;
   display: flex;
   align-items: center;
-  gap: var(--units-md);
+  gap: map.get($size-default, gap);
   box-sizing: border-box;
   width: 100%;
   overflow: hidden;
@@ -70,7 +81,7 @@ $stroke-width: utils.$form-field-stroke-width; /// Épaisseur de bordure d'une l
   &-file {
     display: flex;
     align-items: center;
-    gap: var(--units-sm);
+    gap: $media-gap;
     min-width: 0; // allow the name to truncate
     flex: 1 1 auto;
   }
@@ -88,13 +99,13 @@ $stroke-width: utils.$form-field-stroke-width; /// Épaisseur de bordure d'une l
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: var(--radius-sm);
+    border-radius: $thumb-radius;
   }
 
   &-infos {
     display: flex;
     flex-direction: column;
-    gap: var(--units-2xs);
+    gap: $infos-gap;
     min-width: 0;
   }
 
@@ -121,10 +132,10 @@ $stroke-width: utils.$form-field-stroke-width; /// Épaisseur de bordure d'une l
     align-items: center;
     justify-content: center;
     flex: none;
-    padding: var(--units-2xs);
+    padding: $remove-padding;
     background: transparent;
     border: none;
-    border-radius: var(--radius-sm);
+    border-radius: $remove-radius;
     color: var(--form-high-content-default);
     cursor: pointer;
     line-height: 0;
@@ -133,7 +144,7 @@ $stroke-width: utils.$form-field-stroke-width; /// Épaisseur de bordure d'une l
     &:hover { color: var(--global-text-default); }
     &:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 utils.$form-focus-ring-width var(--form-high-stroke-focused);
+      box-shadow: 0 0 0 $focus-ring-width var(--form-high-stroke-focused);
     }
   }
 
@@ -143,13 +154,13 @@ $stroke-width: utils.$form-field-stroke-width; /// Épaisseur de bordure d'une l
     left: 0;
     right: 0;
     bottom: 0;
-    height: var(--stroke-default);
+    height: $progress-height;
     background-color: var(--form-high-surface-hover);
   }
   &-progress-bar {
     display: block;
     height: 100%;
-    background-color: var(--global-text-default);
+    background-color: $progress-color;
     @include utils.control-transition(width);
   }
 

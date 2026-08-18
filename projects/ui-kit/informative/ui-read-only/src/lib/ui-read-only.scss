@@ -19,13 +19,13 @@
 // --- Config ---------------------------------------
 /// Taille de texte, par taille.
 $sizes: (
-  'default': var(--size-typography-text-default),
-  'small': var(--size-typography-text-md),
+  'default': var(--ui-read-only-font-size, var(--size-typography-text-default)),
+  'small': var(--ui-read-only-font-size-small, var(--size-typography-text-md)),
 );
 
-$label-gap: utils.$form-field-gap;                   /// Écart label→valeur en mode `matchField` (sinon compact).
-$field-height: utils.$form-field-height;             /// Hauteur de la zone de valeur en `matchField` (taille `default`).
-$field-height-small: utils.$form-field-height-small; /// Idem pour la taille `small`.
+$label-gap: var(--ui-read-only-label-gap, #{utils.$form-field-gap});                            /// Écart label→valeur en mode `matchField` (sinon compact).
+$field-height: var(--ui-read-only-field-height, #{utils.$form-field-height});                   /// Hauteur de la zone de valeur en `matchField` (taille `default`).
+$field-height-small: var(--ui-read-only-field-height-small, #{utils.$form-field-height-small}); /// Idem pour la taille `small`.
 
 .ui-read-only {
   margin: 0; // reset native <dl> margin

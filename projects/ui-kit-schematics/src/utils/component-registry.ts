@@ -24,6 +24,11 @@ const COMPONENTS_ROOT = 'src/app/shared/components/ui';
 /** Directives de base, services, utilitaires et types transverses : hors de
  * `components/`, qui ne doit contenir que des composants (FSHSP-121). */
 const CORE_ROOT = 'src/app/shared/ui-core';
+/** Bloc de doc `<ConfigTable>` chez le consommateur (FSHSP-125) : sa place
+ * décide du chemin relatif réécrit dans chaque MDX copié, d'où la constante
+ * partagée plutôt qu'un littéral des deux côtés. Même disposition qu'ici, pour
+ * que le scaffold Storybook à venir tombe juste autour. */
+export const CONFIG_TABLE_PATH = 'storybook/blocks/config-table.js';
 
 function listDirs(dir: string): string[] {
   if (!existsSync(dir)) return [];
@@ -80,6 +85,16 @@ export function resolveSpecifier(specifier: string): AssetUnit | undefined {
 
 export function stylesFoundationDir(): string {
   return join(ASSETS_ROOT, 'styles');
+}
+
+/** Chaîne de doc embarquée : `docs.config.mjs` + le bloc `<ConfigTable>` (FSHSP-125). */
+export function docsPipelineDir(): string {
+  return join(ASSETS_ROOT, 'docs-pipeline');
+}
+
+/** Story et MDX d'un composant : sa doc, copiée seulement sur `--with-storybook`. */
+export function isStorybookFile(path: string): boolean {
+  return path.endsWith('.stories.ts') || path.endsWith('.mdx');
 }
 
 /** Tous les fichiers d'une unité, chemins absolus. */

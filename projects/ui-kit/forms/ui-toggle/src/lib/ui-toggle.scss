@@ -4,35 +4,51 @@
 // =====================================================================
 // ui-toggle : co-located styles. All values come from design tokens.
 // Extend:
-//   • Size → add an entry to $sizes (+ the `ToggleSize` type). `travel` (thumb
-//     slide) is derived: track-w − 2·pad − thumb.
+//   • Size → add an entry to $sizes (+ the `ToggleSize` type). `offset` (thumb
+//     slide) = track-w − 4·pad − thumb (2·pad + the 2 track borders).
 // =====================================================================
 
-$focus-ring-width: utils.$form-focus-ring-width; /// Épaisseur de l'anneau de focus
-$gap: utils.$form-control-gap;                   /// Espace entre l'interrupteur et le label
+$focus-ring-width: var(--ui-toggle-focus-ring-width, #{utils.$form-focus-ring-width}); /// Épaisseur de l'anneau de focus
+$gap: var(--ui-toggle-gap, #{utils.$form-control-gap});                                /// Espace entre l'interrupteur et le label
+
+$track-radius: var(--ui-toggle-track-radius, var(--radius-full));           /// Rayon des coins de la piste.
+$track-stroke-width: var(--ui-toggle-track-stroke-width, var(--stroke-sm)); /// Épaisseur de la bordure de la piste.
+$thumb-radius: var(--ui-toggle-thumb-radius, var(--radius-full));           /// Rayon des coins de la pastille.
+
+$font-size: var(--ui-toggle-font-size, var(--size-typography-text-default));        /// Taille de police du label.
+$font-size-small: var(--ui-toggle-font-size-small, var(--size-typography-text-md)); /// Taille de police du label en taille `small`.
+$label-gap: var(--ui-toggle-label-gap, var(--units-2xs));                           /// Espacement libellé ↔ marqueur requis.
 
 /// Dimensions de la piste et de la pastille par taille (spécifique toggle)
 $sizes: (
-  'default': (track-w: 44px, track-h: 24px, thumb: 20px, pad: 1px),
-  'small': (track-w: 36px, track-h: 20px, thumb: 16px, pad: 1px),
+  'default': (
+    track-w: var(--ui-toggle-track-width, #{utils.rem-calc(44px)}),
+    track-h: var(--ui-toggle-track-height, #{utils.rem-calc(24px)}),
+    thumb: var(--ui-toggle-thumb-size, #{utils.rem-calc(20px)}),
+    pad: var(--ui-toggle-track-padding, #{utils.rem-calc(1px)}),
+    offset: var(--ui-toggle-thumb-offset, #{utils.rem-calc(44px - 4 * 1px - 20px)}),
+  ),
+  'small': (
+    track-w: var(--ui-toggle-track-width-small, #{utils.rem-calc(36px)}),
+    track-h: var(--ui-toggle-track-height-small, #{utils.rem-calc(20px)}),
+    thumb: var(--ui-toggle-thumb-size-small, #{utils.rem-calc(16px)}),
+    pad: var(--ui-toggle-track-padding-small, #{utils.rem-calc(1px)}),
+    offset: var(--ui-toggle-thumb-offset-small, #{utils.rem-calc(36px - 4 * 1px - 16px)}),
+  ),
 );
 
 @mixin toggle-size($size) {
-  $track-w: map.get($size, track-w);
-  $pad: map.get($size, pad);
-  $thumb: map.get($size, thumb);
-
   .ui-toggle-track {
-    width: utils.rem-calc($track-w);
-    height: utils.rem-calc(map.get($size, track-h));
-    padding: utils.rem-calc($pad);
+    width: map.get($size, track-w);
+    height: map.get($size, track-h);
+    padding: map.get($size, pad);
   }
   .ui-toggle-thumb {
-    width: utils.rem-calc($thumb);
-    height: utils.rem-calc($thumb);
+    width: map.get($size, thumb);
+    height: map.get($size, thumb);
   }
   &._checked .ui-toggle-thumb {
-    transform: translateX(utils.rem-calc($track-w - 4 * $pad - $thumb));
+    transform: translateX(map.get($size, offset));
   }
 }
 
@@ -65,8 +81,8 @@ $sizes: (
     display: flex;
     align-items: center;
     box-sizing: border-box;
-    border: var(--stroke-sm) solid transparent;
-    border-radius: var(--radius-full);
+    border: $track-stroke-width solid transparent;
+    border-radius: $track-radius;
     background-color: var(--form-low-content-default);
     @include utils.control-transition(background-color, border-color, box-shadow);
   }
@@ -77,7 +93,7 @@ $sizes: (
     justify-content: center;
     flex-shrink: 0;
     box-sizing: border-box;
-    border-radius: var(--radius-full);
+    border-radius: $thumb-radius;
     background-color: var(--form-high-surface-default);
     color: var(--form-low-content-default);
     line-height: 0;
@@ -119,15 +135,15 @@ $sizes: (
   &-label {
     display: inline-flex;
     align-items: center;
-    gap: var(--units-2xs);
+    gap: $label-gap;
     font-family: var(--fontfamily-base);
-    font-size: var(--size-typography-text-default);
+    font-size: $font-size;
     color: var(--ui-label-color, var(--form-high-content-default));
     cursor: inherit;
     user-select: none;
     @include utils.control-transition(color);
   }
-  &._small &-label { font-size: var(--size-typography-text-md); }
+  &._small &-label { font-size: $font-size-small; }
 
   &-required {
     color: var(--informative-errorlow-content-default);

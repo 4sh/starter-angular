@@ -18,5 +18,9 @@
     "paths": {}
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["src/**/*.spec.ts"]
+  /* `files/` porte des scaffolds destinés au projet consommateur (preview
+     Storybook, thème du manager…). Ils sont copiés tels quels, jamais
+     compilés ici : leurs imports (`@storybook/angular`, `../documentation.json`)
+     n'existent que là-bas. */
+  "exclude": ["src/**/*.spec.ts", "src/**/files/**"]
 }

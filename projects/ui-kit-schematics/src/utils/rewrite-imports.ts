@@ -7,6 +7,10 @@
  * aucun effet sur les composants qui l'utilisent, et le modèle « les sources
  * t'appartiennent » ne tiendrait pas. C'est la raison d'être du starter.
  *
+ * Les MDX passent par la même porte ({@link rewriteDocImports}, FSHSP-125),
+ * avec deux différences : ils importent en plus le bloc `<ConfigTable>`, et
+ * leurs blocs de code sont de la prose — on n'y touche pas.
+ *
  * Un import peut devoir être SCINDÉ : les symboles d'un même barrel ne vivent
  * pas forcément dans le même fichier (`{ UiIcon, UiIconType }` →
  * `ui-icon.ts` + `ui-icon-families.ts`). Une réécriture qui se contenterait de
@@ -14,7 +18,7 @@
  */
 import { dirname, relative } from 'node:path';
 import type { AssetUnit } from './component-registry';
-import { resolveSpecifier } from './component-registry';
+import { CONFIG_TABLE_PATH, resolveSpecifier } from './component-registry';
 import { buildExportMap } from './export-map';
 
 /**
@@ -113,6 +117,75 @@ export function rewriteKitImports(content: string, fileTargetPath: string): Rewr
   for (const match of rewritten.matchAll(ANY_KIT_IMPORT_RE)) {
     unresolved.push(`forme d'import non gérée : ${match[0].trim()}`);
   }
+
+  return { content: rewritten, unresolved };
+}
+
+/** `import { ConfigTable } from '../../../../storybook/blocks/config-table';` */
+const CONFIG_TABLE_IMPORT_RE =
+  /^([ \t]*import\s+(?:type\s+)?\{[^}]*\}\s+from\s+)['"](?:\.\.\/)+storybook\/blocks\/config-table['"](\s*;?[ \t]*)$/gm;
+
+/** Délimiteur de bloc de code MDX : ``` ou ~~~, éventuellement indenté. */
+const FENCE_RE = /^\s*(```|~~~)/;
+
+/**
+ * Applique une réécriture aux seules lignes HORS bloc de code.
+ *
+ * Un MDX mêle deux natures de code : ses propres imports ESM, qui doivent
+ * suivre les copies, et des extraits pédagogiques entre ``` qui montrent au
+ * lecteur ce qu'il écrira dans SON application. Réécrire les seconds
+ * produirait des chemins relatifs faux — ils dépendent de l'emplacement du
+ * fichier du lecteur, que nous ne connaissons pas.
+ */
+function outsideFencedBlocks(content: string, rewrite: (chunk: string) => string): string {
+  const lines = content.split('\n');
+  const out: string[] = [];
+  let buffer: string[] = [];
+  let inFence = false;
+
+  const flush = () => {
+    if (buffer.length) out.push(rewrite(buffer.join('\n')));
+    buffer = [];
+  };
+
+  for (const line of lines) {
+    if (FENCE_RE.test(line)) {
+      if (!inFence) flush();
+      inFence = !inFence;
+      out.push(line);
+      continue;
+    }
+    if (inFence) out.push(line);
+    else buffer.push(line);
+  }
+  flush();
+
+  return out.join('\n');
+}
+
+/**
+ * Réécrit les imports d'un MDX copié : ceux du kit comme dans un `.ts`, plus
+ * l'import du bloc `<ConfigTable>` — qui pointe ici, depuis le kit, vers
+ * `storybook/blocks/` du monorepo (49 MDX sur 54), et doit désigner chez le
+ * consommateur la copie que `ng add` y a posée.
+ *
+ * Ce que ce passage NE corrige PAS : les extraits de code pédagogiques qui
+ * importent `@4sh/ui-kit/…` (aujourd'hui `ui-icon.mdx`) restent tels quels —
+ * voir {@link outsideFencedBlocks}. Le lecteur y verra un package qu'il n'a
+ * pas ; c'est de la prose à reprendre, pas un import à résoudre.
+ */
+export function rewriteDocImports(content: string, fileTargetPath: string): RewriteResult {
+  const unresolved: string[] = [];
+
+  const rewritten = outsideFencedBlocks(content, (chunk) => {
+    const kit = rewriteKitImports(chunk, fileTargetPath);
+    unresolved.push(...kit.unresolved);
+    return kit.content.replace(
+      CONFIG_TABLE_IMPORT_RE,
+      (_whole, prefix: string, suffix: string) =>
+        `${prefix}'${relativeSpecifier(fileTargetPath, CONFIG_TABLE_PATH.replace(/\.js$/, ''))}'${suffix}`,
+    );
+  });
 
   return { content: rewritten, unresolved };
 }

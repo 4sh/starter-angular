@@ -13,23 +13,23 @@
 /// Map avec clés `size` (dimension) et `font-size` (typographie) pour chaque variante (`small`/`default`/`large`).
 $sizes: (
   'default': (
-    size: var(--size-components-default),
-    font-size: var(--size-typography-text-default),
+    size: var(--ui-input-otp-cell-size, var(--size-components-default)),
+    font-size: var(--ui-input-otp-font-size, var(--size-typography-text-default)),
   ),
   'small': (
-    size: var(--size-components-sm),
-    font-size: var(--size-typography-text-md),
+    size: var(--ui-input-otp-cell-size-small, var(--size-components-sm)),
+    font-size: var(--ui-input-otp-font-size-small, var(--size-typography-text-md)),
   ),
   'large': (
-    size: var(--size-components-xl),
-    font-size: var(--size-typography-text-lg),
+    size: var(--ui-input-otp-cell-size-large, var(--size-components-xl)),
+    font-size: var(--ui-input-otp-font-size-large, var(--size-typography-text-lg)),
   ),
 );
-$size-default: map.get($sizes, 'default');             /// Raccourci vers l'entrée `default` de `$sizes`.
-$radius: utils.$form-field-radius;                     /// Rayon des cellules (aligné sur `ui-field`).
-$stroke-width: utils.$form-field-stroke-width;         /// Épaisseur de la bordure.
-$focus-ring-width: utils.$form-field-focus-ring-width; /// Largeur de l'anneau de focus.
-$gap: var(--units-sm);                                 /// Espace entre les cellules (`--units-sm`).
+$size-default: map.get($sizes, 'default');                                                      /// Raccourci vers l'entrée `default` de `$sizes`.
+$radius: var(--ui-input-otp-radius, #{utils.$form-field-radius});                               /// Rayon des cellules (aligné sur `ui-field`).
+$stroke-width: var(--ui-input-otp-stroke-width, #{utils.$form-field-stroke-width});             /// Épaisseur de la bordure.
+$focus-ring-width: var(--ui-input-otp-focus-ring-width, #{utils.$form-field-focus-ring-width}); /// Largeur de l'anneau de focus.
+$gap: var(--ui-input-otp-gap, var(--units-sm));                                                 /// Espace entre les cellules (`--units-sm`).
 
 @mixin otp-size($size) {
   .ui-input-otp-cell {

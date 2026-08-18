@@ -5,22 +5,24 @@
 // Box/label/helper/states come from `ui-field`.
 // =====================================================================
 
-$spinner-width: utils.rem-calc(30); /// Largeur de la colonne du spinner (mixin partagé `utils.field-spinner($btn, $width)`).
+$spinner-width: var(--ui-input-number-spinner-width, #{utils.rem-calc(30)});                 /// Largeur de la colonne du spinner (mixin partagé `utils.field-spinner($btn, $width)`).
+$unit-font-size: var(--ui-input-number-unit-font-size, var(--size-typography-text-default)); /// Taille du texte de l'unité.
+$font-size-small: var(--ui-input-number-font-size-small, var(--size-typography-text-md));    /// Taille du texte (saisie et unité) en variante `small`.
 
 .ui-input-number {
   &-native {
     @include utils.field-native-input;
-    &._small { font-size: var(--size-typography-text-md); }
+    &._small { font-size: $font-size-small; }
   }
 
   &-unit {
     @include utils.field-affix;
     font-family: var(--fontfamily-base);
-    font-size: var(--size-typography-text-default);
+    font-size: $unit-font-size;
     white-space: nowrap;
     user-select: none;
 
-    &._small { font-size: var(--size-typography-text-md); }
+    &._small { font-size: $font-size-small; }
   }
 
   &-spinner { @include utils.field-spinner('button', $spinner-width); }

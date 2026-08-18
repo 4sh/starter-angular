@@ -51,18 +51,24 @@ export function add(options: Schema): Rule {
 
     const kitVersion = readKitVersion();
     const units = resolveDependencies(selected);
-    const manifest = readManifest(tree) ?? emptyManifest(kitVersion);
+    const existing = readManifest(tree);
+    // `--with-storybook` n'est passé qu'à l'installation : sur un `add` isolé,
+    // c'est le manifeste qui porte le choix du projet.
+    const withStorybook = options.withStorybook ?? existing?.storybook ?? false;
+    const manifest = existing ?? emptyManifest(kitVersion, withStorybook);
 
     for (const unit of units) {
-      copyUnit(tree, unit, kitVersion);
+      copyUnit(tree, unit, kitVersion, { withStorybook });
       manifest.components[unit.name] = { version: kitVersion, installedAt: today() };
     }
     manifest.kitVersion = kitVersion;
+    manifest.storybook = withStorybook;
     writeManifest(tree, manifest);
 
     const extra = units.filter((u) => !selected.includes(u.name)).map((u) => u.name);
     context.logger.info(
-      `✔ ${units.length} unité(s) copiée(s)${extra.length ? ` (dont dépendances : ${extra.join(', ')})` : ''}.`,
+      `✔ ${units.length} unité(s) copiée(s)${extra.length ? ` (dont dépendances : ${extra.join(', ')})` : ''}` +
+        `${withStorybook ? ', story et MDX inclus' : ''}.`,
     );
     return tree;
   };

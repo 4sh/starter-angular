@@ -19,7 +19,8 @@ ng add @4sh/ui-kit-schematics
 
 Une seule commande : elle pose la fondation (styles, design tokens,
 `angular.json`), puis demande quels composants copier et les copie, dépendances
-comprises.
+comprises. La sélection se fait à la case à cocher — <kbd>espace</kbd> pour
+choisir, <kbd>a</kbd> pour tout, <kbd>i</kbd> pour inverser.
 
 ```
 src/app/shared/
@@ -37,8 +38,37 @@ jamais une fusion automatique.
 | `ng add @4sh/ui-kit-schematics` | fondation **et** composants, d'un coup |
 | `ng add @4sh/ui-kit-schematics --skip-components` | fondation seule, composants choisis plus tard |
 | `ng add @4sh/ui-kit-schematics --skip-install` | ne pas lancer `npm install` (projet qui pilote son lockfile) |
+| `ng add @4sh/ui-kit-schematics --with-storybook` | copier aussi la story et le MDX de chaque composant (voir ci-dessous) |
 | `ng generate @4sh/ui-kit-schematics:add` | copier d'autres composants (interactif, ou `--components`, ou `--all`) |
 | `ng generate @4sh/ui-kit-schematics:update` | diff des composants copiés face aux sources publiées |
+
+### Votre propre Storybook : `--with-storybook`
+
+Désactivé par défaut. Activé, vous obtenez un Storybook qui tourne, sur les
+composants que vous avez copiés :
+
+```bash
+npm run storybook
+```
+
+Chaque composant arrive avec sa story et sa page MDX, à côté de ses sources. La
+configuration atterrit dans `storybook/` — `main.js`, `preview.ts`, le thème du
+manager, le sélecteur de marque, et les pages transverses *Foundations*,
+*Spécifications* et *Configuration*. Les cibles `storybook` et `build-storybook`
+sont ajoutées à `angular.json`, les devDependencies au `package.json`.
+
+Deux choses font que cette doc est **la vôtre**, et non une photo de la nôtre.
+Les tables *Theming* sont lues sur vos propres `.scss` au build
+(`scripts/docs.config.mjs` en extrait les rôles `///`) : elles décrivent vos
+valeurs, rebranding compris. Et les globs couvrent tout
+`src/app/shared/components/**` : une story écrite à côté de votre propre
+composant apparaît sans toucher à la configuration.
+
+Le choix est retenu dans `ui-kit.json`, et `update` s'y tient.
+
+Non repris : les liens `parameters.design` vers notre fichier Figma — vous ne
+pouvez pas l'ouvrir, ils sont retirés à la copie. Remettez votre `node-id` si
+vous en avez un.
 
 ### `@4sh/ui-kit` n'est délibérément **pas** installé
 

@@ -1,3 +1,9 @@
+$object-fit: var(--ui-image-object-fit, contain);                                  /// Ajustement de l'image dans sa boîte.
+
+$placeholder-min-width: var(--ui-image-placeholder-min-width, var(--units-xl));    /// Largeur minimale du placeholder (visible même sans dimension imposée).
+$placeholder-min-height: var(--ui-image-placeholder-min-height, var(--units-xl));  /// Hauteur minimale du placeholder.
+$placeholder-radius: var(--ui-image-placeholder-radius, var(--radius-default));    /// Rayon des coins du placeholder.
+
 :host {
   display: flex;
   align-items: center;
@@ -5,7 +11,7 @@
 }
 
 .ui-image {
-  object-fit: contain;
+  object-fit: $object-fit;
 }
 
 .ui-image-svg {
@@ -22,9 +28,9 @@
   display: flex; /* Layout */
   align-items: center;
   justify-content: center;
-  min-width: var(--units-xl); /* Metrics — visible even when unsized */
-  min-height: var(--units-xl);
-  border-radius: var(--radius-default);
+  min-width: $placeholder-min-width; /* Metrics — visible even when unsized */
+  min-height: $placeholder-min-height;
+  border-radius: $placeholder-radius;
   background: var(--global-background-muted); /* Colors — adapts light/dark via tokens */
   color: var(--global-text-muted);
 }

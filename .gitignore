@@ -16,6 +16,9 @@ node_modules
 # Generated Tokens (npm run tokens:build)
 projects/ui-kit/styles/generated
 
+# Copie servie par Storybook pour le téléchargement (regénérée par docs:config)
+storybook/public/component-vars.scss
+
 # Compodoc (generated for Storybook)
 documentation.json
 

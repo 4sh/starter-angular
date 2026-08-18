@@ -4,11 +4,17 @@
 // ui-textarea : projected parts only. The box/label/helper/states live in
 // =====================================================================
 
-$pad-x: utils.$form-field-padding-x;                /// Inset horizontal du contrôle multiligne.
-$pad-y: utils.$form-textarea-padding-y;             /// Padding vertical du contrôle multiligne.
-$pad-y-small: utils.$form-textarea-padding-y-small; /// Padding vertical du contrôle multiligne, variante `small`.
-$min-height: utils.$form-textarea-min-height;       /// Hauteur minimale du contrôle multiligne.
-$min-height-small: utils.$form-textarea-min-height-small; /// Hauteur minimale du contrôle multiligne, variante `small`.
+$pad-x: var(--ui-textarea-padding-x, #{utils.$form-field-padding-x}); /// Inset horizontal du contrôle multiligne.
+
+$min-height: var(--ui-textarea-min-height, #{utils.$form-textarea-min-height});                         /// Hauteur minimale du contrôle multiligne.
+$min-height-small: var(--ui-textarea-min-height-small, #{utils.$form-textarea-min-height-small});       /// Hauteur minimale du contrôle multiligne, variante `small`.
+$line-height: var(--ui-textarea-line-height, 1.5);                                                     /// Interlignage du contrôle multiligne.
+$padding-block: var(--ui-textarea-padding-block, calc((#{$min-height} - 1.5em) / 2));                   /// Inset vertical centrant une ligne dans la hauteur minimale.
+$padding-block-small: var(--ui-textarea-padding-block-small, calc((#{$min-height-small} - 1.5em) / 2)); /// Inset vertical centrant une ligne, variante `small`.
+$font-size-small: var(--ui-textarea-font-size-small, var(--size-typography-text-md));                   /// Taille de police du contrôle, variante `small`.
+
+$count-font-size: var(--ui-textarea-count-font-size, var(--size-typography-text-md));             /// Taille de police du compteur de caractères.
+$count-font-size-small: var(--ui-textarea-count-font-size-small, var(--size-typography-text-sm)); /// Taille de police du compteur de caractères, variante `small`.
 
 .ui-textarea {
   &-native {
@@ -16,14 +22,14 @@ $min-height-small: utils.$form-textarea-min-height-small; /// Hauteur minimale d
     box-sizing: border-box;
     width: 100%;
     min-height: $min-height;
-    line-height: 1.5;
-    padding-block: calc((#{$min-height} - 1.5em) / 2);
+    line-height: $line-height;
+    padding-block: $padding-block;
     max-width: 100%;
 
     &._small {
       min-height: $min-height-small;
-      padding-block: calc((#{$min-height-small} - 1.5em) / 2);
-      font-size: var(--size-typography-text-md);
+      padding-block: $padding-block-small;
+      font-size: $font-size-small;
     }
 
     &._auto-resize { overflow: hidden; }
@@ -34,11 +40,11 @@ $min-height-small: utils.$form-textarea-min-height-small; /// Hauteur minimale d
     margin-left: auto;
     flex-shrink: 0;
     font-family: var(--fontfamily-base);
-    font-size: var(--size-typography-text-md);
+    font-size: $count-font-size;
     color: var(--form-low-content-default);
     user-select: none;
 
-    &._small { font-size: var(--size-typography-text-sm); }
+    &._small { font-size: $count-font-size-small; }
     &._over { color: var(--form-error-content-default); }
     &._disabled { color: var(--form-high-content-disabled); }
   }

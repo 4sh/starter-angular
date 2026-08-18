@@ -10,6 +10,32 @@ natif (signals + Angular CDK), style piloté par les design tokens.
 
 ---
 
+## Deux modes de consommation
+
+À choisir **avant** d'installer : la décision conditionne toute la suite.
+
+| | **dépendance** | **starter** |
+|---|---|---|
+| Installation | `npm install @4sh/ui-kit` | `ng add @4sh/ui-kit-schematics` |
+| Ce qui arrive dans votre dépôt | rien — les composants compilés restent dans `node_modules` | les *sources* des composants, dans `src/app/shared/` |
+| Imports | `@4sh/ui-kit/actions/ui-button` | votre propre chemin (`./shared/components/ui/actions/ui-button`) |
+| Styles | `node_modules/@4sh/ui-kit/styles.css`, chargée globalement | copiés dans `src/styles/`, avec la chaîne de génération des tokens (`npm run tokens:build`) |
+| Documentation | le Storybook lié ci-dessus | la vôtre, sur vos copies (`--with-storybook`) |
+| Personnalisation | inputs + variables CSS | modifier le code lui-même |
+| Mise à jour | bump de version | `ng generate @4sh/ui-kit-schematics:update` — diff par composant, appliquer ou ignorer |
+
+**dépendance** est le mode par défaut : rien à maintenir, une seule version à
+suivre, et la garantie que tous les projets affichent le même kit. **starter** —
+l'approche de shadcn/ui ou spartan-ng — échange cette garantie contre la
+possession du code : à choisir quand le projet doit s'écarter du Design System,
+en assumant que les mises à jour deviennent semi-manuelles.
+
+Les deux modes décrivent les mêmes composants. **La suite de cette page décrit le
+mode `dépendance`** ; la voie starter a son propre package et son propre README
+(voir [plus bas](#ou-copier-les-sources-à-la-place)).
+
+---
+
 ## Installation
 
 ```bash
@@ -172,6 +198,50 @@ les mêmes fonctions, mixins et constantes partagées.
 > aucune règle CSS : chaque `.scss` de composant étant une unité de compilation
 > Sass distincte, tout CSS qui y serait exposé serait dupliqué dans chaque
 > composant. Les classes utilitaires globales sont dans `styles.css`.
+
+### Thème, marque et surcharges
+
+Le clair/sombre et la marque sont des **attributs sur `<html>`** — rien à importer,
+`styles.css` porte déjà tous les modes :
+
+| Attribut | Valeurs | Absent signifie |
+|---|---|---|
+| `data-theme` | `dark` | clair |
+| `data-brand` | `brand2`, `brand3` | marque 1 |
+
+```html
+<html data-theme="dark" data-brand="brand2">
+```
+
+À poser comme vous voulez (un service, du SSR, un flag de build) : le kit ne fait que
+les lire.
+
+Pour changer une valeur, trois niveaux, du plus large au plus étroit :
+
+```scss
+// src/styles/main.scss — chargé après styles.css
+@use 'presets/component-vars';                     // 2. les valeurs d'un composant
+
+:root { --units-lg: 20px; }                        // 1. un token : tout le kit suit
+:root[data-theme='dark'] { --global-background-default: #101014; }
+
+.toolbar ui-button { --ui-button-height-small: 24px; }   // 3. une zone de l'écran
+```
+
+1. **Un token** (`--units-*`, `--radius-*`, `--actions-*`…) — doit venir **après**
+   `styles.css`, qui les déclare. Pour une valeur propre à un mode, viser le même
+   sélecteur (`:root[data-theme='dark']`).
+2. **Les valeurs d'un composant** — copier `@4sh/ui-kit/styles/component-vars.scss`
+   dans votre `styles/presets/` : toutes les variables `--ui-*` à leur valeur livrée,
+   prêtes à retoucher. L'ordre de chargement n'importe pas ici, le kit ne fait que
+   *lire* ces noms.
+   Les valeurs partagées par toute une famille sont dans le même fichier, en
+   `--ui-form-*` / `--ui-control-*` / `--ui-overlay-panel-*` : une seule déclaration
+   déplace tous les consommateurs, et une variable de composant reste prioritaire.
+3. **Une zone** — la même variable `--ui-*` sur n'importe quel sélecteur ou élément.
+
+Référence complète (chaque variable, son rôle, sa valeur mesurée) : Storybook →
+*Spécifications → Thème & Système de Tokens*.
 
 ---
 

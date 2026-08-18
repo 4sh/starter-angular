@@ -51,7 +51,7 @@ const meta: Meta<UiCard> = {
     contentFlush: {
       control: { type: 'boolean' },
       description:
-        'Retire la gouttière horizontale du contenu (pleine largeur) : le consommateur gère la mise en page interne. Regouttiérer avec `padding-inline: var(--ui-card-padding)`.',
+        'Retire la gouttière horizontale du contenu (pleine largeur) : le consommateur gère la mise en page interne. Regouttiérer avec `padding-inline: var(--ui-card-gutter)`.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     ariaLabel: {
@@ -179,7 +179,7 @@ export const RichTitle: Story = {
 
 // Contenu « full » : le slot par défaut est mis en pleine largeur via `contentFlush`,
 // le consommateur gère alors ses propres gouttières. Ici : une bande de couleur
-// edge-to-edge suivie d'un paragraphe regouttiéré via `--ui-card-padding`.
+// edge-to-edge suivie d'un paragraphe regouttiéré via `--ui-card-gutter`.
 export const ContentFlush: Story = {
   render: (args) => ({
     props: { ...args, lorem: LOREM },
@@ -187,7 +187,7 @@ export const ContentFlush: Story = {
       <ui-card [header]="header" [variant]="variant" [contentFlush]="true" style="width:340px">
         <div class="flex-y" style="--flex-gap-y: var(--units-md)">
           <div style="height:120px;background:linear-gradient(135deg,var(--primitives-secondary-300),var(--primitives-secondary-500))"></div>
-          <p style="margin:0;padding-inline:var(--ui-card-padding)">{{ lorem }}</p>
+          <p style="margin:0;padding-inline:var(--ui-card-gutter)">{{ lorem }}</p>
         </div>
       </ui-card>`,
   }),

@@ -3,23 +3,63 @@
 // =====================================================================
 // ui-datepicker : the trigger box + helper live in `ui-input` (shell
 // `ui-field`). Here we style the calendar panel (overlay or inline).
-// 100% design tokens; structural constants are local vars below — retarget
-// them (or pass `panelStyleClass`) to customise without forking the SCSS.
+// 100% design tokens; structural constants are the local vars below (or
+// pass `panelStyleClass` for a per-instance skin).
 // =====================================================================
 
 // --- Local structural config  ------------
-$panel-width: utils.rem-calc(360);            /// Largeur du panneau calendrier
-$panel-radius: utils.$overlay-panel-radius;   /// Rayon de bordure du panneau
-$panel-padding: utils.$overlay-panel-padding; /// Padding interne du panneau
-$panel-gap: var(--units-sm);                  /// Espace entre sections (header / grille / heure)
-$panel-shadow: utils.$overlay-panel-shadow;   /// Ombre du panneau en overlay (retirée en inline)
+$panel-width: var(--ui-datepicker-panel-width, #{utils.rem-calc(360)});                /// Largeur du panneau calendrier
+$panel-radius: var(--ui-datepicker-panel-radius, #{utils.$overlay-panel-radius});      /// Rayon de bordure du panneau
+$panel-padding: var(--ui-datepicker-panel-padding, #{utils.$overlay-panel-padding});   /// Padding interne du panneau
+$panel-gap: var(--ui-datepicker-panel-gap, var(--units-sm));                           /// Espace entre sections (header / grille / heure)
+$panel-shadow: var(--ui-datepicker-panel-shadow, #{utils.$overlay-panel-shadow});      /// Ombre du panneau en overlay (retirée en inline)
+$panel-max-width: var(--ui-datepicker-panel-max-width, calc(100vw - var(--units-lg))); /// Largeur maximale du panneau, gouttière laissée au viewport.
 
-$day-size: var(--size-components-default);  /// Diamètre d'une cellule jour
-$day-radius: var(--radius-full);            /// Rayon des cellules jour (cercle)
-$nav-size: var(--size-components-default);  /// Taille des boutons de navigation mensuelle
-$time-field-width: utils.rem-calc(48);      /// Largeur des champs heures / minutes / AM-PM
-$focus-ring-width: utils.$focus-ring-width; /// Anneau de focus (jours, navigation)
-$stroke-width: utils.$control-stroke-width; /// Épaisseur des bordures (panneau, cellule « today »)
+$day-size: var(--ui-datepicker-day-size, var(--size-components-default));                /// Diamètre d'une cellule jour
+$day-radius: var(--ui-datepicker-day-radius, var(--radius-full));                        /// Rayon des cellules jour (cercle)
+$day-font-size: var(--ui-datepicker-day-font-size, var(--size-typography-text-default)); /// Taille du chiffre d'une cellule jour.
+$day-opacity-other-month: var(--ui-datepicker-day-opacity-outside, 0.6);             /// Opacité d'un jour appartenant au mois adjacent.
+$day-opacity-disabled: var(--ui-datepicker-day-opacity-disabled, 0.45);                  /// Opacité d'un jour désactivé.
+$nav-size: var(--ui-datepicker-nav-size, var(--size-components-default));                /// Taille des boutons de navigation mensuelle
+$time-field-width: var(--ui-datepicker-time-field-width, #{utils.rem-calc(48)});         /// Largeur des champs heures / minutes / AM-PM
+$focus-ring-width: var(--ui-datepicker-focus-ring-width, #{utils.$focus-ring-width});    /// Anneau de focus (jours, navigation)
+$stroke-width: var(--ui-datepicker-stroke-width, #{utils.$control-stroke-width});        /// Épaisseur des bordures (panneau, cellule « today »)
+
+$header-gap: var(--ui-datepicker-header-gap, var(--units-sm));                           /// Espacement de l'en-tête de navigation.
+$subheader-gap: var(--ui-datepicker-subheader-gap, var(--units-sm));                     /// Espacement de l'en-tête propre à un mois (multi-mois).
+$title-font-size: var(--ui-datepicker-title-font-size, var(--size-typography-title-md)); /// Taille du titre mois / année.
+$title-padding-y: var(--ui-datepicker-title-padding-y, var(--units-2xs));                /// Inset vertical du titre cliquable.
+$title-padding-x: var(--ui-datepicker-title-padding-x, var(--units-sm));                 /// Inset horizontal du titre cliquable.
+$title-radius: var(--ui-datepicker-title-radius, var(--radius-sm));                      /// Rayon du titre cliquable.
+
+$months-gap: var(--ui-datepicker-months-gap, var(--units-lg));                                 /// Espacement entre les mois affichés côte à côte.
+$month-gap: var(--ui-datepicker-month-gap, var(--units-sm));                                   /// Espacement entre les sections d'une colonne de mois.
+$month-divider-padding-left: var(--ui-datepicker-month-divider-padding-left, var(--units-lg)); /// Retrait après le filet séparant deux mois.
+
+$picker-gap: var(--ui-datepicker-picker-gap, var(--units-xs));                             /// Espacement des grilles mois / année.
+$cell-min-height: var(--ui-datepicker-cell-min-height, var(--size-components-sm));         /// Hauteur minimale d'une cellule mois / année.
+$cell-padding-y: var(--ui-datepicker-cell-padding-y, var(--units-sm));                     /// Inset vertical d'une cellule mois / année.
+$cell-padding-x: var(--ui-datepicker-cell-padding-x, var(--units-md));                     /// Inset horizontal d'une cellule mois / année.
+$cell-radius: var(--ui-datepicker-cell-radius, var(--radius-sm));                          /// Rayon d'une cellule mois / année.
+$cell-font-size: var(--ui-datepicker-cell-font-size, var(--size-typography-text-default)); /// Taille du libellé d'une cellule mois / année.
+
+$weekday-padding-y: var(--ui-datepicker-weekday-padding-y, var(--units-xs));                /// Inset vertical de l'en-tête des jours de semaine.
+$weekday-font-size: var(--ui-datepicker-weekday-font-size, var(--size-typography-text-md)); /// Taille du libellé des jours de semaine.
+$grid-gap: var(--ui-datepicker-grid-gap, var(--units-xs));                                  /// Espacement entre les semaines de la grille.
+
+$time-gap: var(--ui-datepicker-time-gap, var(--units-sm));                             /// Espacement entre les unités de la zone heure.
+$time-padding-top: var(--ui-datepicker-time-padding-top, var(--units-sm));             /// Retrait au-dessus de la zone heure, sous son filet.
+$time-unit-gap: var(--ui-datepicker-time-unit-gap, var(--units-2xs));                  /// Espacement entre les flèches et la valeur d'une unité.
+$time-font-size: var(--ui-datepicker-time-font-size, var(--size-typography-title-md)); /// Taille des chiffres et du séparateur de l'heure.
+$time-value-padding-y: var(--ui-datepicker-time-value-padding-y, var(--units-2xs));    /// Inset vertical d'un champ heure.
+$time-value-padding-x: var(--ui-datepicker-time-value-padding-x, var(--units-sm));     /// Inset horizontal d'un champ heure.
+$time-value-radius: var(--ui-datepicker-time-value-radius, var(--radius-sm));          /// Rayon d'un champ heure.
+$time-btn-width: var(--ui-datepicker-time-btn-width, var(--size-components-xs));       /// Largeur d'une flèche d'incrément.
+$time-btn-height: var(--ui-datepicker-time-btn-height, var(--size-components-2xs));    /// Hauteur d'une flèche d'incrément.
+$time-btn-radius: var(--ui-datepicker-time-btn-radius, var(--radius-sm));              /// Rayon d'une flèche d'incrément.
+
+$buttonbar-gap: var(--ui-datepicker-buttonbar-gap, var(--units-sm));                 /// Espacement des actions de la barre de boutons.
+$buttonbar-padding-top: var(--ui-datepicker-buttonbar-padding-top, var(--units-sm)); /// Retrait au-dessus de la barre de boutons, sous son filet.
 
 .ui-datepicker {
   &-trigger { display: block; cursor: pointer; }
@@ -31,7 +71,7 @@ $stroke-width: utils.$control-stroke-width; /// Épaisseur des bordures (panneau
     gap: $panel-gap;
     box-sizing: border-box;
     width: max-content;
-    max-width: calc(100vw - var(--units-lg));
+    max-width: $panel-max-width;
     padding: $panel-padding;
     border: $stroke-width solid var(--form-high-stroke-default);
     border-radius: $panel-radius;
@@ -47,7 +87,7 @@ $stroke-width: utils.$control-stroke-width; /// Épaisseur des bordures (panneau
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--units-sm);
+    gap: $header-gap;
   }
 
   &-nav {
@@ -78,15 +118,15 @@ $stroke-width: utils.$control-stroke-width; /// Épaisseur des bordures (panneau
   &-title {
     flex: 1 1 auto;
     text-align: center;
-    font-size: var(--size-typography-title-md);
+    font-size: $title-font-size;
     font-weight: var(--weight-bold);
     color: var(--form-high-content-default);
 
     // Clickable variant (drill-up: date → month → year).
     &._button {
-      padding: var(--units-2xs) var(--units-sm);
+      padding: $title-padding-y $title-padding-x;
       border: none;
-      border-radius: var(--radius-sm);
+      border-radius: $title-radius;
       background: none;
       font-family: var(--fontfamily-base);
       cursor: pointer;
@@ -102,17 +142,17 @@ $stroke-width: utils.$control-stroke-width; /// Épaisseur des bordures (panneau
   }
 
   // --- Multi-month layout --------------------------------------------
-  &-months { display: flex; gap: var(--units-lg); }
+  &-months { display: flex; gap: $months-gap; }
   &-month {
     display: flex;
     flex-direction: column;
-    gap: var(--units-sm);
+    gap: $month-gap;
     flex: 0 0 auto;
     width: $panel-width;
 
     &:not(:first-child) {
       border-left: $stroke-width solid var(--form-high-stroke-default);
-      padding-left: var(--units-lg);
+      padding-left: $month-divider-padding-left;
     }
   }
 
@@ -121,14 +161,14 @@ $stroke-width: utils.$control-stroke-width; /// Épaisseur des bordures (panneau
   &-subheader {
     display: flex;
     align-items: center;
-    gap: var(--units-sm);
+    gap: $subheader-gap;
   }
   &-nav-spacer { flex-shrink: 0; width: $nav-size; height: $nav-size; }
 
   // --- Month / Year picker grids -------------------------------------
   &-picker {
     display: grid;
-    gap: var(--units-xs);
+    gap: $picker-gap;
     width: $panel-width;
 
     &._month { grid-template-columns: repeat(3, 1fr); }
@@ -140,13 +180,13 @@ $stroke-width: utils.$control-stroke-width; /// Épaisseur des bordures (panneau
     align-items: center;
     justify-content: center;
     box-sizing: border-box;
-    min-height: var(--size-components-sm);
-    padding: var(--units-sm) var(--units-md);
+    min-height: $cell-min-height;
+    padding: $cell-padding-y $cell-padding-x;
     border: $stroke-width solid transparent;
-    border-radius: var(--radius-sm);
+    border-radius: $cell-radius;
     background-color: var(--actions-low-surface-default);
     font-family: var(--fontfamily-base);
-    font-size: var(--size-typography-text-default);
+    font-size: $cell-font-size;
     color: var(--form-high-content-default);
     cursor: pointer;
     @include utils.control-transition(background-color, border-color, color);
@@ -176,14 +216,14 @@ $stroke-width: utils.$control-stroke-width; /// Épaisseur des bordures (panneau
   }
 
   &-weekday {
-    padding: var(--units-xs) 0;
-    font-size: var(--size-typography-text-md);
+    padding: $weekday-padding-y 0;
+    font-size: $weekday-font-size;
     font-weight: var(--weight-bold);
     color: var(--form-low-content-default);
     user-select: none;
   }
 
-  &-grid { display: flex; flex-direction: column; gap: var(--units-xs); }
+  &-grid { display: flex; flex-direction: column; gap: $grid-gap; }
 
   // --- Day cell ------------------------------------------------------
   $range-bg: var(--informative-highlightlow-surface-hover); /// Fond continu de la plage sélectionnée (`range`).
@@ -201,7 +241,7 @@ $stroke-width: utils.$control-stroke-width; /// Épaisseur des bordures (panneau
     border: none;
     background: transparent;
     font-family: var(--fontfamily-base);
-    font-size: var(--size-typography-text-default);
+    font-size: $day-font-size;
     color: var(--form-high-content-default);
     cursor: pointer;
     @include utils.control-transition(color);
@@ -229,7 +269,7 @@ $stroke-width: utils.$control-stroke-width; /// Épaisseur des bordures (panneau
     }
 
     // Previous/next month + disabled
-    &._other-month { color: var(--form-low-content-default); opacity: 0.6; }
+    &._other-month { color: var(--form-low-content-default); opacity: $day-opacity-other-month; }
 
     // Today (outlined chip) — only when not selected.
     &._today::before { border-color: var(--actions-high-stroke-default); }
@@ -265,7 +305,7 @@ $stroke-width: utils.$control-stroke-width; /// Épaisseur des bordures (panneau
 
     &:disabled {
       color: var(--form-high-content-disabled);
-      opacity: 0.45;
+      opacity: $day-opacity-disabled;
       cursor: not-allowed;
     }
   }
@@ -275,8 +315,8 @@ $stroke-width: utils.$control-stroke-width; /// Épaisseur des bordures (panneau
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: var(--units-sm);
-    padding-top: var(--units-sm);
+    gap: $time-gap;
+    padding-top: $time-padding-top;
     border-top: $stroke-width solid var(--form-high-stroke-default);
 
     &:first-child { padding-top: 0; border-top: none; }
@@ -286,19 +326,19 @@ $stroke-width: utils.$control-stroke-width; /// Épaisseur des bordures (panneau
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--units-2xs);
+    gap: $time-unit-gap;
   }
 
   &-time-value {
     box-sizing: border-box;
     display: inline-block;
     width: $time-field-width;
-    padding: var(--units-2xs) var(--units-sm);
+    padding: $time-value-padding-y $time-value-padding-x;
     border: none;
-    border-radius: var(--radius-sm);
+    border-radius: $time-value-radius;
     background: none;
     font-family: var(--fontfamily-base);
-    font-size: var(--size-typography-title-md);
+    font-size: $time-font-size;
     font-weight: var(--weight-bold);
     font-variant-numeric: tabular-nums;
     color: var(--form-high-content-default);
@@ -323,11 +363,11 @@ $stroke-width: utils.$control-stroke-width; /// Épaisseur des bordures (panneau
     display: flex;
     align-items: center;
     justify-content: center;
-    width: var(--size-components-xs);
-    height: var(--size-components-2xs);
+    width: $time-btn-width;
+    height: $time-btn-height;
     padding: 0;
     border: none;
-    border-radius: var(--radius-sm);
+    border-radius: $time-btn-radius;
     background: none;
     color: var(--form-low-content-default);
     cursor: pointer;
@@ -341,7 +381,7 @@ $stroke-width: utils.$control-stroke-width; /// Épaisseur des bordures (panneau
   }
 
   &-time-colon {
-    font-size: var(--size-typography-title-md);
+    font-size: $time-font-size;
     font-weight: var(--weight-bold);
     color: var(--form-high-content-default);
   }
@@ -351,8 +391,8 @@ $stroke-width: utils.$control-stroke-width; /// Épaisseur des bordures (panneau
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--units-sm);
-    padding-top: var(--units-sm);
+    gap: $buttonbar-gap;
+    padding-top: $buttonbar-padding-top;
     border-top: $stroke-width solid var(--form-high-stroke-default);
   }
 }

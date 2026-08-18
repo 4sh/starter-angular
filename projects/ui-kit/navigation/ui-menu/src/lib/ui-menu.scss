@@ -11,30 +11,30 @@ $levels: high, low; /// Niveaux générant les modifiers `._<niveau>`.
 /// Largeur minimale du panneau, géométrie et typo des items, par taille.
 $sizes: (
   'default': (
-    min-width: utils.rem-calc(210),
-    item-height: utils.rem-calc(40),
-    item-padding-x: var(--units-md),
-    font-size: var(--size-typography-text-default),
-    header-height: utils.rem-calc(32),
-    header-font-size: var(--size-typography-text-md),
+    min-width: var(--ui-menu-min-width, #{utils.rem-calc(210)}),
+    item-height: var(--ui-menu-item-height, #{utils.rem-calc(40)}),
+    item-padding-x: var(--ui-menu-item-padding-x, var(--units-md)),
+    font-size: var(--ui-menu-font-size, var(--size-typography-text-default)),
+    header-height: var(--ui-menu-header-height, #{utils.rem-calc(32)}),
+    header-font-size: var(--ui-menu-header-font-size, var(--size-typography-text-md)),
   ),
   'small': (
-    min-width: utils.rem-calc(160),
-    item-height: utils.rem-calc(32),
-    item-padding-x: var(--units-sm),
-    font-size: var(--size-typography-text-md),
-    header-height: utils.rem-calc(24),
-    header-font-size: var(--size-typography-text-sm),
+    min-width: var(--ui-menu-min-width-small, #{utils.rem-calc(160)}),
+    item-height: var(--ui-menu-item-height-small, #{utils.rem-calc(32)}),
+    item-padding-x: var(--ui-menu-item-padding-x-small, var(--units-sm)),
+    font-size: var(--ui-menu-font-size-small, var(--size-typography-text-md)),
+    header-height: var(--ui-menu-header-height-small, #{utils.rem-calc(24)}),
+    header-font-size: var(--ui-menu-header-font-size-small, var(--size-typography-text-sm)),
   ),
 );
 $size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default` de `$sizes`.
 
-$panel-surface: var(--global-background-default);   /// Fond opaque du panneau (le token surface `navigation` est transparent par design).
-$item-radius: var(--radius-sm);                     /// Rayon des menuitems.
-$group-indent: var(--units-default);                /// Indentation des groupes imbriqués.
-$panel-padding: utils.$overlay-panel-padding;       /// Gouttière interne du panneau (**partagée** avec les autres panneaux flottants).
-$separator-width: var(--stroke-sm);                 /// Épaisseur des séparateurs.
-$focus-ring-width: utils.$focus-ring-width;         /// Épaisseur de l'anneau de focus.
+$panel-surface: var(--global-background-default);                                /// Fond opaque du panneau (le token surface `navigation` est transparent par design).
+$item-radius: var(--ui-menu-item-radius, var(--radius-sm));                      /// Rayon des menuitems.
+$group-indent: var(--ui-menu-group-indent, var(--units-default));                /// Indentation des groupes imbriqués.
+$panel-padding: var(--ui-menu-panel-padding, #{utils.$overlay-panel-padding});   /// Gouttière interne du panneau (**partagée** avec les autres panneaux flottants).
+$separator-width: var(--ui-menu-separator-width, var(--stroke-sm));              /// Épaisseur des séparateurs.
+$focus-ring-width: var(--ui-menu-focus-ring-width, #{utils.$focus-ring-width});  /// Épaisseur de l'anneau de focus.
 
 @mixin menu-size($size) {
   min-width: map.get($size, min-width);

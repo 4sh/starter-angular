@@ -5,13 +5,17 @@
 // component can drive the label state without piercing encapsulation.
 // =====================================================================
 
+$gap: var(--ui-label-gap, var(--units-xs));                                        /// Espace entre le texte et son marqueur.
+$font-size: var(--ui-label-font-size, var(--size-typography-text-md));             /// Taille de police du libellé.
+$font-size-small: var(--ui-label-font-size-small, var(--size-typography-text-sm)); /// Taille de police du libellé, variante `small`.
+
 .ui-label {
   display: inline-flex;
   align-items: center;
-  gap: var(--units-xs);
+  gap: $gap;
   font-family: var(--fontfamily-base);
   font-weight: var(--weight-regular);
-  font-size: var(--size-typography-text-md);
+  font-size: $font-size;
   color: var(--ui-label-color, var(--form-high-content-default)); /// Couleur du texte, pilotable par un composant de formulaire parent (hover, disabled…).
   cursor: inherit;
 
@@ -20,7 +24,7 @@
   }
 
   &._small {
-    font-size: var(--size-typography-text-sm);
+    font-size: $font-size-small;
   }
 
   &._disabled {

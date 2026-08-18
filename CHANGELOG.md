@@ -17,6 +17,38 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 ## [Unreleased]
 
 ### Added
+- **Un projet en sources copiées a désormais son propre Storybook** (FSHSP-125) : `ng add @4sh/ui-kit-schematics --with-storybook` copie, à côté de chaque composant, sa story et sa page MDX, pose la configuration Storybook (`storybook/`, cibles `angular.json`, devDependencies, scripts npm) et la chaîne qui alimente la doc (`scripts/docs.config.mjs`, bloc `<ConfigTable>`). Un `npm run storybook` suffit ensuite. Jusqu'ici le projet possédait son code mais aucune doc : il lui restait un Storybook hébergé qui décrit *nos* composants, pas ses copies éditées.
+
+  Deux choses font que cette doc appartient au projet. Les tables *Theming* sont lues sur ses propres `.scss` au build, donc elles décrivent ses valeurs, rebranding compris. Et les globs couvrent tout `src/app/shared/components/**` : une story écrite à côté d'un composant maison apparaît sans toucher à la configuration.
+
+  Les imports suivent les copies, comme pour les sources — mais les extraits de code des pages ne sont pas réécrits : ce sont des exemples destinés au lecteur, pas des imports à résoudre. Les liens `parameters.design` vers notre fichier Figma sont retirés à la copie : le consommateur n'y a pas accès. Les pages transverses embarquées se limitent à *Foundations*, *Spécifications* et *Configuration* ; `Introduction`, `NpmPackage` et `Overview` parlent du kit lui-même et restent ici.
+
+  Désactivé par défaut : sans Storybook, story et MDX sont deux fichiers qui importent des packages absents. Le choix est retenu dans `ui-kit.json` et `update` s'y tient.
+- **Les README du kit (EN + FR) présentent les deux modes de consommation** (FSHSP-116) : section « Deux modes de consommation » avant l'installation — tableau comparatif *dépendance* / *starter* (ce qui arrive dans le dépôt, imports, styles, documentation, personnalisation, mise à jour), qui renvoie au package compagnon pour la voie starter. FSHSP-109 avait livré le mode starter sans qu'il apparaisse nulle part sur la page npm, où le README est la seule documentation.
+- **Les composants sont personnalisables en mode package, via des custom properties `--ui-*` exposées.** Jusqu'ici le seul levier de personnalisation était le rebinding SCSS (`_ui-config.scss`, variables locales) : inaccessible quand le kit est consommé en dépendance, puisque son SCSS est déjà compilé. Un projet ne pouvait retoucher que les design tokens — donc rien de propre à un composant, ni à une seule de ses tailles. Chaque valeur **structurelle** des 54 composants est maintenant lue à travers un hook dont le défaut est le réglage livré :
+
+  ```scss
+  // avant : valeur compilée, hors d'atteinte
+  height: var(--size-components-sm);
+  // après : surchargeable, même défaut
+  height: var(--ui-button-height-small, var(--size-components-sm));
+  ```
+
+  **579 hooks** exposés, nommés `--ui-{famille}[-{partie}]-{propriété}[-{modifieur}]` (modifieur en dernier, comme les tokens). Le composant ne déclare jamais ces noms : les poser sur `:root` (tout le projet), sur un sélecteur (une zone) ou sur l'élément suffit à gagner.
+
+  ```scss
+  :root              { --ui-button-height-small: 24px; }
+  .toolbar ui-button { --ui-button-height-small: 24px; }
+  ```
+
+  Les **couleurs** restent volontairement sur les tokens sémantiques (clair/sombre × 3 marques × contraste WCAG) : seuls quelques hooks de couleur existent, là où repeindre **un exemplaire** est un cas d'usage réel (voile de masque, marqueur de chargement, reflet de squelette, remplissage de notation).
+
+  Aucun défaut ne change : la migration a été vérifiée fichier par fichier en comparant le CSS compilé avant/après, hook réduit à son défaut.
+- **`@4sh/ui-kit/styles/component-vars.scss`** — livré avec le package : un fichier prêt à copier où les **581 hooks** réglables sont déclarés à la valeur livrée par le starter, groupés par catégorie → composant → type de propriété (dimensions, espacements, bordures, typographie, couleurs), valeurs alignées sur une seule colonne. On le copie dans le projet, on le charge après `styles.css`, on change les valeurs voulues ; tel quel il ne change rien. Également téléchargeable depuis Storybook (*Spécifications → Thème & Système de Tokens*).
+
+  Généré par `npm run docs:config`, **valeurs lues dans le CSS réellement compilé par Sass** : une expression comme `rem-calc(44px - 2 * $gutter)` y figure résolue (`2.25rem`), jamais sous sa forme SCSS. Les 17 hooks pour lesquels un réglage global n'a pas de sens (valeur dépendante de la variante rendue, propriété que le composant se pose lui-même) en sont volontairement absents — la colonne « Hook exposé » de chaque composant les donne.
+
+  Le mot **« thème »** reste réservé au couple marque + clair/sombre (`ThemeService`, `BrandService`) : cette couche-ci s'appelle **hooks**, du nom des custom properties qu'elle règle, pour éviter trois sens différents du même mot.
 - **`@4sh/ui-kit-schematics` embarque son `LICENSE` et ses README** (EN + FR). Le package déclarait `Apache-2.0` sans en fournir le texte, alors que la licence (§4a) demande qu'une redistribution en joigne une copie — d'autant plus ici que ce package existe pour que son contenu soit recopié ailleurs. Sa page npmjs, jusque-là vide, redirige maintenant vers `@4sh/ui-kit` : le compagnon ne s'installe jamais directement.
 
 ### Fixed
@@ -54,6 +86,22 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
   Les bases partagées atterrissaient dans `components/ui/{catégorie}/_shared/`, c'est-à-dire des services (`theme.service`) et des utilitaires (`mask-engine`) rangés sous `components/`. Elles vivent maintenant dans `ui-core/`, en conservant leur regroupement par domaine. Les fichiers propres à un composant (`date-utils`, `ui-alert.types`, `ui-toast.service`…) restent à côté de lui : ils ne servent qu'à lui.
 
   **Mise à jour non triviale** pour un projet déjà installé en `0.2.0` : les chemins des fichiers copiés changent tous, donc `update` ne reconnaîtra pas les anciens. Déplacer les fichiers existants avant de lancer la commande, ou repartir d'un `add` propre.
+- **Les constantes partagées de `_ui-config.scss` sont retouchables sans recompiler.** Ma migration n'avait hookifié que les variables *locales* de chaque composant : il n'existait aucun levier de **catégorie** en mode package. Changer la taille de tous les contrôles de formulaire demandait soit de poser un hook par composant, soit de retoucher `--size-components-2xs`, qui déborde (il alimente aussi `ui-tag`, `ui-select`, `ui-autocomplete`, `ui-datepicker`).
+
+  **16 constantes** exposées, nommées d'après leur variable SCSS (`$form-control-size` → `--ui-form-control-size`). Les composants les *interpolant*, la cascade se construit d'elle-même :
+
+  ```css
+  var(--ui-checkbox-box-size, var(--ui-form-control-size, var(--size-components-2xs)))
+  /*      ↑ composant             ↑ catégorie                ↑ token                 */
+  ```
+
+  Une constante qui **référence une autre constante** (`$form-focus-ring-width: $focus-ring-width`) ne prend pas de nom propre : elle hérite de celui qu'elle vise, si bien que `--ui-focus-ring-width` couvre à lui seul les anneaux de focus du kit. Les quatre tailles d'avatar restent des nombres bruts (elles passent par `rem-calc()`), déjà atteignables par `--ui-avatar-size*`.
+- **`ui-icon` : l'échelle et la surcharge d'exemplaire sont deux niveaux distincts.** `--ui-icon-size` était répété dans les cinq entrées de l'échelle ; il est désormais lu une seule fois, au-dessus d'une variable interne que chaque taille alimente. Comportement inchangé : `--ui-icon-size-{sm,md,default,lg,xl}` retouche un **pas de l'échelle** (donc toutes les icônes de cette taille), `--ui-icon-size` force **un exemplaire** quel que soit son `size` — c'est par là qu'un composant dimensionne l'icône qu'il projette.
+- **`ui-checkbox` et `ui-select` exposent la taille de leur marqueur** (`--ui-checkbox-icon-size`, `--ui-select-checkbox-icon-size`). Rétrécir la case (`--ui-checkbox-box-size`) laissait la coche à la taille de l'échelle d'icônes, donc débordante. Le défaut de ces deux hooks pointe sur le pas d'échelle utilisé, si bien que retoucher l'échelle continue de traverser.
+- **`--ui-card-padding` ne se relit plus sous ce nom : le miroir relisible est `--ui-card-gutter`.** Une custom property ne pouvant pas se référencer elle-même, le nom déclaré par la carte et le nom surchargeable devaient être distincts. `--ui-card-padding` devient le **point de surcharge** (gouttière de la carte), `--ui-card-gutter` la valeur à **relire** pour regouttiérer un contenu `contentFlush` : `padding-inline: var(--ui-card-gutter)`.
+- **`--ui-sidebar-width`, `--ui-sidebar-rail-width`, `--ui-empty-state-media-size`, `--ui-empty-state-media-color`, `--ui-input-group-radius`, `--ui-input-group-overlap` et `--ui-skeleton-shine` sont désormais réellement surchargeables.** Ces sept custom properties étaient documentées comme des points de surcharge, mais le composant les **déclarait** sur son propre élément : une valeur posée par le consommateur sur `:root` était systématiquement écrasée (et, pour `--ui-skeleton-shine`, écrasée en mode sombre uniquement). Les déclarations passent sur un miroir privé, le nom public reste lu en amont. Mêmes valeurs par défaut.
+- **`ui-tab-list` : `--ui-tabs-active-bar-color` / `--ui-tabs-active-bar-size` deviennent `--ui-tabs-indicator-color` / `--ui-tabs-indicator-thickness`** (le mot `active` se lisait comme un état alors que la convention met le modifieur en dernier). Les anciens noms restent honorés une version, en repli.
+- **L'en-tête de traçabilité des fichiers copiés par `ng generate @4sh/ui-kit:add` porte la mention de licence** (`Apache-2.0 — Copyright 2026 4SH.`) en plus de son origine et de sa version. Une fois copié, le fichier vit dans le dépôt du consommateur, où plus rien n'indiquait sous quels termes il est fourni. Conséquence attendue : le premier `ng generate @4sh/ui-kit:update` suivant cette version affiche un diff d'une ligne en tête de chaque fichier installé.
 - **L'en-tête de traçabilité des fichiers copiés tient sur une ligne et porte la mention de licence** :
 
   ```ts

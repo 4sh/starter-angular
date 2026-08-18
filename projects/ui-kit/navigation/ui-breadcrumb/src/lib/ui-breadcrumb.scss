@@ -12,19 +12,19 @@
 /// Dimensions par densité (héritées par les éléments : liens, texte et séparateur)
 $sizes: (
   'default': (
-    font-size: var(--size-typography-text-default),
+    font-size: var(--ui-breadcrumb-font-size, var(--size-typography-text-default)),
   ),
   'small': (
-    font-size: var(--size-typography-text-md),
+    font-size: var(--ui-breadcrumb-font-size-small, var(--size-typography-text-md)),
   ),
 );
-$size-default: map.get($sizes, 'default');         /// Raccourci vers l'entrée `default` de `$sizes`.
-$item-gap: var(--spacing-default);                 /// Espacement entre éléments et séparateurs
-$content-gap: var(--units-sm);                     /// Espacement entre l'icône et le libellé d'un élément
-$weight: var(--weight-bold);                       /// Graisse des éléments (liens et page courante)
-$line-height: 1.4;                                 /// Interlignage des éléments
-$radius: var(--radius-2xs);                        /// Rayon des éléments interactifs (anneau de focus)
-$focus-ring-width: utils.$action-focus-ring-width; /// Épaisseur de l'anneau de focus des éléments interactifs
+$size-default: map.get($sizes, 'default');                                              /// Raccourci vers l'entrée `default` de `$sizes`.
+$item-gap: var(--ui-breadcrumb-item-gap, var(--spacing-default));                       /// Espacement entre éléments et séparateurs
+$content-gap: var(--ui-breadcrumb-content-gap, var(--units-sm));                        /// Espacement entre l'icône et le libellé d'un élément
+$weight: var(--ui-breadcrumb-weight, var(--weight-bold));                               /// Graisse des éléments (liens et page courante)
+$line-height: var(--ui-breadcrumb-line-height, 1.4);                                    /// Interlignage des éléments
+$radius: var(--ui-breadcrumb-radius, var(--radius-2xs));                                /// Rayon des éléments interactifs (anneau de focus)
+$focus-ring-width: var(--ui-breadcrumb-focus-ring-width, #{utils.$action-focus-ring-width}); /// Épaisseur de l'anneau de focus des éléments interactifs
 
 .ui-breadcrumb {
   // --- Base (nav landmark) --------------------------------------------

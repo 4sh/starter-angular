@@ -8,23 +8,23 @@
 // =====================================================================
 
 // --- Config (local) ---------------------------------------------------
-$modal-z-index: 1100;                         /// Palier d'empilement de base (au-dessus des overlays CDK à 1000)
-$mask-padding: var(--units-lg);               /// Inset entre le masque et le dialogue.
-$dialog-radius: var(--radius-md);             /// Rayon du dialogue.
-$dialog-padding: var(--units-lg);             /// Inset du dialogue.
-$header-gap: var(--units-sm);                 /// Espacement entre les éléments de l'en-tête.
-$stroke-width: var(--stroke-sm);              /// Épaisseur de bordure du dialogue.
-$action-size: 32px;                           /// Taille de la cible tactile du bouton de fermeture.
-$resize-handle-size: 16px;                    /// Taille de la poignée de redimensionnement.
-$focus-ring-width: utils.$focus-ring-width;   /// Épaisseur de l'anneau de focus des boutons d'en-tête
-$mask-background: var(--primitives-black-50); /// Assombrissement du masque — exposé via `--ui-modal-mask-background`.
+$modal-z-index: var(--ui-modal-z-index, 1100);                                   /// Palier d'empilement de base (au-dessus des overlays CDK à 1000)
+$mask-padding: var(--ui-modal-mask-padding, var(--units-lg));                    /// Inset entre le masque et le dialogue.
+$dialog-radius: var(--ui-modal-dialog-radius, var(--radius-md));                 /// Rayon du dialogue.
+$dialog-padding: var(--ui-modal-dialog-padding, var(--units-lg));                /// Inset du dialogue.
+$header-gap: var(--ui-modal-header-gap, var(--units-sm));                        /// Espacement entre les éléments de l'en-tête.
+$stroke-width: var(--ui-modal-stroke-width, var(--stroke-sm));                   /// Épaisseur de bordure du dialogue.
+$action-size: var(--ui-modal-action-size, #{utils.rem-calc(32)});                /// Taille de la cible tactile du bouton de fermeture.
+$resize-handle-size: var(--ui-modal-resize-handle-size, 16px);                   /// Taille de la poignée de redimensionnement.
+$focus-ring-width: var(--ui-modal-focus-ring-width, #{utils.$focus-ring-width}); /// Épaisseur de l'anneau de focus des boutons d'en-tête
+$mask-background: var(--ui-modal-mask-background, var(--primitives-black-50));   /// Assombrissement du masque.
 
 .ui-modal-scrim {
   position: fixed;
   inset: 0;
   z-index: $modal-z-index;
   pointer-events: none;
-  background-color: var(--ui-modal-mask-background, #{$mask-background});
+  background-color: $mask-background;
 
   &._contained {
     position: absolute;
@@ -126,8 +126,8 @@ $mask-background: var(--primitives-black-50); /// Assombrissement du masque — 
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: utils.rem-calc($action-size);
-    height: utils.rem-calc($action-size);
+    width: $action-size;
+    height: $action-size;
     padding: 0;
     border: none;
     border-radius: var(--radius-xs);

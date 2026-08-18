@@ -5,8 +5,8 @@
 // =====================================================================
 
 // --- Config ---------------------------------------------------
-$marker-size: utils.rem-calc(44);    /// Diamètre du marqueur d'étape.
-$rail-stroke: var(--stroke-default); /// Épaisseur du rail reliant les étapes.
+$marker-size: var(--ui-stepper-marker-size, #{utils.rem-calc(44)});       /// Diamètre du marqueur d'étape.
+$rail-stroke: var(--ui-stepper-rail-stroke-width, var(--stroke-default)); /// Épaisseur du rail reliant les étapes.
 
 :host {
   display: block;

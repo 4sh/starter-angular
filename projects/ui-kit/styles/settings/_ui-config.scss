@@ -1,67 +1,77 @@
 // =====================================================================
 // ui-config : shared structural constants for ui-* components.
 //
-// Two levers: edit a value here (kit-wide) or override the LOCAL var in a
-// component's .scss (that component only). No colors — themable colors are
-// runtime design tokens.
+// Three levers, from the broadest to the narrowest: the design token each value
+// points at, the `--ui-<name>` hook declared here (kit-wide, no recompile), and
+// the LOCAL var of a component's .scss. No colors — themable colors are runtime
+// design tokens.
+//
+// Components interpolate these values, so a hook added here propagates into
+// every consumer on its own: `var(--ui-checkbox-box-size, var(--ui-form-control-size,
+// var(--size-components-2xs)))` — component, then category, then token.
 // =====================================================================
 
 // --- Global UI --------------------------------------------------------
-$focus-ring-width: var(--units-2xs);
+$focus-ring-width: var(--ui-focus-ring-width, var(--units-2xs)); /// Épaisseur de l'anneau de focus, pour tout le kit.
 
-$control-stroke-width: var(--stroke-default);
-$control-transition-duration: var(--transition-default);
-$control-transition-easing: var(--transition-easeinout);
+$control-stroke-width: var(--ui-control-stroke-width, var(--stroke-default));                 /// Épaisseur de bordure des contrôles.
+$control-transition-duration: var(--ui-control-transition-duration, var(--transition-default)); /// Durée des transitions d'état des contrôles.
+$control-transition-easing: var(--ui-control-transition-easing, var(--transition-easeinout));   /// Courbe des transitions d'état des contrôles.
 
 // --- Global : motion --------------------------------------------------
 // Shared timing for the motion system (enter/leave presets + transitions).
-// Durations/easings map to the `--transition-*` tokens; distance/scale are
-// structural (never colors). Override per instance via the `--ui-motion-*`
-// custom properties (see utils.motion-transition / base/_motion.scss).
-$motion-duration-fast: var(--transition-fast); // 80ms — micro-feedback
-$motion-duration-base: var(--transition-default); // 180ms — default
-$motion-duration-slow: var(--transition-slow); // 280ms — large surfaces
-$motion-easing-standard: var(--transition-easeinout); // symmetric (toggles)
-$motion-easing-enter: var(--transition-easeout); // decelerate (appear)
-$motion-easing-leave: var(--transition-easein); // accelerate (dismiss)
-$motion-distance: 0.5rem; // slide offset (8px)
-$motion-scale: 0.96; // zoom start/end scale
+// Not hooked here: the `--ui-motion-*` custom properties already expose duration,
+// easing, delay, distance and scale per instance (see utils/_motion.scss), and the
+// kit-wide default is the `--transition-*` token these point at.
+$motion-duration-fast: var(--transition-fast);        /// Durée « micro-feedback ».
+$motion-duration-base: var(--transition-default);     /// Durée par défaut (apparition, disparition, collapse).
+$motion-duration-slow: var(--transition-slow);        /// Durée « grande surface ».
+$motion-easing-standard: var(--transition-easeinout); /// Courbe symétrique (bascules).
+$motion-easing-enter: var(--transition-easeout);      /// Courbe décélérée (apparition).
+$motion-easing-leave: var(--transition-easein);       /// Courbe accélérée (disparition).
+$motion-distance: 0.5rem;                             /// Distance du glissement des presets `slide`.
+$motion-scale: 0.96;                                  /// Échelle de départ / d’arrivée des presets `zoom`.
 
 // --- Global : overlay panels ------------------------------------------
-$overlay-panel-radius: var(--radius-default);
-$overlay-panel-padding: var(--units-sm);
-$overlay-panel-shadow: var(--shadow-default-md);
-$overlay-panel-stroke-width: $control-stroke-width;
-$overlay-panel-offset: 8px;
+// `--ui-overlay-*` (utils/_overlay.scss) retunes ONE panel; these set the default
+// for all of them.
+$overlay-panel-radius: var(--ui-overlay-panel-radius, var(--radius-default));      /// Rayon des coins des panneaux flottants.
+$overlay-panel-padding: var(--ui-overlay-panel-padding, var(--units-sm));          /// Gouttière interne des panneaux flottants.
+$overlay-panel-shadow: var(--ui-overlay-panel-shadow, var(--shadow-default-md));   /// Ombre des panneaux flottants.
+$overlay-panel-stroke-width: $control-stroke-width;                                /// Épaisseur de bordure des panneaux flottants (suit `--ui-control-stroke-width`).
+$overlay-panel-offset: var(--ui-overlay-panel-offset, 8px);                        /// Décalage d'un panneau par rapport à son ancre.
 
 // --- Category : forms -------------------------------------------------
-$form-control-size: var(--size-components-2xs);
-$form-control-gap: var(--units-sm);
-$form-focus-ring-width: $focus-ring-width;
+$form-control-size: var(--ui-form-control-size, var(--size-components-2xs));           /// Côté d'un contrôle carré (case à cocher, radio).
+$form-control-gap: var(--ui-form-control-gap, var(--units-sm));                        /// Espace entre un contrôle et son libellé.
+$form-focus-ring-width: $focus-ring-width;                                             /// Anneau de focus des champs (suit `--ui-focus-ring-width`).
 
 // Field
-$form-field-height: var(--size-components-default);
-$form-field-height-small: var(--size-components-sm);
-$form-field-radius: var(--radius-sm);
-$form-field-padding-x: var(--units-md);
-$form-field-gap: var(--units-sm);
-$form-field-stroke-width: $control-stroke-width;
-$form-field-focus-ring-width: $form-focus-ring-width;
+$form-field-height: var(--ui-form-field-height, var(--size-components-default));                     /// Hauteur de la boîte de champ.
+$form-field-height-small: var(--ui-form-field-height-small, var(--size-components-sm));              /// Hauteur de la boîte de champ, variante `small`.
+$form-field-radius: var(--ui-form-field-radius, var(--radius-sm));                                   /// Rayon des coins de la boîte de champ.
+$form-field-padding-x: var(--ui-form-field-padding-x, var(--units-md));                              /// Inset horizontal de la boîte de champ.
+$form-field-gap: var(--ui-form-field-gap, var(--units-sm));                                          /// Espace entre le contrôle et ses affixes.
+$form-field-stroke-width: $control-stroke-width;                                              /// Bordure de la boîte de champ (suit `--ui-control-stroke-width`).
+$form-field-focus-ring-width: $form-focus-ring-width;                                       /// Anneau de focus de la boîte de champ (suit `--ui-focus-ring-width`).
 
 // Textarea (multiline field box)
-$form-textarea-min-height: var(--size-components-sm);
-$form-textarea-min-height-small: var(--size-components-sm);
-$form-textarea-padding-y: var(--units-default);
-$form-textarea-padding-y-small: var(--units-md);
+$form-textarea-min-height: var(--ui-form-textarea-min-height, var(--size-components-sm));             /// Hauteur minimale d'une boîte multiligne.
+$form-textarea-min-height-small: var(--ui-form-textarea-min-height-small, var(--size-components-sm));  /// Hauteur minimale d'une boîte multiligne, variante `small`.
+$form-textarea-padding-y: var(--ui-form-textarea-padding-y, var(--units-default));                     /// Inset vertical d'une boîte multiligne.
+$form-textarea-padding-y-small: var(--ui-form-textarea-padding-y-small, var(--units-md));              /// Inset vertical d'une boîte multiligne, variante `small`.
 
 // --- Category : actions -----------------------------------------------
-$action-focus-ring-width: $focus-ring-width;
+$action-focus-ring-width: $focus-ring-width;                                                   /// Anneau de focus des actions (suit `--ui-focus-ring-width`).
 
 // --- Category : informative -------------------------------------------
 // Avatar
-$avatar-size-tiny: 34px;
-$avatar-size-small: 42px;
-$avatar-size-default: 56px;
-$avatar-size-large: 64px;
-$avatar-square-radius: var(--radius-md);
-$avatar-group-overlap: var(--units-md);
+// The four sizes stay raw numbers: they go through `rem-calc()`, which needs a
+// number, not a `var()`. Each is already reachable per component through
+// `--ui-avatar-size{,-tiny,-small,-large}`.
+$avatar-size-tiny: 34px;    /// Diamètre de l’avatar en taille `tiny` (nombre brut : passe par `rem-calc`).
+$avatar-size-small: 42px;   /// Diamètre de l’avatar en taille `small` (nombre brut).
+$avatar-size-default: 56px; /// Diamètre de l’avatar en taille `default` (nombre brut).
+$avatar-size-large: 64px;   /// Diamètre de l’avatar en taille `large` (nombre brut).
+$avatar-square-radius: var(--ui-avatar-square-radius, var(--radius-md));   /// Rayon des coins d'un avatar carré.
+$avatar-group-overlap: var(--ui-avatar-group-overlap, var(--units-md));    /// Chevauchement des avatars d'un groupe.

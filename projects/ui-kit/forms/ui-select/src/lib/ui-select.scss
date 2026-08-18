@@ -9,33 +9,50 @@
 /// Géométrie et typo des options, des en-têtes de groupe, du filtre et hauteur de défilement, par taille.
 $sizes: (
   'default': (
-    option-height: utils.rem-calc(40),
-    option-padding-x: var(--units-default),
-    font-size: var(--size-typography-text-default),
-    group-height: utils.rem-calc(32),
-    group-font-size: var(--size-typography-text-md),
-    filter-height: var(--size-components-sm),
-    scroll-height: utils.rem-calc(312),
+    option-height: var(--ui-select-option-height, #{utils.rem-calc(40)}),
+    option-padding-x: var(--ui-select-option-padding-x, var(--units-default)),
+    font-size: var(--ui-select-font-size, var(--size-typography-text-default)),
+    group-height: var(--ui-select-group-height, #{utils.rem-calc(32)}),
+    group-font-size: var(--ui-select-group-font-size, var(--size-typography-text-md)),
+    filter-height: var(--ui-select-filter-height, var(--size-components-sm)),
+    scroll-height: var(--ui-select-scroller-max-height, #{utils.rem-calc(312)}),
   ),
   'small': (
-    option-height: utils.rem-calc(32),
-    option-padding-x: var(--units-md),
-    font-size: var(--size-typography-text-md),
-    group-height: utils.rem-calc(24),
-    group-font-size: var(--size-typography-text-sm),
-    filter-height: var(--size-components-xs),
-    scroll-height: utils.rem-calc(256),
+    option-height: var(--ui-select-option-height-small, #{utils.rem-calc(32)}),
+    option-padding-x: var(--ui-select-option-padding-x-small, var(--units-md)),
+    font-size: var(--ui-select-font-size-small, var(--size-typography-text-md)),
+    group-height: var(--ui-select-group-height-small, #{utils.rem-calc(24)}),
+    group-font-size: var(--ui-select-group-font-size-small, var(--size-typography-text-sm)),
+    filter-height: var(--ui-select-filter-height-small, var(--size-components-xs)),
+    scroll-height: var(--ui-select-scroller-max-height-small, #{utils.rem-calc(256)}),
   ),
 );
 $size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default` de `$sizes`.
 $size-small: map.get($sizes, 'small');     /// Raccourci vers l'entrée `small` de `$sizes`.
 
-$panel-padding: var(--units-xs);            /// Inset du panneau d'options.
-$panel-gap: var(--units-xs);                /// Espacement entre les groupes du panneau.
-$option-radius: var(--radius-sm);           /// Rayon d'une ligne d'option
-$option-gap: var(--units-sm);               /// Espace entre case/contenu/coche dans une ligne
-$checkbox-size: utils.rem-calc(18);         /// Taille de la case visuelle (mode `checkbox`)
-$stroke-width: utils.$control-stroke-width; /// Épaisseur de bordure (case visuelle)
+$panel-padding: var(--ui-select-panel-padding, var(--units-xs));                   /// Inset du panneau d'options.
+$panel-gap: var(--ui-select-panel-gap, var(--units-xs));                           /// Espacement entre les groupes du panneau.
+$panel-max-width: var(--ui-select-panel-max-width, calc(100vw - var(--units-lg))); /// Largeur maximale du panneau, gouttière laissée au viewport.
+$header-padding-y: var(--ui-select-header-padding-y, var(--units-xs));             /// Inset vertical des zones d'en-tête et de pied projetées.
+$header-padding-x: var(--ui-select-header-padding-x, var(--units-sm));             /// Inset horizontal des zones d'en-tête et de pied projetées.
+
+$option-radius: var(--ui-select-option-radius, var(--radius-sm));             /// Rayon d'une ligne d'option
+$option-gap: var(--ui-select-option-gap, var(--units-sm));                    /// Espace entre case/contenu/coche dans une ligne
+$values-gap: var(--ui-select-values-gap, var(--units-xs));                    /// Espacement entre les valeurs affichées dans le déclencheur (mode `multiple`).
+$checkbox-size: var(--ui-select-checkbox-size, #{utils.rem-calc(18)});        /// Taille de la case visuelle (mode `checkbox`)
+// The mark has to follow the box, same reason as ui-checkbox: falls back to the `sm`
+// step of the icon scale, which is what it is rendered at.
+$checkbox-icon-size: var(--ui-select-checkbox-icon-size, var(--ui-icon-size-sm, var(--size-typography-icon-sm))); /// Taille de la coche dans la case (mode `checkbox`).
+$checkbox-radius: var(--ui-select-checkbox-radius, var(--radius-xs));         /// Rayon de la case visuelle (mode `checkbox`).
+$stroke-width: var(--ui-select-stroke-width, #{utils.$control-stroke-width}); /// Épaisseur de bordure (case visuelle)
+
+$filter-gap: var(--ui-select-filter-gap, var(--units-sm));                    /// Espacement icône ↔ saisie dans le filtre.
+$filter-padding-x: var(--ui-select-filter-padding-x, var(--units-sm));        /// Inset horizontal du contenu du filtre.
+$filter-stroke-width: var(--ui-select-filter-stroke-width, var(--stroke-sm)); /// Épaisseur de la bordure du filtre.
+
+$clear-size: var(--ui-select-clear-size, var(--size-components-2xs));                  /// Taille du bouton d'effacement.
+$clear-radius: var(--ui-select-clear-radius, var(--radius-full));                      /// Rayon du bouton d'effacement.
+$focus-ring-width: var(--ui-select-focus-ring-width, #{utils.$form-focus-ring-width}); /// Épaisseur de l'anneau de focus (bouton d'effacement).
 
 .ui-select {
   display: block;
@@ -89,7 +106,7 @@ $stroke-width: utils.$control-stroke-width; /// Épaisseur de bordure (case visu
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: var(--units-xs);
+    gap: $values-gap;
     min-width: 0;
   }
 
@@ -128,13 +145,13 @@ $stroke-width: utils.$control-stroke-width; /// Épaisseur de bordure (case visu
     align-items: center;
     justify-content: center;
     box-sizing: border-box;
-    width: var(--size-components-2xs);
-    height: var(--size-components-2xs);
+    width: $clear-size;
+    height: $clear-size;
     flex-shrink: 0;
     margin: 0;
     padding: 0;
     border: none;
-    border-radius: var(--radius-full);
+    border-radius: $clear-radius;
     background: none;
     color: var(--form-low-content-default);
     cursor: pointer;
@@ -145,7 +162,7 @@ $stroke-width: utils.$control-stroke-width; /// Épaisseur de bordure (case visu
     &:focus-visible {
       outline: none;
       color: var(--form-high-content-focused);
-      box-shadow: 0 0 0 utils.$form-focus-ring-width rgb(from var(--form-high-stroke-focused) r g b / 50%);
+      box-shadow: 0 0 0 $focus-ring-width rgb(from var(--form-high-stroke-focused) r g b / 50%);
     }
     &:disabled { cursor: not-allowed; color: var(--form-high-content-disabled); }
   }
@@ -171,13 +188,13 @@ $stroke-width: utils.$control-stroke-width; /// Épaisseur de bordure (case visu
   flex-direction: column;
   gap: $panel-gap;
   box-sizing: border-box;
-  max-width: calc(100vw - var(--units-lg));
+  max-width: $panel-max-width;
   padding: $panel-padding;
 
   // --- Header / footer (projected templates) --------------------------
   .ui-select-header,
   .ui-select-footer {
-    padding: var(--units-xs) var(--units-sm);
+    padding: $header-padding-y $header-padding-x;
     font-family: var(--fontfamily-base);
     font-size: map.get($size-default, group-font-size);
     color: var(--form-high-content-default);
@@ -187,12 +204,12 @@ $stroke-width: utils.$control-stroke-width; /// Épaisseur de bordure (case visu
   .ui-select-filter {
     display: flex;
     align-items: center;
-    gap: var(--units-sm);
+    gap: $filter-gap;
     box-sizing: border-box;
     height: map.get($size-default, filter-height);
     flex-shrink: 0;
     padding: 0;
-    border: var(--stroke-sm) solid var(--form-high-stroke-default);
+    border: $filter-stroke-width solid var(--form-high-stroke-default);
     border-radius: $option-radius;
     background-color: var(--form-high-surface-default);
     @include utils.control-transition(border-color);
@@ -205,11 +222,11 @@ $stroke-width: utils.$control-stroke-width; /// Épaisseur de bordure (case visu
   .ui-select-filter-icon {
     flex-shrink: 0;
     color: var(--form-low-content-default);
-    @include utils.field-inset-edges('margin', var(--units-sm));
+    @include utils.field-inset-edges('margin', $filter-padding-x);
   }
 
   .ui-select-filter-input {
-    @include utils.field-native-input(var(--units-sm));
+    @include utils.field-native-input($filter-padding-x);
     font-size: map.get($size-default, group-font-size);
   }
 
@@ -298,11 +315,12 @@ $stroke-width: utils.$control-stroke-width; /// Épaisseur de bordure (case visu
     height: $checkbox-size;
     flex-shrink: 0;
     border: $stroke-width solid var(--form-high-stroke-default);
-    border-radius: var(--radius-xs);
+    border-radius: $checkbox-radius;
     background-color: var(--form-high-surface-default);
     @include utils.control-transition(background-color, border-color);
 
     .ui-select-checkbox-icon {
+      --ui-icon-size: #{$checkbox-icon-size};
       color: var(--form-high-content-checked);
       opacity: 0;
       transform: scale(0.6);

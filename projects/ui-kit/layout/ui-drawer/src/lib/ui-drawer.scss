@@ -13,21 +13,21 @@
 // =====================================================================
 
 // --- Config (local) ---------------------------------------------------
-$drawer-z-index: 1100;                        /// Palier d'empilement de base (au-dessus des overlays CDK à 1000)
-$stroke-width: var(--stroke-sm);              /// Épaisseur de bordure du panneau.
-$panel-padding: var(--units-lg);              /// Inset du panneau.
-$header-gap: var(--units-sm);                 /// Espacement entre les éléments de l'en-tête.
-$action-size: 32px;                           /// Taille de la cible tactile du bouton de fermeture.
-$focus-ring-width: utils.$focus-ring-width;   /// Épaisseur de l'anneau de focus du bouton de fermeture
-$mask-background: var(--primitives-black-50); /// Assombrissement du masque — exposé via `--ui-drawer-mask-background`.
-$size-side: utils.rem-calc(320);              /// Largeur d'un tiroir gauche / droite.
-$size-edge: utils.rem-calc(160);              /// Hauteur d'un tiroir haut / bas.
+$drawer-z-index: var(--ui-drawer-z-index, 1100);                                  /// Palier d'empilement de base (au-dessus des overlays CDK à 1000)
+$stroke-width: var(--ui-drawer-stroke-width, var(--stroke-sm));                   /// Épaisseur de bordure du panneau.
+$panel-padding: var(--ui-drawer-panel-padding, var(--units-lg));                  /// Inset du panneau.
+$header-gap: var(--ui-drawer-header-gap, var(--units-sm));                        /// Espacement entre les éléments de l'en-tête.
+$action-size: var(--ui-drawer-action-size, #{utils.rem-calc(32)});                /// Taille de la cible tactile du bouton de fermeture.
+$focus-ring-width: var(--ui-drawer-focus-ring-width, #{utils.$focus-ring-width}); /// Épaisseur de l'anneau de focus du bouton de fermeture
+$mask-background: var(--ui-drawer-mask-background, var(--primitives-black-50));   /// Assombrissement du masque.
+$size-side: var(--ui-drawer-size-side, #{utils.rem-calc(320)});                   /// Largeur d'un tiroir gauche / droite.
+$size-edge: var(--ui-drawer-size-edge, #{utils.rem-calc(160)});                   /// Hauteur d'un tiroir haut / bas.
 
 .ui-drawer-scrim {
   position: fixed;
   inset: 0;
   z-index: $drawer-z-index;
-  background-color: var(--ui-drawer-mask-background, #{$mask-background});
+  background-color: $mask-background;
 
   &._contained {
     position: absolute;
@@ -137,8 +137,8 @@ $size-edge: utils.rem-calc(160);              /// Hauteur d'un tiroir haut / bas
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: utils.rem-calc($action-size);
-    height: utils.rem-calc($action-size);
+    width: $action-size;
+    height: $action-size;
     padding: 0;
     border: none;
     border-radius: var(--radius-xs);

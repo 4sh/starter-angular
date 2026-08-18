@@ -259,14 +259,14 @@ export const Disabled: Story = {
 
 // --- Custom Indicator ------------------------------------------------------
 // Personnalisation de l'indicateur actif via les variables CSS exposées
-// `--ui-tabs-active-bar-color` et `--ui-tabs-active-bar-size`.
+// `--ui-tabs-indicator-color` et `--ui-tabs-indicator-thickness`.
 export const CustomIndicator: Story = {
   render: (args) => ({
     props: args,
     template: box(`
       <ui-tabs
         [value]="'0'" [motion]="motion"
-        style="--ui-tabs-active-bar-color: var(--actions-success-surface-default); --ui-tabs-active-bar-size: 4px"
+        style="--ui-tabs-indicator-color: var(--actions-success-surface-default); --ui-tabs-indicator-thickness: 4px"
       >
         <ui-tab-list ariaLabel="Indicateur personnalisé">
           <ui-tab [value]="'0'">Design</ui-tab>
