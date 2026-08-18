@@ -24,6 +24,11 @@ export interface ManifestComponentEntry {
 
 export interface UiKitManifest {
   kitVersion: string;
+  /** Le projet reçoit-il la story et le MDX de chaque composant copié
+   * (FSHSP-125) ? Mémorisé ici parce qu'`update` doit reconduire le choix fait
+   * à l'installation : sans lui, une mise à jour poserait de la doc chez qui
+   * n'en veut pas, ou l'effacerait chez qui en a. */
+  storybook?: boolean;
   components: Record<string, ManifestComponentEntry>;
 }
 
@@ -42,8 +47,8 @@ export function writeManifest(tree: Tree, manifest: UiKitManifest): void {
   }
 }
 
-export function emptyManifest(kitVersion: string): UiKitManifest {
-  return { kitVersion, components: {} };
+export function emptyManifest(kitVersion: string, storybook = false): UiKitManifest {
+  return { kitVersion, storybook, components: {} };
 }
 
 /** Horodatage ISO, tronqué au jour — cohérent avec l'exemple du ticket (`"2026-08-13"`). */

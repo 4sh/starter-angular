@@ -1,0 +1,8 @@
+/* tsconfig lu par Compodoc, qui produit les descriptions de l'onglet API.
+   Les stories en sont exclues : ce sont des exemples, pas de l'API. */
+{
+  "extends": "./tsconfig.json",
+  "exclude": ["../src/**/*.spec.ts", "../src/**/*.stories.ts"],
+  "include": ["../src/**/*"],
+  "files": ["./typings.d.ts"]
+}

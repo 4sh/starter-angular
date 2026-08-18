@@ -11,47 +11,93 @@ schematics that copy them into a consuming project.
 
 ---
 
-## ⚠️ Do not install this package directly
-
-You never install it yourself, and you never pin its version. It is pulled in
-automatically by the kit:
+## Install
 
 ```bash
-ng add @4sh/ui-kit
+ng add @4sh/ui-kit-schematics
 ```
 
-Everything is documented on
-[`@4sh/ui-kit`](https://www.npmjs.com/package/@4sh/ui-kit) — that is the package
-to read, and the only one to depend on.
+One command: it lays the foundation (styles, design tokens, `angular.json`), then
+asks which components to copy and copies them, dependencies included. The prompt
+is a checkbox list — <kbd>space</kbd> to pick, <kbd>a</kbd> for all,
+<kbd>i</kbd> to invert.
+
+```
+src/app/shared/
+├── components/ui/{category}/{ui-name}/{ui-name}.ts   ← components only
+└── ui-core/{forms|motion|overlay|theming|types}/     ← base directives, services, utils, types
+```
+
+Copied files belong to you: edit them freely. `ui-kit.json` records which
+component came from which version, so `update` can later show you a per-file diff
+against newer sources — never an automatic merge.
+
+| | |
+|---|---|
+| `ng add @4sh/ui-kit-schematics` | foundation **and** components, in one go |
+| `ng add @4sh/ui-kit-schematics --skip-components` | foundation only, pick components later |
+| `ng add @4sh/ui-kit-schematics --skip-install` | skip `npm install` (project drives its own lockfile) |
+| `ng add @4sh/ui-kit-schematics --with-storybook` | also copy each component's story and MDX (see below) |
+| `ng generate @4sh/ui-kit-schematics:add` | copy more components (interactive, or `--components`, or `--all`) |
+| `ng generate @4sh/ui-kit-schematics:update` | diff copied components against the published sources |
+
+### Your own Storybook: `--with-storybook`
+
+Off by default. Turned on, you get a working Storybook of the components you
+copied:
+
+```bash
+npm run storybook
+```
+
+Each component arrives with its story and its MDX page, next to its sources. The
+config lands in `storybook/` — `main.js`, `preview.ts`, the manager theme, the
+brand switcher, and the shared *Foundations* / *Specifications* / *Configuration*
+pages. The `storybook` and `build-storybook` targets are added to `angular.json`,
+the devDependencies to `package.json`.
+
+Two things make the doc *yours* rather than a snapshot of ours. The *Theming*
+tables are read off your own `.scss` at build time (`scripts/docs.config.mjs`
+collects the `///` roles), so they describe your values, rebranding included. And
+the globs cover `src/app/shared/components/**` whole: a story you write next to
+your own component shows up with no config change.
+
+The choice is recorded in `ui-kit.json`, and `update` honours it.
+
+Not carried over: the `parameters.design` links to our Figma file — you cannot
+open it, so it is stripped at copy time. Put your own `node-id` back if you have
+one.
+
+### `@4sh/ui-kit` is deliberately **not** installed
+
+This path never puts the kit in `node_modules`, and that is the point: with it
+absent, no import can reach its compiled code instead of your local copies — not
+in the copied sources, and not in your editor's auto-import either.
+
+## The other way: use it as a library
+
+If you would rather consume compiled components and own no source, install
+**[`@4sh/ui-kit`](https://www.npmjs.com/package/@4sh/ui-kit)** instead and follow
+its own README — nothing is copied, and you track the kit's releases.
+
+The two modes do not combine: pick the one that fits the project.
 
 ---
 
 ## Why a separate package
 
 `ng-packagr` *inlines* templates and SCSS into the published `.mjs`. The sources
-that `ng generate @4sh/ui-kit:add` has to copy therefore exist nowhere in the
-kit's own tarball. Keeping them here has a deliberate consequence: a regular
-consumer of `@4sh/ui-kit`, who only imports compiled components, never downloads
-them.
-
-The kit exposes a schematics facade holding no logic, which delegates to this
-package. That is the whole relationship between the two.
-
-## Contents
-
-| | |
-|---|---|
-| `ng-add` | foundation: styles, tokens, `angular.json` |
-| `add` | copies components into the project (interactive selection, or `--all`) |
-| `update` | per-component diff against the published sources |
-| `assets/` | the raw component sources, plus the token generation chain |
+these schematics copy therefore exist nowhere in the kit's own tarball, which is
+why they live here. That split has a deliberate consequence in both directions: a
+library-mode consumer never downloads the raw sources, and a starter-mode consumer
+never downloads the compiled kit.
 
 ## Versioning
 
-**The two packages always carry the same version number**, stamped from the
-kit's at assembly time — the kit's facade requires the companion in
-`^<kit version>`. There is nothing to keep in sync by hand, and no reason to
-pin this package yourself.
+**The two packages always carry the same version number**, stamped from the kit's
+at assembly time. This package embeds a copy of the kit's sources, and that shared
+number is what identifies *which* kit a copied file came from — it is written into
+the traceability header of every copied file, and into `ui-kit.json`.
 
 See [`docs/VERSIONING.md`](https://github.com/4sh/starter-angular/blob/main/docs/VERSIONING.md)
 and [`docs/PUBLISHING.md`](https://github.com/4sh/starter-angular/blob/main/docs/PUBLISHING.md).
