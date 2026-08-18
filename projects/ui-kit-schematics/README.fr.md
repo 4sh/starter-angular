@@ -30,8 +30,8 @@ src/app/shared/
 
 Les fichiers copiés vous appartiennent : modifiez-les librement. `ui-kit.json`
 retient de quelle version vient chaque composant, ce qui permet ensuite à `update`
-de vous présenter un diff fichier par fichier face à des sources plus récentes —
-jamais une fusion automatique.
+de vous présenter un diff fichier par fichier face à des sources plus récentes, à
+accepter ou à sauter.
 
 | | |
 |---|---|
@@ -41,6 +41,13 @@ jamais une fusion automatique.
 | `ng add @4sh/ui-kit-schematics --with-storybook` | copier aussi la story et le MDX de chaque composant (voir ci-dessous) |
 | `ng generate @4sh/ui-kit-schematics:add` | copier d'autres composants (interactif, ou `--components`, ou `--all`) |
 | `ng generate @4sh/ui-kit-schematics:update` | diff des composants copiés face aux sources publiées |
+
+`ui-kit.json` se trouve à la racine de votre projet, à côté de `package.json`.
+
+> ⚠️ **`update` remplace, il ne fusionne pas.** Accepter un composant écrit la version
+> publiée par-dessus la vôtre : **vos modifications sont perdues**. Lisez le diff, reportez
+> à la main ce que vous voulez garder, ou sautez le composant. `--yes` accepte tout sans
+> afficher un seul diff : à réserver aux composants que vous n'avez pas touchés.
 
 ### Votre propre Storybook : `--with-storybook`
 
@@ -101,6 +108,10 @@ depuis celui du kit à l'assemblage. Ce package embarque une copie des sources d
 kit, et ce numéro commun est ce qui identifie *de quel* kit vient un fichier
 copié — il est inscrit dans l'en-tête de traçabilité de chaque fichier, et dans
 `ui-kit.json`.
+
+> En lisant les sources, ne vous fiez pas au `version` du `package.json` de ce package :
+> il est inerte, réécrit avec celui du kit à l'assemblage
+> (`scripts/schematics-package.build.mjs`). Seul le numéro publié a du sens.
 
 Voir [`docs/VERSIONING.md`](https://github.com/4sh/starter-angular/blob/main/docs/VERSIONING.md)
 et [`docs/PUBLISHING.md`](https://github.com/4sh/starter-angular/blob/main/docs/PUBLISHING.md).
