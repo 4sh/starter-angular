@@ -14,6 +14,9 @@ module.exports = {
     '@storybook/addon-docs',
     '@storybook/addon-designs',
     '@storybook/addon-a11y',
+    // L'ordre de ce tableau est l'ordre des outils dans la barre du manager :
+    // la recherche plein texte se place donc juste avant le toggle dark mode.
+    './addons/text-search/preset.cjs',
     '@storybook-community/storybook-dark-mode',
   ],
   framework: {

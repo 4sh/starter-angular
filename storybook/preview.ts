@@ -6,6 +6,7 @@ import { lightTheme, darkTheme } from './myTheme';
 import { addons } from 'storybook/preview-api';
 import docJson from '../documentation.json';
 import { brandGlobalTypes, withBrand, DEFAULT_BRAND } from './brand-toolbar';
+import { DOCS_SCROLL_TO_ANCHOR, type DocsScrollToAnchorPayload } from './addons/text-search/events';
 import { withComponentMetadata } from './restore-component-metadata';
 import { provideUiImageAssets, UiImageAssetsMap } from '@4sh/ui-kit/base/ui-image';
 import assetsMap from '../src/assets/assets-map.json';
@@ -28,6 +29,27 @@ const channel = addons.getChannel();
 channel.on('DARK_MODE', (isDark) => {
   setTimeout(() => syncTheme(isDark), 0);
 });
+
+/**
+ * Défilement jusqu'à une section, demandé par la recherche plein texte
+ * (`storybook/addons/text-search`). Le manager ne peut pas faire défiler cette
+ * iframe — le hash de son URL ne s'y propage pas — il envoie donc l'ancre ici.
+ *
+ * `selectStory()` et l'arrivée du message se courent après : le rendu de la page
+ * de doc n'est pas terminé quand l'ancre arrive. D'où les tentatives bornées,
+ * en `setTimeout` et non en `requestAnimationFrame` (qui ne tire jamais dans un
+ * onglet en arrière-plan).
+ */
+const scrollToAnchor = (anchor: string, attempt = 0): void => {
+  const target = document.getElementById(anchor);
+  if (target) {
+    target.scrollIntoView({ block: 'start' });
+    return;
+  }
+  if (attempt < 40) setTimeout(() => scrollToAnchor(anchor, attempt + 1), 50);
+};
+
+channel.on(DOCS_SCROLL_TO_ANCHOR, ({ anchor }: DocsScrollToAnchorPayload) => scrollToAnchor(anchor));
 
 const preview: Preview = {
   initialGlobals: { brand: DEFAULT_BRAND },

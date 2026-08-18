@@ -446,6 +446,7 @@ Like a `ui-*`, but: project prefix, `domain/` folder, and **composition of `ui-*
 npm start                  # Launch Storybook (source of truth) — alias of npm run storybook
 npm run serve              # Launch the Angular app (minimal demo)
 npm run tokens:build       # Regenerate the CSS variables from the JSON
+npm run docs:search        # Rebuild the doc full-text search index
 npm run build-storybook    # Static Storybook build
 npm run lint               # ESLint --fix
 npm test                   # Unit tests on the kit
@@ -467,3 +468,11 @@ Committed alongside it, `git diff --exit-code -- projects/ui-kit/styles/componen
 figma/component-vars.json`: those two files are **generated yet committed**, and every
 build regenerates them on disk — so only git notices a stale commit. Both run in
 [`pr-checks.yml`](.github/workflows/pr-checks.yml).
+
+> `docs:search` (`scripts/docs.search.mjs`) indexes every `.mdx` **section** into
+> `storybook/public/text-search-docs.json` — read by the local addon
+> `storybook/addons/text-search/`, the search field in the manager toolbar. It is
+> chained into `storybook` / `build-storybook`, and the addon rebuilds it on
+> startup and on every `.mdx` change, so it rarely needs running by hand.
+> A page whose title cannot be resolved (no `<Meta title>` and no resolvable
+> `<Meta of>`) **fails the build** rather than dropping out of the index.
