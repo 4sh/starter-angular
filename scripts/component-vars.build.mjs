@@ -11,6 +11,9 @@
  * `rem-calc(44px - 2 * $gutter)` has to be evaluated, not guessed. DESCRIPTIONS come
  * from the `///` comments, via the docs.config.mjs manifest.
  *
+ * `--check` also confronts the counts quoted in figma/README.md with the ones computed
+ * here: that prose is hand-written, so nothing else would notice it going stale.
+ *
  * Usage:
  *   node scripts/component-vars.build.mjs           # generate
  *   node scripts/component-vars.build.mjs --check   # fail if stale or off-convention
@@ -27,6 +30,9 @@ const STYLES = join(KIT, 'styles');
 const MANIFEST_FILE = join(ROOT, 'storybook/generated/ui-config.json');
 const SCSS_OUT = join(STYLES, 'component-vars.scss');
 const JSON_OUT = join(ROOT, 'figma/component-vars.json');
+// Prose, hand-written — but it quotes the counts of the file above. Nothing regenerates
+// it, so `--check` confronts its figures with the ones just computed (see step 8).
+const JSON_README = join(ROOT, 'figma/README.md');
 // Served by Storybook (staticDirs) for the doc page's download button. Byproduct:
 // regenerated on every build, never committed.
 const PUBLIC_COPY = join(ROOT, 'storybook/public/component-vars.scss');
@@ -774,7 +780,41 @@ function figmaJson() {
   };
 }
 
-// --- 8. Write / check -----------------------------------------------------
+// --- 8. figma/README.md : les chiffres cités == ceux qu'on vient de calculer ----
+// Le README est de la prose (le mode d'emploi de l'import Figma) : rien ne le génère, et
+// c'est bien. Mais il annonce des décomptes, et ceux-là dérivent en silence — le fichier
+// grossit à chaque hook ajouté, la phrase reste. On valide donc les chiffres, pas le texte.
+function readmeCountMismatches(counts) {
+  const text = readFileSync(JSON_README, 'utf8');
+  const claims = [
+    {
+      what: 'alias / total',
+      re: /(\d+) of the (\d+) entries merely \*alias\*/,
+      expected: [counts.alias, counts.tokens],
+    },
+    {
+      what: 'entrées écartées',
+      re: /`\$extensions\.com\.4sh\.ui-kit\.skipped` lists (\d+) entries/,
+      expected: [counts.skipped],
+    },
+  ];
+
+  const errors = [];
+  for (const { what, re, expected } of claims) {
+    const found = text.match(re);
+    if (!found) {
+      errors.push(`${what} : phrase introuvable (motif ${re.source}) — le README a été reformulé, adapte le motif.`);
+      continue;
+    }
+    const actual = found.slice(1).map(Number);
+    if (actual.join() !== expected.join()) {
+      errors.push(`${what} : le README annonce ${actual.join(' / ')}, le fichier en compte ${expected.join(' / ')}.`);
+    }
+  }
+  return errors;
+}
+
+// --- 9. Write / check -----------------------------------------------------
 
 const scssText = themeScss();
 const jsonText = `${JSON.stringify(figmaJson(), null, 2)}\n`;
@@ -802,7 +842,14 @@ if (check) {
     );
     process.exit(1);
   }
-  console.log('✓ component-vars.scss et component-vars.json à jour.');
+  const readmeErrors = readmeCountMismatches(JSON.parse(jsonText).$extensions['com.4sh.ui-kit'].counts);
+  if (readmeErrors.length) {
+    console.error(`✗ figma/README.md : ${readmeErrors.length} chiffre(s) périmé(s) :`);
+    for (const e of readmeErrors) console.error(`  - ${e}`);
+    process.exit(1);
+  }
+
+  console.log('✓ component-vars.scss, component-vars.json et figma/README.md à jour.');
 } else {
   mkdirSync(dirname(SCSS_OUT), { recursive: true });
   mkdirSync(dirname(JSON_OUT), { recursive: true });

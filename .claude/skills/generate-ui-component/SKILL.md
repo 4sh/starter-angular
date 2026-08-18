@@ -205,7 +205,7 @@ import { ConfigTable } from '<…>/storybook/blocks/config-table';
 
 ## Integration
 
-- `src/app/shared/components/components-index.md`: move the component's line from ⬜ to ✅ (with a short description of its capabilities).
+- `docs/components-index.md`: move the component's line from ⬜ to ✅ (with a short description of its capabilities).
 - `storybook/docs/Overview.mdx` (global docs): import the story via a **relative** path (`../../src/app/shared/components/ui/{cat}/ui-{name}/ui-{name}.stories`) + add a `ComponentCard` in the corresponding `CategorySection` (create the section if missing). Pick a representative + reliable story (avoid `ngModel` stories that render in their initial state in docs-blocks).
 - `CHANGELOG.md`: **always** add an entry for a new component, in the `[Unreleased]` section (under `### Added`; `### Changed` for a shared constant adjustment / docs). Group by component, describe the key capabilities.
 - `storybook/docs/config/`: if a shared variable was added to `ui-config`, update the group page (`config-{category}.mdx`) and the table of contents of `component-config.mdx` (see "Shared variables").

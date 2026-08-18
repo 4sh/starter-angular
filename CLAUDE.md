@@ -26,7 +26,7 @@ Before generating anything in Figma, you **must** audit the source Angular compo
 | Behavior (headless) | Components + Angular CDK (overlay, a11y, focus-trap…) |
 | Style | Co-located per component (scoped `.scss`) + CSS custom properties (`--var`) |
 | Design Tokens | JSON (Token Flow Manager) → `scripts/tokens.build.mjs` → SCSS (`projects/ui-kit/styles/generated/`) |
-| Storybook | v10.5.4 + addon-designs (Figma panel) |
+| Storybook | 10.x + addon-designs (Figma panel) |
 | Themes | themeOne (purple), themeTwo, themeThree × light/dark (via `._themeX` / `.dark-mode` classes) |
 | Icons | FontAwesome Free |
 | Grid | Gridaflex 1.0.0 |
@@ -125,12 +125,16 @@ effects.{modeLight|modeDark}.{default|highlight|success|warning|error}
 ### File structure
 
 ```
-ui-{name}/
-├── ui-{name}.ts          ← logic + inputs (signals), classes computed via computed()
-├── ui-{name}.html        ← headless native HTML template (+ Angular CDK if needed)
-├── ui-{name}.scss        ← CO-LOCATED component STYLE (scoped to the component)
-├── ui-{name}.stories.ts  ← CO-LOCATED Storybook story
-└── ui-{name}.mdx         ← CO-LOCATED Storybook doc
+projects/ui-kit/{category}/ui-{name}/
+├── ng-package.json           ← the secondary entry point
+├── ui-{name}.stories.ts      ← CO-LOCATED Storybook story
+├── ui-{name}.mdx             ← CO-LOCATED Storybook doc
+└── src/
+    ├── public-api.ts         ← what the entry point exports
+    └── lib/
+        ├── ui-{name}.ts      ← logic + inputs (signals), classes computed via computed()
+        ├── ui-{name}.html    ← headless native HTML template (+ Angular CDK if needed)
+        └── ui-{name}.scss    ← CO-LOCATED component STYLE (scoped to the component)
 ```
 
 > A component's **story and MDX doc are co-located** in its folder. **Global** doc
@@ -485,10 +489,10 @@ When the user requests an audit of a Figma component, apply this grid:
 
 ```
 Analyze the following Angular component to prepare its creation in Figma:
-- Read `src/app/shared/components/{category}/{name}/{name}.ts`
-- Read `src/app/shared/components/{category}/{name}/{name}.html`
-- Read `src/app/shared/components/{category}/{name}/{name}.scss`
-- Read `src/app/shared/components/{category}/{name}/{name}.stories.ts` (co-located)
+- Read `projects/ui-kit/{category}/{name}/src/lib/{name}.ts`
+- Read `projects/ui-kit/{category}/{name}/src/lib/{name}.html`
+- Read `projects/ui-kit/{category}/{name}/src/lib/{name}.scss`
+- Read `projects/ui-kit/{category}/{name}/{name}.stories.ts` (co-located)
 Produce:
 1. List of inputs with types and default values
 2. Distinct visual states (required Figma variants)
@@ -525,7 +529,7 @@ Produce a report with: critical issues / improvements / overall compliance (%)
 ### 4. Storybook → Figma migration
 
 ```
-For the component whose story is `src/app/shared/components/{path}/{name}/{name}.stories.ts` (co-located):
+For the component whose story is `projects/ui-kit/{category}/{name}/{name}.stories.ts` (co-located):
 1. Extract all argTypes and their possible values
 2. Identify the current Figma node-id in `parameters.design.url`
 3. Verify that the Figma component covers all exported stories

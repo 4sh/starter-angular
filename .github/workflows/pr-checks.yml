@@ -59,12 +59,28 @@ jobs:
       - name: Unit tests
         run: npm run test
 
-      # Not `docs:config:check`: postinstall just regenerated the doc manifest,
-      # so that half is a no-op here. components:check is the meaningful one —
-      # it compares the hand-written component lists against the entry points
-      # actually on disk.
-      - name: Check the component lists
-        run: npm run components:check
+      # `postinstall` has just regenerated everything `docs:config` produces, so
+      # this step looks redundant. It is not — it enforces two things nothing
+      # else does:
+      #
+      #  - The validations `component-vars.build.mjs` performs but does NOT fail
+      #    on in generation mode: off-convention `--ui-*` names, hooks with no
+      #    `///` (public but invisible in the doc), aliases pointing at a token
+      #    that does not exist (imports into Figma as an empty variable), and the
+      #    counts quoted in prose in `figma/README.md`. Under `postinstall` those
+      #    are printed and ignored; only `--check` turns them into a failure.
+      #  - The hand-written component lists, via the `components:check` this
+      #    chains — the six places that claim to describe `projects/ui-kit/`.
+      - name: Check the docs (lists, conventions, quoted counts)
+        run: npm run docs:config:check
+
+      # The opposite case, which the step above CANNOT catch: two of those
+      # generated files are committed — `component-vars.scss` ships in the
+      # tarball, `component-vars.json` is imported into Figma. `postinstall` has
+      # already overwritten them on disk, so comparing disk to disk always
+      # passes. Only git knows whether the commit was stale.
+      - name: Fail if a committed generated file was stale
+        run: git diff --exit-code -- projects/ui-kit/styles/component-vars.scss figma/component-vars.json
 
   storybook:
     name: Build Storybook

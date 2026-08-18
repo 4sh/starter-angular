@@ -11,7 +11,8 @@ This is the **Starter Angular** side of the *Dual-Engine* strategy:
 - The **component styling is co-located** (Angular scoped `.scss`) and consumes these tokens.
 
 This repo holds the **[`@4sh/ui-kit`](https://www.npmjs.com/package/@4sh/ui-kit)** package
-(53 secondary entry points / 54 `ui-*` components) and the demo application that consumes it.
+(54 `ui-*` components on 53 entry points, plus 5 cross-cutting ones) and the demo
+application that consumes it.
 
 | | |
 |---|---|
@@ -74,12 +75,14 @@ Only needed to build the design system itself: add or modify a `ui-*` component,
 edit the tokens, cut a release.
 
 ```bash
-npm install            # install + postinstall: tokens:build, ui-kit:build, docs:config
-npm start              # Storybook          → http://localhost:6006
-npm run serve          # demo application   → http://localhost:4200
-npm run tokens:build   # regenerate the token CSS variables
-npm run ui-kit:build   # build the package into dist/ui-kit
-npm run lint           # ESLint --fix
+npm install                 # install + postinstall: tokens:build, ui-kit:build, docs:config
+npm start                   # Storybook          → http://localhost:6006
+npm run serve               # demo application   → http://localhost:4200
+npm run tokens:build        # regenerate the token CSS variables
+npm run ui-kit:build        # build the package into dist/ui-kit
+npm run lint                # ESLint --fix
+npm test                    # unit tests on the kit
+npm run docs:config:check   # ← run this before committing documentation
 ```
 
 > `npm start`, `npm run serve` and the builds all run `ui-kit:build` first: the demo app
@@ -88,6 +91,15 @@ npm run lint           # ESLint --fix
 >
 > `projects/ui-kit/styles/generated/` and `storybook/generated/` are **generated**
 > (gitignored), rebuilt by `tokens:build` and `docs:config`.
+
+**`docs:config:check` is the guardrail on everything this repo states by hand.** Six
+places claim to describe `projects/ui-kit/` — the two package READMEs, `Overview.mdx`,
+[`docs/components-index.md`](docs/components-index.md) and two announced counts — and
+nothing in the code forces them to follow when a component lands. It also fails on an
+off-convention `--ui-*` name, a hook with no `///` (public, yet invisible in the doc), an
+alias pointing at a token that does not exist, and the figures quoted in
+[`figma/README.md`](figma/README.md). Run by
+[`pr-checks.yml`](.github/workflows/pr-checks.yml) on every pull request.
 
 Conventions to follow before writing code — repo layout, naming, CSS/SCSS rules
 (no BEM), component creation recipe, Storybook file organization, token workflow —
