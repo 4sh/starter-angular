@@ -292,8 +292,8 @@ function table(caption, rows, values, withHook) {
           'tr',
           null,
           el('th', { style: { width: 200 } }, 'Variable'),
-          el('th', null, 'Rôle'),
-          ...(withHook ? [el('th', { style: { width: 250 } }, 'Hook exposé')] : []),
+          el('th', { style: { width: 200 } }, 'Rôle'),
+          ...(withHook ? [el('th', { style: { width: 260 } }, 'Hook exposé')] : []),
           el('th', { style: { width: 200 } }, 'Défaut (starter)'),
           el('th', { style: { width: 130 } }, 'Valeur résolue')
         )
