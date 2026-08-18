@@ -9,7 +9,11 @@
   [message]="displayMessage()"
   [messageId]="messageId()"
 >
-  @if (iconLeft(); as name) {
+  @if (resolvedIconLeftTemplate(); as tpl) {
+    <span uiFieldPrefix class="ui-input-icon" [class._disabled]="isDisabled()">
+      <ng-container [ngTemplateOutlet]="tpl" [ngTemplateOutletContext]="leftIconContext()" />
+    </span>
+  } @else if (iconLeft(); as name) {
     <ui-icon uiFieldPrefix class="ui-input-icon" [class._disabled]="isDisabled()" [name]="name" [size]="iconSize()" />
   }
 
@@ -44,7 +48,7 @@
     <span uiFieldSuffix class="ui-input-unit" [class._small]="size() === 'small'" [class._disabled]="isDisabled()">{{ u }}</span>
   }
 
-  @if (iconRight(); as name) {
+  @if (iconRight() || resolvedIconRightTemplate()) {
     @if (hasRightAction()) {
       <button
         uiFieldSuffix
@@ -54,10 +58,18 @@
         [disabled]="isDisabled()"
         (click)="iconRightClick.emit($event)"
       >
-        <ui-icon [name]="name" [size]="iconSize()" />
+        @if (resolvedIconRightTemplate(); as tpl) {
+          <ng-container [ngTemplateOutlet]="tpl" [ngTemplateOutletContext]="rightIconContext()" />
+        } @else {
+          <ui-icon [name]="iconRight()!" [size]="iconSize()" />
+        }
       </button>
+    } @else if (resolvedIconRightTemplate(); as tpl) {
+      <span uiFieldSuffix class="ui-input-icon" [class._disabled]="isDisabled()">
+        <ng-container [ngTemplateOutlet]="tpl" [ngTemplateOutletContext]="rightIconContext()" />
+      </span>
     } @else {
-      <ui-icon uiFieldSuffix class="ui-input-icon" [class._disabled]="isDisabled()" [name]="name" [size]="iconSize()" />
+      <ui-icon uiFieldSuffix class="ui-input-icon" [class._disabled]="isDisabled()" [name]="iconRight()!" [size]="iconSize()" />
     }
   }
 </ui-field>

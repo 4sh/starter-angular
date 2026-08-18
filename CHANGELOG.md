@@ -17,6 +17,17 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 ## [Unreleased]
 
 ### Added
+- **Les icônes des composants sont surchargeables à deux échelles** (FSHSP-113). `ui-icon` savait déjà rendre n'importe quelle police (`UiIconFamily` + `provideUiIconFamilies()`), mais aucun composant ne forwardait cette notion : les champs exposent le *nom* de leur icône, jamais sa famille, et la majorité des icônes d'un composant sont **internes** — les dix chevrons du panneau de `ui-datepicker`, la coche et la loupe de `ui-select`. Basculer la famille par défaut au niveau applicatif envoyait ces noms FontAwesome codés en dur à la police cible, qui ne les connaît pas, et les icônes internes disparaissaient.
+
+  **Directive `uiIconFamily`, granularité sous-arbre.** Posée sur un champ, une section ou la racine, elle re-déclare la famille par défaut dans son *element injector* : tous les `ui-icon` descendants la voient, icônes internes comprises, sans `provideUiIconFamilies` global. Elle traverse les **overlays CDK** (panneaux de `ui-datepicker`, `ui-select`, `ui-autocomplete`) — la relocalisation DOM ne change pas la chaîne d'injecteurs — et vaut aussi pour les composants non-formulaire (menu, paginator, modal, tabs).
+
+  ```html
+  <form uiIconFamily="material">…</form>
+  ```
+
+  **Templates d'icône, granularité une icône.** `ui-input` expose `#iconLeft` et `#iconRight` (contexte : nom configuré, taille du champ, état `disabled`), sur le modèle déjà en place ailleurs dans le kit (`#onIcon`/`#offIcon` de `ui-rating`, `#item` de `ui-select`). La zone d'action droite garde son `<button>` accessible : seul son contenu est remplacé. `ui-datepicker` forwarde le sien vers le déclencheur sous `#icon`, ce qui permet de changer la seule icône calendrier en gardant FontAwesome sur ses dix chevrons.
+
+  Les deux leviers se choisissent selon l'échelle visée, pas selon une hiérarchie : un template vise une icône et peut en changer le markup entier (SVG de marque) ; la directive vise une zone et atteint ce qu'aucun input n'expose. Sans rien préciser, la famille par défaut s'applique et le markup rendu est inchangé.
 - **Un projet en sources copiées a désormais son propre Storybook** (FSHSP-125) : `ng add @4sh/ui-kit-schematics --with-storybook` copie, à côté de chaque composant, sa story et sa page MDX, pose la configuration Storybook (`storybook/`, cibles `angular.json`, devDependencies, scripts npm) et la chaîne qui alimente la doc (`scripts/docs.config.mjs`, bloc `<ConfigTable>`). Un `npm run storybook` suffit ensuite. Jusqu'ici le projet possédait son code mais aucune doc : il lui restait un Storybook hébergé qui décrit *nos* composants, pas ses copies éditées.
 
   Deux choses font que cette doc appartient au projet. Les tables *Theming* sont lues sur ses propres `.scss` au build, donc elles décrivent ses valeurs, rebranding compris. Et les globs couvrent tout `src/app/shared/components/**` : une story écrite à côté d'un composant maison apparaît sans toucher à la configuration.

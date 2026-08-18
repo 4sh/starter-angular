@@ -167,16 +167,21 @@ ne sont jamais round-trippés à travers la CVA, donc pas concernés par le cont
 
 ## Templates
 
-Deux points d'extension via `<ng-template>` projetés, résolus par `contentChild` :
+Trois points d'extension via `<ng-template>` projetés, résolus par `contentChild` :
 
 - **`#date`** — cellule de jour personnalisée. Contexte : `$implicit` = descripteur du jour
   (`{ day, month, year, otherMonth, today, selected, disabled, rangeStart, rangeEnd, inRange }`)
   et `selected` (booléen). Idéal pour des pastilles d'évènements, week-ends colorés, etc.
 - **`#buttonbar`** — barre de boutons personnalisée. Contexte : `todayCallback` et `clearCallback`
   (fonctions à câbler sur `(click)`).
+- **`#icon`** — icône du **déclencheur** (forwardée au `ui-input` sous-jacent). Contexte :
+  `$implicit` = le nom résolu par le composant (`calendar`, `clock` en `timeOnly`, ou `xmark`
+  quand `showClear` a une valeur à effacer), `size` = la taille calée sur le champ, `disabled` =
+  l'état du champ. Sans effet quand `showIcon="false"` : il n'y a alors aucune zone d'icône.
 
 <Canvas of={DatepickerStories.DateTemplate} />
 <Canvas of={DatepickerStories.CustomButtonBar} />
+<Canvas of={DatepickerStories.IconTemplate} />
 
 ```html
 <!-- Cellule de jour personnalisée -->
@@ -194,6 +199,26 @@ Deux points d'extension via `<ng-template>` projetés, résolus par `contentChil
     <ui-button size="small" level="error" icon="xmark" iconOnly ariaLabel="Effacer" (buttonClick)="clearCallback($event)" />
   </ng-template>
 </ui-datepicker>
+
+<!-- Icône du déclencheur (le panneau garde la famille par défaut) -->
+<ui-datepicker [(ngModel)]="date" valueType="date" label="Date">
+  <ng-template #icon let-name let-size="size">
+    <ui-icon [name]="name" family="material" [size]="size" />
+  </ng-template>
+</ui-datepicker>
+```
+
+### Changer la famille d'icônes, panneau compris
+
+`#icon` ne couvre que le déclencheur. Les **dix chevrons** du panneau (navigation des mois,
+steppers d'heure) sont internes : aucun input ne les expose. Pour les basculer aussi, posez la
+directive `uiIconFamily` sur le composant ou sur un conteneur — elle traverse l'overlay CDK.
+Voir [`ui-icon`](?path=/docs/components-ui-ui-icon--docs).
+
+<Canvas of={DatepickerStories.ScopedIconFamily} />
+
+```html
+<ui-datepicker uiIconFamily="material" [(ngModel)]="date" valueType="date" label="Rendez-vous" showTime />
 ```
 
 ## Formulaires
@@ -278,7 +303,7 @@ via l'interop CVA native, ainsi qu'aux formulaires template-driven (`[(ngModel)]
 > dans les grilles `MonthPicker`/`YearPicker` ; en multi-mois les entêtes sont fixes avec flèches
 > aux extrémités. Les états interactifs (hover/focus/pressed) sont des **pseudo-classes CSS**
 > pilotées par les tokens, pas des props. Personnalisation via `panelStyleClass`, `#date`,
-> `#buttonbar`.
+> `#buttonbar`, `#icon` et la directive `uiIconFamily`.
 
 ## Theming
 

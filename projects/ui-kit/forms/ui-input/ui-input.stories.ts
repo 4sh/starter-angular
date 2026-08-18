@@ -1,9 +1,10 @@
 import { Component, signal } from '@angular/core';
 import type { Meta, StoryObj } from '@storybook/angular';
-import { moduleMetadata } from '@storybook/angular';
+import { applicationConfig, moduleMetadata } from '@storybook/angular';
 import { FormsModule } from '@angular/forms';
 import { FormField, form, minLength, required } from '@angular/forms/signals';
 import { UiInput } from '@4sh/ui-kit/forms/ui-input';
+import { UiIcon, UiIconFamilyScope, provideUiIconFamilies } from '@4sh/ui-kit/base/ui-icon';
 
 const meta: Meta<UiInput> = {
   title: 'Components/ui/forms/ui-input',
@@ -31,6 +32,16 @@ const meta: Meta<UiInput> = {
     unit: { control: 'text', description: 'Unité suffixe.', table: { type: { summary: 'string' } } },
     iconLeft: { control: 'text', table: { type: { summary: 'string' } } },
     iconRight: { control: 'text', table: { type: { summary: 'string' } } },
+    iconLeftTemplate: {
+      control: false,
+      description: "Template d'icône gauche fourni par code (équivalent du `<ng-template #iconLeft>` projeté, qui reste prioritairement lisible côté app).",
+      table: { type: { summary: 'TemplateRef<UiInputIconContext>' } },
+    },
+    iconRightTemplate: {
+      control: false,
+      description: "Template d'icône droite fourni par code — c'est ce que `ui-datepicker` utilise pour forwarder son `#icon` vers le déclencheur.",
+      table: { type: { summary: 'TemplateRef<UiInputIconContext>' } },
+    },
     required: { control: 'boolean', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
     disabled: { control: 'boolean', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
     readonly: { control: 'boolean', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
@@ -122,4 +133,70 @@ export const SignalForms: Story = {
   name: 'Signal Forms',
   render: () => ({ template: `<demo-input-signal-forms />` }),
   decorators: [moduleMetadata({ imports: [SignalFormsDemo] })],
+};
+
+// --- Templates d'icône (#iconLeft / #iconRight) -------------------------
+/** Famille de démonstration : remappe quelques noms sur d'autres glyphes FontAwesome, pour rendre
+ *  la bascule visible sans charger une seconde police d'icônes. */
+const DEMO_GLYPHS: Record<string, string> = {
+  'magnifying-glass': 'binoculars',
+  xmark: 'circle-xmark',
+  sun: 'circle-half-stroke',
+};
+const demoFamily = { classes: (name: string) => `fa-solid fa-${DEMO_GLYPHS[name] ?? name}` };
+
+/**
+ * Chaque zone d'icône accepte un `<ng-template>` qui remplace le markup rendu : icône d'une autre
+ * famille, SVG de marque, n'importe quel contenu. Contexte reçu : `$implicit` = le nom configuré
+ * sur cette zone, `size` = la taille calée sur le champ, `disabled` = l'état du champ.
+ *
+ * À gauche, un SVG de marque ; à droite, la zone d'action garde son `<button>` accessible
+ * (`iconRightAriaLabel` + `iconRightClick`), seul son contenu est remplacé — ici par une icône
+ * d'une autre famille.
+ */
+export const IconTemplate: Story = {
+  decorators: [
+    applicationConfig({ providers: [provideUiIconFamilies({ demo: demoFamily })] }),
+    moduleMetadata({ imports: [UiInput, UiIcon, FormsModule] }),
+  ],
+  render: () => ({
+    props: { model: '' },
+    template: `<div style="width:280px; display:grid; gap:16px">
+      <ui-input [(ngModel)]="model" label="Espace de travail" placeholder="Nom de l'espace">
+        <ng-template #iconLeft>
+          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+            <rect width="16" height="16" rx="4" fill="var(--actions-high-surface-default)" />
+            <path d="M4.5 8.5l2.5 2.5 4.5-5" fill="none" stroke="var(--actions-high-content-default)" stroke-width="1.8" stroke-linecap="round" />
+          </svg>
+        </ng-template>
+      </ui-input>
+
+      <ui-input [(ngModel)]="model" label="Thème" placeholder="Clair / sombre"
+                iconRight="sun" iconRightAriaLabel="Inverser le thème">
+        <ng-template #iconRight let-name let-size="size">
+          <ui-icon [name]="name" family="demo" [size]="size" />
+        </ng-template>
+      </ui-input>
+    </div>`,
+  }),
+};
+
+/**
+ * Autre échelle, autre levier : la directive `uiIconFamily` bascule **toutes** les icônes
+ * descendantes d'un coup (ici les deux champs), sans viser une icône en particulier ni toucher au
+ * reste de l'application. Un template vise une icône ; la directive vise une zone.
+ */
+export const ScopedIconFamily: Story = {
+  decorators: [
+    applicationConfig({ providers: [provideUiIconFamilies({ demo: demoFamily })] }),
+    moduleMetadata({ imports: [UiInput, UiIconFamilyScope, FormsModule] }),
+  ],
+  render: () => ({
+    props: { a: 'Rapport annuel', b: '' },
+    template: `<div uiIconFamily="demo" style="width:280px; display:grid; gap:16px">
+      <ui-input [(ngModel)]="a" label="Recherche" iconLeft="magnifying-glass"
+                [iconRight]="a ? 'xmark' : undefined" iconRightAriaLabel="Effacer" (iconRightClick)="a = ''" />
+      <ui-input [(ngModel)]="b" label="Filtre" iconLeft="magnifying-glass" placeholder="Filtrer…" />
+    </div>`,
+  }),
 };

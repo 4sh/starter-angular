@@ -31,7 +31,7 @@ import {
   MaskBounds,
   MaskSlot,
 } from '@4sh/ui-kit/forms';
-import { UiInput } from '@4sh/ui-kit/forms/ui-input';
+import { UiInput, UiInputIconContext } from '@4sh/ui-kit/forms/ui-input';
 import { UiButton } from '@4sh/ui-kit/actions/ui-button';
 import { UiIcon } from '@4sh/ui-kit/base/ui-icon';
 import { closeOnNavigation } from '@4sh/ui-kit/overlay';
@@ -284,6 +284,8 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   protected readonly dateTemplate = contentChild<TemplateRef<unknown>>('date');
   /** Custom button-bar template: `<ng-template #buttonbar let-todayCallback let-clearCallback>`. */
   protected readonly buttonBarTemplate = contentChild<TemplateRef<unknown>>('buttonbar');
+  /** Custom trigger-icon template: `<ng-template #icon let-name let-size="size">`. */
+  private readonly iconTemplate = contentChild<TemplateRef<UiInputIconContext>>('icon');
 
   /** @ignore */
   private readonly localeId = inject(LOCALE_ID);
@@ -442,6 +444,8 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   protected readonly triggerIconAriaLabel = computed(() =>
     this.showClearButton() ? this.clearLabel() : this.iconAriaLabel(),
   );
+  /** @ignore Forwarded to the trigger only when an icon zone is rendered — `showIcon="false"` stays icon-less. */
+  protected readonly triggerIconTemplate = computed(() => (this.triggerIcon() ? this.iconTemplate() : undefined));
 
   // --- Selection helpers ----------------------------------------------
 

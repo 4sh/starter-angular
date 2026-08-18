@@ -44,15 +44,63 @@ export const appConfig: ApplicationConfig = {
 };
 ```
 
-```html
-<!-- Utilisation par famille -->
-<ui-icon name="home" family="material" />
-<ui-icon name="alarm" family="bootstrap" />
-<ui-icon name="circle-user" family="fontawesome" />
-```
-
 > La police correspondante doit être chargée par le projet (CSS/webfont). Une clé de famille
 > inconnue retombe sur `fontawesome` (avec un warning en dev).
+
+### Trois échelles d'application
+
+Une fois la famille enregistrée, **trois leviers** la posent, à trois granularités. Ils se
+combinent : le plus proche de l'icône gagne.
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Portée</th>
+      <th>Levier</th>
+      <th>Quand</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Une icône</strong></td>
+      <td><code>family</code> sur le <code>ui-icon</code></td>
+      <td>Une icône isolée vient d'une autre bibliothèque.</td>
+    </tr>
+    <tr>
+      <td><strong>Un sous-arbre</strong></td>
+      <td>directive <code>uiIconFamily</code></td>
+      <td>Aligner une zone — un champ, un formulaire, une page — <strong>icônes internes comprises</strong>.</td>
+    </tr>
+    <tr>
+      <td><strong>L'application</strong></td>
+      <td><code>provideUiIconFamilies(…, &#123; default &#125;)</code></td>
+      <td>Le projet entier tourne sur une autre police.</td>
+    </tr>
+  </tbody>
+</table>
+
+```html
+<!-- Une icône -->
+<ui-icon name="home" family="material" />
+<ui-icon name="alarm" family="bootstrap" />
+
+<!-- Un sous-arbre : tout ce qui est en dessous bascule -->
+<form uiIconFamily="material">
+  <ui-datepicker [(ngModel)]="date" valueType="date" label="Date" />
+</form>
+```
+
+<Canvas of={IconStories.ScopedFamily} />
+
+**Pourquoi la directive existe.** La majorité des icônes d'un composant sont **internes** : les dix
+chevrons du panneau de `ui-datepicker`, la coche et la loupe de `ui-select`… aucun input ne les
+expose, donc aucune surcharge ponctuelle ne les atteint. La directive re-déclare la famille par
+défaut dans son *element injector* : chaque `ui-icon` descendant la voit, y compris ceux d'un
+panneau **monté en overlay CDK** — la relocalisation DOM ne change pas la chaîne d'injecteurs.
+
+**Critère de choix.** Vous visez *une* icône → `family` (ou un template d'icône, quand c'est le
+markup entier qui change : voir [`ui-input`](?path=/docs/components-ui-forms-ui-input--docs)).
+Vous visez *une zone* → la directive. Vous visez *tout le projet* → l'option `default`.
 
 ## Accessibilité
 

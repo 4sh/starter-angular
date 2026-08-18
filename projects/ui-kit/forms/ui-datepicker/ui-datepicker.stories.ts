@@ -1,11 +1,12 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import type { Meta, StoryObj } from '@storybook/angular';
-import { moduleMetadata } from '@storybook/angular';
+import { applicationConfig, moduleMetadata } from '@storybook/angular';
 import { FormsModule } from '@angular/forms';
 import { FormField, form, required } from '@angular/forms/signals';
 import { UiDatepicker } from '@4sh/ui-kit/forms/ui-datepicker';
 import { UiButton } from '@4sh/ui-kit/actions/ui-button';
+import { UiIcon, UiIconFamilyScope, provideUiIconFamilies } from '@4sh/ui-kit/base/ui-icon';
 
 const meta: Meta<UiDatepicker> = {
   title: 'Components/ui/forms/ui-datepicker',
@@ -442,5 +443,57 @@ export const DateTemplate: Story = {
         </span>
       </ng-template>
     </ui-datepicker></div>`,
+  }),
+};
+
+// --- Icônes : template ponctuel vs famille de sous-arbre ----------------
+/** Famille de démonstration : remappe les noms utilisés par le composant sur d'autres glyphes
+ *  FontAwesome, pour rendre la bascule visible sans charger une seconde police d'icônes. */
+const DEMO_GLYPHS: Record<string, string> = {
+  'chevron-left': 'circle-arrow-left',
+  'chevron-right': 'circle-arrow-right',
+  'chevron-up': 'circle-arrow-up',
+  'chevron-down': 'circle-arrow-down',
+  calendar: 'calendar-days',
+  clock: 'stopwatch',
+  xmark: 'circle-xmark',
+};
+const demoFamily = { classes: (name: string) => `fa-solid fa-${DEMO_GLYPHS[name] ?? name}` };
+
+/**
+ * `#icon` remplace le markup de l'icône du **déclencheur** — et rien d'autre : les dix chevrons du
+ * panneau restent sur la famille par défaut. Contexte reçu : `$implicit` = le nom que le composant
+ * a résolu (`calendar`, `clock` en `timeOnly`, ou `xmark` quand `showClear` a une valeur à effacer),
+ * `size` = la taille calée sur le champ, `disabled` = l'état du champ.
+ */
+export const IconTemplate: Story = {
+  decorators: [
+    applicationConfig({ providers: [provideUiIconFamilies({ demo: demoFamily })] }),
+    moduleMetadata({ imports: [UiDatepicker, UiIcon, FormsModule] }),
+  ],
+  render: () => ({
+    props: { model: null },
+    template: `<div style="width:280px"><ui-datepicker [(ngModel)]="model" valueType="date" label="Date" showClear>
+      <ng-template #icon let-name let-size="size">
+        <ui-icon [name]="name" family="demo" [size]="size" />
+      </ng-template>
+    </ui-datepicker></div>`,
+  }),
+};
+
+/**
+ * La directive `uiIconFamily` couvre l'autre échelle : **toutes** les icônes descendantes basculent,
+ * y compris celles qu'aucun input n'expose — les chevrons de navigation et des steppers d'heure,
+ * rendus dans le panneau **monté en overlay CDK**. Ouvrez le champ pour les voir.
+ */
+export const ScopedIconFamily: Story = {
+  decorators: [
+    applicationConfig({ providers: [provideUiIconFamilies({ demo: demoFamily })] }),
+    moduleMetadata({ imports: [UiDatepicker, UiIconFamilyScope, FormsModule] }),
+  ],
+  render: () => ({
+    props: { model: new Date(2026, 6, 8) },
+    template: `<div style="width:280px"><ui-datepicker uiIconFamily="demo"
+      [(ngModel)]="model" valueType="date" label="Rendez-vous" showTime /></div>`,
   }),
 };
