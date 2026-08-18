@@ -8,14 +8,22 @@ import { SchematicsException } from '@angular-devkit/schematics';
 import { readFileSync } from 'node:fs';
 import { basename } from 'node:path';
 import type { AssetUnit } from './component-registry';
-import { flattenedRelPath, unitSourceFiles } from './component-registry';
+import { flattenedRelPath, isStorybookFile, unitSourceFiles } from './component-registry';
 import { BARREL_FILENAME } from './export-map';
-import { rewriteKitImports } from './rewrite-imports';
+import { rewriteDocImports, rewriteKitImports } from './rewrite-imports';
+import { stripFigmaDesign } from './strip-figma';
 
 const HEADER_STYLE: Record<string, (lines: string[]) => string> = {
   '.ts': (lines) => lines.map((l) => `// ${l}`).join('\n') + '\n',
   '.scss': (lines) => lines.map((l) => `// ${l}`).join('\n') + '\n',
   '.html': (lines) => `<!--\n${lines.map((l) => `  ${l}`).join('\n')}\n-->\n`,
+  // Une constante exportée, et non le commentaire `{/* … */}` qu'on attendrait
+  // ici : c'est la seule forme de commentaire que le MDX accepte, et elle ne
+  // survit pas au passage de Prettier que le CLI Angular applique aux fichiers
+  // écrits par un schematic (`{/*` en ressort en `{/_`, et l'indexeur de
+  // Storybook ne parse plus la page). Un `export const` traverse ce formatage
+  // sans dommage, reste invisible au rendu, et porte la même mention.
+  '.mdx': (lines) => `export const uiKitOrigin = ${JSON.stringify(lines.join(' '))};\n\n`,
 };
 
 function traceabilityHeader(unit: AssetUnit, relPath: string, kitVersion: string, ext: string): string {
@@ -37,9 +45,17 @@ export interface RenderedFile {
   content: string;
 }
 
+export interface RenderOptions {
+  /** Poser aussi la story et le MDX du composant (FSHSP-125). Par défaut non :
+   * sans Storybook dans le projet, ce sont deux fichiers qui importent des
+   * packages absents. Le choix est mémorisé dans `ui-kit.json`, pour qu'`update`
+   * le reconduise au lieu de le redemander. */
+  withStorybook?: boolean;
+}
+
 /** Calcule le contenu final (en-tête inclus) de chaque fichier d'une unité,
  * sans rien écrire — réutilisé par `copyUnit` et par le diff d'`update`. */
-export function renderUnitFiles(unit: AssetUnit, kitVersion: string): RenderedFile[] {
+export function renderUnitFiles(unit: AssetUnit, kitVersion: string, options: RenderOptions = {}): RenderedFile[] {
   const files: RenderedFile[] = [];
   const unresolved: string[] = [];
 
@@ -55,6 +71,7 @@ export function renderUnitFiles(unit: AssetUnit, kitVersion: string): RenderedFi
     // Comparaison sur le nom EXACT : un `endsWith` écarterait aussi un
     // `ui-table-public-api.ts`, qui est un fichier de composant ordinaire.
     if (basename(absSrc) === BARREL_FILENAME) continue;
+    if (!options.withStorybook && isStorybookFile(absSrc)) continue;
 
     const relPath = flattenedRelPath(unit, absSrc);
     const ext = absSrc.slice(absSrc.lastIndexOf('.'));
@@ -70,8 +87,9 @@ export function renderUnitFiles(unit: AssetUnit, kitVersion: string): RenderedFi
     claimedBy.set(targetPath, absSrc);
 
     let source = readFileSync(absSrc, 'utf8');
-    if (ext === '.ts') {
-      const result = rewriteKitImports(source, targetPath);
+    if (absSrc.endsWith('.stories.ts')) source = stripFigmaDesign(source);
+    if (ext === '.ts' || ext === '.mdx') {
+      const result = ext === '.mdx' ? rewriteDocImports(source, targetPath) : rewriteKitImports(source, targetPath);
       source = result.content;
       unresolved.push(...result.unresolved.map((item) => `${relPath} → ${item}`));
     }
@@ -94,9 +112,9 @@ export function renderUnitFiles(unit: AssetUnit, kitVersion: string): RenderedFi
 }
 
 /** Copie tous les fichiers d'une unité dans l'arbre, avec en-tête de traçabilité. */
-export function copyUnit(tree: Tree, unit: AssetUnit, kitVersion: string): string[] {
+export function copyUnit(tree: Tree, unit: AssetUnit, kitVersion: string, options: RenderOptions = {}): string[] {
   const written: string[] = [];
-  for (const { targetPath, content } of renderUnitFiles(unit, kitVersion)) {
+  for (const { targetPath, content } of renderUnitFiles(unit, kitVersion, options)) {
     if (tree.exists(targetPath)) tree.overwrite(targetPath, content);
     else tree.create(targetPath, content);
     written.push(targetPath);

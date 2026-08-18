@@ -16,7 +16,7 @@
 
 import { execSync } from 'node:child_process';
 import { cpSync, copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
+import { dirname, join, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -56,9 +56,13 @@ for (const name of ['README.md', 'README.fr.md', 'LICENSE']) {
   if (existsSync(src)) copyFileSync(src, join(DEST, name));
 }
 // `schema.json` n'est pas un `.ts` : tsc ne le copie pas tout seul.
+// Les `files/` échappent au filtre : ce sont des scaffolds pour le projet
+// consommateur (`preview.ts`, `myTheme.ts`…), exclus de la compilation
+// justement parce qu'ils doivent partir tels quels — les filtrer ici les
+// ferait disparaître du package sans que rien ne le signale.
 cpSync(join(PKG, 'src'), join(DEST, 'src'), {
   recursive: true,
-  filter: (path) => !path.endsWith('.ts'),
+  filter: (path) => !path.endsWith('.ts') || path.includes(`${sep}files${sep}`),
 });
 cpSync(join(PKG, 'assets'), join(DEST, 'assets'), { recursive: true });
 
