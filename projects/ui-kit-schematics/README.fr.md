@@ -41,18 +41,33 @@ jamais une fusion automatique.
 | `ng generate @4sh/ui-kit-schematics:add` | copier d'autres composants (interactif, ou `--components`, ou `--all`) |
 | `ng generate @4sh/ui-kit-schematics:update` | diff des composants copiés face aux sources publiées |
 
-### Documenter ses copies : `--with-storybook`
+### Votre propre Storybook : `--with-storybook`
 
-Désactivé par défaut. Activé, chaque composant arrive avec sa story et sa page
-MDX, et le projet reçoit la chaîne qui garde leurs tables *Theming* justes :
-`scripts/docs.config.mjs` lit les rôles `///` de vos `.scss`, si bien que les
-tables décrivent **vos** valeurs — la raison même de copier les sources. Le choix
-est retenu dans `ui-kit.json`, et `update` s'y tient.
+Désactivé par défaut. Activé, vous obtenez un Storybook qui tourne, sur les
+composants que vous avez copiés :
 
-Ce que cela ne fait **pas** encore : installer Storybook ni écrire sa
-configuration. Pointez votre `storybook/main.js` sur
-`src/app/shared/components/**/*.mdx` et `**/*.stories.ts`, et lancez
-`npm run docs:config` avant de le démarrer.
+```bash
+npm run storybook
+```
+
+Chaque composant arrive avec sa story et sa page MDX, à côté de ses sources. La
+configuration atterrit dans `storybook/` — `main.js`, `preview.ts`, le thème du
+manager, le sélecteur de marque, et les pages transverses *Foundations*,
+*Spécifications* et *Configuration*. Les cibles `storybook` et `build-storybook`
+sont ajoutées à `angular.json`, les devDependencies au `package.json`.
+
+Deux choses font que cette doc est **la vôtre**, et non une photo de la nôtre.
+Les tables *Theming* sont lues sur vos propres `.scss` au build
+(`scripts/docs.config.mjs` en extrait les rôles `///`) : elles décrivent vos
+valeurs, rebranding compris. Et les globs couvrent tout
+`src/app/shared/components/**` : une story écrite à côté de votre propre
+composant apparaît sans toucher à la configuration.
+
+Le choix est retenu dans `ui-kit.json`, et `update` s'y tient.
+
+Non repris : les liens `parameters.design` vers notre fichier Figma — vous ne
+pouvez pas l'ouvrir, ils sont retirés à la copie. Remettez votre `node-id` si
+vous en avez un.
 
 ### `@4sh/ui-kit` n'est délibérément **pas** installé
 

@@ -196,6 +196,35 @@ function main() {
     docFiles++;
   }
 
+  // Configuration Storybook — la part qui vaut TELLE QUELLE chez le
+  // consommateur, donc copiée d'ici pour rester en phase avec ce dépôt sans
+  // recopie manuelle. Ce qui doit diverger (`main.js` et ses globs, `preview.ts`
+  // et ses couplages, `myTheme.ts` et sa marque, les tsconfig) est écrit en
+  // scaffold dans `src/ng-add/files/storybook/` : deux natures, deux endroits.
+  //
+  // `restore-component-metadata.ts` n'est PAS du lot : il répare les
+  // annotations que le linker retire du package *compilé* que nos stories
+  // importent. Chez le consommateur les stories visent des sources, compilées
+  // avec le reste de son app — le décorateur n'aurait rien à réparer.
+  for (const name of ['manager.ts', 'brand-toolbar.ts', 'preview-head.html', 'typings.d.ts']) {
+    const src = join(ROOT, 'storybook', name);
+    if (!existsSync(src)) continue;
+    mkdirSync(join(ASSETS, 'storybook'), { recursive: true });
+    copyFileSync(src, join(ASSETS, 'storybook', name));
+    docFiles++;
+  }
+
+  // Pages de doc transverses. `Introduction`, `NpmPackage` et `Overview` restent
+  // ici : les deux premières racontent l'installation de `@4sh/ui-kit`, la
+  // troisième est validée par `components.check.mjs` contre NOTRE inventaire.
+  // Les pages `config/` sont, elles, la cible des liens `?path=/docs/…` que
+  // portent les MDX des composants : sans elles, ces liens tombent dans le vide.
+  for (const group of ['foundations', 'specifications', 'config']) {
+    const src = join(ROOT, 'storybook/docs', group);
+    if (!existsSync(src)) continue;
+    docFiles += copyTree(src, join(ASSETS, 'storybook/docs', group), (n) => n.endsWith('.mdx'));
+  }
+
   console.log(
     `[schematics-assets] ${componentCount} composant(s), ${sharedCount} base(s) partagée(s), ` +
       `${styleFiles} fichier(s) de style, ${tokenFiles} fichier(s) de pipeline de tokens, ` +

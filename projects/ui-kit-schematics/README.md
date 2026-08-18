@@ -39,17 +39,32 @@ against newer sources — never an automatic merge.
 | `ng generate @4sh/ui-kit-schematics:add` | copy more components (interactive, or `--components`, or `--all`) |
 | `ng generate @4sh/ui-kit-schematics:update` | diff copied components against the published sources |
 
-### Documenting your copies: `--with-storybook`
+### Your own Storybook: `--with-storybook`
 
-Off by default. Turned on, each component arrives with its story and its MDX page,
-and the project gets the chain that keeps their *Theming* tables truthful:
-`scripts/docs.config.mjs` reads the `///` roles out of your `.scss` files, so the
-tables describe **your** values — the point of copying sources in the first place.
+Off by default. Turned on, you get a working Storybook of the components you
+copied:
+
+```bash
+npm run storybook
+```
+
+Each component arrives with its story and its MDX page, next to its sources. The
+config lands in `storybook/` — `main.js`, `preview.ts`, the manager theme, the
+brand switcher, and the shared *Foundations* / *Specifications* / *Configuration*
+pages. The `storybook` and `build-storybook` targets are added to `angular.json`,
+the devDependencies to `package.json`.
+
+Two things make the doc *yours* rather than a snapshot of ours. The *Theming*
+tables are read off your own `.scss` at build time (`scripts/docs.config.mjs`
+collects the `///` roles), so they describe your values, rebranding included. And
+the globs cover `src/app/shared/components/**` whole: a story you write next to
+your own component shows up with no config change.
+
 The choice is recorded in `ui-kit.json`, and `update` honours it.
 
-What this does **not** do yet: install Storybook or write its configuration. Point
-your own `storybook/main.js` at `src/app/shared/components/**/*.mdx` and
-`**/*.stories.ts`, and run `npm run docs:config` before starting it.
+Not carried over: the `parameters.design` links to our Figma file — you cannot
+open it, so it is stripped at copy time. Put your own `node-id` back if you have
+one.
 
 ### `@4sh/ui-kit` is deliberately **not** installed
 

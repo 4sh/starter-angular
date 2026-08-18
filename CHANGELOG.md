@@ -17,11 +17,13 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 ## [Unreleased]
 
 ### Added
-- **Les composants copiés peuvent emporter leur doc** (FSHSP-125) : `ng add @4sh/ui-kit-schematics --with-storybook` copie, à côté de chaque composant, sa story et sa page MDX, et pose la chaîne qui les alimente (`scripts/docs.config.mjs`, bloc `<ConfigTable>`). Jusqu'ici un projet en sources copiées possédait son code mais aucune doc : il lui restait un Storybook hébergé qui décrit *nos* composants, pas ses copies éditées.
+- **Un projet en sources copiées a désormais son propre Storybook** (FSHSP-125) : `ng add @4sh/ui-kit-schematics --with-storybook` copie, à côté de chaque composant, sa story et sa page MDX, pose la configuration Storybook (`storybook/`, cibles `angular.json`, devDependencies, scripts npm) et la chaîne qui alimente la doc (`scripts/docs.config.mjs`, bloc `<ConfigTable>`). Un `npm run storybook` suffit ensuite. Jusqu'ici le projet possédait son code mais aucune doc : il lui restait un Storybook hébergé qui décrit *nos* composants, pas ses copies éditées.
 
-  Les imports suivent les copies, comme pour les sources : la story désigne ses voisins locaux, le MDX désigne le bloc `<ConfigTable>` posé dans le projet — mais les extraits de code des pages, eux, ne sont pas réécrits (ce sont des exemples destinés au lecteur, pas des imports à résoudre). Les tables *Theming* restent lues sur les `.scss` du projet : elles décrivent ses valeurs, pas les nôtres.
+  Deux choses font que cette doc appartient au projet. Les tables *Theming* sont lues sur ses propres `.scss` au build, donc elles décrivent ses valeurs, rebranding compris. Et les globs couvrent tout `src/app/shared/components/**` : une story écrite à côté d'un composant maison apparaît sans toucher à la configuration.
 
-  Désactivé par défaut : sans Storybook installé, ce sont des fichiers qui importent des packages absents. Le choix est retenu dans `ui-kit.json` et `update` s'y tient. La configuration Storybook elle-même n'est pas encore posée par le schematic.
+  Les imports suivent les copies, comme pour les sources — mais les extraits de code des pages ne sont pas réécrits : ce sont des exemples destinés au lecteur, pas des imports à résoudre. Les liens `parameters.design` vers notre fichier Figma sont retirés à la copie : le consommateur n'y a pas accès. Les pages transverses embarquées se limitent à *Foundations*, *Spécifications* et *Configuration* ; `Introduction`, `NpmPackage` et `Overview` parlent du kit lui-même et restent ici.
+
+  Désactivé par défaut : sans Storybook, story et MDX sont deux fichiers qui importent des packages absents. Le choix est retenu dans `ui-kit.json` et `update` s'y tient.
 - **`@4sh/ui-kit-schematics` embarque son `LICENSE` et ses README** (EN + FR). Le package déclarait `Apache-2.0` sans en fournir le texte, alors que la licence (§4a) demande qu'une redistribution en joigne une copie — d'autant plus ici que ce package existe pour que son contenu soit recopié ailleurs. Sa page npmjs, jusque-là vide, redirige maintenant vers `@4sh/ui-kit` : le compagnon ne s'installe jamais directement.
 
 ### Fixed

@@ -11,14 +11,19 @@ import type { AssetUnit } from './component-registry';
 import { flattenedRelPath, isStorybookFile, unitSourceFiles } from './component-registry';
 import { BARREL_FILENAME } from './export-map';
 import { rewriteDocImports, rewriteKitImports } from './rewrite-imports';
+import { stripFigmaDesign } from './strip-figma';
 
 const HEADER_STYLE: Record<string, (lines: string[]) => string> = {
   '.ts': (lines) => lines.map((l) => `// ${l}`).join('\n') + '\n',
   '.scss': (lines) => lines.map((l) => `// ${l}`).join('\n') + '\n',
   '.html': (lines) => `<!--\n${lines.map((l) => `  ${l}`).join('\n')}\n-->\n`,
-  // Commentaire d'expression JSX : le MDX v3 ne connaît plus `<!-- -->`, qu'il
-  // rendrait tel quel en haut de la page de doc.
-  '.mdx': (lines) => `{/*\n${lines.map((l) => `  ${l}`).join('\n')}\n*/}\n\n`,
+  // Une constante exportée, et non le commentaire `{/* … */}` qu'on attendrait
+  // ici : c'est la seule forme de commentaire que le MDX accepte, et elle ne
+  // survit pas au passage de Prettier que le CLI Angular applique aux fichiers
+  // écrits par un schematic (`{/*` en ressort en `{/_`, et l'indexeur de
+  // Storybook ne parse plus la page). Un `export const` traverse ce formatage
+  // sans dommage, reste invisible au rendu, et porte la même mention.
+  '.mdx': (lines) => `export const uiKitOrigin = ${JSON.stringify(lines.join(' '))};\n\n`,
 };
 
 function traceabilityHeader(unit: AssetUnit, relPath: string, kitVersion: string, ext: string): string {
@@ -82,6 +87,7 @@ export function renderUnitFiles(unit: AssetUnit, kitVersion: string, options: Re
     claimedBy.set(targetPath, absSrc);
 
     let source = readFileSync(absSrc, 'utf8');
+    if (absSrc.endsWith('.stories.ts')) source = stripFigmaDesign(source);
     if (ext === '.ts' || ext === '.mdx') {
       const result = ext === '.mdx' ? rewriteDocImports(source, targetPath) : rewriteKitImports(source, targetPath);
       source = result.content;
