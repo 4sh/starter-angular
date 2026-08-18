@@ -38,6 +38,28 @@ composant, dans la barre latérale, donne l'import exact à recopier.
 
 ---
 
+## Ou : posséder les sources (mode *starter*)
+
+`npm install` livre les composants **compilés**. Le second mode de consommation
+les installe en **sources**, dans votre dépôt, libres d'être modifiées :
+
+```bash
+ng add @4sh/ui-kit-schematics                    # fondation + composants, en une commande
+ng add @4sh/ui-kit-schematics --with-storybook   # avec la doc des composants copiés
+ng generate @4sh/ui-kit-schematics:update        # diff par composant après une release du kit
+```
+
+Le parcours passe par le package compagnon, et `@4sh/ui-kit` n'entre jamais dans
+`node_modules` : absent, rien ne peut importer son code compilé à la place de vos
+copies.
+
+Le choix entre les deux — ce qui arrive dans le dépôt, les imports, les styles, la
+personnalisation, les mises à jour — est comparé dans le README du package,
+ci-dessous. La documentation des composants, elle, est la même dans les deux cas :
+c'est ce Storybook.
+
+---
+
 ## Le mode d'emploi complet vit dans le README du package
 
 Installation, liste des entry points, feuille de styles à charger, providers

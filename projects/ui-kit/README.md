@@ -10,6 +10,32 @@ built in natively (signals + Angular CDK), styling driven by design tokens.
 
 ---
 
+## Two ways to consume the kit
+
+Choose **before** installing: the decision shapes everything that follows.
+
+| | **dependency** | **starter** |
+|---|---|---|
+| Install | `npm install @4sh/ui-kit` | `ng add @4sh/ui-kit-schematics` |
+| What lands in your repo | nothing — compiled components stay in `node_modules` | the component *sources*, in `src/app/shared/` |
+| Imports | `@4sh/ui-kit/actions/ui-button` | your own path (`./shared/components/ui/actions/ui-button`) |
+| Styles | `node_modules/@4sh/ui-kit/styles.css`, loaded globally | copied into `src/styles/`, with the token generation chain (`npm run tokens:build`) |
+| Documentation | the Storybook linked above | yours, on your own copies (`--with-storybook`) |
+| Customization | inputs + CSS variables | edit the code itself |
+| Updating | bump the version | `ng generate @4sh/ui-kit-schematics:update` — per-component diff, accept or skip |
+
+**dependency** is the default: nothing to maintain, one version to follow, and a
+guarantee that every project renders the same kit. **starter** — the shadcn/ui or
+spartan-ng approach — trades that guarantee for ownership of the code: pick it
+when the project needs to diverge from the Design System, and accept that
+updates are then semi-manual.
+
+Both modes describe the same components. **The rest of this page describes the
+`dependency` mode**; the starter path has its own package and its own README (see
+[below](#or-copy-the-sources-instead)).
+
+---
+
 ## Installation
 
 ```bash
