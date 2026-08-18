@@ -889,8 +889,8 @@
   // Bordures & rayons
   --ui-tabs-focus-ring-width:                   var(--ui-focus-ring-width, var(--units-2xs));
   // Couleurs
-  --ui-tabs-active-bar-color:                   var(--navigation-high-stroke-active);
-  --ui-tabs-indicator-color:                    var(--navigation-high-stroke-active);
+  --ui-tabs-active-bar-color:                   var(--navigation-highoutlined-stroke-active);
+  --ui-tabs-indicator-color:                    var(--navigation-highoutlined-stroke-active);
 
   // ══════════════════════════════════════════════════════════════════
   // shared

@@ -78,6 +78,13 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
   Effets de bord corrigés au passage : les dépendances copiées n'étaient utilisées par personne (copies mortes, suivies par `update` pour rien), le bundle embarquait le composant deux fois, et du code applicatif dépendait d'une `devDependency` — ce qui cassait en `npm ci --omit=dev`.
 
 ### Changed
+- **`ui-tabs` passe sur les jetons `navigation.highOutlined.*`**, pour s'aligner sur le composant du UI Kit Figma. Les onglets lisaient `navigation.high.*`, la déclinaison *pleine* : l'onglet actif était une pastille remplie (`surface.active` = `primary.500`, libellé blanc) **doublée** de la barre d'indicateur — deux marqueurs pour le même état, là où la maquette n'en montre qu'un.
+
+  En `highOutlined`, `surface.active` est transparent et `content.active` prend la couleur d'accent : l'onglet actif se lit par son libellé coloré et la barre, comme dans Figma. Le survol passe de `primary.700` à `primary.500` sur le libellé (le fond `primary.100` est inchangé), et `default` / `disabled` sont identiques dans les deux déclinaisons.
+
+  Les navigateurs de défilement de `ui-tab-list` suivent la même bascule, pour que la bande reste d'une seule pièce. Aucun changement de code ni d'API : seuls les noms de variables CSS changent. Les hooks exposés (`--ui-tabs-indicator-color`, `--ui-tabs-active-bar-color`) gardent leur nom ; seul leur défaut suit — désormais `var(--navigation-highoutlined-stroke-active)`.
+
+  **En sombre**, `content.active` vaut `white.base` face à `grey.50` pour les onglets inactifs : l'écart est imperceptible, la barre d'indicateur porte seule la distinction. C'est la valeur du jeton Figma, conservée telle quelle.
 - ⚠️ **Le parcours starter s'installe en une commande, et n'installe plus `@4sh/ui-kit`** (FSHSP-122) :
 
   ```bash

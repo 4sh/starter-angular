@@ -12100,7 +12100,7 @@
   "tabs": {
     "active-bar": {
       "color": {
-        "$value": "{semantics.navigation.high.stroke.active}",
+        "$value": "{semantics.navigation.highOutlined.stroke.active}",
         "$type": "color",
         "$description": "Couleur de la barre d'onglet actif.",
         "$extensions": {
@@ -12168,7 +12168,7 @@
     },
     "indicator": {
       "color": {
-        "$value": "{semantics.navigation.high.stroke.active}",
+        "$value": "{semantics.navigation.highOutlined.stroke.active}",
         "$type": "color",
         "$description": "Couleur de la barre d'onglet actif.",
         "$extensions": {
