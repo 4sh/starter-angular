@@ -16,12 +16,13 @@ Choose **before** installing: the decision shapes everything that follows.
 
 | | **dependency** | **starter** |
 |---|---|---|
-| Install | `npm install @4sh/ui-kit` | `ng add @4sh/ui-kit` |
-| What lands in your repo | nothing — compiled components stay in `node_modules` | the component *sources*, in `src/app/shared/components/ui/` |
+| Install | `npm install @4sh/ui-kit` | `ng add @4sh/ui-kit-schematics` |
+| What lands in your repo | nothing — compiled components stay in `node_modules` | the component *sources*, in `src/app/shared/` |
 | Imports | `@4sh/ui-kit/actions/ui-button` | your own path (`./shared/components/ui/actions/ui-button`) |
 | Styles | `node_modules/@4sh/ui-kit/styles.css`, loaded globally | copied into `src/styles/`, with the token generation chain (`npm run tokens:build`) |
+| Documentation | the Storybook linked above | yours, on your own copies (`--with-storybook`) |
 | Customization | inputs + CSS variables | edit the code itself |
-| Updating | bump the version | `ng generate @4sh/ui-kit:update` — per-component diff, accept or skip |
+| Updating | bump the version | `ng generate @4sh/ui-kit-schematics:update` — per-component diff, accept or skip |
 
 **dependency** is the default: nothing to maintain, one version to follow, and a
 guarantee that every project renders the same kit. **starter** — the shadcn/ui or
@@ -29,30 +30,9 @@ spartan-ng approach — trades that guarantee for ownership of the code: pick it
 when the project needs to diverge from the Design System, and accept that
 updates are then semi-manual.
 
-Both modes document the same components: the Storybook above is the reference in
-either case. **The rest of this page describes the `dependency` mode.**
-
-### Starter mode
-
-```bash
-ng add @4sh/ui-kit                    # foundation: styles, tokens, angular.json
-ng generate @4sh/ui-kit:add           # interactive selection (a = all)
-ng generate @4sh/ui-kit:add --all     # no prompt
-ng generate @4sh/ui-kit:update        # diff per component, apply or skip
-```
-
-`ng add` copies the styles foundation, the token generation chain
-(`src/design-tokens/`, `tokens.config.json`, `scripts/tokens.build.mjs` — so the
-project can rebrand without waiting for a kit release), wires `angular.json`,
-and installs the runtime dependencies. `add` resolves dependencies between
-components (`ui-select` pulls in `ui-icon`, `ui-field`, `ui-spinner`…) by
-analyzing imports; each copied file carries its origin in a header, and
-`ui-kit.json` records what is installed.
-
-In this mode `@4sh/ui-kit` stays a **devDependency**: it is only there to drive
-the CLI. The sources come from the companion package
-[`@4sh/ui-kit-schematics`](https://www.npmjs.com/package/@4sh/ui-kit-schematics),
-pulled in automatically — never install it yourself.
+Both modes describe the same components. **The rest of this page describes the
+`dependency` mode**; the starter path has its own package and its own README (see
+[below](#or-copy-the-sources-instead)).
 
 ---
 
@@ -69,6 +49,24 @@ Dependencies are declared as `peerDependencies` — the version already present 
 your application is the one used (never a second copy of Angular):
 `@angular/core`, `@angular/common`, `@angular/forms`, `@angular/router`,
 `@angular/cdk`, `@angular/platform-browser` and `rxjs`.
+
+### Or copy the sources instead
+
+This package gives you **compiled** components: you import them and follow the
+kit's releases. If you would rather have the sources *in your own repository*, to
+read and edit them — the shadcn/spartan-ng approach — that is the other mode, and
+it goes through the companion package:
+
+```bash
+ng add @4sh/ui-kit-schematics
+```
+
+It copies the components you pick into `src/app/shared/`, and deliberately does
+**not** install `@4sh/ui-kit`: absent from `node_modules`, nothing can import its
+compiled code instead of your copies. See
+**[`@4sh/ui-kit-schematics`](https://www.npmjs.com/package/@4sh/ui-kit-schematics)**.
+
+The two modes do not combine — pick the one that fits the project.
 
 ---
 

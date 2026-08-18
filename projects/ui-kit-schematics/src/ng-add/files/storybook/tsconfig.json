@@ -1,0 +1,14 @@
+/* tsconfig de la configuration Storybook (posé par `ng add
+   @4sh/ui-kit-schematics --with-storybook`). Il étend celui de l'application
+   pour compiler stories et preview avec les mêmes règles que votre code. */
+{
+  "extends": "../tsconfig.app.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true
+  },
+  "exclude": ["../src/**/*.spec.ts", "../src/main.ts"],
+  "include": ["../src/**/*", "./preview.ts"],
+  "files": ["./typings.d.ts"]
+}

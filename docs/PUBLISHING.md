@@ -13,24 +13,42 @@ Versionnage : voir [`VERSIONING.md`](./VERSIONING.md).
 | `@4sh/ui-kit-schematics` | les **sources brutes** que le starter recopie chez le consommateur, et les schematics qui les copient | `projects/ui-kit-schematics` |
 
 Le second existe parce que `ng-packagr` *inline* template et SCSS dans le `.mjs`
-publié : les sources que `ng generate @4sh/ui-kit:add` doit copier n'existent
-nulle part dans le tarball du kit (FSHSP-109).
+publié : les sources que les schematics doivent copier n'existent nulle part dans
+le tarball du kit (FSHSP-109).
+
+Chacun sert **un mode de consommation**, et les deux ne se croisent pas
+(FSHSP-122) :
+
+| Mode | Commande | Ce que le consommateur installe |
+|---|---|---|
+| Librairie | `npm i @4sh/ui-kit` | le kit compilé |
+| Starter (sources copiées) | `ng add @4sh/ui-kit-schematics` | le compagnon seul — **jamais le kit** |
+
+Le kit est absent du parcours starter délibérément : hors de `node_modules`, aucun
+import ne peut viser son code compilé au lieu des copies locales.
 
 **Les deux portent toujours le même numéro de version, et se publient dans le
-même job.** Le `ng-add` de `@4sh/ui-kit` réclame le compagnon en
-`^<version du kit>` ([`projects/ui-kit/schematics/index.cjs`](../projects/ui-kit/schematics/index.cjs)) :
-publier l'un sans l'autre casse `ng add` chez le consommateur. La version du
-compagnon est d'ailleurs **estampillée depuis celle du kit** au moment de
-l'assemblage (`scripts/schematics-package.build.mjs`) — il n'y a pas de numéro à
-tenir à jour à deux endroits, et le job `verify` vérifie la parité avant toute
-publication.
+même job.** La version du compagnon est **estampillée depuis celle du kit** au
+moment de l'assemblage (`scripts/schematics-package.build.mjs`) — il n'y a pas de
+numéro à tenir à jour à deux endroits, et le job `verify` vérifie la parité avant
+toute publication.
 
-> ⚠️ **Ordre de publication : le compagnon d'abord, le kit ensuite.** npm ne
-> connaît pas la transaction ; si la seconde publication échoue, l'ordre décide
-> de ce qui reste. Un compagnon orphelin est inerte (aucun kit publié ne le
-> référence) ; un kit publié sans son compagnon est cassé pour tout le monde, et
-> irréparable passé 72 h. Le workflow applique cet ordre, avec le raisonnement
-> en commentaire — ne pas l'inverser.
+Ce numéro commun n'est pas cosmétique : le compagnon embarque une copie des
+sources du kit, et c'est lui qui identifie **de quel kit** vient un fichier copié.
+Il est inscrit dans l'en-tête de traçabilité de chaque fichier et dans le
+`ui-kit.json` du consommateur, dont `update` se sert pour calculer ses diffs.
+
+> ⚠️ **Ordre de publication : le compagnon d'abord, le kit ensuite.** Le workflow
+> applique cet ordre — ne pas l'inverser sans relire ce qui suit.
+>
+> Depuis FSHSP-122, aucun des deux packages ne référence l'autre à l'installation :
+> une publication partielle ne casse donc plus personne, là où un kit publié sans
+> son compagnon rendait auparavant `ng add` inopérant pour tout le monde. Ce qui
+> reste en jeu est plus étroit : un compagnon publié seul livre des sources dont
+> l'en-tête annonce une version de kit absente du registre, et un kit publié seul
+> laisse le parcours starter sur les sources de la version précédente. L'ordre
+> actuel privilégie le second cas, moins déroutant — mais dans les deux
+> situations, la réponse est de publier le manquant, ou un correctif.
 
 ---
 
@@ -314,16 +332,25 @@ Contenu et résolution des imports strictement identiques à une vraie
 publication. Pour du développement en parallèle :
 `npm install ../starter-angular/dist/ui-kit`.
 
-Pour éprouver le **starter** (`ng add`, `ng generate …:add`), il faut les deux
-packages, le kit ne sachant que déléguer :
+Pour éprouver le **starter**, le compagnon suffit — il porte les sources *et* les
+schematics, et le parcours n'installe pas le kit :
 
 ```bash
 npm run schematics:pack     # → 4sh-ui-kit-schematics-<version>.tgz
-npm run ui-kit:pack         # → 4sh-ui-kit-<version>.tgz
 
-# dans le projet consommateur — le compagnon d'abord, sinon `ng add` tirerait
-# la version publiée sur le registre au lieu de celle qu'on veut éprouver
+# dans le projet consommateur
 npm install -D /chemin/vers/4sh-ui-kit-schematics-<version>.tgz
-npm install -D /chemin/vers/4sh-ui-kit-<version>.tgz
-ng generate @4sh/ui-kit:add
+npx ng generate @4sh/ui-kit-schematics:ng-add --components ui-button ui-checkbox
+```
+
+On passe par `ng generate …:ng-add` plutôt que `ng add` : la commande publiée
+`ng add @4sh/ui-kit-schematics` irait chercher le package sur le registre, pas le
+tarball local. La règle exécutée est exactement la même. Et `--components` évite
+le prompt interactif, ce qui rend l'essai scriptable — l'omettre le rétablit.
+
+Vérifications qui valent la peine, une fois la commande passée :
+
+```bash
+grep '@4sh' package.json     # le kit doit être ABSENT, seul le compagnon apparaît
+npm install && npx ng build  # les sources copiées doivent compiler telles quelles
 ```

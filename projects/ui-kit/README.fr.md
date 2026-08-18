@@ -16,12 +16,13 @@ natif (signals + Angular CDK), style piloté par les design tokens.
 
 | | **dépendance** | **starter** |
 |---|---|---|
-| Installation | `npm install @4sh/ui-kit` | `ng add @4sh/ui-kit` |
-| Ce qui arrive dans votre dépôt | rien — les composants compilés restent dans `node_modules` | les *sources* des composants, dans `src/app/shared/components/ui/` |
+| Installation | `npm install @4sh/ui-kit` | `ng add @4sh/ui-kit-schematics` |
+| Ce qui arrive dans votre dépôt | rien — les composants compilés restent dans `node_modules` | les *sources* des composants, dans `src/app/shared/` |
 | Imports | `@4sh/ui-kit/actions/ui-button` | votre propre chemin (`./shared/components/ui/actions/ui-button`) |
 | Styles | `node_modules/@4sh/ui-kit/styles.css`, chargée globalement | copiés dans `src/styles/`, avec la chaîne de génération des tokens (`npm run tokens:build`) |
+| Documentation | le Storybook lié ci-dessus | la vôtre, sur vos copies (`--with-storybook`) |
 | Personnalisation | inputs + variables CSS | modifier le code lui-même |
-| Mise à jour | bump de version | `ng generate @4sh/ui-kit:update` — diff par composant, appliquer ou ignorer |
+| Mise à jour | bump de version | `ng generate @4sh/ui-kit-schematics:update` — diff par composant, appliquer ou ignorer |
 
 **dépendance** est le mode par défaut : rien à maintenir, une seule version à
 suivre, et la garantie que tous les projets affichent le même kit. **starter** —
@@ -29,31 +30,9 @@ l'approche de shadcn/ui ou spartan-ng — échange cette garantie contre la
 possession du code : à choisir quand le projet doit s'écarter du Design System,
 en assumant que les mises à jour deviennent semi-manuelles.
 
-Les deux modes documentent les mêmes composants : le Storybook ci-dessus reste la
-référence dans les deux cas. **La suite de cette page décrit le mode
-`dépendance`.**
-
-### Mode starter
-
-```bash
-ng add @4sh/ui-kit                    # fondation : styles, tokens, angular.json
-ng generate @4sh/ui-kit:add           # sélection interactive (a = tout)
-ng generate @4sh/ui-kit:add --all     # sans prompt
-ng generate @4sh/ui-kit:update        # diff par composant, appliquer ou ignorer
-```
-
-`ng add` copie la fondation de styles, la chaîne de génération des tokens
-(`src/design-tokens/`, `tokens.config.json`, `scripts/tokens.build.mjs` — le
-projet peut donc rebrander sans attendre une release du kit), câble
-`angular.json` et installe les dépendances runtime. `add` résout les dépendances
-entre composants (`ui-select` entraîne `ui-icon`, `ui-field`, `ui-spinner`…) par
-analyse des imports ; chaque fichier copié porte son origine en en-tête, et
-`ui-kit.json` recense ce qui est installé.
-
-Dans ce mode, `@4sh/ui-kit` reste une **devDependency** : il ne sert qu'à piloter
-la CLI. Les sources viennent du package compagnon
-[`@4sh/ui-kit-schematics`](https://www.npmjs.com/package/@4sh/ui-kit-schematics),
-tiré automatiquement — ne l'installez jamais vous-même.
+Les deux modes décrivent les mêmes composants. **La suite de cette page décrit le
+mode `dépendance`** ; la voie starter a son propre package et son propre README
+(voir [plus bas](#ou-copier-les-sources-à-la-place)).
 
 ---
 
@@ -70,6 +49,24 @@ Les dépendances sont déclarées en `peerDependencies` — c'est la version dé
 présente dans votre application qui est utilisée (jamais un second exemplaire
 d'Angular) : `@angular/core`, `@angular/common`, `@angular/forms`,
 `@angular/router`, `@angular/cdk`, `@angular/platform-browser` et `rxjs`.
+
+### Ou copier les sources à la place
+
+Ce package vous donne les composants **compilés** : vous les importez et vous
+suivez les releases du kit. Si vous préférez avoir les sources *dans votre propre
+dépôt*, pour les lire et les modifier — l'approche shadcn/spartan-ng — c'est
+l'autre mode, et il passe par le package compagnon :
+
+```bash
+ng add @4sh/ui-kit-schematics
+```
+
+Il copie les composants que vous choisissez dans `src/app/shared/`, et n'installe
+délibérément **pas** `@4sh/ui-kit` : absent de `node_modules`, plus rien ne peut
+importer son code compilé au lieu de vos copies. Voir
+**[`@4sh/ui-kit-schematics`](https://www.npmjs.com/package/@4sh/ui-kit-schematics)**.
+
+Les deux modes ne se combinent pas — choisissez celui qui correspond au projet.
 
 ---
 

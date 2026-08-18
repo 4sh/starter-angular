@@ -14,8 +14,11 @@
  *     `ng-package.json`) → `assets/components/{catégorie}/ui-{nom}/`
  *   - une base PARTAGÉE (transverse à une catégorie, ex. `forms/src` qui
  *     porte `BaseFormField`) → `assets/shared/{catégorie}/`
- * Seuls `*.ts`, `*.html`, `*.scss` sont copiés — jamais `*.stories.ts`,
- * `*.spec.ts`, `*.mdx` (contrat repris de `components.check.mjs`).
+ * Seuls `*.ts`, `*.html`, `*.scss`, `*.mdx` sont copiés — jamais `*.spec.ts`.
+ * La story et le MDX en font partie depuis FSHSP-125 : ils sont la doc du
+ * composant, et un composant copié sans sa doc laisse le consommateur avec un
+ * Storybook hébergé qui décrit NOS composants, pas ses copies éditées. C'est
+ * `add --with-storybook` qui décide de les poser ou non chez lui, pas ce script.
  *
  * La fondation de styles (`styles/base`, `styles/utils`, `styles/settings`,
  * `styles/generated`) part elle aussi dans `assets/styles/`, pour `ng-add`.
@@ -31,8 +34,10 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const KIT = join(ROOT, 'projects/ui-kit');
 const ASSETS = join(ROOT, 'projects/ui-kit-schematics/assets');
 
-const SOURCE_EXTENSIONS = new Set(['.ts', '.html', '.scss']);
-const EXCLUDED_SUFFIXES = ['.stories.ts', '.spec.ts', '.mdx'];
+const SOURCE_EXTENSIONS = new Set(['.ts', '.html', '.scss', '.mdx']);
+// Les tests restent au kit : ils s'appuient sur son harnais, pas sur celui du
+// consommateur, chez qui ils échoueraient sans rien lui apprendre.
+const EXCLUDED_SUFFIXES = ['.spec.ts'];
 
 function isSourceFile(name) {
   const ext = name.slice(name.lastIndexOf('.'));
@@ -40,7 +45,7 @@ function isSourceFile(name) {
   return !EXCLUDED_SUFFIXES.some((suffix) => name.endsWith(suffix));
 }
 
-/** Copie récursivement les fichiers source (.ts/.html/.scss) d'un dossier vers un autre. */
+/** Copie récursivement les fichiers source (.ts/.html/.scss/.mdx) d'un dossier vers un autre. */
 function copySourceTree(srcDir, destDir) {
   return copyTree(srcDir, destDir, isSourceFile);
 }
@@ -134,22 +139,10 @@ function main() {
   // peerDependencies runtime à répercuter chez le consommateur (ng-add).
   copyFileSync(join(KIT, 'package.json'), join(ASSETS, 'ui-kit-package.json'));
 
-  // Schémas de la FAÇADE (`projects/ui-kit/collection.json`, qui donne au
-  // consommateur un nom unique — voir projects/ui-kit/schematics/index.cjs).
-  // La façade ne fait que déléguer, mais doit déclarer les mêmes options que
-  // le compagnon : c'est elle que la CLI lit pour typer les arguments
-  // (`--components` doit arriver en tableau, pas en chaîne). On les COPIE
-  // depuis le compagnon plutôt que de les réécrire : une option ajoutée d'un
-  // seul côté serait silencieusement ignorée par l'autre.
-  const facadeSchemas = [
-    ['src/ng-add/schema.json', 'schema-ng-add.json'],
-    ['src/add/schema.json', 'schema-add.json'],
-    ['src/update/schema.json', 'schema-update.json'],
-  ];
-  const facadeDir = join(ROOT, 'projects/ui-kit/schematics');
-  for (const [from, to] of facadeSchemas) {
-    copyFileSync(join(ROOT, 'projects/ui-kit-schematics', from), join(facadeDir, to));
-  }
+  // Plus aucun schéma de façade à synchroniser (FSHSP-122) : la façade de
+  // `@4sh/ui-kit` ne délègue plus rien — elle se borne à indiquer que le
+  // parcours starter passe par `ng add @4sh/ui-kit-schematics` — et n'expose
+  // donc aucune option. Les schémas vivent d'un seul côté, celui du compagnon.
 
   // Chaîne de génération des tokens — embarquée entière (décision validée avec
   // le designer, FSHSP-109) : `generated/` doit rester régénérable chez le
@@ -184,10 +177,58 @@ function main() {
     tokenFiles++;
   }
 
+  // Chaîne de doc (FSHSP-125) — pendant exact de la chaîne de tokens, pour la
+  // même raison : la section « Theming » de chaque MDX n'est pas écrite à la
+  // main, elle est lue dans `ui-config.json` que `docs.config.mjs` extrait des
+  // `///` des `.scss`. Sans le script chez le consommateur, ses tables gèlent
+  // sur NOS valeurs à la première copie — l'inverse de ce que la doc promet.
+  // `docs.config.mjs` est copié tel quel : il détecte lui-même sa disposition
+  // (monorepo ou projet consommateur), aucun chemin à réécrire ici.
+  let docFiles = 0;
+  const docsDest = join(ASSETS, 'docs-pipeline');
+  for (const [src, name] of [
+    [join(ROOT, 'scripts/docs.config.mjs'), 'docs.config.mjs'],
+    [join(ROOT, 'storybook/blocks/config-table.js'), 'config-table.js'],
+  ]) {
+    if (!existsSync(src)) continue;
+    mkdirSync(docsDest, { recursive: true });
+    copyFileSync(src, join(docsDest, name));
+    docFiles++;
+  }
+
+  // Configuration Storybook — la part qui vaut TELLE QUELLE chez le
+  // consommateur, donc copiée d'ici pour rester en phase avec ce dépôt sans
+  // recopie manuelle. Ce qui doit diverger (`main.js` et ses globs, `preview.ts`
+  // et ses couplages, `myTheme.ts` et sa marque, les tsconfig) est écrit en
+  // scaffold dans `src/ng-add/files/storybook/` : deux natures, deux endroits.
+  //
+  // `restore-component-metadata.ts` n'est PAS du lot : il répare les
+  // annotations que le linker retire du package *compilé* que nos stories
+  // importent. Chez le consommateur les stories visent des sources, compilées
+  // avec le reste de son app — le décorateur n'aurait rien à réparer.
+  for (const name of ['manager.ts', 'brand-toolbar.ts', 'preview-head.html', 'typings.d.ts']) {
+    const src = join(ROOT, 'storybook', name);
+    if (!existsSync(src)) continue;
+    mkdirSync(join(ASSETS, 'storybook'), { recursive: true });
+    copyFileSync(src, join(ASSETS, 'storybook', name));
+    docFiles++;
+  }
+
+  // Pages de doc transverses. `Introduction`, `NpmPackage` et `Overview` restent
+  // ici : les deux premières racontent l'installation de `@4sh/ui-kit`, la
+  // troisième est validée par `components.check.mjs` contre NOTRE inventaire.
+  // Les pages `config/` sont, elles, la cible des liens `?path=/docs/…` que
+  // portent les MDX des composants : sans elles, ces liens tombent dans le vide.
+  for (const group of ['foundations', 'specifications', 'config']) {
+    const src = join(ROOT, 'storybook/docs', group);
+    if (!existsSync(src)) continue;
+    docFiles += copyTree(src, join(ASSETS, 'storybook/docs', group), (n) => n.endsWith('.mdx'));
+  }
+
   console.log(
     `[schematics-assets] ${componentCount} composant(s), ${sharedCount} base(s) partagée(s), ` +
-      `${styleFiles} fichier(s) de style, ${tokenFiles} fichier(s) de pipeline de tokens ` +
-      `→ ${relative(ROOT, ASSETS)}`,
+      `${styleFiles} fichier(s) de style, ${tokenFiles} fichier(s) de pipeline de tokens, ` +
+      `${docFiles} fichier(s) de chaîne de doc → ${relative(ROOT, ASSETS)}`,
   );
 }
 

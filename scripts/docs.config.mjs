@@ -40,13 +40,32 @@ import { dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const SHARED_CONFIG = join(ROOT, 'projects/ui-kit/styles/settings/_ui-config.scss');
-const COMPONENTS_DIRS = [
-  join(ROOT, 'src/app/shared/components'),
-  // Components already migrated to the `ui-kit` npm package (`ng-packagr` secondary
-  // entry points) — their `.scss` still documents the same public contract.
-  join(ROOT, 'projects/ui-kit'),
-];
+
+/**
+ * Le script est embarqué tel quel dans `@4sh/ui-kit-schematics` et tourne donc
+ * dans deux dispositions (FSHSP-125) : ce monorepo, où le kit vit sous
+ * `projects/ui-kit/`, et un projet consommateur, où il n'existe que des copies
+ * sous `src/`. Ce sont les mêmes `.scss` et le même contrat `///` : seuls les
+ * chemins changent. On les déduit du disque plutôt que de maintenir deux
+ * versions du script, ou de réécrire ses constantes à la copie.
+ */
+const IS_KIT_MONOREPO = existsSync(join(ROOT, 'projects/ui-kit/styles/settings/_ui-config.scss'));
+
+const SHARED_CONFIG = IS_KIT_MONOREPO
+  ? join(ROOT, 'projects/ui-kit/styles/settings/_ui-config.scss')
+  : // Chez le consommateur, la fondation de styles est posée par `ng add`.
+    join(ROOT, 'src/styles/ui-kit/settings/_ui-config.scss');
+
+const COMPONENTS_DIRS = IS_KIT_MONOREPO
+  ? [
+      join(ROOT, 'src/app/shared/components'),
+      // Components already migrated to the `ui-kit` npm package (`ng-packagr` secondary
+      // entry points) — their `.scss` still documents the same public contract.
+      join(ROOT, 'projects/ui-kit'),
+    ]
+  : // Les composants copiés (`components/ui/`) et ceux du projet cohabitent ici.
+    [join(ROOT, 'src/app/shared/components')];
+
 const OUT_FILE = join(ROOT, 'storybook/generated/ui-config.json');
 
 // Sections de `_ui-config.scss` → page de doc du groupe partagé.
@@ -362,6 +381,9 @@ function resolveBinding(rawValue, { shared, local }) {
 // --- Collecte ---------------------------------------------------------
 
 function walk(dir, out = []) {
+  // Un projet consommateur peut n'avoir encore copié aucun composant : le
+  // dossier n'existe pas, ce n'est pas une erreur (la doc est alors vide).
+  if (!existsSync(dir)) return out;
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
     const full = join(dir, entry.name);
     if (entry.isDirectory()) walk(full, out);
@@ -371,6 +393,15 @@ function walk(dir, out = []) {
 }
 
 function parseSharedConfig() {
+  if (!existsSync(SHARED_CONFIG)) {
+    // Chez le consommateur, ce fichier arrive avec la fondation de styles. Sans
+    // lui, chaque composant perdrait ses constantes partagées sans qu'on sache
+    // dire pourquoi : on nomme la cause plutôt que de produire une doc amputée.
+    throw new Error(
+      `${relative(ROOT, SHARED_CONFIG)} introuvable — pose la fondation de styles ` +
+        `(\`ng add @4sh/ui-kit-schematics\`) avant de générer la doc.`,
+    );
+  }
   const text = readFileSync(SHARED_CONFIG, 'utf8');
   const map = new Map();
   for (const decl of parseDeclarations(text)) {

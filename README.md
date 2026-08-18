@@ -44,12 +44,15 @@ Both sites are redeployed on every push to `main`
 consumed in one of two modes:
 
 ```bash
-npm install @4sh/ui-kit   # dependency — compiled components, updated by version bump
-ng add @4sh/ui-kit        # starter — component sources copied into your project, yours to edit
+npm install @4sh/ui-kit         # dependency — compiled components, updated by version bump
+ng add @4sh/ui-kit-schematics   # starter — component sources copied into your project, yours to edit
 ```
 
-In starter mode, `ng generate @4sh/ui-kit:add` copies the components you pick, and
-`ng generate @4sh/ui-kit:update` replays their diff after a kit release.
+Starter mode goes through the companion package, and deliberately leaves
+`@4sh/ui-kit` out of `node_modules`: the one command lays the foundation and
+copies the components you pick, `--with-storybook` brings their documentation
+along, and `ng generate @4sh/ui-kit-schematics:update` replays their diff after a
+kit release.
 
 Everything a consumer needs — choosing between the two modes, the list of entry
 points, the stylesheet to load, the providers expected by `ui-image` and

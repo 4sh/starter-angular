@@ -355,7 +355,9 @@ $focus-ring-width: utils.$form-focus-ring-width; // ← replace the value here t
 > File **placement** does not drive the Storybook sidebar tree — the `title` does
 > (`<Meta title="…">`, or the story's `title:`). Placement only decides what ships: a
 > co-located `.stories.ts`/`.mdx` sits outside the entry point's `src/`, which is where
-> `ng-packagr` starts from, so it never reaches the published package.
+> `ng-packagr` starts from, so it never reaches `@4sh/ui-kit`. It does travel in
+> `@4sh/ui-kit-schematics` (FSHSP-125), which copies it next to the component so a
+> starter project documents its own copies.
 
 ### Create a business component (domain)
 
