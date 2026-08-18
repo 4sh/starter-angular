@@ -7,8 +7,8 @@ Format: `MAJOR.MINOR.PATCH`
 ## Scope: one version number, two published packages
 
 SemVer applies to **`projects/ui-kit/package.json`** only — that is the artifact
-published as `@4sh/ui-kit`, the one a consumer's `package.json` pins a version
-against.
+published as `@4sh/ui-kit`, the one a library-mode consumer's `package.json` pins a
+version against.
 
 `@4sh/ui-kit-schematics` (the raw sources the starter copies, see
 [`PUBLISHING.md`](./PUBLISHING.md)) is published from the same repo, at the same
@@ -17,10 +17,13 @@ rather than maintained separately. It has no version of its own to bump: the
 number written in `projects/ui-kit-schematics/package.json` is a development
 placeholder and is overwritten by the build.
 
-That lockstep is not cosmetic. The kit's `ng-add` requests the companion as
-`^<kit version>`, so the two moving independently would break `ng add` for
-consumers. It also means the table below is read against the **kit**: a change
-confined to the schematics still ships under the kit's next version.
+That lockstep is not cosmetic. The companion embeds a copy of the kit's sources,
+and the shared number is what identifies **which kit** a copied file came from: it
+is written into every copied file's traceability header and into the consumer's
+`ui-kit.json`, which `update` reads to compute its diffs. Two numbers drifting
+apart would make that provenance meaningless. It also means the table below is read
+against the **kit**: a change confined to the schematics still ships under the
+kit's next version.
 
 The root `package.json` (demo app + Storybook tooling) is **not** versioned in
 step with it. Nothing depends on it: it is never published, `private: true`, and

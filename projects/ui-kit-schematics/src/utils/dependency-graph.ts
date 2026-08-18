@@ -8,7 +8,7 @@
  */
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { type AssetUnit, findUnit } from './component-registry';
+import { type AssetUnit, findUnit, resolveSpecifier } from './component-registry';
 
 const IMPORT_RE = /from\s+['"]@4sh\/ui-kit\/([^'"]+)['"]/g;
 
@@ -35,14 +35,6 @@ function importedSpecifiers(unit: AssetUnit): string[] {
     }
   }
   return [...specifiers];
-}
-
-/** Résout un spécificateur importé (`forms/ui-field`, `forms`) vers son unité. */
-function resolveSpecifier(specifier: string): AssetUnit | undefined {
-  const segments = specifier.split('/');
-  // `{catégorie}/{ui-nom}` → composant ; `{catégorie}` seul → base partagée.
-  const candidateName = segments.length > 1 ? segments[segments.length - 1] : segments[0];
-  return findUnit(candidateName);
 }
 
 /**

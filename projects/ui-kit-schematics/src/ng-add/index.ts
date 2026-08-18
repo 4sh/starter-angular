@@ -1,10 +1,17 @@
 /**
- * ng-add — `ng add @4sh/ui-kit` (ou directement `@4sh/ui-kit-schematics`).
- * Étape « fondation », une seule fois : dépendances runtime, styles verrouillés
- * + éditables, chaîne de génération des tokens, manifeste vide.
- * La copie des composants eux-mêmes est le rôle du schematic `add` (FSHSP-109).
+ * ng-add — `ng add @4sh/ui-kit-schematics`, la commande UNIQUE d'installation
+ * (FSHSP-122) : fondation (dépendances runtime, styles verrouillés + éditables,
+ * chaîne de génération des tokens, manifeste) puis sélection et copie des
+ * composants, enchaînées.
+ *
+ * Le point d'entrée est ce package, et non `@4sh/ui-kit`, pour deux raisons
+ * liées : le kit n'entre jamais dans `node_modules`, donc aucun import ne peut
+ * viser son code compilé au lieu des copies locales ; et sans package compagnon
+ * à installer au préalable, plus besoin de la `RunSchematicTask` différée dans
+ * laquelle un prompt interactif ne tenait pas — d'où la commande unique.
  */
 import { chain, Rule, SchematicContext, Tree } from '@angular-devkit/schematics';
+import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
 import { updateWorkspace } from '@schematics/angular/utility/workspace';
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
@@ -12,15 +19,8 @@ import type { Schema } from './schema';
 import { addDependency, addNpmScript, readPackageJson } from '../utils/package-json';
 import { emptyManifest, MANIFEST_PATH, writeManifest } from '../utils/manifest';
 import { stylesFoundationDir } from '../utils/component-registry';
-
-/** `projects/ui-kit/package.json` — copié tel quel dans `assets/` : source de vérité
- * pour la version du kit et pour les peer dependencies runtime à répercuter. */
-const KIT_PACKAGE_JSON = join(stylesFoundationDir(), '..', 'ui-kit-package.json');
-
-function readKitManifestInfo(): { version: string; peerDependencies: Record<string, string> } {
-  const json = JSON.parse(readFileSync(KIT_PACKAGE_JSON, 'utf8'));
-  return { version: json.version, peerDependencies: json.peerDependencies ?? {} };
-}
+import { readKitManifestInfo } from '../utils/kit-manifest';
+import { add } from '../add';
 
 /** Copie la fondation de styles selon l'arborescence validée avec le designer
  * (FSHSP-109) : `ui-kit/` verrouillé (régénéré à chaque `ng add`), `base/`
@@ -189,13 +189,53 @@ function createManifest(): Rule {
   };
 }
 
-export function ngAdd(_options: Schema): Rule {
-  return chain([
+/**
+ * Programme le `npm install` des dépendances que `addRuntimeDependencies` vient
+ * d'inscrire.
+ *
+ * Sans lui, `angular.json` référence `node_modules/@angular/cdk/overlay-prebuilt.css`
+ * et la feuille FontAwesome alors que ni l'un ni l'autre n'est installé : le
+ * projet ne compile pas, et l'erreur (`Could not resolve`) ne dit rien de sa
+ * cause. C'est le seul install du parcours — `ng add` n'installe que le package
+ * qu'on lui nomme, pas ce que son schematic ajoute ensuite au `package.json`.
+ */
+function installRuntimeDependencies(): Rule {
+  return (tree: Tree, context: SchematicContext) => {
+    context.addTask(new NodePackageInstallTask());
+    return tree;
+  };
+}
+
+export function ngAdd(options: Schema): Rule {
+  const foundation = [
     copyStylesFoundationRule(),
     createStyleScaffolds(),
     copyTokensPipeline(),
     addRuntimeDependencies(),
     updateAngularJson(),
     createManifest(),
-  ]);
+  ];
+
+  // En queue de chaîne : la tâche s'exécute après application de l'arbre, donc
+  // une fois `package.json` écrit. `--skip-install` la retire, pour un projet qui
+  // pilote son lockfile lui-même (CI, monorepo).
+  const install = options.skipInstall ? [] : [installRuntimeDependencies()];
+
+  // La fondation seule ne rend aucun composant disponible : enchaîner la copie
+  // est ce qui fait de `ng add` une commande complète. `--skip-components` reste
+  // là pour poser la fondation dans un projet qui choisira ses composants plus
+  // tard, ou pour un enchaînement scripté.
+  if (options.skipComponents) {
+    return chain([
+      ...foundation,
+      (_tree: Tree, context: SchematicContext) => {
+        context.logger.info(
+          'Fondation posée. Composants à copier ensuite : `ng generate @4sh/ui-kit-schematics:add`.',
+        );
+      },
+      ...install,
+    ]);
+  }
+
+  return chain([...foundation, add({ components: options.components, all: options.all }), ...install]);
 }

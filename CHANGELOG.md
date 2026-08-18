@@ -19,7 +19,41 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 ### Added
 - **`@4sh/ui-kit-schematics` embarque son `LICENSE` et ses README** (EN + FR). Le package déclarait `Apache-2.0` sans en fournir le texte, alors que la licence (§4a) demande qu'une redistribution en joigne une copie — d'autant plus ici que ce package existe pour que son contenu soit recopié ailleurs. Sa page npmjs, jusque-là vide, redirige maintenant vers `@4sh/ui-kit` : le compagnon ne s'installe jamais directement.
 
+### Fixed
+- **`ui-file-upload` ne déclare plus `UiLink`** (FSHSP-124). Le composant l'avait dans ses `imports` sans jamais s'en servir — en mode `drag`, le lien est un `<span>` stylé à l'intérieur du `<label>`, un élément interactif y étant à éviter. Le build d'un projet en sources copiées remontait un `NG8113`, et `ui-file-upload` faisait recopier `ui-link` pour rien.
+- **Les sources copiées n'importent plus depuis `node_modules`** (FSHSP-119). Un composant copié résolvait ses dépendances dans `node_modules/@4sh/ui-kit`, c'est-à-dire le code compilé : modifier le `ui-icon` copié n'avait aucun effet sur les composants qui l'utilisent, ce qui annulait la raison d'être du starter. Les 139 imports `@4sh/ui-kit/*` des sources sont désormais réadressés vers les copies voisines au moment de la copie.
+
+  Un import passant par un barrel est résolu jusqu'au fichier qui porte réellement le symbole, et **scindé** si ses symboles sont dispersés (`{ UiIcon, UiIconType }` → `ui-icon.ts` + `ui-icon-families.ts`). Un symbole introuvable interrompt la copie en le nommant, plutôt que d'écrire un chemin faux.
+
+  Effets de bord corrigés au passage : les dépendances copiées n'étaient utilisées par personne (copies mortes, suivies par `update` pour rien), le bundle embarquait le composant deux fois, et du code applicatif dépendait d'une `devDependency` — ce qui cassait en `npm ci --omit=dev`.
+
 ### Changed
+- ⚠️ **Le parcours starter s'installe en une commande, et n'installe plus `@4sh/ui-kit`** (FSHSP-122) :
+
+  ```bash
+  ng add @4sh/ui-kit-schematics    # fondation + sélection des composants, enchaînées
+  ```
+
+  Auparavant il en fallait deux (`ng add @4sh/ui-kit` pour la fondation, puis `ng generate @4sh/ui-kit:add` pour les composants), et le kit restait dans `node_modules` : l'auto-complétion de l'IDE proposait ses imports alors que le projet doit utiliser ses copies locales. Les deux problèmes avaient la même cause — la porte d'entrée. Au moment du `ng add`, le compagnon n'était pas encore installé, d'où une `RunSchematicTask` différée, dans laquelle un prompt interactif ne tient pas.
+
+  En entrant par le compagnon, le kit n'est plus installé du tout : plus rien à auto-importer, et le prompt fonctionne dans la foulée de la fondation. La version copiée est lue dans le compagnon lui-même, plus dans le `package.json` du consommateur.
+
+  `--skip-components` pose la fondation seule, pour choisir les composants plus tard.
+
+  **Le mode librairie est inchangé** : `npm i @4sh/ui-kit` puis `import { UiButton } from '@4sh/ui-kit/actions/ui-button'`. Seule la voie « sources copiées » change. `ng add @4sh/ui-kit` installe désormais le kit en `dependencies` (et non plus en `devDependencies`, qui n'avait de sens que pour piloter la CLI) et affiche laquelle des deux voies a été prise.
+
+  **Migration** depuis `0.2.0` : désinstaller `@4sh/ui-kit` du projet (`npm rm @4sh/ui-kit`), les sources copiées n'en dépendant plus.
+- ⚠️ **L'arborescence copiée est aplatie, et les fichiers transverses sortent de `components/`** (FSHSP-121). La copie reproduisait la structure d'`ng-packagr` (`ui-checkbox/src/lib/ui-checkbox.ts`, plus un barrel `src/public-api.ts`) : `src/` et `lib/` délimitent la surface publiée d'une librairie, et une fois le fichier chez le consommateur ils n'encadrent plus rien — ils enfouissaient chaque composant de deux niveaux. Elles disparaissent, le barrel avec :
+
+  ```
+  src/app/shared/
+  ├── components/ui/{catégorie}/{ui-nom}/{ui-nom}.ts      ← uniquement des composants
+  └── ui-core/{forms|motion|overlay|theming|types}/       ← directives de base, services, utilitaires, types
+  ```
+
+  Les bases partagées atterrissaient dans `components/ui/{catégorie}/_shared/`, c'est-à-dire des services (`theme.service`) et des utilitaires (`mask-engine`) rangés sous `components/`. Elles vivent maintenant dans `ui-core/`, en conservant leur regroupement par domaine. Les fichiers propres à un composant (`date-utils`, `ui-alert.types`, `ui-toast.service`…) restent à côté de lui : ils ne servent qu'à lui.
+
+  **Mise à jour non triviale** pour un projet déjà installé en `0.2.0` : les chemins des fichiers copiés changent tous, donc `update` ne reconnaîtra pas les anciens. Déplacer les fichiers existants avant de lancer la commande, ou repartir d'un `add` propre.
 - **L'en-tête de traçabilité des fichiers copiés par `ng generate @4sh/ui-kit:add` porte la mention de licence** (`Apache-2.0 — Copyright 2026 4SH.`) en plus de son origine et de sa version. Une fois copié, le fichier vit dans le dépôt du consommateur, où plus rien n'indiquait sous quels termes il est fourni. Conséquence attendue : le premier `ng generate @4sh/ui-kit:update` suivant cette version affiche un diff d'une ligne en tête de chaque fichier installé.
 
 ## [0.2.0] - 2026-08-14

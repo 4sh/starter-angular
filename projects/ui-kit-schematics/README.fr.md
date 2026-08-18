@@ -11,47 +11,66 @@ Angular qui les recopient dans un projet consommateur.
 
 ---
 
-## ⚠️ Ne pas installer ce package directement
-
-Vous ne l'installez jamais vous-même, et vous n'épinglez jamais sa version. Il
-est tiré automatiquement par le kit :
+## Installation
 
 ```bash
-ng add @4sh/ui-kit
+ng add @4sh/ui-kit-schematics
 ```
 
-Tout est documenté sur
-[`@4sh/ui-kit`](https://www.npmjs.com/package/@4sh/ui-kit) — c'est ce package
-qu'il faut lire, et le seul dont dépendre.
+Une seule commande : elle pose la fondation (styles, design tokens,
+`angular.json`), puis demande quels composants copier et les copie, dépendances
+comprises.
+
+```
+src/app/shared/
+├── components/ui/{catégorie}/{ui-nom}/{ui-nom}.ts    ← uniquement des composants
+└── ui-core/{forms|motion|overlay|theming|types}/     ← directives de base, services, utilitaires, types
+```
+
+Les fichiers copiés vous appartiennent : modifiez-les librement. `ui-kit.json`
+retient de quelle version vient chaque composant, ce qui permet ensuite à `update`
+de vous présenter un diff fichier par fichier face à des sources plus récentes —
+jamais une fusion automatique.
+
+| | |
+|---|---|
+| `ng add @4sh/ui-kit-schematics` | fondation **et** composants, d'un coup |
+| `ng add @4sh/ui-kit-schematics --skip-components` | fondation seule, composants choisis plus tard |
+| `ng add @4sh/ui-kit-schematics --skip-install` | ne pas lancer `npm install` (projet qui pilote son lockfile) |
+| `ng generate @4sh/ui-kit-schematics:add` | copier d'autres composants (interactif, ou `--components`, ou `--all`) |
+| `ng generate @4sh/ui-kit-schematics:update` | diff des composants copiés face aux sources publiées |
+
+### `@4sh/ui-kit` n'est délibérément **pas** installé
+
+Cette voie ne met jamais le kit dans `node_modules`, et c'est précisément le but :
+absent, aucun import ne peut viser son code compilé au lieu de vos copies
+locales — ni dans les sources copiées, ni dans l'auto-complétion de votre éditeur.
+
+## L'autre voie : l'utiliser comme librairie
+
+Si vous préférez consommer les composants compilés, sans posséder aucune source,
+installez **[`@4sh/ui-kit`](https://www.npmjs.com/package/@4sh/ui-kit)** et suivez
+son propre README — rien n'est copié, et vous suivez les releases du kit.
+
+Les deux modes ne se combinent pas : choisissez celui qui correspond au projet.
 
 ---
 
 ## Pourquoi un package séparé
 
-`ng-packagr` *inline* template et SCSS dans le `.mjs` publié. Les sources que
-`ng generate @4sh/ui-kit:add` doit copier n'existent donc nulle part dans le
-tarball du kit. Les garder ici a une conséquence voulue : un consommateur
-classique de `@4sh/ui-kit`, qui importe seulement les composants compilés, ne les
-télécharge jamais.
-
-Le kit expose une façade de schematics sans aucune logique, qui délègue à ce
-package. C'est toute la relation entre les deux.
-
-## Contenu
-
-| | |
-|---|---|
-| `ng-add` | fondation : styles, tokens, `angular.json` |
-| `add` | copie les composants dans le projet (sélection interactive, ou `--all`) |
-| `update` | diff par composant face aux sources publiées |
-| `assets/` | les sources brutes des composants, et la chaîne de génération des tokens |
+`ng-packagr` *inline* template et SCSS dans le `.mjs` publié. Les sources que ces
+schematics copient n'existent donc nulle part dans le tarball du kit, d'où leur
+présence ici. Cette séparation a une conséquence voulue, dans les deux sens : un
+consommateur en mode librairie ne télécharge jamais les sources brutes, et un
+consommateur en mode starter ne télécharge jamais le kit compilé.
 
 ## Versionnage
 
 **Les deux packages portent toujours le même numéro de version**, estampillé
-depuis celui du kit à l'assemblage — la façade du kit réclame le compagnon en
-`^<version du kit>`. Il n'y a rien à tenir à jour à la main, ni aucune raison
-d'épingler ce package vous-même.
+depuis celui du kit à l'assemblage. Ce package embarque une copie des sources du
+kit, et ce numéro commun est ce qui identifie *de quel* kit vient un fichier
+copié — il est inscrit dans l'en-tête de traçabilité de chaque fichier, et dans
+`ui-kit.json`.
 
 Voir [`docs/VERSIONING.md`](https://github.com/4sh/starter-angular/blob/main/docs/VERSIONING.md)
 et [`docs/PUBLISHING.md`](https://github.com/4sh/starter-angular/blob/main/docs/PUBLISHING.md).

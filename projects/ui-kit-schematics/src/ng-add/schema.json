@@ -8,6 +8,21 @@
       "type": "boolean",
       "default": false,
       "description": "Ne pas lancer `npm install` après avoir modifié package.json."
+    },
+    "components": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Composants à copier (ex. ui-button ui-select). Omis → sélection interactive."
+    },
+    "all": {
+      "type": "boolean",
+      "default": false,
+      "description": "Copie tous les composants disponibles, sans prompt."
+    },
+    "skipComponents": {
+      "type": "boolean",
+      "default": false,
+      "description": "Pose la fondation seule. Les composants se copient ensuite avec `ng generate @4sh/ui-kit-schematics:add`."
     }
   }
 }

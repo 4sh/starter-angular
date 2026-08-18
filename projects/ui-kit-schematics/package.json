@@ -19,6 +19,9 @@
     "registry": "https://registry.npmjs.org/"
   },
   "schematics": "./collection.json",
+  "ng-add": {
+    "save": "devDependencies"
+  },
   "peerDependencies": {
     "@angular-devkit/core": "^22.0.0",
     "@angular-devkit/schematics": "^22.0.0",

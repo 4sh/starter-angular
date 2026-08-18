@@ -1,11 +1,16 @@
 /**
  * copy — recopie une unité (`AssetUnit`) dans l'arbre du projet consommateur,
+ * aplatie (FSHSP-121), imports réadressés vers les copies voisines (FSHSP-119),
  * avec en-tête de traçabilité (origine + version + licence) sur chaque fichier.
  */
 import type { Tree } from '@angular-devkit/schematics';
-import { readFileSync, readdirSync } from 'node:fs';
-import { join, relative } from 'node:path';
+import { SchematicsException } from '@angular-devkit/schematics';
+import { readFileSync } from 'node:fs';
+import { basename } from 'node:path';
 import type { AssetUnit } from './component-registry';
+import { flattenedRelPath, unitSourceFiles } from './component-registry';
+import { BARREL_FILENAME } from './export-map';
+import { rewriteKitImports } from './rewrite-imports';
 
 const HEADER_STYLE: Record<string, (lines: string[]) => string> = {
   '.ts': (lines) => lines.map((l) => `// ${l}`).join('\n') + '\n',
@@ -27,16 +32,6 @@ function traceabilityHeader(unit: AssetUnit, relPath: string, kitVersion: string
   ]);
 }
 
-function walk(dir: string): string[] {
-  const out: string[] = [];
-  for (const entry of readdirSync(dir, { withFileTypes: true })) {
-    const full = join(dir, entry.name);
-    if (entry.isDirectory()) out.push(...walk(full));
-    else out.push(full);
-  }
-  return out;
-}
-
 export interface RenderedFile {
   targetPath: string;
   content: string;
@@ -45,13 +40,57 @@ export interface RenderedFile {
 /** Calcule le contenu final (en-tête inclus) de chaque fichier d'une unité,
  * sans rien écrire — réutilisé par `copyUnit` et par le diff d'`update`. */
 export function renderUnitFiles(unit: AssetUnit, kitVersion: string): RenderedFile[] {
-  return walk(unit.dir).map((absSrc) => {
-    const relPath = relative(unit.dir, absSrc);
+  const files: RenderedFile[] = [];
+  const unresolved: string[] = [];
+
+  // L'aplatissement retire `src/` et `lib/` : deux sources distinctes peuvent
+  // donc viser la même destination (`src/foo.ts` et `src/lib/foo.ts`). Sans ce
+  // relevé, la seconde écraserait la première en silence — le seul chemin de
+  // perte muette d'un module qui échoue bruyamment partout ailleurs.
+  const claimedBy = new Map<string, string>();
+
+  for (const absSrc of unitSourceFiles(unit)) {
+    // Le barrel est une surface de publication de librairie : il n'a rien à
+    // faire chez le consommateur, où les imports désignent les fichiers.
+    // Comparaison sur le nom EXACT : un `endsWith` écarterait aussi un
+    // `ui-table-public-api.ts`, qui est un fichier de composant ordinaire.
+    if (basename(absSrc) === BARREL_FILENAME) continue;
+
+    const relPath = flattenedRelPath(unit, absSrc);
     const ext = absSrc.slice(absSrc.lastIndexOf('.'));
-    const targetPath = join(unit.targetDir, relPath);
-    const header = traceabilityHeader(unit, relPath, kitVersion, ext);
-    return { targetPath, content: header + readFileSync(absSrc, 'utf8') };
-  });
+    const targetPath = `${unit.targetDir}/${relPath}`;
+
+    const previous = claimedBy.get(targetPath);
+    if (previous) {
+      throw new SchematicsException(
+        `${unit.name} : après aplatissement, « ${previous} » et « ${absSrc} » visent tous deux ` +
+          `${targetPath}. Renommer l'un des deux dans le kit — la copie ne peut pas trancher.`,
+      );
+    }
+    claimedBy.set(targetPath, absSrc);
+
+    let source = readFileSync(absSrc, 'utf8');
+    if (ext === '.ts') {
+      const result = rewriteKitImports(source, targetPath);
+      source = result.content;
+      unresolved.push(...result.unresolved.map((item) => `${relPath} → ${item}`));
+    }
+
+    files.push({ targetPath, content: traceabilityHeader(unit, relPath, kitVersion, ext) + source });
+  }
+
+  if (unresolved.length) {
+    // Laisser passer produirait un projet qui ne compile pas, avec une cause
+    // très difficile à remonter jusqu'ici. On échoue sur place, en nommant.
+    throw new SchematicsException(
+      `${unit.name} : ${unresolved.length} import(s) du kit non réadressé(s) —\n  ` +
+        unresolved.join('\n  ') +
+        `\nCorriger la table d'exports (utils/export-map.ts) ou le mapping ` +
+        `(utils/component-registry.ts#resolveSpecifier) avant de publier.`,
+    );
+  }
+
+  return files;
 }
 
 /** Copie tous les fichiers d'une unité dans l'arbre, avec en-tête de traçabilité. */

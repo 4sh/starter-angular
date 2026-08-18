@@ -19,16 +19,6 @@ export function writePackageJson(tree: Tree, json: PackageJson): void {
   tree.overwrite('/package.json', JSON.stringify(json, null, 2) + '\n');
 }
 
-/** Version installée de `@4sh/ui-kit` (dependencies ou devDependencies), sans le préfixe semver (`^`, `~`). */
-export function installedKitVersion(tree: Tree): string {
-  const json = readPackageJson(tree);
-  const raw = json.dependencies?.['@4sh/ui-kit'] ?? json.devDependencies?.['@4sh/ui-kit'];
-  if (!raw) {
-    throw new SchematicsException("@4sh/ui-kit n'est pas installé — lancez d'abord `ng add @4sh/ui-kit`.");
-  }
-  return String(raw).replace(/^[\^~]/, '');
-}
-
 export function addDependency(
   tree: Tree,
   name: string,
