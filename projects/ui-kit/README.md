@@ -302,8 +302,11 @@ you should not have to rewrite:
 - `disabled` is the native attribute, not just a visual state.
 - Overlay components (select, menu, modal, drawer…) use the Angular CDK for focus
   trapping and keyboard navigation.
-- Every story is checked with axe-core on each pull request
-  (`@storybook/addon-a11y` + `test-storybook`).
+
+Every story runs through axe-core in CI (`@storybook/addon-a11y` + `test-storybook`).
+**That check is informational today**: a backlog of known violations is still being worked
+through, so read it as a guardrail in progress, not as a conformance claim. The kit makes
+accessibility much easier to get right; it does not certify your screens.
 
 ---
 

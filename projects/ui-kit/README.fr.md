@@ -306,8 +306,11 @@ l'accessibilité sont la part que vous ne devriez pas avoir à réécrire :
 - `disabled` est l'attribut natif, pas seulement un état visuel.
 - Les composants à overlay (select, menu, modal, drawer…) s'appuient sur le CDK Angular
   pour le piège de focus et la navigation clavier.
-- Chaque story passe axe-core à chaque pull request (`@storybook/addon-a11y` +
-  `test-storybook`).
+
+Chaque story passe axe-core en CI (`@storybook/addon-a11y` + `test-storybook`).
+**Ce contrôle est informatif aujourd'hui** : un reliquat de violations connues reste à
+traiter, à lire donc comme un garde-fou en cours, pas comme une déclaration de conformité.
+Le kit rend l'accessibilité bien plus facile à réussir ; il ne certifie pas vos écrans.
 
 ---
 
