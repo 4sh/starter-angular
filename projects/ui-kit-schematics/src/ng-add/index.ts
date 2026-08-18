@@ -10,6 +10,7 @@
  * à installer au préalable, plus besoin de la `RunSchematicTask` différée dans
  * laquelle un prompt interactif ne tenait pas — d'où la commande unique.
  */
+import type { JsonValue, workspaces } from '@angular-devkit/core';
 import { chain, Rule, SchematicContext, Tree } from '@angular-devkit/schematics';
 import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
 import { updateWorkspace } from '@schematics/angular/utility/workspace';
@@ -80,6 +81,72 @@ function createStyleScaffolds(): Rule {
 }
 
 /**
+ * `anyComponentStyle` floor (FSHSP-127). `ng new` ships 8kB, which applies to
+ * EACH component's compiled CSS — `ui-button` alone emits 55.7kB, so a copied
+ * source tree cannot build for production.
+ *
+ * 128kB, not just above 55.7: `ui-button`'s axes are multiplicative (+10.5kB per
+ * level, +17.2kB per variant) and adding one is what starter mode is for.
+ * Angular's unit, not the SI one: `BYTES_IN_KILOBYTE = 1000`.
+ */
+const ANY_COMPONENT_STYLE_FLOOR = '128kB';
+const ANY_COMPONENT_STYLE_FLOOR_BYTES = 128_000;
+
+/** An `angular.json` budget, narrowed to the fields read here. */
+interface Budget {
+  type?: string;
+  maximumWarning?: string;
+  maximumError?: string;
+}
+
+/**
+ * Threshold to bytes, using Angular's own grammar (`bundle-calculator.js`).
+ * `null` for what cannot be compared — percentages need a `baseline`.
+ */
+function budgetBytes(value: string | undefined): number | null {
+  const matches = value?.trim().match(/^(\d+(?:\.\d+)?)[ \t]*(k?b|mb|gb)?$/i);
+  if (!matches) return null;
+  const factor = { b: 1, kb: 1e3, mb: 1e6, gb: 1e9 }[matches[2]?.toLowerCase() ?? 'b'] ?? 1;
+  return Number(matches[1]) * factor;
+}
+
+/**
+ * Raises the `anyComponentStyle` budget wherever it exists, across every
+ * configuration (`production` for `ng new`, but a project may name others).
+ *
+ * Never ADDS a missing budget, never LOWERS a higher one, never touches a
+ * percentage: each would undo a choice the project made. `maximumWarning` is
+ * dropped — at 4kB some fifteen kit components would warn on every build.
+ */
+function relaxAnyComponentStyleBudget(target: workspaces.TargetDefinition): void {
+  for (const configuration of Object.values(target.configurations ?? {})) {
+    const budgets = configuration?.['budgets'];
+    if (!Array.isArray(budgets)) continue;
+
+    let changed = false;
+    const relaxed = budgets.map((entry) => {
+      const budget = entry as Budget;
+      if (budget?.type !== 'anyComponentStyle') return entry;
+
+      const error = budgetBytes(budget.maximumError);
+      if (error !== null && error >= ANY_COMPONENT_STYLE_FLOOR_BYTES) return entry;
+      if (budget.maximumError !== undefined && error === null) return entry; // percentage: not comparable
+
+      changed = true;
+      // Destructured out rather than set to `undefined`: the key must be absent
+      // from the written JSON, not present without a value.
+      const { maximumWarning, ...rest } = budget;
+      const warning = budgetBytes(maximumWarning);
+      const next: Budget = { ...rest, maximumError: ANY_COMPONENT_STYLE_FLOOR };
+      if (warning !== null && warning >= ANY_COMPONENT_STYLE_FLOOR_BYTES) next.maximumWarning = maximumWarning;
+      return next;
+    });
+
+    if (changed) configuration!['budgets'] = relaxed as JsonValue;
+  }
+}
+
+/**
  * Câble la feuille globale dans `angular.json` : `styles` + les `includePaths`
  * dont dépendent les `@use` sans chemin relatif (`utils`, `generated/tokens`…).
  * Passe par `updateWorkspace` plutôt qu'un `JSON.parse`/`stringify` maison :
@@ -88,6 +155,10 @@ function createStyleScaffolds(): Rule {
 function updateAngularJson(): Rule {
   return updateWorkspace((workspace) => {
     for (const project of workspace.projects.values()) {
+      // Budgets live on `build` only — `test` declares none.
+      const build = project.targets.get('build');
+      if (build) relaxAnyComponentStyleBudget(build);
+
       for (const targetName of ['build', 'test'] as const) {
         const target = project.targets.get(targetName);
         if (!target) continue;

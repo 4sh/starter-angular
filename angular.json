@@ -21,6 +21,25 @@
             },
             "production": {
               "aot": true,
+              // No budgets here until FSHSP-128 — which is why FSHSP-127 (a
+              // copied source tree cannot build) was found by an outside user.
+              "budgets": [
+                {
+                  // `ng new` non-strict values: `demo` instantiates all 54
+                  // components and lands at 1.24MB, so the strict 500kB/1MB
+                  // would measure the showcase, not the kit.
+                  "type": "initial",
+                  "maximumWarning": "2MB",
+                  "maximumError": "5MB"
+                },
+                {
+                  // Mirrors what the schematic writes for consumers
+                  // (`ANY_COMPONENT_STYLE_FLOOR`) — `demo` must reflect a
+                  // project AFTER `ng add`. Move both together.
+                  "type": "anyComponentStyle",
+                  "maximumError": "128kB"
+                }
+              ],
               "extractLicenses": true,
               "namedChunks": false,
               "optimization": true,
