@@ -408,6 +408,13 @@ $focus-ring-width: utils.$form-focus-ring-width; // ← replace the value here t
 3. Create the story + the `.mdx` **co-located** in `projects/ui-kit/<category>/ui-<name>/` (outside `src/`; global doc only → `storybook/docs/`) — pick `<category>` from `storybook/docs/Overview.mdx`'s sections, or ask if the component doesn't fit an existing one
 4. Check off the component in `components-index.md`
 
+> File **placement** does not drive the Storybook sidebar tree — the `title` does
+> (`<Meta title="…">`, or the story's `title:`). Placement only decides what ships: a
+> co-located `.stories.ts`/`.mdx` sits outside the entry point's `src/`, which is where
+> `ng-packagr` starts from, so it never reaches `@4sh/ui-kit`. It does travel in
+> `@4sh/ui-kit-schematics` (FSHSP-125), which copies it next to the component so a
+> starter project documents its own copies.
+
 ### Create a business component (domain)
 
 Like a `ui-*`, but: project prefix, `domain/` folder, and **composition of `ui-*` instances** (never style copying).

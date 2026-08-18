@@ -14,7 +14,7 @@ import type { Schema } from './schema';
 import { findUnit } from '../utils/component-registry';
 import { renderUnitFiles } from '../utils/copy';
 import { readManifest, today, writeManifest } from '../utils/manifest';
-import { installedKitVersion } from '../utils/package-json';
+import { kitVersion as readKitVersion } from '../utils/kit-manifest';
 
 type Action = 'apply' | 'skip' | 'view-diff';
 
@@ -39,11 +39,11 @@ export function update(options: Schema): Rule {
     const manifest = readManifest(tree);
     if (!manifest) {
       throw new SchematicsException(
-        "Aucun ui-kit.json trouvé — lancez d'abord `ng add @4sh/ui-kit` puis `ng generate @4sh/ui-kit-schematics:add`.",
+        "Aucun ui-kit.json trouvé — lancez d'abord `ng add @4sh/ui-kit-schematics`.",
       );
     }
 
-    const kitVersion = installedKitVersion(tree);
+    const kitVersion = readKitVersion();
     const outdated = Object.entries(manifest.components).filter(([, entry]) => entry.version !== kitVersion);
 
     if (!outdated.length) {
@@ -58,7 +58,10 @@ export function update(options: Schema): Rule {
         context.logger.warn(`${name} : présent dans ui-kit.json mais introuvable dans le kit installé — ignoré.`);
         continue;
       }
-      const files = renderUnitFiles(unit, kitVersion);
+      // Le choix fait à l'installation, pas une valeur par défaut : une mise à
+      // jour ne doit ni introduire de la doc chez qui n'en a pas demandé, ni
+      // laisser périmée celle du projet qui en a (FSHSP-125).
+      const files = renderUnitFiles(unit, kitVersion, { withStorybook: manifest.storybook ?? false });
 
        
       while (true) {

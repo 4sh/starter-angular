@@ -17,6 +17,14 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 ## [Unreleased]
 
 ### Added
+- **Un projet en sources copiées a désormais son propre Storybook** (FSHSP-125) : `ng add @4sh/ui-kit-schematics --with-storybook` copie, à côté de chaque composant, sa story et sa page MDX, pose la configuration Storybook (`storybook/`, cibles `angular.json`, devDependencies, scripts npm) et la chaîne qui alimente la doc (`scripts/docs.config.mjs`, bloc `<ConfigTable>`). Un `npm run storybook` suffit ensuite. Jusqu'ici le projet possédait son code mais aucune doc : il lui restait un Storybook hébergé qui décrit *nos* composants, pas ses copies éditées.
+
+  Deux choses font que cette doc appartient au projet. Les tables *Theming* sont lues sur ses propres `.scss` au build, donc elles décrivent ses valeurs, rebranding compris. Et les globs couvrent tout `src/app/shared/components/**` : une story écrite à côté d'un composant maison apparaît sans toucher à la configuration.
+
+  Les imports suivent les copies, comme pour les sources — mais les extraits de code des pages ne sont pas réécrits : ce sont des exemples destinés au lecteur, pas des imports à résoudre. Les liens `parameters.design` vers notre fichier Figma sont retirés à la copie : le consommateur n'y a pas accès. Les pages transverses embarquées se limitent à *Foundations*, *Spécifications* et *Configuration* ; `Introduction`, `NpmPackage` et `Overview` parlent du kit lui-même et restent ici.
+
+  Désactivé par défaut : sans Storybook, story et MDX sont deux fichiers qui importent des packages absents. Le choix est retenu dans `ui-kit.json` et `update` s'y tient.
+- **Les README du kit (EN + FR) présentent les deux modes de consommation** (FSHSP-116) : section « Deux modes de consommation » avant l'installation — tableau comparatif *dépendance* / *starter* (ce qui arrive dans le dépôt, imports, styles, documentation, personnalisation, mise à jour), qui renvoie au package compagnon pour la voie starter. FSHSP-109 avait livré le mode starter sans qu'il apparaisse nulle part sur la page npm, où le README est la seule documentation.
 - **Les composants sont personnalisables en mode package, via des custom properties `--ui-*` exposées.** Jusqu'ici le seul levier de personnalisation était le rebinding SCSS (`_ui-config.scss`, variables locales) : inaccessible quand le kit est consommé en dépendance, puisque son SCSS est déjà compilé. Un projet ne pouvait retoucher que les design tokens — donc rien de propre à un composant, ni à une seule de ses tailles. Chaque valeur **structurelle** des 54 composants est maintenant lue à travers un hook dont le défaut est le réglage livré :
 
   ```scss
@@ -43,7 +51,41 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
   Le mot **« thème »** reste réservé au couple marque + clair/sombre (`ThemeService`, `BrandService`) : cette couche-ci s'appelle **hooks**, du nom des custom properties qu'elle règle, pour éviter trois sens différents du même mot.
 - **`@4sh/ui-kit-schematics` embarque son `LICENSE` et ses README** (EN + FR). Le package déclarait `Apache-2.0` sans en fournir le texte, alors que la licence (§4a) demande qu'une redistribution en joigne une copie — d'autant plus ici que ce package existe pour que son contenu soit recopié ailleurs. Sa page npmjs, jusque-là vide, redirige maintenant vers `@4sh/ui-kit` : le compagnon ne s'installe jamais directement.
 
+### Fixed
+- **`ui-file-upload` ne déclare plus `UiLink`** (FSHSP-124). Le composant l'avait dans ses `imports` sans jamais s'en servir — en mode `drag`, le lien est un `<span>` stylé à l'intérieur du `<label>`, un élément interactif y étant à éviter. Le build d'un projet en sources copiées remontait un `NG8113`, et `ui-file-upload` faisait recopier `ui-link` pour rien.
+- **Les sources copiées n'importent plus depuis `node_modules`** (FSHSP-119). Un composant copié résolvait ses dépendances dans `node_modules/@4sh/ui-kit`, c'est-à-dire le code compilé : modifier le `ui-icon` copié n'avait aucun effet sur les composants qui l'utilisent, ce qui annulait la raison d'être du starter. Les 139 imports `@4sh/ui-kit/*` des sources sont désormais réadressés vers les copies voisines au moment de la copie.
+
+  Un import passant par un barrel est résolu jusqu'au fichier qui porte réellement le symbole, et **scindé** si ses symboles sont dispersés (`{ UiIcon, UiIconType }` → `ui-icon.ts` + `ui-icon-families.ts`). Un symbole introuvable interrompt la copie en le nommant, plutôt que d'écrire un chemin faux.
+
+  Effets de bord corrigés au passage : les dépendances copiées n'étaient utilisées par personne (copies mortes, suivies par `update` pour rien), le bundle embarquait le composant deux fois, et du code applicatif dépendait d'une `devDependency` — ce qui cassait en `npm ci --omit=dev`.
+
 ### Changed
+- ⚠️ **Le parcours starter s'installe en une commande, et n'installe plus `@4sh/ui-kit`** (FSHSP-122) :
+
+  ```bash
+  ng add @4sh/ui-kit-schematics    # fondation + sélection des composants, enchaînées
+  ```
+
+  Auparavant il en fallait deux (`ng add @4sh/ui-kit` pour la fondation, puis `ng generate @4sh/ui-kit:add` pour les composants), et le kit restait dans `node_modules` : l'auto-complétion de l'IDE proposait ses imports alors que le projet doit utiliser ses copies locales. Les deux problèmes avaient la même cause — la porte d'entrée. Au moment du `ng add`, le compagnon n'était pas encore installé, d'où une `RunSchematicTask` différée, dans laquelle un prompt interactif ne tient pas.
+
+  En entrant par le compagnon, le kit n'est plus installé du tout : plus rien à auto-importer, et le prompt fonctionne dans la foulée de la fondation. La version copiée est lue dans le compagnon lui-même, plus dans le `package.json` du consommateur.
+
+  `--skip-components` pose la fondation seule, pour choisir les composants plus tard.
+
+  **Le mode librairie est inchangé** : `npm i @4sh/ui-kit` puis `import { UiButton } from '@4sh/ui-kit/actions/ui-button'`. Seule la voie « sources copiées » change. `ng add @4sh/ui-kit` installe désormais le kit en `dependencies` (et non plus en `devDependencies`, qui n'avait de sens que pour piloter la CLI) et affiche laquelle des deux voies a été prise.
+
+  **Migration** depuis `0.2.0` : désinstaller `@4sh/ui-kit` du projet (`npm rm @4sh/ui-kit`), les sources copiées n'en dépendant plus.
+- ⚠️ **L'arborescence copiée est aplatie, et les fichiers transverses sortent de `components/`** (FSHSP-121). La copie reproduisait la structure d'`ng-packagr` (`ui-checkbox/src/lib/ui-checkbox.ts`, plus un barrel `src/public-api.ts`) : `src/` et `lib/` délimitent la surface publiée d'une librairie, et une fois le fichier chez le consommateur ils n'encadrent plus rien — ils enfouissaient chaque composant de deux niveaux. Elles disparaissent, le barrel avec :
+
+  ```
+  src/app/shared/
+  ├── components/ui/{catégorie}/{ui-nom}/{ui-nom}.ts      ← uniquement des composants
+  └── ui-core/{forms|motion|overlay|theming|types}/       ← directives de base, services, utilitaires, types
+  ```
+
+  Les bases partagées atterrissaient dans `components/ui/{catégorie}/_shared/`, c'est-à-dire des services (`theme.service`) et des utilitaires (`mask-engine`) rangés sous `components/`. Elles vivent maintenant dans `ui-core/`, en conservant leur regroupement par domaine. Les fichiers propres à un composant (`date-utils`, `ui-alert.types`, `ui-toast.service`…) restent à côté de lui : ils ne servent qu'à lui.
+
+  **Mise à jour non triviale** pour un projet déjà installé en `0.2.0` : les chemins des fichiers copiés changent tous, donc `update` ne reconnaîtra pas les anciens. Déplacer les fichiers existants avant de lancer la commande, ou repartir d'un `add` propre.
 - **Les constantes partagées de `_ui-config.scss` sont retouchables sans recompiler.** Ma migration n'avait hookifié que les variables *locales* de chaque composant : il n'existait aucun levier de **catégorie** en mode package. Changer la taille de tous les contrôles de formulaire demandait soit de poser un hook par composant, soit de retoucher `--size-components-2xs`, qui déborde (il alimente aussi `ui-tag`, `ui-select`, `ui-autocomplete`, `ui-datepicker`).
 
   **16 constantes** exposées, nommées d'après leur variable SCSS (`$form-control-size` → `--ui-form-control-size`). Les composants les *interpolant*, la cascade se construit d'elle-même :
