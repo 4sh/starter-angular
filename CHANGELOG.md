@@ -16,6 +16,25 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-08-18
+
+Deux chantiers dominent cette version, un par mode de consommation. En **mode
+librairie**, les composants deviennent retouchables sans recompiler : 581 custom
+properties `--ui-*` exposées sur leurs valeurs structurelles, et un
+`component-vars.scss` livré avec le package, prêt à copier, qui les déclare
+toutes à la valeur du starter. En **mode starter**, le parcours tient en une
+commande, les sources copiées ne dépendent plus de `node_modules`, leur
+arborescence est aplatie, et le projet reçoit son propre Storybook.
+
+Elle est `MINOR` malgré les ruptures qu'elle contient : tant que la version
+commence par `0.x`, l'API est déclarée instable et une `MINOR` peut casser, à
+condition de le documenter (voir [VERSIONING.md](./docs/VERSIONING.md)).
+
+⚠️ **Mise à jour non triviale pour un projet en sources copiées** : tous les
+chemins des fichiers copiés changent (FSHSP-121), et `@4sh/ui-kit` doit être
+désinstallé du projet (FSHSP-122). Voir la section `Changed`. **Le mode
+librairie est inchangé** — aucun import n'y bouge.
+
 ### Added
 - **Les icônes des composants sont surchargeables à deux échelles** (FSHSP-113). `ui-icon` savait déjà rendre n'importe quelle police (`UiIconFamily` + `provideUiIconFamilies()`), mais aucun composant ne forwardait cette notion : les champs exposent le *nom* de leur icône, jamais sa famille, et la majorité des icônes d'un composant sont **internes** — les dix chevrons du panneau de `ui-datepicker`, la coche et la loupe de `ui-select`. Basculer la famille par défaut au niveau applicatif envoyait ces noms FontAwesome codés en dur à la police cible, qui ne les connaît pas, et les icônes internes disparaissaient.
 
@@ -45,7 +64,7 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
   height: var(--ui-button-height-small, var(--size-components-sm));
   ```
 
-  **579 hooks** exposés, nommés `--ui-{famille}[-{partie}]-{propriété}[-{modifieur}]` (modifieur en dernier, comme les tokens). Le composant ne déclare jamais ces noms : les poser sur `:root` (tout le projet), sur un sélecteur (une zone) ou sur l'élément suffit à gagner.
+  **601 hooks** exposés, nommés `--ui-{famille}[-{partie}]-{propriété}[-{modifieur}]` (modifieur en dernier, comme les tokens). Le composant ne déclare jamais ces noms : les poser sur `:root` (tout le projet), sur un sélecteur (une zone) ou sur l'élément suffit à gagner.
 
   ```scss
   :root              { --ui-button-height-small: 24px; }
@@ -55,14 +74,16 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
   Les **couleurs** restent volontairement sur les tokens sémantiques (clair/sombre × 3 marques × contraste WCAG) : seuls quelques hooks de couleur existent, là où repeindre **un exemplaire** est un cas d'usage réel (voile de masque, marqueur de chargement, reflet de squelette, remplissage de notation).
 
   Aucun défaut ne change : la migration a été vérifiée fichier par fichier en comparant le CSS compilé avant/après, hook réduit à son défaut.
-- **`@4sh/ui-kit/styles/component-vars.scss`** — livré avec le package : un fichier prêt à copier où les **581 hooks** réglables sont déclarés à la valeur livrée par le starter, groupés par catégorie → composant → type de propriété (dimensions, espacements, bordures, typographie, couleurs), valeurs alignées sur une seule colonne. On le copie dans le projet, on le charge après `styles.css`, on change les valeurs voulues ; tel quel il ne change rien. Également téléchargeable depuis Storybook (*Spécifications → Thème & Système de Tokens*).
+- **`@4sh/ui-kit/styles/component-vars.scss`** — livré avec le package : un fichier prêt à copier où les **598 hooks** réglables sont déclarés à la valeur livrée par le starter, groupés par catégorie → composant → type de propriété (dimensions, espacements, bordures, typographie, couleurs), valeurs alignées sur une seule colonne. On le copie dans le projet, on le charge après `styles.css`, on change les valeurs voulues ; tel quel il ne change rien. Également téléchargeable depuis Storybook (*Spécifications → Thème & Système de Tokens*).
 
-  Généré par `npm run docs:config`, **valeurs lues dans le CSS réellement compilé par Sass** : une expression comme `rem-calc(44px - 2 * $gutter)` y figure résolue (`2.25rem`), jamais sous sa forme SCSS. Les 17 hooks pour lesquels un réglage global n'a pas de sens (valeur dépendante de la variante rendue, propriété que le composant se pose lui-même) en sont volontairement absents — la colonne « Hook exposé » de chaque composant les donne.
+  Généré par `npm run docs:config`, **valeurs lues dans le CSS réellement compilé par Sass** : une expression comme `rem-calc(44px - 2 * $gutter)` y figure résolue (`2.25rem`), jamais sous sa forme SCSS. Les 19 hooks pour lesquels un réglage global n'a pas de sens (valeur dépendante de la variante rendue, propriété que le composant se pose lui-même) en sont volontairement absents — la colonne « Hook exposé » de chaque composant les donne.
 
   Le mot **« thème »** reste réservé au couple marque + clair/sombre (`ThemeService`, `BrandService`) : cette couche-ci s'appelle **hooks**, du nom des custom properties qu'elle règle, pour éviter trois sens différents du même mot.
+- **Jetons sémantiques `navigation.highOutlined.*`** — la déclinaison *contour* de la navigation (36 jetons : `content` / `surface` / `stroke` × 6 états, en clair et en sombre). `actions` avait la sienne depuis toujours, `navigation` n'exposait que `high` et `low`, c'est-à-dire uniquement des déclinaisons pleines. C'est ce que `ui-tabs` consomme désormais (voir `Changed`), et elle est disponible pour les autres composants de navigation.
 - **`@4sh/ui-kit-schematics` embarque son `LICENSE` et ses README** (EN + FR). Le package déclarait `Apache-2.0` sans en fournir le texte, alors que la licence (§4a) demande qu'une redistribution en joigne une copie — d'autant plus ici que ce package existe pour que son contenu soit recopié ailleurs. Sa page npmjs, jusque-là vide, redirige maintenant vers `@4sh/ui-kit` : le compagnon ne s'installe jamais directement.
 
 ### Fixed
+- **`ui-toggle` : le survol d'un interrupteur éteint virait au rose.** La piste lisait `--form-low-content-hover` (`secondary-400`) tant que l'interrupteur était éteint, alors que l'état allumé lisait `--form-high-content-hover` (`primary-400`) : survoler un toggle éteint le teintait dans la couleur secondaire, qu'aucun autre contrôle de formulaire n'emploie au survol. Les deux états partagent désormais le même jeton.
 - **Un projet en sources copiées peut produire un build de production** (FSHSP-127). `ng add` câblait `styles` et `includePaths` dans `angular.json` mais laissait le budget `anyComponentStyle` d'`ng new` à sa valeur par défaut (4 kB d'avertissement, **8 kB d'erreur**). Ce seuil s'applique à *chaque* composant, sur le CSS compilé : cinq composants du kit le dépassent — `ui-button` (55,7 kB), `ui-datepicker` (13,9), `ui-chip` (13,7), `ui-select` (12,6), `ui-autocomplete` (8,7). `ng serve` fonctionnait, les budgets ne vivant qu'en configuration `production` : c'est la CI qui tombait, sur un fichier que le consommateur n'a pas écrit et un seuil qu'il n'a pas choisi.
 
   Le schematic relève désormais ce budget à **128 kB d'erreur**, et retire l'avertissement — le laisser à 4 kB ferait remonter une quinzaine de composants à chaque build. 128 kB et pas au ras des 55,7 : les axes de `ui-button` sont multiplicatifs, un level de plus coûte 10,5 kB et une variante 17,2 kB, or les ajouter est précisément ce que le mode starter permet.
