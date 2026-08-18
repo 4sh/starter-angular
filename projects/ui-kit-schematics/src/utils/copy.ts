@@ -1,7 +1,7 @@
 /**
  * copy — recopie une unité (`AssetUnit`) dans l'arbre du projet consommateur,
  * aplatie (FSHSP-121), imports réadressés vers les copies voisines (FSHSP-119),
- * avec en-tête de traçabilité (origine + version + licence) sur chaque fichier.
+ * avec en-tête de traçabilité (version + licence) sur chaque fichier.
  */
 import type { Tree } from '@angular-devkit/schematics';
 import { SchematicsException } from '@angular-devkit/schematics';
@@ -13,31 +13,29 @@ import { BARREL_FILENAME } from './export-map';
 import { rewriteDocImports, rewriteKitImports } from './rewrite-imports';
 import { stripFigmaDesign } from './strip-figma';
 
-const HEADER_STYLE: Record<string, (lines: string[]) => string> = {
-  '.ts': (lines) => lines.map((l) => `// ${l}`).join('\n') + '\n',
-  '.scss': (lines) => lines.map((l) => `// ${l}`).join('\n') + '\n',
-  '.html': (lines) => `<!--\n${lines.map((l) => `  ${l}`).join('\n')}\n-->\n`,
+const HEADER_STYLE: Record<string, (line: string) => string> = {
+  '.ts': (line) => `// ${line}\n`,
+  '.scss': (line) => `// ${line}\n`,
+  '.html': (line) => `<!-- ${line} -->\n`,
   // Une constante exportée, et non le commentaire `{/* … */}` qu'on attendrait
   // ici : c'est la seule forme de commentaire que le MDX accepte, et elle ne
   // survit pas au passage de Prettier que le CLI Angular applique aux fichiers
   // écrits par un schematic (`{/*` en ressort en `{/_`, et l'indexeur de
   // Storybook ne parse plus la page). Un `export const` traverse ce formatage
   // sans dommage, reste invisible au rendu, et porte la même mention.
-  '.mdx': (lines) => `export const uiKitOrigin = ${JSON.stringify(lines.join(' '))};\n\n`,
+  '.mdx': (line) => `export const uiKitOrigin = ${JSON.stringify(line)};\n\n`,
 };
 
-function traceabilityHeader(unit: AssetUnit, relPath: string, kitVersion: string, ext: string): string {
+// Une ligne, et rien de déductible : ni l'origine ni le chemin, que le fichier
+// copié porte déjà dans son emplacement (`ui/{catégorie}/{ui-nom}/`,
+// `ui-core/{domaine}/`). Restent la version, et la mention de licence — le
+// fichier quitte le package pour vivre dans le dépôt du consommateur, où plus
+// rien d'autre n'y rattache les termes sous lesquels il est fourni
+// (Apache-2.0 §4b — conserver les mentions dans les copies).
+function traceabilityHeader(kitVersion: string, ext: string): string {
   const make = HEADER_STYLE[ext];
   if (!make) return '';
-  const origin = unit.kind === 'component' ? `${unit.category}/${unit.name}` : `base partagée ${unit.name}`;
-  return make([
-    `Copié depuis @4sh/ui-kit@${kitVersion} (${origin}, ${relPath}). ` +
-      `Géré par ui-kit.json — voir \`ng generate @4sh/ui-kit-schematics:update\`.`,
-    // Le fichier quitte le package pour vivre dans le dépôt du consommateur :
-    // sans cette ligne, plus rien n'y rattache les termes sous lesquels il est
-    // fourni (Apache-2.0 §4b — conserver les mentions dans les copies).
-    `Apache-2.0 — Copyright 2026 4SH.`,
-  ]);
+  return make(`@4sh/ui-kit@${kitVersion} — Apache-2.0 — Copyright 2026 4SH.`);
 }
 
 export interface RenderedFile {
@@ -94,7 +92,7 @@ export function renderUnitFiles(unit: AssetUnit, kitVersion: string, options: Re
       unresolved.push(...result.unresolved.map((item) => `${relPath} → ${item}`));
     }
 
-    files.push({ targetPath, content: traceabilityHeader(unit, relPath, kitVersion, ext) + source });
+    files.push({ targetPath, content: traceabilityHeader(kitVersion, ext) + source });
   }
 
   if (unresolved.length) {

@@ -102,6 +102,13 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 - **`--ui-sidebar-width`, `--ui-sidebar-rail-width`, `--ui-empty-state-media-size`, `--ui-empty-state-media-color`, `--ui-input-group-radius`, `--ui-input-group-overlap` et `--ui-skeleton-shine` sont désormais réellement surchargeables.** Ces sept custom properties étaient documentées comme des points de surcharge, mais le composant les **déclarait** sur son propre élément : une valeur posée par le consommateur sur `:root` était systématiquement écrasée (et, pour `--ui-skeleton-shine`, écrasée en mode sombre uniquement). Les déclarations passent sur un miroir privé, le nom public reste lu en amont. Mêmes valeurs par défaut.
 - **`ui-tab-list` : `--ui-tabs-active-bar-color` / `--ui-tabs-active-bar-size` deviennent `--ui-tabs-indicator-color` / `--ui-tabs-indicator-thickness`** (le mot `active` se lisait comme un état alors que la convention met le modifieur en dernier). Les anciens noms restent honorés une version, en repli.
 - **L'en-tête de traçabilité des fichiers copiés par `ng generate @4sh/ui-kit:add` porte la mention de licence** (`Apache-2.0 — Copyright 2026 4SH.`) en plus de son origine et de sa version. Une fois copié, le fichier vit dans le dépôt du consommateur, où plus rien n'indiquait sous quels termes il est fourni. Conséquence attendue : le premier `ng generate @4sh/ui-kit:update` suivant cette version affiche un diff d'une ligne en tête de chaque fichier installé.
+- **L'en-tête de traçabilité des fichiers copiés tient sur une ligne et porte la mention de licence** :
+
+  ```ts
+  // @4sh/ui-kit@0.2.0 — Apache-2.0 — Copyright 2026 4SH.
+  ```
+
+  Il reprenait la catégorie, le nom du composant et le chemin du fichier — trois informations que le fichier copié porte déjà dans son emplacement. Ne reste que la version d'origine, et la licence : une fois copié, le fichier vit dans le dépôt du consommateur, où plus rien n'indiquait sous quels termes il est fourni. Conséquence attendue : le premier `ng generate @4sh/ui-kit-schematics:update` suivant cette version affiche un diff d'une ligne en tête de chaque fichier installé.
 
 ## [0.2.0] - 2026-08-14
 
