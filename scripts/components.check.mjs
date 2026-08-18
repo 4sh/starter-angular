@@ -34,7 +34,7 @@ const READMES = [
   { file: join(KIT, 'README.fr.md'), heading: '### Entry points disponibles' },
 ];
 const OVERVIEW = join(ROOT, 'storybook/docs/Overview.mdx');
-const INDEX = join(ROOT, 'src/app/shared/components/components-index.md');
+const INDEX = join(ROOT, 'docs/components-index.md');
 
 /**
  * Entry points du disque : un dossier `ui-*` portant un `ng-package.json`, à
@@ -140,7 +140,7 @@ if (staleOverview.length) {
 const uncheckedInIndex = diff(disk, checkedInIndex());
 if (uncheckedInIndex.length) {
   errors.push(
-    `src/app/shared/components/components-index.md : entry points livrés mais non cochés ✅ — ${uncheckedInIndex.join(', ')}`,
+    `docs/components-index.md : entry points livrés mais non cochés ✅ — ${uncheckedInIndex.join(', ')}`,
   );
 }
 

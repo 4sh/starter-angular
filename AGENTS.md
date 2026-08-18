@@ -27,7 +27,7 @@ Fonts embedded locally (DM Sans + Inter, variable fonts): `src/styles/src/vendor
 
 | Question | Where to look |
 |---|---|
-| Existing components / roadmap | `src/app/shared/components/components-index.md` |
+| Existing components / roadmap | `docs/components-index.md` |
 | A component's API (`inputs`, `outputs`, types) | `projects/ui-kit/<category>/ui-<name>/ui-<name>.stories.ts` → `argTypes` (co-located) |
 | Colors, semantic tokens | Storybook → `Foundations / Colors` (brand + mode explorer) |
 | Typography | Storybook → `Foundations / Typography` |
@@ -131,9 +131,12 @@ src/
     app.config.ts            # provides the kit's app-level data (brand, ui-image assets)
     shared/
       components/
-        components-index.md  # Index: components built ✅ / to build ⬜
         domain/              # Business components (project prefix) — created per project
   design-tokens/             # Token JSON sources (Figma / Token Flow export)
+
+docs/
+  components-index.md        # Index: components built ✅ / to build ⬜
+  VERSIONING.md · PUBLISHING.md · figma-migration-global.md
 ```
 
 Each component's style is **co-located** in its `.scss` (Angular scoped) and consumes
@@ -406,7 +409,9 @@ $focus-ring-width: utils.$form-focus-ring-width; // ← replace the value here t
 1. Check `components-index.md` (roadmap, planned name)
 2. Replicate the **`actions/ui-button` pattern**: file structure, signals + `computed()` for the classes, co-located SCSS
 3. Create the story + the `.mdx` **co-located** in `projects/ui-kit/<category>/ui-<name>/` (outside `src/`; global doc only → `storybook/docs/`) — pick `<category>` from `storybook/docs/Overview.mdx`'s sections, or ask if the component doesn't fit an existing one
-4. Check off the component in `components-index.md`
+4. Check off the component in `components-index.md`, add its card to `Overview.mdx`, add it
+   to the family table of **both** package READMEs (EN + FR)
+5. `npm run docs:config:check` — it is what tells you which of those you forgot
 
 > File **placement** does not drive the Storybook sidebar tree — the `title` does
 > (`<Meta title="…">`, or the story's `title:`). Placement only decides what ships: a
@@ -438,9 +443,27 @@ Like a `ui-*`, but: project prefix, `domain/` folder, and **composition of `ui-*
 ## Commands
 
 ```bash
-npm start                # Launch Storybook (source of truth) — alias of npm run storybook
-npm run serve            # Launch the Angular app (minimal demo)
-npm run tokens:build     # Regenerate the CSS variables from the JSON
-npm run build-storybook  # Static Storybook build
-npm run lint             # ESLint --fix
+npm start                  # Launch Storybook (source of truth) — alias of npm run storybook
+npm run serve              # Launch the Angular app (minimal demo)
+npm run tokens:build       # Regenerate the CSS variables from the JSON
+npm run build-storybook    # Static Storybook build
+npm run lint               # ESLint --fix
+npm test                   # Unit tests on the kit
+npm run docs:config:check  # Guardrail on the hand-written doc — see below
 ```
+
+`docs:config:check` is what catches a doc that has drifted from the code, and **you are
+expected to run it before committing**. It fails on:
+
+- a component present in `projects/ui-kit/` but missing from one of the six places that
+  enumerate the kit (the two package READMEs, `Overview.mdx`, `docs/components-index.md`,
+  and the two announced counts) — this is the rule you break by finishing a component
+  without updating its lists;
+- a `--ui-*` hook off convention, or without a `///` (public, yet invisible in the doc);
+- an alias pointing at a token that does not exist in `src/design-tokens/`;
+- the counts quoted in prose in `figma/README.md`.
+
+Committed alongside it, `git diff --exit-code -- projects/ui-kit/styles/component-vars.scss
+figma/component-vars.json`: those two files are **generated yet committed**, and every
+build regenerates them on disk — so only git notices a stale commit. Both run in
+[`pr-checks.yml`](.github/workflows/pr-checks.yml).

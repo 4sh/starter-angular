@@ -45,10 +45,13 @@ npm install @4sh/ui-kit
 Published on the **public npm registry**, under the **`4sh`** organization:
 [npmjs.com/package/@4sh/ui-kit](https://www.npmjs.com/package/@4sh/ui-kit)
 
-Dependencies are declared as `peerDependencies` — the version already present in
-your application is the one used (never a second copy of Angular):
-`@angular/core`, `@angular/common`, `@angular/forms`, `@angular/router`,
-`@angular/cdk`, `@angular/platform-browser` and `rxjs`.
+| Requires | |
+|---|---|
+| Angular | `^22.0.0` — `core`, `common`, `forms`, `router`, `platform-browser`, `cdk` |
+| RxJS | `^7.8.0` |
+
+These are declared as `peerDependencies`: the version already present in your
+application is the one used, never a second copy of Angular.
 
 ### Or copy the sources instead
 
@@ -67,6 +70,48 @@ compiled code instead of your copies. See
 **[`@4sh/ui-kit-schematics`](https://www.npmjs.com/package/@4sh/ui-kit-schematics)**.
 
 The two modes do not combine — pick the one that fits the project.
+
+---
+
+## Getting started
+
+Two steps, and the second one is the one people forget.
+
+**1. Load the kit's stylesheet, once, globally.** The components are **headless**: no
+color, size or spacing is hardcoded — everything is read from CSS variables, and the
+package ships them.
+
+```jsonc
+// angular.json
+"styles": [
+  "node_modules/@4sh/ui-kit/styles.css",   // ← tokens + base + typography + motion
+  "src/styles/main.scss"
+]
+```
+
+`styles.css` contains the design tokens (all 3 brands, light/dark, responsive), the base
+layer, the typography classes and the animation presets of the `UiMotion` directive.
+**Without it, components render unstyled** — nothing errors, everything just looks wrong.
+
+`@font-face` rules are **not** included: the tokens merely *name* the families
+(`--fontfamily-base`). Ship your own fonts and override `--fontfamily-*` if needed.
+
+**2. Import the component you need** — and only that one. Here, the date picker, without
+pulling the rest of the kit into your bundle:
+
+```ts
+import { UiDatepicker } from '@4sh/ui-kit/forms/ui-datepicker';
+
+@Component({
+  selector: 'app-booking',
+  imports: [UiDatepicker],
+  template: `<ui-datepicker label="Date" valueType="date" [(ngModel)]="date" />`,
+})
+export class Booking { date = signal<Date | null>(null); }
+```
+
+That is the whole setup. Two components need one provider each — see
+[below](#configuration-required-by-some-components) — and everything else is opt-in.
 
 ---
 
@@ -141,43 +186,7 @@ placeholder.
 
 ---
 
-Example — using only the date picker, without pulling the rest of the kit into
-your bundle:
-
-```ts
-import { UiDatepicker } from '@4sh/ui-kit/forms/ui-datepicker';
-
-@Component({
-  selector: 'app-booking',
-  imports: [UiDatepicker],
-  template: `<ui-datepicker label="Date" valueType="date" [(ngModel)]="date" />`,
-})
-export class Booking { date = signal<Date | null>(null); }
-```
-
----
-
-## Styles: loading the kit's stylesheet
-
-The components are **headless**: no color, size or spacing is hardcoded —
-everything is read from CSS variables. The package **ships** that stylesheet,
-to be loaded **once**, globally:
-
-```jsonc
-// angular.json
-"styles": [
-  "node_modules/@4sh/ui-kit/styles.css",   // ← tokens + base + typography + motion
-  "src/styles/main.scss"
-]
-```
-
-`styles.css` contains the design tokens (all 3 brands, light/dark, responsive),
-the base layer, the typography classes and the animation presets of the
-`UiMotion` directive. **Without it, components render unstyled.**
-
-`@font-face` rules are **not** included: the tokens merely *name* the families
-(`--fontfamily-base`). Ship your own fonts and override `--fontfamily-*` if
-needed.
+## Styles: going further
 
 ### Writing your own styles on the kit's foundation
 
@@ -282,22 +291,30 @@ export class MyField extends BaseFormField<string> {
 
 ---
 
-## Contributing (development inside this repo)
+## Accessibility
 
-```bash
-npm run ui-kit:build   # builds the package into dist/ui-kit
-npm run ui-kit:pack    # + produces a tarball installable elsewhere
-npm run storybook      # component catalogue (port 6006)
-```
+The reason the components are headless is that behaviour and accessibility are the part
+you should not have to rewrite:
 
-Publishing: see [`docs/PUBLISHING.md`](../../docs/PUBLISHING.md) (manual GitHub
-Actions workflow, `4sh-package-admin` service account).
+- Native elements (`<button>`, `<a>`, `<input>`) — never a clickable `<div>`.
+- `aria-label` required in icon-only mode; decorative icons carry `aria-hidden`.
+- `:focus-visible` always visible, and distinct from `hover`.
+- `disabled` is the native attribute, not just a visual state.
+- Overlay components (select, menu, modal, drawer…) use the Angular CDK for focus
+  trapping and keyboard navigation.
 
-⚠️ **Hard rule for imports internal to the package**: always use the real
-package name (`@4sh/ui-kit/base/ui-icon`), never a relative path to another entry
-point nor a shortcut. `ng-packagr` only detects a dependency between entry
-points if the import literally starts with the package name; otherwise the
-compilation order becomes undefined and the build fails intermittently.
+Every story runs through axe-core in CI (`@storybook/addon-a11y` + `test-storybook`).
+**That check is informational today**: a backlog of known violations is still being worked
+through, so read it as a guardrail in progress, not as a conformance claim. The kit makes
+accessibility much easier to get right; it does not certify your screens.
+
+---
+
+## Contributing
+
+The kit is developed in the
+[starter-angular](https://github.com/4sh/starter-angular) repository — conventions,
+commands and release flow are documented there.
 
 ---
 

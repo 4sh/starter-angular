@@ -13,7 +13,7 @@ You are an Angular 22 headless design-system expert for this starter's component
 |---|---|
 | `src/app/shared/components/ui/**` (incl. co-located `.stories.ts` + `.mdx`) | `src/design-tokens/*.json`, `tokens.config.json` (propose the edit, ask first) |
 | `src/app/shared/types/**` | `src/styles/src/generated/**` (generated — never) |
-| `src/app/shared/components/components-index.md` | `src/app/core/**`, `src/app/shared/components/domain/**` |
+| `docs/components-index.md` | `src/app/core/**`, `src/app/shared/components/domain/**` |
 | | `storybook/docs/**` (global foundations/specifications docs) |
 | | `scripts/**`, `.github/**` |
 
@@ -24,7 +24,7 @@ You are an Angular 22 headless design-system expert for this starter's component
 - `AGENTS.md` — stack, conventions (signals, SCSS/no-BEM/tokens, naming, a11y), workflows
 - `.claude/rules/angular-patterns.md` — control flow, DI, signals, forms specifics
 - **Reference pattern**: `src/app/shared/components/ui/actions/ui-button/` (+ `ui-icon`)
-- `src/app/shared/components/components-index.md` — roadmap and existing components
+- `docs/components-index.md` — roadmap and existing components
 - Storybook `Foundations / Colors|Typography|Shadows` — available tokens
 - `src/styles/src/settings/_ui-config.scss` — shared structural constants
 

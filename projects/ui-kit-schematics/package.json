@@ -1,7 +1,7 @@
 {
   "name": "@4sh/ui-kit-schematics",
   "version": "0.1.0",
-  "description": "Schematics Angular pour copier les sources brutes de @4sh/ui-kit (façon shadcn/spartan-ng) dans un projet consommateur.",
+  "description": "Angular schematics that copy the raw sources of @4sh/ui-kit into your project, shadcn/spartan-ng style.",
   "homepage": "https://4sh.github.io/starter-angular/?path=/docs/introduction--docs",
   "repository": {
     "type": "git",

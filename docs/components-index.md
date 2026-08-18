@@ -1,6 +1,6 @@
 # Index des composants
 
-> Story & doc **co-localisées** dans le dossier du composant : `projects/ui-kit/ui-<nom>/ui-<nom>.stories.ts` + `ui-<nom>.mdx` (package `@4sh/ui-kit`)
+> Story & doc **co-localisées** dans le dossier du composant : `projects/ui-kit/<famille>/ui-<nom>/ui-<nom>.stories.ts` + `ui-<nom>.mdx` (package `@4sh/ui-kit`) — la famille est la section de cette page (`actions`, `forms`, …)
 > ✅ = implémenté · ⬜ = à construire (recopier le patron `ui-button`)
 
 ## actions
