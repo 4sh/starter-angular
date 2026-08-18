@@ -175,7 +175,7 @@ export const ComponentCard = ({ name, description, link, story, previewHeight = 
         transition: 'all .2s ease', cursor: 'pointer'
       }}
       onClick={handleCardClick}
-      onMouseOver={(e) => { e.currentTarget.style.borderColor = 'var(--sb-code-color)'; e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,.1)'; }}
+      onMouseOver={(e) => { e.currentTarget.style.borderColor = 'var(--sb-accent)'; e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,.1)'; }}
       onMouseOut={(e) => { e.currentTarget.style.borderColor = 'var(--sb-border)'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
     >
       <div
@@ -186,7 +186,7 @@ export const ComponentCard = ({ name, description, link, story, previewHeight = 
       </div>
       <div style={{ fontWeight: 'bold', fontSize: 15, marginBottom: 6 }}>{name}</div>
       <div style={{ fontSize: 12, color: 'var(--sb-text-subtle)', lineHeight: 1.4, marginBottom: 12 }}>{description}</div>
-      <div style={{ marginTop: 'auto', paddingTop: 8, fontSize: 11, color: 'var(--sb-code-color)', fontWeight: 'bold' }}>Voir la documentation →</div>
+      <div style={{ marginTop: 'auto', paddingTop: 8, fontSize: 11, color: 'var(--sb-accent)', fontWeight: 'bold' }}>Voir la documentation →</div>
     </div>
   );
 };
@@ -209,12 +209,12 @@ export const StatsCards = ({ categories }) => {
       minWidth: 0,
       padding: '28px 32px',
       borderRadius: 16,
-      background: 'linear-gradient(135deg, var(--sb-code-color, #0070f3) 0%, #7c3aed 100%)',
-      color: '#fff',
+      background: 'linear-gradient(135deg, var(--sb-hero-from) 0%, var(--sb-hero-to) 100%)',
+      color: 'var(--sb-hero-text)',
       display: 'flex',
       flexDirection: 'column',
       gap: 8,
-      boxShadow: '0 8px 32px rgba(0,112,243,.22)',
+      boxShadow: '0 8px 32px rgba(0,0,0,.28)',
       position: 'relative',
       overflow: 'hidden',
     }}>
@@ -273,7 +273,7 @@ export const StatsCards = ({ categories }) => {
               style={{
                 fontSize: 14,
                 fontWeight: 500,
-                color: 'var(--sb-code-color)',
+                color: 'var(--sb-accent)',
                 textDecoration: 'none',
                 cursor: 'pointer',
               }}
@@ -290,8 +290,8 @@ export const StatsCards = ({ categories }) => {
               height: 20,
               padding: '0 7px',
               borderRadius: 999,
-              background: 'var(--sb-code-color, #0070f3)',
-              color: '#fff',
+              background: 'var(--sb-accent)',
+              color: 'var(--sb-accent-contrast)',
               fontSize: 11,
               fontWeight: 700,
               letterSpacing: '.02em',

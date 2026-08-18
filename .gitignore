@@ -19,6 +19,9 @@ projects/ui-kit/styles/generated
 # Copie servie par Storybook pour le téléchargement (regénérée par docs:config)
 storybook/public/component-vars.scss
 
+# Index de recherche plein texte de la doc (regénéré par docs:search)
+storybook/public/text-search-docs.json
+
 # Compodoc (generated for Storybook)
 documentation.json
 

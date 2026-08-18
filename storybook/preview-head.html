@@ -12,8 +12,13 @@
         --sb-text-subtle: #64748b;
         --sb-border: #e2e8f0;
         --sb-border-subtle: #f1f5f9;
-        --sb-code-bg: #f3eeff;
-        --sb-code-color: #9747ff;
+        --sb-code-bg: #f1f5f9;
+        --sb-code-color: #334155;
+        --sb-accent: #111827;
+        --sb-accent-contrast: #ffffff;
+        --sb-hero-from: #1e293b;
+        --sb-hero-to: #334155;
+        --sb-hero-text: #f8fafc;
     }
 
     html.dark,
@@ -25,7 +30,12 @@
         --sb-border: #334155;
         --sb-border-subtle: #1e293b;
         --sb-code-bg: #1e293b;
-        --sb-code-color: #ac78ff;
+        --sb-code-color: #e2e8f0;
+        --sb-accent: #d1d5db;
+        --sb-accent-contrast: #111827;
+        --sb-hero-from: #334155;
+        --sb-hero-to: #475569;
+        --sb-hero-text: #f8fafc;
     }
 
     /* ═══════════════════════════════════════════════════════
@@ -155,7 +165,7 @@
     .doc-table tbody tr:hover td,
     .sb-argstableBlock tbody tr:hover td,
     .sbdocs-content table:not(.sb-anchor, .sb-unstyled, .sb-unstyled table) tbody tr:hover td {
-        background-color: rgba(151, 71, 255, .08) !important;
+        background-color: rgba(100, 116, 139, .10) !important;
     }
 
     .doc-table code,
@@ -234,15 +244,15 @@
         font-size: 14px !important;
     }
 
-    /* Fond légèrement teinté en violet en dark mode */
+    /* Fond légèrement teinté en dark mode */
     html.dark .ai-instruction-block,
     html.dark-mode .ai-instruction-block {
-        background-color: rgba(172, 120, 255, 0.1) !important;
+        background-color: rgba(148, 163, 184, 0.10) !important;
     }
 
     /*
       Ultra-ciblé : bat la règle globale ".dark div:not(.docs-story *)"
-      Le titre doit toujours être de la couleur du code (violet).
+      Le titre doit toujours être de la couleur du code.
     */
     html .ai-instruction-block .ai-instruction-block-title,
     html.dark .ai-instruction-block .ai-instruction-block-title,

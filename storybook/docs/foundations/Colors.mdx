@@ -93,20 +93,20 @@ export const ColorsExplorer = () => {
   return (
     <div className="tfm-colors">
       <style>{`
-        .tfm-colors { --accent: #9747ff; }
+        .tfm-colors { --accent: var(--sb-accent, #111827); --accent-contrast: var(--sb-accent-contrast, #fff); }
         .tfm-seg { display: inline-flex; padding: 4px; gap: 4px; border-radius: 10px; background: rgba(128,128,128,.12); margin-bottom: 16px; }
         .tfm-seg button { border: 0; background: transparent; padding: 7px 18px; border-radius: 7px; font-size: 14px; font-weight: 600; cursor: pointer; color: inherit; transition: all .15s; }
-        .tfm-seg button.is-active { background: var(--accent); color: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
+        .tfm-seg button.is-active { background: var(--accent); color: var(--accent-contrast); box-shadow: 0 1px 3px rgba(0,0,0,.2); }
         .tfm-subtabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
         .tfm-subtabs button { border: 1px solid rgba(128,128,128,.28); background: transparent; color: inherit; padding: 6px 14px; border-radius: 999px; font-size: 13px; cursor: pointer; transition: all .15s; }
         .tfm-subtabs button:hover { border-color: var(--accent); color: var(--accent); }
-        .tfm-subtabs button.is-active { background: var(--accent); border-color: var(--accent); color: #fff; }
+        .tfm-subtabs button.is-active { background: var(--accent); border-color: var(--accent); color: var(--accent-contrast); }
         .tfm-top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 16px; }
         .tfm-switches { display: flex; gap: 24px; flex-wrap: wrap; align-items: center; }
         .tfm-switches .grp { display: flex; gap: 6px; align-items: center; }
         .tfm-switches .grp > span { font-size: 12px; font-weight: 700; opacity: .7; }
         .tfm-switches button { border: 1px solid rgba(128,128,128,.28); background: transparent; color: inherit; padding: 5px 12px; border-radius: 7px; font-size: 13px; cursor: pointer; }
-        .tfm-switches button.is-active { background: var(--accent); border-color: var(--accent); color: #fff; }
+        .tfm-switches button.is-active { background: var(--accent); border-color: var(--accent); color: var(--accent-contrast); }
         .tfm-table-wrap { overflow-x: auto; }
         .tfm-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; }
         .tfm-val { opacity: .8; font-variant-numeric: tabular-nums; font-family: var(--sb-code-font, ui-monospace, monospace); font-size: 12px; white-space: nowrap; }
@@ -118,7 +118,7 @@ export const ColorsExplorer = () => {
         .tfm-table tbody tr:last-child td { border-bottom: none; }
         .tfm-table tbody tr { transition: background-color .15s ease; }
         .tfm-table tbody tr:nth-child(even) { background-color: rgba(128,128,128,.04); }
-        .tfm-table tbody tr:hover { background-color: rgba(151,71,255,.08); }
+        .tfm-table tbody tr:hover { background-color: rgba(100,116,139,.10); }
         .tfm-sw { display: block; width: 40px; height: 26px; border-radius: 6px; border: 1px solid rgba(128,128,128,.3); }
         .tfm-copy { font-size: 12px; padding: 3px 10px; border-radius: 6px; cursor: pointer; border: 1px solid rgba(128,128,128,.3); background: transparent; color: inherit; transition: all .15s; }
         .tfm-copy:hover { border-color: var(--accent); color: var(--accent); }

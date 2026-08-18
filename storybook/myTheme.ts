@@ -28,15 +28,15 @@ export const lightTheme = create({
   textInverseColor: '#ffffff',
   // Toolbar
   barTextColor: '#6b7280',
-  barSelectedColor: '#9747ff',
+  barSelectedColor: '#111827',
   barBg: '#ffffff',
   // Form colors
   inputBg: '#ffffff',
   inputBorder: '#dfe2e7',
   inputTextColor: '#111827',
   // Accent
-  colorPrimary: '#9747ff',
-  colorSecondary: '#9747ff',
+  colorPrimary: '#111827',
+  colorSecondary: '#111827',
 });
 
 export const darkTheme = create({
@@ -52,15 +52,15 @@ export const darkTheme = create({
   textInverseColor: '#111827',
   // Toolbar
   barTextColor: '#9ca3af',
-  barSelectedColor: '#ac78ff',
+  barSelectedColor: '#f3f4f6',
   barBg: '#111827',
   // Form colors
   inputBg: '#1f2937',
   inputBorder: '#374151',
   inputTextColor: '#f6f7f9',
   // Accent
-  colorPrimary: '#9747ff',
-  colorSecondary: '#9747ff',
+  colorPrimary: '#d1d5db',
+  colorSecondary: '#d1d5db',
 });
 
 export default lightTheme;
