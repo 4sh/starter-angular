@@ -18,7 +18,9 @@ ng add @4sh/ui-kit-schematics
 ```
 
 One command: it lays the foundation (styles, design tokens, `angular.json`), then
-asks which components to copy and copies them, dependencies included.
+asks which components to copy and copies them, dependencies included. The prompt
+is a checkbox list — <kbd>space</kbd> to pick, <kbd>a</kbd> for all,
+<kbd>i</kbd> to invert.
 
 ```
 src/app/shared/

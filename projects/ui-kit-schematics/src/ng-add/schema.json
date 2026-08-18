@@ -9,11 +9,6 @@
       "default": false,
       "description": "Ne pas lancer `npm install` après avoir modifié package.json."
     },
-    "components": {
-      "type": "array",
-      "items": { "type": "string" },
-      "description": "Composants à copier (ex. ui-button ui-select). Omis → sélection interactive."
-    },
     "all": {
       "type": "boolean",
       "default": false,

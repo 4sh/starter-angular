@@ -479,7 +479,11 @@ export function ngAdd(options: Schema): Rule {
 
   return chain([
     ...foundation,
-    add({ components: options.components, all: options.all, withStorybook }),
+    // Pas de `components` ici : `ng add` enchaîne sur le prompt, où l'on coche
+    // à la barre d'espace (`a` = tout). Une liste en ligne de commande ne
+    // rendrait pas le service que rend déjà cet écran, deux secondes plus tard.
+    // Elle reste sur `ng generate …:add`, pour un usage scripté.
+    add({ all: options.all, withStorybook }),
     ...storybook,
     ...install,
   ]);

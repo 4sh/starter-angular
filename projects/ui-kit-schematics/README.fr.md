@@ -19,7 +19,8 @@ ng add @4sh/ui-kit-schematics
 
 Une seule commande : elle pose la fondation (styles, design tokens,
 `angular.json`), puis demande quels composants copier et les copie, dépendances
-comprises.
+comprises. La sélection se fait à la case à cocher — <kbd>espace</kbd> pour
+choisir, <kbd>a</kbd> pour tout, <kbd>i</kbd> pour inverser.
 
 ```
 src/app/shared/
