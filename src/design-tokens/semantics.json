@@ -16723,7 +16723,7 @@
             }
           },
           "checked": {
-            "$value": "{primitives.primary.300}",
+            "$value": "{primitives.primary.400}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -16879,7 +16879,7 @@
             }
           },
           "checked": {
-            "$value": "{primitives.primary.300}",
+            "$value": "{primitives.primary.400}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -16961,7 +16961,7 @@
             }
           },
           "checked": {
-            "$value": "{primitives.secondary.300}",
+            "$value": "{primitives.secondary.400}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -17117,7 +17117,7 @@
             }
           },
           "checked": {
-            "$value": "{primitives.secondary.300}",
+            "$value": "{primitives.secondary.400}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -17199,7 +17199,7 @@
             }
           },
           "checked": {
-            "$value": "{primitives.green.300}",
+            "$value": "{primitives.green.500}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -17355,7 +17355,7 @@
             }
           },
           "checked": {
-            "$value": "{primitives.green.300}",
+            "$value": "{primitives.green.500}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -17437,7 +17437,7 @@
             }
           },
           "checked": {
-            "$value": "{primitives.red.300}",
+            "$value": "{primitives.red.500}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -17593,7 +17593,7 @@
             }
           },
           "checked": {
-            "$value": "{primitives.red.300}",
+            "$value": "{primitives.red.500}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
