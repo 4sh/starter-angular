@@ -23,6 +23,7 @@ import {
   CONFIG_TABLE_PATH,
   docsPipelineDir,
   mcpServerDir,
+  prettierConfigDir,
   stylesFoundationDir,
 } from '../utils/component-registry';
 import { readKitManifestInfo } from '../utils/kit-manifest';
@@ -82,6 +83,40 @@ function createStyleScaffolds(): Rule {
       tree.create(targetPath, readFileSync(join(filesDir, name), 'utf8'));
     }
     context.logger.info('✔ Scaffolds src/styles/main.scss et src/styles/variables.scss créés.');
+    return tree;
+  };
+}
+
+/**
+ * Pose `.prettierrc`/`.prettierignore` + `prettier` en devDependency (FSHSP-140).
+ *
+ * Le CLI Angular reformate les fichiers qu'il écrit (`add`/`update`) avec la
+ * config Prettier trouvée chez le consommateur — ou son absence. Sans la
+ * MÊME config des deux côtés, un `update` compare une copie fraîche formatée
+ * façon kit à une copie existante formatée autrement (ou pas), et le diff se
+ * noie dans du bruit d'indentation plutôt que du contenu changé.
+ *
+ * `create()` uniquement : un `.prettierrc` existant chez le consommateur est
+ * le sien, jamais réécrasé — les deux configs divergeraient alors quand même,
+ * mais c'est un choix explicite du projet, pas un oubli.
+ */
+function copyPrettierConfigRule(): Rule {
+  return (tree: Tree, context: SchematicContext) => {
+    const dir = prettierConfigDir();
+    let created = 0;
+    for (const name of ['.prettierrc', '.prettierignore']) {
+      if (tree.exists(name)) continue;
+      tree.create(name, readFileSync(join(dir, name), 'utf8'));
+      created++;
+    }
+    addDependency(tree, 'prettier', '3.9.6', 'devDependencies');
+    addNpmScript(tree, 'format', 'prettier --write .');
+    addNpmScript(tree, 'format:check', 'prettier --check .');
+    context.logger.info(
+      created
+        ? '✔ .prettierrc/.prettierignore posés (format/format:check ajoutés).'
+        : '✔ .prettierrc déjà présent, inchangé (format/format:check ajoutés).',
+    );
     return tree;
   };
 }
@@ -260,7 +295,9 @@ function copyDocsPipeline(): Rule {
     }
     addNpmScript(tree, 'docs:config', 'node scripts/docs.config.mjs');
     addNpmScript(tree, 'docs:search', 'node scripts/docs.search.mjs');
-    context.logger.info(`✔ Chaîne de doc copiée (scripts/docs.config.mjs, scripts/docs.search.mjs, ${CONFIG_TABLE_PATH}).`);
+    context.logger.info(
+      `✔ Chaîne de doc copiée (scripts/docs.config.mjs, scripts/docs.search.mjs, ${CONFIG_TABLE_PATH}).`,
+    );
     return tree;
   };
 }
@@ -699,6 +736,7 @@ export function ngAdd(options: Schema): Rule {
   const foundation = [
     copyStylesFoundationRule(),
     createStyleScaffolds(),
+    copyPrettierConfigRule(),
     copyTokensPipeline(),
     // La chaîne de doc ne sert qu'aux MDX copiés : sans eux, ce sont deux
     // fichiers morts dans le dépôt du consommateur.

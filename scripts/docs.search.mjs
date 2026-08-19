@@ -50,7 +50,11 @@ const IS_KIT_MONOREPO = existsSync(join(ROOT, 'projects/ui-kit/styles/settings/_
 /** Mêmes racines que les globs `stories` de `storybook/main.js`. */
 const DOC_DIRS = IS_KIT_MONOREPO
   ? [join(ROOT, 'storybook/docs'), join(ROOT, 'projects/ui-kit')]
-  : [join(ROOT, 'storybook/docs'), join(ROOT, 'src/app/shared/components'), join(ROOT, 'src/app/shared/ui-core')];
+  : [
+      join(ROOT, 'storybook/docs'),
+      join(ROOT, 'src/app/shared/components'),
+      join(ROOT, 'src/app/shared/ui-core'),
+    ];
 
 const OUT_FILE = join(ROOT, 'storybook/public/text-search-docs.json');
 

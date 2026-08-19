@@ -97,6 +97,17 @@ export function mcpServerDir(): string {
   return join(ASSETS_ROOT, 'mcp-server');
 }
 
+/**
+ * `.prettierrc`/`.prettierignore` du kit (FSHSP-140) : posés tels quels chez
+ * le consommateur pour que `ng generate …:update` compare deux copies
+ * reformatées avec LA MÊME config — sinon le CLI Angular reformate les
+ * fichiers écrits avec celle (ou l'absence) trouvée chez le consommateur, et
+ * le diff se noie dans du bruit d'indentation plutôt que du contenu.
+ */
+export function prettierConfigDir(): string {
+  return join(ASSETS_ROOT, 'prettier');
+}
+
 /** Story et MDX d'un composant : sa doc, laissée de côté sur `--skip-storybook`. */
 export function isStorybookFile(path: string): boolean {
   return path.endsWith('.stories.ts') || path.endsWith('.mdx');

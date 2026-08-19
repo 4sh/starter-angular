@@ -169,6 +169,18 @@ function main() {
   // peerDependencies runtime à répercuter chez le consommateur (ng-add).
   copyFileSync(join(KIT, 'package.json'), join(ASSETS, 'ui-kit-package.json'));
 
+  // `.prettierrc`/`.prettierignore` (FSHSP-140) — posés chez le consommateur
+  // par `ng-add` pour que `update` compare deux copies formatées pareil.
+  let prettierFiles = 0;
+  const prettierDest = join(ASSETS, 'prettier');
+  for (const name of ['.prettierrc', '.prettierignore']) {
+    const src = join(ROOT, name);
+    if (!existsSync(src)) continue;
+    mkdirSync(prettierDest, { recursive: true });
+    copyFileSync(src, join(prettierDest, name));
+    prettierFiles++;
+  }
+
   // Plus aucun schéma de façade à synchroniser (FSHSP-122) : la façade de
   // `@4sh/ui-kit` ne délègue plus rien — elle se borne à indiquer que le
   // parcours starter passe par `ng add @4sh/ui-kit-schematics` — et n'expose
@@ -283,7 +295,13 @@ function main() {
   // Images référencées par `Introduction.mdx` (`./doc-*.png`) : servies par
   // `staticDirs: ['./public']` (scaffold `main.js`), jamais copiées jusqu'ici
   // puisque la page elle-même ne l'était pas (FSHSP-138).
-  const introImages = ['doc-token.png', 'doc-token-json.png', 'doc-tfm.png', 'doc-gridaflex.png', 'doc-icon.png'];
+  const introImages = [
+    'doc-token.png',
+    'doc-token-json.png',
+    'doc-tfm.png',
+    'doc-gridaflex.png',
+    'doc-icon.png',
+  ];
   for (const name of introImages) {
     const src = join(ROOT, 'storybook/public', name);
     if (!existsSync(src)) continue;
@@ -307,7 +325,8 @@ function main() {
   console.log(
     `[schematics-assets] ${componentCount} composant(s), ${sharedCount} base(s) partagée(s), ` +
       `${styleFiles} fichier(s) de style, ${tokenFiles} fichier(s) de pipeline de tokens, ` +
-      `${docFiles} fichier(s) de chaîne de doc, ${mcpFiles} fichier(s) de serveur MCP → ${relative(ROOT, ASSETS)}`,
+      `${docFiles} fichier(s) de chaîne de doc, ${mcpFiles} fichier(s) de serveur MCP, ` +
+      `${prettierFiles} fichier(s) Prettier → ${relative(ROOT, ASSETS)}`,
   );
 }
 

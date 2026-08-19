@@ -42,16 +42,16 @@ function ngAdd() {
     throw new SchematicsException(
       [
         '',
-        '`ng add @4sh/ui-kit` est bloqué : ce point d\'entrée n\'apporte rien de plus',
+        "`ng add @4sh/ui-kit` est bloqué : ce point d'entrée n'apporte rien de plus",
         `qu'un simple \`npm install @4sh/ui-kit\` (aucune configuration générée).`,
         '',
         `Pour COPIER les sources dans le projet et les posséder :`,
         `    ng add ${COMPANION}`,
         '',
-        '@4sh/ui-kit vient d\'être ajouté à votre package.json par la CLI avant ce',
+        "@4sh/ui-kit vient d'être ajouté à votre package.json par la CLI avant ce",
         'contrôle — retirez-le si vous vouliez le starter. Si vous vouliez vraiment',
         'le mode librairie, gardez-le et suivez les étapes manuelles du README',
-        '(npm install suffit, `ng add` n\'était pas nécessaire).',
+        "(npm install suffit, `ng add` n'était pas nécessaire).",
         '',
       ].join('\n'),
     );
