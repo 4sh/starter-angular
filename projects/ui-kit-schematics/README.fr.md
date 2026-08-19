@@ -45,6 +45,7 @@ accepter ou à sauter.
 | `ng add @4sh/ui-kit-schematics --skip-components` | fondation seule, composants choisis plus tard |
 | `ng add @4sh/ui-kit-schematics --skip-install` | ne pas lancer `npm install` (projet qui pilote son lockfile) |
 | `ng add @4sh/ui-kit-schematics --skip-storybook` | ne pas poser de Storybook (voir ci-dessous) |
+| `ng add @4sh/ui-kit-schematics --skip-mcp` | ne pas déclarer le serveur MCP (voir ci-dessous) |
 | `ng generate @4sh/ui-kit-schematics:add` | copier d'autres composants (interactif, ou `--components`, ou `--all`) |
 | `ng generate @4sh/ui-kit-schematics:update` | diff des composants copiés face aux sources publiées |
 
@@ -85,6 +86,22 @@ dessus.
 Non repris : les liens `parameters.design` vers notre fichier Figma — vous ne
 pouvez pas l'ouvrir, ils sont retirés à la copie. Remettez votre `node-id` si
 vous en avez un.
+
+### Agent IA (serveur MCP)
+
+Posé par défaut aussi : un petit serveur MCP copié dans `.ui-kit-mcp/` (un fichier
+bundlé, zéro dépendance — 🔒 verrouillé, régénéré à chaque `ng add`, comme la
+fondation de styles — jamais retouché à la main), une entrée `.mcp.json` qui le
+déclare (`node .ui-kit-mcp/index.js` — rien à aller chercher sur le registre npm,
+il est déjà sur le disque), et une courte instruction ajoutée à votre `AGENTS.md`
+qui dit à un agent compatible MCP de l'interroger — API des composants, tokens,
+recherche plein texte dans la doc — plutôt que de lire les sources ou de deviner.
+
+`.mcp.json` et `AGENTS.md` sont additifs : un `.mcp.json` existant garde ses
+autres serveurs, un `AGENTS.md` existant garde son contenu, et relancer `ng add`
+ne duplique jamais le bloc. `--skip-mcp` si vous n'utilisez pas d'agent compatible
+MCP, ou gérez cette
+config vous-même.
 
 ### `@4sh/ui-kit` n'est délibérément **pas** installé
 

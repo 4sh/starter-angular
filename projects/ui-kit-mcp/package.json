@@ -1,0 +1,19 @@
+{
+  "name": "@4sh/ui-kit-mcp",
+  "version": "0.1.0",
+  "description": "MCP server exposing the @4sh/ui-kit design system (components, props, tokens, doc) to AI coding agents. Not published on its own: bundled at build time into @4sh/ui-kit (library mode) and @4sh/ui-kit-schematics (starter mode) — see scripts/mcp-bundle.build.mjs.",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "minisearch": "^7.2.0",
+    "zod": "^4.0.0"
+  },
+  "sideEffects": false
+}

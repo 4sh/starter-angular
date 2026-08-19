@@ -71,6 +71,34 @@ compiled code instead of your copies. See
 
 The two modes do not combine — pick the one that fits the project.
 
+### AI agent (MCP server)
+
+A small MCP server ships **inside this package**, under `mcp/` — bundled at build
+time (a single dependency-free file), not published on its own. It exposes the kit's
+component catalog, API and doc (full-text search included) to an MCP-aware coding
+agent (Claude Code, Claude Desktop, Cursor…), so it can look things up instead of
+reading sources or guessing.
+
+Unlike `ng add @4sh/ui-kit-schematics` (which declares it for you), this path has no
+install-time hook — add it yourself, once, to your `.mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "ui-kit": {
+      "command": "node",
+      "args": ["node_modules/@4sh/ui-kit/mcp/index.js"]
+    }
+  }
+}
+```
+
+Nothing to install beyond `@4sh/ui-kit` itself, and nothing to reach on the npm
+registry at run time — the file is already on disk once `npm install` has run. Tools:
+`list_components`, `get_component_doc`, `search_docs`, `get_shared_config` — same
+content as the Storybook doc linked above, and as its per-page **Copy as Markdown**
+button, for a chat that isn't MCP-aware.
+
 ---
 
 ## Getting started

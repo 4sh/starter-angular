@@ -16,6 +16,10 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+### Added
+- **Serveur MCP compagnon** (FSHSP-115) : expose le catalogue des composants `ui-*`, leur API (props/types/theming) et une recherche plein texte dans toute la doc Storybook à un agent IA (Claude Code, Claude Desktop…), sans qu'il ait besoin de lire les sources. Pas de package npm à part : bundlé (esbuild, un seul fichier, zéro dépendance — `npm run mcp:bundle`) puis embarqué dans les deux tarballs publiés — sous `mcp/` dans `@4sh/ui-kit` (mode librairie, cf. son README), copié dans `.ui-kit-mcp/` par `ng add @4sh/ui-kit-schematics` (mode starter, `--skip-mcp` pour l'omettre). `npm run mcp:test` pour sa suite Vitest.
+- **`ng add @4sh/ui-kit-schematics` déclare le serveur MCP `ui-kit`** (FSHSP-115) : `.mcp.json` (`node .ui-kit-mcp/index.js` — fusionné, jamais écrasé) + instruction ajoutée à `AGENTS.md` (créé si absent, complété sinon) pour qu'un agent compatible MCP interroge la doc du kit au lieu de deviner.
+
 ### Changed
 - **Le Storybook du mode starter est posé par défaut** (FSHSP-134). `ng add @4sh/ui-kit-schematics` pose désormais la doc sans qu'on la demande : story et MDX à côté de chaque composant copié, configuration `storybook/`, cibles `angular.json`, devDependencies et scripts npm. `--with-storybook` disparaît au profit de `--skip-storybook`, pour le projet qui documente ailleurs. Le flag opt-in laissait le cas nominal sans doc, et la commande ne mentionnait nulle part qu'il existait : le diagnostic naturel devant `npm run storybook` → `Missing script` est que le Storybook de la schematic est cassé. La commande dit maintenant, en dernière ligne, ce qu'il reste à lancer.
 

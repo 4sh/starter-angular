@@ -23,6 +23,11 @@
       "type": "boolean",
       "default": false,
       "description": "Ne pas poser de Storybook : ni story ni MDX à côté des composants, ni configuration `storybook/`, ni devDependencies de preview. Par défaut, le Storybook est posé."
+    },
+    "skipMcp": {
+      "type": "boolean",
+      "default": false,
+      "description": "Ne pas déclarer le serveur MCP `ui-kit` (.mcp.json) ni l'instruction agent (AGENTS.md). Par défaut, les deux sont posés."
     }
   }
 }

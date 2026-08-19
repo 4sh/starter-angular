@@ -1,0 +1,71 @@
+#!/usr/bin/env node
+/**
+ * mcp-bundle.build.mjs — assemble le serveur MCP (`projects/ui-kit-mcp/`) en un
+ * artefact autonome : `dist/ui-kit-mcp/index.js`, un seul fichier ESM qui
+ * embarque le SDK MCP, Zod et MiniSearch (esbuild `--bundle`), plus son
+ * manifeste doc à côté (`data/`, copié tel quel — jamais bundlé : voir
+ * `src/data.ts`, qui le lit par `readFileSync` au runtime, pas par `import`).
+ *
+ * `@4sh/ui-kit-mcp` n'est PAS publié sur npm : ce dossier n'est qu'un artefact
+ * de build intermédiaire, embarqué ensuite par deux consommateurs :
+ *   - `scripts/ui-kit-mcp-embed.build.mjs` → `dist/ui-kit/mcp/` (mode librairie) ;
+ *   - `scripts/schematics-assets.build.mjs` → `assets/mcp-server/` (mode starter,
+ *     copié par `ng add` dans le projet consommateur).
+ * Bundler plutôt que publier : zéro dépendance npm à résoudre chez le
+ * consommateur (`node index.js` suffit), et zéro registre à interroger — le
+ * fichier voyage avec le tarball qui l'embarque, quel qu'il soit.
+ *
+ * Usage : node scripts/mcp-bundle.build.mjs
+ */
+import { execSync } from 'node:child_process';
+import { copyFileSync, cpSync, mkdirSync, rmSync } from 'node:fs';
+import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import * as esbuild from 'esbuild';
+
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const PKG = join(ROOT, 'projects/ui-kit-mcp');
+const DEST = join(ROOT, 'dist/ui-kit-mcp');
+
+function run(cmd) {
+  execSync(cmd, { cwd: ROOT, stdio: 'inherit' });
+}
+
+// 1. Doc à jour, puis manifeste embarqué copié dans projects/ui-kit-mcp/data/.
+run('npm run docs:config');
+run('npm run docs:search');
+run('node scripts/mcp-assets.build.mjs');
+
+// 2. Bundle ESM autonome — `platform: 'node'` laisse les built-ins (node:fs,
+//    node:path…) en `import` natif ; tout le reste (le SDK MCP, ses propres
+//    dépendances, zod, minisearch) est inliné dans le fichier de sortie.
+//    Nettoyé d'abord : sinon un artefact d'un ancien pipeline (ex. les .js
+//    éclatés de la version tsc précédente) survivrait ici, et se retrouverait
+//    embarqué dans les deux tarballs qui copient ce dossier tel quel.
+rmSync(DEST, { recursive: true, force: true });
+mkdirSync(DEST, { recursive: true });
+await esbuild.build({
+  entryPoints: [join(PKG, 'src/index.ts')],
+  outfile: join(DEST, 'index.js'),
+  bundle: true,
+  platform: 'node',
+  format: 'esm',
+  target: 'node18',
+  minify: false,
+  sourcemap: false,
+  banner: {
+    js: '// @4sh/ui-kit-mcp — bundle généré par scripts/mcp-bundle.build.mjs, ne pas éditer à la main.',
+  },
+});
+
+// 3. Fichiers statiques copiés tels quels à côté du bundle.
+cpSync(join(PKG, 'data'), join(DEST, 'data'), { recursive: true });
+// `package.json` : lu au runtime par `src/server.ts` pour le numéro de version
+// annoncé au client MCP — pas pour la résolution de dépendances (le bundle
+// n'en a aucune).
+copyFileSync(join(PKG, 'package.json'), join(DEST, 'package.json'));
+// Apache-2.0 (§4a) : toute redistribution doit fournir une copie de la licence
+// — et ce bundle est redistribué, deux fois (voir les deux embed scripts).
+copyFileSync(join(PKG, 'LICENSE'), join(DEST, 'LICENSE'));
+
+console.log(`[mcp-bundle] serveur MCP bundlé → ${DEST}`);

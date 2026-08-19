@@ -7,4 +7,7 @@ export interface Schema {
   /** Ne pas poser de Storybook : ni doc des composants (story + MDX), ni
    * configuration, ni dépendances de preview. Posé par défaut. */
   skipStorybook?: boolean;
+  /** Ne pas déclarer le serveur MCP `ui-kit` (.mcp.json) ni l'instruction
+   * agent (AGENTS.md). Posé par défaut. */
+  skipMcp?: boolean;
 }
