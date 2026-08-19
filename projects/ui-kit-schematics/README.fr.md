@@ -33,6 +33,12 @@ retient de quelle version vient chaque composant, ce qui permet ensuite à `upda
 de vous présenter un diff fichier par fichier face à des sources plus récentes, à
 accepter ou à sauter.
 
+> Chaque composant est livré avec un fichier **`.scss`**, pas `.css` : l'étape de
+> fondation positionne `schematics.@schematics/angular:component.style` à `scss`
+> dans votre `angular.json`, si bien que `ng generate component` continue ensuite à
+> générer du SCSS dans votre projet — le CSS pur par défaut d'Angular est
+> délibérément surchargé.
+
 | | |
 |---|---|
 | `ng add @4sh/ui-kit-schematics` | fondation **et** composants, d'un coup |

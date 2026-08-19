@@ -190,7 +190,11 @@ placeholder.
 
 ### Writing your own styles on the kit's foundation
 
-The SCSS sources ship with the package: your own components can use the same
+The kit's styles are authored in **SCSS (Sass)**, not plain CSS — that is what
+lets `styles.css` be assembled from tokens, mixins and per-component partials
+instead of one flat, hand-maintained stylesheet. The compiled `styles.css` you
+load in `angular.json` is plain CSS and needs no Sass on your side; but the SCSS
+**sources** ship with the package too, so your own components can use the same
 shared functions, mixins and constants.
 
 ```scss

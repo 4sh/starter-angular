@@ -191,8 +191,13 @@ n'affiche que ses images distantes (`src`), `name` retombant sur le placeholder.
 
 ### Écrire ses propres styles avec le socle du kit
 
-Les sources SCSS sont livrées avec le package : vos composants peuvent utiliser
-les mêmes fonctions, mixins et constantes partagées.
+Les styles du kit sont écrits en **SCSS (Sass)**, pas en CSS pur — c'est ce qui
+permet d'assembler `styles.css` à partir des tokens, de mixins et de partiels par
+composant plutôt que d'une seule feuille plate à maintenir à la main. Le
+`styles.css` compilé que vous chargez dans `angular.json` est du CSS pur et ne
+nécessite pas Sass de votre côté ; mais les **sources** SCSS sont aussi livrées
+avec le package, et vos composants peuvent donc utiliser les mêmes fonctions,
+mixins et constantes partagées.
 
 ```scss
 // avec `node_modules/@4sh/ui-kit/styles` dans vos includePaths
