@@ -29,7 +29,8 @@
     "schematics:pack": "npm run schematics:build && npm pack ./dist/ui-kit-schematics",
     "mcp:assets": "node scripts/mcp-assets.build.mjs",
     "mcp:build": "node scripts/mcp-package.build.mjs",
-    "mcp:pack": "npm run mcp:build && npm pack ./dist/ui-kit-mcp"
+    "mcp:pack": "npm run mcp:build && npm pack ./dist/ui-kit-mcp",
+    "mcp:test": "vitest run --root projects/ui-kit-mcp"
   },
   "dependencies": {
     "@angular/animations": "22.1.1",

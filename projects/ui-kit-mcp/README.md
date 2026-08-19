@@ -52,6 +52,7 @@ c'est la source de vérité, toujours à jour."*
 ```bash
 npm run mcp:build   # régénère la doc, copie le manifeste, compile → dist/ui-kit-mcp
 npm run mcp:pack    # + npm pack, pour tester l'installation d'un tarball local
+npm run mcp:test    # Vitest — logique testée sur fixtures, sans dépendre du manifeste généré
 ```
 
 Le serveur ne lit jamais le repo en live : il embarque une copie figée du manifeste doc
