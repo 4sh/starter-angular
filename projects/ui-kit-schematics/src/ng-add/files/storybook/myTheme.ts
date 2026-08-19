@@ -1,6 +1,6 @@
 /**
  * Thème du manager Storybook (barre latérale, barre d'outils) posé par
- * `ng add @4sh/ui-kit-schematics --with-storybook`. Fichier à vous.
+ * `ng add @4sh/ui-kit-schematics`. Fichier à vous.
  *
  * Ce sont les couleurs du CHÂSSIS Storybook, pas celles de vos composants :
  * elles ne peuvent pas venir des design tokens, le manager étant rendu hors de

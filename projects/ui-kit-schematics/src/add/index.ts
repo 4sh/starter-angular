@@ -52,8 +52,9 @@ export function add(options: Schema): Rule {
     const kitVersion = readKitVersion();
     const units = resolveDependencies(selected);
     const existing = readManifest(tree);
-    // `--with-storybook` n'est passé qu'à l'installation : sur un `add` isolé,
-    // c'est le manifeste qui porte le choix du projet.
+    // Le choix du Storybook se fait à l'installation : sur un `add` isolé,
+    // c'est le manifeste qui le porte. `--with-storybook` reste là pour le
+    // forcer sur un projet installé avec `--skip-storybook`.
     const withStorybook = options.withStorybook ?? existing?.storybook ?? false;
     const manifest = existing ?? emptyManifest(kitVersion, withStorybook);
 

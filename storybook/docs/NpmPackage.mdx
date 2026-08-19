@@ -45,8 +45,8 @@ composant, dans la barre latérale, donne l'import exact à recopier.
 les installe en **sources**, dans votre dépôt, libres d'être modifiées :
 
 ```bash
-ng add @4sh/ui-kit-schematics                    # fondation + composants, en une commande
-ng add @4sh/ui-kit-schematics --with-storybook   # avec la doc des composants copiés
+ng add @4sh/ui-kit-schematics                    # fondation + composants + Storybook, en une commande
+ng add @4sh/ui-kit-schematics --skip-storybook   # idem, sans le Storybook
 ng generate @4sh/ui-kit-schematics:update        # diff par composant après une release du kit
 ```
 

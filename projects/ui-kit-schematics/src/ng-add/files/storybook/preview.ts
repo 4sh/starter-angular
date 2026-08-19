@@ -1,5 +1,5 @@
 /**
- * Preview Storybook posée par `ng add @4sh/ui-kit-schematics --with-storybook`.
+ * Preview Storybook posée par `ng add @4sh/ui-kit-schematics`.
  * Fichier à vous : modifiez-le librement.
  *
  * Il fait trois choses que les stories du kit supposent : brancher le thème

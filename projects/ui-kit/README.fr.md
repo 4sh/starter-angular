@@ -20,7 +20,7 @@ natif (signals + Angular CDK), style piloté par les design tokens.
 | Ce qui arrive dans votre dépôt | rien — les composants compilés restent dans `node_modules` | les *sources* des composants, dans `src/app/shared/` |
 | Imports | `@4sh/ui-kit/actions/ui-button` | votre propre chemin (`./shared/components/ui/actions/ui-button`) |
 | Styles | `node_modules/@4sh/ui-kit/styles.css`, chargée globalement | copiés dans `src/styles/`, avec la chaîne de génération des tokens (`npm run tokens:build`) |
-| Documentation | le Storybook lié ci-dessus | la vôtre, sur vos copies (`--with-storybook`) |
+| Documentation | le Storybook lié ci-dessus | la vôtre, sur vos copies (posée par `ng add`) |
 | Personnalisation | inputs + variables CSS | modifier le code lui-même |
 | Mise à jour | bump de version | `ng generate @4sh/ui-kit-schematics:update` — diff par composant, appliquer ou ignorer |
 

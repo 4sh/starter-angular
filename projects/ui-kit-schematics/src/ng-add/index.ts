@@ -503,8 +503,31 @@ function installRuntimeDependencies(): Rule {
   };
 }
 
+/**
+ * Dernière ligne de la commande : ce qu'il y a à lancer maintenant.
+ *
+ * Les scripts npm sont écrits sans être nommés nulle part, et le README du
+ * package n'est pas relu après un `ng add` qui vient d'afficher huit `✔` : un
+ * `npm run storybook` qu'il faut deviner est un Storybook que l'on croit cassé.
+ */
+function logNextSteps(withStorybook: boolean): Rule {
+  return (tree: Tree, context: SchematicContext) => {
+    context.logger.info(
+      withStorybook
+        ? '\nStorybook posé. Pour le démarrer :\n    npm run storybook\n'
+        : '\nStorybook non posé (--skip-storybook). Pour revenir dessus :\n    ng add @4sh/ui-kit-schematics\n',
+    );
+    return tree;
+  };
+}
+
 export function ngAdd(options: Schema): Rule {
-  const withStorybook = options.withStorybook ?? false;
+  // Posé par défaut : un consommateur qui possède les sources mais pas leur doc
+  // n'a reçu que la moitié du design system, et sa doc ne peut pas être la
+  // nôtre — les tables Theming se lisent sur SES `.scss`. `--skip-storybook`
+  // reste pour le projet qui documente ailleurs, et qui n'a alors ni story, ni
+  // MDX, ni les devDependencies de la preview.
+  const withStorybook = !(options.skipStorybook ?? false);
 
   const foundation = [
     copyStylesFoundationRule(),
@@ -544,6 +567,7 @@ export function ngAdd(options: Schema): Rule {
           'Fondation posée. Composants à copier ensuite : `ng generate @4sh/ui-kit-schematics:add`.',
         );
       },
+      logNextSteps(withStorybook),
       ...install,
     ]);
   }
@@ -556,6 +580,7 @@ export function ngAdd(options: Schema): Rule {
     // Elle reste sur `ng generate …:add`, pour un usage scripté.
     add({ all: options.all, withStorybook }),
     ...storybook,
+    logNextSteps(withStorybook),
     ...install,
   ]);
 }
