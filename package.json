@@ -26,7 +26,10 @@
     "ui-kit:pack": "npm run ui-kit:build && npm pack ./dist/ui-kit",
     "schematics:assets": "node scripts/schematics-assets.build.mjs",
     "schematics:build": "node scripts/schematics-package.build.mjs",
-    "schematics:pack": "npm run schematics:build && npm pack ./dist/ui-kit-schematics"
+    "schematics:pack": "npm run schematics:build && npm pack ./dist/ui-kit-schematics",
+    "mcp:assets": "node scripts/mcp-assets.build.mjs",
+    "mcp:build": "node scripts/mcp-package.build.mjs",
+    "mcp:pack": "npm run mcp:build && npm pack ./dist/ui-kit-mcp"
   },
   "dependencies": {
     "@angular/animations": "22.1.1",
@@ -54,6 +57,7 @@
     "@eslint/js": "^10.0.1",
     "@figma/code-connect": "^1.4.8",
     "@inquirer/prompts": "^7.0.0",
+    "@modelcontextprotocol/sdk": "^1.30.0",
     "@storybook-community/storybook-dark-mode": "7.1.3",
     "@storybook/addon-a11y": "^10.5.7",
     "@storybook/addon-designs": "11.1.4",
@@ -79,6 +83,7 @@
     "unified": "^11.0.5",
     "unist-util-visit": "^5.1.0",
     "vitest": "^4.0.8",
-    "wait-on": "^9.1.0"
+    "wait-on": "^9.1.0",
+    "zod": "^4.4.3"
   }
 }

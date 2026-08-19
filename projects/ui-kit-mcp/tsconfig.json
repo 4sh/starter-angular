@@ -1,0 +1,18 @@
+/* Package autonome, exécuté en Node pur (bin CLI) — pas d'ng-packagr ni de
+   pipeline Ivy/AOT ici, comme `ui-kit-schematics` (voir son tsconfig). ESM
+   plutôt que CommonJS : c'est un serveur MCP lancé directement (`npx`), sans
+   contrainte de compatibilité avec Angular CLI/webpack. */
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../dist/ui-kit-mcp",
+    "rootDir": "src",
+    "module": "ES2022",
+    "moduleResolution": "bundler",
+    "types": ["node"],
+    "declaration": false,
+    "paths": {}
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["src/**/*.spec.ts"]
+}

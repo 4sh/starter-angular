@@ -1,0 +1,35 @@
+{
+  "name": "@4sh/ui-kit-mcp",
+  "version": "0.1.0",
+  "description": "MCP server exposing the @4sh/ui-kit design system (components, props, tokens, doc) to AI coding agents.",
+  "homepage": "https://4sh.github.io/starter-angular/?path=/docs/introduction--docs",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/4sh/starter-angular.git",
+    "directory": "projects/ui-kit-mcp"
+  },
+  "bugs": {
+    "url": "https://github.com/4sh/starter-angular/issues"
+  },
+  "author": "4SH",
+  "license": "Apache-2.0",
+  "keywords": ["mcp", "model-context-protocol", "angular", "design-system", "ui-kit", "ai-agent"],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "type": "module",
+  "bin": {
+    "ui-kit-mcp": "./index.js"
+  },
+  "main": "./index.js",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "minisearch": "^7.2.0",
+    "zod": "^4.0.0"
+  },
+  "sideEffects": false
+}

@@ -28,6 +28,9 @@ documentation.json
 # Storybook doc config manifest (npm run docs:config)
 storybook/generated
 
+# Manifeste doc embarqué dans @4sh/ui-kit-mcp (regénéré par npm run mcp:assets)
+projects/ui-kit-mcp/data
+
 # Storybook build output
 storybook-static
 

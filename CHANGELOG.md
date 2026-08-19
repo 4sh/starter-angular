@@ -16,6 +16,9 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+### Added
+- **Serveur MCP `@4sh/ui-kit-mcp`** (FSHSP-115) : expose le catalogue des composants `ui-*`, leur API (props/types/theming) et une recherche plein texte dans toute la doc Storybook à un agent IA (Claude Code, Claude Desktop…), sans qu'il ait besoin de lire les sources. Package publié à part, avec un manifeste doc embarqué au build — indépendant du repo consommateur. `npm run mcp:build` / `npm run mcp:pack` pour l'assembler.
+
 ### Changed
 - **Le Storybook du mode starter est posé par défaut** (FSHSP-134). `ng add @4sh/ui-kit-schematics` pose désormais la doc sans qu'on la demande : story et MDX à côté de chaque composant copié, configuration `storybook/`, cibles `angular.json`, devDependencies et scripts npm. `--with-storybook` disparaît au profit de `--skip-storybook`, pour le projet qui documente ailleurs. Le flag opt-in laissait le cas nominal sans doc, et la commande ne mentionnait nulle part qu'il existait : le diagnostic naturel devant `npm run storybook` → `Missing script` est que le Storybook de la schematic est cassé. La commande dit maintenant, en dernière ligne, ce qu'il reste à lancer.
 
