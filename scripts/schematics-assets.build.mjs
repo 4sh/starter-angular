@@ -248,13 +248,13 @@ function main() {
     docFiles += copyTree(src, join(ASSETS, 'storybook/addons', addon));
   }
 
-  // Pages de doc transverses. `NpmPackage` et `Overview` restent ici :
-  // la première raconte l'installation de `@4sh/ui-kit` (mode librairie,
-  // hors périmètre du starter), la seconde est validée par
-  // `components.check.mjs` contre NOTRE inventaire ET importe en dur les
-  // stories de tous les composants du monorepo — ni l'une ni l'autre ne
-  // transposent tel quel chez un consommateur qui n'a copié qu'une partie
-  // des composants (FSHSP-139 pour la suite à donner).
+  // Pages de doc transverses. `GettingStarted` et `Overview` restent ici :
+  // la première compare les deux modes de consommation — dont le mode
+  // librairie, hors périmètre du starter (FSHSP-139) —, la seconde est
+  // validée par `components.check.mjs` contre NOTRE inventaire ET importe en
+  // dur les stories de tous les composants du monorepo. Ni l'une ni l'autre
+  // ne transposent tel quel chez un consommateur qui n'a copié qu'une partie
+  // des composants.
   // `Introduction`, elle, n'a aucune dépendance au monorepo (texte + images
   // statiques) : FSHSP-138 corrige son absence, oubliée jusqu'ici.
   const introSrc = join(ROOT, 'storybook/docs/Introduction.mdx');

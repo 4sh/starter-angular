@@ -1,11 +1,18 @@
 import { Meta } from '@storybook/addon-docs/blocks';
 
-<Meta title="Installation" />
+<Meta title="Getting Started" />
 
-# Package npm : `@4sh/ui-kit`
+# Getting started
 
-Les composants de ce Design System sont publiés sous forme d'**un seul package
-npm**, consommable par n'importe quelle application Angular.
+Deux façons de consommer ce Design System — le choix se fait une fois, au
+démarrage du projet.
+
+<br/>
+
+## Package : `npm install @4sh/ui-kit`
+
+Les composants sont publiés sous forme d'**un seul package npm**, consommable
+par n'importe quelle application Angular.
 
 ```bash
 npm install @4sh/ui-kit
@@ -36,17 +43,39 @@ export class Booking { date = signal<Date | null>(null); }
 Le nom de l'entry point est celui du composant : la page de doc de chaque
 composant, dans la barre latérale, donne l'import exact à recopier.
 
+### MCP (optionnel)
+
+`npm install` installe aussi le serveur MCP compagnon, sous
+`node_modules/@4sh/ui-kit/mcp/`, mais ne le déclare nulle part — c'est la seule
+étape manuelle du mode package. Pour qu'un agent IA compatible MCP (Claude Code,
+Claude Desktop…) interroge la doc du kit sans lire les sources, ajoutez-le à la
+racine du projet :
+
+```json
+// .mcp.json
+{
+  "mcpServers": {
+    "ui-kit": {
+      "command": "node",
+      "args": ["node_modules/@4sh/ui-kit/mcp/index.js"]
+    }
+  }
+}
+```
+
 <br/>
 <br/>
 
-## Ou : posséder les sources (mode *starter*)
+## Schematic : `ng add @4sh/ui-kit-schematics`
 
 `npm install` livre les composants **compilés**. Le second mode de consommation
-les installe en **sources**, dans votre dépôt, libres d'être modifiées :
+les installe en **sources**, dans votre dépôt, libres d'être modifiées (façon
+shadcn/spartan-ng) :
 
 ```bash
 ng add @4sh/ui-kit-schematics                    # fondation + composants + Storybook, en une commande
 ng add @4sh/ui-kit-schematics --skip-storybook   # idem, sans le Storybook
+ng generate @4sh/ui-kit-schematics:add           # ajouter d'autres composants ensuite
 ng generate @4sh/ui-kit-schematics:update        # diff par composant après une release du kit
 ```
 
@@ -54,10 +83,14 @@ Le parcours passe par le package compagnon, et `@4sh/ui-kit` n'entre jamais dans
 `node_modules` : absent, rien ne peut importer son code compilé à la place de vos
 copies.
 
-Le choix entre les deux — ce qui arrive dans le dépôt, les imports, les styles, la
-personnalisation, les mises à jour — est comparé dans le README du package,
-ci-dessous. La documentation des composants, elle, est la même dans les deux cas :
-c'est ce Storybook.
+<div className="sb-callout">
+
+**Pas de section MCP ici, volontairement.** `ng add` déclare déjà le serveur MCP
+tout seul — `.mcp.json` (fusionné, jamais écrasé s'il existe) et `.ui-kit-mcp/` à
+la racine du projet, plus une instruction ajoutée à `AGENTS.md`. Rien à faire de
+plus (`--skip-mcp` pour l'omettre).
+
+</div>
 
 <br/>
 <br/>
