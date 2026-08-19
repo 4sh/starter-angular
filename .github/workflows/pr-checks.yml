@@ -35,7 +35,7 @@ jobs:
         uses: actions/setup-node@v7
         with:
           node-version: ${{ steps.nvmrc.outputs.NODE_VERSION }}
-          cache: "npm"
+          cache: 'npm'
 
       # `postinstall` chains tokens:build → ui-kit:build → docs:config, so this
       # step already proves the 53 entry points compile. A failing package build
@@ -104,7 +104,7 @@ jobs:
         uses: actions/setup-node@v7
         with:
           node-version: ${{ steps.nvmrc.outputs.NODE_VERSION }}
-          cache: "npm"
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
@@ -143,7 +143,7 @@ jobs:
         uses: actions/setup-node@v7
         with:
           node-version: ${{ steps.nvmrc.outputs.NODE_VERSION }}
-          cache: "npm"
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci

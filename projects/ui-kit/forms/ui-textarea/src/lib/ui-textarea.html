@@ -45,7 +45,10 @@
       [class._over]="overLimit()"
       [attr.id]="countId()"
     >
-      {{ charCount() }}@if (maxlength(); as max) {&nbsp;/&nbsp;{{ max }}}
+      {{ charCount() }}
+      @if (maxlength(); as max) {
+        &nbsp;/&nbsp;{{ max }}
+      }
     </span>
   }
 </ui-field>

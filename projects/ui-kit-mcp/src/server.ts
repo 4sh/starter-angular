@@ -55,7 +55,13 @@ export function createServer(): McpServer {
       description: SEARCH_DOCS_DESCRIPTION,
       inputSchema: {
         query: z.string().describe('Termes recherchés, en langage naturel ou mots-clés.'),
-        limit: z.number().int().positive().max(50).optional().describe('Nombre de résultats max (défaut 10).'),
+        limit: z
+          .number()
+          .int()
+          .positive()
+          .max(50)
+          .optional()
+          .describe('Nombre de résultats max (défaut 10).'),
       },
     },
     async ({ query, limit }) => searchDocs(query, limit),

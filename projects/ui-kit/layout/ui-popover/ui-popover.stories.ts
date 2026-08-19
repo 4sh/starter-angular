@@ -25,7 +25,10 @@ const meta: Meta<UiPopover> = {
       control: { type: 'select' },
       options: ['top', 'bottom', 'left', 'right'],
       description: 'Côté préféré du déclencheur ; retournement automatique si la place manque.',
-      table: { type: { summary: "'top' | 'bottom' | 'left' | 'right'" }, defaultValue: { summary: "'bottom'" } },
+      table: {
+        type: { summary: "'top' | 'bottom' | 'left' | 'right'" },
+        defaultValue: { summary: "'bottom'" },
+      },
     },
     showArrow: {
       control: { type: 'boolean' },
@@ -54,7 +57,8 @@ const meta: Meta<UiPopover> = {
     },
     focusOnShow: {
       control: { type: 'boolean' },
-      description: "Déplace le focus dans le panneau à l'ouverture (premier focusable ou `[autofocus]`).",
+      description:
+        "Déplace le focus dans le panneau à l'ouverture (premier focusable ou `[autofocus]`).",
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
     closeOnEscape: {

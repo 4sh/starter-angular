@@ -74,7 +74,8 @@ const meta: Meta<UiCheckbox> = {
     },
     invalid: {
       control: { type: 'boolean' },
-      description: 'Force le style erreur (automatique quand le contrôle attaché est invalide et touched/dirty).',
+      description:
+        'Force le style erreur (automatique quand le contrôle attaché est invalide et touched/dirty).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     tabindex: {

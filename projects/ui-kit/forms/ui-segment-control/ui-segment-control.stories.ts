@@ -25,7 +25,9 @@ const meta: Meta<UiSegmentControl> = {
   title: 'Components/ui/forms/ui-segment-control',
   component: UiSegmentControl,
   decorators: [
-    moduleMetadata({ imports: [UiSegmentControl, CommonModule, FormsModule, ReactiveFormsModule, FormField] }),
+    moduleMetadata({
+      imports: [UiSegmentControl, CommonModule, FormsModule, ReactiveFormsModule, FormField],
+    }),
   ],
   parameters: {
     layout: 'centered',
@@ -38,7 +40,10 @@ const meta: Meta<UiSegmentControl> = {
     options: {
       control: 'object',
       description: 'Options affichées (primitives, objets, ou `SegmentControlOption`).',
-      table: { type: { summary: '(T | SegmentControlOption<T>)[]' }, defaultValue: { summary: '[]' } },
+      table: {
+        type: { summary: '(T | SegmentControlOption<T>)[]' },
+        defaultValue: { summary: '[]' },
+      },
     },
     optionLabel: {
       control: 'text',
@@ -83,7 +88,10 @@ const meta: Meta<UiSegmentControl> = {
     orientation: {
       control: 'inline-radio',
       options: ['horizontal', 'vertical'],
-      table: { type: { summary: 'SegmentControlOrientation' }, defaultValue: { summary: "'horizontal'" } },
+      table: {
+        type: { summary: 'SegmentControlOrientation' },
+        defaultValue: { summary: "'horizontal'" },
+      },
     },
     fluid: {
       control: 'boolean',
@@ -117,7 +125,8 @@ const meta: Meta<UiSegmentControl> = {
     },
     invalid: {
       control: 'boolean',
-      description: 'Force le style erreur (automatique quand le contrôle attaché est invalide et touched/dirty).',
+      description:
+        'Force le style erreur (automatique quand le contrôle attaché est invalide et touched/dirty).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     selectionChange: {
@@ -329,7 +338,10 @@ export const TemplateDriven: Story = {
 export const ReactiveForms: Story = {
   name: 'Reactive Forms',
   render: () => ({
-    props: { control: new FormControl<string | null>('Liste', Validators.required), opts: VIEW_OPTIONS },
+    props: {
+      control: new FormControl<string | null>('Liste', Validators.required),
+      opts: VIEW_OPTIONS,
+    },
     template: `
       <div style="display:grid; gap:12px; justify-items:start;">
         <ui-segment-control [formControl]="control" [options]="opts" ariaLabel="Mode d’affichage" />

@@ -1,4 +1,12 @@
-import { booleanAttribute, Component, computed, effect, inject, input, isDevMode } from '@angular/core';
+import {
+  booleanAttribute,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  isDevMode,
+} from '@angular/core';
 import {
   fontAwesomeFamily,
   UI_ICON_BUILTIN_FAMILIES,
@@ -57,7 +65,8 @@ export class UiIcon {
    * Precedence: own `family` → nearest `uiIconFamily` subtree → app-wide default.
    */
   private readonly resolvedFamily = computed(() => {
-    const key = this.family() ?? this.familyScope?.uiIconFamily() ?? this.configuredDefault ?? 'fontawesome';
+    const key =
+      this.family() ?? this.familyScope?.uiIconFamily() ?? this.configuredDefault ?? 'fontawesome';
     const family = this.families()[key];
     if (!family && isDevMode()) {
       console.warn(`[ui-icon] Unknown icon family "${key}". Falling back to "fontawesome".`);

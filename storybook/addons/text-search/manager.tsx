@@ -107,7 +107,8 @@ const Panel = styled.div(({ theme }) => ({
   borderRadius: theme.appBorderRadius,
   background: theme.background.content,
   color: theme.color.defaultText,
-  boxShadow: theme.base === 'dark' ? '0 16px 40px rgba(0, 0, 0, 0.6)' : '0 16px 40px rgba(27, 28, 35, 0.25)',
+  boxShadow:
+    theme.base === 'dark' ? '0 16px 40px rgba(0, 0, 0, 0.6)' : '0 16px 40px rgba(27, 28, 35, 0.25)',
 }));
 
 const Field = styled.div(({ theme }) => ({
@@ -232,7 +233,12 @@ const SearchGlyph = () => (
 
 const ClearGlyph = () => (
   <svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-    <path d="M2.6 2.6 L9.4 9.4 M9.4 2.6 L2.6 9.4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+    <path
+      d="M2.6 2.6 L9.4 9.4 M9.4 2.6 L2.6 9.4"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+    />
   </svg>
 );
 
@@ -293,9 +299,7 @@ function Highlighted({ text, terms }: { text: string; terms: string[] }) {
 
   const parts = text.split(new RegExp(`(${terms.map(escapeRegExp).join('|')})`, 'gi'));
   return (
-    <>
-      {parts.map((part, index) => (index % 2 === 1 ? <Mark key={index}>{part}</Mark> : part))}
-    </>
+    <>{parts.map((part, index) => (index % 2 === 1 ? <Mark key={index}>{part}</Mark> : part))}</>
   );
 }
 
@@ -315,7 +319,10 @@ interface PreviewKeydownPayload {
 const isSearchShortcut = (event: ShortcutKeys) =>
   (isMac ? event.metaKey : event.ctrlKey) && event.shiftKey && event.key.toLowerCase() === 'k';
 
-type IndexState = { status: 'idle' | 'loading' } | { status: 'ready'; mini: MiniSearch<SearchDoc> } | { status: 'error' };
+type IndexState =
+  | { status: 'idle' | 'loading' }
+  | { status: 'ready'; mini: MiniSearch<SearchDoc> }
+  | { status: 'error' };
 
 function TextSearch() {
   const api = useStorybookApi();
@@ -410,9 +417,13 @@ function TextSearch() {
   // preview : le `keydown` y reste et n'atteint jamais cette fenêtre, donc le
   // raccourci semble mort. Storybook relaie ces touches sur le canal — c'est le
   // seul chemin qui couvre le cas le plus courant, un lecteur en train de lire.
-  useChannel({ [PREVIEW_KEYDOWN]: ({ event }: PreviewKeydownPayload) => isSearchShortcut(event) && openSearch() }, [
-    openSearch,
-  ]);
+  useChannel(
+    {
+      [PREVIEW_KEYDOWN]: ({ event }: PreviewKeydownPayload) =>
+        isSearchShortcut(event) && openSearch(),
+    },
+    [openSearch],
+  );
 
   useEffect(() => setSelected(0), [query]);
 
@@ -477,7 +488,9 @@ function TextSearch() {
                 placeholder="Rechercher dans la documentation…"
                 aria-label="Rechercher dans la documentation"
                 aria-controls={`${TOOL_ID}-results`}
-                aria-activedescendant={results[selected] ? `${TOOL_ID}-result-${selected}` : undefined}
+                aria-activedescendant={
+                  results[selected] ? `${TOOL_ID}-result-${selected}` : undefined
+                }
                 onChange={(event) => setQuery(event.target.value)}
                 onKeyDown={onInputKeyDown}
               />
@@ -514,7 +527,10 @@ function TextSearch() {
                     onClick={() => go(doc)}
                   >
                     <ResultTitle>
-                      <Highlighted text={doc.section ? `${doc.name} › ${doc.section}` : doc.name} terms={terms} />
+                      <Highlighted
+                        text={doc.section ? `${doc.name} › ${doc.section}` : doc.name}
+                        terms={terms}
+                      />
                     </ResultTitle>
                     <ResultPath>{doc.title}</ResultPath>
                     {doc.text && (

@@ -80,7 +80,10 @@ export const FIXTURE_SEARCH_DOCS: SearchDocsManifest = {
 
 export const FIXTURE_UI_CONFIG: UiConfigManifest = {
   $generatedBy: 'scripts/docs.config.mjs',
-  $source: { shared: 'projects/ui-kit/styles/settings/_ui-config.scss', components: 'projects/ui-kit' },
+  $source: {
+    shared: 'projects/ui-kit/styles/settings/_ui-config.scss',
+    components: 'projects/ui-kit',
+  },
   groups: {
     'global-ui': { label: 'Global UI', docId: 'components-configuration-global-ui' },
   },

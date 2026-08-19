@@ -27,7 +27,10 @@ const meta: Meta<TabsArgs> = {
       control: { type: 'inline-radio' },
       options: ['horizontal', 'vertical'],
       description: 'Axe de la liste : onglets en haut (horizontal) ou sur le côté (vertical).',
-      table: { type: { summary: "'horizontal' | 'vertical'" }, defaultValue: { summary: "'horizontal'" } },
+      table: {
+        type: { summary: "'horizontal' | 'vertical'" },
+        defaultValue: { summary: "'horizontal'" },
+      },
     },
     scrollable: {
       control: { type: 'boolean' },
@@ -51,18 +54,27 @@ const meta: Meta<TabsArgs> = {
     },
     motion: {
       control: { type: 'boolean' },
-      description: "Anime l'indicateur actif et l'apparition des panneaux (reduced-motion respecté).",
+      description:
+        "Anime l'indicateur actif et l'apparition des panneaux (reduced-motion respecté).",
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
     prevAriaLabel: {
       control: { type: 'text' },
-      description: 'Nom accessible du navigateur « précédent » (`ui-tab-list`), à traduire côté application.',
-      table: { type: { summary: 'string' }, defaultValue: { summary: "'Défiler vers les onglets précédents'" } },
+      description:
+        'Nom accessible du navigateur « précédent » (`ui-tab-list`), à traduire côté application.',
+      table: {
+        type: { summary: 'string' },
+        defaultValue: { summary: "'Défiler vers les onglets précédents'" },
+      },
     },
     nextAriaLabel: {
       control: { type: 'text' },
-      description: 'Nom accessible du navigateur « suivant » (`ui-tab-list`), à traduire côté application.',
-      table: { type: { summary: 'string' }, defaultValue: { summary: "'Défiler vers les onglets suivants'" } },
+      description:
+        'Nom accessible du navigateur « suivant » (`ui-tab-list`), à traduire côté application.',
+      table: {
+        type: { summary: 'string' },
+        defaultValue: { summary: "'Défiler vers les onglets suivants'" },
+      },
     },
   },
   args: {
@@ -173,7 +185,8 @@ export const Scrollable: Story = {
       active: '1',
       items: Array.from({ length: 12 }, (_, i) => `${i + 1}`),
     },
-    template: box(`
+    template: box(
+      `
       <ui-tabs [(value)]="active" [scrollable]="scrollable" [showNavigators]="showNavigators" [motion]="motion">
         <ui-tab-list ariaLabel="Nombreux onglets" [prevAriaLabel]="prevAriaLabel" [nextAriaLabel]="nextAriaLabel">
           @for (n of items; track n) {
@@ -185,7 +198,9 @@ export const Scrollable: Story = {
             <ui-tab-panel [value]="n">Contenu de l'onglet {{ n }}.</ui-tab-panel>
           }
         </ui-tab-panels>
-      </ui-tabs>`, 420),
+      </ui-tabs>`,
+      420,
+    ),
   }),
 };
 
@@ -340,4 +355,3 @@ export const TabMenu: Story = {
       </div>`),
   }),
 };
-

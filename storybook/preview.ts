@@ -49,7 +49,9 @@ const scrollToAnchor = (anchor: string, attempt = 0): void => {
   if (attempt < 40) setTimeout(() => scrollToAnchor(anchor, attempt + 1), 50);
 };
 
-channel.on(DOCS_SCROLL_TO_ANCHOR, ({ anchor }: DocsScrollToAnchorPayload) => scrollToAnchor(anchor));
+channel.on(DOCS_SCROLL_TO_ANCHOR, ({ anchor }: DocsScrollToAnchorPayload) =>
+  scrollToAnchor(anchor),
+);
 
 const preview: Preview = {
   initialGlobals: { brand: DEFAULT_BRAND },

@@ -58,7 +58,7 @@ async function setupReactive() {
 
 describe('BaseControlValueAccessor', () => {
   describe('mirroring a reactive-forms NgControl', () => {
-    it('seeds the signals from the control\'s initial state', async () => {
+    it("seeds the signals from the control's initial state", async () => {
       const { cva } = await setupReactive();
       expect(cva.pristine()).toBe(true);
       expect(cva.dirty()).toBe(false);

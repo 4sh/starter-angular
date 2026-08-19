@@ -53,7 +53,7 @@ const meta: Meta<UiSpinner> = {
     },
     strokeWidth: {
       control: { type: 'number' },
-      description: "Épaisseur du trait du cercle par défaut (échelle du viewBox 0–50).",
+      description: 'Épaisseur du trait du cercle par défaut (échelle du viewBox 0–50).',
       table: { type: { summary: 'string | number' }, defaultValue: { summary: '4' } },
     },
     fill: {
@@ -68,7 +68,8 @@ const meta: Meta<UiSpinner> = {
     },
     delay: {
       control: { type: 'number' },
-      description: "Délai de grâce (ms) avant l'apparition — évite le flash sur les attentes très courtes.",
+      description:
+        "Délai de grâce (ms) avant l'apparition — évite le flash sur les attentes très courtes.",
       table: { type: { summary: 'number' }, defaultValue: { summary: '0' } },
     },
   },

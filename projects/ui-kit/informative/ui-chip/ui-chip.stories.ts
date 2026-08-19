@@ -80,7 +80,7 @@ const meta: Meta<UiChip> = {
     },
     selectedIcon: {
       control: { type: 'text' },
-      description: "Icône FontAwesome affichée en tête lorsque sélectionné.",
+      description: 'Icône FontAwesome affichée en tête lorsque sélectionné.',
       table: { type: { summary: 'string' }, defaultValue: { summary: '"check"' } },
     },
     ariaLabel: {
@@ -124,10 +124,14 @@ export const Warning: Story = { args: { label: 'En attente', level: 'warning', r
 export const Error: Story = { args: { label: 'Rejeté', level: 'error', removable: true } };
 
 // Intensité soutenue
-export const SubLevelHigh: Story = { args: { label: 'Soutenu', level: 'highlight', subLevel: 'high' } };
+export const SubLevelHigh: Story = {
+  args: { label: 'Soutenu', level: 'highlight', subLevel: 'high' },
+};
 
 // Tailles
-export const Small: Story = { args: { label: 'Compact', level: 'highlight', size: 'small', removable: true } };
+export const Small: Story = {
+  args: { label: 'Compact', level: 'highlight', size: 'small', removable: true },
+};
 
 // Icon
 export const Icon: Story = { args: { label: 'Favori', level: 'highlight', icon: 'star' } };

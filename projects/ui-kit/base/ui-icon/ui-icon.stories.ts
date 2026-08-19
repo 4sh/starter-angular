@@ -46,7 +46,13 @@ type Story = StoryObj<UiIcon>;
 export const Solid: Story = { args: { name: 'circle-user', size: 'lg', type: 'solid' } };
 export const Outline: Story = { args: { name: 'circle-user', size: 'lg', type: 'outline' } };
 export const Meaningful: Story = {
-  args: { name: 'triangle-exclamation', size: 'lg', type: 'solid', decorative: false, ariaLabel: 'Attention' },
+  args: {
+    name: 'triangle-exclamation',
+    size: 'lg',
+    type: 'solid',
+    decorative: false,
+    ariaLabel: 'Attention',
+  },
 };
 
 /**

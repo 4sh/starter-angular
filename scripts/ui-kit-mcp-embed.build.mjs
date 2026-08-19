@@ -32,7 +32,9 @@ if (!existsSync(join(MCP_DIST, 'index.js'))) {
   throw new Error(`[ui-kit-mcp-embed] ${MCP_DIST}/index.js introuvable après le bundle.`);
 }
 if (!existsSync(join(ROOT, 'dist/ui-kit'))) {
-  throw new Error("[ui-kit-mcp-embed] dist/ui-kit introuvable — lance `npm run ui-kit:build` avant ce script.");
+  throw new Error(
+    '[ui-kit-mcp-embed] dist/ui-kit introuvable — lance `npm run ui-kit:build` avant ce script.',
+  );
 }
 
 cpSync(MCP_DIST, DEST, { recursive: true });

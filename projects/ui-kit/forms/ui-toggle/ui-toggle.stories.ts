@@ -37,7 +37,8 @@ const meta: Meta<UiToggle> = {
     labelPosition: {
       control: { type: 'inline-radio' },
       options: ['before', 'after'],
-      description: 'Côté du label (gauche = before / droite = after). Les deux côtés sont cliquables.',
+      description:
+        'Côté du label (gauche = before / droite = after). Les deux côtés sont cliquables.',
       table: { type: { summary: 'ToggleLabelPosition' }, defaultValue: { summary: '"after"' } },
     },
     handle: {
@@ -93,22 +94,42 @@ const TEMPLATE = `<ui-toggle
     (toggleChange)="toggleChange($event)" />`;
 
 /** Story factory: `on` seeds the initial ngModel value. */
-const story = (on = false): Story['render'] => (args) => ({ props: { ...args, model: on }, template: TEMPLATE });
+const story =
+  (on = false): Story['render'] =>
+  (args) => ({ props: { ...args, model: on }, template: TEMPLATE });
 
 export const Default: Story = { render: story(), args: { label: 'Notifications' } };
 export const Checked: Story = { render: story(true), args: { label: 'Notifications' } };
 export const Small: Story = { render: story(), args: { label: 'Compact', size: 'small' } };
-export const Required: Story = { render: story(), args: { label: 'Accepter les CGU', required: true } };
+export const Required: Story = {
+  render: story(),
+  args: { label: 'Accepter les CGU', required: true },
+};
 export const Disabled: Story = { render: story(), args: { label: 'Indisponible', disabled: true } };
-export const DisabledChecked: Story = { render: story(true), args: { label: 'Verrouillé activé', disabled: true } };
-export const Readonly: Story = { render: story(), args: { label: 'Lecture seule', readonly: true } };
-export const Invalid: Story = { render: story(), args: { label: 'Champ obligatoire', invalid: true } };
+export const DisabledChecked: Story = {
+  render: story(true),
+  args: { label: 'Verrouillé activé', disabled: true },
+};
+export const Readonly: Story = {
+  render: story(),
+  args: { label: 'Lecture seule', readonly: true },
+};
+export const Invalid: Story = {
+  render: story(),
+  args: { label: 'Champ obligatoire', invalid: true },
+};
 
 // Sans label visible : nom accessible obligatoire
-export const NoLabel: Story = { render: story(), args: { label: undefined, ariaLabel: 'Mode sombre' } };
+export const NoLabel: Story = {
+  render: story(),
+  args: { label: undefined, ariaLabel: 'Mode sombre' },
+};
 
 // Label à gauche (before) — cliquable des deux côtés
-export const LabelBefore: Story = { render: story(), args: { label: 'Mode sombre', labelPosition: 'before' } };
+export const LabelBefore: Story = {
+  render: story(),
+  args: { label: 'Mode sombre', labelPosition: 'before' },
+};
 
 // --- Signal Forms (@angular/forms/signals) ------------------------------
 @Component({

@@ -97,7 +97,14 @@ interface SelectGroupEntry {
 /** @ignore Rendered row: a group header or an option. */
 type SelectRow =
   | { kind: 'group'; key: string; label: string; original: unknown }
-  | { kind: 'option'; key: string; id: string; index: number; entry: SelectEntry; selected: boolean };
+  | {
+      kind: 'option';
+      key: string;
+      id: string;
+      index: number;
+      entry: SelectEntry;
+      selected: boolean;
+    };
 
 /**
  * ui-select — headless dropdown list built on the `ui-field` shell
@@ -240,7 +247,8 @@ export class UiSelect<T = unknown> extends BaseFormField<SelectValue<T>> {
   /** Custom option template: `<ng-template #item let-option let-selected="selected">`. */
   protected readonly itemTemplate = contentChild<TemplateRef<SelectItemContext<T>>>('item');
   /** Custom selected-value template (per selected option): `<ng-template #selectedItem let-option>`. */
-  protected readonly selectedItemTemplate = contentChild<TemplateRef<SelectSelectedItemContext<T>>>('selectedItem');
+  protected readonly selectedItemTemplate =
+    contentChild<TemplateRef<SelectSelectedItemContext<T>>>('selectedItem');
   /** Custom group-header template: `<ng-template #group let-group>`. */
   protected readonly groupTemplate = contentChild<TemplateRef<SelectGroupContext>>('group');
   /** Free content pinned above the list (before the filter). */
@@ -311,13 +319,19 @@ export class UiSelect<T = unknown> extends BaseFormField<SelectValue<T>> {
     if (isDevMode()) {
       effect(() => {
         if (!this.label() && !this.ariaLabel() && !this.ariaLabelledBy()) {
-          console.warn('[ui-select] Field has no accessible name: provide `label`, `ariaLabel` or `ariaLabelledBy`.');
+          console.warn(
+            '[ui-select] Field has no accessible name: provide `label`, `ariaLabel` or `ariaLabelledBy`.',
+          );
         }
         if (this.editable() && this.multiple()) {
-          console.warn('[ui-select] `editable` is ignored in `multiple` mode (free-text entry is single-value only).');
+          console.warn(
+            '[ui-select] `editable` is ignored in `multiple` mode (free-text entry is single-value only).',
+          );
         }
         if (this.checkbox() && !this.multiple()) {
-          console.warn('[ui-select] `checkbox` is meant for `multiple` mode (one checkbox per option).');
+          console.warn(
+            '[ui-select] `checkbox` is meant for `multiple` mode (one checkbox per option).',
+          );
         }
       });
     }
@@ -380,18 +394,27 @@ export class UiSelect<T = unknown> extends BaseFormField<SelectValue<T>> {
       this.groupEntries().forEach((g, gi) => {
         const entries = g.entries.filter((e) => this.matchesFilter(e));
         if (!entries.length) return;
-        rows.push({ kind: 'group', key: `${this.listboxId()}-group-${gi}`, label: g.label, original: g.original });
+        rows.push({
+          kind: 'group',
+          key: `${this.listboxId()}-group-${gi}`,
+          label: g.label,
+          original: g.original,
+        });
         entries.forEach(pushOption);
       });
     } else {
-      this.flatEntries().filter((e) => this.matchesFilter(e)).forEach(pushOption);
+      this.flatEntries()
+        .filter((e) => this.matchesFilter(e))
+        .forEach(pushOption);
     }
     return rows;
   });
 
   /** @ignore Visible option rows only (visual-focus / type-ahead space). */
   protected readonly visibleOptions = computed(() =>
-    this.visibleRows().filter((r): r is Extract<SelectRow, { kind: 'option' }> => r.kind === 'option'),
+    this.visibleRows().filter(
+      (r): r is Extract<SelectRow, { kind: 'option' }> => r.kind === 'option',
+    ),
   );
 
   /** @ignore aria-setsize of the visible listbox. */
@@ -402,7 +425,9 @@ export class UiSelect<T = unknown> extends BaseFormField<SelectValue<T>> {
 
   /** @ignore Empty state: no option at all, or nothing matches the filter / typed text. */
   protected readonly emptyLabel = computed(() =>
-    this.normalizedFilter() || this.normalizedEditableQuery() ? this.emptyFilterMessage() : this.emptyMessage(),
+    this.normalizedFilter() || this.normalizedEditableQuery()
+      ? this.emptyFilterMessage()
+      : this.emptyMessage(),
   );
 
   /** @ignore Selected values as an array (whatever the mode). */
@@ -461,7 +486,9 @@ export class UiSelect<T = unknown> extends BaseFormField<SelectValue<T>> {
 
   /** @ignore Text rendered in the trigger (and in the editable input). */
   protected readonly selectedLabel = computed(() => {
-    const shown = this.displayedSelectedEntries().map((e) => e.label).join(', ');
+    const shown = this.displayedSelectedEntries()
+      .map((e) => e.label)
+      .join(', ');
     return this.overflowCount() > 0 ? `${shown} ${this.overflowText()}` : shown;
   });
 
@@ -524,7 +551,8 @@ export class UiSelect<T = unknown> extends BaseFormField<SelectValue<T>> {
   open(): void {
     if (this.isDisabled() || this.readonly() || this.panelOpen()) return;
     const origin =
-      this.containerEl().nativeElement.querySelector('.ui-field-box') ?? this.containerEl().nativeElement;
+      this.containerEl().nativeElement.querySelector('.ui-field-box') ??
+      this.containerEl().nativeElement;
     this.overlayOrigin.set(origin);
     this.overlayWidth.set(origin.getBoundingClientRect().width);
     this.focusedIndex.set(this.initialFocusIndex());
@@ -567,7 +595,8 @@ export class UiSelect<T = unknown> extends BaseFormField<SelectValue<T>> {
   private queueAfterOpen(): void {
     setTimeout(() => {
       // Never steal the focus from the editable input while the user types.
-      if (this.filter() && this.autofocusFilter() && !this.isEditable()) this.filterInputEl()?.nativeElement.focus();
+      if (this.filter() && this.autofocusFilter() && !this.isEditable())
+        this.filterInputEl()?.nativeElement.focus();
       this.scrollFocusedIntoView();
     });
   }
@@ -656,7 +685,13 @@ export class UiSelect<T = unknown> extends BaseFormField<SelectValue<T>> {
     if (this.handleNavigationKey(event)) return;
 
     // Type-ahead (button trigger only — the editable input types for real).
-    if (!this.isEditable() && event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) {
+    if (
+      !this.isEditable() &&
+      event.key.length === 1 &&
+      !event.ctrlKey &&
+      !event.metaKey &&
+      !event.altKey
+    ) {
       event.preventDefault();
       if (!this.panelOpen()) this.open();
       this.searchOption(event.key);
@@ -708,7 +743,10 @@ export class UiSelect<T = unknown> extends BaseFormField<SelectValue<T>> {
         this.selectFocused();
         return true;
       case ' ':
-        if (this.isEditable() || (this.filter() && event.target === this.filterInputEl()?.nativeElement)) {
+        if (
+          this.isEditable() ||
+          (this.filter() && event.target === this.filterInputEl()?.nativeElement)
+        ) {
           return false; // space types in the inputs
         }
         if (!this.panelOpen()) return false; // closed button: native click opens
@@ -825,7 +863,9 @@ export class UiSelect<T = unknown> extends BaseFormField<SelectValue<T>> {
     if (!row) return;
     const vp = this.viewport();
     if (vp) {
-      const rowIndex = this.visibleRows().findIndex((r) => r.kind === 'option' && r.index === row.index);
+      const rowIndex = this.visibleRows().findIndex(
+        (r) => r.kind === 'option' && r.index === row.index,
+      );
       if (rowIndex !== -1) vp.scrollToIndex(Math.max(0, rowIndex - 1), 'auto');
       return;
     }
@@ -846,7 +886,8 @@ export class UiSelect<T = unknown> extends BaseFormField<SelectValue<T>> {
     if (!options.length) return;
     const needle = this.normalize(this.searchBuffer);
     // Restart the scan below the focused option only for a fresh (1-char) search.
-    const from = this.searchBuffer.length === 1 ? this.focusedIndex() + 1 : Math.max(0, this.focusedIndex());
+    const from =
+      this.searchBuffer.length === 1 ? this.focusedIndex() + 1 : Math.max(0, this.focusedIndex());
     for (let k = 0; k < options.length; k++) {
       const i = (from + k) % options.length;
       const option = options[i];
@@ -889,15 +930,14 @@ export class UiSelect<T = unknown> extends BaseFormField<SelectValue<T>> {
     const haystacks = fields?.length
       ? fields.map((f) => this.asText(this.getField(entry.original, f)) ?? '')
       : [entry.label];
-    return needles.every((needle) => haystacks.some((text) => this.normalize(text).includes(needle)));
+    return needles.every((needle) =>
+      haystacks.some((text) => this.normalize(text).includes(needle)),
+    );
   }
 
   /** @ignore Case- and diacritics-insensitive comparison text. */
   private normalize(text: string): string {
-    return text
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[̀-ͯ]/g, '');
+    return text.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
   }
 
   // --- Option resolution ----------------------------------------------------------

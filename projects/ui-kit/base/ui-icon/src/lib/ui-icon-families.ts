@@ -32,7 +32,9 @@ export const UI_ICON_BUILTIN_FAMILIES: Record<string, UiIconFamily> = {
 };
 
 /** Registered icon families (multi provider). Merged over the built-ins. */
-export const UI_ICON_FAMILIES = new InjectionToken<Record<string, UiIconFamily>[]>('UI_ICON_FAMILIES');
+export const UI_ICON_FAMILIES = new InjectionToken<Record<string, UiIconFamily>[]>(
+  'UI_ICON_FAMILIES',
+);
 
 /** Family key used when a `ui-icon` does not set `family`. */
 export const UI_ICON_DEFAULT_FAMILY = new InjectionToken<string>('UI_ICON_DEFAULT_FAMILY');

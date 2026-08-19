@@ -90,9 +90,11 @@ export class UiInput extends BaseFormField<string> {
   iconRightTemplate = input<TemplateRef<UiInputIconContext>>();
 
   /** Custom left icon: `<ng-template #iconLeft let-name let-size="size">`. */
-  private readonly iconLeftTemplateContent = contentChild<TemplateRef<UiInputIconContext>>('iconLeft');
+  private readonly iconLeftTemplateContent =
+    contentChild<TemplateRef<UiInputIconContext>>('iconLeft');
   /** Custom right icon: `<ng-template #iconRight let-name let-size="size">`. */
-  private readonly iconRightTemplateContent = contentChild<TemplateRef<UiInputIconContext>>('iconRight');
+  private readonly iconRightTemplateContent =
+    contentChild<TemplateRef<UiInputIconContext>>('iconRight');
 
   /** Emitted on each input with the new value. */
   valueChange = output<string>();

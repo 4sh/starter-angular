@@ -65,11 +65,7 @@ const GROUPED_COUNTRIES: CountryGroup[] = [
 
 const MANY_ITEMS = Array.from({ length: 10000 }, (_, i) => `Élément ${i + 1}`);
 
-const norm = (text: string): string =>
-  text
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '');
+const norm = (text: string): string => text.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
 
 /** Interactive completer: filters `data` into `results` on each `completeMethod`. */
 function completer<T>(data: readonly T[], toText: (item: T) => string) {
@@ -116,7 +112,9 @@ const meta: Meta<UiAutocomplete> = {
   title: 'Components/ui/forms/ui-autocomplete',
   component: UiAutocomplete,
   decorators: [
-    moduleMetadata({ imports: [UiAutocomplete, UiIcon, UiChip, CommonModule, FormsModule, ReactiveFormsModule] }),
+    moduleMetadata({
+      imports: [UiAutocomplete, UiIcon, UiChip, CommonModule, FormsModule, ReactiveFormsModule],
+    }),
   ],
   parameters: {
     layout: 'centered',
@@ -138,7 +136,8 @@ const meta: Meta<UiAutocomplete> = {
     },
     optionValue: {
       control: 'text',
-      description: 'Champ (chemin pointé) porté dans le modèle quand les suggestions sont des objets.',
+      description:
+        'Champ (chemin pointé) porté dans le modèle quand les suggestions sont des objets.',
       table: { type: { summary: 'string' } },
     },
     optionDisabled: {
@@ -148,7 +147,8 @@ const meta: Meta<UiAutocomplete> = {
     },
     group: {
       control: 'boolean',
-      description: 'Traite `suggestions` comme des groupes (`optionGroupLabel` + `optionGroupChildren`).',
+      description:
+        'Traite `suggestions` comme des groupes (`optionGroupLabel` + `optionGroupChildren`).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     optionGroupLabel: {
@@ -199,7 +199,8 @@ const meta: Meta<UiAutocomplete> = {
     },
     multiple: {
       control: 'boolean',
-      description: 'Sélection multiple : le modèle est un tableau, chaque choix devient une chip supprimable.',
+      description:
+        'Sélection multiple : le modèle est un tableau, chaque choix devient une chip supprimable.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     unique: {
@@ -209,7 +210,8 @@ const meta: Meta<UiAutocomplete> = {
     },
     maxSelectedLabels: {
       control: 'number',
-      description: 'Avec `multiple` : nombre maximal de chips affichées, le reste replié derrière `overflowLabel`.',
+      description:
+        'Avec `multiple` : nombre maximal de chips affichées, le reste replié derrière `overflowLabel`.',
       table: { type: { summary: 'number' }, defaultValue: { summary: 'undefined' } },
     },
     overflowLabel: {
@@ -270,11 +272,20 @@ const meta: Meta<UiAutocomplete> = {
     },
     invalid: {
       control: 'boolean',
-      description: 'Force le style d’erreur (auto quand le contrôle attaché est invalide + touché).',
+      description:
+        'Force le style d’erreur (auto quand le contrôle attaché est invalide + touché).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
-    label: { control: 'text', description: 'Libellé du champ.', table: { type: { summary: 'string' } } },
-    helperText: { control: 'text', description: 'Texte d’aide sous le champ.', table: { type: { summary: 'string' } } },
+    label: {
+      control: 'text',
+      description: 'Libellé du champ.',
+      table: { type: { summary: 'string' } },
+    },
+    helperText: {
+      control: 'text',
+      description: 'Texte d’aide sous le champ.',
+      table: { type: { summary: 'string' } },
+    },
     completeMethod: { action: 'completeMethod', table: { category: 'Outputs' } },
     optionSelect: { action: 'optionSelect', table: { category: 'Outputs' } },
     optionUnselect: { action: 'optionUnselect', table: { category: 'Outputs' } },

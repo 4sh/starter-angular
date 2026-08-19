@@ -24,12 +24,14 @@ const meta: Meta<UiContextMenu> = {
   argTypes: {
     items: {
       control: false,
-      description: 'Modèle déclaratif du menu (`UiMenuItem[]`) : items, sous-menus imbriqués, commandes, liens.',
+      description:
+        'Modèle déclaratif du menu (`UiMenuItem[]`) : items, sous-menus imbriqués, commandes, liens.',
       table: { type: { summary: 'UiMenuItem[]' }, defaultValue: { summary: '[]' } },
     },
     target: {
       control: false,
-      description: 'Élément auquel le menu contextuel est attaché (variable de référence de template).',
+      description:
+        'Élément auquel le menu contextuel est attaché (variable de référence de template).',
       table: { type: { summary: 'HTMLElement | ElementRef' }, defaultValue: { summary: 'null' } },
     },
     global: {
@@ -45,7 +47,8 @@ const meta: Meta<UiContextMenu> = {
     level: {
       control: { type: 'inline-radio' },
       options: ['high', 'low'],
-      description: 'Famille de couleur navigation utilisée (`navigation.high` ou `navigation.low`).',
+      description:
+        'Famille de couleur navigation utilisée (`navigation.high` ou `navigation.low`).',
       table: { type: { summary: "'high' | 'low'" }, defaultValue: { summary: "'high'" } },
     },
     size: {
@@ -57,7 +60,8 @@ const meta: Meta<UiContextMenu> = {
     submenus: {
       control: { type: 'inline-radio' },
       options: ['flyout', 'inline'],
-      description: 'Rendu des groupes : panneaux latéraux en cascade (défaut) ou sections/accordéons dans le panneau.',
+      description:
+        'Rendu des groupes : panneaux latéraux en cascade (défaut) ou sections/accordéons dans le panneau.',
       table: { type: { summary: "'inline' | 'flyout'" }, defaultValue: { summary: "'flyout'" } },
     },
     motion: {
@@ -204,10 +208,22 @@ export const Command: Story = {
   render: (args) => {
     const lastAction = signal('—');
     const items: UiMenuItem[] = [
-      { label: 'Épingler', icon: 'thumbtack', command: ({ item }) => lastAction.set(`« ${item.label} »`) },
-      { label: 'Archiver', icon: 'box-archive', command: ({ item }) => lastAction.set(`« ${item.label} »`) },
+      {
+        label: 'Épingler',
+        icon: 'thumbtack',
+        command: ({ item }) => lastAction.set(`« ${item.label} »`),
+      },
+      {
+        label: 'Archiver',
+        icon: 'box-archive',
+        command: ({ item }) => lastAction.set(`« ${item.label} »`),
+      },
       { separator: true },
-      { label: 'Signaler', icon: 'flag', command: ({ item }) => lastAction.set(`« ${item.label} »`) },
+      {
+        label: 'Signaler',
+        icon: 'flag',
+        command: ({ item }) => lastAction.set(`« ${item.label} »`),
+      },
     ];
     return {
       props: { ...args, items, lastAction },
@@ -231,7 +247,12 @@ export const Router: Story = {
       { label: 'Accueil', icon: 'house', routerLink: '/', routerLinkActiveExact: true },
       { label: 'Profil', icon: 'user', routerLink: '/profil' },
       { separator: true },
-      { label: 'Documentation Angular', icon: 'up-right-from-square', url: 'https://angular.dev', target: '_blank' },
+      {
+        label: 'Documentation Angular',
+        icon: 'up-right-from-square',
+        url: 'https://angular.dev',
+        target: '_blank',
+      },
     ];
     return {
       props: { ...args, items },

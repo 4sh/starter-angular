@@ -122,10 +122,7 @@
           },
           "collections": {
             "description": "Collection ids to render, or \"all\".",
-            "oneOf": [
-              { "const": "all" },
-              { "type": "array", "items": { "type": "string" } }
-            ]
+            "oneOf": [{ "const": "all" }, { "type": "array", "items": { "type": "string" } }]
           }
         }
       }

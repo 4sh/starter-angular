@@ -25,9 +25,7 @@ import { BaseFieldControl } from '@4sh/ui-kit/forms';
   selector: 'ui-radio',
   templateUrl: './ui-radio.html',
   styleUrl: './ui-radio.scss',
-  providers: [
-    { provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => UiRadio), multi: true },
-  ],
+  providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => UiRadio), multi: true }],
 })
 export class UiRadio<T = unknown> extends BaseFieldControl<T> {
   /** Value carried by this radio (the model takes it when selected). */

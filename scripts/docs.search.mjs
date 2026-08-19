@@ -67,7 +67,9 @@ const toPosix = (path) => path.split(sep).join('/');
 function collectMdx(dir) {
   if (!existsSync(dir)) return [];
   const found = [];
-  const entries = readdirSync(dir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name));
+  const entries = readdirSync(dir, { withFileTypes: true }).sort((a, b) =>
+    a.name.localeCompare(b.name),
+  );
   for (const entry of entries) {
     if (entry.name.startsWith('.') || entry.name === 'node_modules') continue;
     const full = join(dir, entry.name);
@@ -118,7 +120,9 @@ function resolveStoryPath(tree, mdxPath, identifier) {
   const imports = [];
   visit(tree, 'mdxjsEsm', (node) => imports.push(node.value));
 
-  const importPattern = new RegExp(`import\\s+\\*\\s+as\\s+${identifier}\\s+from\\s+['"]([^'"]+)['"]`);
+  const importPattern = new RegExp(
+    `import\\s+\\*\\s+as\\s+${identifier}\\s+from\\s+['"]([^'"]+)['"]`,
+  );
   const specifier = imports.map((source) => source.match(importPattern)?.[1]).find(Boolean);
   if (!specifier) return null;
 
@@ -134,7 +138,9 @@ function resolveStoryPath(tree, mdxPath, identifier) {
 function titleFromStories(tree, mdxPath, identifier) {
   const storyPath = resolveStoryPath(tree, mdxPath, identifier);
   if (!storyPath) {
-    throw new Error(`<Meta of={${identifier}} /> non résolu depuis ${toPosix(relative(ROOT, mdxPath))}`);
+    throw new Error(
+      `<Meta of={${identifier}} /> non résolu depuis ${toPosix(relative(ROOT, mdxPath))}`,
+    );
   }
 
   // Le `title:` recherché est celui du `meta`, pas le premier du fichier : les
@@ -190,7 +196,9 @@ function storySource(path) {
 
 /** Valeur d'un attribut JSX : littéral, ou code source de l'expression. */
 function jsxAttribute(node, name) {
-  const found = (node.attributes ?? []).find((attr) => attr.type === 'mdxJsxAttribute' && attr.name === name);
+  const found = (node.attributes ?? []).find(
+    (attr) => attr.type === 'mdxJsxAttribute' && attr.name === name,
+  );
   if (!found) return null;
   return typeof found.value === 'string' ? found.value : (found.value?.value ?? null);
 }
@@ -211,14 +219,18 @@ const entryText = (name, entry) => [name, entry.role ?? '', ...settingText(entry
 function configTableText(component) {
   const entry = uiConfig().components?.[component];
   if (!entry) return [];
-  return [...(entry.vars ?? []), ...(entry.hooks ?? [])].flatMap((item) => entryText(item.name, item));
+  return [...(entry.vars ?? []), ...(entry.hooks ?? [])].flatMap((item) =>
+    entryText(item.name, item),
+  );
 }
 
 function sharedConfigTableText(node) {
   const group = jsxAttribute(node, 'group');
   const prefix = jsxAttribute(node, 'prefix');
   // `exclude={['motion-', 'overlay-panel-']}` : on relit les littéraux de l'expression.
-  const exclude = [...(jsxAttribute(node, 'exclude') ?? '').matchAll(/['"]([^'"]+)['"]/g)].map((match) => match[1]);
+  const exclude = [...(jsxAttribute(node, 'exclude') ?? '').matchAll(/['"]([^'"]+)['"]/g)].map(
+    (match) => match[1],
+  );
 
   return Object.entries(uiConfig().shared ?? {})
     .filter(([name, entry]) => {
@@ -354,7 +366,10 @@ function extractSections(tree, mdxPath) {
     }
     // Les blocs de code comptent : les noms de variables SCSS et les extraits
     // d'import sont précisément ce qu'on vient chercher dans cette doc.
-    if ((node.type === 'text' || node.type === 'inlineCode' || node.type === 'code') && node.value) {
+    if (
+      (node.type === 'text' || node.type === 'inlineCode' || node.type === 'code') &&
+      node.value
+    ) {
       current.chunks.push(node.value);
     }
     return undefined;
@@ -421,7 +436,9 @@ if (isCli) {
   if (process.argv.includes('--check')) {
     const current = existsSync(OUT_FILE) ? readFileSync(OUT_FILE, 'utf8') : null;
     if (current !== serialize(build())) {
-      console.error('✗ storybook/public/text-search-docs.json est périmé — lance `npm run docs:search`.');
+      console.error(
+        '✗ storybook/public/text-search-docs.json est périmé — lance `npm run docs:search`.',
+      );
       process.exit(1);
     }
     console.log('✓ text-search-docs.json à jour.');

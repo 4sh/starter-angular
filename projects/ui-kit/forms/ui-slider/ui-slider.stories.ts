@@ -11,7 +11,9 @@ const meta: Meta<UiSlider> = {
   title: 'Components/ui/forms/ui-slider',
   component: UiSlider,
   decorators: [
-    moduleMetadata({ imports: [UiSlider, CommonModule, FormsModule, ReactiveFormsModule, FormField] }),
+    moduleMetadata({
+      imports: [UiSlider, CommonModule, FormsModule, ReactiveFormsModule, FormField],
+    }),
   ],
   parameters: {
     layout: 'centered',
@@ -74,7 +76,8 @@ const meta: Meta<UiSlider> = {
     },
     invalid: {
       control: 'boolean',
-      description: 'Force le style erreur (automatique quand le contrôle attaché est invalide et touched/dirty).',
+      description:
+        'Force le style erreur (automatique quand le contrôle attaché est invalide et touched/dirty).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     ariaLabel: {

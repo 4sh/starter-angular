@@ -27,7 +27,16 @@
  */
 
 import { execSync } from 'node:child_process';
-import { readdirSync, readFileSync, writeFileSync, existsSync, mkdirSync, copyFileSync, cpSync, rmSync } from 'node:fs';
+import {
+  readdirSync,
+  readFileSync,
+  writeFileSync,
+  existsSync,
+  mkdirSync,
+  copyFileSync,
+  cpSync,
+  rmSync,
+} from 'node:fs';
 import { dirname, join, resolve, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -172,7 +181,9 @@ function main() {
   const tokensDest = join(ASSETS, 'tokens-pipeline');
   const designTokensSrc = join(ROOT, 'src/design-tokens');
   if (existsSync(designTokensSrc)) {
-    tokenFiles += copyTree(designTokensSrc, join(tokensDest, 'design-tokens'), (n) => n.endsWith('.json'));
+    tokenFiles += copyTree(designTokensSrc, join(tokensDest, 'design-tokens'), (n) =>
+      n.endsWith('.json'),
+    );
   }
   // `tokens.config.json` pointe ici vers `projects/ui-kit/styles/generated` —
   // un chemin propre au monorepo. Côté consommateur, la fondation de styles

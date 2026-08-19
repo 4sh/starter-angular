@@ -10,7 +10,12 @@
     <ui-icon name="image" />
   </div>
 } @else if (isInlineSvg() && !primaryFailed()) {
-  <div class="ui-image-svg" [style.width]="cssWidth()" [style.height]="cssHeight()" [innerHTML]="svgContent()"></div>
+  <div
+    class="ui-image-svg"
+    [style.width]="cssWidth()"
+    [style.height]="cssHeight()"
+    [innerHTML]="svgContent()"
+  ></div>
 } @else {
   <img
     class="ui-image"

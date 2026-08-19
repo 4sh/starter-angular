@@ -96,7 +96,11 @@ export function acceptsMaskChar(slot: MaskSlot, segment: string, ch: string): bo
 }
 
 /** Apply the mask template to a sequence of data characters (fills empty positions with `slotChar`). */
-export function applyMaskTemplate(slots: MaskSlot[], data: string, slotChar: string): MaskBuildResult {
+export function applyMaskTemplate(
+  slots: MaskSlot[],
+  data: string,
+  slotChar: string,
+): MaskBuildResult {
   let di = 0;
   let display = '';
   let masked = '';
@@ -144,7 +148,10 @@ export function caretForMask(tokenIndices: number[], n: number, length: number):
  * template at rest). Used by `ui-datepicker`'s typeable trigger to auto-insert "/" as digits are
  * typed, the same way a card-expiry field auto-inserts its "/".
  */
-export function autoFormatSegments(slots: MaskSlot[], data: string): { text: string; tokenIndices: number[] } {
+export function autoFormatSegments(
+  slots: MaskSlot[],
+  data: string,
+): { text: string; tokenIndices: number[] } {
   let di = 0;
   let text = '';
   let segment = '';

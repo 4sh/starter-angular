@@ -11,9 +11,11 @@ describe('searchDocs', () => {
   it('finds a section by a term that only appears in its text', () => {
     const result = searchDocs('anneau de focus');
     const payload = JSON.parse(result.content[0].text);
-    expect(payload.results.some((r: { name: string; section: string }) => r.name === 'ui-button' && r.section === 'Theming')).toBe(
-      true,
-    );
+    expect(
+      payload.results.some(
+        (r: { name: string; section: string }) => r.name === 'ui-button' && r.section === 'Theming',
+      ),
+    ).toBe(true);
   });
 
   it('ranks a title/name match above a body-text-only match', () => {

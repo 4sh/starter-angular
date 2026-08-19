@@ -31,7 +31,9 @@ export type TextareaResize = 'none' | 'vertical' | 'horizontal' | 'both';
   imports: [UiField],
   templateUrl: './ui-textarea.html',
   styleUrl: './ui-textarea.scss',
-  providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => UiTextarea), multi: true }],
+  providers: [
+    { provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => UiTextarea), multi: true },
+  ],
 })
 export class UiTextarea extends BaseFormField<string> {
   /** Native placeholder. */
@@ -58,7 +60,9 @@ export class UiTextarea extends BaseFormField<string> {
   private readonly textareaEl = viewChild<ElementRef<HTMLTextAreaElement>>('textareaEl');
 
   /** @ignore Effective resize axis (`none` while auto-resizing). */
-  protected readonly effectiveResize = computed<TextareaResize>(() => (this.autoResize() ? 'none' : this.resize()));
+  protected readonly effectiveResize = computed<TextareaResize>(() =>
+    this.autoResize() ? 'none' : this.resize(),
+  );
   /** @ignore Current character count. */
   protected readonly charCount = computed(() => (this.modelValue() ?? '').length);
   /** @ignore Over the maxlength (only reachable programmatically). */
@@ -70,9 +74,10 @@ export class UiTextarea extends BaseFormField<string> {
   protected readonly countId = computed(() => `${this.resolvedId()}-count`);
   /** @ignore `aria-describedby` combines the message and the counter, whichever are shown. */
   protected readonly describedByIds = computed(() => {
-    const ids = [this.displayMessage() ? this.messageId() : null, this.showCount() ? this.countId() : null].filter(
-      Boolean,
-    );
+    const ids = [
+      this.displayMessage() ? this.messageId() : null,
+      this.showCount() ? this.countId() : null,
+    ].filter(Boolean);
     return ids.length ? ids.join(' ') : null;
   });
 

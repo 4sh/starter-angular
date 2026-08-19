@@ -37,7 +37,8 @@ const meta: Meta<UiPaginator> = {
     },
     ellipsis: {
       control: { type: 'boolean' },
-      description: 'Mode compact : `1 2 3 … 30 31 32` — bords + voisinage de la page courante, `…` dans les trous.',
+      description:
+        'Mode compact : `1 2 3 … 30 31 32` — bords + voisinage de la page courante, `…` dans les trous.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     boundaryCount: {
@@ -47,7 +48,8 @@ const meta: Meta<UiPaginator> = {
     },
     rowsPerPageOptions: {
       control: false,
-      description: 'Choix du sélecteur « lignes par page » (masqué si omis — booléen Figma `selectPage`).',
+      description:
+        'Choix du sélecteur « lignes par page » (masqué si omis — booléen Figma `selectPage`).',
       table: { type: { summary: 'number[]' }, defaultValue: { summary: 'undefined' } },
     },
     showFirstLastIcon: {
@@ -57,7 +59,8 @@ const meta: Meta<UiPaginator> = {
     },
     showPageLinks: {
       control: { type: 'boolean' },
-      description: 'Affiche les numéros de page (désactiver pour une barre compacte précédent/suivant).',
+      description:
+        'Affiche les numéros de page (désactiver pour une barre compacte précédent/suivant).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
     showCurrentPageReport: {
@@ -67,8 +70,12 @@ const meta: Meta<UiPaginator> = {
     },
     currentPageReportTemplate: {
       control: { type: 'text' },
-      description: 'Motif du rapport — placeholders `{first}` `{last}` `{rows}` `{page}` `{pageCount}` `{totalRecords}`.',
-      table: { type: { summary: 'string' }, defaultValue: { summary: '{first} - {last} sur {totalRecords}' } },
+      description:
+        'Motif du rapport — placeholders `{first}` `{last}` `{rows}` `{page}` `{pageCount}` `{totalRecords}`.',
+      table: {
+        type: { summary: 'string' },
+        defaultValue: { summary: '{first} - {last} sur {totalRecords}' },
+      },
     },
     disabled: {
       control: { type: 'boolean' },

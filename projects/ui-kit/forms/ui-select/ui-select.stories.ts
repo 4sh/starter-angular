@@ -78,7 +78,11 @@ const MANY_ITEMS = Array.from({ length: 10000 }, (_, i) => `Élément ${i + 1}`)
 const meta: Meta<UiSelect> = {
   title: 'Components/ui/forms/ui-select',
   component: UiSelect,
-  decorators: [moduleMetadata({ imports: [UiSelect, UiChip, UiIcon, CommonModule, FormsModule, ReactiveFormsModule] })],
+  decorators: [
+    moduleMetadata({
+      imports: [UiSelect, UiChip, UiIcon, CommonModule, FormsModule, ReactiveFormsModule],
+    }),
+  ],
   parameters: {
     layout: 'centered',
     design: {
@@ -99,7 +103,8 @@ const meta: Meta<UiSelect> = {
     },
     optionValue: {
       control: 'text',
-      description: 'Nom du champ (chemin pointé) lu comme valeur quand les options sont des objets.',
+      description:
+        'Nom du champ (chemin pointé) lu comme valeur quand les options sont des objets.',
       table: { type: { summary: 'string' } },
     },
     optionDisabled: {
@@ -109,7 +114,8 @@ const meta: Meta<UiSelect> = {
     },
     group: {
       control: 'boolean',
-      description: 'Traite `options` comme des groupes (`optionGroupLabel` + `optionGroupChildren`).',
+      description:
+        'Traite `options` comme des groupes (`optionGroupLabel` + `optionGroupChildren`).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     optionGroupLabel: {
@@ -144,7 +150,8 @@ const meta: Meta<UiSelect> = {
     },
     maxSelectedLabels: {
       control: 'number',
-      description: 'Nombre max d’éléments sélectionnés affichés dans le champ (`multiple`) ; le reste est replié dans `overflowLabel`.',
+      description:
+        'Nombre max d’éléments sélectionnés affichés dans le champ (`multiple`) ; le reste est replié dans `overflowLabel`.',
       table: { type: { summary: 'number' } },
     },
     overflowLabel: {
@@ -174,12 +181,14 @@ const meta: Meta<UiSelect> = {
     },
     filterBy: {
       control: 'text',
-      description: 'Champs (chemins pointés, séparés par des virgules) comparés par le filtre — label par défaut.',
+      description:
+        'Champs (chemins pointés, séparés par des virgules) comparés par le filtre — label par défaut.',
       table: { type: { summary: 'string' } },
     },
     editable: {
       control: 'boolean',
-      description: 'Saisie libre : le déclencheur devient un `<input>`, la frappe fixe directement la valeur.',
+      description:
+        'Saisie libre : le déclencheur devient un `<input>`, la frappe fixe directement la valeur.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     loading: {
@@ -214,7 +223,8 @@ const meta: Meta<UiSelect> = {
     },
     lazy: {
       control: 'boolean',
-      description: 'Avec `virtualScroll` : émet `lazyLoad` avec la plage rendue (chargement paresseux).',
+      description:
+        'Avec `virtualScroll` : émet `lazyLoad` avec la plage rendue (chargement paresseux).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     scrollHeight: {
@@ -228,21 +238,43 @@ const meta: Meta<UiSelect> = {
         'Largeur du panneau. Par défaut il reprend celle du champ ; `auto` le dimensionne sur son contenu (sans jamais passer sous la largeur du champ) ; une taille CSS (ex. `260px`) la fixe.',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'largeur du champ' } },
     },
-    label: { control: 'text', description: 'Label du champ (rendu via `ui-label`).', table: { type: { summary: 'string' } } },
-    helperText: { control: 'text', description: 'Texte d’aide sous le champ.', table: { type: { summary: 'string' } } },
-    errorText: { control: 'text', description: 'Message affiché à la place de l’aide en erreur.', table: { type: { summary: 'string' } } },
+    label: {
+      control: 'text',
+      description: 'Label du champ (rendu via `ui-label`).',
+      table: { type: { summary: 'string' } },
+    },
+    helperText: {
+      control: 'text',
+      description: 'Texte d’aide sous le champ.',
+      table: { type: { summary: 'string' } },
+    },
+    errorText: {
+      control: 'text',
+      description: 'Message affiché à la place de l’aide en erreur.',
+      table: { type: { summary: 'string' } },
+    },
     size: {
       control: 'inline-radio',
       options: ['default', 'small'],
       description: 'Taille du champ.',
       table: { type: { summary: 'FieldSize' }, defaultValue: { summary: "'default'" } },
     },
-    required: { control: 'boolean', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
-    disabled: { control: 'boolean', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
-    readonly: { control: 'boolean', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
+    required: {
+      control: 'boolean',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    disabled: {
+      control: 'boolean',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    readonly: {
+      control: 'boolean',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
     invalid: {
       control: 'boolean',
-      description: 'Force le style erreur (automatique quand le contrôle attaché est invalide et touched/dirty).',
+      description:
+        'Force le style erreur (automatique quand le contrôle attaché est invalide et touched/dirty).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     valueChange: { action: 'valueChange', table: { disable: true } },
@@ -281,7 +313,13 @@ type Story = StoryObj<UiSelect>;
 // --- Basic : ngModel + options objets (optionLabel / optionValue) --------
 export const Basic: Story = {
   render: (args) => ({
-    props: { ...args, cities: CITIES, city: null, fruit: null, fruits: ['Pomme', 'Poire', 'Cerise'] },
+    props: {
+      ...args,
+      cities: CITIES,
+      city: null,
+      fruit: null,
+      fruits: ['Pomme', 'Poire', 'Cerise'],
+    },
     template: `
       <div style="display:grid; gap:16px; width:280px;">
         <ui-select
@@ -573,8 +611,13 @@ export const Invalid: Story = {
   template: `
     <div style="display:grid; gap:12px; width:280px;">
       <ui-select
-        label="Ville" placeholder="Sélectionner une ville"
-        [formField]="city" [options]="cities" optionLabel="name" optionValue="code" />
+        label="Ville"
+        placeholder="Sélectionner une ville"
+        [formField]="city"
+        [options]="cities"
+        optionLabel="name"
+        optionValue="code"
+      />
       <code>value = {{ city().value() }} · valid = {{ city().valid() }}</code>
     </div>
   `,
@@ -664,7 +707,10 @@ export const LazyVirtualScroll: Story = {
         items,
         model: null,
         loadedCount: 0,
-        onLazyLoad(this: { items: string[]; loadedCount: number }, range: { first: number; last: number }) {
+        onLazyLoad(
+          this: { items: string[]; loadedCount: number },
+          range: { first: number; last: number },
+        ) {
           for (let i = range.first; i < Math.min(range.last + 10, total); i++) {
             if (this.items[i] === 'Chargement…') {
               this.items[i] = `Élément ${i + 1}`;

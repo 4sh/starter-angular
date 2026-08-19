@@ -77,13 +77,19 @@ const meta: Meta<UiRating> = {
       control: 'radio',
       options: ['horizontal', 'vertical'],
       description: 'Orientation du contrôle.',
-      table: { type: { summary: "'horizontal' | 'vertical'" }, defaultValue: { summary: "'horizontal'" } },
+      table: {
+        type: { summary: "'horizontal' | 'vertical'" },
+        defaultValue: { summary: "'horizontal'" },
+      },
     },
     size: {
       control: 'radio',
       options: ['sm', 'md', 'default', 'lg', 'xl'],
       description: 'Taille des icônes étoiles.',
-      table: { type: { summary: "'sm' | 'md' | 'default' | 'lg' | 'xl'" }, defaultValue: { summary: "'default'" } },
+      table: {
+        type: { summary: "'sm' | 'md' | 'default' | 'lg' | 'xl'" },
+        defaultValue: { summary: "'default'" },
+      },
     },
     ariaLabel: {
       control: 'text',

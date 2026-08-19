@@ -33,7 +33,7 @@ const meta: Meta<UiModal> = {
     },
     dismissableMask: {
       control: { type: 'boolean' },
-      description: "Ferme au clic sur le masque (hors dialogue) — nécessite `modal`.",
+      description: 'Ferme au clic sur le masque (hors dialogue) — nécessite `modal`.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     closable: {
@@ -58,7 +58,7 @@ const meta: Meta<UiModal> = {
     },
     draggable: {
       control: { type: 'boolean' },
-      description: "Autorise le déplacement du dialogue par son en-tête.",
+      description: 'Autorise le déplacement du dialogue par son en-tête.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     maximizable: {
@@ -117,16 +117,25 @@ const meta: Meta<UiModal> = {
     dialogStyle: {
       control: false,
       description: 'Styles inline appliqués au dialogue (ex : `{ width: "32rem" }`).',
-      table: { type: { summary: 'Record<string, string>' }, defaultValue: { summary: 'undefined' } },
+      table: {
+        type: { summary: 'Record<string, string>' },
+        defaultValue: { summary: 'undefined' },
+      },
     },
     breakpoints: {
       control: false,
       description: 'Largeurs par palier, clé = `max-width` (ex : `{ "960px": "75vw" }`).',
-      table: { type: { summary: 'Record<string, string>' }, defaultValue: { summary: 'undefined' } },
+      table: {
+        type: { summary: 'Record<string, string>' },
+        defaultValue: { summary: 'undefined' },
+      },
     },
     shown: { action: 'shown', description: 'Émis après ouverture.' },
     hidden: { action: 'hidden', description: 'Émis après fermeture.' },
-    maximizedChange: { action: 'maximizedChange', description: 'Émis au basculement agrandi / restauré.' },
+    maximizedChange: {
+      action: 'maximizedChange',
+      description: 'Émis au basculement agrandi / restauré.',
+    },
     dragEnd: { action: 'dragEnd', description: "Émis à la fin d'un déplacement." },
     resizeEnd: { action: 'resizeEnd', description: "Émis à la fin d'un redimensionnement." },
   },

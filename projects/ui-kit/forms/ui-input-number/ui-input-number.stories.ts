@@ -20,17 +20,46 @@ const meta: Meta<UiInputNumber> = {
     label: { control: 'text', table: { type: { summary: 'string' } } },
     helperText: { control: 'text', table: { type: { summary: 'string' } } },
     placeholder: { control: 'text', table: { type: { summary: 'string' } } },
-    size: { control: 'inline-radio', options: ['default', 'small'], table: { defaultValue: { summary: '"default"' } } },
-    level: { control: 'inline-radio', options: ['default', 'success', 'error'], table: { defaultValue: { summary: '"default"' } } },
+    size: {
+      control: 'inline-radio',
+      options: ['default', 'small'],
+      table: { defaultValue: { summary: '"default"' } },
+    },
+    level: {
+      control: 'inline-radio',
+      options: ['default', 'success', 'error'],
+      table: { defaultValue: { summary: '"default"' } },
+    },
     min: { control: 'number', table: { type: { summary: 'number' } } },
     max: { control: 'number', table: { type: { summary: 'number' } } },
-    step: { control: 'number', table: { type: { summary: 'number' }, defaultValue: { summary: '1' } } },
-    allowDecimals: { control: 'boolean', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } } },
+    step: {
+      control: 'number',
+      table: { type: { summary: 'number' }, defaultValue: { summary: '1' } },
+    },
+    allowDecimals: {
+      control: 'boolean',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
+    },
     unit: { control: 'text', table: { type: { summary: 'string' } } },
-    showButtons: { control: 'boolean', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } } },
-    locale: { control: 'text', description: 'Locale BCP-47 (ex. fr-FR).', table: { type: { summary: 'string' } } },
-    currency: { control: 'text', description: 'Code devise ISO (ex. EUR) → format monétaire.', table: { type: { summary: 'string' } } },
-    useGrouping: { control: 'boolean', description: 'Séparateurs de milliers au blur.', table: { defaultValue: { summary: 'true' } } },
+    showButtons: {
+      control: 'boolean',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
+    },
+    locale: {
+      control: 'text',
+      description: 'Locale BCP-47 (ex. fr-FR).',
+      table: { type: { summary: 'string' } },
+    },
+    currency: {
+      control: 'text',
+      description: 'Code devise ISO (ex. EUR) → format monétaire.',
+      table: { type: { summary: 'string' } },
+    },
+    useGrouping: {
+      control: 'boolean',
+      description: 'Séparateurs de milliers au blur.',
+      table: { defaultValue: { summary: 'true' } },
+    },
     required: { control: 'boolean', table: { defaultValue: { summary: 'false' } } },
     disabled: { control: 'boolean', table: { defaultValue: { summary: 'false' } } },
     readonly: { control: 'boolean', table: { defaultValue: { summary: 'false' } } },
@@ -38,7 +67,15 @@ const meta: Meta<UiInputNumber> = {
     valueChange: { action: 'valueChange', table: { disable: true } },
     inputBlur: { action: 'inputBlur', table: { disable: true } },
   },
-  args: { label: 'Quantité', size: 'default', level: 'default', step: 1, showButtons: true, allowDecimals: true, useGrouping: true },
+  args: {
+    label: 'Quantité',
+    size: 'default',
+    level: 'default',
+    step: 1,
+    showButtons: true,
+    allowDecimals: true,
+    useGrouping: true,
+  },
 };
 
 export default meta;
@@ -53,22 +90,48 @@ const TEMPLATE = `<div style="width:220px"><ui-input-number
     [required]="required" [disabled]="disabled" [readonly]="readonly" [invalid]="invalid"
     (valueChange)="valueChange($event)" /></div>`;
 
-const story = (value: number | null = null): Story['render'] => (args) => ({ props: { ...args, model: value }, template: TEMPLATE });
+const story =
+  (value: number | null = null): Story['render'] =>
+  (args) => ({ props: { ...args, model: value }, template: TEMPLATE });
 
 export const Default: Story = { render: story(3), args: { label: 'Quantité' } };
 export const Empty: Story = { render: story(null), args: { label: 'Quantité', placeholder: '0' } };
-export const MinMax: Story = { render: story(5), args: { label: 'Note (0–10)', min: 0, max: 10, helperText: 'Bornée entre 0 et 10.' } };
+export const MinMax: Story = {
+  render: story(5),
+  args: { label: 'Note (0–10)', min: 0, max: 10, helperText: 'Bornée entre 0 et 10.' },
+};
 export const Step: Story = { render: story(10), args: { label: 'Prix', step: 5, unit: '€' } };
-export const Integer: Story = { render: story(2), args: { label: 'Personnes', allowDecimals: false, min: 1 } };
+export const Integer: Story = {
+  render: story(2),
+  args: { label: 'Personnes', allowDecimals: false, min: 1 },
+};
 export const WithUnit: Story = { render: story(70), args: { label: 'Poids', unit: 'kg' } };
-export const NoButtons: Story = { render: story(42), args: { label: 'Sans spinner', showButtons: false } };
+export const NoButtons: Story = {
+  render: story(42),
+  args: { label: 'Sans spinner', showButtons: false },
+};
 export const Small: Story = { render: story(3), args: { label: 'Compact', size: 'small' } };
-export const Error: Story = { render: story(150), args: { label: 'Âge', max: 120, level: 'error', errorText: 'Valeur trop élevée.' } };
+export const Error: Story = {
+  render: story(150),
+  args: { label: 'Âge', max: 120, level: 'error', errorText: 'Valeur trop élevée.' },
+};
 export const Disabled: Story = { render: story(3), args: { label: 'Quantité', disabled: true } };
 
 // Formatage Intl (appliqué au blur ; forme éditable au focus)
-export const Currency: Story = { render: story(1234.5), args: { label: 'Prix', locale: 'fr-FR', currency: 'EUR', step: 0.5, helperText: 'Focus pour éditer, blur pour formater.' } };
-export const Grouped: Story = { render: story(1234567), args: { label: 'Population', locale: 'fr-FR', useGrouping: true } };
+export const Currency: Story = {
+  render: story(1234.5),
+  args: {
+    label: 'Prix',
+    locale: 'fr-FR',
+    currency: 'EUR',
+    step: 0.5,
+    helperText: 'Focus pour éditer, blur pour formater.',
+  },
+};
+export const Grouped: Story = {
+  render: story(1234567),
+  args: { label: 'Population', locale: 'fr-FR', useGrouping: true },
+};
 
 // --- Signal Forms (@angular/forms/signals) ------------------------------
 @Component({

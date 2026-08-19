@@ -17,7 +17,10 @@ import { brandGlobalTypes, withBrand, DEFAULT_BRAND } from './brand-toolbar';
 // builder `@storybook/angular` lance lui-même (`compodoc: true` dans angular.json).
 import docJson from '../documentation.json';
 // <ui-image>
-import { provideUiImageAssets, UiImageAssetsMap } from '../src/app/shared/components/ui/base/ui-image/ui-image';
+import {
+  provideUiImageAssets,
+  UiImageAssetsMap,
+} from '../src/app/shared/components/ui/base/ui-image/ui-image';
 // `ui-image` lit ses images locales dans une map injectée : le composant ne peut
 // pas deviner l'arborescence d'assets d'un projet. Remplissez
 // `src/assets/assets-map.json` pour que ses stories affichent vos visuels.

@@ -132,7 +132,9 @@ export class UiChip {
   );
 
   /** @ignore The leading image is shown (not overridden by the selected icon). */
-  protected readonly showLeadingImage = computed(() => !this.showSelectedIcon() && this.showImage());
+  protected readonly showLeadingImage = computed(
+    () => !this.showSelectedIcon() && this.showImage(),
+  );
 
   /** @ignore The leading font icon is shown (no image / selected icon taking its place). */
   protected readonly showIcon = computed(() => !this.showImage() && !!this.icon());

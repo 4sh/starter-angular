@@ -34,11 +34,11 @@ to keep it. It can drift, stay put, or get dropped entirely; nothing consumes it
 
 ## When to bump `projects/ui-kit`
 
-| Bump | When |
-|---|---|
+| Bump      | When                                                                                                                                                                                                                      |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **MAJOR** | Breaking change: rename/removal of a token, removal of a component, API change of an input, entry point renamed/removed, new `peerDependency` or a raised floor on an existing one, a schematic option removed or renamed |
-| **MINOR** | New component, new token, new non-breaking variant, new entry point, a new schematic or a new option on an existing one |
-| **PATCH** | Visual fix, bug fix, adjustment of an existing token value without rename, fix inside a schematic that leaves its options untouched |
+| **MINOR** | New component, new token, new non-breaking variant, new entry point, a new schematic or a new option on an existing one                                                                                                   |
+| **PATCH** | Visual fix, bug fix, adjustment of an existing token value without rename, fix inside a schematic that leaves its options untouched                                                                                       |
 
 As long as the version starts with `0.x.y`, the API is considered unstable: `MINOR` releases may contain breaking changes documented in the CHANGELOG. Moving to `1.0.0` freezes the public API.
 
@@ -85,7 +85,7 @@ produced it. A tag pushed manually carries no such guarantee — that is how
 
 Consequence: **the `[X.Y.Z]` section must exist in `CHANGELOG.md` before you
 publish.** The `verify` job checks it (via `scripts/changelog.section.mjs`), so a
-`dry_run: true` run reports a missing section *before* the irreversible publish.
+`dry_run: true` run reports a missing section _before_ the irreversible publish.
 
 Pushing a tag yourself still works — `npm version` + `git push --follow-tags` —
 and the release job reuses an existing tag rather than creating one. It is simply

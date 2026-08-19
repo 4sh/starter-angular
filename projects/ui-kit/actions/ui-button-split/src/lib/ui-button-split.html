@@ -30,7 +30,11 @@
     [onColor]="onColor()"
     [disabled]="triggerDisabled()"
     iconOnly
-    [buttonProps]="{ 'aria-haspopup': 'menu', 'aria-expanded': menuOpen() ? 'true' : 'false', 'aria-controls': menu.uid }"
+    [buttonProps]="{
+      'aria-haspopup': 'menu',
+      'aria-expanded': menuOpen() ? 'true' : 'false',
+      'aria-controls': menu.uid,
+    }"
     (buttonClick)="onDropdownClick($event)"
   />
 

@@ -29,12 +29,14 @@ const meta: Meta<UiMenu> = {
   argTypes: {
     items: {
       control: false,
-      description: 'Modèle déclaratif du menu (`UiMenuItem[]`) : groupes, séparateurs, commandes, liens.',
+      description:
+        'Modèle déclaratif du menu (`UiMenuItem[]`) : groupes, séparateurs, commandes, liens.',
       table: { type: { summary: 'UiMenuItem[]' }, defaultValue: { summary: '[]' } },
     },
     popup: {
       control: false,
-      description: 'Mode popup : le panneau s’ouvre dans un overlay via `toggle(event)` / `show(event)`.',
+      description:
+        'Mode popup : le panneau s’ouvre dans un overlay via `toggle(event)` / `show(event)`.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     expandedKeys: {
@@ -46,7 +48,8 @@ const meta: Meta<UiMenu> = {
     level: {
       control: { type: 'inline-radio' },
       options: ['high', 'low'],
-      description: 'Famille de couleur navigation utilisée (`navigation.high` ou `navigation.low`).',
+      description:
+        'Famille de couleur navigation utilisée (`navigation.high` ou `navigation.low`).',
       table: { type: { summary: "'high' | 'low'" }, defaultValue: { summary: "'high'" } },
     },
     size: {
@@ -57,7 +60,8 @@ const meta: Meta<UiMenu> = {
     },
     motion: {
       control: { type: 'boolean' },
-      description: 'Anime l’ouverture du popup et le repli des sous-menus (reduced-motion respecté).',
+      description:
+        'Anime l’ouverture du popup et le repli des sous-menus (reduced-motion respecté).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
     autoFlip: {
@@ -113,7 +117,9 @@ const BASIC_ITEMS: UiMenuItem[] = [
 export const Basic: Story = {
   render: (args) => ({
     props: { ...args, items: BASIC_ITEMS },
-    template: box(`<ui-menu [items]="items" [level]="level" [size]="size" [motion]="motion" ariaLabel="Menu principal" />`),
+    template: box(
+      `<ui-menu [items]="items" [level]="level" [size]="size" [motion]="motion" ariaLabel="Menu principal" />`,
+    ),
   }),
 };
 
@@ -159,7 +165,9 @@ export const Group: Story = {
     ]);
     return {
       props: { ...args, items },
-      template: box(`<ui-menu [items]="items()" [level]="level" [motion]="motion" ariaLabel="Options d'affichage" />`),
+      template: box(
+        `<ui-menu [items]="items()" [level]="level" [motion]="motion" ariaLabel="Options d'affichage" />`,
+      ),
     };
   },
 };
@@ -303,10 +311,27 @@ export const Command: Story = {
       {
         label: 'Actions',
         items: [
-          { label: 'Enregistrer', icon: 'floppy-disk', command: ({ item }) => lastAction.set(`« ${item.label} »`) },
-          { label: 'Dupliquer', icon: 'copy', command: ({ item }) => lastAction.set(`« ${item.label} »`) },
-          { label: 'Supprimer', icon: 'trash', command: ({ item }) => lastAction.set(`« ${item.label} »`) },
-          { label: 'Action désactivée', icon: 'ban', disabled: true, command: () => lastAction.set('jamais appelé') },
+          {
+            label: 'Enregistrer',
+            icon: 'floppy-disk',
+            command: ({ item }) => lastAction.set(`« ${item.label} »`),
+          },
+          {
+            label: 'Dupliquer',
+            icon: 'copy',
+            command: ({ item }) => lastAction.set(`« ${item.label} »`),
+          },
+          {
+            label: 'Supprimer',
+            icon: 'trash',
+            command: ({ item }) => lastAction.set(`« ${item.label} »`),
+          },
+          {
+            label: 'Action désactivée',
+            icon: 'ban',
+            disabled: true,
+            command: () => lastAction.set('jamais appelé'),
+          },
         ],
       },
     ];
@@ -331,18 +356,32 @@ export const Router: Story = {
         items: [
           { label: 'Accueil', icon: 'house', routerLink: '/', routerLinkActiveExact: true },
           { label: 'Profil', icon: 'user', routerLink: '/profil' },
-          { label: 'Recherche', icon: 'magnifying-glass', routerLink: '/recherche', queryParams: { q: 'tokens' } },
+          {
+            label: 'Recherche',
+            icon: 'magnifying-glass',
+            routerLink: '/recherche',
+            queryParams: { q: 'tokens' },
+          },
         ],
       },
       { separator: true },
       {
         label: 'Liens externes',
-        items: [{ label: 'Documentation Angular', icon: 'up-right-from-square', url: 'https://angular.dev', target: '_blank' }],
+        items: [
+          {
+            label: 'Documentation Angular',
+            icon: 'up-right-from-square',
+            url: 'https://angular.dev',
+            target: '_blank',
+          },
+        ],
       },
     ];
     return {
       props: { ...args, items },
-      template: box(`<ui-menu [items]="items" [level]="level" [motion]="motion" ariaLabel="Navigation" />`),
+      template: box(
+        `<ui-menu [items]="items" [level]="level" [motion]="motion" ariaLabel="Navigation" />`,
+      ),
     };
   },
 };
@@ -404,6 +443,8 @@ export const Controlled: Story = {
 export const Low: Story = {
   render: (args) => ({
     props: { ...args, items: BASIC_ITEMS },
-    template: box(`<ui-menu [items]="items" level="low" [motion]="motion" ariaLabel="Menu secondaire" />`),
+    template: box(
+      `<ui-menu [items]="items" level="low" [motion]="motion" ariaLabel="Menu secondaire" />`,
+    ),
   }),
 };

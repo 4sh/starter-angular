@@ -3,7 +3,10 @@
   @if (row.kind === 'group') {
     <li class="ui-autocomplete-group" role="presentation" [class._small]="size() === 'small'">
       @if (groupTemplate(); as tpl) {
-        <ng-container [ngTemplateOutlet]="tpl" [ngTemplateOutletContext]="{ $implicit: row.original, group: row.original }" />
+        <ng-container
+          [ngTemplateOutlet]="tpl"
+          [ngTemplateOutletContext]="{ $implicit: row.original, group: row.original }"
+        />
       } @else {
         {{ row.label }}
       }
@@ -31,7 +34,12 @@
       @if (itemTemplate(); as tpl) {
         <ng-container
           [ngTemplateOutlet]="tpl"
-          [ngTemplateOutletContext]="{ $implicit: row.entry.original, option: row.entry.original, selected: row.selected, index: row.index }"
+          [ngTemplateOutletContext]="{
+            $implicit: row.entry.original,
+            option: row.entry.original,
+            selected: row.selected,
+            index: row.index,
+          }"
         />
       } @else {
         <span class="ui-autocomplete-option-label">{{ row.entry.label }}</span>
@@ -72,7 +80,10 @@
           [attr.aria-label]="label() || ariaLabel() || null"
         >
           <ng-container *cdkVirtualFor="let row of visibleRows(); trackBy: trackRow">
-            <ng-container [ngTemplateOutlet]="rowTpl" [ngTemplateOutletContext]="{ $implicit: row }" />
+            <ng-container
+              [ngTemplateOutlet]="rowTpl"
+              [ngTemplateOutletContext]="{ $implicit: row }"
+            />
           </ng-container>
           @if (showEmpty()) {
             <ng-container [ngTemplateOutlet]="emptyTpl" />
@@ -80,7 +91,11 @@
         </ul>
       </cdk-virtual-scroll-viewport>
     } @else {
-      <div class="ui-autocomplete-scroller" [class._small]="size() === 'small'" [style.max-height]="scrollHeight() || null">
+      <div
+        class="ui-autocomplete-scroller"
+        [class._small]="size() === 'small'"
+        [style.max-height]="scrollHeight() || null"
+      >
         <ul
           class="ui-autocomplete-list"
           role="listbox"
@@ -89,7 +104,10 @@
           [attr.aria-label]="label() || ariaLabel() || null"
         >
           @for (row of visibleRows(); track row.key) {
-            <ng-container [ngTemplateOutlet]="rowTpl" [ngTemplateOutletContext]="{ $implicit: row }" />
+            <ng-container
+              [ngTemplateOutlet]="rowTpl"
+              [ngTemplateOutletContext]="{ $implicit: row }"
+            />
           }
           @if (showEmpty()) {
             <ng-container [ngTemplateOutlet]="emptyTpl" />
@@ -135,8 +153,12 @@
       class="ui-autocomplete-control"
       [attr.role]="multiple() && !selectedItemTemplate() ? 'listbox' : null"
       [attr.aria-orientation]="multiple() && !selectedItemTemplate() ? 'horizontal' : null"
-      [attr.aria-label]="multiple() && !selectedItemTemplate() && !label() ? ariaLabel() || null : null"
-      [attr.aria-labelledby]="multiple() && !selectedItemTemplate() ? ariaLabelledBy() || null : null"
+      [attr.aria-label]="
+        multiple() && !selectedItemTemplate() && !label() ? ariaLabel() || null : null
+      "
+      [attr.aria-labelledby]="
+        multiple() && !selectedItemTemplate() ? ariaLabelledBy() || null : null
+      "
       (mousedown)="onBoxMousedown($event)"
     >
       @if (multiple()) {
@@ -160,7 +182,7 @@
               [removeAriaLabel]="tag.removeAriaLabel"
               [attr.aria-setsize]="tagRows().length"
               [attr.aria-posinset]="tag.index + 1"
-              [attr.tabindex]="isDisabled() ? null : (focusedTag() === tag.index ? 0 : -1)"
+              [attr.tabindex]="isDisabled() ? null : focusedTag() === tag.index ? 0 : -1"
               (keydown)="onTagKeydown($event, tag.index)"
               (focus)="focusedTag.set(tag.index)"
               (remove)="removeAt(tag.index)"

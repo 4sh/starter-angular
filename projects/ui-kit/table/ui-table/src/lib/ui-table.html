@@ -24,7 +24,10 @@
           <tbody class="ui-table-tbody _frozen-rows">
             @for (row of frozenValue(); track $index) {
               @if (bodyTemplate(); as body) {
-                <ng-container [ngTemplateOutlet]="body" [ngTemplateOutletContext]="rowContext(row, $index, true)" />
+                <ng-container
+                  [ngTemplateOutlet]="body"
+                  [ngTemplateOutletContext]="rowContext(row, $index, true)"
+                />
               }
             }
           </tbody>
@@ -38,38 +41,44 @@
               </td>
             </tr>
           } @else {
-          @if (virtualScroll() && virtualPadding().top > 0) {
-            <tr class="ui-table-virtual-spacer" aria-hidden="true">
-              <td [attr.colspan]="columnCount()" [style.height.px]="virtualPadding().top"></td>
-            </tr>
-          }
-
-          @for (row of pageData(); track $index) {
-            @if (bodyTemplate(); as body) {
-              <ng-container [ngTemplateOutlet]="body" [ngTemplateOutletContext]="rowContext(row, $index)" />
+            @if (virtualScroll() && virtualPadding().top > 0) {
+              <tr class="ui-table-virtual-spacer" aria-hidden="true">
+                <td [attr.colspan]="columnCount()" [style.height.px]="virtualPadding().top"></td>
+              </tr>
             }
-            @if (expandedRowTemplate(); as expansion) {
-              @if (isRowExpanded(row)) {
-                <ng-container [ngTemplateOutlet]="expansion" [ngTemplateOutletContext]="rowContext(row, $index)" />
+
+            @for (row of pageData(); track $index) {
+              @if (bodyTemplate(); as body) {
+                <ng-container
+                  [ngTemplateOutlet]="body"
+                  [ngTemplateOutletContext]="rowContext(row, $index)"
+                />
               }
-            }
-          } @empty {
-            <tr class="ui-table-empty-row">
-              <td class="ui-table-empty-cell" [attr.colspan]="columnCount()">
-                @if (emptyMessageTemplate(); as empty) {
-                  <ng-container [ngTemplateOutlet]="empty" />
-                } @else {
-                  <ui-empty-state size="small" [icon]="emptyIcon()" [title]="emptyMessage()" />
+              @if (expandedRowTemplate(); as expansion) {
+                @if (isRowExpanded(row)) {
+                  <ng-container
+                    [ngTemplateOutlet]="expansion"
+                    [ngTemplateOutletContext]="rowContext(row, $index)"
+                  />
                 }
-              </td>
-            </tr>
-          }
+              }
+            } @empty {
+              <tr class="ui-table-empty-row">
+                <td class="ui-table-empty-cell" [attr.colspan]="columnCount()">
+                  @if (emptyMessageTemplate(); as empty) {
+                    <ng-container [ngTemplateOutlet]="empty" />
+                  } @else {
+                    <ui-empty-state size="small" [icon]="emptyIcon()" [title]="emptyMessage()" />
+                  }
+                </td>
+              </tr>
+            }
 
-          @if (virtualScroll() && virtualPadding().bottom > 0) {
-            <tr class="ui-table-virtual-spacer" aria-hidden="true">
-              <td [attr.colspan]="columnCount()" [style.height.px]="virtualPadding().bottom"></td>
-            </tr>
-          }
+            @if (virtualScroll() && virtualPadding().bottom > 0) {
+              <tr class="ui-table-virtual-spacer" aria-hidden="true">
+                <td [attr.colspan]="columnCount()" [style.height.px]="virtualPadding().bottom"></td>
+              </tr>
+            }
           }
         </tbody>
 

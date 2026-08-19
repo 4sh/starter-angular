@@ -70,13 +70,15 @@ const meta: Meta<TooltipArgs> = {
     },
     fitContent: {
       control: { type: 'boolean' },
-      description: 'Retourne vers un autre côté si l’espace manque (défaut). false : verrouille le côté choisi.',
+      description:
+        'Retourne vers un autre côté si l’espace manque (défaut). false : verrouille le côté choisi.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
     tooltipEvent: {
       control: { type: 'inline-radio' },
       options: ['hover', 'focus', 'both'],
-      description: 'Interaction déclenchant l’affichage. `both` couvre aussi le focus clavier (a11y).',
+      description:
+        'Interaction déclenchant l’affichage. `both` couvre aussi le focus clavier (a11y).',
       table: { type: { summary: 'TooltipEvent' }, defaultValue: { summary: '"both"' } },
     },
     tooltipDisabled: {
@@ -101,7 +103,8 @@ const meta: Meta<TooltipArgs> = {
     },
     autoHide: {
       control: { type: 'boolean' },
-      description: 'Masque quand le pointeur quitte le déclencheur. false : reste ouvert au survol de l’infobulle.',
+      description:
+        'Masque quand le pointeur quitte le déclencheur. false : reste ouvert au survol de l’infobulle.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
     hideOnEscape: {
@@ -116,7 +119,8 @@ const meta: Meta<TooltipArgs> = {
     },
     tooltipStyleClass: {
       control: { type: 'text' },
-      description: 'Classe(s) supplémentaire(s) appliquée(s) au panneau (personnalisation ponctuelle).',
+      description:
+        'Classe(s) supplémentaire(s) appliquée(s) au panneau (personnalisation ponctuelle).',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
   },

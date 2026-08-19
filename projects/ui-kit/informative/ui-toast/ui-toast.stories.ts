@@ -110,12 +110,16 @@ class ToastDemoSticky {
   providers: [UiToastService],
   template: `
     <div [style]="box">
-      <button type="button" class="demo-trigger" (click)="show()">Afficher un toast personnalisé</button>
+      <button type="button" class="demo-trigger" (click)="show()">
+        Afficher un toast personnalisé
+      </button>
       <ui-toast-container position="top-right" [contained]="true" [template]="tpl" />
       <ng-template #tpl let-message>
         <span style="font-weight:700;">{{ message.data?.name }}</span>
         <span style="font-size:0.875rem;">{{ message.data?.action }}</span>
-        <span style="margin-top:4px; font-size:0.75rem; opacity:0.75;">{{ message.data?.time }}</span>
+        <span style="margin-top:4px; font-size:0.75rem; opacity:0.75;">{{
+          message.data?.time
+        }}</span>
       </ng-template>
     </div>
   `,
@@ -242,7 +246,11 @@ class ToastDemoStacking {
   protected burst(): void {
     for (let i = 0; i < 5; i++) {
       this.n++;
-      this.toast.add({ level: 'default', title: `Toast ${this.n}`, text: 'stackVisibleLimit = 3.' });
+      this.toast.add({
+        level: 'default',
+        title: `Toast ${this.n}`,
+        text: 'stackVisibleLimit = 3.',
+      });
     }
   }
   protected duplicate(): void {

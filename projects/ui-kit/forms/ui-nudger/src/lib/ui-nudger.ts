@@ -11,11 +11,7 @@ import {
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { BaseFieldControl } from '@4sh/ui-kit/forms';
 import { UiLevel } from '@4sh/ui-kit/types';
-import {
-  ButtonOnColor,
-  ButtonVariant,
-  UiButton,
-} from '@4sh/ui-kit/actions/ui-button';
+import { ButtonOnColor, ButtonVariant, UiButton } from '@4sh/ui-kit/actions/ui-button';
 
 export type NudgerSize = 'default' | 'small';
 
@@ -77,7 +73,9 @@ export class UiNudger extends BaseFieldControl<number> {
     if (isDevMode()) {
       effect(() => {
         if (!this.ariaLabel() && !this.ariaLabelledBy()) {
-          console.warn('[ui-nudger] No accessible name: provide `ariaLabel` (or `ariaLabelledBy`).');
+          console.warn(
+            '[ui-nudger] No accessible name: provide `ariaLabel` (or `ariaLabelledBy`).',
+          );
         }
       });
     }

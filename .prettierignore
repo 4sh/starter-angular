@@ -1,0 +1,29 @@
+dist
+storybook-static
+documentation.json
+storybook/generated
+storybook/public/component-vars.scss
+storybook/public/text-search-docs.json
+projects/ui-kit/styles/generated
+projects/ui-kit/styles/component-vars.scss
+figma/component-vars.json
+projects/ui-kit-mcp/data
+coverage
+*.tgz
+
+# Prettier's markdown formatter treats `{/* comment */}` (the only JSX comment
+# MDX accepts) as emphasis and mangles it into `{/_ comment _/}` — silently
+# breaking the file for both Storybook's MDX indexer and docs.search.mjs
+# (unterminated-regex parse error). Confirmed on storybook/docs/Overview.mdx.
+*.mdx
+
+# Prettier's SCSS printer can silently change Sass semantics, not just
+# whitespace: wrapping a parenthesized space-separated list onto multiple
+# lines added a trailing comma, turning `(a b c)` (one space-list) into
+# `(a b c,)` (a comma-list containing that space-list) — confirmed on
+# src/styles/src/vendors/_gridaflex-settings.scss ($breakpoint-classes),
+# which broke gridaflex's arithmetic at Storybook build time with no lint
+# error beforehand. Combined with the `///` doc-comment fragility (see
+# docs.config.mjs's joinWrappedVarCalls), the risk of a silent, undetected
+# corruption outweighs consistent indentation here.
+*.scss

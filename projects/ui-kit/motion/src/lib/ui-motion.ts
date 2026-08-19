@@ -14,13 +14,7 @@ import { booleanAttribute, computed, Directive, input } from '@angular/core';
  * - `collapse`     — grid-row height + fade (accordions, panels; needs a grid wrapper).
  */
 export type UiMotionPreset =
-  | 'fade'
-  | 'slide-up'
-  | 'slide-down'
-  | 'slide-left'
-  | 'slide-right'
-  | 'zoom'
-  | 'collapse';
+  'fade' | 'slide-up' | 'slide-down' | 'slide-left' | 'slide-right' | 'zoom' | 'collapse';
 
 /** All preset keys, in declaration order (handy for stories/docs). */
 export const UI_MOTION_PRESETS: readonly UiMotionPreset[] = [
@@ -129,9 +123,13 @@ export class UiMotion {
   /** @ignore */
   protected readonly _delay = computed(() => this.motionDelay() ?? null);
   /** @ignore */
-  protected readonly _enterEasing = computed(() => this.motionEnterEasing() ?? this.motionEasing() ?? null);
+  protected readonly _enterEasing = computed(
+    () => this.motionEnterEasing() ?? this.motionEasing() ?? null,
+  );
   /** @ignore */
-  protected readonly _leaveEasing = computed(() => this.motionLeaveEasing() ?? this.motionEasing() ?? null);
+  protected readonly _leaveEasing = computed(
+    () => this.motionLeaveEasing() ?? this.motionEasing() ?? null,
+  );
   /** @ignore */
   protected readonly _distance = computed(() => this.motionDistance() ?? null);
   /** @ignore */

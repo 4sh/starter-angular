@@ -81,7 +81,9 @@ export interface InputOtpCellContext {
   imports: [NgTemplateOutlet],
   templateUrl: './ui-input-otp.html',
   styleUrl: './ui-input-otp.scss',
-  providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => UiInputOtp), multi: true }],
+  providers: [
+    { provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => UiInputOtp), multi: true },
+  ],
   host: {
     class: 'ui-input-otp',
     role: 'group',

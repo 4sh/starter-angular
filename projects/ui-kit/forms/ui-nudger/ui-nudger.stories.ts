@@ -43,8 +43,14 @@ const meta: Meta<UiNudger> = {
     },
     min: { control: 'number', table: { type: { summary: 'number' } } },
     max: { control: 'number', table: { type: { summary: 'number' } } },
-    step: { control: 'number', table: { type: { summary: 'number' }, defaultValue: { summary: '1' } } },
-    defaultValue: { control: 'number', table: { type: { summary: 'number' }, defaultValue: { summary: '0' } } },
+    step: {
+      control: 'number',
+      table: { type: { summary: 'number' }, defaultValue: { summary: '1' } },
+    },
+    defaultValue: {
+      control: 'number',
+      table: { type: { summary: 'number' }, defaultValue: { summary: '0' } },
+    },
     disabled: { control: 'boolean', table: { defaultValue: { summary: 'false' } } },
     readonly: { control: 'boolean', table: { defaultValue: { summary: 'false' } } },
     required: { control: 'boolean', table: { defaultValue: { summary: 'false' } } },

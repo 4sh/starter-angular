@@ -60,9 +60,7 @@ interface SliderMark {
     '[style.display]': "orientation() === 'vertical' ? 'inline-block' : 'block'",
     '[style.width]': "orientation() === 'vertical' ? null : '100%'",
   },
-  providers: [
-    { provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => UiSlider), multi: true },
-  ],
+  providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => UiSlider), multi: true }],
 })
 export class UiSlider extends BaseFieldControl<SliderValue> {
   /** Minimum boundary value. */
@@ -115,7 +113,12 @@ export class UiSlider extends BaseFieldControl<SliderValue> {
             'No accessible name: provide `ariaLabel` (or `ariaLabelledBy`).',
           );
         }
-        if (this.range() && !this.ariaLabelStart() && !this.ariaLabelEnd() && !this.ariaLabelledBy()) {
+        if (
+          this.range() &&
+          !this.ariaLabelStart() &&
+          !this.ariaLabelEnd() &&
+          !this.ariaLabelledBy()
+        ) {
           warnMissingAccessibleName(
             'ui-slider',
             'Range mode: set `ariaLabelStart`/`ariaLabelEnd` so each handle has a distinct name.',

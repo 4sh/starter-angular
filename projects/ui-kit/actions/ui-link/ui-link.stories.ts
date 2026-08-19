@@ -78,7 +78,8 @@ const meta: Meta<UiLink> = {
     },
     ariaCurrent: {
       control: { type: 'text' },
-      description: 'aria-current posé sur l\'ancre (ex : "page" pour l\'élément courant d\'un fil d\'Ariane).',
+      description:
+        "aria-current posé sur l'ancre (ex : \"page\" pour l'élément courant d'un fil d'Ariane).",
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     linkClick: {
@@ -108,11 +109,20 @@ export const Small: Story = { args: { label: 'En savoir plus', href: '#', size: 
 
 // Icônes
 export const IconLeft: Story = { args: { label: 'Retour', href: '#', iconLeft: 'arrow-left' } };
-export const IconRight: Story = { args: { label: 'Continuer', href: '#', iconRight: 'arrow-right' } };
-export const External: Story = {
-  args: { label: 'Ouvrir le site', href: 'https://angular.dev', external: true, iconRight: 'arrow-up-right-from-square' },
+export const IconRight: Story = {
+  args: { label: 'Continuer', href: '#', iconRight: 'arrow-right' },
 };
-export const IconOnly: Story = { args: { href: '#', iconLeft: 'link', ariaLabel: 'Copier le lien' } };
+export const External: Story = {
+  args: {
+    label: 'Ouvrir le site',
+    href: 'https://angular.dev',
+    external: true,
+    iconRight: 'arrow-up-right-from-square',
+  },
+};
+export const IconOnly: Story = {
+  args: { href: '#', iconLeft: 'link', ariaLabel: 'Copier le lien' },
+};
 
 // Navigation interne (RouterLink) — router fourni au niveau de la story.
 export const RouterInternal: Story = {

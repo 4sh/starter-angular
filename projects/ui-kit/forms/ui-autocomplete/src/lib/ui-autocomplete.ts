@@ -136,10 +136,21 @@ type AcRow =
  */
 @Component({
   selector: 'ui-autocomplete',
-  imports: [NgTemplateOutlet, OverlayModule, ScrollingModule, UiField, UiIcon, UiSpinner, UiChip, UiMotion],
+  imports: [
+    NgTemplateOutlet,
+    OverlayModule,
+    ScrollingModule,
+    UiField,
+    UiIcon,
+    UiSpinner,
+    UiChip,
+    UiMotion,
+  ],
   templateUrl: './ui-autocomplete.html',
   styleUrl: './ui-autocomplete.scss',
-  providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => UiAutocomplete), multi: true }],
+  providers: [
+    { provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => UiAutocomplete), multi: true },
+  ],
 })
 export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue<T>> {
   /** Suggestions to display — set by the parent in response to `completeMethod`. */
@@ -258,7 +269,8 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
   /** Custom suggestion template: `<ng-template #item let-option let-selected="selected">`. */
   protected readonly itemTemplate = contentChild<TemplateRef<AutocompleteItemContext<T>>>('item');
   /** Custom selected-value template (per selected value, `multiple`): `<ng-template #selectedItem let-option let-remove="remove">`. */
-  protected readonly selectedItemTemplate = contentChild<TemplateRef<AutocompleteSelectedItemContext<T>>>('selectedItem');
+  protected readonly selectedItemTemplate =
+    contentChild<TemplateRef<AutocompleteSelectedItemContext<T>>>('selectedItem');
   /** Custom group-header template: `<ng-template #group let-group>`. */
   protected readonly groupTemplate = contentChild<TemplateRef<AutocompleteGroupContext>>('group');
   /** Free content pinned above the list. */
@@ -311,7 +323,9 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
     // pre-filled form using `optionValue`) displays the raw value; swap in the
     // real label once a matching suggestion arrives.
     effect(() => {
-      const entry = this.pendingLabelSync() ? this.entryOfValue(untracked(this.modelValue) ?? null) : undefined;
+      const entry = this.pendingLabelSync()
+        ? this.entryOfValue(untracked(this.modelValue) ?? null)
+        : undefined;
       if (!entry) return;
       untracked(() => {
         this.pendingLabelSync.set(false);
@@ -398,7 +412,12 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
     if (this.group()) {
       this.groupEntries().forEach((g, gi) => {
         if (!g.entries.length) return;
-        rows.push({ kind: 'group', key: `${this.listboxId()}-group-${gi}`, label: g.label, original: g.original });
+        rows.push({
+          kind: 'group',
+          key: `${this.listboxId()}-group-${gi}`,
+          label: g.label,
+          original: g.original,
+        });
         g.entries.forEach(pushOption);
       });
     } else {
@@ -453,10 +472,14 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
   });
 
   /** @ignore Number of selected values collapsed behind the overflow chip. */
-  protected readonly overflowCount = computed(() => this.tagRows().length - this.visibleTagRows().length);
+  protected readonly overflowCount = computed(
+    () => this.tagRows().length - this.visibleTagRows().length,
+  );
 
   /** @ignore Rendered overflow chip label (e.g. `(+2 autres)`). */
-  protected readonly overflowText = computed(() => formatLabel(this.overflowLabel(), this.overflowCount()));
+  protected readonly overflowText = computed(() =>
+    formatLabel(this.overflowLabel(), this.overflowCount()),
+  );
 
   /** @ignore Contexts handed to the `#selectedItem` template (one per displayed value). */
   protected readonly selectedItemContexts = computed<AutocompleteSelectedItemContext<T>[]>(() =>
@@ -545,7 +568,8 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
   private open(): void {
     if (this.isDisabled() || this.readonly() || this.panelOpen()) return;
     const origin =
-      this.containerEl().nativeElement.querySelector('.ui-field-box') ?? this.containerEl().nativeElement;
+      this.containerEl().nativeElement.querySelector('.ui-field-box') ??
+      this.containerEl().nativeElement;
     this.overlayOrigin.set(origin);
     this.overlayWidth.set(origin.getBoundingClientRect().width);
     this.focusedIndex.set(this.initialFocusIndex());
@@ -656,7 +680,9 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
   private validateForceSelection(event: Event): void {
     const text = this.inputText().trim();
     if (!text) return;
-    const match = this.flatEntries().find((e) => !e.disabled && this.normalize(e.label) === this.normalize(text));
+    const match = this.flatEntries().find(
+      (e) => !e.disabled && this.normalize(e.label) === this.normalize(text),
+    );
     if (match) {
       this.selectEntry(match, event, false);
     } else if (this.multiple()) {
@@ -857,7 +883,9 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
     if (!row) return;
     const vp = this.viewport();
     if (vp) {
-      const rowIndex = this.visibleRows().findIndex((r) => r.kind === 'option' && r.index === row.index);
+      const rowIndex = this.visibleRows().findIndex(
+        (r) => r.kind === 'option' && r.index === row.index,
+      );
       if (rowIndex !== -1) vp.scrollToIndex(Math.max(0, rowIndex - 1), 'auto');
       return;
     }
@@ -919,7 +947,12 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
   /** @ignore Clicking the box's empty area focuses the input. */
   protected onBoxMousedown(event: MouseEvent): void {
     const target = event.target as HTMLElement;
-    if (target.closest('button') || target.closest('.ui-autocomplete-tag') || target.closest('input')) return;
+    if (
+      target.closest('button') ||
+      target.closest('.ui-autocomplete-tag') ||
+      target.closest('input')
+    )
+      return;
     event.preventDefault();
     this.focusInput();
   }
@@ -1007,9 +1040,6 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
 
   /** @ignore Case- and diacritics-insensitive comparison text. */
   private normalize(text: string): string {
-    return text
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[̀-ͯ]/g, '');
+    return text.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
   }
 }

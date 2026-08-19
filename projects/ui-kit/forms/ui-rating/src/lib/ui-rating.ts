@@ -35,9 +35,7 @@ export interface UiRatingIconContext {
   styleUrl: './ui-rating.scss',
   standalone: true,
   imports: [UiIcon, NgTemplateOutlet],
-  providers: [
-    { provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => UiRating), multi: true },
-  ],
+  providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => UiRating), multi: true }],
 })
 export class UiRating extends BaseFieldControl<number | null> {
   /** Size of the rating stars. */

@@ -57,7 +57,9 @@ async function setup() {
   fixture.detectChanges();
   await fixture.whenStable();
   const input = fixture.nativeElement.querySelector('.ui-autocomplete-input') as HTMLInputElement;
-  const dropdownTrigger = fixture.nativeElement.querySelector('.ui-autocomplete-dropdown') as HTMLButtonElement;
+  const dropdownTrigger = fixture.nativeElement.querySelector(
+    '.ui-autocomplete-dropdown',
+  ) as HTMLButtonElement;
   return { fixture, host: fixture.componentInstance, input, dropdownTrigger };
 }
 

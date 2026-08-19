@@ -27,7 +27,7 @@ describe('startOfDay', () => {
 });
 
 describe('firstOfMonth', () => {
-  it('returns the 1st of the given date\'s month', () => {
+  it("returns the 1st of the given date's month", () => {
     const result = firstOfMonth(new Date(2024, 5, 15));
     expect(result.getFullYear()).toBe(2024);
     expect(result.getMonth()).toBe(5);

@@ -3,9 +3,7 @@
   "dest": "../../dist/ui-kit",
   "lib": {
     "entryFile": "src/public-api.ts",
-    "styleIncludePaths": [
-      "./styles"
-    ]
+    "styleIncludePaths": ["./styles"]
   },
   "assets": [
     {

@@ -27,7 +27,7 @@ module.exports = {
   },
   webpackFinal: async (config) => {
     const definePlugin = config.plugins.find(
-      (p) => p.constructor.name === 'DefinePlugin' && p.definitions['process.env.NODE_ENV']
+      (p) => p.constructor.name === 'DefinePlugin' && p.definitions['process.env.NODE_ENV'],
     );
     if (definePlugin) {
       delete definePlugin.definitions['process.env.NODE_ENV'];

@@ -4,7 +4,7 @@ Angular 22 starter (standalone, signals, zoneless) for building a **fully in-hou
 with no dependency on a proprietary UI library. **Headless** components (Angular CDK +
 native signals) styled exclusively through **design tokens**.
 
-This is the **Starter Angular** side of the *Dual-Engine* strategy:
+This is the **Starter Angular** side of the _Dual-Engine_ strategy:
 
 - The **logic** depends on the stack: Angular CDK here (Radix UI on the React side).
 - The layer shared across stacks = the **design tokens** (CSS variables).
@@ -14,11 +14,11 @@ This repo holds the **[`@4sh/ui-kit`](https://www.npmjs.com/package/@4sh/ui-kit)
 (54 `ui-*` components on 53 entry points, plus 5 cross-cutting ones) and the demo
 application that consumes it.
 
-| | |
-|---|---|
-| **Storybook** — component catalogue and foundations | <https://4sh.github.io/starter-angular/?path=/docs/introduction--docs> |
-| **Demo application** — the kit in a real app | <https://4sh.github.io/starter-angular/demo/> |
-| **Package** | [npmjs.com/package/@4sh/ui-kit](https://www.npmjs.com/package/@4sh/ui-kit) |
+|                                                     |                                                                            |
+| --------------------------------------------------- | -------------------------------------------------------------------------- |
+| **Storybook** — component catalogue and foundations | <https://4sh.github.io/starter-angular/?path=/docs/introduction--docs>     |
+| **Demo application** — the kit in a real app        | <https://4sh.github.io/starter-angular/demo/>                              |
+| **Package**                                         | [npmjs.com/package/@4sh/ui-kit](https://www.npmjs.com/package/@4sh/ui-kit) |
 
 Both sites are redeployed on every push to `main`
 ([`deploy-pages.yml`](.github/workflows/deploy-pages.yml)).
@@ -33,15 +33,15 @@ Both sites are redeployed on every push to `main`
 
 ## Stack
 
-| Layer        | Tech |
-|--------------|---|
-| Framework    | Angular 22 standalone, signals, zoneless |
-| Behavior     | Components + `@angular/cdk` |
-| Style        | Co-located per component (scoped `.scss`) + CSS custom properties |
-| Tokens       | JSON (Token Flow Manager) → `scripts/tokens.build.mjs` → SCSS |
-| Storybook    | 10.x + addon-designs (Figma) |
-| Grid         | Gridaflex |
-| Icons        | FontAwesome Free |
+| Layer     | Tech                                                              |
+| --------- | ----------------------------------------------------------------- |
+| Framework | Angular 22 standalone, signals, zoneless                          |
+| Behavior  | Components + `@angular/cdk`                                       |
+| Style     | Co-located per component (scoped `.scss`) + CSS custom properties |
+| Tokens    | JSON (Token Flow Manager) → `scripts/tokens.build.mjs` → SCSS     |
+| Storybook | 10.x + addon-designs (Figma)                                      |
+| Grid      | Gridaflex                                                         |
+| Icons     | FontAwesome Free                                                  |
 
 > **Stylesheets are SCSS (Sass), not the plain CSS Angular scaffolds by default.**
 > `schematics.@schematics/angular:component.style` is set to `scss` in
@@ -62,7 +62,7 @@ ng add @4sh/ui-kit-schematics   # starter — component sources copied into your
 
 Which one to pick, the entry points, the stylesheet to load, the required providers,
 building your own field: **[`projects/ui-kit/README.md`](projects/ui-kit/README.md)** ·
-[Français](projects/ui-kit/README.fr.md) — documented once, and that page *is* the npmjs
+[Français](projects/ui-kit/README.fr.md) — documented once, and that page _is_ the npmjs
 one. Each component's API is in the
 [Storybook](https://4sh.github.io/starter-angular/?path=/docs/introduction--docs).
 
@@ -113,10 +113,10 @@ component creation recipe, Storybook file organization, token workflow — are a
 **[`AGENTS.md`](AGENTS.md)**. It is the single source of truth for them, for humans as
 much as for AI agents.
 
-| | |
-|---|---|
-| Branch | `feat/` · `fix/` · `chore/` · `breaking/` — the prefix drives the SemVer bump |
-| Commit | `FSHSP-XXX type(scope): imperative description` — Jira key **first**, English, imperative |
+|           |                                                                                                               |
+| --------- | ------------------------------------------------------------------------------------------------------------- |
+| Branch    | `feat/` · `fix/` · `chore/` · `breaking/` — the prefix drives the SemVer bump                                 |
+| Commit    | `FSHSP-XXX type(scope): imperative description` — Jira key **first**, English, imperative                     |
 | CHANGELOG | every user-visible change under `## [Unreleased]`; a doc-, CI- or Storybook-only change does not belong there |
 
 Details: [`.claude/rules/git-conventions.md`](.claude/rules/git-conventions.md) for git,
@@ -126,12 +126,12 @@ Details: [`.claude/rules/git-conventions.md`](.claude/rules/git-conventions.md) 
 
 ## Going further
 
-| Topic | Where |
-|---|---|
-| Consuming the package | [`projects/ui-kit/README.md`](projects/ui-kit/README.md) ([FR](projects/ui-kit/README.fr.md)) |
-| Coding conventions in this repo | [`AGENTS.md`](AGENTS.md) · [`CLAUDE.md`](CLAUDE.md) |
-| Versioning & releases | [`docs/VERSIONING.md`](docs/VERSIONING.md) · [`CHANGELOG.md`](CHANGELOG.md) |
-| Publishing to npm | [`docs/PUBLISHING.md`](docs/PUBLISHING.md) |
-| Schematics companion package | [`projects/ui-kit-schematics/README.md`](projects/ui-kit-schematics/README.md) |
-| Figma ↔ code workflow | [`CLAUDE.md`](CLAUDE.md) · [`docs/figma-migration-global.md`](docs/figma-migration-global.md) |
-| Security policy | [`SECURITY.md`](SECURITY.md) |
+| Topic                           | Where                                                                                         |
+| ------------------------------- | --------------------------------------------------------------------------------------------- |
+| Consuming the package           | [`projects/ui-kit/README.md`](projects/ui-kit/README.md) ([FR](projects/ui-kit/README.fr.md)) |
+| Coding conventions in this repo | [`AGENTS.md`](AGENTS.md) · [`CLAUDE.md`](CLAUDE.md)                                           |
+| Versioning & releases           | [`docs/VERSIONING.md`](docs/VERSIONING.md) · [`CHANGELOG.md`](CHANGELOG.md)                   |
+| Publishing to npm               | [`docs/PUBLISHING.md`](docs/PUBLISHING.md)                                                    |
+| Schematics companion package    | [`projects/ui-kit-schematics/README.md`](projects/ui-kit-schematics/README.md)                |
+| Figma ↔ code workflow           | [`CLAUDE.md`](CLAUDE.md) · [`docs/figma-migration-global.md`](docs/figma-migration-global.md) |
+| Security policy                 | [`SECURITY.md`](SECURITY.md)                                                                  |

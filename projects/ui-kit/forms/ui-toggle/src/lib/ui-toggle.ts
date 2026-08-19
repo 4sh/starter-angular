@@ -69,7 +69,9 @@ export class UiToggle<T = boolean> extends BaseFieldControl<T> {
   /** @ignore A visible label is provided. */
   protected readonly hasLabel = computed(() => !!this.label());
   /** @ignore Context handed to the custom handle template. */
-  protected readonly handleContext = computed<ToggleHandleContext>(() => ({ checked: this.checked() }));
+  protected readonly handleContext = computed<ToggleHandleContext>(() => ({
+    checked: this.checked(),
+  }));
 
   /** @ignore */
   protected readonly classes = computed(() => {

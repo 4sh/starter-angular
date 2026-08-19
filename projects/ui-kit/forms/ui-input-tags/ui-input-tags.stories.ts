@@ -4,7 +4,12 @@ import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
 import { FormsModule, ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
 import { FormField, form, required } from '@angular/forms/signals';
-import { UiInputTags, InputTagsCompleteEvent, InputTagsAddEvent, InputTagsRemoveEvent } from '@4sh/ui-kit/forms/ui-input-tags';
+import {
+  UiInputTags,
+  InputTagsCompleteEvent,
+  InputTagsAddEvent,
+  InputTagsRemoveEvent,
+} from '@4sh/ui-kit/forms/ui-input-tags';
 import { UiIcon } from '@4sh/ui-kit/base/ui-icon';
 import { UiChip } from '@4sh/ui-kit/informative/ui-chip';
 
@@ -21,11 +26,7 @@ const TECHNOS = [
   'Alpine',
 ];
 
-const norm = (text: string): string =>
-  text
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '');
+const norm = (text: string): string => text.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
 
 /** Interactive completer: filters `data` into `results` on each `completeMethod`. */
 function completer(data: readonly string[]) {
@@ -41,7 +42,11 @@ function completer(data: readonly string[]) {
 const meta: Meta<UiInputTags> = {
   title: 'Components/ui/forms/ui-input-tags',
   component: UiInputTags,
-  decorators: [moduleMetadata({ imports: [UiInputTags, UiIcon, UiChip, CommonModule, FormsModule, ReactiveFormsModule] })],
+  decorators: [
+    moduleMetadata({
+      imports: [UiInputTags, UiIcon, UiChip, CommonModule, FormsModule, ReactiveFormsModule],
+    }),
+  ],
   parameters: {
     layout: 'centered',
     design: {
@@ -109,7 +114,8 @@ const meta: Meta<UiInputTags> = {
     chipLevel: {
       control: 'inline-radio',
       options: ['default', 'highlight', 'success', 'warning', 'error'],
-      description: 'Famille de couleur des tags `ui-chip` par défaut (ignoré avec un template `#item`).',
+      description:
+        'Famille de couleur des tags `ui-chip` par défaut (ignoré avec un template `#item`).',
       table: { type: { summary: 'UiFeedbackLevel' }, defaultValue: { summary: "'default'" } },
     },
     chipSubLevel: {
@@ -125,11 +131,20 @@ const meta: Meta<UiInputTags> = {
     },
     invalid: {
       control: 'boolean',
-      description: 'Force le style d’erreur (auto quand le contrôle attaché est invalide + touché).',
+      description:
+        'Force le style d’erreur (auto quand le contrôle attaché est invalide + touché).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
-    label: { control: 'text', description: 'Libellé du champ.', table: { type: { summary: 'string' } } },
-    helperText: { control: 'text', description: 'Texte d’aide sous le champ.', table: { type: { summary: 'string' } } },
+    label: {
+      control: 'text',
+      description: 'Libellé du champ.',
+      table: { type: { summary: 'string' } },
+    },
+    helperText: {
+      control: 'text',
+      description: 'Texte d’aide sous le champ.',
+      table: { type: { summary: 'string' } },
+    },
     tagAdd: { action: 'tagAdd', table: { category: 'Outputs' } },
     tagRemove: { action: 'tagRemove', table: { category: 'Outputs' } },
     valueChange: { action: 'valueChange', table: { category: 'Outputs' } },
@@ -344,7 +359,12 @@ export const Invalid: Story = {
   imports: [UiInputTags, FormField, CommonModule],
   template: `
     <div style="width: 22rem; display: grid; gap: 12px; justify-items: start;">
-      <ui-input-tags [formField]="skills" label="Compétences" placeholder="Ajouter…" style="width: 100%" />
+      <ui-input-tags
+        [formField]="skills"
+        label="Compétences"
+        placeholder="Ajouter…"
+        style="width: 100%"
+      />
       <code>value = {{ skills().value() | json }} · valid = {{ skills().valid() }}</code>
     </div>
   `,

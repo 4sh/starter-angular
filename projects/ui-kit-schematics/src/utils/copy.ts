@@ -53,7 +53,11 @@ export interface RenderOptions {
 
 /** Calcule le contenu final (en-tête inclus) de chaque fichier d'une unité,
  * sans rien écrire — réutilisé par `copyUnit` et par le diff d'`update`. */
-export function renderUnitFiles(unit: AssetUnit, kitVersion: string, options: RenderOptions = {}): RenderedFile[] {
+export function renderUnitFiles(
+  unit: AssetUnit,
+  kitVersion: string,
+  options: RenderOptions = {},
+): RenderedFile[] {
   const files: RenderedFile[] = [];
   const unresolved: string[] = [];
 
@@ -87,7 +91,10 @@ export function renderUnitFiles(unit: AssetUnit, kitVersion: string, options: Re
     let source = readFileSync(absSrc, 'utf8');
     if (absSrc.endsWith('.stories.ts')) source = stripFigmaDesign(source);
     if (ext === '.ts' || ext === '.mdx') {
-      const result = ext === '.mdx' ? rewriteDocImports(source, targetPath) : rewriteKitImports(source, targetPath);
+      const result =
+        ext === '.mdx'
+          ? rewriteDocImports(source, targetPath)
+          : rewriteKitImports(source, targetPath);
       source = result.content;
       unresolved.push(...result.unresolved.map((item) => `${relPath} → ${item}`));
     }
@@ -110,7 +117,12 @@ export function renderUnitFiles(unit: AssetUnit, kitVersion: string, options: Re
 }
 
 /** Copie tous les fichiers d'une unité dans l'arbre, avec en-tête de traçabilité. */
-export function copyUnit(tree: Tree, unit: AssetUnit, kitVersion: string, options: RenderOptions = {}): string[] {
+export function copyUnit(
+  tree: Tree,
+  unit: AssetUnit,
+  kitVersion: string,
+  options: RenderOptions = {},
+): string[] {
   const written: string[] = [];
   for (const { targetPath, content } of renderUnitFiles(unit, kitVersion, options)) {
     if (tree.exists(targetPath)) tree.overwrite(targetPath, content);

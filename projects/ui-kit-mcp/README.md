@@ -10,10 +10,10 @@ associée — sans que l'agent ait besoin de lire les fichiers sources ou de dev
 > un seul fichier ESM, zéro dépendance à installer) puis **embarqué** dans les deux
 > packages qui, eux, sont publiés :
 >
-> | Consommateur | Où le bundle atterrit | Qui l'y met |
-> |---|---|---|
-> | `npm install @4sh/ui-kit` | `node_modules/@4sh/ui-kit/mcp/` | `scripts/ui-kit-mcp-embed.build.mjs`, chaîné dans `ui-kit:pack` |
-> | `ng add @4sh/ui-kit-schematics` | `.ui-kit-mcp/` du projet consommateur | `scripts/schematics-assets.build.mjs`, copié par `ng add` |
+> | Consommateur                    | Où le bundle atterrit                 | Qui l'y met                                                     |
+> | ------------------------------- | ------------------------------------- | --------------------------------------------------------------- |
+> | `npm install @4sh/ui-kit`       | `node_modules/@4sh/ui-kit/mcp/`       | `scripts/ui-kit-mcp-embed.build.mjs`, chaîné dans `ui-kit:pack` |
+> | `ng add @4sh/ui-kit-schematics` | `.ui-kit-mcp/` du projet consommateur | `scripts/schematics-assets.build.mjs`, copié par `ng add`       |
 >
 > Voir le README de chacun de ces deux packages pour l'usage côté consommateur — celui-ci
 > ne documente que le développement du serveur lui-même.
@@ -27,12 +27,12 @@ associée — sans que l'agent ait besoin de lire les fichiers sources ou de dev
 
 ## Tools exposés
 
-| Tool | Usage |
-|---|---|
-| `list_components` | Catalogue de tous les composants `ui-*` disponibles. |
-| `get_component_doc` | Doc complète d'un composant (API, theming, tailles, états, exemples). |
-| `search_docs` | Recherche plein texte dans toute la doc (composants, fondations, tokens). |
-| `get_shared_config` | Config structurelle transverse du kit (`_ui-config.scss`). |
+| Tool                | Usage                                                                     |
+| ------------------- | ------------------------------------------------------------------------- |
+| `list_components`   | Catalogue de tous les composants `ui-*` disponibles.                      |
+| `get_component_doc` | Doc complète d'un composant (API, theming, tailles, états, exemples).     |
+| `search_docs`       | Recherche plein texte dans toute la doc (composants, fondations, tokens). |
+| `get_shared_config` | Config structurelle transverse du kit (`_ui-config.scss`).                |
 
 ## Développement (dans ce monorepo)
 

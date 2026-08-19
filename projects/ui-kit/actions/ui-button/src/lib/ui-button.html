@@ -75,7 +75,10 @@
     @if (loadingIconTemplate(); as tpl) {
       <ng-container [ngTemplateOutlet]="tpl" />
     } @else {
-      <i class="ui-button-icon ui-button-icon-loading fa-solid fa-{{ loadingIcon() }} fa-spin" aria-hidden="true"></i>
+      <i
+        class="ui-button-icon ui-button-icon-loading fa-solid fa-{{ loadingIcon() }} fa-spin"
+        aria-hidden="true"
+      ></i>
     }
   } @else if (iconTemplate(); as tpl) {
     <ng-container [ngTemplateOutlet]="tpl" />

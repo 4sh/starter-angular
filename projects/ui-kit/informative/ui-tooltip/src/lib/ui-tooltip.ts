@@ -234,7 +234,9 @@ export class UiTooltip {
 
     const overlayRef = this.getOverlayRef();
     if (!overlayRef.hasAttached()) {
-      this.panelRef = overlayRef.attach(new ComponentPortal(UiTooltipPanel, this.vcr, this.injector));
+      this.panelRef = overlayRef.attach(
+        new ComponentPortal(UiTooltipPanel, this.vcr, this.injector),
+      );
       this.panelRef.setInput('tooltipId', this.tooltipId);
       this.applyContent();
       this.renderer.setAttribute(this.el.nativeElement, 'aria-describedby', this.tooltipId);
@@ -295,20 +297,36 @@ export class UiTooltip {
     const ox = this.positionLeft();
     const oy = this.positionTop();
     const top: ConnectedPosition = {
-      originX: 'center', originY: 'top', overlayX: 'center', overlayY: 'bottom',
-      offsetX: ox, offsetY: -ARROW_GAP + oy,
+      originX: 'center',
+      originY: 'top',
+      overlayX: 'center',
+      overlayY: 'bottom',
+      offsetX: ox,
+      offsetY: -ARROW_GAP + oy,
     };
     const bottom: ConnectedPosition = {
-      originX: 'center', originY: 'bottom', overlayX: 'center', overlayY: 'top',
-      offsetX: ox, offsetY: ARROW_GAP + oy,
+      originX: 'center',
+      originY: 'bottom',
+      overlayX: 'center',
+      overlayY: 'top',
+      offsetX: ox,
+      offsetY: ARROW_GAP + oy,
     };
     const left: ConnectedPosition = {
-      originX: 'start', originY: 'center', overlayX: 'end', overlayY: 'center',
-      offsetX: -ARROW_GAP + ox, offsetY: oy,
+      originX: 'start',
+      originY: 'center',
+      overlayX: 'end',
+      overlayY: 'center',
+      offsetX: -ARROW_GAP + ox,
+      offsetY: oy,
     };
     const right: ConnectedPosition = {
-      originX: 'end', originY: 'center', overlayX: 'start', overlayY: 'center',
-      offsetX: ARROW_GAP + ox, offsetY: oy,
+      originX: 'end',
+      originY: 'center',
+      overlayX: 'start',
+      overlayY: 'center',
+      offsetX: ARROW_GAP + ox,
+      offsetY: oy,
     };
     const primary: Record<TooltipPosition, ConnectedPosition> = { top, bottom, left, right };
     // fitContent=false → keep only the preferred side (no auto-flip).
@@ -392,17 +410,26 @@ export class UiTooltip {
 
   /** @ignore */
   private clearShowTimer(): void {
-    if (this.showTimer) { clearTimeout(this.showTimer); this.showTimer = null; }
+    if (this.showTimer) {
+      clearTimeout(this.showTimer);
+      this.showTimer = null;
+    }
   }
 
   /** @ignore */
   private clearHideTimer(): void {
-    if (this.hideTimer) { clearTimeout(this.hideTimer); this.hideTimer = null; }
+    if (this.hideTimer) {
+      clearTimeout(this.hideTimer);
+      this.hideTimer = null;
+    }
   }
 
   /** @ignore */
   private clearLifeTimer(): void {
-    if (this.lifeTimer) { clearTimeout(this.lifeTimer); this.lifeTimer = null; }
+    if (this.lifeTimer) {
+      clearTimeout(this.lifeTimer);
+      this.lifeTimer = null;
+    }
   }
 
   /** @ignore */

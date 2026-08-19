@@ -44,7 +44,9 @@ export function provideUiKitBrand(brand: Brand): Provider {
 export class BrandService {
   private document = inject(DOCUMENT);
 
-  readonly currentBrand = signal<Brand>(inject(UI_KIT_INITIAL_BRAND, { optional: true }) ?? 'brand1');
+  readonly currentBrand = signal<Brand>(
+    inject(UI_KIT_INITIAL_BRAND, { optional: true }) ?? 'brand1',
+  );
 
   constructor() {
     effect(() => {

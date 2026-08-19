@@ -19,14 +19,42 @@ const meta: Meta<UiInputMask> = {
   argTypes: {
     label: { control: 'text', table: { type: { summary: 'string' } } },
     helperText: { control: 'text', table: { type: { summary: 'string' } } },
-    errorText: { control: 'text', description: "Message affiché à la place de l'aide quand en erreur.", table: { type: { summary: 'string' } } },
+    errorText: {
+      control: 'text',
+      description: "Message affiché à la place de l'aide quand en erreur.",
+      table: { type: { summary: 'string' } },
+    },
     placeholder: { control: 'text', table: { type: { summary: 'string' } } },
-    mask: { control: 'text', description: '9 chiffre · a lettre · * alphanumérique · autre = littéral.', table: { type: { summary: 'string' } } },
-    ranges: { control: 'text', description: 'Bornes par segment numérique, dans l\'ordre du masque : "0-23 0-59". `*` = non borné.', table: { type: { summary: 'string' } } },
-    slotChar: { control: 'text', table: { type: { summary: 'string' }, defaultValue: { summary: '"_"' } } },
-    unmask: { control: 'boolean', description: 'Émet la valeur brute (sans littéraux).', table: { defaultValue: { summary: 'false' } } },
-    size: { control: 'inline-radio', options: ['default', 'small'], table: { defaultValue: { summary: '"default"' } } },
-    level: { control: 'inline-radio', options: ['default', 'success', 'error'], table: { defaultValue: { summary: '"default"' } } },
+    mask: {
+      control: 'text',
+      description: '9 chiffre · a lettre · * alphanumérique · autre = littéral.',
+      table: { type: { summary: 'string' } },
+    },
+    ranges: {
+      control: 'text',
+      description:
+        'Bornes par segment numérique, dans l\'ordre du masque : "0-23 0-59". `*` = non borné.',
+      table: { type: { summary: 'string' } },
+    },
+    slotChar: {
+      control: 'text',
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"_"' } },
+    },
+    unmask: {
+      control: 'boolean',
+      description: 'Émet la valeur brute (sans littéraux).',
+      table: { defaultValue: { summary: 'false' } },
+    },
+    size: {
+      control: 'inline-radio',
+      options: ['default', 'small'],
+      table: { defaultValue: { summary: '"default"' } },
+    },
+    level: {
+      control: 'inline-radio',
+      options: ['default', 'success', 'error'],
+      table: { defaultValue: { summary: '"default"' } },
+    },
     iconLeft: { control: 'text', table: { type: { summary: 'string' } } },
     required: { control: 'boolean', table: { defaultValue: { summary: 'false' } } },
     disabled: { control: 'boolean', table: { defaultValue: { summary: 'false' } } },
@@ -35,7 +63,14 @@ const meta: Meta<UiInputMask> = {
     valueChange: { action: 'valueChange', table: { disable: true } },
     inputBlur: { action: 'inputBlur', table: { disable: true } },
   },
-  args: { label: 'Téléphone', mask: '(999) 999-9999', ranges: '', slotChar: '_', size: 'default', level: 'default' },
+  args: {
+    label: 'Téléphone',
+    mask: '(999) 999-9999',
+    ranges: '',
+    slotChar: '_',
+    size: 'default',
+    level: 'default',
+  },
 };
 
 export default meta;
@@ -49,26 +84,69 @@ const TEMPLATE = `<div style="width:240px"><ui-input-mask
     [required]="required" [disabled]="disabled" [readonly]="readonly" [invalid]="invalid"
     (valueChange)="valueChange($event)" /></div>`;
 
-const story = (value = ''): Story['render'] => (args) => ({ props: { ...args, model: value }, template: TEMPLATE });
+const story =
+  (value = ''): Story['render'] =>
+  (args) => ({ props: { ...args, model: value }, template: TEMPLATE });
 
-export const Phone: Story = { render: story(), args: { label: 'Téléphone', mask: '(999) 999-9999' } };
+export const Phone: Story = {
+  render: story(),
+  args: { label: 'Téléphone', mask: '(999) 999-9999' },
+};
 export const Time: Story = {
   render: story(),
-  args: { label: 'Heure', mask: '99:99', ranges: '0-23 0-59', helperText: 'Format 24h', iconLeft: 'clock' },
+  args: {
+    label: 'Heure',
+    mask: '99:99',
+    ranges: '0-23 0-59',
+    helperText: 'Format 24h',
+    iconLeft: 'clock',
+  },
 };
 export const Date: Story = {
   render: story(),
-  args: { label: 'Date', mask: '99/99/9999', ranges: '1-31 1-12 1900-2100', placeholder: 'jj/mm/aaaa', iconLeft: 'calendar' },
+  args: {
+    label: 'Date',
+    mask: '99/99/9999',
+    ranges: '1-31 1-12 1900-2100',
+    placeholder: 'jj/mm/aaaa',
+    iconLeft: 'calendar',
+  },
 };
-export const License: Story = { render: story(), args: { label: 'Immatriculation', mask: 'aa-999-aa' } };
-export const Prefilled: Story = { render: story('12/09/2024'), args: { label: 'Date', mask: '99/99/9999' } };
-export const Unmask: Story = { render: story(), args: { label: 'IBAN (brut)', mask: 'FR99 9999 9999 9999', unmask: true, helperText: 'Émet la valeur sans espaces.' } };
-export const Small: Story = { render: story(), args: { label: 'Date', mask: '99/99/9999', size: 'small' } };
+export const License: Story = {
+  render: story(),
+  args: { label: 'Immatriculation', mask: 'aa-999-aa' },
+};
+export const Prefilled: Story = {
+  render: story('12/09/2024'),
+  args: { label: 'Date', mask: '99/99/9999' },
+};
+export const Unmask: Story = {
+  render: story(),
+  args: {
+    label: 'IBAN (brut)',
+    mask: 'FR99 9999 9999 9999',
+    unmask: true,
+    helperText: 'Émet la valeur sans espaces.',
+  },
+};
+export const Small: Story = {
+  render: story(),
+  args: { label: 'Date', mask: '99/99/9999', size: 'small' },
+};
 export const Error: Story = {
   render: story('12/'),
-  args: { label: 'Date', mask: '99/99/9999', level: 'error', invalid: true, errorText: 'Date incomplète.' },
+  args: {
+    label: 'Date',
+    mask: '99/99/9999',
+    level: 'error',
+    invalid: true,
+    errorText: 'Date incomplète.',
+  },
 };
-export const Disabled: Story = { render: story('12/09/2024'), args: { label: 'Date', mask: '99/99/9999', disabled: true } };
+export const Disabled: Story = {
+  render: story('12/09/2024'),
+  args: { label: 'Date', mask: '99/99/9999', disabled: true },
+};
 
 // --- Signal Forms (@angular/forms/signals) ------------------------------
 @Component({

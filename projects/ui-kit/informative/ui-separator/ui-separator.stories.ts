@@ -23,7 +23,10 @@ const meta: Meta<UiSeparator> = {
       control: { type: 'inline-radio' },
       options: ['horizontal', 'vertical'],
       description: 'Orientation de la règle (Figma : Axe).',
-      table: { type: { summary: 'SeparatorOrientation' }, defaultValue: { summary: '"horizontal"' } },
+      table: {
+        type: { summary: 'SeparatorOrientation' },
+        defaultValue: { summary: '"horizontal"' },
+      },
     },
     variant: {
       control: { type: 'inline-radio' },
@@ -67,28 +70,46 @@ const vBox = (inner: string) =>
   `<div style="display:flex; align-items:stretch; height: 96px">${inner}</div>`;
 
 export const Default: Story = {
-  render: (args) => ({ props: args, template: hBox(`<ui-separator [variant]="variant" [size]="size" />`) }),
+  render: (args) => ({
+    props: args,
+    template: hBox(`<ui-separator [variant]="variant" [size]="size" />`),
+  }),
 };
 
 export const Dashed: Story = {
-  render: (args) => ({ props: args, template: hBox(`<ui-separator variant="dashed" [size]="size" />`) }),
+  render: (args) => ({
+    props: args,
+    template: hBox(`<ui-separator variant="dashed" [size]="size" />`),
+  }),
 };
 
 export const Small: Story = {
-  render: (args) => ({ props: args, template: hBox(`<ui-separator [variant]="variant" size="small" />`) }),
+  render: (args) => ({
+    props: args,
+    template: hBox(`<ui-separator [variant]="variant" size="small" />`),
+  }),
 };
 
 // Libellé — start / center / end
 export const LabelStart: Story = {
-  render: (args) => ({ props: args, template: hBox(`<ui-separator label="Section" labelAlign="start" [variant]="variant" />`) }),
+  render: (args) => ({
+    props: args,
+    template: hBox(`<ui-separator label="Section" labelAlign="start" [variant]="variant" />`),
+  }),
 };
 
 export const LabelCenter: Story = {
-  render: (args) => ({ props: args, template: hBox(`<ui-separator label="OU" labelAlign="center" [variant]="variant" />`) }),
+  render: (args) => ({
+    props: args,
+    template: hBox(`<ui-separator label="OU" labelAlign="center" [variant]="variant" />`),
+  }),
 };
 
 export const LabelEnd: Story = {
-  render: (args) => ({ props: args, template: hBox(`<ui-separator label="Fin" labelAlign="end" [variant]="variant" />`) }),
+  render: (args) => ({
+    props: args,
+    template: hBox(`<ui-separator label="Fin" labelAlign="end" [variant]="variant" />`),
+  }),
 };
 
 // Vertical (entre deux éléments d'une rangée)

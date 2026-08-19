@@ -28,12 +28,14 @@ const meta: Meta<UiSkeleton> = {
     },
     width: {
       control: { type: 'text' },
-      description: 'Largeur CSS brute, surcharge la valeur par défaut de la forme (ex. `100%`, `10rem`).',
+      description:
+        'Largeur CSS brute, surcharge la valeur par défaut de la forme (ex. `100%`, `10rem`).',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     height: {
       control: { type: 'text' },
-      description: 'Hauteur CSS brute, surcharge la valeur par défaut de la forme (ex. `1rem`, `50px`).',
+      description:
+        'Hauteur CSS brute, surcharge la valeur par défaut de la forme (ex. `1rem`, `50px`).',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     borderRadius: {

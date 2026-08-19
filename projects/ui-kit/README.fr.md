@@ -1,8 +1,8 @@
 # @4sh/ui-kit
 
-*[English](./README.md) · **Français***
+_[English](./README.md) · **Français**_
 
-Composants Angular *headless* du Design System 4SH : logique et accessibilité en
+Composants Angular _headless_ du Design System 4SH : logique et accessibilité en
 natif (signals + Angular CDK), style piloté par les design tokens.
 
 **Documentation complète (Storybook)** :
@@ -14,15 +14,15 @@ natif (signals + Angular CDK), style piloté par les design tokens.
 
 À choisir **avant** d'installer : la décision conditionne toute la suite.
 
-| | **dépendance** | **starter** |
-|---|---|---|
-| Installation | `npm install @4sh/ui-kit` | `ng add @4sh/ui-kit-schematics` |
-| Ce qui arrive dans votre dépôt | rien — les composants compilés restent dans `node_modules` | les *sources* des composants, dans `src/app/shared/` |
-| Imports | `@4sh/ui-kit/actions/ui-button` | votre propre chemin (`./shared/components/ui/actions/ui-button`) |
-| Styles | `node_modules/@4sh/ui-kit/styles.css`, chargée globalement | copiés dans `src/styles/`, avec la chaîne de génération des tokens (`npm run tokens:build`) |
-| Documentation | le Storybook lié ci-dessus | la vôtre, sur vos copies (posée par `ng add`) |
-| Personnalisation | inputs + variables CSS | modifier le code lui-même |
-| Mise à jour | bump de version | `ng generate @4sh/ui-kit-schematics:update` — diff par composant, appliquer ou ignorer |
+|                                | **dépendance**                                             | **starter**                                                                                 |
+| ------------------------------ | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| Installation                   | `npm install @4sh/ui-kit`                                  | `ng add @4sh/ui-kit-schematics`                                                             |
+| Ce qui arrive dans votre dépôt | rien — les composants compilés restent dans `node_modules` | les _sources_ des composants, dans `src/app/shared/`                                        |
+| Imports                        | `@4sh/ui-kit/actions/ui-button`                            | votre propre chemin (`./shared/components/ui/actions/ui-button`)                            |
+| Styles                         | `node_modules/@4sh/ui-kit/styles.css`, chargée globalement | copiés dans `src/styles/`, avec la chaîne de génération des tokens (`npm run tokens:build`) |
+| Documentation                  | le Storybook lié ci-dessus                                 | la vôtre, sur vos copies (posée par `ng add`)                                               |
+| Personnalisation               | inputs + variables CSS                                     | modifier le code lui-même                                                                   |
+| Mise à jour                    | bump de version                                            | `ng generate @4sh/ui-kit-schematics:update` — diff par composant, appliquer ou ignorer      |
 
 **dépendance** est le mode par défaut : rien à maintenir, une seule version à
 suivre, et la garantie que tous les projets affichent le même kit. **starter** —
@@ -45,10 +45,10 @@ npm install @4sh/ui-kit
 Publié sur le **registre npm public**, organisation **`4sh`** :
 [npmjs.com/package/@4sh/ui-kit](https://www.npmjs.com/package/@4sh/ui-kit)
 
-| Requiert | |
-|---|---|
-| Angular | `^22.0.0` — `core`, `common`, `forms`, `router`, `platform-browser`, `cdk` |
-| RxJS | `^7.8.0` |
+| Requiert |                                                                            |
+| -------- | -------------------------------------------------------------------------- |
+| Angular  | `^22.0.0` — `core`, `common`, `forms`, `router`, `platform-browser`, `cdk` |
+| RxJS     | `^7.8.0`                                                                   |
 
 Déclarées en `peerDependencies` : c'est la version déjà présente dans votre
 application qui est utilisée, jamais un second exemplaire d'Angular.
@@ -56,8 +56,8 @@ application qui est utilisée, jamais un second exemplaire d'Angular.
 ### Ou copier les sources à la place
 
 Ce package vous donne les composants **compilés** : vous les importez et vous
-suivez les releases du kit. Si vous préférez avoir les sources *dans votre propre
-dépôt*, pour les lire et les modifier — l'approche shadcn/spartan-ng — c'est
+suivez les releases du kit. Si vous préférez avoir les sources _dans votre propre
+dépôt_, pour les lire et les modifier — l'approche shadcn/spartan-ng — c'est
 l'autre mode, et il passe par le package compagnon :
 
 ```bash
@@ -124,7 +124,7 @@ couche de base, les classes typographiques et les presets d'animation de la dire
 `UiMotion`. **Sans elle, les composants s'affichent sans style** — rien ne plante, tout
 est simplement faux visuellement.
 
-Les `@font-face` ne sont **pas** inclus : les tokens se contentent de *nommer* les
+Les `@font-face` ne sont **pas** inclus : les tokens se contentent de _nommer_ les
 familles (`--fontfamily-base`), et chacune se termine par une pile système, une
 application qui n'embarque aucun fichier de police s'affiche donc dans le sans-serif de
 l'OS (San Francisco, Segoe UI, Roboto), jamais dans le serif par défaut du navigateur.
@@ -143,7 +143,9 @@ import { UiDatepicker } from '@4sh/ui-kit/forms/ui-datepicker';
   imports: [UiDatepicker],
   template: `<ui-datepicker label="Date" valueType="date" [(ngModel)]="date" />`,
 })
-export class Booking { date = signal<Date | null>(null); }
+export class Booking {
+  date = signal<Date | null>(null);
+}
 ```
 
 C'est toute l'installation. Deux composants demandent un provider chacun — voir
@@ -153,7 +155,7 @@ C'est toute l'installation. Deux composants demandent un provider chacun — voi
 
 ## Import à la carte (secondary entry points)
 
-Chaque composant est exposé par son propre *entry point*. Vous importez ce dont
+Chaque composant est exposé par son propre _entry point_. Vous importez ce dont
 vous avez besoin, et le tree-shaking élimine le reste de votre bundle final :
 
 ```ts
@@ -175,25 +177,25 @@ famille ci-dessous est littéralement le segment de chemin, en minuscules :
 (54 composants au total — `ui-file-upload-list` est livré dans
 `ui-file-upload`, dont il consomme le modèle.)
 
-| Famille | Entry points |
-|---|---|
-| Actions | `ui-button` · `ui-button-split` · `ui-link` |
-| Formulaires | `ui-input` · `ui-textarea` · `ui-select` · `ui-autocomplete` · `ui-datepicker` · `ui-checkbox` · `ui-radio` · `ui-toggle` · `ui-slider` · `ui-nudger` · `ui-rating` · `ui-segment-control` · `ui-input-number` · `ui-input-mask` · `ui-input-otp` · `ui-input-tags` · `ui-input-group` · `ui-file-upload` · `ui-field` · `ui-label` |
-| Informatif | `ui-alert` · `ui-toast` · `ui-badge` · `ui-chip` · `ui-tag` · `ui-avatar` · `ui-avatar-group` · `ui-accordion` · `ui-tooltip` · `ui-spinner` · `ui-skeleton` · `ui-progress-bar` · `ui-empty-state` · `ui-read-only` · `ui-separator` · `ui-helper` |
-| Mise en page | `ui-card` · `ui-modal` · `ui-drawer` · `ui-popover` |
-| Navigation | `ui-menu` · `ui-context-menu` · `ui-tabs` · `ui-stepper` · `ui-sidebar` · `ui-breadcrumb` |
-| Tableau | `ui-table` · `ui-paginator` |
-| Base | `ui-icon` · `ui-image` |
+| Famille      | Entry points                                                                                                                                                                                                                                                                                                                        |
+| ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Actions      | `ui-button` · `ui-button-split` · `ui-link`                                                                                                                                                                                                                                                                                         |
+| Formulaires  | `ui-input` · `ui-textarea` · `ui-select` · `ui-autocomplete` · `ui-datepicker` · `ui-checkbox` · `ui-radio` · `ui-toggle` · `ui-slider` · `ui-nudger` · `ui-rating` · `ui-segment-control` · `ui-input-number` · `ui-input-mask` · `ui-input-otp` · `ui-input-tags` · `ui-input-group` · `ui-file-upload` · `ui-field` · `ui-label` |
+| Informatif   | `ui-alert` · `ui-toast` · `ui-badge` · `ui-chip` · `ui-tag` · `ui-avatar` · `ui-avatar-group` · `ui-accordion` · `ui-tooltip` · `ui-spinner` · `ui-skeleton` · `ui-progress-bar` · `ui-empty-state` · `ui-read-only` · `ui-separator` · `ui-helper`                                                                                 |
+| Mise en page | `ui-card` · `ui-modal` · `ui-drawer` · `ui-popover`                                                                                                                                                                                                                                                                                 |
+| Navigation   | `ui-menu` · `ui-context-menu` · `ui-tabs` · `ui-stepper` · `ui-sidebar` · `ui-breadcrumb`                                                                                                                                                                                                                                           |
+| Tableau      | `ui-table` · `ui-paginator`                                                                                                                                                                                                                                                                                                         |
+| Base         | `ui-icon` · `ui-image`                                                                                                                                                                                                                                                                                                              |
 
 Plus les entry points transverses :
 
-| Entry point | Contenu |
-|---|---|
-| `@4sh/ui-kit/forms` | Socle des champs de formulaire — voir ci-dessous |
+| Entry point           | Contenu                                                                                                 |
+| --------------------- | ------------------------------------------------------------------------------------------------------- |
+| `@4sh/ui-kit/forms`   | Socle des champs de formulaire — voir ci-dessous                                                        |
 | `@4sh/ui-kit/theming` | `ThemeService` (clair/sombre, `[data-theme]`) · `BrandService` (`[data-brand]`) · `provideUiKitBrand()` |
-| `@4sh/ui-kit/motion` | Directive `UiMotion` + presets d'animation |
-| `@4sh/ui-kit/overlay` | Utilitaires des composants à overlay CDK (`closeOnNavigation`) |
-| `@4sh/ui-kit/types` | Types transverses (`UiLevel`, `UiSubLevel`, `UiFeedbackLevel`) |
+| `@4sh/ui-kit/motion`  | Directive `UiMotion` + presets d'animation                                                              |
+| `@4sh/ui-kit/overlay` | Utilitaires des composants à overlay CDK (`closeOnNavigation`)                                          |
+| `@4sh/ui-kit/types`   | Types transverses (`UiLevel`, `UiSubLevel`, `UiFeedbackLevel`)                                          |
 
 ---
 
@@ -213,7 +215,7 @@ providers: [
   provideUiKitBrand(brandFromSubdomain(subdomain)),
   // carte des assets locaux de VOTRE projet, consommée par `ui-image` (input `name`)
   provideUiImageAssets(assetsMap),
-]
+];
 ```
 
 Les deux sont **optionnels** : sans eux, la marque vaut `brand1` et `ui-image`
@@ -254,13 +256,13 @@ mixins et constantes partagées.
 Le clair/sombre et la marque sont des **attributs sur `<html>`** — rien à importer,
 `styles.css` porte déjà tous les modes :
 
-| Attribut | Valeurs | Absent signifie |
-|---|---|---|
-| `data-theme` | `dark` | clair |
-| `data-brand` | `brand2`, `brand3` | marque 1 |
+| Attribut     | Valeurs            | Absent signifie |
+| ------------ | ------------------ | --------------- |
+| `data-theme` | `dark`             | clair           |
+| `data-brand` | `brand2`, `brand3` | marque 1        |
 
 ```html
-<html data-theme="dark" data-brand="brand2">
+<html data-theme="dark" data-brand="brand2"></html>
 ```
 
 À poser comme vous voulez (un service, du SSR, un flag de build) : le kit ne fait que
@@ -270,12 +272,18 @@ Pour changer une valeur, trois niveaux, du plus large au plus étroit :
 
 ```scss
 // src/styles/main.scss — chargé après styles.css
-@use 'presets/component-vars';                     // 2. les valeurs d'un composant
+@use 'presets/component-vars'; // 2. les valeurs d'un composant
 
-:root { --units-lg: 20px; }                        // 1. un token : tout le kit suit
-:root[data-theme='dark'] { --global-background-default: #101014; }
+:root {
+  --units-lg: 20px;
+} // 1. un token : tout le kit suit
+:root[data-theme='dark'] {
+  --global-background-default: #101014;
+}
 
-.toolbar ui-button { --ui-button-height-small: 24px; }   // 3. une zone de l'écran
+.toolbar ui-button {
+  --ui-button-height-small: 24px;
+} // 3. une zone de l'écran
 ```
 
 1. **Un token** (`--units-*`, `--radius-*`, `--actions-*`…) — doit venir **après**
@@ -284,14 +292,14 @@ Pour changer une valeur, trois niveaux, du plus large au plus étroit :
 2. **Les valeurs d'un composant** — copier `@4sh/ui-kit/styles/component-vars.scss`
    dans votre `styles/presets/` : toutes les variables `--ui-*` à leur valeur livrée,
    prêtes à retoucher. L'ordre de chargement n'importe pas ici, le kit ne fait que
-   *lire* ces noms.
+   _lire_ ces noms.
    Les valeurs partagées par toute une famille sont dans le même fichier, en
    `--ui-form-*` / `--ui-control-*` / `--ui-overlay-panel-*` : une seule déclaration
    déplace tous les consommateurs, et une variable de composant reste prioritaire.
 3. **Une zone** — la même variable `--ui-*` sur n'importe quel sélecteur ou élément.
 
 Référence complète (chaque variable, son rôle, sa valeur mesurée) : Storybook →
-*Spécifications → Thème & Système de Tokens*.
+_Spécifications → Thème & Système de Tokens_.
 
 ---
 
@@ -302,14 +310,14 @@ Cet entry point regroupe l'infrastructure partagée par tous les champs du kit.
 `UiSelect`, `UiDatepicker`… le tirent déjà). Il devient utile quand vous
 construisez **votre propre champ** en réutilisant les conventions du kit.
 
-| Export | Rôle |
-|---|---|
-| `BaseControlValueAccessor<T>` | Implémente `ControlValueAccessor` et miroite l'état du `NgControl` attaché dans des signals (`touched`, `dirty`, `controlInvalid`, `controlErrors`, `showError`). C'est ce qui rend un champ compatible d'un coup avec `[(ngModel)]`, les Reactive Forms **et** les Signal Forms. |
-| `BaseFieldControl<T>` | Contrôle « nu », sans habillage : inputs communs (`ariaLabel`, `inputId`, `name`, `required`, `disabled`, `readonly`, `invalid`, `tabindex`), génération d'`id` accessibles, `modelValue`, états dérivés `isDisabled`/`isInvalid`. Base de `ui-checkbox`, `ui-toggle`, `ui-slider`, `ui-radio`, `ui-nudger`. |
-| `BaseFormField<T>` | Étend le précédent avec le chrome « boîte » : `label`, `helperText`, `errorText`, `size`, `level`, plus `effectiveLevel` / `displayMessage` / `displayValue`. Base de `ui-input`, `ui-select`, `ui-datepicker`, `ui-textarea`… |
-| `dropdownOverlayPositions()` | Ancrage CDK standard d'un panneau déroulant (sous le champ, retourné au-dessus si besoin). |
-| `maskEngine` | Moteur de masque de saisie partagé (`ui-input-mask`, `ui-datepicker`). |
-| `option-resolver`, `format-label`, `warn-missing-accessible-name` | Utilitaires de résolution d'options, de formatage de libellé et garde-fou d'accessibilité. |
+| Export                                                            | Rôle                                                                                                                                                                                                                                                                                                         |
+| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `BaseControlValueAccessor<T>`                                     | Implémente `ControlValueAccessor` et miroite l'état du `NgControl` attaché dans des signals (`touched`, `dirty`, `controlInvalid`, `controlErrors`, `showError`). C'est ce qui rend un champ compatible d'un coup avec `[(ngModel)]`, les Reactive Forms **et** les Signal Forms.                            |
+| `BaseFieldControl<T>`                                             | Contrôle « nu », sans habillage : inputs communs (`ariaLabel`, `inputId`, `name`, `required`, `disabled`, `readonly`, `invalid`, `tabindex`), génération d'`id` accessibles, `modelValue`, états dérivés `isDisabled`/`isInvalid`. Base de `ui-checkbox`, `ui-toggle`, `ui-slider`, `ui-radio`, `ui-nudger`. |
+| `BaseFormField<T>`                                                | Étend le précédent avec le chrome « boîte » : `label`, `helperText`, `errorText`, `size`, `level`, plus `effectiveLevel` / `displayMessage` / `displayValue`. Base de `ui-input`, `ui-select`, `ui-datepicker`, `ui-textarea`…                                                                               |
+| `dropdownOverlayPositions()`                                      | Ancrage CDK standard d'un panneau déroulant (sous le champ, retourné au-dessus si besoin).                                                                                                                                                                                                                   |
+| `maskEngine`                                                      | Moteur de masque de saisie partagé (`ui-input-mask`, `ui-datepicker`).                                                                                                                                                                                                                                       |
+| `option-resolver`, `format-label`, `warn-missing-accessible-name` | Utilitaires de résolution d'options, de formatage de libellé et garde-fou d'accessibilité.                                                                                                                                                                                                                   |
 
 ### Créer son propre champ
 
@@ -321,9 +329,7 @@ import { BaseFormField } from '@4sh/ui-kit/forms';
 @Component({
   selector: 'app-my-field',
   templateUrl: './my-field.html',
-  providers: [
-    { provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => MyField), multi: true },
-  ],
+  providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => MyField), multi: true }],
 })
 export class MyField extends BaseFormField<string> {
   // `writeValue` est fourni par défaut (écrit dans `modelValue`).

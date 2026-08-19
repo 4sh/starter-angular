@@ -129,7 +129,11 @@ export class UiStep {
   imports: [NgTemplateOutlet],
   template: `
     <ng-template #defaultContent><ng-content /></ng-template>
-    <div class="ui-step-panel-collapse" [class._open]="active()" [class._no-motion]="!stepper.motion()">
+    <div
+      class="ui-step-panel-collapse"
+      [class._open]="active()"
+      [class._no-motion]="!stepper.motion()"
+    >
       <div class="ui-step-panel-inner">
         <div class="ui-step-panel-body">
           @if (shouldRender()) {
@@ -154,7 +158,9 @@ export class UiStepPanel {
   /** Identifier of this panel (matched against the step of the same `value`). */
   value = model<UiStepValue | undefined>(undefined);
   /** Render this panel's content only once it is first activated (overrides the group default). */
-  lazy = input<boolean, unknown>(undefined, { transform: (v) => (v == null ? undefined : booleanAttribute(v)) });
+  lazy = input<boolean, unknown>(undefined, {
+    transform: (v) => (v == null ? undefined : booleanAttribute(v)),
+  });
 
   /** Optional lazy content template (`<ng-template #content>`). */
   protected readonly content = contentChild<TemplateRef<unknown>>('content');
@@ -337,7 +343,10 @@ export class UiStepper {
   readonly id = `ui-stepper-${nextUid++}`;
 
   /** @ignore All steps projected under this container, in DOM order. */
-  private readonly steps = contentChildren(forwardRef(() => UiStep), { descendants: true });
+  private readonly steps = contentChildren(
+    forwardRef(() => UiStep),
+    { descendants: true },
+  );
 
   /** @ignore Ordered step values (the progression sequence). */
   private readonly orderedValues = computed(() => this.steps().map((s) => s.value()));

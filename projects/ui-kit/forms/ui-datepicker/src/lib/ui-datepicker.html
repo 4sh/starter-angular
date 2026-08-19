@@ -16,7 +16,12 @@
            Multi-month puts the arrows + titles in each panel's own header. -->
       @if (singleMonth()) {
         <div class="ui-datepicker-header">
-          <button type="button" class="ui-datepicker-nav" [attr.aria-label]="prevAriaLabel()" (click)="onPrev()">
+          <button
+            type="button"
+            class="ui-datepicker-nav"
+            [attr.aria-label]="prevAriaLabel()"
+            (click)="onPrev()"
+          >
             <ui-icon name="chevron-left" size="sm" />
           </button>
           <button
@@ -28,7 +33,12 @@
           >
             {{ headerLabel() }}
           </button>
-          <button type="button" class="ui-datepicker-nav" [attr.aria-label]="nextAriaLabel()" (click)="onNext()">
+          <button
+            type="button"
+            class="ui-datepicker-nav"
+            [attr.aria-label]="nextAriaLabel()"
+            (click)="onNext()"
+          >
             <ui-icon name="chevron-right" size="sm" />
           </button>
         </div>
@@ -90,7 +100,12 @@
                 <!-- Per-panel header: prev on the first panel, next on the last, title centered. -->
                 <div class="ui-datepicker-subheader">
                   @if (mp.showPrev) {
-                    <button type="button" class="ui-datepicker-nav" [attr.aria-label]="prevAriaLabel()" (click)="onPrev()">
+                    <button
+                      type="button"
+                      class="ui-datepicker-nav"
+                      [attr.aria-label]="prevAriaLabel()"
+                      (click)="onPrev()"
+                    >
                       <ui-icon name="chevron-left" size="sm" />
                     </button>
                   } @else {
@@ -98,7 +113,12 @@
                   }
                   <span class="ui-datepicker-title" aria-live="polite">{{ mp.label }}</span>
                   @if (mp.showNext) {
-                    <button type="button" class="ui-datepicker-nav" [attr.aria-label]="nextAriaLabel()" (click)="onNext()">
+                    <button
+                      type="button"
+                      class="ui-datepicker-nav"
+                      [attr.aria-label]="nextAriaLabel()"
+                      (click)="onNext()"
+                    >
                       <ui-icon name="chevron-right" size="sm" />
                     </button>
                   } @else {
@@ -110,7 +130,12 @@
               <div class="ui-datepicker-grid" role="grid">
                 <div class="ui-datepicker-weekdays" role="row">
                   @for (wd of weekDayNames(); track $index) {
-                    <span class="ui-datepicker-weekday" role="columnheader" [attr.aria-label]="wd.full">{{ wd.short }}</span>
+                    <span
+                      class="ui-datepicker-weekday"
+                      role="columnheader"
+                      [attr.aria-label]="wd.full"
+                      >{{ wd.short }}</span
+                    >
                   }
                 </div>
                 @for (week of mp.weeks; track $index) {
@@ -135,7 +160,10 @@
                         (click)="selectDay(cell)"
                       >
                         @if (dateTemplate(); as tpl) {
-                          <ng-container [ngTemplateOutlet]="tpl" [ngTemplateOutletContext]="{ $implicit: cell, selected: cell.selected }" />
+                          <ng-container
+                            [ngTemplateOutlet]="tpl"
+                            [ngTemplateOutletContext]="{ $implicit: cell, selected: cell.selected }"
+                          />
                         } @else {
                           {{ cell.day }}
                         }
@@ -155,7 +183,14 @@
       <div class="ui-datepicker-time">
         <!-- Hours -->
         <div class="ui-datepicker-time-unit">
-          <button type="button" class="ui-datepicker-time-btn" tabindex="-1" [disabled]="!timeControlsEnabled()" [attr.aria-label]="incrementHoursAriaLabel()" (click)="stepHours(1)">
+          <button
+            type="button"
+            class="ui-datepicker-time-btn"
+            tabindex="-1"
+            [disabled]="!timeControlsEnabled()"
+            [attr.aria-label]="incrementHoursAriaLabel()"
+            (click)="stepHours(1)"
+          >
             <ui-icon name="chevron-up" size="sm" />
           </button>
           <input
@@ -178,7 +213,14 @@
             (blur)="onHoursBlur()"
             (keydown)="onHourKeydown($event)"
           />
-          <button type="button" class="ui-datepicker-time-btn" tabindex="-1" [disabled]="!timeControlsEnabled()" [attr.aria-label]="decrementHoursAriaLabel()" (click)="stepHours(-1)">
+          <button
+            type="button"
+            class="ui-datepicker-time-btn"
+            tabindex="-1"
+            [disabled]="!timeControlsEnabled()"
+            [attr.aria-label]="decrementHoursAriaLabel()"
+            (click)="stepHours(-1)"
+          >
             <ui-icon name="chevron-down" size="sm" />
           </button>
         </div>
@@ -187,7 +229,14 @@
 
         <!-- Minutes -->
         <div class="ui-datepicker-time-unit">
-          <button type="button" class="ui-datepicker-time-btn" tabindex="-1" [disabled]="!timeControlsEnabled()" [attr.aria-label]="incrementMinutesAriaLabel()" (click)="stepMinutes(1)">
+          <button
+            type="button"
+            class="ui-datepicker-time-btn"
+            tabindex="-1"
+            [disabled]="!timeControlsEnabled()"
+            [attr.aria-label]="incrementMinutesAriaLabel()"
+            (click)="stepMinutes(1)"
+          >
             <ui-icon name="chevron-up" size="sm" />
           </button>
           <input
@@ -210,7 +259,14 @@
             (blur)="onMinutesBlur()"
             (keydown)="onMinuteKeydown($event)"
           />
-          <button type="button" class="ui-datepicker-time-btn" tabindex="-1" [disabled]="!timeControlsEnabled()" [attr.aria-label]="decrementMinutesAriaLabel()" (click)="stepMinutes(-1)">
+          <button
+            type="button"
+            class="ui-datepicker-time-btn"
+            tabindex="-1"
+            [disabled]="!timeControlsEnabled()"
+            [attr.aria-label]="decrementMinutesAriaLabel()"
+            (click)="stepMinutes(-1)"
+          >
             <ui-icon name="chevron-down" size="sm" />
           </button>
         </div>
@@ -219,7 +275,14 @@
         @if (hourFormat() === '12') {
           <span class="ui-datepicker-time-colon" aria-hidden="true">:</span>
           <div class="ui-datepicker-time-unit">
-            <button type="button" class="ui-datepicker-time-btn" tabindex="-1" [disabled]="!timeControlsEnabled()" [attr.aria-label]="toggleMeridiemAriaLabel()" (click)="toggleMeridiem()">
+            <button
+              type="button"
+              class="ui-datepicker-time-btn"
+              tabindex="-1"
+              [disabled]="!timeControlsEnabled()"
+              [attr.aria-label]="toggleMeridiemAriaLabel()"
+              (click)="toggleMeridiem()"
+            >
               <ui-icon name="chevron-up" size="sm" />
             </button>
             <span
@@ -234,7 +297,14 @@
             >
               {{ meridiem() }}
             </span>
-            <button type="button" class="ui-datepicker-time-btn" tabindex="-1" [disabled]="!timeControlsEnabled()" [attr.aria-label]="toggleMeridiemAriaLabel()" (click)="toggleMeridiem()">
+            <button
+              type="button"
+              class="ui-datepicker-time-btn"
+              tabindex="-1"
+              [disabled]="!timeControlsEnabled()"
+              [attr.aria-label]="toggleMeridiemAriaLabel()"
+              (click)="toggleMeridiem()"
+            >
               <ui-icon name="chevron-down" size="sm" />
             </button>
           </div>
@@ -248,10 +318,19 @@
         @if (buttonBarTemplate(); as tpl) {
           <ng-container
             [ngTemplateOutlet]="tpl"
-            [ngTemplateOutletContext]="{ $implicit: todayCallback, todayCallback: todayCallback, clearCallback: clearCallback }"
+            [ngTemplateOutletContext]="{
+              $implicit: todayCallback,
+              todayCallback: todayCallback,
+              clearCallback: clearCallback,
+            }"
           />
         } @else {
-          <ui-button size="small" level="low" [label]="todayLabel()" (buttonClick)="selectToday()" />
+          <ui-button
+            size="small"
+            level="low"
+            [label]="todayLabel()"
+            (buttonClick)="selectToday()"
+          />
           <ui-button size="small" level="low" [label]="clearLabel()" (buttonClick)="clear()" />
         }
       </div>

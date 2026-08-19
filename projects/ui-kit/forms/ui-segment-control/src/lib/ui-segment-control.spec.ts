@@ -51,7 +51,11 @@ class Host {
   ]);
 }
 
-async function setup(): Promise<{ fixture: ComponentFixture<Host>; host: Host; buttons: HTMLButtonElement[] }> {
+async function setup(): Promise<{
+  fixture: ComponentFixture<Host>;
+  host: Host;
+  buttons: HTMLButtonElement[];
+}> {
   await TestBed.configureTestingModule({ imports: [Host] }).compileComponents();
   const fixture = TestBed.createComponent(Host);
   fixture.detectChanges();

@@ -30,12 +30,54 @@ interface Product {
 }
 
 const products: Product[] = [
-  { id: 1, code: 'f230fh0g3', name: 'Bracelet bambou', category: 'Accessoires', quantity: 24, price: 65 },
-  { id: 2, code: 'nvklal433', name: 'Montre noire', category: 'Accessoires', quantity: 61, price: 72 },
-  { id: 3, code: 'zz21cz3c1', name: 'Ceinture bleue', category: 'Accessoires', quantity: 2, price: 79 },
-  { id: 4, code: '244wgerg2', name: 'T-shirt bleu', category: 'Vêtements', quantity: 25, price: 29 },
-  { id: 5, code: 'h456wer53', name: 'Bracelet cuir', category: 'Accessoires', quantity: 73, price: 15 },
-  { id: 6, code: 'av2231fwg', name: 'Chaussures marine', category: 'Chaussures', quantity: 0, price: 109 },
+  {
+    id: 1,
+    code: 'f230fh0g3',
+    name: 'Bracelet bambou',
+    category: 'Accessoires',
+    quantity: 24,
+    price: 65,
+  },
+  {
+    id: 2,
+    code: 'nvklal433',
+    name: 'Montre noire',
+    category: 'Accessoires',
+    quantity: 61,
+    price: 72,
+  },
+  {
+    id: 3,
+    code: 'zz21cz3c1',
+    name: 'Ceinture bleue',
+    category: 'Accessoires',
+    quantity: 2,
+    price: 79,
+  },
+  {
+    id: 4,
+    code: '244wgerg2',
+    name: 'T-shirt bleu',
+    category: 'Vêtements',
+    quantity: 25,
+    price: 29,
+  },
+  {
+    id: 5,
+    code: 'h456wer53',
+    name: 'Bracelet cuir',
+    category: 'Accessoires',
+    quantity: 73,
+    price: 15,
+  },
+  {
+    id: 6,
+    code: 'av2231fwg',
+    name: 'Chaussures marine',
+    category: 'Chaussures',
+    quantity: 0,
+    price: 109,
+  },
 ];
 
 /** Dataset étendu pour les démonstrations de scroll / pagination. */
@@ -114,7 +156,10 @@ const meta: Meta<UiTable<Product>> = {
       control: { type: 'inline-radio' },
       options: ['default', 'small', 'large'],
       description: 'Densité du padding des cellules.',
-      table: { type: { summary: "'default' | 'small' | 'large'" }, defaultValue: { summary: 'default' } },
+      table: {
+        type: { summary: "'default' | 'small' | 'large'" },
+        defaultValue: { summary: 'default' },
+      },
     },
     showGridlines: {
       control: { type: 'boolean' },
@@ -128,19 +173,27 @@ const meta: Meta<UiTable<Product>> = {
     },
     rowHover: {
       control: { type: 'boolean' },
-      description: 'Surbrillance de la ligne survolée (implicite dès qu’un mode de sélection est actif).',
+      description:
+        'Surbrillance de la ligne survolée (implicite dès qu’un mode de sélection est actif).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     tableStyle: {
       control: false,
-      description: 'Styles inline du `<table>` interne (ex. `{\'min-width\': \'60rem\'}` pour le scroll horizontal).',
-      table: { type: { summary: 'Record<string, string>' }, defaultValue: { summary: 'undefined' } },
+      description:
+        "Styles inline du `<table>` interne (ex. `{'min-width': '60rem'}` pour le scroll horizontal).",
+      table: {
+        type: { summary: 'Record<string, string>' },
+        defaultValue: { summary: 'undefined' },
+      },
     },
     selectionMode: {
       control: { type: 'inline-radio' },
       options: ['single', 'multiple'],
       description: 'Comportement de sélection des lignes.',
-      table: { type: { summary: "'single' | 'multiple' | null" }, defaultValue: { summary: 'null' } },
+      table: {
+        type: { summary: "'single' | 'multiple' | null" },
+        defaultValue: { summary: 'null' },
+      },
     },
     selection: {
       control: false,
@@ -221,7 +274,8 @@ const meta: Meta<UiTable<Product>> = {
     },
     scrollHeight: {
       control: false,
-      description: 'Hauteur du viewport : taille CSS (`\'400px\'`) ou `\'flex\'` pour remplir le parent flex.',
+      description:
+        "Hauteur du viewport : taille CSS (`'400px'`) ou `'flex'` pour remplir le parent flex.",
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     frozenValue: {
@@ -256,7 +310,8 @@ const meta: Meta<UiTable<Product>> = {
     },
     virtualScroll: {
       control: false,
-      description: 'Fenêtre le rendu des lignes sur le viewport visible (requiert `scrollable` + `scrollHeight` fixe).',
+      description:
+        'Fenêtre le rendu des lignes sur le viewport visible (requiert `scrollable` + `scrollHeight` fixe).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     virtualScrollItemSize: {
@@ -272,11 +327,20 @@ const meta: Meta<UiTable<Product>> = {
     },
     resizableColumns: {
       control: { type: 'boolean' },
-      description: 'Active le redimensionnement des colonnes (mode fit : la colonne voisine absorbe le delta).',
+      description:
+        'Active le redimensionnement des colonnes (mode fit : la colonne voisine absorbe le delta).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
-    rowSelect: { control: false, description: 'Émis quand une ligne devient sélectionnée.', table: { category: 'outputs' } },
-    rowUnselect: { control: false, description: 'Émis quand une ligne est désélectionnée.', table: { category: 'outputs' } },
+    rowSelect: {
+      control: false,
+      description: 'Émis quand une ligne devient sélectionnée.',
+      table: { category: 'outputs' },
+    },
+    rowUnselect: {
+      control: false,
+      description: 'Émis quand une ligne est désélectionnée.',
+      table: { category: 'outputs' },
+    },
     headerCheckboxToggle: {
       control: false,
       description: 'Émis quand la case « tout sélectionner » de l’en-tête bascule.',
@@ -292,10 +356,26 @@ const meta: Meta<UiTable<Product>> = {
       description: 'Émis à chaque changement d’état du tri (mode lazy : refetch avec cet état).',
       table: { category: 'outputs' },
     },
-    pageChange: { control: false, description: 'Émis à chaque changement de pagination.', table: { category: 'outputs' } },
-    rowExpand: { control: false, description: 'Émis quand une ligne se déplie.', table: { category: 'outputs' } },
-    rowCollapse: { control: false, description: 'Émis quand une ligne se replie.', table: { category: 'outputs' } },
-    colResize: { control: false, description: 'Émis après un redimensionnement de colonne.', table: { category: 'outputs' } },
+    pageChange: {
+      control: false,
+      description: 'Émis à chaque changement de pagination.',
+      table: { category: 'outputs' },
+    },
+    rowExpand: {
+      control: false,
+      description: 'Émis quand une ligne se déplie.',
+      table: { category: 'outputs' },
+    },
+    rowCollapse: {
+      control: false,
+      description: 'Émis quand une ligne se replie.',
+      table: { category: 'outputs' },
+    },
+    colResize: {
+      control: false,
+      description: 'Émis après un redimensionnement de colonne.',
+      table: { category: 'outputs' },
+    },
     rowReorder: {
       control: false,
       description: 'Émis après un glisser-déposer de ligne, avec la copie réordonnée de `value`.',
@@ -554,11 +634,17 @@ const serverProducts: Product[] = Array.from({ length: 200 }, (_, i) => ({
 }));
 
 /** Tri + découpe exécutés « côté serveur » par le faux backend. */
-function serverFetch(sort: { field?: string; order?: number }, first: number, rows: number): Product[] {
+function serverFetch(
+  sort: { field?: string; order?: number },
+  first: number,
+  rows: number,
+): Product[] {
   let data = serverProducts;
   if (sort.field && sort.order) {
     const field = sort.field as keyof Product;
-    data = [...data].sort((a, b) => (sort.order ?? 1) * (a[field] < b[field] ? -1 : a[field] > b[field] ? 1 : 0));
+    data = [...data].sort(
+      (a, b) => (sort.order ?? 1) * (a[field] < b[field] ? -1 : a[field] > b[field] ? 1 : 0),
+    );
   }
   return data.slice(first, first + rows);
 }

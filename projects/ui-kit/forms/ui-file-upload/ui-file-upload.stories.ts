@@ -66,7 +66,7 @@ const meta: Meta<UiFileUpload> = {
     },
     customUpload: {
       control: { type: 'boolean' },
-      description: "Délègue le téléversement à la sortie `uploadHandler`.",
+      description: 'Délègue le téléversement à la sortie `uploadHandler`.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     disabled: {

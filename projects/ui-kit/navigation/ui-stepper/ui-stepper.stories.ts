@@ -40,16 +40,21 @@ const meta: Meta<UiStepper> = {
       control: { type: 'inline-radio' },
       options: ['horizontal', 'vertical'],
       description: 'Axe de la progression : en-têtes en haut (horizontal) ou empilés (vertical).',
-      table: { type: { summary: "'horizontal' | 'vertical'" }, defaultValue: { summary: "'horizontal'" } },
+      table: {
+        type: { summary: "'horizontal' | 'vertical'" },
+        defaultValue: { summary: "'horizontal'" },
+      },
     },
     linear: {
       control: { type: 'boolean' },
-      description: "Empêche de sauter en avant : les étapes situées après l'étape active sont désactivées.",
+      description:
+        "Empêche de sauter en avant : les étapes situées après l'étape active sont désactivées.",
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     lazy: {
       control: { type: 'boolean' },
-      description: "Défaut de groupe : ne rend le contenu d'un panneau qu'à sa première activation.",
+      description:
+        "Défaut de groupe : ne rend le contenu d'un panneau qu'à sa première activation.",
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     motion: {
@@ -109,7 +114,8 @@ export const Vertical: Story = {
   args: { orientation: 'vertical' },
   render: (args) => ({
     props: { ...args, active: 1 },
-    template: box(`
+    template: box(
+      `
       <ui-stepper [(value)]="active" orientation="vertical" [motion]="motion" ariaLabel="Installation">
         <ui-step-item [value]="1">
           <ui-step [value]="1">Prérequis</ui-step>
@@ -123,7 +129,9 @@ export const Vertical: Story = {
           <ui-step [value]="3">Terminé</ui-step>
           <ui-step-panel [value]="3">Tout est prêt, vous pouvez démarrer.</ui-step-panel>
         </ui-step-item>
-      </ui-stepper>`, 480),
+      </ui-stepper>`,
+      480,
+    ),
   }),
 };
 

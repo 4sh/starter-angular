@@ -92,7 +92,9 @@ export class UiSpinner {
   });
 
   /** @ignore Icon size matching the spinner box (default → xl, small → default). */
-  protected readonly iconSize = computed<UiIconSize>(() => (this.size() === 'small' ? 'default' : 'xl'));
+  protected readonly iconSize = computed<UiIconSize>(() =>
+    this.size() === 'small' ? 'default' : 'xl',
+  );
 
   /** @ignore Accessible name: explicit, else the visible label reads on its own, else a default. */
   protected readonly rootAriaLabel = computed(() => {

@@ -1,9 +1,9 @@
 <div class="demo-layout">
-
   <!-- ================================================================ SIDEBAR -->
   <ui-sidebar
     #sb
-    responsive breakpoint="1024px"
+    responsive
+    breakpoint="1024px"
     [collapsed]="sidebarCollapsed()"
     (collapsedChange)="sidebarCollapsed.set($event)"
     collapsible
@@ -12,7 +12,9 @@
     <!-- Header -->
     <ng-template #header let-collapsed="collapsed">
       <ui-icon name="bolt" size="lg" />
-      @if (!collapsed) { <strong class="demo-sidebar-brand">Demo</strong> }
+      @if (!collapsed) {
+        <strong class="demo-sidebar-brand">Demo</strong>
+      }
     </ng-template>
 
     <!-- Menu -->
@@ -32,7 +34,6 @@
 
   <!-- ================================================================ MAIN -->
   <main class="demo-main">
-
     <!-- ---- Topbar ---------------------------------------- -->
     <header class="demo-topbar">
       <div class="demo-topbar-left">
@@ -47,14 +48,14 @@
         <ui-breadcrumb [items]="breadcrumbItems" ariaLabel="Fil d'Ariane" />
       </div>
       <div class="demo-topbar-right">
-        <ui-toggle 
+        <ui-toggle
           [ngModel]="themeService.isDark"
           (ngModelChange)="themeService.toggle()"
           ariaLabel="Basculer le thème"
           [handle]="themeToggleTpl"
         />
         <ng-template #themeToggleTpl let-checked="checked">
-          <ui-icon [name]="checked ? 'moon' : 'sun'" size="sm"/>
+          <ui-icon [name]="checked ? 'moon' : 'sun'" size="sm" />
         </ng-template>
         <ui-button level="low" size="small" icon="bell" iconOnly ariaLabel="Notifications">
           <ui-badge value="2" level="error" size="small" ariaLabel="2 notifications" />
@@ -78,11 +79,18 @@
         <span class="title-default">Commandes</span>
         <p class="demo-page-subtitle">Gérez et suivez toutes vos commandes en un seul endroit.</p>
       </div>
-      <ui-button label="Nouvelle commande" icon="plus" level="high" (buttonClick)="newOrderDrawerVisible.set(true)" />
+      <ui-button
+        label="Nouvelle commande"
+        icon="plus"
+        level="high"
+        (buttonClick)="newOrderDrawerVisible.set(true)"
+      />
     </section>
 
     <!-- ---- KPI Cards ------------------------------------- -->
-    <div class="flex-x flex-gap-xy phone-up-1 tablet-portrait-up-2 tablet-landscape-up-4 demo-kpi-row">
+    <div
+      class="flex-x flex-gap-xy phone-up-1 tablet-portrait-up-2 tablet-landscape-up-4 demo-kpi-row"
+    >
       @for (kpi of kpis; track kpi.id) {
         <div class="cell demo-kpi-col">
           <ui-card variant="elevated" [ariaLabel]="kpi.label" class="demo-kpi-card">
@@ -95,17 +103,22 @@
                 <span class="demo-kpi-value">{{ kpi.value }}</span>
               </div>
             </div>
-              <br/>
+            <br />
             <div class="flex-x flex-gap-xy align-middle">
-                  @if (kpi.trend) {
-                      <div class="cell phone-shrink demo-kpi-trend">
-                          <ui-tag [label]="kpi.trend" [level]="kpi.trendColor" variant="outlined" size="small" />
-                      </div>
-                  }
-                  <div class="cell phone-auto">
-                      <ui-progress-bar [value]="kpi.progress" />
-                  </div>
+              @if (kpi.trend) {
+                <div class="cell phone-shrink demo-kpi-trend">
+                  <ui-tag
+                    [label]="kpi.trend"
+                    [level]="kpi.trendColor"
+                    variant="outlined"
+                    size="small"
+                  />
+                </div>
+              }
+              <div class="cell phone-auto">
+                <ui-progress-bar [value]="kpi.progress" />
               </div>
+            </div>
           </ui-card>
         </div>
       }
@@ -130,157 +143,177 @@
       </ui-tab-list>
 
       <ui-tab-panels>
-
         <!-- Panel: Orders -->
         <ui-tab-panel value="orders">
-            <!-- Toolbar -->
-            <div class="demo-toolbar flex-x">
-                <div class="cell phone-24 tablet-12 desktop-10">
-                    <ui-input
-                            placeholder="Rechercher une commande, un client…"
-                            iconLeft="magnifying-glass"
-                            [(ngModel)]="search"
-                            ariaLabel="Rechercher"
-                    />
-                </div>
-                <div class="cell phone-24 tablet-6 desktop-auto">
-                    <ui-select
-                            [(ngModel)]="statusFilter"
-                            [options]="statusOptions"
-                            optionLabel="label"
-                            optionValue="value"
-                            placeholder="Filtrer par statut"
-                    />
-                </div>
-                <div class="cell phone-24 tablet-6 desktop-auto align-right demo-toolbar-actions">
-                    <ui-segment-control [options]="tableSizeOptions" [(ngModel)]="tableSize" optionIcon="icon" optionValue="value" size="small" />
-                    <ui-button
-                            level="low"
-                            size="small"
-                            icon="sliders"
-                            label="Filtres"
-                            (buttonClick)="openFilters()"
-                    />
-                </div>
+          <!-- Toolbar -->
+          <div class="demo-toolbar flex-x">
+            <div class="cell phone-24 tablet-12 desktop-10">
+              <ui-input
+                placeholder="Rechercher une commande, un client…"
+                iconLeft="magnifying-glass"
+                [(ngModel)]="search"
+                ariaLabel="Rechercher"
+              />
             </div>
+            <div class="cell phone-24 tablet-6 desktop-auto">
+              <ui-select
+                [(ngModel)]="statusFilter"
+                [options]="statusOptions"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Filtrer par statut"
+              />
+            </div>
+            <div class="cell phone-24 tablet-6 desktop-auto align-right demo-toolbar-actions">
+              <ui-segment-control
+                [options]="tableSizeOptions"
+                [(ngModel)]="tableSize"
+                optionIcon="icon"
+                optionValue="value"
+                size="small"
+              />
+              <ui-button
+                level="low"
+                size="small"
+                icon="sliders"
+                label="Filtres"
+                (buttonClick)="openFilters()"
+              />
+            </div>
+          </div>
 
-            <!-- Selection info -->
-            @if (selection().length > 0) {
-                <div class="demo-selection-bar">
-                    <ui-icon name="check-square" size="sm" />
-                    <span>{{ selection().length }} commande(s) sélectionnée(s)</span>
-                    <ui-button level="error" size="small" icon="trash" label="Supprimer" />
-                    <ui-button level="low" size="small" label="Désélectionner" (buttonClick)="selection.set([])" />
-                </div>
-            }
+          <!-- Selection info -->
+          @if (selection().length > 0) {
+            <div class="demo-selection-bar">
+              <ui-icon name="check-square" size="sm" />
+              <span>{{ selection().length }} commande(s) sélectionnée(s)</span>
+              <ui-button level="error" size="small" icon="trash" label="Supprimer" />
+              <ui-button
+                level="low"
+                size="small"
+                label="Désélectionner"
+                (buttonClick)="selection.set([])"
+              />
+            </div>
+          }
 
-            <!-- Table -->
-            <div class="demo-table-wrap">
-                <ui-table
-                        [value]="orders()"
-                        dataKey="id"
-                        selectionMode="multiple"
-                        [(selection)]="selection"
-                        stripedRows
-                        [rowHover]="true"
-                        paginator
-                        [rows]="8"
-                        [rowsPerPageOptions]="[5, 8, 25]"
-                        [size]="tableSize()"
+          <!-- Table -->
+          <div class="demo-table-wrap">
+            <ui-table
+              [value]="orders()"
+              dataKey="id"
+              selectionMode="multiple"
+              [(selection)]="selection"
+              stripedRows
+              [rowHover]="true"
+              paginator
+              [rows]="8"
+              [rowsPerPageOptions]="[5, 8, 25]"
+              [size]="tableSize()"
+            >
+              <!-- Header -->
+              <ng-template #header>
+                <tr>
+                  <th style="width: 3rem">
+                    <ui-table-header-checkbox />
+                  </th>
+                  <th uiSortableColumn="number" style="width: 12rem">
+                    N° commande <ui-table-sort-icon field="number" />
+                  </th>
+                  <th>Client</th>
+                  <th uiSortableColumn="date">Date <ui-table-sort-icon field="date" /></th>
+                  <th uiSortableColumn="amount" style="text-align: right">
+                    Montant <ui-table-sort-icon field="amount" />
+                  </th>
+                  <th>Statut</th>
+                  <th style="width: 5rem; text-align: center">Actions</th>
+                </tr>
+              </ng-template>
+
+              <!-- Body -->
+              <ng-template #body let-order let-rowIndex="rowIndex">
+                <tr
+                  [uiSelectableRow]="order"
+                  [uiSelectableRowIndex]="rowIndex"
+                  class="demo-table-row"
+                  (click)="openOrder(order)"
+                  style="cursor: pointer"
                 >
-                    <!-- Header -->
-                    <ng-template #header>
-                        <tr>
-                            <th style="width: 3rem">
-                                <ui-table-header-checkbox />
-                            </th>
-                            <th uiSortableColumn="number" style="width: 12rem">
-                                N° commande <ui-table-sort-icon field="number" />
-                            </th>
-                            <th>Client</th>
-                            <th uiSortableColumn="date">
-                                Date <ui-table-sort-icon field="date" />
-                            </th>
-                            <th uiSortableColumn="amount" style="text-align: right">
-                                Montant <ui-table-sort-icon field="amount" />
-                            </th>
-                            <th>Statut</th>
-                            <th style="width: 5rem; text-align: center">Actions</th>
-                        </tr>
-                    </ng-template>
+                  <td (click)="$event.stopPropagation()">
+                    <ui-table-checkbox [value]="order" [index]="rowIndex" />
+                  </td>
+                  <td>
+                    <ui-link
+                      [href]="'#'"
+                      size="small"
+                      (click)="$event.preventDefault(); openOrder(order)"
+                    >
+                      {{ order.number }}
+                    </ui-link>
+                  </td>
+                  <td>
+                    <div class="demo-customer-cell">
+                      <ui-avatar
+                        [label]="order.customer.initials"
+                        size="small"
+                        [ariaLabel]="order.customer.name"
+                      />
+                      <div class="demo-customer-info">
+                        <span class="demo-customer-name">{{ order.customer.name }}</span>
+                        @if (tableSize() !== 'small') {
+                          <small class="demo-customer-email">{{ order.customer.email }}</small>
+                        }
+                      </div>
+                    </div>
+                  </td>
+                  <td>{{ order.date }}</td>
+                  <td style="text-align: right; font-variant-numeric: tabular-nums">
+                    {{ order.amount | number: '1.2-2' }} €
+                  </td>
+                  <td>
+                    <ui-tag
+                      [label]="statusLabel(order.status)"
+                      [level]="statusLevel(order.status)"
+                      subLevel="low"
+                      size="small"
+                      [iconLeft]="statusIcon(order.status)"
+                    />
+                  </td>
+                  <td style="text-align: center" (click)="$event.stopPropagation()">
+                    <ui-button
+                      level="low"
+                      size="small"
+                      icon="ellipsis"
+                      iconOnly
+                      ariaLabel="Actions pour {{ order.number }}"
+                      [uiTooltip]="'Voir les actions'"
+                    />
+                  </td>
+                </tr>
+              </ng-template>
 
-                    <!-- Body -->
-                    <ng-template #body let-order let-rowIndex="rowIndex">
-                        <tr
-                                [uiSelectableRow]="order"
-                                [uiSelectableRowIndex]="rowIndex"
-                                class="demo-table-row"
-                                (click)="openOrder(order)"
-                                style="cursor: pointer"
-                        >
-                            <td (click)="$event.stopPropagation()">
-                                <ui-table-checkbox [value]="order" [index]="rowIndex" />
-                            </td>
-                            <td>
-                                <ui-link [href]="'#'" size="small" (click)="$event.preventDefault(); openOrder(order)">
-                                    {{ order.number }}
-                                </ui-link>
-                            </td>
-                            <td>
-                                <div class="demo-customer-cell">
-                                    <ui-avatar [label]="order.customer.initials" size="small" [ariaLabel]="order.customer.name" />
-                                    <div class="demo-customer-info">
-                                        <span class="demo-customer-name">{{ order.customer.name }}</span>
-                                        @if (tableSize() !== 'small') {
-                                            <small class="demo-customer-email">{{ order.customer.email }}</small>
-                                        }
-                                    </div>
-                                </div>
-                            </td>
-                            <td>{{ order.date }}</td>
-                            <td style="text-align: right; font-variant-numeric: tabular-nums">
-                                {{ order.amount | number:'1.2-2' }} €
-                            </td>
-                            <td>
-                                <ui-tag
-                                        [label]="statusLabel(order.status)"
-                                        [level]="statusLevel(order.status)"
-                                        subLevel="low"
-                                        size="small"
-                                        [iconLeft]="statusIcon(order.status)"
-                                />
-                            </td>
-                            <td style="text-align: center" (click)="$event.stopPropagation()">
-                                <ui-button
-                                        level="low"
-                                        size="small"
-                                        icon="ellipsis"
-                                        iconOnly
-                                        ariaLabel="Actions pour {{ order.number }}"
-                                        [uiTooltip]="'Voir les actions'"
-                                />
-                            </td>
-                        </tr>
-                    </ng-template>
-
-                    <!-- Empty state -->
-                    <ng-template #emptymessage>
-                        <div class="demo-empty">
-                            <ui-icon name="inbox" size="lg" />
-                            <p>Aucune commande trouvée</p>
-                            <ui-button level="low" size="small" label="Réinitialiser les filtres"
-                                       (buttonClick)="search.set(''); statusFilter.set(null)" />
-                        </div>
-                    </ng-template>
-                </ui-table>
-            </div>
+              <!-- Empty state -->
+              <ng-template #emptymessage>
+                <div class="demo-empty">
+                  <ui-icon name="inbox" size="lg" />
+                  <p>Aucune commande trouvée</p>
+                  <ui-button
+                    level="low"
+                    size="small"
+                    label="Réinitialiser les filtres"
+                    (buttonClick)="search.set(''); statusFilter.set(null)"
+                  />
+                </div>
+              </ng-template>
+            </ui-table>
+          </div>
         </ui-tab-panel>
 
         <!-- Panel: Statistics (skeleton placeholder) -->
         <ui-tab-panel value="stats">
           <div class="demo-placeholder-panel">
             <div class="flex-x" style="gap: var(--units-md); margin-bottom: var(--units-md)">
-              @for (i of [1,2,3]; track i) {
+              @for (i of [1, 2, 3]; track i) {
                 <div class="cell phone-24 tablet-8">
                   <ui-skeleton height="180px" shape="rectangle" />
                 </div>
@@ -297,7 +330,6 @@
             <ui-skeleton height="480px" shape="rectangle" />
           </div>
         </ui-tab-panel>
-
       </ui-tab-panels>
     </ui-tabs>
   </main>
@@ -312,61 +344,71 @@
   ariaLabel="Filtres avancés"
 >
   <div class="demo-drawer-body">
-    <div class="flex-y" style="gap: var(--units-lg);">
-    
-    <!-- Period -->
-    <div class="demo-filter-section">
-      <div class="demo-filter-header-row flex-x">
-        <span class="demo-filter-label">Période</span>
-        <div class="demo-filter-line"></div>
+    <div class="flex-y" style="gap: var(--units-lg)">
+      <!-- Period -->
+      <div class="demo-filter-section">
+        <div class="demo-filter-header-row flex-x">
+          <span class="demo-filter-label">Période</span>
+          <div class="demo-filter-line"></div>
+        </div>
+        <div class="flex-y" style="gap: var(--units-sm); margin-top: var(--units-sm)">
+          <ui-datepicker label="Du" valueType="date" [(ngModel)]="filterDateFrom" />
+          <ui-datepicker label="Au" valueType="date" [(ngModel)]="filterDateTo" />
+        </div>
       </div>
-      <div class="flex-y" style="gap: var(--units-sm); margin-top: var(--units-sm);">
-        <ui-datepicker label="Du" valueType="date" [(ngModel)]="filterDateFrom" />
-        <ui-datepicker label="Au" valueType="date" [(ngModel)]="filterDateTo" />
-      </div>
-    </div>
 
-    <!-- Status -->
-    <div class="demo-filter-section">
-      <div class="demo-filter-header-row flex-x">
-        <span class="demo-filter-label">Statut</span>
-        <div class="demo-filter-line"></div>
+      <!-- Status -->
+      <div class="demo-filter-section">
+        <div class="demo-filter-header-row flex-x">
+          <span class="demo-filter-label">Statut</span>
+          <div class="demo-filter-line"></div>
+        </div>
+        <div class="flex-y" style="gap: var(--units-sm); margin-top: var(--units-sm)">
+          <ui-checkbox label="En attente" [(ngModel)]="filterPending" />
+          <ui-checkbox label="Confirmée" [(ngModel)]="filterConfirmed" />
+          <ui-checkbox label="Expédiée" [(ngModel)]="filterShipped" />
+          <ui-checkbox label="Livrée" [(ngModel)]="filterDelivered" />
+        </div>
       </div>
-      <div class="flex-y" style="gap: var(--units-sm); margin-top: var(--units-sm);">
-        <ui-checkbox label="En attente" [(ngModel)]="filterPending" />
-        <ui-checkbox label="Confirmée" [(ngModel)]="filterConfirmed" />
-        <ui-checkbox label="Expédiée" [(ngModel)]="filterShipped" />
-        <ui-checkbox label="Livrée" [(ngModel)]="filterDelivered" />
-      </div>
-    </div>
 
-    <!-- Amount -->
-    <div class="demo-filter-section">
-      <div class="demo-filter-header-row flex-x">
-        <span class="demo-filter-label">Montant</span>
-        <div class="demo-filter-line"></div>
+      <!-- Amount -->
+      <div class="demo-filter-section">
+        <div class="demo-filter-header-row flex-x">
+          <span class="demo-filter-label">Montant</span>
+          <div class="demo-filter-line"></div>
+        </div>
+        <div style="margin-top: var(--units-sm)">
+          <ui-segment-control
+            [options]="amountOptions"
+            [(ngModel)]="filterAmount"
+            optionLabel="label"
+            optionValue="value"
+            fluid
+          />
+        </div>
       </div>
-      <div style="margin-top: var(--units-sm);">
-        <ui-segment-control [options]="amountOptions" [(ngModel)]="filterAmount" optionLabel="label" optionValue="value" fluid />
-      </div>
-    </div>
 
-    <!-- Display options -->
-    <div class="demo-filter-section">
-      <div class="demo-filter-header-row flex-x">
-        <span class="demo-filter-label">Options d'affichage</span>
-        <div class="demo-filter-line"></div>
-      </div>
-      <div style="margin-top: var(--units-sm);">
-        <ui-toggle label="Afficher les archives" />
+      <!-- Display options -->
+      <div class="demo-filter-section">
+        <div class="demo-filter-header-row flex-x">
+          <span class="demo-filter-label">Options d'affichage</span>
+          <div class="demo-filter-line"></div>
+        </div>
+        <div style="margin-top: var(--units-sm)">
+          <ui-toggle label="Afficher les archives" />
+        </div>
       </div>
     </div>
-  </div>
   </div>
 
   <ng-template #footer>
-    <ui-button level="low"  label="Réinitialiser" icon="arrow-rotate-left" (buttonClick)="resetFilters()" />
-    <ui-button level="high" label="Appliquer"     icon="check"             (buttonClick)="applyFilters()" />
+    <ui-button
+      level="low"
+      label="Réinitialiser"
+      icon="arrow-rotate-left"
+      (buttonClick)="resetFilters()"
+    />
+    <ui-button level="high" label="Appliquer" icon="check" (buttonClick)="applyFilters()" />
   </ng-template>
 </ui-drawer>
 
@@ -423,14 +465,18 @@
             <tr>
               <td>{{ item.label }}</td>
               <td style="text-align: right">{{ item.qty }}</td>
-              <td style="text-align: right">{{ item.unitPrice | number:'1.2-2' }} €</td>
-              <td style="text-align: right; font-weight: 600">{{ item.qty * item.unitPrice | number:'1.2-2' }} €</td>
+              <td style="text-align: right">{{ item.unitPrice | number: '1.2-2' }} €</td>
+              <td style="text-align: right; font-weight: 600">
+                {{ item.qty * item.unitPrice | number: '1.2-2' }} €
+              </td>
             </tr>
           </ng-template>
           <ng-template #footer>
             <tr class="demo-order-total-row">
               <td colspan="3" style="text-align: right; font-weight: 600">Total</td>
-              <td style="text-align: right; font-weight: 700">{{ orderTotal(order) | number:'1.2-2' }} €</td>
+              <td style="text-align: right; font-weight: 700">
+                {{ orderTotal(order) | number: '1.2-2' }} €
+              </td>
             </tr>
           </ng-template>
         </ui-table>
@@ -438,9 +484,14 @@
     </div>
 
     <ng-template #footer>
-      <ui-button level="low"     icon="print"         label="Imprimer"         (buttonClick)="closeModal()" />
-      <ui-button level="error"   icon="ban"           label="Annuler la cmd"   (buttonClick)="closeModal()" />
-      <ui-button level="success" icon="circle-check"  label="Marquer livrée"   (buttonClick)="closeModal()" />
+      <ui-button level="low" icon="print" label="Imprimer" (buttonClick)="closeModal()" />
+      <ui-button level="error" icon="ban" label="Annuler la cmd" (buttonClick)="closeModal()" />
+      <ui-button
+        level="success"
+        icon="circle-check"
+        label="Marquer livrée"
+        (buttonClick)="closeModal()"
+      />
     </ng-template>
   }
 </ui-modal>
@@ -454,17 +505,26 @@
   ariaLabel="Créer une nouvelle commande"
 >
   <div class="demo-drawer-body flex-y flex-gap-xy">
-    
     <!-- Section 1: Customer -->
     <section class="demo-filter-section">
       <div class="demo-filter-header-row flex-x">
         <span class="demo-filter-label">Informations client</span>
         <div class="demo-filter-line"></div>
       </div>
-      <div class="flex-y" style="gap: var(--units-md); margin-top: var(--units-sm);">
+      <div class="flex-y" style="gap: var(--units-md); margin-top: var(--units-sm)">
         <ui-input label="Nom du client" placeholder="Ex: Acme Corp" [(ngModel)]="newOrderName" />
-        <ui-input label="Adresse email" type="email" placeholder="contact@acme.com" [(ngModel)]="newOrderEmail" />
-        <ui-input-mask label="Téléphone" mask="00 00 00 00 00" placeholder="06 12 34 56 78" [(ngModel)]="newOrderPhone" />
+        <ui-input
+          label="Adresse email"
+          type="email"
+          placeholder="contact@acme.com"
+          [(ngModel)]="newOrderEmail"
+        />
+        <ui-input-mask
+          label="Téléphone"
+          mask="00 00 00 00 00"
+          placeholder="06 12 34 56 78"
+          [(ngModel)]="newOrderPhone"
+        />
       </div>
     </section>
 
@@ -474,12 +534,35 @@
         <span class="demo-filter-label">Détails de la commande</span>
         <div class="demo-filter-line"></div>
       </div>
-      <div class="flex-y" style="gap: var(--units-md); margin-top: var(--units-sm);">
-        <ui-select label="Statut initial" [options]="statusOptions" [(ngModel)]="newOrderStatus" optionLabel="label" optionValue="value" />
-        <ui-datepicker label="Date d'expédition prévue" valueType="date" [(ngModel)]="newOrderDate" />
-        <div style="display: flex; flex-direction: column; gap: var(--units-xs);">
-          <span style="font-size: var(--size-typography-text-sm); font-weight: 500; color: var(--global-text-default);">Priorité</span>
-          <ui-segment-control [options]="priorityOptions" [(ngModel)]="newOrderPriority" optionLabel="label" optionValue="value" fluid />
+      <div class="flex-y" style="gap: var(--units-md); margin-top: var(--units-sm)">
+        <ui-select
+          label="Statut initial"
+          [options]="statusOptions"
+          [(ngModel)]="newOrderStatus"
+          optionLabel="label"
+          optionValue="value"
+        />
+        <ui-datepicker
+          label="Date d'expédition prévue"
+          valueType="date"
+          [(ngModel)]="newOrderDate"
+        />
+        <div style="display: flex; flex-direction: column; gap: var(--units-xs)">
+          <span
+            style="
+              font-size: var(--size-typography-text-sm);
+              font-weight: 500;
+              color: var(--global-text-default);
+            "
+            >Priorité</span
+          >
+          <ui-segment-control
+            [options]="priorityOptions"
+            [(ngModel)]="newOrderPriority"
+            optionLabel="label"
+            optionValue="value"
+            fluid
+          />
         </div>
       </div>
     </section>
@@ -490,13 +573,34 @@
         <span class="demo-filter-label">Produits & Tarification</span>
         <div class="demo-filter-line"></div>
       </div>
-      <div class="flex-y" style="gap: var(--units-md); margin-top: var(--units-sm);">
-        <ui-nudger label="Nombre d'articles différents" [min]="1" [max]="50" [(ngModel)]="newOrderQty" />
-        
-        <div style="display: flex; flex-direction: column; gap: var(--units-xs); margin-top: var(--units-xs);">
-          <div class="flex-x" style="justify-content: space-between;">
-            <span style="font-size: var(--size-typography-text-sm); font-weight: 500; color: var(--global-text-default);">Remise globale</span>
-            <span style="font-size: var(--size-typography-text-sm); color: var(--global-text-muted);">{{ newOrderDiscount() }}%</span>
+      <div class="flex-y" style="gap: var(--units-md); margin-top: var(--units-sm)">
+        <ui-nudger
+          label="Nombre d'articles différents"
+          [min]="1"
+          [max]="50"
+          [(ngModel)]="newOrderQty"
+        />
+
+        <div
+          style="
+            display: flex;
+            flex-direction: column;
+            gap: var(--units-xs);
+            margin-top: var(--units-xs);
+          "
+        >
+          <div class="flex-x" style="justify-content: space-between">
+            <span
+              style="
+                font-size: var(--size-typography-text-sm);
+                font-weight: 500;
+                color: var(--global-text-default);
+              "
+              >Remise globale</span
+            >
+            <span style="font-size: var(--size-typography-text-sm); color: var(--global-text-muted)"
+              >{{ newOrderDiscount() }}%</span
+            >
           </div>
           <ui-slider [min]="0" [max]="30" [step]="5" [(ngModel)]="newOrderDiscount" />
         </div>
@@ -509,17 +613,26 @@
         <span class="demo-filter-label">Options supplémentaires</span>
         <div class="demo-filter-line"></div>
       </div>
-      <div class="flex-y" style="gap: var(--units-md); margin-top: var(--units-sm);">
+      <div class="flex-y" style="gap: var(--units-md); margin-top: var(--units-sm)">
         <ui-toggle label="Livraison express (24h)" [(ngModel)]="newOrderExpress" />
         <ui-checkbox label="Emballage cadeau requis" [(ngModel)]="newOrderGift" />
-        <ui-textarea label="Notes de préparation" placeholder="Instructions spéciales pour l'entrepôt..." multiline [(ngModel)]="newOrderNotes" />
+        <ui-textarea
+          label="Notes de préparation"
+          placeholder="Instructions spéciales pour l'entrepôt..."
+          multiline
+          [(ngModel)]="newOrderNotes"
+        />
       </div>
     </section>
-    
   </div>
 
   <ng-template #footer>
     <ui-button level="low" label="Annuler" (buttonClick)="newOrderDrawerVisible.set(false)" />
-    <ui-button level="high" label="Créer la commande" icon="plus" (buttonClick)="newOrderDrawerVisible.set(false)" />
+    <ui-button
+      level="high"
+      label="Créer la commande"
+      icon="plus"
+      (buttonClick)="newOrderDrawerVisible.set(false)"
+    />
   </ng-template>
 </ui-drawer>

@@ -18,13 +18,13 @@ l'ordre est contraint et **l'étape 3 est irréversible**.
 - [ ] **Étape 1** — 14 renommages dans `[Projet] - Composants metiers`, puis publication
 - [ ] **Étape 2a** — 14 rebinds dans `[Projet] - Composants metiers`
 - [ ] **Étape 2b** — 20 rebinds dans `[Projet] - UI Kit`
-- [ ] **Étape 3** — ⚠️ **IRRÉVERSIBLE** — 7 suppressions, puis republication *(ne lancer qu'après vérification des compteurs de l'étape 2)*
+- [ ] **Étape 3** — ⚠️ **IRRÉVERSIBLE** — 7 suppressions, puis republication _(ne lancer qu'après vérification des compteurs de l'étape 2)_
 - [ ] **Étape 4** — vérification finale (re-scan, captures light/dark, comparaison Storybook)
 
-| | |
-|---|---|
+|                                                 |                            |
+| ----------------------------------------------- | -------------------------- |
 | Version du fichier propriétaire avant l'étape 1 | `à renseigner à l'étape 0` |
-| Exécuté par / le | `—` |
+| Exécuté par / le                                | `—`                        |
 
 > Si toutes les cases sont cochées, la migration est terminée : ce document devient
 > un historique et n'a plus d'action à déclencher.
@@ -35,10 +35,10 @@ l'ordre est contraint et **l'étape 3 est irréversible**.
 
 ### Fichiers concernés
 
-| Fichier | `fileKey` | Rôle |
-|---|---|---|
-| **[Projet] - Composants metiers** | `lH4jhyZFkIeJ1Ob1tlY7Wm` | **Propriétaire** de la collection `semantics`. Seul fichier où les variables sont *locales*, donc le seul où le renommage est possible. |
-| **[Projet] - UI Kit** | `GZww5hdUA49LB8XWeWP6tl` | **Consommateur** : variables en `remote`. Renommage impossible, mais rebind possible via `importVariableByKeyAsync`. |
+| Fichier                           | `fileKey`                | Rôle                                                                                                                                    |
+| --------------------------------- | ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
+| **[Projet] - Composants metiers** | `lH4jhyZFkIeJ1Ob1tlY7Wm` | **Propriétaire** de la collection `semantics`. Seul fichier où les variables sont _locales_, donc le seul où le renommage est possible. |
+| **[Projet] - UI Kit**             | `GZww5hdUA49LB8XWeWP6tl` | **Consommateur** : variables en `remote`. Renommage impossible, mais rebind possible via `importVariableByKeyAsync`.                    |
 
 ### ⛔ Fichiers à ne PAS toucher
 
@@ -52,7 +52,7 @@ et aucune action ne doit être menée dessus.
 
 > ⚠️ Le `fileKey` `XgSemnGLFrAq75CxcjPVf1` cité dans les templates de prompt de
 > `CLAUDE.md` **n'est pas un fichier `[Projet]`** : il souscrit aux bibliothèques
-> *BeCLM UI 2.0*. Référence périmée, à corriger séparément.
+> _BeCLM UI 2.0_. Référence périmée, à corriger séparément.
 
 ### Collection cible
 
@@ -71,26 +71,26 @@ cascader hors du groupe `global`.
 
 ## 2. État relevé (lecture seule, avant toute action)
 
-| Fichier | Pages | Nœuds scannés | Bindings `global/*` |
-|---|---|---|---|
-| Composants metiers | 45 / 45 | 5 353 | 1 076 |
-| UI Kit | 50 / 50 | 6 386 | 403 |
+| Fichier            | Pages   | Nœuds scannés | Bindings `global/*` |
+| ------------------ | ------- | ------------- | ------------------- |
+| Composants metiers | 45 / 45 | 5 353         | 1 076               |
+| UI Kit             | 50 / 50 | 6 386         | 403                 |
 
 Bindings par variable (Composants metiers + UI Kit) :
 
-| Variable | Owner | UI Kit | Total |
-|---|---:|---:|---:|
-| `global/default/surface/default` | 475 | 79 | **554** |
-| `global/high/content/default` | 318 | 103 | **421** |
-| `global/high/stroke/default` | 257 | 144 | **401** |
-| `global/low/surface/default` | 6 | 27 | 33 |
-| `global/low/content/default` | 6 | 14 | 20 |
-| `global/high/surface/default` | 8 | 6 | 14 |
-| `global/default/content/default` | 0 | 13 | 13 |
-| `global/low/surface/hover` | 0 | 12 | 12 |
-| `global/low/stroke/default` | 6 | 1 | 7 |
-| `global/high/surface/hover` | 0 | 4 | 4 |
-| *les 11 autres* | 0 | 0 | **0** |
+| Variable                         | Owner | UI Kit |   Total |
+| -------------------------------- | ----: | -----: | ------: |
+| `global/default/surface/default` |   475 |     79 | **554** |
+| `global/high/content/default`    |   318 |    103 | **421** |
+| `global/high/stroke/default`     |   257 |    144 | **401** |
+| `global/low/surface/default`     |     6 |     27 |      33 |
+| `global/low/content/default`     |     6 |     14 |      20 |
+| `global/high/surface/default`    |     8 |      6 |      14 |
+| `global/default/content/default` |     0 |     13 |      13 |
+| `global/low/surface/hover`       |     0 |     12 |      12 |
+| `global/low/stroke/default`      |     6 |      1 |       7 |
+| `global/high/surface/hover`      |     0 |      4 |       4 |
+| _les 11 autres_                  |     0 |      0 |   **0** |
 
 ---
 
@@ -102,22 +102,22 @@ Les bindings Figma se font **par identifiant**, jamais par nom : renommer une
 variable publiée ne casse aucun composant, ni dans le fichier propriétaire ni chez
 les consommateurs. C'est l'opération la plus sûre du lot.
 
-| Variable à renommer | `localId` | Nouveau nom |
-|---|---|---|
-| `global/high/content/default` | `VariableID:5:104` | `global/text/default` |
-| `global/high/content/hover` | `VariableID:5:105` | `global/text/default-hover` |
-| `global/low/content/default` | `VariableID:5:113` | `global/text/muted` |
-| `global/low/content/hover` | `VariableID:5:114` | `global/text/muted-hover` |
-| `global/high/content/focused` | `VariableID:5:106` | `global/text/brand` |
-| **`global/default/surface/default`** | `VariableID:5:103` | `global/background/default` |
-| `global/high/surface/hover` | `VariableID:5:108` | `global/background/default-hover` |
-| `global/low/surface/default` | `VariableID:5:116` | `global/background/muted` |
-| `global/low/surface/hover` | `VariableID:5:117` | `global/background/muted-hover` |
-| `global/high/surface/focused` | `VariableID:5:109` | `global/background/brand` |
-| `global/high/stroke/default` | `VariableID:5:110` | `global/border/default` |
-| `global/high/stroke/hover` | `VariableID:5:111` | `global/border/default-hover` |
-| `global/default/stroke/default` | `VariableID:1003:113` | `global/border/subtle` |
-| `global/high/stroke/focused` | `VariableID:5:112` | `global/border/focus` |
+| Variable à renommer                  | `localId`             | Nouveau nom                       |
+| ------------------------------------ | --------------------- | --------------------------------- |
+| `global/high/content/default`        | `VariableID:5:104`    | `global/text/default`             |
+| `global/high/content/hover`          | `VariableID:5:105`    | `global/text/default-hover`       |
+| `global/low/content/default`         | `VariableID:5:113`    | `global/text/muted`               |
+| `global/low/content/hover`           | `VariableID:5:114`    | `global/text/muted-hover`         |
+| `global/high/content/focused`        | `VariableID:5:106`    | `global/text/brand`               |
+| **`global/default/surface/default`** | `VariableID:5:103`    | `global/background/default`       |
+| `global/high/surface/hover`          | `VariableID:5:108`    | `global/background/default-hover` |
+| `global/low/surface/default`         | `VariableID:5:116`    | `global/background/muted`         |
+| `global/low/surface/hover`           | `VariableID:5:117`    | `global/background/muted-hover`   |
+| `global/high/surface/focused`        | `VariableID:5:109`    | `global/background/brand`         |
+| `global/high/stroke/default`         | `VariableID:5:110`    | `global/border/default`           |
+| `global/high/stroke/hover`           | `VariableID:5:111`    | `global/border/default-hover`     |
+| `global/default/stroke/default`      | `VariableID:1003:113` | `global/border/subtle`            |
+| `global/high/stroke/focused`         | `VariableID:5:112`    | `global/border/focus`             |
 
 #### ⚠️ Un survivant diffère du code
 
@@ -136,13 +136,13 @@ n'est nécessaire. L'écart est tracé dans le JSON sous
 Supprimer une variable publiée casse les bindings de ses consommateurs. Les trois
 variables fusionnées portent encore des bindings, à réaffecter vers leur survivant.
 
-| Fichier | Variable à vider | Prop | Nb | Vers |
-|---|---|---|---:|---|
-| Owner | `global/high/surface/default` | `fills` | 8 | `global/background/default` |
-| Owner | `global/low/stroke/default` | `strokes` | 6 | `global/border/default` |
-| UI Kit | `global/default/content/default` | `fills` | 13 | `global/text/default` |
-| UI Kit | `global/high/surface/default` | `fills` | 6 | `global/background/default` |
-| UI Kit | `global/low/stroke/default` | `strokes` | 1 | `global/border/default` |
+| Fichier | Variable à vider                 | Prop      |  Nb | Vers                        |
+| ------- | -------------------------------- | --------- | --: | --------------------------- |
+| Owner   | `global/high/surface/default`    | `fills`   |   8 | `global/background/default` |
+| Owner   | `global/low/stroke/default`      | `strokes` |   6 | `global/border/default`     |
+| UI Kit  | `global/default/content/default` | `fills`   |  13 | `global/text/default`       |
+| UI Kit  | `global/high/surface/default`    | `fills`   |   6 | `global/background/default` |
+| UI Kit  | `global/low/stroke/default`      | `strokes` |   1 | `global/border/default`     |
 
 Pages concernées côté UI Kit : `Drawer` (4), `Spinner` (4), `Bottom Sheet` (5) pour
 `default/content/default` ; `COMPONENTS` (4), `Card` (1), `Bottom Sheet` (1) pour
@@ -159,21 +159,21 @@ Sheet. Écart de luminance ~1,5 %, validé.
 
 **Fusionnées** (0 binding après l'étape 3.2) :
 
-| Variable | `localId` |
-|---|---|
+| Variable                         | `localId`             |
+| -------------------------------- | --------------------- |
 | `global/default/content/default` | `VariableID:1003:112` |
-| `global/high/surface/default` | `VariableID:5:107` |
-| `global/low/stroke/default` | `VariableID:5:119` |
+| `global/high/surface/default`    | `VariableID:5:107`    |
+| `global/low/stroke/default`      | `VariableID:5:119`    |
 
 **Mortes** — 0 binding dans les deux fichiers **et** 0 usage dans le code. Les trois
 premières étaient teintées `secondary` : un anneau de focus rose n'a jamais servi.
 
-| Variable | `localId` |
-|---|---|
+| Variable                     | `localId`          |
+| ---------------------------- | ------------------ |
 | `global/low/content/focused` | `VariableID:5:115` |
 | `global/low/surface/focused` | `VariableID:5:118` |
-| `global/low/stroke/focused` | `VariableID:5:121` |
-| `global/low/stroke/hover` | `VariableID:5:120` |
+| `global/low/stroke/focused`  | `VariableID:5:121` |
+| `global/low/stroke/hover`    | `VariableID:5:120` |
 
 ---
 
@@ -189,7 +189,7 @@ premières étaient teintées `secondary` : un anneau de focus rose n'a jamais s
    S'ils ont bougé, le fichier a été édité depuis le relevé : recalculer avant
    d'agir.
 2. **Vérifier qu'aucun autre fichier ne consomme la bibliothèque.** Le Plugin API
-   n'expose pas la liste des consommateurs — passer par les *library analytics*
+   n'expose pas la liste des consommateurs — passer par les _library analytics_
    Figma. Un consommateur inconnu verrait ses bindings cassés à l'étape 3.
 3. Noter la version du fichier propriétaire (historique de versions) pour pouvoir
    revenir en arrière.
@@ -199,25 +199,29 @@ premières étaient teintées `secondary` : un anneau de focus rose n'a jamais s
 ```js
 // fileKey: lH4jhyZFkIeJ1Ob1tlY7Wm
 const RENAMES = {
-  'VariableID:5:104':    'global/text/default',
-  'VariableID:5:105':    'global/text/default-hover',
-  'VariableID:5:113':    'global/text/muted',
-  'VariableID:5:114':    'global/text/muted-hover',
-  'VariableID:5:106':    'global/text/brand',
-  'VariableID:5:103':    'global/background/default',
-  'VariableID:5:108':    'global/background/default-hover',
-  'VariableID:5:116':    'global/background/muted',
-  'VariableID:5:117':    'global/background/muted-hover',
-  'VariableID:5:109':    'global/background/brand',
-  'VariableID:5:110':    'global/border/default',
-  'VariableID:5:111':    'global/border/default-hover',
+  'VariableID:5:104': 'global/text/default',
+  'VariableID:5:105': 'global/text/default-hover',
+  'VariableID:5:113': 'global/text/muted',
+  'VariableID:5:114': 'global/text/muted-hover',
+  'VariableID:5:106': 'global/text/brand',
+  'VariableID:5:103': 'global/background/default',
+  'VariableID:5:108': 'global/background/default-hover',
+  'VariableID:5:116': 'global/background/muted',
+  'VariableID:5:117': 'global/background/muted-hover',
+  'VariableID:5:109': 'global/background/brand',
+  'VariableID:5:110': 'global/border/default',
+  'VariableID:5:111': 'global/border/default-hover',
   'VariableID:1003:113': 'global/border/subtle',
-  'VariableID:5:112':    'global/border/focus',
+  'VariableID:5:112': 'global/border/focus',
 };
-const done = [], errors = [];
+const done = [],
+  errors = [];
 for (const [id, newName] of Object.entries(RENAMES)) {
   const v = await figma.variables.getVariableByIdAsync(id);
-  if (!v) { errors.push(`${id} introuvable`); continue; }
+  if (!v) {
+    errors.push(`${id} introuvable`);
+    continue;
+  }
   const before = v.name;
   v.name = newName;
   done.push({ id, before, after: v.name });
@@ -225,7 +229,7 @@ for (const [id, newName] of Object.entries(RENAMES)) {
 return { renamed: done.length, done, errors, mutatedVariableIds: Object.keys(RENAMES) };
 ```
 
-**Puis publier la bibliothèque** (action manuelle dans Figma : *Assets → Publier*).
+**Puis publier la bibliothèque** (action manuelle dans Figma : _Assets → Publier_).
 Sans publication, le UI Kit continue d'afficher les anciens noms.
 
 ### Étape 2 — Rebinder (les deux fichiers)
@@ -242,7 +246,18 @@ const MAP = [
   { from: 'VariableID:5:107', to: 'VariableID:5:103', prop: 'fills' },
   { from: 'VariableID:5:119', to: 'VariableID:5:110', prop: 'strokes' },
 ];
-const TYPES = ['COMPONENT','COMPONENT_SET','FRAME','TEXT','RECTANGLE','INSTANCE','ELLIPSE','VECTOR','LINE','GROUP'];
+const TYPES = [
+  'COMPONENT',
+  'COMPONENT_SET',
+  'FRAME',
+  'TEXT',
+  'RECTANGLE',
+  'INSTANCE',
+  'ELLIPSE',
+  'VECTOR',
+  'LINE',
+  'GROUP',
+];
 const mutated = [];
 for (const { from, to, prop } of MAP) {
   const target = await figma.variables.getVariableByIdAsync(to);
@@ -257,7 +272,10 @@ for (const { from, to, prop } of MAP) {
         hit = true;
         return figma.variables.setBoundVariableForPaint(p, 'color', target);
       });
-      if (hit) { node[prop] = next; mutated.push({ id: node.id, page: page.name, prop }); }
+      if (hit) {
+        node[prop] = next;
+        mutated.push({ id: node.id, page: page.name, prop });
+      }
     }
   }
 }
@@ -270,11 +288,34 @@ distantes → les importer par **clé** et matcher l'identifiant distant
 
 ```js
 const MAP = [
-  { fromKey: '9ae5d9a691c26557e6406b23c7e9e1f2dece0d4d', toKey: '0c98a229d2f11a73ff2cebe8b0b842ff4f65d213', prop: 'fills'   }, // text/default
-  { fromKey: 'dbdd1740f2b95c121a51a0ee9e4b011721ded1e2', toKey: 'f7f095c7265df1d331d191ec59d3f57c8dbdbb22', prop: 'fills'   }, // background/default
-  { fromKey: 'c8ccca49f183cd3ecd2df6c20104b98c450ad6b4', toKey: '02d064b7a69fb86b1b6dacee642a5e33561b7e9e', prop: 'strokes' }, // border/default
+  {
+    fromKey: '9ae5d9a691c26557e6406b23c7e9e1f2dece0d4d',
+    toKey: '0c98a229d2f11a73ff2cebe8b0b842ff4f65d213',
+    prop: 'fills',
+  }, // text/default
+  {
+    fromKey: 'dbdd1740f2b95c121a51a0ee9e4b011721ded1e2',
+    toKey: 'f7f095c7265df1d331d191ec59d3f57c8dbdbb22',
+    prop: 'fills',
+  }, // background/default
+  {
+    fromKey: 'c8ccca49f183cd3ecd2df6c20104b98c450ad6b4',
+    toKey: '02d064b7a69fb86b1b6dacee642a5e33561b7e9e',
+    prop: 'strokes',
+  }, // border/default
 ];
-const TYPES = ['COMPONENT','COMPONENT_SET','FRAME','TEXT','RECTANGLE','INSTANCE','ELLIPSE','VECTOR','LINE','GROUP'];
+const TYPES = [
+  'COMPONENT',
+  'COMPONENT_SET',
+  'FRAME',
+  'TEXT',
+  'RECTANGLE',
+  'INSTANCE',
+  'ELLIPSE',
+  'VECTOR',
+  'LINE',
+  'GROUP',
+];
 const mutated = [];
 for (const { fromKey, toKey, prop } of MAP) {
   const target = await figma.variables.importVariableByKeyAsync(toKey);
@@ -290,7 +331,10 @@ for (const { fromKey, toKey, prop } of MAP) {
         hit = true;
         return figma.variables.setBoundVariableForPaint(p, 'color', target);
       });
-      if (hit) { node[prop] = next; mutated.push({ id: node.id, page: page.name, prop }); }
+      if (hit) {
+        node[prop] = next;
+        mutated.push({ id: node.id, page: page.name, prop });
+      }
     }
   }
 }
@@ -307,17 +351,21 @@ Ne lancer que si l'étape 2 a rendu les compteurs à zéro.
 ```js
 const TO_DELETE = [
   'VariableID:1003:112', // global/default/content/default (fusionnée)
-  'VariableID:5:107',    // global/high/surface/default    (fusionnée)
-  'VariableID:5:119',    // global/low/stroke/default      (fusionnée)
-  'VariableID:5:115',    // global/low/content/focused     (morte)
-  'VariableID:5:118',    // global/low/surface/focused     (morte)
-  'VariableID:5:121',    // global/low/stroke/focused      (morte)
-  'VariableID:5:120',    // global/low/stroke/hover        (morte)
+  'VariableID:5:107', // global/high/surface/default    (fusionnée)
+  'VariableID:5:119', // global/low/stroke/default      (fusionnée)
+  'VariableID:5:115', // global/low/content/focused     (morte)
+  'VariableID:5:118', // global/low/surface/focused     (morte)
+  'VariableID:5:121', // global/low/stroke/focused      (morte)
+  'VariableID:5:120', // global/low/stroke/hover        (morte)
 ];
-const deleted = [], skipped = [];
+const deleted = [],
+  skipped = [];
 for (const id of TO_DELETE) {
   const v = await figma.variables.getVariableByIdAsync(id);
-  if (!v) { skipped.push({ id, reason: 'introuvable' }); continue; }
+  if (!v) {
+    skipped.push({ id, reason: 'introuvable' });
+    continue;
+  }
   const name = v.name;
   v.remove();
   deleted.push({ id, name });
@@ -347,11 +395,11 @@ return { deleted, skipped };
 Indépendantes de cette migration, mais mises au jour par le relevé. À traiter
 séparément, elles ne bloquent pas le runbook.
 
-| Constat | Détail |
-|---|---|
-| **Figma ne modélise aucun état de focus** | `high/stroke/focused` → futur `border/focus` : **0 binding** dans les deux fichiers, alors que le code l'utilise **14 fois** (l'anneau de `:focus-visible`). Les composants Figma n'ont pas de variante `focused` reliée au token. |
-| **La bordure la plus utilisée du code est absente de Figma** | `default/stroke/default` → futur `border/subtle` : **0 binding** Figma, **27 usages** code. Figma utilise `high/stroke/default` partout où le code met la bordure discrète. |
-| **États hover partiellement absents** | `high/content/hover`, `high/stroke/hover`, `low/content/hover` : 0 binding Figma, mais utilisés dans le code. |
+| Constat                                                      | Détail                                                                                                                                                                                                                             |
+| ------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Figma ne modélise aucun état de focus**                    | `high/stroke/focused` → futur `border/focus` : **0 binding** dans les deux fichiers, alors que le code l'utilise **14 fois** (l'anneau de `:focus-visible`). Les composants Figma n'ont pas de variante `focused` reliée au token. |
+| **La bordure la plus utilisée du code est absente de Figma** | `default/stroke/default` → futur `border/subtle` : **0 binding** Figma, **27 usages** code. Figma utilise `high/stroke/default` partout où le code met la bordure discrète.                                                        |
+| **États hover partiellement absents**                        | `high/content/hover`, `high/stroke/hover`, `low/content/hover` : 0 binding Figma, mais utilisés dans le code.                                                                                                                      |
 
 Conséquence : après migration, ces 5 variables existeront dans Figma sans y être
 consommées. Elles restent nécessaires (le code s'en sert) — c'est le kit Figma qui

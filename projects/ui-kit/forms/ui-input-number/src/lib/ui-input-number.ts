@@ -160,7 +160,9 @@ export class UiInputNumber extends BaseFormField<number | null> {
 
   /** @ignore Does the input currently have focus? */
   private isFocused(): boolean {
-    return typeof document !== 'undefined' && document.activeElement === this.inputEl().nativeElement;
+    return (
+      typeof document !== 'undefined' && document.activeElement === this.inputEl().nativeElement
+    );
   }
 
   /** @ignore Update model + emit; reformat the text when requested. */

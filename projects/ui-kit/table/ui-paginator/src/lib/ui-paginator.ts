@@ -124,13 +124,17 @@ export class UiPaginator {
   /** @ignore Icon of the "last page" control. */
   protected readonly lastIconTemplate = contentChild<TemplateRef<unknown>>('lasticon');
   /** @ignore Content of a page-number button (context: number, page, active). */
-  protected readonly pageLinkTemplate = contentChild<TemplateRef<UiPaginatorPageLinkContext>>('pagelink');
+  protected readonly pageLinkTemplate =
+    contentChild<TemplateRef<UiPaginatorPageLinkContext>>('pagelink');
   /** @ignore Free content rendered before the controls (context: pagination state). */
-  protected readonly startTemplate = contentChild<TemplateRef<{ $implicit: UiPaginatorState }>>('start');
+  protected readonly startTemplate =
+    contentChild<TemplateRef<{ $implicit: UiPaginatorState }>>('start');
   /** @ignore Free content rendered after the rows-per-page select (context: pagination state). */
-  protected readonly endTemplate = contentChild<TemplateRef<{ $implicit: UiPaginatorState }>>('end');
+  protected readonly endTemplate =
+    contentChild<TemplateRef<{ $implicit: UiPaginatorState }>>('end');
   /** @ignore Rich current-page report (overrides `currentPageReportTemplate`). */
-  protected readonly reportTemplate = contentChild<TemplateRef<{ $implicit: UiPaginatorState }>>('report');
+  protected readonly reportTemplate =
+    contentChild<TemplateRef<{ $implicit: UiPaginatorState }>>('report');
 
   /** @ignore Exposes the ellipsis sentinel to the template. */
   protected readonly ELLIPSIS = ELLIPSIS;
@@ -139,14 +143,18 @@ export class UiPaginator {
   protected readonly rowsState = linkedSignal(() => Math.max(1, this.rows()));
 
   /** @ignore */
-  protected readonly pageCount = computed(() => Math.max(1, Math.ceil(this.totalRecords() / this.rowsState())));
+  protected readonly pageCount = computed(() =>
+    Math.max(1, Math.ceil(this.totalRecords() / this.rowsState())),
+  );
   /** @ignore `first` clamped to the dataset (data may shrink under the cursor). */
   protected readonly clampedFirst = computed(() => {
     const maxFirst = (this.pageCount() - 1) * this.rowsState();
     return Math.min(Math.max(0, this.first()), maxFirst);
   });
   /** @ignore Zero-based current page. */
-  protected readonly currentPage = computed(() => Math.floor(this.clampedFirst() / this.rowsState()));
+  protected readonly currentPage = computed(() =>
+    Math.floor(this.clampedFirst() / this.rowsState()),
+  );
 
   /** @ignore Page items to render: zero-based page indexes, `ELLIPSIS` for a gap. */
   protected readonly pageItems = computed<number[]>(() => {

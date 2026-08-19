@@ -1,23 +1,27 @@
 <div [class]="classes()" (mouseleave)="clearHover()">
   <!-- autofocus is a deliberate opt-in input of the component (default false). -->
   <!-- eslint-disable @angular-eslint/template/no-autofocus -->
-  <input #inputEl
-         type="range"
-         class="ui-rating-input"
-         min="0" [max]="stars()" [step]="step()"
-         [id]="resolvedId()"
-         [name]="name()"
-         [disabled]="isDisabled()"
-         [required]="required()"
-         [attr.autofocus]="autofocus() ? true : null"
-         [attr.readonly]="readonly() ? true : null"
-         [attr.aria-label]="ariaLabel() || null"
-         [attr.aria-labelledby]="ariaLabelledBy() || null"
-         [tabindex]="tabindex() ?? 0"
-         [value]="currentValue()"
-         (input)="onNativeChange($event)"
-         (focus)="onFocus($event)"
-         (blur)="onBlur($event)">
+  <input
+    #inputEl
+    type="range"
+    class="ui-rating-input"
+    min="0"
+    [max]="stars()"
+    [step]="step()"
+    [id]="resolvedId()"
+    [name]="name()"
+    [disabled]="isDisabled()"
+    [required]="required()"
+    [attr.autofocus]="autofocus() ? true : null"
+    [attr.readonly]="readonly() ? true : null"
+    [attr.aria-label]="ariaLabel() || null"
+    [attr.aria-labelledby]="ariaLabelledBy() || null"
+    [tabindex]="tabindex() ?? 0"
+    [value]="currentValue()"
+    (input)="onNativeChange($event)"
+    (focus)="onFocus($event)"
+    (blur)="onBlur($event)"
+  />
   <!-- eslint-enable @angular-eslint/template/no-autofocus -->
 
   <div class="ui-rating-stars">
@@ -25,18 +29,30 @@
       <!-- Purely visual stars: focus and keyboard are carried by
            the native <input type="range"> above. -->
       <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -->
-      <div class="ui-rating-icon"
-           (click)="rate(star.index, $event)"
-           (mousemove)="setHover(star.index, $event)">
+      <div
+        class="ui-rating-icon"
+        (click)="rate(star.index, $event)"
+        (mousemove)="setHover(star.index, $event)"
+      >
         <!-- The "on" icon is stacked over the "off" one and clipped to `fill`:
              a half star works with any icon family and any projected template. -->
         <span class="ui-rating-icon-stack">
           <span class="ui-rating-icon-base">
-            <ng-container *ngTemplateOutlet="offIconTemplate() || defaultOffIcon; context: { $implicit: star.index, active: star.active, fill: star.fill }" />
+            <ng-container
+              *ngTemplateOutlet="
+                offIconTemplate() || defaultOffIcon;
+                context: { $implicit: star.index, active: star.active, fill: star.fill }
+              "
+            />
           </span>
           @if (star.fill > 0) {
             <span class="ui-rating-icon-fill" [style.--ui-rating-fill]="star.fill">
-              <ng-container *ngTemplateOutlet="onIconTemplate() || defaultOnIcon; context: { $implicit: star.index, active: star.active, fill: star.fill }" />
+              <ng-container
+                *ngTemplateOutlet="
+                  onIconTemplate() || defaultOnIcon;
+                  context: { $implicit: star.index, active: star.active, fill: star.fill }
+                "
+              />
             </span>
           }
         </span>

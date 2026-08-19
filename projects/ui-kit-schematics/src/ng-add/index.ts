@@ -19,7 +19,12 @@ import { join } from 'node:path';
 import type { Schema } from './schema';
 import { addDependency, addNpmScript, readPackageJson } from '../utils/package-json';
 import { emptyManifest, MANIFEST_PATH, writeManifest } from '../utils/manifest';
-import { CONFIG_TABLE_PATH, docsPipelineDir, mcpServerDir, stylesFoundationDir } from '../utils/component-registry';
+import {
+  CONFIG_TABLE_PATH,
+  docsPipelineDir,
+  mcpServerDir,
+  stylesFoundationDir,
+} from '../utils/component-registry';
 import { readKitManifestInfo } from '../utils/kit-manifest';
 import { rewriteKitPaths } from '../utils/kit-paths';
 import { add } from '../add';
@@ -54,7 +59,8 @@ function copyStylesFoundationRule(): Rule {
     // La barrel `utils.scss` : c'est elle que résout le `@use 'utils'` en tête
     // de chaque `.scss` de composant, via l'includePath `src/styles/ui-kit`.
     const utilsBarrel = readFileSync(join(root, 'utils.scss'), 'utf8');
-    if (tree.exists('src/styles/ui-kit/utils.scss')) tree.overwrite('src/styles/ui-kit/utils.scss', utilsBarrel);
+    if (tree.exists('src/styles/ui-kit/utils.scss'))
+      tree.overwrite('src/styles/ui-kit/utils.scss', utilsBarrel);
     else tree.create('src/styles/ui-kit/utils.scss', utilsBarrel);
     // ✏️ copié UNE FOIS, éditable ensuite.
     copyAll(join(root, 'base'), 'src/styles/base', false);
@@ -138,7 +144,8 @@ function relaxAnyComponentStyleBudget(target: workspaces.TargetDefinition): void
       const { maximumWarning, ...rest } = budget;
       const warning = budgetBytes(maximumWarning);
       const next: Budget = { ...rest, maximumError: ANY_COMPONENT_STYLE_FLOOR };
-      if (warning !== null && warning >= ANY_COMPONENT_STYLE_FLOOR_BYTES) next.maximumWarning = maximumWarning;
+      if (warning !== null && warning >= ANY_COMPONENT_STYLE_FLOOR_BYTES)
+        next.maximumWarning = maximumWarning;
       return next;
     });
 
@@ -174,7 +181,9 @@ function updateAngularJson(): Rule {
         }
         options['styles'] = styles;
 
-        const preprocessor = (options['stylePreprocessorOptions'] ?? {}) as { includePaths?: string[] };
+        const preprocessor = (options['stylePreprocessorOptions'] ?? {}) as {
+          includePaths?: string[];
+        };
         const includePaths = (preprocessor.includePaths ?? []).slice();
         // `src/styles/ui-kit` résout `@use 'utils'` et `generated/tokens` ;
         // `src/styles` résout `base/base` et les couches du projet.
@@ -207,13 +216,21 @@ function copyTokensPipeline(): Rule {
 
     copyAll(join(pipelineDir, 'design-tokens'), 'src/design-tokens');
     if (!tree.exists('tokens.config.json')) {
-      tree.create('tokens.config.json', readFileSync(join(pipelineDir, 'tokens.config.json'), 'utf8'));
+      tree.create(
+        'tokens.config.json',
+        readFileSync(join(pipelineDir, 'tokens.config.json'), 'utf8'),
+      );
     }
     if (!tree.exists('scripts/tokens.build.mjs')) {
-      tree.create('scripts/tokens.build.mjs', readFileSync(join(pipelineDir, 'tokens.build.mjs'), 'utf8'));
+      tree.create(
+        'scripts/tokens.build.mjs',
+        readFileSync(join(pipelineDir, 'tokens.build.mjs'), 'utf8'),
+      );
     }
 
-    context.logger.info('✔ Chaîne de génération des tokens copiée (src/design-tokens/, tokens.config.json, scripts/tokens.build.mjs).');
+    context.logger.info(
+      '✔ Chaîne de génération des tokens copiée (src/design-tokens/, tokens.config.json, scripts/tokens.build.mjs).',
+    );
     return tree;
   };
 }
@@ -290,7 +307,10 @@ function scaffoldStorybook(): Rule {
         // Les pages transverses citent la fondation de styles — `Colors.mdx`
         // va jusqu'à importer le manifeste de tokens. Aux chemins du monorepo,
         // le build échoue sur un module introuvable.
-        create(`${targetDir}/${entry.name}`, entry.name.endsWith('.mdx') ? rewriteKitPaths(source) : source);
+        create(
+          `${targetDir}/${entry.name}`,
+          entry.name.endsWith('.mdx') ? rewriteKitPaths(source) : source,
+        );
       }
     };
 
@@ -302,7 +322,10 @@ function scaffoldStorybook(): Rule {
 
     const hasUiImage = tree.exists(UI_IMAGE_PATH);
     const preview = readFileSync(join(scaffolds, 'preview.ts'), 'utf8');
-    create('storybook/preview.ts', hasUiImage ? preview.replace(UI_IMAGE_MARKER_RE, '') : preview.replace(UI_IMAGE_BLOCK_RE, ''));
+    create(
+      'storybook/preview.ts',
+      hasUiImage ? preview.replace(UI_IMAGE_MARKER_RE, '') : preview.replace(UI_IMAGE_BLOCK_RE, ''),
+    );
 
     // `ui-image` résout ses images dans cette map. Vide, ses stories affichent
     // le placeholder plutôt que de faire échouer la compilation de la preview.
@@ -338,7 +361,9 @@ function addStorybookTargets(): Rule {
       const assets = build.options?.['assets'];
       if (Array.isArray(assets)) {
         build.options!['assets'] = assets.map((asset) =>
-          asset && typeof asset === 'object' && !('output' in asset) ? { ...asset, output: '.' } : asset,
+          asset && typeof asset === 'object' && !('output' in asset)
+            ? { ...asset, output: '.' }
+            : asset,
         );
       }
 
@@ -482,7 +507,9 @@ function addRuntimeDependencies(): Rule {
     if (!existingPostinstall?.includes('tokens:build')) {
       json.scripts = {
         ...json.scripts,
-        postinstall: existingPostinstall ? `${existingPostinstall} && npm run tokens:build` : 'npm run tokens:build',
+        postinstall: existingPostinstall
+          ? `${existingPostinstall} && npm run tokens:build`
+          : 'npm run tokens:build',
       };
       tree.overwrite('/package.json', JSON.stringify(json, null, 2) + '\n');
     }
@@ -554,7 +581,9 @@ function scaffoldMcpConfig(): Rule {
     const content = JSON.stringify(json, null, 2) + '\n';
     if (buffer) tree.overwrite(path, content);
     else tree.create(path, content);
-    context.logger.info(`✔ .mcp.json : serveur "${MCP_SERVER_NAME}" déclaré (${MCP_SERVER_DIR}/, local).`);
+    context.logger.info(
+      `✔ .mcp.json : serveur "${MCP_SERVER_NAME}" déclaré (${MCP_SERVER_DIR}/, local).`,
+    );
     return tree;
   };
 }
@@ -572,7 +601,7 @@ const AGENTS_MCP_BLOCK = [
   '',
   "Avant d'utiliser un composant `ui-*`, interroge le serveur MCP `ui-kit` (`list_components`, " +
     '`get_component_doc`, `search_docs`) plutôt que de lire les fichiers sources ou de deviner une ' +
-    'API — c\'est la doc publiée du kit, toujours à jour avec la version installée.',
+    "API — c'est la doc publiée du kit, toujours à jour avec la version installée.",
   AGENTS_MCP_MARKER_END,
   '',
 ].join('\n');

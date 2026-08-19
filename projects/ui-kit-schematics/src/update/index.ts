@@ -44,7 +44,9 @@ export function update(options: Schema): Rule {
     }
 
     const kitVersion = readKitVersion();
-    const outdated = Object.entries(manifest.components).filter(([, entry]) => entry.version !== kitVersion);
+    const outdated = Object.entries(manifest.components).filter(
+      ([, entry]) => entry.version !== kitVersion,
+    );
 
     if (!outdated.length) {
       context.logger.info(`Rien à mettre à jour — tout est déjà en ${kitVersion}.`);
@@ -55,17 +57,22 @@ export function update(options: Schema): Rule {
     for (const [name, entry] of outdated) {
       const unit = findUnit(name);
       if (!unit) {
-        context.logger.warn(`${name} : présent dans ui-kit.json mais introuvable dans le kit installé — ignoré.`);
+        context.logger.warn(
+          `${name} : présent dans ui-kit.json mais introuvable dans le kit installé — ignoré.`,
+        );
         continue;
       }
       // Le choix fait à l'installation, pas une valeur par défaut : une mise à
       // jour ne doit ni introduire de la doc chez qui n'en a pas demandé, ni
       // laisser périmée celle du projet qui en a (FSHSP-125).
-      const files = renderUnitFiles(unit, kitVersion, { withStorybook: manifest.storybook ?? false });
+      const files = renderUnitFiles(unit, kitVersion, {
+        withStorybook: manifest.storybook ?? false,
+      });
 
-       
       while (true) {
-        const action = options.yes ? 'apply' : await promptAction(`${name} (${entry.version} → ${kitVersion})`);
+        const action = options.yes
+          ? 'apply'
+          : await promptAction(`${name} (${entry.version} → ${kitVersion})`);
         if (action === 'view-diff') {
           for (const file of files) {
             context.logger.info(diffFor(tree, file.targetPath, file.content));
@@ -86,7 +93,9 @@ export function update(options: Schema): Rule {
 
     manifest.kitVersion = kitVersion;
     writeManifest(tree, manifest);
-    context.logger.info(`✔ ${applied}/${outdated.length} composant(s) mis à jour vers ${kitVersion}.`);
+    context.logger.info(
+      `✔ ${applied}/${outdated.length} composant(s) mis à jour vers ${kitVersion}.`,
+    );
     return tree;
   };
 }
