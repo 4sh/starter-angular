@@ -476,6 +476,88 @@ function addRuntimeDependencies(): Rule {
   };
 }
 
+/** Entrée `.mcp.json` déclarant le serveur MCP compagnon (FSHSP-115). `npx`,
+ * pas une dépendance installée : le serveur n'a besoin de rien d'autre pour
+ * répondre (son manifeste doc est embarqué au build, voir son README). */
+const MCP_SERVER_NAME = 'ui-kit';
+const MCP_SERVER_ENTRY = { command: 'npx', args: ['-y', '@4sh/ui-kit-mcp'] };
+
+/**
+ * Déclare le serveur MCP `ui-kit` dans `.mcp.json`, à la racine du projet.
+ *
+ * Fusionne plutôt qu'écrase : un `.mcp.json` existant peut déjà déclarer
+ * d'autres serveurs (ou celui-ci, retouché par le consommateur) — on
+ * n'ajoute la clé `ui-kit` que si elle est absente, jamais en écrasant une
+ * entrée déjà présente.
+ */
+function scaffoldMcpConfig(): Rule {
+  return (tree: Tree, context: SchematicContext) => {
+    const path = '/.mcp.json';
+    const buffer = tree.read(path);
+    const json: { mcpServers?: Record<string, unknown>; [key: string]: unknown } = buffer
+      ? JSON.parse(buffer.toString('utf8'))
+      : {};
+
+    if (json.mcpServers?.[MCP_SERVER_NAME]) {
+      context.logger.info(`✔ .mcp.json : serveur "${MCP_SERVER_NAME}" déjà déclaré, inchangé.`);
+      return tree;
+    }
+
+    json.mcpServers = { ...json.mcpServers, [MCP_SERVER_NAME]: MCP_SERVER_ENTRY };
+    const content = JSON.stringify(json, null, 2) + '\n';
+    if (buffer) tree.overwrite(path, content);
+    else tree.create(path, content);
+    context.logger.info(`✔ .mcp.json : serveur "${MCP_SERVER_NAME}" déclaré (npx @4sh/ui-kit-mcp).`);
+    return tree;
+  };
+}
+
+/**
+ * Bloc d'instruction agent, entre marqueurs pour rester idempotent d'un
+ * `ng add` à l'autre (jamais dupliqué, jamais réécrasé — un consommateur peut
+ * l'avoir retouché).
+ */
+const AGENTS_MCP_MARKER_START = '<!-- ui-kit-mcp:start -->';
+const AGENTS_MCP_MARKER_END = '<!-- ui-kit-mcp:end -->';
+const AGENTS_MCP_BLOCK = [
+  AGENTS_MCP_MARKER_START,
+  '## Design system (@4sh/ui-kit)',
+  '',
+  "Avant d'utiliser un composant `ui-*`, interroge le serveur MCP `ui-kit` (`list_components`, " +
+    '`get_component_doc`, `search_docs`) plutôt que de lire les fichiers sources ou de deviner une ' +
+    'API — c\'est la doc publiée du kit, toujours à jour avec la version installée.',
+  AGENTS_MCP_MARKER_END,
+  '',
+].join('\n');
+
+/**
+ * Ajoute ce bloc à `AGENTS.md`, à la racine du projet (convention déjà en
+ * place dans ce repo — voir son propre `AGENTS.md`). Crée le fichier s'il
+ * n'existe pas encore ; l'étend sinon, sans jamais toucher au reste.
+ */
+function scaffoldAgentsInstructions(): Rule {
+  return (tree: Tree, context: SchematicContext) => {
+    const path = '/AGENTS.md';
+    const buffer = tree.read(path);
+
+    if (!buffer) {
+      tree.create(path, `# AGENTS.md\n\n${AGENTS_MCP_BLOCK}`);
+      context.logger.info('✔ AGENTS.md créé (instruction agent pour le serveur MCP ui-kit).');
+      return tree;
+    }
+
+    const content = buffer.toString('utf8');
+    if (content.includes(AGENTS_MCP_MARKER_START)) {
+      context.logger.info('✔ AGENTS.md : instruction agent déjà présente, inchangée.');
+      return tree;
+    }
+
+    tree.overwrite(path, `${content.trimEnd()}\n\n${AGENTS_MCP_BLOCK}`);
+    context.logger.info('✔ AGENTS.md : instruction agent ajoutée pour le serveur MCP ui-kit.');
+    return tree;
+  };
+}
+
 function createManifest(withStorybook: boolean): Rule {
   return (tree: Tree, context: SchematicContext) => {
     if (tree.exists(MANIFEST_PATH)) return tree; // ré-exécution de `ng add` : on ne réinitialise pas
@@ -510,13 +592,18 @@ function installRuntimeDependencies(): Rule {
  * package n'est pas relu après un `ng add` qui vient d'afficher huit `✔` : un
  * `npm run storybook` qu'il faut deviner est un Storybook que l'on croit cassé.
  */
-function logNextSteps(withStorybook: boolean): Rule {
+function logNextSteps(withStorybook: boolean, withMcp: boolean): Rule {
   return (tree: Tree, context: SchematicContext) => {
     context.logger.info(
       withStorybook
         ? '\nStorybook posé. Pour le démarrer :\n    npm run storybook\n'
         : '\nStorybook non posé (--skip-storybook). Pour revenir dessus :\n    ng add @4sh/ui-kit-schematics\n',
     );
+    if (withMcp) {
+      context.logger.info(
+        'Serveur MCP "ui-kit" déclaré (.mcp.json) : un agent IA compatible MCP peut interroger la doc du kit directement.\n',
+      );
+    }
     return tree;
   };
 }
@@ -528,6 +615,10 @@ export function ngAdd(options: Schema): Rule {
   // reste pour le projet qui documente ailleurs, et qui n'a alors ni story, ni
   // MDX, ni les devDependencies de la preview.
   const withStorybook = !(options.skipStorybook ?? false);
+  // Posé par défaut aussi : c'est ce qui permet à un agent IA de consulter la
+  // doc du kit sans lire les sources (FSHSP-115). `--skip-mcp` pour le projet
+  // qui n'utilise pas d'agent compatible MCP, ou gère sa propre config.
+  const withMcp = !(options.skipMcp ?? false);
 
   const foundation = [
     copyStylesFoundationRule(),
@@ -539,6 +630,7 @@ export function ngAdd(options: Schema): Rule {
     addRuntimeDependencies(),
     updateAngularJson(),
     createManifest(withStorybook),
+    ...(withMcp ? [scaffoldMcpConfig(), scaffoldAgentsInstructions()] : []),
   ];
 
   // Après la fondation ET après la copie : le scaffold lit l'arbre pour savoir
@@ -567,7 +659,7 @@ export function ngAdd(options: Schema): Rule {
           'Fondation posée. Composants à copier ensuite : `ng generate @4sh/ui-kit-schematics:add`.',
         );
       },
-      logNextSteps(withStorybook),
+      logNextSteps(withStorybook, withMcp),
       ...install,
     ]);
   }
@@ -580,7 +672,7 @@ export function ngAdd(options: Schema): Rule {
     // Elle reste sur `ng generate …:add`, pour un usage scripté.
     add({ all: options.all, withStorybook }),
     ...storybook,
-    logNextSteps(withStorybook),
+    logNextSteps(withStorybook, withMcp),
     ...install,
   ]);
 }

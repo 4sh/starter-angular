@@ -43,6 +43,7 @@ against newer sources, to accept or skip.
 | `ng add @4sh/ui-kit-schematics --skip-components` | foundation only, pick components later |
 | `ng add @4sh/ui-kit-schematics --skip-install` | skip `npm install` (project drives its own lockfile) |
 | `ng add @4sh/ui-kit-schematics --skip-storybook` | do not set up a Storybook (see below) |
+| `ng add @4sh/ui-kit-schematics --skip-mcp` | do not declare the MCP server (see below) |
 | `ng generate @4sh/ui-kit-schematics:add` | copy more components (interactive, or `--components`, or `--all`) |
 | `ng generate @4sh/ui-kit-schematics:update` | diff copied components against the published sources |
 
@@ -81,6 +82,18 @@ none of the preview devDependencies. The choice is recorded in `ui-kit.json`, an
 Not carried over: the `parameters.design` links to our Figma file — you cannot
 open it, so it is stripped at copy time. Put your own `node-id` back if you have
 one.
+
+### AI agent (MCP server)
+
+Also set up by default: an `.mcp.json` entry declaring the companion
+**[`@4sh/ui-kit-mcp`](https://www.npmjs.com/package/@4sh/ui-kit-mcp)** server (run
+on demand via `npx`, nothing to install), and a short instruction appended to your
+`AGENTS.md` telling an MCP-aware coding agent to query it — component API, tokens,
+full-text doc search — instead of reading sources or guessing.
+
+Both are additive: an existing `.mcp.json` keeps its other servers, an existing
+`AGENTS.md` keeps its content, and re-running `ng add` never duplicates the block.
+`--skip-mcp` if you do not use an MCP-aware agent, or manage that config yourself.
 
 ### `@4sh/ui-kit` is deliberately **not** installed
 
