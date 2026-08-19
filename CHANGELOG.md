@@ -16,6 +16,9 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+### Changed
+- **`ng add @4sh/ui-kit` échoue désormais** (FSHSP-142). Ce point d'entrée ne faisait que logger un message d'info — aucune configuration générée, pas plus qu'un simple `npm install @4sh/ui-kit` — tout en étant la commande tentée naturellement pour le mode starter. Il renvoie maintenant une erreur explicite (`ng add @4sh/ui-kit-schematics` pour le starter, `npm install @4sh/ui-kit` directement pour la librairie) plutôt que de se terminer en succès silencieux.
+
 ## [0.4.0] - 2026-08-19
 
 ### Added
