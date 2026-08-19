@@ -46,6 +46,28 @@
             "items": { "type": "string" },
             "description": "Token JSON files (DTCG format: nested groups with $value/$type leaves), relative to sourceRoot."
           },
+          "fontStacks": {
+            "type": "object",
+            "description": "Append a CSS fallback stack to this collection's font family tokens. The token JSON keeps the bare family name (what Figma's FONT_FAMILY scope stores), the generated CSS gets \"Inter\", system-ui, …, sans-serif. Without it, a project that does not ship the font files falls through to the browser default, which is a serif.",
+            "required": ["group"],
+            "additionalProperties": false,
+            "properties": {
+              "group": {
+                "type": "string",
+                "description": "Path segment holding the font family tokens (e.g. \"fontFamily\"). Every token outside it is left untouched."
+              },
+              "default": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Families appended after the token's own, for every family without a byFamily entry. Ordered, most preferred first. CSS generics and system keywords (sans-serif, system-ui, ui-monospace…) are emitted unquoted; names carrying a space are quoted."
+              },
+              "byFamily": {
+                "type": "object",
+                "additionalProperties": { "type": "array", "items": { "type": "string" } },
+                "description": "Per-family override, keyed by the token's last path segment (e.g. \"monospace\"). An empty array appends nothing — the right choice for an icon font, which has no meaningful substitute."
+              }
+            }
+          },
           "modeAxes": {
             "type": "array",
             "description": "How this collection's modes become CSS. Each axis detects a mode from a path segment (e.g. \"modeDark\" nested in the tree) and wraps the tokens of non-default modes in a selector or media query. Default mode goes to :root.",

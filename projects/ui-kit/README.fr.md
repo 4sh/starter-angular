@@ -125,8 +125,12 @@ couche de base, les classes typographiques et les presets d'animation de la dire
 est simplement faux visuellement.
 
 Les `@font-face` ne sont **pas** inclus : les tokens se contentent de *nommer* les
-familles (`--fontfamily-base`). Livrez vos propres polices et surchargez
-`--fontfamily-*` si besoin.
+familles (`--fontfamily-base`), et chacune se termine par une pile système, une
+application qui n'embarque aucun fichier de police s'affiche donc dans le sans-serif de
+l'OS (San Francisco, Segoe UI, Roboto), jamais dans le serif par défaut du navigateur.
+Pour les vôtres : déclarez les `@font-face` dans une feuille globale et surchargez
+`--fontfamily-*` au même endroit, en gardant une queue de pile. Le pas-à-pas, pour les
+deux modes de consommation : **Foundations → Typography** dans le Storybook.
 
 **2. Importez le composant dont vous avez besoin** — et lui seul. Ici le date picker,
 sans tirer le reste du kit dans votre bundle :
