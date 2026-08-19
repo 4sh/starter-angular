@@ -32,6 +32,11 @@ Copied files belong to you: edit them freely. `ui-kit.json` records which
 component came from which version, so `update` can later show you a per-file diff
 against newer sources, to accept or skip.
 
+> Each component ships with a **`.scss`** file, not `.css`: the foundation step sets
+> `schematics.@schematics/angular:component.style` to `scss` in your `angular.json`,
+> so `ng generate component` in your project keeps generating SCSS afterwards too —
+> Angular's plain-CSS default is intentionally overridden.
+
 | | |
 |---|---|
 | `ng add @4sh/ui-kit-schematics` | foundation **and** components, in one go |

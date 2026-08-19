@@ -43,6 +43,12 @@ Both sites are redeployed on every push to `main`
 | Grid         | Gridaflex |
 | Icons        | FontAwesome Free |
 
+> **Stylesheets are SCSS (Sass), not the plain CSS Angular scaffolds by default.**
+> `schematics.@schematics/angular:component.style` is set to `scss` in
+> [`angular.json`](angular.json), and every component ships a `.scss` file — never
+> `.css`. `ng generate component` in this repo therefore already generates the right
+> extension; do not switch it back to `css`.
+
 ---
 
 ## Using the kit in an application
