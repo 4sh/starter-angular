@@ -26,7 +26,8 @@
  * Usage : node scripts/schematics-assets.build.mjs
  */
 
-import { readdirSync, readFileSync, writeFileSync, existsSync, mkdirSync, copyFileSync, rmSync } from 'node:fs';
+import { execSync } from 'node:child_process';
+import { readdirSync, readFileSync, writeFileSync, existsSync, mkdirSync, copyFileSync, cpSync, rmSync } from 'node:fs';
 import { dirname, join, resolve, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -225,10 +226,22 @@ function main() {
     docFiles += copyTree(src, join(ASSETS, 'storybook/docs', group), (n) => n.endsWith('.mdx'));
   }
 
+  // Serveur MCP compagnon (FSHSP-115) : bundlé (esbuild, un seul fichier ESM,
+  // zéro dépendance) puis copié tel quel — c'est CE dossier que `ng-add`
+  // recopiera chez le consommateur (`.ui-kit-mcp/`), jamais publié à part.
+  // Voir `projects/ui-kit-mcp/README.md`.
+  execSync('npm run mcp:bundle', { cwd: ROOT, stdio: 'inherit' });
+  const mcpServerDir = join(ROOT, 'dist/ui-kit-mcp');
+  let mcpFiles = 0;
+  if (existsSync(mcpServerDir)) {
+    cpSync(mcpServerDir, join(ASSETS, 'mcp-server'), { recursive: true });
+    mcpFiles = readdirSync(mcpServerDir, { recursive: true }).length;
+  }
+
   console.log(
     `[schematics-assets] ${componentCount} composant(s), ${sharedCount} base(s) partagée(s), ` +
       `${styleFiles} fichier(s) de style, ${tokenFiles} fichier(s) de pipeline de tokens, ` +
-      `${docFiles} fichier(s) de chaîne de doc → ${relative(ROOT, ASSETS)}`,
+      `${docFiles} fichier(s) de chaîne de doc, ${mcpFiles} fichier(s) de serveur MCP → ${relative(ROOT, ASSETS)}`,
   );
 }
 

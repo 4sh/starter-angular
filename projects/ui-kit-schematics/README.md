@@ -85,15 +85,18 @@ one.
 
 ### AI agent (MCP server)
 
-Also set up by default: an `.mcp.json` entry declaring the companion
-**[`@4sh/ui-kit-mcp`](https://www.npmjs.com/package/@4sh/ui-kit-mcp)** server (run
-on demand via `npx`, nothing to install), and a short instruction appended to your
-`AGENTS.md` telling an MCP-aware coding agent to query it — component API, tokens,
-full-text doc search — instead of reading sources or guessing.
+Also set up by default: a small MCP server copied into `.ui-kit-mcp/` (a bundled,
+dependency-free file — 🔒 locked, refreshed on every `ng add`, like the styles
+foundation — never hand-edit it), an `.mcp.json` entry declaring it (`node
+.ui-kit-mcp/index.js` — nothing to fetch from the npm registry, it is already on
+disk), and a short instruction appended to your `AGENTS.md` telling an MCP-aware
+coding agent to query it — component API, tokens, full-text doc search — instead
+of reading sources or guessing.
 
-Both are additive: an existing `.mcp.json` keeps its other servers, an existing
-`AGENTS.md` keeps its content, and re-running `ng add` never duplicates the block.
-`--skip-mcp` if you do not use an MCP-aware agent, or manage that config yourself.
+`.mcp.json` and `AGENTS.md` are additive: an existing `.mcp.json` keeps its other
+servers, an existing `AGENTS.md` keeps its content, and re-running `ng add` never
+duplicates the block. `--skip-mcp` if you do not use an MCP-aware agent, or manage
+that config yourself.
 
 ### `@4sh/ui-kit` is deliberately **not** installed
 

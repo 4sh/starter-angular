@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 /**
- * index — point d'entrée du bin `ui-kit-mcp`. Transport stdio uniquement pour
- * l'instant (usage nominal MCP : lancé par le client — Claude Code, Claude
- * Desktop… — via `npx -y @4sh/ui-kit-mcp`, jamais exposé en réseau).
+ * index — point d'entrée, bundlé en un seul fichier autonome (voir
+ * `scripts/mcp-bundle.build.mjs`). Transport stdio uniquement pour l'instant :
+ * lancé localement par le client (Claude Code, Claude Desktop…) via
+ * `node <chemin du bundle>`, jamais exposé en réseau.
  */
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { createServer } from './server.js';

@@ -92,6 +92,11 @@ export function docsPipelineDir(): string {
   return join(ASSETS_ROOT, 'docs-pipeline');
 }
 
+/** Serveur MCP compagnon, bundlé (FSHSP-115) — voir `scripts/mcp-bundle.build.mjs`. */
+export function mcpServerDir(): string {
+  return join(ASSETS_ROOT, 'mcp-server');
+}
+
 /** Story et MDX d'un composant : sa doc, laissée de côté sur `--skip-storybook`. */
 export function isStorybookFile(path: string): boolean {
   return path.endsWith('.stories.ts') || path.endsWith('.mdx');

@@ -23,13 +23,12 @@
     "docs:config:check": "node scripts/docs.config.mjs --check && node scripts/component-vars.build.mjs --check && npm run components:check",
     "components:check": "node scripts/components.check.mjs",
     "ui-kit:styles": "sass projects/ui-kit/styles/index.scss dist/ui-kit/styles.css --load-path=projects/ui-kit/styles --no-source-map --style=compressed",
-    "ui-kit:pack": "npm run ui-kit:build && npm pack ./dist/ui-kit",
+    "ui-kit:pack": "npm run ui-kit:build && node scripts/ui-kit-mcp-embed.build.mjs && npm pack ./dist/ui-kit",
     "schematics:assets": "node scripts/schematics-assets.build.mjs",
     "schematics:build": "node scripts/schematics-package.build.mjs",
     "schematics:pack": "npm run schematics:build && npm pack ./dist/ui-kit-schematics",
     "mcp:assets": "node scripts/mcp-assets.build.mjs",
-    "mcp:build": "node scripts/mcp-package.build.mjs",
-    "mcp:pack": "npm run mcp:build && npm pack ./dist/ui-kit-mcp",
+    "mcp:bundle": "node scripts/mcp-bundle.build.mjs",
     "mcp:test": "vitest run --root projects/ui-kit-mcp"
   },
   "dependencies": {
@@ -70,6 +69,7 @@
     "angular-eslint": "^22.1.0",
     "axe-playwright": "^2.2.2",
     "diff": "^9.0.0",
+    "esbuild": "^0.28.2",
     "eslint": "^10.8.1",
     "http-server": "^14.1.1",
     "jsdom": "^28.0.0",

@@ -19,7 +19,7 @@ import { join } from 'node:path';
 import type { Schema } from './schema';
 import { addDependency, addNpmScript, readPackageJson } from '../utils/package-json';
 import { emptyManifest, MANIFEST_PATH, writeManifest } from '../utils/manifest';
-import { CONFIG_TABLE_PATH, docsPipelineDir, stylesFoundationDir } from '../utils/component-registry';
+import { CONFIG_TABLE_PATH, docsPipelineDir, mcpServerDir, stylesFoundationDir } from '../utils/component-registry';
 import { readKitManifestInfo } from '../utils/kit-manifest';
 import { rewriteKitPaths } from '../utils/kit-paths';
 import { add } from '../add';
@@ -476,11 +476,43 @@ function addRuntimeDependencies(): Rule {
   };
 }
 
-/** Entrée `.mcp.json` déclarant le serveur MCP compagnon (FSHSP-115). `npx`,
- * pas une dépendance installée : le serveur n'a besoin de rien d'autre pour
- * répondre (son manifeste doc est embarqué au build, voir son README). */
+/** Dossier du serveur MCP compagnon chez le consommateur (FSHSP-115). Un
+ * point (comme `.storybook` ailleurs dans l'écosystème) : c'est un outil, pas
+ * une source à éditer — voir {@link copyMcpServerRule}. */
+const MCP_SERVER_DIR = '.ui-kit-mcp';
 const MCP_SERVER_NAME = 'ui-kit';
-const MCP_SERVER_ENTRY = { command: 'npx', args: ['-y', '@4sh/ui-kit-mcp'] };
+/** `node`, pas `npx` : le bundle copié est autonome (esbuild, zéro dépendance
+ * à résoudre), donc rien à aller chercher sur le registre npm pour le lancer. */
+const MCP_SERVER_ENTRY = { command: 'node', args: [`${MCP_SERVER_DIR}/index.js`] };
+
+/**
+ * Copie le serveur MCP bundlé (FSHSP-115) dans `.ui-kit-mcp/`, à la racine du
+ * projet. 🔒 Verrouillé comme la fondation de styles : régénéré à chaque
+ * `ng add`/mise à jour — c'est un outil, jamais une source à éditer.
+ */
+function copyMcpServerRule(): Rule {
+  return (tree: Tree, context: SchematicContext) => {
+    const root = mcpServerDir();
+
+    const copyAll = (srcDir: string, targetDir: string) => {
+      for (const entry of readdirSync(srcDir, { withFileTypes: true })) {
+        const full = join(srcDir, entry.name);
+        const targetPath = `${targetDir}/${entry.name}`;
+        if (entry.isDirectory()) {
+          copyAll(full, targetPath);
+          continue;
+        }
+        const content = readFileSync(full, 'utf8');
+        if (tree.exists(targetPath)) tree.overwrite(targetPath, content);
+        else tree.create(targetPath, content);
+      }
+    };
+
+    copyAll(root, MCP_SERVER_DIR);
+    context.logger.info(`✔ Serveur MCP copié (${MCP_SERVER_DIR}/).`);
+    return tree;
+  };
+}
 
 /**
  * Déclare le serveur MCP `ui-kit` dans `.mcp.json`, à la racine du projet.
@@ -507,7 +539,7 @@ function scaffoldMcpConfig(): Rule {
     const content = JSON.stringify(json, null, 2) + '\n';
     if (buffer) tree.overwrite(path, content);
     else tree.create(path, content);
-    context.logger.info(`✔ .mcp.json : serveur "${MCP_SERVER_NAME}" déclaré (npx @4sh/ui-kit-mcp).`);
+    context.logger.info(`✔ .mcp.json : serveur "${MCP_SERVER_NAME}" déclaré (${MCP_SERVER_DIR}/, local).`);
     return tree;
   };
 }
@@ -630,7 +662,7 @@ export function ngAdd(options: Schema): Rule {
     addRuntimeDependencies(),
     updateAngularJson(),
     createManifest(withStorybook),
-    ...(withMcp ? [scaffoldMcpConfig(), scaffoldAgentsInstructions()] : []),
+    ...(withMcp ? [copyMcpServerRule(), scaffoldMcpConfig(), scaffoldAgentsInstructions()] : []),
   ];
 
   // Après la fondation ET après la copie : le scaffold lit l'arbre pour savoir

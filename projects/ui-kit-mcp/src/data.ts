@@ -1,14 +1,16 @@
 /**
- * data — charge le manifeste embarqué avec le package : une copie figée, au
+ * data — charge le manifeste embarqué avec le serveur : une copie figée, au
  * moment du build, des artefacts déjà produits par le pipeline doc du kit
  * (`storybook/public/text-search-docs.json`, `storybook/generated/ui-config.json`).
  *
- * Pourquoi une copie et pas une lecture live du repo : ce serveur est publié
- * à part (`@4sh/ui-kit-mcp`) et tourne chez le consommateur, qui n'a ni
- * `storybook/`, ni `projects/ui-kit/` sur disque — seulement le package
- * installé. Le manifeste voyage donc AVEC le serveur ; `scripts/mcp-assets.build.mjs`
- * le copie ici avant `tsc`, et `scripts/mcp-package.build.mjs` le recopie à
- * côté du JS compilé pour que ce chemin relatif reste valide une fois publié.
+ * Pourquoi une copie et pas une lecture live du repo : ce serveur n'est pas
+ * publié sur npm — il est bundlé (`scripts/mcp-bundle.build.mjs`) puis
+ * embarqué dans `@4sh/ui-kit` (mode librairie) ou `@4sh/ui-kit-schematics`
+ * (mode starter, copié chez le consommateur par `ng add`). Dans les deux cas,
+ * il tourne loin de ce repo, sans `storybook/` ni `projects/ui-kit/` sur
+ * disque. Le manifeste voyage donc AVEC le serveur : `scripts/mcp-assets.build.mjs`
+ * le copie ici avant le bundle, qui le recopie à côté du JS pour que ce
+ * chemin relatif reste valide partout où le bundle est embarqué.
  */
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';

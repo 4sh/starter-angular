@@ -71,6 +71,36 @@ importer son code compilé au lieu de vos copies. Voir
 
 Les deux modes ne se combinent pas — choisissez celui qui correspond au projet.
 
+### Agent IA (serveur MCP)
+
+Un petit serveur MCP est embarqué **dans ce package**, sous `mcp/` — bundlé au
+build (un seul fichier, zéro dépendance), jamais publié à part. Il expose le
+catalogue des composants, leur API et leur doc (recherche plein texte incluse) à un
+agent IA compatible MCP (Claude Code, Claude Desktop, Cursor…), pour qu'il
+l'interroge plutôt que de lire les sources ou de deviner.
+
+Contrairement à `ng add @4sh/ui-kit-schematics` (qui le déclare pour vous), cette
+voie n'a pas de hook à l'installation — ajoutez-le vous-même, une fois, dans votre
+`.mcp.json` :
+
+```json
+{
+  "mcpServers": {
+    "ui-kit": {
+      "command": "node",
+      "args": ["node_modules/@4sh/ui-kit/mcp/index.js"]
+    }
+  }
+}
+```
+
+Rien à installer au-delà de `@4sh/ui-kit` lui-même, et rien à aller chercher sur le
+registre npm à l'usage — le fichier est déjà sur le disque une fois `npm install`
+passé. Tools : `list_components`, `get_component_doc`, `search_docs`,
+`get_shared_config` — le même contenu que la doc Storybook liée plus haut, et que
+son bouton **Copier en Markdown** sur chaque page, pour un chat qui n'est pas
+compatible MCP.
+
 ---
 
 ## Démarrer

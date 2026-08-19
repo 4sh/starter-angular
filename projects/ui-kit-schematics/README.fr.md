@@ -89,16 +89,18 @@ vous en avez un.
 
 ### Agent IA (serveur MCP)
 
-Posé par défaut aussi : une entrée `.mcp.json` déclarant le serveur compagnon
-**[`@4sh/ui-kit-mcp`](https://www.npmjs.com/package/@4sh/ui-kit-mcp)** (lancé à la
-demande via `npx`, rien à installer), et une courte instruction ajoutée à votre
-`AGENTS.md` qui dit à un agent compatible MCP de l'interroger — API des
-composants, tokens, recherche plein texte dans la doc — plutôt que de lire les
-sources ou de deviner.
+Posé par défaut aussi : un petit serveur MCP copié dans `.ui-kit-mcp/` (un fichier
+bundlé, zéro dépendance — 🔒 verrouillé, régénéré à chaque `ng add`, comme la
+fondation de styles — jamais retouché à la main), une entrée `.mcp.json` qui le
+déclare (`node .ui-kit-mcp/index.js` — rien à aller chercher sur le registre npm,
+il est déjà sur le disque), et une courte instruction ajoutée à votre `AGENTS.md`
+qui dit à un agent compatible MCP de l'interroger — API des composants, tokens,
+recherche plein texte dans la doc — plutôt que de lire les sources ou de deviner.
 
-Les deux sont additifs : un `.mcp.json` existant garde ses autres serveurs, un
-`AGENTS.md` existant garde son contenu, et relancer `ng add` ne duplique jamais le
-bloc. `--skip-mcp` si vous n'utilisez pas d'agent compatible MCP, ou gérez cette
+`.mcp.json` et `AGENTS.md` sont additifs : un `.mcp.json` existant garde ses
+autres serveurs, un `AGENTS.md` existant garde son contenu, et relancer `ng add`
+ne duplique jamais le bloc. `--skip-mcp` si vous n'utilisez pas d'agent compatible
+MCP, ou gérez cette
 config vous-même.
 
 ### `@4sh/ui-kit` n'est délibérément **pas** installé
