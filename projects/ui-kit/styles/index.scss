@@ -15,7 +15,10 @@
 //
 // NOT included: `@font-face` declarations. The tokens only *name* the families
 // (`--fontfamily-base`), so each project ships and declares its own font files;
-// override `--fontfamily-*` to point at yours.
+// override `--fontfamily-*` to point at yours. Every family token ends with a
+// system fallback stack (see `fontStacks` in tokens.config.json), so a project
+// that ships nothing still renders in the OS sans — never in the browser's
+// serif default. Keep that tail when you override.
 // -----------------------------------------------------------------------------
 
 @use 'generated/tokens';

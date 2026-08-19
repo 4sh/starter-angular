@@ -122,7 +122,11 @@ layer, the typography classes and the animation presets of the `UiMotion` direct
 **Without it, components render unstyled** — nothing errors, everything just looks wrong.
 
 `@font-face` rules are **not** included: the tokens merely *name* the families
-(`--fontfamily-base`). Ship your own fonts and override `--fontfamily-*` if needed.
+(`--fontfamily-base`), and every one of them ends with a system fallback stack, so an app
+that ships no font file renders in the OS sans (San Francisco, Segoe UI, Roboto), never in
+the browser's serif default. To use your own: declare the `@font-face` rules in a global
+stylesheet and override `--fontfamily-*` there, keeping a fallback tail. Step by step, for
+both consumption modes: **Foundations → Typography** in the Storybook.
 
 **2. Import the component you need** — and only that one. Here, the date picker, without
 pulling the rest of the kit into your bundle:

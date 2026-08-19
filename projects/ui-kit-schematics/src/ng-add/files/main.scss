@@ -13,7 +13,10 @@
 //
 // NON inclus : les déclarations `@font-face`. Les tokens ne font que *nommer*
 // les familles (`--fontfamily-base`) ; déclarez vos propres fichiers de police
-// et surchargez `--fontfamily-*` pour les pointer.
+// et surchargez `--fontfamily-*` pour les pointer. Chaque famille se termine par
+// une pile système (cf. `fontStacks` dans tokens.config.json) : sans aucune
+// police embarquée, le rendu tombe sur le sans-serif de l'OS, jamais sur le
+// serif du navigateur. Gardez cette queue de pile quand vous surchargez.
 // -----------------------------------------------------------------------------
 
 // 🔒 Tokens générés — régénérés par `npm run tokens:build`, jamais édités à la main.

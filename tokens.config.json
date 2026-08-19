@@ -98,7 +98,29 @@
       "files": [
         "typography.json"
       ],
-      "modeAxes": []
+      "modeAxes": [],
+      "fontStacks": {
+        "group": "fontFamily",
+        "default": [
+          "system-ui",
+          "-apple-system",
+          "Segoe UI",
+          "Roboto",
+          "Helvetica Neue",
+          "Arial",
+          "sans-serif"
+        ],
+        "byFamily": {
+          "monospace": [
+            "ui-monospace",
+            "SFMono-Regular",
+            "Menlo",
+            "Consolas",
+            "monospace"
+          ],
+          "icon": []
+        }
+      }
     },
     {
       "id": "styles",

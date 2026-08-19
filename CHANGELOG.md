@@ -23,6 +23,22 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 ### Changed
 - **Le Storybook du mode starter est posé par défaut** (FSHSP-134). `ng add @4sh/ui-kit-schematics` pose désormais la doc sans qu'on la demande : story et MDX à côté de chaque composant copié, configuration `storybook/`, cibles `angular.json`, devDependencies et scripts npm. `--with-storybook` disparaît au profit de `--skip-storybook`, pour le projet qui documente ailleurs. Le flag opt-in laissait le cas nominal sans doc, et la commande ne mentionnait nulle part qu'il existait : le diagnostic naturel devant `npm run storybook` → `Missing script` est que le Storybook de la schematic est cassé. La commande dit maintenant, en dernière ligne, ce qu'il reste à lancer.
 
+### Fixed
+- **Les composants ne s'affichent plus en serif chez un consommateur qui n'embarque pas les polices du starter** (FSHSP-135). Les tokens de famille ne portaient que le nom nu — `--fontfamily-base: Inter` — et les ~40 `.scss` du kit les lisent tels quels (`font-family: var(--fontfamily-base)`). Sans le fichier de police, cette déclaration retombait sur le défaut du navigateur, c'est-à-dire un serif ; la couche de base aggravait le cas en déclarant explicitement `var(--fontfamily-base), serif`. Un projet qui installait le kit et chargeait `styles.css` voyait donc tout le kit en Times.
+
+  Chaque famille se termine désormais par une pile système, ajoutée **au build** :
+
+  ```css
+  --fontfamily-base:      Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --fontfamily-monospace: "Roboto Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  ```
+
+  La pile est déclarée par la clé `fontStacks` de la collection `typography` dans `tokens.config.json` (repli par défaut, et par famille pour le monospace ; aucun repli pour la police d'icônes, qui n'a pas de substitut lisible). Le JSON de tokens, lui, garde le nom de famille nu : c'est ce que stocke la variable Figma (scope `FONT_FAMILY`), et la parité Figma ↔ SCSS reste donc intacte.
+
+  Sans aucune police embarquée, le rendu tombe maintenant sur le sans-serif de l'OS — San Francisco, Segoe UI, Roboto. **Les fichiers de police ne sont toujours pas livrés dans le package** : ils appartiennent au projet, comme sa marque. La mise en place, pour les deux modes de consommation, est documentée dans Storybook → *Foundations → Typography*.
+
+  Vaut pour les deux modes : le mode schematics reçoit la même fondation, et le pipeline de tokens qu'il copie porte le correctif — un `npm run tokens:build` côté projet régénère bien les piles.
+
 ## [0.3.0] - 2026-08-18
 
 Deux chantiers dominent cette version, un par mode de consommation. En **mode

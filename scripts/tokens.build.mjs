@@ -27,6 +27,44 @@ const kebab = (parts) =>
   parts.filter(Boolean).join('-').toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
 const slug = (id) => String(id).replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-|-$/g, '').toLowerCase();
 
+// --- Font family stacks -------------------------------------------------------
+// A font family token carries the BARE family name: that is what Figma's
+// FONT_FAMILY scope stores, and renaming it would break the Figma ↔ SCSS parity.
+// But `font-family: Inter` alone falls through to the browser default — a serif —
+// in any project that does not ship the font files. So the fallback stack is
+// appended here, at build time, declared per collection in tokens.config.json
+// (`fontStacks`). The JSON stays Figma-shaped; the CSS gets a real stack.
+
+/** CSS generic families and system keywords: never quoted. */
+const FONT_KEYWORDS = new Set([
+  'serif',
+  'sans-serif',
+  'monospace',
+  'cursive',
+  'fantasy',
+  'system-ui',
+  'ui-serif',
+  'ui-sans-serif',
+  'ui-monospace',
+  'ui-rounded',
+  'math',
+  'emoji',
+  'fangsong',
+]);
+
+/** Quote a family name unless it is a keyword or a single CSS identifier (`-apple-system`, `Roboto`). */
+function cssFamily(name) {
+  const n = String(name).trim();
+  if (FONT_KEYWORDS.has(n.toLowerCase())) return n;
+  return /^-?[a-zA-Z_][\w-]*$/.test(n) ? n : `"${n.replace(/"/g, '\\"')}"`;
+}
+
+/** Family key ("base", "monospace"…) of a leaf sitting inside the configured group, else undefined. */
+function fontFamilyKey(path, group) {
+  const segs = path[0]?.startsWith('__grp__') ? path.slice(1) : path;
+  return segs.includes(group) ? segs[segs.length - 1] : undefined;
+}
+
 /** Mode names to strip from paths/names for a collection (all axes, defaults included). */
 function modeSegments(col) {
   const s = new Set();
@@ -237,6 +275,22 @@ StyleDictionary.registerTransform({
   },
 });
 
+// Font family values: `Inter` → `"Inter", system-ui, …, sans-serif`. Driven by the
+// collection's `fontStacks` (see above); a no-op for every other collection.
+StyleDictionary.registerTransform({
+  name: 'value/starter-font-stack',
+  type: 'value',
+  transform: (token, config) => {
+    const value = token.$value ?? token.value;
+    const stacks = config.fontStacks;
+    if (!stacks || typeof value !== 'string') return value;
+    const family = fontFamilyKey(token.path, stacks.group);
+    if (family === undefined) return value;
+    const fallback = stacks.byFamily?.[family] ?? stacks.default ?? [];
+    return [value, ...fallback].map(cssFamily).join(', ');
+  },
+});
+
 /** `--name: value;` lines of a token list (references kept as var(--…)), deduped by name. */
 function cssLines(tokens, dictionary, options) {
   const format = createPropertyFormatter({
@@ -370,7 +424,8 @@ for (const output of CONFIG.outputs ?? []) {
       log: { verbosity: 'verbose', warnings: 'disabled' },
       platforms: {
         out: {
-          transforms: ['name/starter'],
+          transforms: ['name/starter', 'value/starter-font-stack'],
+          fontStacks: col.fontStacks,
           files: [
             {
               destination: `_tokens-${slug(col.id)}.scss`,

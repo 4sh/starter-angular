@@ -67,6 +67,122 @@ Voici les polices configurées via les design tokens. Chaque famille a un rôle 
 
 ---
 
+## Fournir les fichiers de police
+
+Les tokens **nomment** les familles, ils ne les **livrent** pas. Ni `styles.css` (mode
+package) ni la fondation copiée (mode schematics) ne contient de `@font-face`, et le kit
+n'appelle aucun CDN : les fichiers de police appartiennent au projet, comme sa marque.
+
+### Ce qui est garanti sans rien installer
+
+Chaque `--fontfamily-*` généré se termine par une pile système. Une application qui
+n'embarque aucune police s'affiche donc dans le sans-serif de l'OS — San Francisco,
+Segoe UI, Roboto — et **jamais** dans le serif par défaut du navigateur :
+
+```css
+--fontfamily-base:       Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+--fontfamily-title:      "DM Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+--fontfamily-monospace:  "Roboto Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+--fontfamily-icon:       "Font Awesome 6 Free";
+```
+
+La première famille de chaque pile est celle du Design System ; les suivantes sont le
+filet. La pile est ajoutée **au build** par `tokens.config.json` (clé `fontStacks` de la
+collection `typography`) : le JSON de tokens, lui, garde le nom de famille nu, parce que
+c'est ce que la variable Figma stocke. `--fontfamily-icon` n'a volontairement pas de
+repli : une police d'icônes n'a pas de substitut lisible.
+
+### Installer les vôtres, en trois gestes
+
+**1. Poser les fichiers** dans `src/assets/fonts/`. Un format suffit : `.woff2`, supporté
+partout, et une **variable font** couvre toute la plage de graisses en une ressource.
+
+**2. Déclarer les `@font-face`** dans une feuille **globale** du projet :
+
+```scss
+// src/styles/vendors/_fonts.scss
+$fonts: "../../assets/fonts"; // chemin relatif à CE fichier : le builder Angular
+                              // le réécrit et empreinte les fichiers au build
+
+@font-face {
+  font-family: "Söhne";                          // le nom que le token ira chercher
+  src: url("#{$fonts}/soehne-variable.woff2") format("woff2");
+  font-weight: 100 900;                          // variable font : toute la plage
+  font-style: normal;
+  font-display: swap;                            // texte visible pendant le chargement
+}
+
+@font-face {
+  font-family: "Söhne";
+  src: url("#{$fonts}/soehne-variable-italic.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+```
+
+**3. Pointer les tokens dessus**, dans la même feuille globale — en **gardant la queue de
+pile**, sinon le serif revient au premier écran où la police n'a pas fini de charger :
+
+```scss
+:root {
+  --fontfamily-base: "Söhne", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --fontfamily-title: "Söhne Breit", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+```
+
+Rien d'autre à toucher : les composants lisent tous `var(--fontfamily-base)` ou
+`var(--fontfamily-title)`, jamais un nom de police en dur.
+
+### Où déclarer, selon le mode
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Mode</th>
+      <th>Fichier</th>
+      <th>Point d'attention</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Package (<code>@4sh/ui-kit</code>)</td>
+      <td>Votre feuille globale, ex. <code>src/styles/main.scss</code></td>
+      <td>Elle doit être chargée <strong>après</strong> <code>@4sh/ui-kit/styles.css</code> dans <code>angular.json</code> : les deux écrivent sur <code>:root</code>, c'est l'ordre des feuilles qui tranche.</td>
+    </tr>
+    <tr>
+      <td>Schematics (<code>ng add</code>)</td>
+      <td><code>src/styles/vendors/_fonts.scss</code>, chargé par <code>@use</code> depuis <code>src/styles/main.scss</code></td>
+      <td>Le pipeline de tokens est aussi dans le dépôt : la famille peut se changer à la source, dans <code>src/design-tokens/typography.json</code> + <code>npm run tokens:build</code>, plutôt que par surcharge.</td>
+    </tr>
+  </tbody>
+</table>
+
+L'implémentation de référence est celle de ce starter :
+`src/styles/src/vendors/_fonts.scss` (DM Sans + Inter en variable fonts auto-hébergées),
+chargée depuis `src/styles/main.scss`.
+
+### Pièges
+
+<div className="sb-callout">
+
+- **La surcharge doit être globale.** `:root` écrit dans le `.scss` d'un composant Angular
+  ne s'applique pas : l'encapsulation tamponne l'attribut de scope sur le sélecteur, et
+  `:root` ne le porte jamais. Feuille globale uniquement.
+- **Auto-héberger, pas de CDN.** Servir Google Fonts depuis ses serveurs transmet l'IP du
+  visiteur à un tiers, c'est le point que la CNIL sanctionne, et casse tout build ou
+  déploiement hors ligne.
+- **Ne jamais laisser une famille seule.** `font-family: "Söhne"` sans queue de pile, c'est
+  exactement le serif du navigateur qui revient dès que le fichier manque.
+- **`font-display: swap`** évite l'écran de texte invisible pendant le téléchargement.
+- **La police d'icônes est à part.** `--fontfamily-icon` ne fait que la nommer ; la feuille
+  FontAwesome se charge séparément (`node_modules/@fortawesome/fontawesome-free/css/all.css`
+  dans `angular.json`, `ng add` la câble automatiquement).
+
+</div>
+
+---
+
 <table className="doc-table">
   <thead>
     <tr>
@@ -76,9 +192,9 @@ Voici les polices configurées via les design tokens. Chaque famille a un rôle 
     </tr>
   </thead>
   <tbody>
-    <tr><td>Titres</td><td><code>.title-&#123;size&#125;</code></td><td>sm · md · default · lg · xl · 2xl</td></tr>
-    <tr><td>Textes</td><td><code>.text-&#123;weight&#125;-&#123;size&#125;</code></td><td>weight: light · regular · bold · italic : size: sm · md · default · lg · xl</td></tr>
-    <tr><td>Accent</td><td><code>.accent-&#123;size&#125;</code></td><td>sm · default · lg</td></tr>
+    <tr><td>Titres</td><td><code>.title-&#123;size&#125;</code></td><td>sm, md, default, lg, xl, 2xl</td></tr>
+    <tr><td>Textes</td><td><code>.text-&#123;weight&#125;-&#123;size&#125;</code></td><td>weight: light, regular, bold, italic : size: sm, md, default, lg, xl</td></tr>
+    <tr><td>Accent</td><td><code>.accent-&#123;size&#125;</code></td><td>sm, default, lg</td></tr>
   </tbody>
 </table>
 
