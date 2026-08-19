@@ -16,6 +16,8 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-08-19
+
 ### Added
 - **Serveur MCP compagnon** (FSHSP-115) : expose le catalogue des composants `ui-*`, leur API (props/types/theming) et une recherche plein texte dans toute la doc Storybook à un agent IA (Claude Code, Claude Desktop…), sans qu'il ait besoin de lire les sources. Pas de package npm à part : bundlé (esbuild, un seul fichier, zéro dépendance — `npm run mcp:bundle`) puis embarqué dans les deux tarballs publiés — sous `mcp/` dans `@4sh/ui-kit` (mode librairie, cf. son README), copié dans `.ui-kit-mcp/` par `ng add @4sh/ui-kit-schematics` (mode starter, `--skip-mcp` pour l'omettre). `npm run mcp:test` pour sa suite Vitest.
 - **`ng add @4sh/ui-kit-schematics` déclare le serveur MCP `ui-kit`** (FSHSP-115) : `.mcp.json` (`node .ui-kit-mcp/index.js` — fusionné, jamais écrasé) + instruction ajoutée à `AGENTS.md` (créé si absent, complété sinon) pour qu'un agent compatible MCP interroge la doc du kit au lieu de deviner.
