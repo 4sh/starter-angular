@@ -39,8 +39,18 @@ import { sanitize } from 'storybook/internal/csf';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
+/**
+ * Le script est embarqué tel quel dans `@4sh/ui-kit-schematics` (FSHSP-138,
+ * même disposition que `docs.config.mjs`, cf. son commentaire) : ce monorepo,
+ * où les composants vivent sous `projects/ui-kit/`, et un projet consommateur,
+ * où ce sont des copies sous `src/app/shared/`.
+ */
+const IS_KIT_MONOREPO = existsSync(join(ROOT, 'projects/ui-kit/styles/settings/_ui-config.scss'));
+
 /** Mêmes racines que les globs `stories` de `storybook/main.js`. */
-const DOC_DIRS = [join(ROOT, 'storybook/docs'), join(ROOT, 'projects/ui-kit')];
+const DOC_DIRS = IS_KIT_MONOREPO
+  ? [join(ROOT, 'storybook/docs'), join(ROOT, 'projects/ui-kit')]
+  : [join(ROOT, 'storybook/docs'), join(ROOT, 'src/app/shared/components'), join(ROOT, 'src/app/shared/ui-core')];
 
 const OUT_FILE = join(ROOT, 'storybook/public/text-search-docs.json');
 

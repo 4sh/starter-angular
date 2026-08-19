@@ -84,7 +84,12 @@ function discover(dir, category = null) {
     const full = join(dir, entry.name);
     if (entry.name === 'styles') continue; // géré à part
     if (entry.name === 'src' && category) {
-      sharedDirs.push({ category, dir: full });
+      // `siblingDir` (= `dir`, le dossier de catégorie lui-même) porte les
+      // fichiers de doc co-localisés à côté de `src/` — ex. `motion/ui-motion.mdx`,
+      // `motion/ui-motion.stories.ts`, `motion/ui-motion.demo.ts` — même
+      // traitement qu'un composant, dont le `.mdx`/`.stories.ts` vit dans son
+      // propre dossier `ui-*/` (FSHSP-138 : ces fichiers manquaient jusqu'ici).
+      sharedDirs.push({ category, dir: full, siblingDir: dir });
       continue;
     }
     if (entry.name.startsWith('ui-') && existsSync(join(full, 'ng-package.json'))) {
@@ -113,8 +118,23 @@ function main() {
   }
 
   let sharedCount = 0;
-  for (const { category, dir } of sharedDirs) {
-    copySourceTree(dir, join(ASSETS, 'shared', category));
+  for (const { category, dir, siblingDir } of sharedDirs) {
+    const dest = join(ASSETS, 'shared', category);
+    copySourceTree(dir, dest);
+    // Doc co-localisée à côté de `src/` (ex. `motion/ui-motion.mdx` + son
+    // `.stories.ts`/`.demo.ts`) : `add`/`copyUnit` la traite déjà comme
+    // n'importe quel fichier de l'unité (réécriture d'imports, en-tête de
+    // traçabilité, exclusion sur `--skip-storybook`) — il ne manquait que sa
+    // copie ici, jusqu'ici oubliée pour les bases partagées.
+    if (siblingDir) {
+      const siblingFiles = readdirSync(siblingDir, { withFileTypes: true }).filter(
+        (entry) => !entry.isDirectory() && isSourceFile(entry.name),
+      );
+      if (siblingFiles.length) mkdirSync(dest, { recursive: true });
+      for (const entry of siblingFiles) {
+        copyFileSync(join(siblingDir, entry.name), join(dest, entry.name));
+      }
+    }
     sharedCount++;
   }
 
@@ -190,6 +210,9 @@ function main() {
   for (const [src, name] of [
     [join(ROOT, 'scripts/docs.config.mjs'), 'docs.config.mjs'],
     [join(ROOT, 'storybook/blocks/config-table.js'), 'config-table.js'],
+    // Index de recherche plein texte (FSHSP-138) : même disposition à double
+    // détection que `docs.config.mjs`, cf. son commentaire.
+    [join(ROOT, 'scripts/docs.search.mjs'), 'docs.search.mjs'],
   ]) {
     if (!existsSync(src)) continue;
     mkdirSync(docsDest, { recursive: true });
@@ -215,15 +238,47 @@ function main() {
     docFiles++;
   }
 
-  // Pages de doc transverses. `Introduction`, `NpmPackage` et `Overview` restent
-  // ici : les deux premières racontent l'installation de `@4sh/ui-kit`, la
-  // troisième est validée par `components.check.mjs` contre NOTRE inventaire.
-  // Les pages `config/` sont, elles, la cible des liens `?path=/docs/…` que
-  // portent les MDX des composants : sans elles, ces liens tombent dans le vide.
+  // Addons de la barre du manager (recherche plein texte, copie Markdown) —
+  // FSHSP-138 : posés sur CE Storybook (`storybook/main.js`) mais jamais
+  // répercutés ici jusqu'à présent, alors qu'ils sont génériques (aucune
+  // dépendance au monorepo, cf. `preset.cjs`/`manager.tsx` de chacun).
+  for (const addon of ['text-search', 'copy-as-markdown']) {
+    const src = join(ROOT, 'storybook/addons', addon);
+    if (!existsSync(src)) continue;
+    docFiles += copyTree(src, join(ASSETS, 'storybook/addons', addon));
+  }
+
+  // Pages de doc transverses. `NpmPackage` et `Overview` restent ici :
+  // la première raconte l'installation de `@4sh/ui-kit` (mode librairie,
+  // hors périmètre du starter), la seconde est validée par
+  // `components.check.mjs` contre NOTRE inventaire ET importe en dur les
+  // stories de tous les composants du monorepo — ni l'une ni l'autre ne
+  // transposent tel quel chez un consommateur qui n'a copié qu'une partie
+  // des composants (FSHSP-139 pour la suite à donner).
+  // `Introduction`, elle, n'a aucune dépendance au monorepo (texte + images
+  // statiques) : FSHSP-138 corrige son absence, oubliée jusqu'ici.
+  const introSrc = join(ROOT, 'storybook/docs/Introduction.mdx');
+  if (existsSync(introSrc)) {
+    mkdirSync(join(ASSETS, 'storybook/docs'), { recursive: true });
+    copyFileSync(introSrc, join(ASSETS, 'storybook/docs/Introduction.mdx'));
+    docFiles++;
+  }
   for (const group of ['foundations', 'specifications', 'config']) {
     const src = join(ROOT, 'storybook/docs', group);
     if (!existsSync(src)) continue;
     docFiles += copyTree(src, join(ASSETS, 'storybook/docs', group), (n) => n.endsWith('.mdx'));
+  }
+
+  // Images référencées par `Introduction.mdx` (`./doc-*.png`) : servies par
+  // `staticDirs: ['./public']` (scaffold `main.js`), jamais copiées jusqu'ici
+  // puisque la page elle-même ne l'était pas (FSHSP-138).
+  const introImages = ['doc-token.png', 'doc-token-json.png', 'doc-tfm.png', 'doc-gridaflex.png', 'doc-icon.png'];
+  for (const name of introImages) {
+    const src = join(ROOT, 'storybook/public', name);
+    if (!existsSync(src)) continue;
+    mkdirSync(join(ASSETS, 'storybook/public'), { recursive: true });
+    copyFileSync(src, join(ASSETS, 'storybook/public', name));
+    docFiles++;
   }
 
   // Serveur MCP compagnon (FSHSP-115) : bundlé (esbuild, un seul fichier ESM,

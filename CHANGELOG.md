@@ -16,6 +16,10 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+### Added
+- **Le Storybook posé par `ng add @4sh/ui-kit-schematics` a maintenant la recherche plein texte et le bouton « copier en Markdown »** (FSHSP-138). Les deux addons (`storybook/addons/text-search`, `storybook/addons/copy-as-markdown`) et la page `Introduction` n'étaient jamais sortis du Storybook du monorepo : `scripts/schematics-assets.build.mjs` les copie désormais dans `assets/`, le scaffold `main.js` les déclare (+ `staticDirs: ['./public']` pour les images d'`Introduction`), et `scripts/docs.search.mjs` (qui alimente la recherche) se détecte lui-même monorepo/consommateur, comme `docs.config.mjs`. Nouvelles devDependencies : `minisearch`, `unified`, `remark-parse`, `remark-mdx`, `unist-util-visit`. Nouveau script `docs:search`, chaîné dans `storybook`/`build-storybook`.
+- **La doc `Foundations/Motion` suit maintenant la base partagée `motion` copiée par `add`** (FSHSP-138). `ui-motion.mdx`/`.stories.ts`/`.demo.ts` sont co-localisés à côté de `src/` dans `projects/ui-kit/motion/`, comme un composant — mais `schematics-assets.build.mjs` ne copiait que `src/`, jamais ces fichiers, pour aucune base partagée. Les globs `stories` de `storybook/main.js` (scaffold) gagnent aussi `ui-core/**` : sans eux, un fichier bien copié restait invisible pour Storybook.
+
 ### Changed
 - **`ng add @4sh/ui-kit` échoue désormais** (FSHSP-142). Ce point d'entrée ne faisait que logger un message d'info — aucune configuration générée, pas plus qu'un simple `npm install @4sh/ui-kit` — tout en étant la commande tentée naturellement pour le mode starter. Il renvoie maintenant une erreur explicite (`ng add @4sh/ui-kit-schematics` pour le starter, `npm install @4sh/ui-kit` directement pour la librairie) plutôt que de se terminer en succès silencieux.
 

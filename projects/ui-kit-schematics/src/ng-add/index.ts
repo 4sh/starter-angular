@@ -234,12 +234,16 @@ function copyDocsPipeline(): Rule {
     for (const [name, targetPath] of [
       ['docs.config.mjs', 'scripts/docs.config.mjs'],
       ['config-table.js', CONFIG_TABLE_PATH],
+      // Index de recherche plein texte de l'addon `text-search` (FSHSP-138) :
+      // même logique que `docs.config.mjs`, chaîné à part car indépendant.
+      ['docs.search.mjs', 'scripts/docs.search.mjs'],
     ] as const) {
       if (tree.exists(targetPath)) continue; // éditable : jamais réécrasé
       tree.create(targetPath, readFileSync(join(dir, name), 'utf8'));
     }
     addNpmScript(tree, 'docs:config', 'node scripts/docs.config.mjs');
-    context.logger.info(`✔ Chaîne de doc copiée (scripts/docs.config.mjs, ${CONFIG_TABLE_PATH}).`);
+    addNpmScript(tree, 'docs:search', 'node scripts/docs.search.mjs');
+    context.logger.info(`✔ Chaîne de doc copiée (scripts/docs.config.mjs, scripts/docs.search.mjs, ${CONFIG_TABLE_PATH}).`);
     return tree;
   };
 }
@@ -420,17 +424,28 @@ function addStorybookDependencies(): Rule {
       ['@storybook-community/storybook-dark-mode', '^7.1.0'],
       // Lancé par le builder (`compodoc: true`), pas par un script à nous.
       ['@compodoc/compodoc', '^1.1.26'],
+      // Addon `text-search` (FSHSP-138) : index de recherche construit par
+      // `scripts/docs.search.mjs` (minisearch au runtime manager, remark/unified
+      // pour parser les `.mdx` à la génération).
+      ['minisearch', '^7.2.0'],
+      ['unified', '^11.0.5'],
+      ['remark-parse', '^11.0.0'],
+      ['remark-mdx', '^3.1.1'],
+      ['unist-util-visit', '^5.1.0'],
     ] as const) {
       addDependency(tree, name, version, 'devDependencies');
     }
-    // Les deux générations d'abord, dans cet ordre : la page « Colors » importe
-    // `tokens.manifest.json` (produit par `tokens:build`) et le bloc
-    // `<ConfigTable>` lit `ui-config.json` (produit par `docs:config`). Les
-    // chaîner ici plutôt que de compter sur le `postinstall` : sur une
+    // Les générations d'abord, dans cet ordre : la page « Colors » importe
+    // `tokens.manifest.json` (produit par `tokens:build`), le bloc
+    // `<ConfigTable>` lit `ui-config.json` (produit par `docs:config`), et
+    // l'addon `text-search` lit `storybook/public/text-search-docs.json`
+    // (produit par `docs:search`, qui a lui-même besoin de `ui-config.json`
+    // pour le theming des pages composant — d'où son rang après `docs:config`).
+    // Les chaîner ici plutôt que de compter sur le `postinstall` : sur une
     // installation fraîche, le build tomberait sinon sur un module introuvable.
     const project = firstApplicationName(tree);
     if (project) {
-      const generate = 'npm run tokens:build && npm run docs:config';
+      const generate = 'npm run tokens:build && npm run docs:config && npm run docs:search';
       addNpmScript(tree, 'storybook', `${generate} && ng run ${project}:storybook`);
       addNpmScript(tree, 'build-storybook', `${generate} && ng run ${project}:build-storybook`);
     } else {
