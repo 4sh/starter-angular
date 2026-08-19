@@ -1,5 +1,5 @@
 /* tsconfig de la configuration Storybook (posé par `ng add
-   @4sh/ui-kit-schematics --with-storybook`). Il étend celui de l'application
+   @4sh/ui-kit-schematics`). Il étend celui de l'application
    pour compiler stories et preview avec les mêmes règles que votre code. */
 {
   "extends": "../tsconfig.app.json",

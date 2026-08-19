@@ -38,7 +38,7 @@ accepter ou à sauter.
 | `ng add @4sh/ui-kit-schematics` | fondation **et** composants, d'un coup |
 | `ng add @4sh/ui-kit-schematics --skip-components` | fondation seule, composants choisis plus tard |
 | `ng add @4sh/ui-kit-schematics --skip-install` | ne pas lancer `npm install` (projet qui pilote son lockfile) |
-| `ng add @4sh/ui-kit-schematics --with-storybook` | copier aussi la story et le MDX de chaque composant (voir ci-dessous) |
+| `ng add @4sh/ui-kit-schematics --skip-storybook` | ne pas poser de Storybook (voir ci-dessous) |
 | `ng generate @4sh/ui-kit-schematics:add` | copier d'autres composants (interactif, ou `--components`, ou `--all`) |
 | `ng generate @4sh/ui-kit-schematics:update` | diff des composants copiés face aux sources publiées |
 
@@ -49,10 +49,10 @@ accepter ou à sauter.
 > à la main ce que vous voulez garder, ou sautez le composant. `--yes` accepte tout sans
 > afficher un seul diff : à réserver aux composants que vous n'avez pas touchés.
 
-### Votre propre Storybook : `--with-storybook`
+### Votre propre Storybook
 
-Désactivé par défaut. Activé, vous obtenez un Storybook qui tourne, sur les
-composants que vous avez copiés :
+Posé par défaut : à la fin du `ng add`, vous avez un Storybook qui tourne, sur
+les composants que vous avez copiés :
 
 ```bash
 npm run storybook
@@ -71,7 +71,10 @@ valeurs, rebranding compris. Et les globs couvrent tout
 `src/app/shared/components/**` : une story écrite à côté de votre propre
 composant apparaît sans toucher à la configuration.
 
-Le choix est retenu dans `ui-kit.json`, et `update` s'y tient.
+`--skip-storybook` si vous documentez ailleurs : ni story, ni MDX, ni
+configuration, ni les devDependencies de la preview. Le choix est retenu dans
+`ui-kit.json`, et `update` s'y tient — relancer `ng add` sans le flag revient
+dessus.
 
 Non repris : les liens `parameters.design` vers notre fichier Figma — vous ne
 pouvez pas l'ouvrir, ils sont retirés à la copie. Remettez votre `node-id` si

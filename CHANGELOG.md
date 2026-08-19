@@ -16,6 +16,9 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+### Changed
+- **Le Storybook du mode starter est posé par défaut** (FSHSP-134). `ng add @4sh/ui-kit-schematics` pose désormais la doc sans qu'on la demande : story et MDX à côté de chaque composant copié, configuration `storybook/`, cibles `angular.json`, devDependencies et scripts npm. `--with-storybook` disparaît au profit de `--skip-storybook`, pour le projet qui documente ailleurs. Le flag opt-in laissait le cas nominal sans doc, et la commande ne mentionnait nulle part qu'il existait : le diagnostic naturel devant `npm run storybook` → `Missing script` est que le Storybook de la schematic est cassé. La commande dit maintenant, en dernière ligne, ce qu'il reste à lancer.
+
 ## [0.3.0] - 2026-08-18
 
 Deux chantiers dominent cette version, un par mode de consommation. En **mode

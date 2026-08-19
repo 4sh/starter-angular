@@ -18,7 +18,7 @@
  * La story et le MDX en font partie depuis FSHSP-125 : ils sont la doc du
  * composant, et un composant copié sans sa doc laisse le consommateur avec un
  * Storybook hébergé qui décrit NOS composants, pas ses copies éditées. C'est
- * `add --with-storybook` qui décide de les poser ou non chez lui, pas ce script.
+ * `add` qui décide de les poser ou non chez lui, pas ce script.
  *
  * La fondation de styles (`styles/base`, `styles/utils`, `styles/settings`,
  * `styles/generated`) part elle aussi dans `assets/styles/`, pour `ng-add`.

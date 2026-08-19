@@ -37,7 +37,7 @@ against newer sources, to accept or skip.
 | `ng add @4sh/ui-kit-schematics` | foundation **and** components, in one go |
 | `ng add @4sh/ui-kit-schematics --skip-components` | foundation only, pick components later |
 | `ng add @4sh/ui-kit-schematics --skip-install` | skip `npm install` (project drives its own lockfile) |
-| `ng add @4sh/ui-kit-schematics --with-storybook` | also copy each component's story and MDX (see below) |
+| `ng add @4sh/ui-kit-schematics --skip-storybook` | do not set up a Storybook (see below) |
 | `ng generate @4sh/ui-kit-schematics:add` | copy more components (interactive, or `--components`, or `--all`) |
 | `ng generate @4sh/ui-kit-schematics:update` | diff copied components against the published sources |
 
@@ -48,10 +48,10 @@ against newer sources, to accept or skip.
 > hand what you want to keep, or skip the component. `--yes` accepts everything without
 > showing a single diff: keep it for components you have not touched.
 
-### Your own Storybook: `--with-storybook`
+### Your own Storybook
 
-Off by default. Turned on, you get a working Storybook of the components you
-copied:
+Set up by default: when `ng add` returns, you have a working Storybook of the
+components you copied:
 
 ```bash
 npm run storybook
@@ -69,7 +69,9 @@ collects the `///` roles), so they describe your values, rebranding included. An
 the globs cover `src/app/shared/components/**` whole: a story you write next to
 your own component shows up with no config change.
 
-The choice is recorded in `ui-kit.json`, and `update` honours it.
+`--skip-storybook` if you document elsewhere: no story, no MDX, no config, and
+none of the preview devDependencies. The choice is recorded in `ui-kit.json`, and
+`update` honours it — re-running `ng add` without the flag brings it back.
 
 Not carried over: the `parameters.design` links to our Figma file — you cannot
 open it, so it is stripped at copy time. Put your own `node-id` back if you have

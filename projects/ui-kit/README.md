@@ -20,7 +20,7 @@ Choose **before** installing: the decision shapes everything that follows.
 | What lands in your repo | nothing — compiled components stay in `node_modules` | the component *sources*, in `src/app/shared/` |
 | Imports | `@4sh/ui-kit/actions/ui-button` | your own path (`./shared/components/ui/actions/ui-button`) |
 | Styles | `node_modules/@4sh/ui-kit/styles.css`, loaded globally | copied into `src/styles/`, with the token generation chain (`npm run tokens:build`) |
-| Documentation | the Storybook linked above | yours, on your own copies (`--with-storybook`) |
+| Documentation | the Storybook linked above | yours, on your own copies (set up by `ng add`) |
 | Customization | inputs + CSS variables | edit the code itself |
 | Updating | bump the version | `ng generate @4sh/ui-kit-schematics:update` — per-component diff, accept or skip |
 
