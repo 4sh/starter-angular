@@ -71,6 +71,17 @@ jobs:
       - name: Build the package
         run: npm run ui-kit:build
 
+      # FSHSP-141: `ui-kit:build` alone never embeds the MCP server — that step
+      # only lives in `ui-kit:pack` (`ui-kit:build && mcp-embed && npm pack`),
+      # which this workflow never called. The 0.4.0 tarball shipped without
+      # `mcp/`, silently: `ui-kit:build` succeeds either way, and the dry-run
+      # pack below doesn't diff against what the README promises. Embedding
+      # here, explicitly, is what makes a missing bundle fail the build instead
+      # of reaching the registry (the script itself throws if the bundle step
+      # produced nothing — see scripts/ui-kit-mcp-embed.build.mjs).
+      - name: Embed the MCP server into the package
+        run: node scripts/ui-kit-mcp-embed.build.mjs
+
       - name: Build the schematics package
         run: npm run schematics:build
 
@@ -188,6 +199,17 @@ jobs:
       # provenance attestation ends up certifying.
       - name: Build the package
         run: npm run ui-kit:build
+
+      # FSHSP-141: `ui-kit:build` alone never embeds the MCP server — that step
+      # only lives in `ui-kit:pack` (`ui-kit:build && mcp-embed && npm pack`),
+      # which this workflow never called. The 0.4.0 tarball shipped without
+      # `mcp/`, silently: `ui-kit:build` succeeds either way, and the dry-run
+      # pack below doesn't diff against what the README promises. Embedding
+      # here, explicitly, is what makes a missing bundle fail the build instead
+      # of reaching the registry (the script itself throws if the bundle step
+      # produced nothing — see scripts/ui-kit-mcp-embed.build.mjs).
+      - name: Embed the MCP server into the package
+        run: node scripts/ui-kit-mcp-embed.build.mjs
 
       - name: Build the schematics package
         run: npm run schematics:build
