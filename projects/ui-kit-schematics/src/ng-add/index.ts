@@ -316,7 +316,8 @@ const UI_IMAGE_MARKER_RE = /^[ \t]*\/\/ <\/?ui-image>\n/gm;
  * là-bas (`manager.ts`, `brand-toolbar.ts`, `preview-head.html`, les pages de
  * doc transverses) vient des assets, synchronisé depuis ce dépôt ; ce qui doit
  * diverger (`main.js` et ses globs, `preview.ts` et ses couplages, `myTheme.ts`
- * et sa marque, les tsconfig) est un scaffold écrit pour le consommateur.
+ * et sa marque, les tsconfig, `docs/Introduction.mdx` et ses liens vers la
+ * démo/le Figma DE CE DÉPÔT) est un scaffold écrit pour le consommateur.
  *
  * La règle tourne APRÈS la copie des composants, et pas avant : c'est l'arbre
  * qui dit si `ui-image` en fait partie. Sa preview a besoin de providers que
@@ -350,6 +351,15 @@ function scaffoldStorybook(): Rule {
         );
       }
     };
+
+    // `Introduction.mdx` des assets cite la démo et les Figma DE CE DÉPÔT
+    // (sections "Application de démonstration" / "Ressources Figma") : sans
+    // objet chez un consommateur. Scaffold posé en premier pour que `create()`
+    // dans `copyAll` le trouve déjà là et n'écrase pas avec la version brute.
+    create(
+      'storybook/docs/Introduction.mdx',
+      readFileSync(join(scaffolds, 'docs/Introduction.mdx'), 'utf8'),
+    );
 
     copyAll(assets, 'storybook');
 

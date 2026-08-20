@@ -16,6 +16,10 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+### Fixed
+
+- **La page `Introduction` du Storybook posé par `ng add @4sh/ui-kit-schematics` renvoyait vers la démo et les fichiers Figma du starter** (FSHSP-145). `scripts/schematics-assets.build.mjs` copiait `Introduction.mdx` tel quel en le traitant comme sans dépendance au monorepo, alors que ses sections « Application de démonstration » et « Ressources Figma » sont propres à ce dépôt. `scaffoldStorybook` pose désormais un scaffold (`src/ng-add/files/storybook/docs/Introduction.mdx`, sans ces deux sections) avant la copie brute des assets, pour la court-circuiter sur ce fichier précis.
+
 ## [0.5.0] - 2026-08-20
 
 ### Fixed
