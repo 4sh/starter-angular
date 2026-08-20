@@ -16,6 +16,8 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-08-20
+
 ### Fixed
 
 - **Le serveur MCP compagnon était absent du tarball `@4sh/ui-kit` publié** (FSHSP-141). `npm run ui-kit:build`, seul appelé par `publish-ui-kit.yml`, n'embarque jamais `mcp/` — cette étape ne vit que dans `ui-kit:pack` (`ui-kit:build && mcp-embed && npm pack`), jamais utilisé par le workflow de publication. La 0.4.0 a donc été publiée sans `mcp/`, sans qu'aucune étape ne le détecte. Le workflow appelle maintenant explicitement `scripts/ui-kit-mcp-embed.build.mjs` après le build, dans les jobs `verify` et `publish` — un bundle manquant fait désormais échouer le job au lieu d'atteindre le registre.
