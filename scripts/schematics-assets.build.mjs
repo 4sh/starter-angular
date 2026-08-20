@@ -278,8 +278,12 @@ function main() {
   // dur les stories de tous les composants du monorepo. Ni l'une ni l'autre
   // ne transposent tel quel chez un consommateur qui n'a copié qu'une partie
   // des composants.
-  // `Introduction`, elle, n'a aucune dépendance au monorepo (texte + images
-  // statiques) : FSHSP-138 corrige son absence, oubliée jusqu'ici.
+  // `Introduction`, elle, est en majorité indépendante du monorepo (texte +
+  // images statiques) : FSHSP-138 corrige son absence, oubliée jusqu'ici. Ses
+  // sections "Application de démonstration" / "Ressources Figma" restent
+  // spécifiques À CE DÉPÔT : `ng-add` les court-circuite avec un scaffold
+  // (`src/ng-add/files/storybook/docs/Introduction.mdx`), posé avant cette
+  // copie brute — voir `scaffoldStorybook`.
   const introSrc = join(ROOT, 'storybook/docs/Introduction.mdx');
   if (existsSync(introSrc)) {
     mkdirSync(join(ASSETS, 'storybook/docs'), { recursive: true });
