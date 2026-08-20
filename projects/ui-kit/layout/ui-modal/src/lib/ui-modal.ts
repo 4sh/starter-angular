@@ -308,7 +308,9 @@ export class UiModal {
     () => this.ariaLabelledBy() ?? (this.showHeader() && this.header() ? this.titleId : null),
   );
   /** @ignore Fallback accessible name when nothing is referenced. */
-  protected readonly resolvedAriaLabel = computed(() => (this.labelledBy() ? null : this.ariaLabel()));
+  protected readonly resolvedAriaLabel = computed(() =>
+    this.labelledBy() ? null : this.ariaLabel(),
+  );
 
   constructor() {
     const destroyRef = inject(DestroyRef);
@@ -516,8 +518,14 @@ export class UiModal {
     // `|| MAX` (not `??`) so a degenerate 0 viewport never clamps the dialog to nothing.
     const maxW = view?.innerWidth || Number.MAX_SAFE_INTEGER;
     const maxH = view?.innerHeight || Number.MAX_SAFE_INTEGER;
-    const w = Math.min(maxW, Math.max(this.minWidth(), this.resizeStart.w + (event.clientX - this.resizeStart.x)));
-    const h = Math.min(maxH, Math.max(this.minHeight(), this.resizeStart.h + (event.clientY - this.resizeStart.y)));
+    const w = Math.min(
+      maxW,
+      Math.max(this.minWidth(), this.resizeStart.w + (event.clientX - this.resizeStart.x)),
+    );
+    const h = Math.min(
+      maxH,
+      Math.max(this.minHeight(), this.resizeStart.h + (event.clientY - this.resizeStart.y)),
+    );
     this.resizeSize.set({ w, h });
   }
 

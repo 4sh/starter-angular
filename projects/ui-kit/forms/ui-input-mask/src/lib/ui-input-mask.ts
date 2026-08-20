@@ -75,13 +75,17 @@ export class UiInputMask extends BaseFormField<string> {
   protected readonly iconSize = computed<UiIconSize>(() => (this.size() === 'small' ? 'sm' : 'md'));
 
   /** @ignore Bounds declared by `ranges`, one entry per numeric segment (`null` = unbounded). */
-  private readonly parsedRanges = computed<(MaskBounds | null)[]>(() => parseMaskRanges(this.ranges()));
+  private readonly parsedRanges = computed<(MaskBounds | null)[]>(() =>
+    parseMaskRanges(this.ranges()),
+  );
 
   /**
    * @ignore The mask resolved once per template: literals, input slots, and the
    * `ranges` bounds attached to every slot of the numeric segment it belongs to.
    */
-  private readonly slots = computed<MaskSlot[]>(() => buildMaskSlots(this.mask(), this.parsedRanges()));
+  private readonly slots = computed<MaskSlot[]>(() =>
+    buildMaskSlots(this.mask(), this.parsedRanges()),
+  );
 
   override writeValue(value: string | null): void {
     const built = applyMaskTemplate(this.slots(), extractMaskData(value ?? ''), this.slotChar());

@@ -189,7 +189,12 @@ export class UiBreadcrumb {
         })),
       ];
     } else {
-      entries = items.map((item, i) => ({ kind: 'item' as const, item, key: `item-${i}`, last: false }));
+      entries = items.map((item, i) => ({
+        kind: 'item' as const,
+        item,
+        key: `item-${i}`,
+        last: false,
+      }));
     }
     if (entries.length) entries[entries.length - 1].last = true;
     return entries;

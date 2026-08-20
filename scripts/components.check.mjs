@@ -99,7 +99,11 @@ function componentsInReadme(file, heading) {
  */
 function componentsInOverview() {
   const src = readFileSync(OVERVIEW, 'utf8');
-  return [...new Set([...src.matchAll(/\/(ui-[a-z0-9-]+)\/ui-[a-z0-9-]+\.stories["']/g)].map((m) => m[1]))].sort();
+  return [
+    ...new Set(
+      [...src.matchAll(/\/(ui-[a-z0-9-]+)\/ui-[a-z0-9-]+\.stories["']/g)].map((m) => m[1]),
+    ),
+  ].sort();
 }
 
 /** Composants cochés ✅ dans l'index. */
@@ -118,8 +122,10 @@ for (const { file, heading } of READMES) {
   const label = file.replace(`${ROOT}/`, '');
   const missing = diff(disk, listed);
   const extra = diff(listed, disk);
-  if (missing.length) errors.push(`${label} : entry points absents de la table — ${missing.join(', ')}`);
-  if (extra.length) errors.push(`${label} : table citant des entry points inexistants — ${extra.join(', ')}`);
+  if (missing.length)
+    errors.push(`${label} : entry points absents de la table — ${missing.join(', ')}`);
+  if (extra.length)
+    errors.push(`${label} : table citant des entry points inexistants — ${extra.join(', ')}`);
 }
 
 const overview = componentsInOverview();
@@ -134,7 +140,9 @@ if (missingFromOverview.length) {
 }
 const staleOverview = diff(overview, disk);
 if (staleOverview.length) {
-  errors.push(`storybook/docs/Overview.mdx : imports pointant un entry point inexistant — ${staleOverview.join(', ')}`);
+  errors.push(
+    `storybook/docs/Overview.mdx : imports pointant un entry point inexistant — ${staleOverview.join(', ')}`,
+  );
 }
 
 const uncheckedInIndex = diff(disk, checkedInIndex());
@@ -151,4 +159,6 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`✓ ${disk.length} entry points — README (EN/FR), Overview.mdx et components-index.md sont à jour.`);
+console.log(
+  `✓ ${disk.length} entry points — README (EN/FR), Overview.mdx et components-index.md sont à jour.`,
+);

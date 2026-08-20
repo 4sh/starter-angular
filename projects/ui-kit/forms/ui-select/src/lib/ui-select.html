@@ -3,7 +3,10 @@
   @if (row.kind === 'group') {
     <li class="ui-select-group" role="presentation" [class._small]="size() === 'small'">
       @if (groupTemplate(); as tpl) {
-        <ng-container [ngTemplateOutlet]="tpl" [ngTemplateOutletContext]="{ $implicit: row.original, group: row.original }" />
+        <ng-container
+          [ngTemplateOutlet]="tpl"
+          [ngTemplateOutletContext]="{ $implicit: row.original, group: row.original }"
+        />
       } @else {
         {{ row.label }}
       }
@@ -37,7 +40,12 @@
       @if (itemTemplate(); as tpl) {
         <ng-container
           [ngTemplateOutlet]="tpl"
-          [ngTemplateOutletContext]="{ $implicit: row.entry.original, option: row.entry.original, selected: row.selected, index: row.index }"
+          [ngTemplateOutletContext]="{
+            $implicit: row.entry.original,
+            option: row.entry.original,
+            selected: row.selected,
+            index: row.index,
+          }"
         />
       } @else {
         <span class="ui-select-option-label">{{ row.entry.label }}</span>
@@ -102,7 +110,10 @@
           [attr.aria-multiselectable]="multiple() ? 'true' : null"
         >
           <ng-container *cdkVirtualFor="let row of visibleRows(); trackBy: trackRow">
-            <ng-container [ngTemplateOutlet]="rowTpl" [ngTemplateOutletContext]="{ $implicit: row }" />
+            <ng-container
+              [ngTemplateOutlet]="rowTpl"
+              [ngTemplateOutletContext]="{ $implicit: row }"
+            />
           </ng-container>
           @if (!visibleRows().length) {
             <ng-container [ngTemplateOutlet]="emptyTpl" />
@@ -110,7 +121,11 @@
         </ul>
       </cdk-virtual-scroll-viewport>
     } @else {
-      <div class="ui-select-scroller" [class._small]="size() === 'small'" [style.max-height]="scrollHeight() || null">
+      <div
+        class="ui-select-scroller"
+        [class._small]="size() === 'small'"
+        [style.max-height]="scrollHeight() || null"
+      >
         <ul
           class="ui-select-list"
           role="listbox"
@@ -119,7 +134,10 @@
           [attr.aria-multiselectable]="multiple() ? 'true' : null"
         >
           @for (row of visibleRows(); track row.key) {
-            <ng-container [ngTemplateOutlet]="rowTpl" [ngTemplateOutletContext]="{ $implicit: row }" />
+            <ng-container
+              [ngTemplateOutlet]="rowTpl"
+              [ngTemplateOutletContext]="{ $implicit: row }"
+            />
           } @empty {
             <ng-container [ngTemplateOutlet]="emptyTpl" />
           }
@@ -150,7 +168,12 @@
 <!-- Convenience click on the wrapper: focus and keyboard are carried by
      the inner trigger role="combobox". -->
 <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -->
-<div #container class="ui-select" [class._editable]="isEditable()" (click)="onContainerClick($event)">
+<div
+  #container
+  class="ui-select"
+  [class._editable]="isEditable()"
+  (click)="onContainerClick($event)"
+>
   <ui-field
     [label]="label()"
     [for]="resolvedId()"
@@ -198,10 +221,15 @@
       @if (multiple() && selectedItemTemplate() && hasValue()) {
         <div class="ui-select-values">
           @for (ctx of selectedItemContexts(); track $index) {
-            <ng-container [ngTemplateOutlet]="selectedItemTemplate()!" [ngTemplateOutletContext]="ctx" />
+            <ng-container
+              [ngTemplateOutlet]="selectedItemTemplate()!"
+              [ngTemplateOutletContext]="ctx"
+            />
           }
           @if (overflowCount() > 0) {
-            <span class="ui-select-overflow" [class._small]="size() === 'small'">{{ overflowText() }}</span>
+            <span class="ui-select-overflow" [class._small]="size() === 'small'">{{
+              overflowText()
+            }}</span>
           }
         </div>
       }
@@ -231,7 +259,10 @@
           <!-- Accessible value of the combobox (the visual value is the chips next to it). -->
           <span class="ui-select-sr">{{ selectedLabel() }}</span>
         } @else if (!multiple() && selectedItemTemplate() && hasValue()) {
-          <ng-container [ngTemplateOutlet]="selectedItemTemplate()!" [ngTemplateOutletContext]="selectedItemContexts()[0]" />
+          <ng-container
+            [ngTemplateOutlet]="selectedItemTemplate()!"
+            [ngTemplateOutletContext]="selectedItemContexts()[0]"
+          />
         } @else if (hasValue()) {
           <span class="ui-select-value" [class._wrap]="multiple()">{{ selectedLabel() }}</span>
         } @else {
@@ -253,7 +284,13 @@
     }
 
     @if (loading()) {
-      <ui-spinner uiFieldSuffix class="ui-select-loading" size="small" orientation="horizontal" ariaLabel="Chargement des options" />
+      <ui-spinner
+        uiFieldSuffix
+        class="ui-select-loading"
+        size="small"
+        orientation="horizontal"
+        ariaLabel="Chargement des options"
+      />
     } @else {
       <ui-icon
         uiFieldSuffix

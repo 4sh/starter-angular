@@ -24,7 +24,8 @@ const meta: Meta<UiRadio> = {
     },
     name: {
       control: { type: 'text' },
-      description: 'Nom natif du groupe — même name pour tous les radios du groupe (navigation flèches native).',
+      description:
+        'Nom natif du groupe — même name pour tous les radios du groupe (navigation flèches native).',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     label: {
@@ -59,7 +60,8 @@ const meta: Meta<UiRadio> = {
     },
     invalid: {
       control: { type: 'boolean' },
-      description: 'Force le style erreur (automatique quand le contrôle attaché est invalide et touched/dirty).',
+      description:
+        'Force le style erreur (automatique quand le contrôle attaché est invalide et touched/dirty).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     tabindex: {
@@ -97,8 +99,12 @@ export const Checked: Story = {
   }),
   args: { label: 'Sélectionné' },
 };
-export const Disabled: Story = { args: { value: 'a', label: 'Désactivé', disabled: true, name: 'disabled-demo' } };
-export const Invalid: Story = { args: { value: 'a', label: 'En erreur', invalid: true, name: 'invalid-demo' } };
+export const Disabled: Story = {
+  args: { value: 'a', label: 'Désactivé', disabled: true, name: 'disabled-demo' },
+};
+export const Invalid: Story = {
+  args: { value: 'a', label: 'En erreur', invalid: true, name: 'invalid-demo' },
+};
 
 // Groupe — le vrai usage : même name + même modèle
 export const Groupe: Story = {
@@ -124,7 +130,11 @@ export const Groupe: Story = {
   standalone: true,
   imports: [UiRadio, FormField],
   template: `
-    <div role="radiogroup" aria-label="Parfum" style="display: grid; gap: 8px; justify-items: start;">
+    <div
+      role="radiogroup"
+      aria-label="Parfum"
+      style="display: grid; gap: 8px; justify-items: start;"
+    >
       <ui-radio [formField]="flavor" name="sf-flavor" value="vanilla" label="Vanille" />
       <ui-radio [formField]="flavor" name="sf-flavor" value="chocolate" label="Chocolat" />
       <ui-radio [formField]="flavor" name="sf-flavor" value="strawberry" label="Fraise" />

@@ -78,7 +78,9 @@ export const Small: Story = { args: { label: 'UI', size: 'small' } };
 export const Large: Story = { args: { label: 'UI', size: 'large' } };
 
 // Forme
-export const Square: Story = { args: { image: SAMPLE_IMAGE, alt: 'Photo de profil', shape: 'square' } };
+export const Square: Story = {
+  args: { image: SAMPLE_IMAGE, alt: 'Photo de profil', shape: 'square' },
+};
 
 // Avec badge de statut (contenu projeté)
 export const WithBadge: Story = {

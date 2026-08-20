@@ -185,7 +185,9 @@ export class UiFileUpload {
   /** @ignore */
   protected readonly hasFiles = computed(() => this.selection().length > 0);
   /** @ignore */
-  protected readonly pending = computed(() => this.selection().filter((f) => f.status === 'pending'));
+  protected readonly pending = computed(() =>
+    this.selection().filter((f) => f.status === 'pending'),
+  );
   /** @ignore Single-file summary shown in field mode. */
   protected readonly fieldSummary = computed(() => {
     const files = this.selection();
@@ -319,7 +321,10 @@ export class UiFileUpload {
         this.fail(item, 'size', formatLabel(this.invalidSizeMessage(), file.name), newMessages);
         continue;
       }
-      if (limit != null && (this.multiple() ? this.selection().length : 0) + added.length >= limit) {
+      if (
+        limit != null &&
+        (this.multiple() ? this.selection().length : 0) + added.length >= limit
+      ) {
         this.fail(item, 'limit', formatLabel(this.limitReachedMessage(), limit), newMessages);
         continue;
       }
@@ -357,7 +362,12 @@ export class UiFileUpload {
     };
   }
 
-  private fail(item: UiUploadFile, reason: UiUploadErrorEvent['reason'], message: string, sink: string[]): void {
+  private fail(
+    item: UiUploadFile,
+    reason: UiUploadErrorEvent['reason'],
+    message: string,
+    sink: string[],
+  ): void {
     this.revoke(item);
     sink.push(message);
     this.uploadError.emit({ file: { ...item, status: 'error', error: message }, reason, message });
@@ -373,7 +383,10 @@ export class UiFileUpload {
     this.uploadHandler.emit({
       files: pending,
       setProgress: (file, progress) =>
-        this.patch(file.id, { status: 'uploading', progress: Math.max(0, Math.min(100, progress)) }),
+        this.patch(file.id, {
+          status: 'uploading',
+          progress: Math.max(0, Math.min(100, progress)),
+        }),
       markUploaded: (file) => {
         this.patch(file.id, { status: 'completed', progress: 100 });
         this.filesChange.emit(this.selection());
@@ -398,7 +411,8 @@ export class UiFileUpload {
     body.append(this.fieldName(), item.file, item.name);
 
     xhr.upload.addEventListener('progress', (e) => {
-      if (e.lengthComputable) this.patch(item.id, { progress: Math.round((e.loaded / e.total) * 100) });
+      if (e.lengthComputable)
+        this.patch(item.id, { progress: Math.round((e.loaded / e.total) * 100) });
     });
     xhr.addEventListener('load', () => {
       this.requests.delete(item.id);

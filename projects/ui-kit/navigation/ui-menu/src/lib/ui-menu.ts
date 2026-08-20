@@ -23,7 +23,7 @@ import { UiSubLevel } from '@4sh/ui-kit/types';
 import { UiIcon } from '@4sh/ui-kit/base/ui-icon';
 import { UiMotion } from '@4sh/ui-kit/motion';
 import { closeOnNavigation } from '@4sh/ui-kit/overlay';
-import {UiSeparator} from "@4sh/ui-kit/informative/ui-separator";
+import { UiSeparator } from '@4sh/ui-kit/informative/ui-separator';
 
 /** Menu density: `small` = compact rendering ("…" action menus). */
 export type MenuSize = 'default' | 'small';
@@ -128,7 +128,15 @@ const OVERLAY_OFFSET = 8;
  */
 @Component({
   selector: 'ui-menu',
-  imports: [NgTemplateOutlet, OverlayModule, RouterLink, RouterLinkActive, UiIcon, UiMotion, UiSeparator],
+  imports: [
+    NgTemplateOutlet,
+    OverlayModule,
+    RouterLink,
+    RouterLinkActive,
+    UiIcon,
+    UiMotion,
+    UiSeparator,
+  ],
   templateUrl: './ui-menu.html',
   styleUrl: './ui-menu.scss',
   host: {
@@ -180,10 +188,13 @@ export class UiMenu {
   /** Custom menuitem content: `<ng-template #item let-item>`. */
   private readonly itemTemplateContent = contentChild<TemplateRef<unknown>>('item');
   /** Custom group-header content: `<ng-template #submenuheader let-item>`. */
-  private readonly submenuHeaderTemplateContent = contentChild<TemplateRef<unknown>>('submenuheader');
+  private readonly submenuHeaderTemplateContent =
+    contentChild<TemplateRef<unknown>>('submenuheader');
 
   /** @ignore Input wins over the projected `#item` template. */
-  protected readonly resolvedItemTemplate = computed(() => this.itemTemplate() ?? this.itemTemplateContent());
+  protected readonly resolvedItemTemplate = computed(
+    () => this.itemTemplate() ?? this.itemTemplateContent(),
+  );
   /** @ignore Input wins over the projected `#submenuheader` template. */
   protected readonly resolvedSubmenuHeaderTemplate = computed(
     () => this.submenuHeaderTemplate() ?? this.submenuHeaderTemplateContent(),
@@ -250,22 +261,60 @@ export class UiMenu {
 
   /** @ignore Below the trigger, flipping above when `autoFlip` and space is lacking. */
   protected readonly overlayPositions = computed<ConnectedPosition[]>(() => {
-    const below: ConnectedPosition = { originX: 'start', originY: 'bottom', overlayX: 'start', overlayY: 'top', offsetY: OVERLAY_OFFSET };
-    const above: ConnectedPosition = { originX: 'start', originY: 'top', overlayX: 'start', overlayY: 'bottom', offsetY: -OVERLAY_OFFSET };
+    const below: ConnectedPosition = {
+      originX: 'start',
+      originY: 'bottom',
+      overlayX: 'start',
+      overlayY: 'top',
+      offsetY: OVERLAY_OFFSET,
+    };
+    const above: ConnectedPosition = {
+      originX: 'start',
+      originY: 'top',
+      overlayX: 'start',
+      overlayY: 'bottom',
+      offsetY: -OVERLAY_OFFSET,
+    };
     return this.autoFlip() ? [below, above] : [below];
   });
 
   /** @ignore Flyout panel beside its parent item: right-start first, then flips.
    * The vertical offset aligns the child's first item with the parent item. */
   protected readonly flyoutPositions: ConnectedPosition[] = [
-    { originX: 'end', originY: 'top', overlayX: 'start', overlayY: 'top', offsetY: -OVERLAY_OFFSET },
-    { originX: 'start', originY: 'top', overlayX: 'end', overlayY: 'top', offsetY: -OVERLAY_OFFSET },
-    { originX: 'end', originY: 'bottom', overlayX: 'start', overlayY: 'bottom', offsetY: OVERLAY_OFFSET },
-    { originX: 'start', originY: 'bottom', overlayX: 'end', overlayY: 'bottom', offsetY: OVERLAY_OFFSET },
+    {
+      originX: 'end',
+      originY: 'top',
+      overlayX: 'start',
+      overlayY: 'top',
+      offsetY: -OVERLAY_OFFSET,
+    },
+    {
+      originX: 'start',
+      originY: 'top',
+      overlayX: 'end',
+      overlayY: 'top',
+      offsetY: -OVERLAY_OFFSET,
+    },
+    {
+      originX: 'end',
+      originY: 'bottom',
+      overlayX: 'start',
+      overlayY: 'bottom',
+      offsetY: OVERLAY_OFFSET,
+    },
+    {
+      originX: 'start',
+      originY: 'bottom',
+      overlayX: 'end',
+      overlayY: 'bottom',
+      offsetY: OVERLAY_OFFSET,
+    },
   ];
 
   /** @ignore Resolved render tree (kinds, keys, expanded state). */
-  protected readonly nodes = computed<UiMenuNode[]>(() => this.buildNodes(this.items(), this.uid, 0));
+  protected readonly nodes = computed<UiMenuNode[]>(() =>
+    this.buildNodes(this.items(), this.uid, 0),
+  );
 
   /** @ignore Keys of the focusable entries, in visual order (roving focus path). */
   private readonly focusableKeys = computed<string[]>(() => {
@@ -273,7 +322,8 @@ export class UiMenu {
     const walk = (nodes: UiMenuNode[]): void => {
       for (const node of nodes) {
         if (node.kind === 'separator') continue;
-        if ((node.kind === 'item' || node.kind === 'flyout') && !node.item.disabled) keys.push(node.key);
+        if ((node.kind === 'item' || node.kind === 'flyout') && !node.item.disabled)
+          keys.push(node.key);
         if (node.kind === 'toggle' && !node.item.disabled) {
           keys.push(node.key);
           if (node.expanded) walk(node.children);
@@ -499,12 +549,26 @@ export class UiMenu {
       .map((item, index) => {
         const key = item.id ?? `${parentKey}_${index}`;
         if (item.separator) {
-          return { item, key, kind: 'separator', children: [], expanded: false, depth } satisfies UiMenuNode;
+          return {
+            item,
+            key,
+            kind: 'separator',
+            children: [],
+            expanded: false,
+            depth,
+          } satisfies UiMenuNode;
         }
         if (item.items) {
           // Flyout mode: every group becomes a cascading side panel.
           if (this.submenus() === 'flyout') {
-            return { item, key, kind: 'flyout', children: [], expanded: false, depth } satisfies UiMenuNode;
+            return {
+              item,
+              key,
+              kind: 'flyout',
+              children: [],
+              expanded: false,
+              depth,
+            } satisfies UiMenuNode;
           }
           const toggleable = item.toggleable ?? depth > 0;
           const expanded = toggleable ? (expandedKeys[key] ?? item.expanded ?? false) : true;
@@ -517,7 +581,14 @@ export class UiMenu {
             depth,
           } satisfies UiMenuNode;
         }
-        return { item, key, kind: 'item', children: [], expanded: false, depth } satisfies UiMenuNode;
+        return {
+          item,
+          key,
+          kind: 'item',
+          children: [],
+          expanded: false,
+          depth,
+        } satisfies UiMenuNode;
       });
   }
 

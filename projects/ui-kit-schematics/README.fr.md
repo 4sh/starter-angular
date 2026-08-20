@@ -1,9 +1,9 @@
 # @4sh/ui-kit-schematics
 
-*[English](./README.md) · **Français***
+_[English](./README.md) · **Français**_
 
 Package compagnon de **[`@4sh/ui-kit`](https://www.npmjs.com/package/@4sh/ui-kit)** :
-il porte les *sources brutes* des composants du Design System, et les schematics
+il porte les _sources brutes_ des composants du Design System, et les schematics
 Angular qui les recopient dans un projet consommateur.
 
 **Documentation complète (Storybook)** :
@@ -39,15 +39,15 @@ accepter ou à sauter.
 > générer du SCSS dans votre projet — le CSS pur par défaut d'Angular est
 > délibérément surchargé.
 
-| | |
-|---|---|
-| `ng add @4sh/ui-kit-schematics` | fondation **et** composants, d'un coup |
-| `ng add @4sh/ui-kit-schematics --skip-components` | fondation seule, composants choisis plus tard |
-| `ng add @4sh/ui-kit-schematics --skip-install` | ne pas lancer `npm install` (projet qui pilote son lockfile) |
-| `ng add @4sh/ui-kit-schematics --skip-storybook` | ne pas poser de Storybook (voir ci-dessous) |
-| `ng add @4sh/ui-kit-schematics --skip-mcp` | ne pas déclarer le serveur MCP (voir ci-dessous) |
-| `ng generate @4sh/ui-kit-schematics:add` | copier d'autres composants (interactif, ou `--components`, ou `--all`) |
-| `ng generate @4sh/ui-kit-schematics:update` | diff des composants copiés face aux sources publiées |
+|                                                   |                                                                        |
+| ------------------------------------------------- | ---------------------------------------------------------------------- |
+| `ng add @4sh/ui-kit-schematics`                   | fondation **et** composants, d'un coup                                 |
+| `ng add @4sh/ui-kit-schematics --skip-components` | fondation seule, composants choisis plus tard                          |
+| `ng add @4sh/ui-kit-schematics --skip-install`    | ne pas lancer `npm install` (projet qui pilote son lockfile)           |
+| `ng add @4sh/ui-kit-schematics --skip-storybook`  | ne pas poser de Storybook (voir ci-dessous)                            |
+| `ng add @4sh/ui-kit-schematics --skip-mcp`        | ne pas déclarer le serveur MCP (voir ci-dessous)                       |
+| `ng generate @4sh/ui-kit-schematics:add`          | copier d'autres composants (interactif, ou `--components`, ou `--all`) |
+| `ng generate @4sh/ui-kit-schematics:update`       | diff des composants copiés face aux sources publiées                   |
 
 `ui-kit.json` se trouve à la racine de votre projet, à côté de `package.json`.
 
@@ -67,12 +67,12 @@ npm run storybook
 
 Chaque composant arrive avec sa story et sa page MDX, à côté de ses sources. La
 configuration atterrit dans `storybook/` — `main.js`, `preview.ts`, le thème du
-manager, le sélecteur de marque, et les pages transverses *Foundations*,
-*Spécifications* et *Configuration*. Les cibles `storybook` et `build-storybook`
+manager, le sélecteur de marque, et les pages transverses _Foundations_,
+_Spécifications_ et _Configuration_. Les cibles `storybook` et `build-storybook`
 sont ajoutées à `angular.json`, les devDependencies au `package.json`.
 
 Deux choses font que cette doc est **la vôtre**, et non une photo de la nôtre.
-Les tables *Theming* sont lues sur vos propres `.scss` au build
+Les tables _Theming_ sont lues sur vos propres `.scss` au build
 (`scripts/docs.config.mjs` en extrait les rôles `///`) : elles décrivent vos
 valeurs, rebranding compris. Et les globs couvrent tout
 `src/app/shared/components/**` : une story écrite à côté de votre propre
@@ -121,7 +121,7 @@ Les deux modes ne se combinent pas : choisissez celui qui correspond au projet.
 
 ## Pourquoi un package séparé
 
-`ng-packagr` *inline* template et SCSS dans le `.mjs` publié. Les sources que ces
+`ng-packagr` _inline_ template et SCSS dans le `.mjs` publié. Les sources que ces
 schematics copient n'existent donc nulle part dans le tarball du kit, d'où leur
 présence ici. Cette séparation a une conséquence voulue, dans les deux sens : un
 consommateur en mode librairie ne télécharge jamais les sources brutes, et un
@@ -131,7 +131,7 @@ consommateur en mode starter ne télécharge jamais le kit compilé.
 
 **Les deux packages portent toujours le même numéro de version**, estampillé
 depuis celui du kit à l'assemblage. Ce package embarque une copie des sources du
-kit, et ce numéro commun est ce qui identifie *de quel* kit vient un fichier
+kit, et ce numéro commun est ce qui identifie _de quel_ kit vient un fichier
 copié — il est inscrit dans l'en-tête de traçabilité de chaque fichier, et dans
 `ui-kit.json`.
 

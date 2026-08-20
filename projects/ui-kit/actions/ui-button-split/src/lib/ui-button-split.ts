@@ -1,4 +1,12 @@
-import { booleanAttribute, Component, computed, input, output, signal, viewChild } from '@angular/core';
+import {
+  booleanAttribute,
+  Component,
+  computed,
+  input,
+  output,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { UiLevel } from '@4sh/ui-kit/types';
 import {
   ButtonIconPos,

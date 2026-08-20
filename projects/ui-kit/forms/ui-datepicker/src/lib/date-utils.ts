@@ -15,7 +15,11 @@ export function firstOfMonth(d: Date): Date {
 }
 export function isSameDay(a: Date | null | undefined, b: Date | null | undefined): boolean {
   if (!a || !b) return false;
-  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+  return (
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate()
+  );
 }
 export function addDays(d: Date, n: number): Date {
   const x = new Date(d);
@@ -26,7 +30,13 @@ export function addMonths(d: Date, n: number): Date {
   return new Date(d.getFullYear(), d.getMonth() + n, 1);
 }
 /** Build a Date and reject overflowed components (e.g. 31 Feb). */
-export function finalizeParsed(year: number, month: number, day: number, h: number, min: number): Date | null {
+export function finalizeParsed(
+  year: number,
+  month: number,
+  day: number,
+  h: number,
+  min: number,
+): Date | null {
   if (month < 0 || month > 11 || day < 1 || day > 31 || h > 23 || min > 59) return null;
   const d = new Date(year, month, day, h, min, 0, 0);
   if (d.getFullYear() !== year || d.getMonth() !== month || d.getDate() !== day) return null;

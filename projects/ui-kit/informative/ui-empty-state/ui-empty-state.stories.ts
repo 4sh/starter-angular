@@ -33,7 +33,7 @@ const meta: Meta<UiEmptyState> = {
     },
     icon: {
       control: { type: 'text' },
-      description: "Nom FontAwesome du visuel (raccourci ; ignoré si un slot média est projeté).",
+      description: 'Nom FontAwesome du visuel (raccourci ; ignoré si un slot média est projeté).',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     iconType: {

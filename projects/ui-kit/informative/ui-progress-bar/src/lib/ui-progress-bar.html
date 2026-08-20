@@ -35,7 +35,10 @@
 
 <ng-template #labelTpl>
   @if (valueTemplate(); as tpl) {
-    <ng-container [ngTemplateOutlet]="tpl" [ngTemplateOutletContext]="{ $implicit: clampedValue() }" />
+    <ng-container
+      [ngTemplateOutlet]="tpl"
+      [ngTemplateOutletContext]="{ $implicit: clampedValue() }"
+    />
   } @else {
     {{ clampedValue() }}{{ unit() }}
   }

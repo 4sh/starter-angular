@@ -11,7 +11,9 @@ const meta: Meta<UiInputOtp> = {
   title: 'Components/ui/forms/ui-input-otp',
   component: UiInputOtp,
   decorators: [
-    moduleMetadata({ imports: [UiInputOtp, UiButton, CommonModule, FormsModule, ReactiveFormsModule] }),
+    moduleMetadata({
+      imports: [UiInputOtp, UiButton, CommonModule, FormsModule, ReactiveFormsModule],
+    }),
   ],
   parameters: {
     layout: 'centered',
@@ -36,7 +38,10 @@ const meta: Meta<UiInputOtp> = {
       control: 'inline-radio',
       options: ['small', 'default', 'large'],
       description: 'Taille des cellules.',
-      table: { type: { summary: "'small' | 'default' | 'large'" }, defaultValue: { summary: "'default'" } },
+      table: {
+        type: { summary: "'small' | 'default' | 'large'" },
+        defaultValue: { summary: "'default'" },
+      },
     },
     disabled: {
       control: 'boolean',
@@ -50,7 +55,8 @@ const meta: Meta<UiInputOtp> = {
     },
     invalid: {
       control: 'boolean',
-      description: 'Force le style d’erreur (auto quand le contrôle attaché est invalide + touché).',
+      description:
+        'Force le style d’erreur (auto quand le contrôle attaché est invalide + touché).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     autofocus: {

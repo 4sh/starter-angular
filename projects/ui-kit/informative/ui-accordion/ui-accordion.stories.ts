@@ -26,7 +26,8 @@ const meta: Meta<UiAccordion> = {
   argTypes: {
     multiple: {
       control: { type: 'boolean' },
-      description: 'Autorise plusieurs panneaux ouverts simultanément (la valeur devient un tableau).',
+      description:
+        'Autorise plusieurs panneaux ouverts simultanément (la valeur devient un tableau).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     selectOnFocus: {
@@ -36,17 +37,20 @@ const meta: Meta<UiAccordion> = {
     },
     separator: {
       control: { type: 'boolean' },
-      description: 'Défaut de groupe : affiche le trait sous chaque en-tête (surchargeable par panneau).',
+      description:
+        'Défaut de groupe : affiche le trait sous chaque en-tête (surchargeable par panneau).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
     control: {
       control: { type: 'boolean' },
-      description: 'Défaut de groupe : affiche le chevron sur chaque en-tête (surchargeable par panneau).',
+      description:
+        'Défaut de groupe : affiche le chevron sur chaque en-tête (surchargeable par panneau).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
     motion: {
       control: { type: 'boolean' },
-      description: "Anime l'ouverture/fermeture (le préférence reduced-motion est toujours respectée).",
+      description:
+        "Anime l'ouverture/fermeture (le préférence reduced-motion est toujours respectée).",
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
     expandIcon: {

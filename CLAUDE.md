@@ -5,7 +5,7 @@
 This repository is a **fully in-house** Angular 22 (standalone) Design System: **headless**
 components (Angular CDK + native signals) styled exclusively through design tokens.
 
-It is the "Starter Angular" side of the **Dual-Engine** strategy: the *logic* depends on
+It is the "Starter Angular" side of the **Dual-Engine** strategy: the _logic_ depends on
 the stack (Angular CDK here, Radix on the React side). The layer actually shared across stacks
 = the **design tokens** (CSS variables). Component styling is **co-located** (scoped
 to the Angular component) and consumes these tokens.
@@ -20,16 +20,16 @@ Before generating anything in Figma, you **must** audit the source Angular compo
 
 ## Tech stack
 
-| Layer | Technology |
-|---|---|
-| Framework | Angular 22, standalone, signals API, zoneless |
-| Behavior (headless) | Components + Angular CDK (overlay, a11y, focus-trap…) |
-| Style | Co-located per component (scoped `.scss`) + CSS custom properties (`--var`) |
-| Design Tokens | JSON (Token Flow Manager) → `scripts/tokens.build.mjs` → SCSS (`projects/ui-kit/styles/generated/`) |
-| Storybook | 10.x + addon-designs (Figma panel) |
-| Themes | themeOne (purple), themeTwo, themeThree × light/dark (via `._themeX` / `.dark-mode` classes) |
-| Icons | FontAwesome Free |
-| Grid | Gridaflex 1.0.0 |
+| Layer               | Technology                                                                                          |
+| ------------------- | --------------------------------------------------------------------------------------------------- |
+| Framework           | Angular 22, standalone, signals API, zoneless                                                       |
+| Behavior (headless) | Components + Angular CDK (overlay, a11y, focus-trap…)                                               |
+| Style               | Co-located per component (scoped `.scss`) + CSS custom properties (`--var`)                         |
+| Design Tokens       | JSON (Token Flow Manager) → `scripts/tokens.build.mjs` → SCSS (`projects/ui-kit/styles/generated/`) |
+| Storybook           | 10.x + addon-designs (Figma panel)                                                                  |
+| Themes              | themeOne (purple), themeTwo, themeThree × light/dark (via `._themeX` / `.dark-mode` classes)        |
+| Icons               | FontAwesome Free                                                                                    |
+| Grid                | Gridaflex 1.0.0                                                                                     |
 
 > **Reference pattern**: `projects/ui-kit/actions/ui-button/`. Every new
 > `ui-*` component is built on this model (signals + SCSS visual-DNA classes).
@@ -41,16 +41,16 @@ Before generating anything in Figma, you **must** audit the source Angular compo
 
 ### Figma files (two, with distinct roles)
 
-| File | `fileKey` | Role |
-|---|---|---|
-| **[Projet] - UI Kit** | `GZww5hdUA49LB8XWeWP6tl` | The **components**. Target every component generation/audit here. Consumes the variables as `remote`. |
+| File                              | `fileKey`                | Role                                                                                                                                        |
+| --------------------------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| **[Projet] - UI Kit**             | `GZww5hdUA49LB8XWeWP6tl` | The **components**. Target every component generation/audit here. Consumes the variables as `remote`.                                       |
 | **[Projet] - Composants metiers** | `lH4jhyZFkIeJ1Ob1tlY7Wm` | **Owns the variable collections** (`semantics`, `primitives`, `metrics`, `typography`, `responsive`, `transitions`, `breakpoint`, `utils`). |
 
 UI Kit URL: `https://www.figma.com/design/GZww5hdUA49LB8XWeWP6tl/-Projet----UI-Kit?node-id=0-1&t=PXOwFotKvf72dn1c-1`
 
 > ⚠️ **Any write to a variable — create, rename, retarget, delete — must happen in
 > `lH4jhyZFkIeJ1Ob1tlY7Wm`.** In the UI Kit the variables are `remote`, therefore
-> read-only: the Plugin API can only mutate *local* variables. From the UI Kit you can
+> read-only: the Plugin API can only mutate _local_ variables. From the UI Kit you can
 > only rebind a node to another variable (`importVariableByKeyAsync`).
 >
 > Never write to another project's library (`[TEST]`, `[NAXOS] VUP`, `[EasyFret]`,
@@ -94,18 +94,19 @@ effects.{modeLight|modeDark}.{default|highlight|success|warning|error}
 
 ### Metrics (`metrics.json`)
 
-| Category | Available values |
-|---|---|
-| Spacing | 2xs (2px), xs (4px), sm (8px), md (12px), lg (16px), xl (24px), 2xl (32px), 3xl (40px), 4xl (56px) |
-| Radius | 2xs, xs, sm, md, lg, xl, 2xl, full |
-| Stroke | sm (1px), default (2px), lg (4px) |
-| Shadow | sm, md, lg |
+| Category | Available values                                                                                   |
+| -------- | -------------------------------------------------------------------------------------------------- |
+| Spacing  | 2xs (2px), xs (4px), sm (8px), md (12px), lg (16px), xl (24px), 2xl (32px), 3xl (40px), 4xl (56px) |
+| Radius   | 2xs, xs, sm, md, lg, xl, 2xl, full                                                                 |
+| Stroke   | sm (1px), default (2px), lg (4px)                                                                  |
+| Shadow   | sm, md, lg                                                                                         |
 
 ---
 
 ## Strict rules: Tokens
 
 **FORBIDDEN**:
+
 - No hardcoded hexadecimal color in Figma
 - No numeric spacing value outside `metrics`
 - No `font-size` outside `typography`
@@ -113,6 +114,7 @@ effects.{modeLight|modeDark}.{default|highlight|success|warning|error}
 - No duplicated style (always a Figma variable)
 
 **MANDATORY**:
+
 - Always read `src/design-tokens/semantics.json` before choosing a color
 - Always use semantic tokens, never primitives directly in components
 - Figma tokens must carry the same names as the generated SCSS tokens in `projects/ui-kit/styles/generated/`
@@ -157,8 +159,8 @@ French), `//` = internal note (English, invisible in the doc). The `///` goes **
 the declaration**, vertically aligned with its visual group:
 
 ```scss
-$card-padding: var(--units-lg);       /// Inset du corps.
-$card-radius: var(--radius-md);       /// Rayon des coins.
+$card-padding: var(--units-lg); /// Inset du corps.
+$card-radius: var(--radius-md); /// Rayon des coins.
 ```
 
 Rules:
@@ -176,18 +178,18 @@ Rules:
 
 ### Categories
 
-| Category | Selector prefix | Location |
-|---|---|---|
-| Generic UI | `ui-` | `projects/ui-kit/{category}/ui-{name}/` (package `@4sh/ui-kit`) |
-| Business domain | `sp-` or project prefix | `src/app/shared/components/domain/` |
+| Category        | Selector prefix         | Location                                                        |
+| --------------- | ----------------------- | --------------------------------------------------------------- |
+| Generic UI      | `ui-`                   | `projects/ui-kit/{category}/ui-{name}/` (package `@4sh/ui-kit`) |
+| Business domain | `sp-` or project prefix | `src/app/shared/components/domain/`                             |
 
 ### Signals patterns
 
 ```typescript
 // Inputs
-label = input<string>();                    // optional
-name = input.required<string>();            // required
-level = input<'high' | 'low'>('high');      // with default
+label = input<string>(); // optional
+name = input.required<string>(); // required
+level = input<'high' | 'low'>('high'); // with default
 disabled = input<boolean>(false);
 
 // Outputs
@@ -205,19 +207,19 @@ wrapperClass = computed(() => {
 
 ## Mapping Angular inputs → Figma Properties
 
-| Angular (input) | Figma (component property) | Figma type |
-|---|---|---|
-| `level: 'high'\|'low'\|'success'\|'warning'\|'error'\|'info'\|'danger'` | `Level` | Variant |
-| `size: 'small'\|undefined\|'large'` | `Size` | Variant |
-| `outlined: boolean` | `Outlined` | Boolean |
-| `disabled: boolean` | `State = disabled` | Variant (within State) |
-| `iconLeft: string\|null` | `Icon Left` | Boolean |
-| `iconRight: string\|null` | `Icon Right` | Boolean |
-| `label: string` | `Label` | Text |
-| `state: 'default'\|'success'\|'error'\|'warning'\|'neutral'` | `State` | Variant |
-| `active: boolean` | `Active` | Boolean |
-| `readonly: boolean` | `State = readonly` | Variant (within State) |
-| `error: string\|null` | included in `State = error` | Variant |
+| Angular (input)                                                         | Figma (component property)  | Figma type             |
+| ----------------------------------------------------------------------- | --------------------------- | ---------------------- |
+| `level: 'high'\|'low'\|'success'\|'warning'\|'error'\|'info'\|'danger'` | `Level`                     | Variant                |
+| `size: 'small'\|undefined\|'large'`                                     | `Size`                      | Variant                |
+| `outlined: boolean`                                                     | `Outlined`                  | Boolean                |
+| `disabled: boolean`                                                     | `State = disabled`          | Variant (within State) |
+| `iconLeft: string\|null`                                                | `Icon Left`                 | Boolean                |
+| `iconRight: string\|null`                                               | `Icon Right`                | Boolean                |
+| `label: string`                                                         | `Label`                     | Text                   |
+| `state: 'default'\|'success'\|'error'\|'warning'\|'neutral'`            | `State`                     | Variant                |
+| `active: boolean`                                                       | `Active`                    | Boolean                |
+| `readonly: boolean`                                                     | `State = readonly`          | Variant (within State) |
+| `error: string\|null`                                                   | included in `State = error` | Variant                |
 
 ### Interactive states rule
 
@@ -273,16 +275,17 @@ ComponentSet "{ComponentName}"
 
 **Always use Auto Layout**, never fixed-position frames for components.
 
-| Case | Rule |
-|---|---|
+| Case                 | Rule                                                              |
+| -------------------- | ----------------------------------------------------------------- |
 | Component with label | `direction: horizontal`, `align: center`, `gap: metrics.sm (8px)` |
-| Vertical list | `direction: vertical`, `gap: metrics.md or lg` |
-| Internal padding | Use `metrics.sm/md/lg` for horizontal and vertical padding |
-| Expand | `fill container` on the main child, never a hardcoded width |
-| Icon only | `width/height: fixed` per size token |
-| Full-width component | `fill` constraint on the parent |
+| Vertical list        | `direction: vertical`, `gap: metrics.md or lg`                    |
+| Internal padding     | Use `metrics.sm/md/lg` for horizontal and vertical padding        |
+| Expand               | `fill container` on the main child, never a hardcoded width       |
+| Icon only            | `width/height: fixed` per size token                              |
+| Full-width component | `fill` constraint on the parent                                   |
 
 **FORBIDDEN**:
+
 - `position: absolute` on elements inside a component
 - Hardcoded fixed dimensions outside the `metrics` tokens
 - Asymmetric padding not justified by the design token
@@ -292,6 +295,7 @@ ComponentSet "{ComponentName}"
 ## Accessibility rules
 
 Every Figma component **must** have:
+
 - A descriptive layer name (not "Frame 42", but "Button/High/Default")
 - The Figma `aria-label` property filled in on interactive elements
 - Color contrast compliant with WCAG 2.1 AA minimum (verify with the semantic tokens)
@@ -305,6 +309,7 @@ Every Figma component **must** have:
 Every story with a Figma `parameters.design.url` **must** correspond to an existing Figma component.
 
 Expected URL format in stories:
+
 ```typescript
 parameters: {
   design: {
@@ -322,34 +327,34 @@ Rule: the `node-id` in the Figma parameter must point to the **ComponentSet** (v
 
 ### Figma
 
-| Element | Convention | Example |
-|---|---|---|
-| ComponentSet | `ComponentName` | `Button` |
-| Variant frame | `Level=high, State=default` | - |
-| Root layer | `{prefix}/{category}` | `ui/button` |
-| Variable collection | `Semantics`, `Metrics`, `Typography` | - |
-| Variable token | `{category}/{subcategory}/{property}` | `actions/high/surface/default` |
-| Mode | `Light`, `Dark` | - |
-| Theme | `ThemeOne`, `ThemeTwo`, `ThemeThree` | - |
+| Element             | Convention                            | Example                        |
+| ------------------- | ------------------------------------- | ------------------------------ |
+| ComponentSet        | `ComponentName`                       | `Button`                       |
+| Variant frame       | `Level=high, State=default`           | -                              |
+| Root layer          | `{prefix}/{category}`                 | `ui/button`                    |
+| Variable collection | `Semantics`, `Metrics`, `Typography`  | -                              |
+| Variable token      | `{category}/{subcategory}/{property}` | `actions/high/surface/default` |
+| Mode                | `Light`, `Dark`                       | -                              |
+| Theme               | `ThemeOne`, `ThemeTwo`, `ThemeThree`  | -                              |
 
 ### Angular (existing: do not change)
 
-| Element | Convention |
-|---|---|
-| UI selector | `ui-{kebab-case}` |
-| Domain selector | `sp-{kebab-case}` |
-| TypeScript class | `Ui{PascalCase}` |
+| Element          | Convention                            |
+| ---------------- | ------------------------------------- |
+| UI selector      | `ui-{kebab-case}`                     |
+| Domain selector  | `sp-{kebab-case}`                     |
+| TypeScript class | `Ui{PascalCase}`                      |
 | Input union type | `type {Name}Variant = '...' \| '...'` |
 
 ### CSS/SCSS classes (MANDATORY: no BEM)
 
 > ⚠️ **Do NOT use BEM notation** (`ui-button__icon`, `ui-button--active`).
 
-| Element | Convention | SCSS | Example |
-|---|---|---|---|
-| Root | `ui-{name}` | `.ui-{name}` | `.ui-button` |
-| Sub-element | `ui-{name}-{part}` | `&-{part}` | `&-icon` → `.ui-button-icon` |
-| Modifier | `_{modifier}` (`_` prefix) | `&._{modifier}` | `&._small`, `&._high`, `&._active` |
+| Element     | Convention                 | SCSS            | Example                            |
+| ----------- | -------------------------- | --------------- | ---------------------------------- |
+| Root        | `ui-{name}`                | `.ui-{name}`    | `.ui-button`                       |
+| Sub-element | `ui-{name}-{part}`         | `&-{part}`      | `&-icon` → `.ui-button-icon`       |
+| Modifier    | `_{modifier}` (`_` prefix) | `&._{modifier}` | `&._small`, `&._high`, `&._active` |
 
 ```scss
 .ui-button {
@@ -395,6 +400,7 @@ Interactive states (`hover`/`focus`/`active`/`disabled`) = **CSS pseudo-classes*
 ## Mandatory workflow before Figma generation
 
 **Step 1: Angular component analysis**
+
 ```
 1. Read the .ts file → identify all inputs and their types
 2. Read the .html file → identify the DOM structure
@@ -404,6 +410,7 @@ Interactive states (`hover`/`focus`/`active`/`disabled`) = **CSS pseudo-classes*
 ```
 
 **Step 2: Token mapping**
+
 ```
 1. For each CSS color used → find the corresponding semantic token
 2. For each spacing → find the corresponding metrics value
@@ -412,6 +419,7 @@ Interactive states (`hover`/`focus`/`active`/`disabled`) = **CSS pseudo-classes*
 ```
 
 **Step 3: Figma architecture**
+
 ```
 1. Define the ComponentSet properties (not the individual variants)
 2. List the visually distinct states (requiring variants)
@@ -420,6 +428,7 @@ Interactive states (`hover`/`focus`/`active`/`disabled`) = **CSS pseudo-classes*
 ```
 
 **Step 4: Generation**
+
 ```
 1. Use use_figma to create the component
 2. Apply Figma variables for all colors
@@ -452,32 +461,38 @@ Before validating a Figma component:
 When the user requests an audit of a Figma component, apply this grid:
 
 ### Bad variants detection
+
 - Redundant variants (same visual appearance)
 - Variants that should be boolean Component Properties
 - More than 30 variants for a single component → propose restructuring
 
 ### Hardcoded values detection
+
 - Hexadecimal colors not bound to Figma variables
 - Padding/gap/spacing numbers that match no metric token
 - Font-size/weight/family hardcoded outside the typography variables
 
 ### Scalability issues detection
+
 - Component duplication instead of instantiation
 - Color styles instead of Figma variables
 - Light/dark modes implemented by copying instead of variable modes
 - Themes implemented by duplication instead of collections
 
 ### Bad Figma properties detection
+
 - Boolean `Disabled` property when it is a State
 - Separate Angular `error`/`success`/`warning` properties when they should be a single `State`
 - Missing property for variable content (label, icon)
 
 ### Auto Layout issues detection
+
 - Frames without Auto Layout inside a component
 - Fixed dimensions on elements that should be `fill`
 - Padding/gap without binding to the metrics tokens
 
 ### Token violations detection
+
 - Primitive used directly in a component (e.g. `primary.500` instead of `actions.high.surface.default`)
 - Token from one category used in another (e.g. `navigation` token on a button)
 
@@ -558,16 +573,16 @@ Audit the variants architecture of the Figma ComponentSet "{ComponentName}":
 All of them already live in `lH4jhyZFkIeJ1Ob1tlY7Wm`. Names are **lowercase**, and the
 mode names are not the ones the SCSS uses. Read before writing.
 
-| Collection | Modes | Vars |
-|---|---|---|
-| `primitives` | `Brand 1`, `Brand 2`, `Brand 3` | 85 |
-| `semantics` | `Light`, `Dark` | 421 |
-| `metrics` | `Mode 1` | 33 |
-| `typography` | `Mode 1` | 10 |
-| `responsive` | `Desktop`, `Tablet`, `Mobile` | 32 |
-| `utils` | `Mode 1` | 31 |
-| `breakpoint` | `Mode 1` | 6 |
-| `transitions` | `Mode 1` | 7 |
+| Collection    | Modes                           | Vars |
+| ------------- | ------------------------------- | ---- |
+| `primitives`  | `Brand 1`, `Brand 2`, `Brand 3` | 85   |
+| `semantics`   | `Light`, `Dark`                 | 421  |
+| `metrics`     | `Mode 1`                        | 33   |
+| `typography`  | `Mode 1`                        | 10   |
+| `responsive`  | `Desktop`, `Tablet`, `Mobile`   | 32   |
+| `utils`       | `Mode 1`                        | 31   |
+| `breakpoint`  | `Mode 1`                        | 6    |
+| `transitions` | `Mode 1`                        | 7    |
 
 `semantics` references `primitives` through variable aliases — that is what makes the
 brand/mode switch work without duplication.
@@ -630,37 +645,37 @@ Configuration: **`tokens.config.json`** (repo root, documented/validated by
 
 ### CSS variable naming
 
-| Collection | Var prefix | Example |
-|---|---|---|
-| primitives | `--primitives-*` | `--primitives-primary-500` |
-| metrics | `--metrics-*` | `--metrics-units-sm`, `--metrics-radius-sm` |
-| semantics | *(none)* | `--actions-high-surface-default`, `--global-high-content-default` |
-| typography | *(none)* | `--fontfamily-base`, `--weight-bold` |
-| transitions | *(none)* | `--transition-fast` |
+| Collection  | Var prefix       | Example                                                           |
+| ----------- | ---------------- | ----------------------------------------------------------------- |
+| primitives  | `--primitives-*` | `--primitives-primary-500`                                        |
+| metrics     | `--metrics-*`    | `--metrics-units-sm`, `--metrics-radius-sm`                       |
+| semantics   | _(none)_         | `--actions-high-surface-default`, `--global-high-content-default` |
+| typography  | _(none)_         | `--fontfamily-base`, `--weight-bold`                              |
+| transitions | _(none)_         | `--transition-fast`                                               |
 
 The **semantics reference the primitives** via `var(--primitives-*)` (outputReferences) → the
 brand/mode switch happens at runtime without duplication.
 
 ### Dimensions / modes
 
-| Dimension | Carried by | Runtime application |
-|---|---|---|
-| Brand | primitives (modeBrand1/2/3) | `[data-brand='brand2'\|'brand3']` (brand1 = default): `BrandService` |
-| Light/Dark | semantics (modeLight/modeDark) | `[data-theme='dark']` (light = default): `ThemeService` |
-| Viewport | responsive (modeMobile/Tablet/Desktop) | `@media (min-width: …)` |
+| Dimension  | Carried by                             | Runtime application                                                  |
+| ---------- | -------------------------------------- | -------------------------------------------------------------------- |
+| Brand      | primitives (modeBrand1/2/3)            | `[data-brand='brand2'\|'brand3']` (brand1 = default): `BrandService` |
+| Light/Dark | semantics (modeLight/modeDark)         | `[data-theme='dark']` (light = default): `ThemeService`              |
+| Viewport   | responsive (modeMobile/Tablet/Desktop) | `@media (min-width: …)`                                              |
 
 ---
 
 ## Breakpoints
 
-| Token | Value | Usage |
-|---|---|---|
-| `phone` | 0px | Mobile first |
-| `tabletPortrait` | 600px | Small tablet |
-| `tabletLandscape` | 900px | Tablet landscape |
-| `desktop` | 1200px | Standard desktop |
-| `mediumDesktop` | 1440px | Large desktop |
-| `bigDesktop` | 1800px | Very large screen |
+| Token             | Value  | Usage             |
+| ----------------- | ------ | ----------------- |
+| `phone`           | 0px    | Mobile first      |
+| `tabletPortrait`  | 600px  | Small tablet      |
+| `tabletLandscape` | 900px  | Tablet landscape  |
+| `desktop`         | 1200px | Standard desktop  |
+| `mediumDesktop`   | 1440px | Large desktop     |
+| `bigDesktop`      | 1800px | Very large screen |
 
 In Figma, use 1440px frames (mediumDesktop) as the desktop reference size.
 Document mobile adaptations via separate frames, not component duplication.

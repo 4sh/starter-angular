@@ -9,13 +9,13 @@ You are an Angular 22 headless design-system expert for this starter's component
 
 ## Scope
 
-| You modify | You do NOT modify |
-|---|---|
+| You modify                                                                  | You do NOT modify                                                              |
+| --------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
 | `src/app/shared/components/ui/**` (incl. co-located `.stories.ts` + `.mdx`) | `src/design-tokens/*.json`, `tokens.config.json` (propose the edit, ask first) |
-| `src/app/shared/types/**` | `src/styles/src/generated/**` (generated — never) |
-| `docs/components-index.md` | `src/app/core/**`, `src/app/shared/components/domain/**` |
-| | `storybook/docs/**` (global foundations/specifications docs) |
-| | `scripts/**`, `.github/**` |
+| `src/app/shared/types/**`                                                   | `src/styles/src/generated/**` (generated — never)                              |
+| `docs/components-index.md`                                                  | `src/app/core/**`, `src/app/shared/components/domain/**`                       |
+|                                                                             | `storybook/docs/**` (global foundations/specifications docs)                   |
+|                                                                             | `scripts/**`, `.github/**`                                                     |
 
 **Out-of-scope requests**: refuse and orient — domain components (project prefix, composition of `ui-*`) and core services belong to the main thread per `AGENTS.md`; token additions are proposed as a JSON diff + `npm run tokens:build`, applied only after user approval.
 
@@ -84,15 +84,18 @@ If the verb matches none of these, or the phrasing is ambiguous (“check that�
 For each component in scope, check:
 
 **Component**
+
 - [ ] `input()`/`output()`/`viewChild()` only; no decorators; signals `readonly`.
 - [ ] `inject()` only; `private`/`protected` explicit; member order respected.
 - [ ] Class list via `computed()`; no logic in template; inputs invoked (`label()`).
 
 **Template**
+
 - [ ] `@if` / `@for track` / `@switch` exclusively; `[class]`/`[style]` bindings.
 - [ ] Native `<button>`/`<a>`; `aria-label` on icon-only; decorative icons `aria-hidden`.
 
 **Styles**
+
 - [ ] Zero hardcoded values — every color/spacing/radius/font from a token variable.
 - [ ] Semantic tokens only (no `--primitives-*`), right category for the component.
 - [ ] `.ui-<name>` / `&-part` / `&._modifier` naming; states via pseudo-classes + state tokens.
@@ -100,6 +103,7 @@ For each component in scope, check:
 - [ ] Shared structural values consumed from `_ui-config.scss`; no external margins.
 
 **Storybook (co-located deliverables)**
+
 - [ ] `.stories.ts` + `.mdx` present in the component folder.
 - [ ] `argTypes` exhaustive (one per `input()`/`output()`).
 - [ ] MDX: description, API, HTML tables (not native Markdown).

@@ -11,9 +11,7 @@
             "collectionId": "VariableCollectionId:5:438",
             "modeId": "5:4",
             "resolvedType": "FLOAT",
-            "scopes": [
-              "WIDTH_HEIGHT"
-            ]
+            "scopes": ["WIDTH_HEIGHT"]
           }
         }
       },
@@ -26,9 +24,7 @@
             "collectionId": "VariableCollectionId:5:438",
             "modeId": "5:4",
             "resolvedType": "FLOAT",
-            "scopes": [
-              "WIDTH_HEIGHT"
-            ]
+            "scopes": ["WIDTH_HEIGHT"]
           }
         }
       }
@@ -43,9 +39,7 @@
             "collectionId": "VariableCollectionId:5:438",
             "modeId": "5:5",
             "resolvedType": "FLOAT",
-            "scopes": [
-              "WIDTH_HEIGHT"
-            ]
+            "scopes": ["WIDTH_HEIGHT"]
           }
         }
       },
@@ -58,9 +52,7 @@
             "collectionId": "VariableCollectionId:5:438",
             "modeId": "5:5",
             "resolvedType": "FLOAT",
-            "scopes": [
-              "WIDTH_HEIGHT"
-            ]
+            "scopes": ["WIDTH_HEIGHT"]
           }
         }
       }
@@ -75,9 +67,7 @@
             "collectionId": "VariableCollectionId:5:438",
             "modeId": "5:6",
             "resolvedType": "FLOAT",
-            "scopes": [
-              "WIDTH_HEIGHT"
-            ]
+            "scopes": ["WIDTH_HEIGHT"]
           }
         }
       },
@@ -90,9 +80,7 @@
             "collectionId": "VariableCollectionId:5:438",
             "modeId": "5:6",
             "resolvedType": "FLOAT",
-            "scopes": [
-              "WIDTH_HEIGHT"
-            ]
+            "scopes": ["WIDTH_HEIGHT"]
           }
         }
       }
@@ -109,9 +97,7 @@
             "collectionId": "VariableCollectionId:5:438",
             "modeId": "5:4",
             "resolvedType": "FLOAT",
-            "scopes": [
-              "GAP"
-            ]
+            "scopes": ["GAP"]
           }
         }
       }
@@ -126,9 +112,7 @@
             "collectionId": "VariableCollectionId:5:438",
             "modeId": "5:5",
             "resolvedType": "FLOAT",
-            "scopes": [
-              "GAP"
-            ]
+            "scopes": ["GAP"]
           }
         }
       }
@@ -143,9 +127,7 @@
             "collectionId": "VariableCollectionId:5:438",
             "modeId": "5:6",
             "resolvedType": "FLOAT",
-            "scopes": [
-              "GAP"
-            ]
+            "scopes": ["GAP"]
           }
         }
       }
@@ -162,9 +144,7 @@
             "collectionId": "VariableCollectionId:5:438",
             "modeId": "5:4",
             "resolvedType": "FLOAT",
-            "scopes": [
-              "WIDTH_HEIGHT"
-            ]
+            "scopes": ["WIDTH_HEIGHT"]
           }
         }
       }
@@ -179,9 +159,7 @@
             "collectionId": "VariableCollectionId:5:438",
             "modeId": "5:5",
             "resolvedType": "FLOAT",
-            "scopes": [
-              "WIDTH_HEIGHT"
-            ]
+            "scopes": ["WIDTH_HEIGHT"]
           }
         }
       }
@@ -196,9 +174,7 @@
             "collectionId": "VariableCollectionId:5:438",
             "modeId": "5:6",
             "resolvedType": "FLOAT",
-            "scopes": [
-              "WIDTH_HEIGHT"
-            ]
+            "scopes": ["WIDTH_HEIGHT"]
           }
         }
       }
@@ -216,9 +192,7 @@
               "collectionId": "VariableCollectionId:5:438",
               "modeId": "5:4",
               "resolvedType": "FLOAT",
-              "scopes": [
-                "WIDTH_HEIGHT"
-              ]
+              "scopes": ["WIDTH_HEIGHT"]
             }
           }
         },
@@ -231,9 +205,7 @@
               "collectionId": "VariableCollectionId:5:438",
               "modeId": "5:4",
               "resolvedType": "FLOAT",
-              "scopes": [
-                "WIDTH_HEIGHT"
-              ]
+              "scopes": ["WIDTH_HEIGHT"]
             }
           }
         },
@@ -246,9 +218,7 @@
               "collectionId": "VariableCollectionId:5:438",
               "modeId": "5:4",
               "resolvedType": "FLOAT",
-              "scopes": [
-                "WIDTH_HEIGHT"
-              ]
+              "scopes": ["WIDTH_HEIGHT"]
             }
           }
         },
@@ -261,9 +231,7 @@
               "collectionId": "VariableCollectionId:5:438",
               "modeId": "5:4",
               "resolvedType": "FLOAT",
-              "scopes": [
-                "WIDTH_HEIGHT"
-              ]
+              "scopes": ["WIDTH_HEIGHT"]
             }
           }
         },
@@ -276,9 +244,7 @@
               "collectionId": "VariableCollectionId:5:438",
               "modeId": "5:4",
               "resolvedType": "FLOAT",
-              "scopes": [
-                "WIDTH_HEIGHT"
-              ]
+              "scopes": ["WIDTH_HEIGHT"]
             }
           }
         },
@@ -291,9 +257,7 @@
               "collectionId": "VariableCollectionId:5:438",
               "modeId": "5:4",
               "resolvedType": "FLOAT",
-              "scopes": [
-                "WIDTH_HEIGHT"
-              ]
+              "scopes": ["WIDTH_HEIGHT"]
             }
           }
         }
@@ -309,9 +273,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:4",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           },
@@ -324,9 +286,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:4",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           },
@@ -339,9 +299,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:4",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           },
@@ -354,9 +312,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:4",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           },
@@ -369,9 +325,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:4",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           },
@@ -384,9 +338,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:4",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           }
@@ -401,9 +353,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:4",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           },
@@ -416,9 +366,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:4",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           },
@@ -431,9 +379,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:4",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           },
@@ -446,9 +392,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:4",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           },
@@ -461,9 +405,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:4",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           }
@@ -478,9 +420,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:4",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           },
@@ -493,9 +433,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:4",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           },
@@ -508,9 +446,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:4",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           }
@@ -525,9 +461,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:4",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           },
@@ -540,9 +474,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:4",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           },
@@ -555,9 +487,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:4",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           },
@@ -570,9 +500,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:4",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           },
@@ -585,9 +513,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:4",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           }
@@ -605,9 +531,7 @@
               "collectionId": "VariableCollectionId:5:438",
               "modeId": "5:5",
               "resolvedType": "FLOAT",
-              "scopes": [
-                "WIDTH_HEIGHT"
-              ]
+              "scopes": ["WIDTH_HEIGHT"]
             }
           }
         },
@@ -620,9 +544,7 @@
               "collectionId": "VariableCollectionId:5:438",
               "modeId": "5:5",
               "resolvedType": "FLOAT",
-              "scopes": [
-                "WIDTH_HEIGHT"
-              ]
+              "scopes": ["WIDTH_HEIGHT"]
             }
           }
         },
@@ -635,9 +557,7 @@
               "collectionId": "VariableCollectionId:5:438",
               "modeId": "5:5",
               "resolvedType": "FLOAT",
-              "scopes": [
-                "WIDTH_HEIGHT"
-              ]
+              "scopes": ["WIDTH_HEIGHT"]
             }
           }
         },
@@ -650,9 +570,7 @@
               "collectionId": "VariableCollectionId:5:438",
               "modeId": "5:5",
               "resolvedType": "FLOAT",
-              "scopes": [
-                "WIDTH_HEIGHT"
-              ]
+              "scopes": ["WIDTH_HEIGHT"]
             }
           }
         },
@@ -665,9 +583,7 @@
               "collectionId": "VariableCollectionId:5:438",
               "modeId": "5:5",
               "resolvedType": "FLOAT",
-              "scopes": [
-                "WIDTH_HEIGHT"
-              ]
+              "scopes": ["WIDTH_HEIGHT"]
             }
           }
         },
@@ -680,9 +596,7 @@
               "collectionId": "VariableCollectionId:5:438",
               "modeId": "5:5",
               "resolvedType": "FLOAT",
-              "scopes": [
-                "WIDTH_HEIGHT"
-              ]
+              "scopes": ["WIDTH_HEIGHT"]
             }
           }
         }
@@ -698,9 +612,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:5",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           },
@@ -713,9 +625,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:5",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           },
@@ -728,9 +638,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:5",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           },
@@ -743,9 +651,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:5",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           },
@@ -758,9 +664,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:5",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           },
@@ -773,9 +677,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:5",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           }
@@ -790,9 +692,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:5",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           },
@@ -805,9 +705,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:5",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           },
@@ -820,9 +718,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:5",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           },
@@ -835,9 +731,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:5",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           },
@@ -850,9 +744,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:5",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           }
@@ -867,9 +759,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:5",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           },
@@ -882,9 +772,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:5",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           },
@@ -897,9 +785,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:5",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           }
@@ -914,9 +800,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:5",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           },
@@ -929,9 +813,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:5",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           },
@@ -944,9 +826,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:5",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           },
@@ -959,9 +839,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:5",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           },
@@ -974,9 +852,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:5",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           }
@@ -994,9 +870,7 @@
               "collectionId": "VariableCollectionId:5:438",
               "modeId": "5:6",
               "resolvedType": "FLOAT",
-              "scopes": [
-                "WIDTH_HEIGHT"
-              ]
+              "scopes": ["WIDTH_HEIGHT"]
             }
           }
         },
@@ -1009,9 +883,7 @@
               "collectionId": "VariableCollectionId:5:438",
               "modeId": "5:6",
               "resolvedType": "FLOAT",
-              "scopes": [
-                "WIDTH_HEIGHT"
-              ]
+              "scopes": ["WIDTH_HEIGHT"]
             }
           }
         },
@@ -1024,9 +896,7 @@
               "collectionId": "VariableCollectionId:5:438",
               "modeId": "5:6",
               "resolvedType": "FLOAT",
-              "scopes": [
-                "WIDTH_HEIGHT"
-              ]
+              "scopes": ["WIDTH_HEIGHT"]
             }
           }
         },
@@ -1039,9 +909,7 @@
               "collectionId": "VariableCollectionId:5:438",
               "modeId": "5:6",
               "resolvedType": "FLOAT",
-              "scopes": [
-                "WIDTH_HEIGHT"
-              ]
+              "scopes": ["WIDTH_HEIGHT"]
             }
           }
         },
@@ -1054,9 +922,7 @@
               "collectionId": "VariableCollectionId:5:438",
               "modeId": "5:6",
               "resolvedType": "FLOAT",
-              "scopes": [
-                "WIDTH_HEIGHT"
-              ]
+              "scopes": ["WIDTH_HEIGHT"]
             }
           }
         },
@@ -1069,9 +935,7 @@
               "collectionId": "VariableCollectionId:5:438",
               "modeId": "5:6",
               "resolvedType": "FLOAT",
-              "scopes": [
-                "WIDTH_HEIGHT"
-              ]
+              "scopes": ["WIDTH_HEIGHT"]
             }
           }
         }
@@ -1087,9 +951,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:6",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           },
@@ -1102,9 +964,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:6",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           },
@@ -1117,9 +977,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:6",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           },
@@ -1132,9 +990,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:6",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           },
@@ -1147,9 +1003,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:6",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           },
@@ -1162,9 +1016,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:6",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           }
@@ -1179,9 +1031,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:6",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           },
@@ -1194,9 +1044,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:6",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           },
@@ -1209,9 +1057,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:6",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           },
@@ -1224,9 +1070,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:6",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           },
@@ -1239,9 +1083,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:6",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           }
@@ -1256,9 +1098,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:6",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           },
@@ -1271,9 +1111,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:6",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           },
@@ -1286,9 +1124,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:6",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           }
@@ -1303,9 +1139,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:6",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           },
@@ -1318,9 +1152,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:6",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           },
@@ -1333,9 +1165,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:6",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           },
@@ -1348,9 +1178,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:6",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           },
@@ -1363,9 +1191,7 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:6",
                 "resolvedType": "FLOAT",
-                "scopes": [
-                  "ALL_SCOPES"
-                ]
+                "scopes": ["ALL_SCOPES"]
               }
             }
           }

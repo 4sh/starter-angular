@@ -25,7 +25,10 @@
       [attr.aria-labelledby]="ariaLabelledBy() || null"
       (keydown)="onListKeydown($event)"
     >
-      <ng-container [ngTemplateOutlet]="nodesTpl" [ngTemplateOutletContext]="{ $implicit: nodes() }" />
+      <ng-container
+        [ngTemplateOutlet]="nodesTpl"
+        [ngTemplateOutletContext]="{ $implicit: nodes() }"
+      />
     </ul>
 
     @if (endTemplate(); as tpl) {
@@ -42,7 +45,7 @@
     @switch (node.kind) {
       @case ('separator') {
         <li class="ui-menu-separator" role="separator" aria-hidden="true">
-            <ui-separator></ui-separator>
+          <ui-separator></ui-separator>
         </li>
       }
 
@@ -50,7 +53,10 @@
         <li class="ui-menu-section" role="none" [class]="node.item.styleClass ?? ''">
           <span class="ui-menu-header" [attr.id]="headerId(node)">
             @if (resolvedSubmenuHeaderTemplate(); as tpl) {
-              <ng-container [ngTemplateOutlet]="tpl" [ngTemplateOutletContext]="{ $implicit: node.item }" />
+              <ng-container
+                [ngTemplateOutlet]="tpl"
+                [ngTemplateOutletContext]="{ $implicit: node.item }"
+              />
             } @else {
               @if (node.item.icon; as icon) {
                 <ui-icon class="ui-menu-item-icon" [name]="icon" size="sm" />
@@ -59,7 +65,10 @@
             }
           </span>
           <ul class="ui-menu-group" role="group" [attr.aria-labelledby]="headerId(node)">
-            <ng-container [ngTemplateOutlet]="nodesTpl" [ngTemplateOutletContext]="{ $implicit: node.children }" />
+            <ng-container
+              [ngTemplateOutlet]="nodesTpl"
+              [ngTemplateOutletContext]="{ $implicit: node.children }"
+            />
           </ul>
         </li>
       }
@@ -82,7 +91,10 @@
             (focus)="onEntryFocus(node)"
           >
             @if (resolvedSubmenuHeaderTemplate(); as tpl) {
-              <ng-container [ngTemplateOutlet]="tpl" [ngTemplateOutletContext]="{ $implicit: node.item }" />
+              <ng-container
+                [ngTemplateOutlet]="tpl"
+                [ngTemplateOutletContext]="{ $implicit: node.item }"
+              />
             } @else {
               @if (node.item.icon; as icon) {
                 <ui-icon class="ui-menu-item-icon" [name]="icon" size="sm" />
@@ -90,12 +102,25 @@
               <span class="ui-menu-item-label">{{ node.item.label }}</span>
             }
             <!-- `_open`, not `_expanded`: a global helper class `._expanded` (width:100%) exists. -->
-            <ui-icon class="ui-menu-chevron" [class._open]="node.expanded" name="chevron-down" size="sm" />
+            <ui-icon
+              class="ui-menu-chevron"
+              [class._open]="node.expanded"
+              name="chevron-down"
+              size="sm"
+            />
           </button>
-          <div class="ui-menu-collapse" [class._open]="node.expanded" [attr.id]="groupId(node)" [attr.inert]="node.expanded ? null : ''">
+          <div
+            class="ui-menu-collapse"
+            [class._open]="node.expanded"
+            [attr.id]="groupId(node)"
+            [attr.inert]="node.expanded ? null : ''"
+          >
             <div class="ui-menu-collapse-inner">
               <ul class="ui-menu-group _nested" role="group">
-                <ng-container [ngTemplateOutlet]="nodesTpl" [ngTemplateOutletContext]="{ $implicit: node.children }" />
+                <ng-container
+                  [ngTemplateOutlet]="nodesTpl"
+                  [ngTemplateOutletContext]="{ $implicit: node.children }"
+                />
               </ul>
             </div>
           </div>
@@ -103,7 +128,13 @@
       }
 
       @case ('flyout') {
-        <li class="ui-menu-entry" role="none" [class]="node.item.styleClass ?? ''" cdkOverlayOrigin #flyoutOrigin="cdkOverlayOrigin">
+        <li
+          class="ui-menu-entry"
+          role="none"
+          [class]="node.item.styleClass ?? ''"
+          cdkOverlayOrigin
+          #flyoutOrigin="cdkOverlayOrigin"
+        >
           <button
             type="button"
             class="ui-menu-action _has-sub"
@@ -121,7 +152,10 @@
             (focus)="onEntryFocus(node)"
           >
             @if (resolvedItemTemplate(); as tpl) {
-              <ng-container [ngTemplateOutlet]="tpl" [ngTemplateOutletContext]="{ $implicit: node.item }" />
+              <ng-container
+                [ngTemplateOutlet]="tpl"
+                [ngTemplateOutletContext]="{ $implicit: node.item }"
+              />
             } @else {
               @if (node.item.icon; as icon) {
                 <ui-icon class="ui-menu-item-icon" [name]="icon" size="sm" />
@@ -170,7 +204,10 @@
           <!-- Shared menuitem content (icon + label, or the #item template). -->
           <ng-template #content>
             @if (resolvedItemTemplate(); as tpl) {
-              <ng-container [ngTemplateOutlet]="tpl" [ngTemplateOutletContext]="{ $implicit: node.item }" />
+              <ng-container
+                [ngTemplateOutlet]="tpl"
+                [ngTemplateOutletContext]="{ $implicit: node.item }"
+              />
             } @else {
               @if (node.item.icon; as icon) {
                 <ui-icon class="ui-menu-item-icon" [name]="icon" size="sm" />

@@ -10,7 +10,13 @@
   [messageId]="messageId()"
 >
   @if (iconLeft(); as name) {
-    <ui-icon uiFieldPrefix class="ui-input-mask-icon" [class._disabled]="isDisabled()" [name]="name" [size]="iconSize()" />
+    <ui-icon
+      uiFieldPrefix
+      class="ui-input-mask-icon"
+      [class._disabled]="isDisabled()"
+      [name]="name"
+      [size]="iconSize()"
+    />
   }
 
   <input

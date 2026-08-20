@@ -171,7 +171,9 @@ export class UiTabPanel {
   /** Identifier of this panel (matched against the container `value`). */
   value = input.required<UiTabValue>();
   /** Render this panel's content only once it is first activated (overrides the group default). */
-  lazy = input<boolean, unknown>(undefined, { transform: (v) => (v == null ? undefined : booleanAttribute(v)) });
+  lazy = input<boolean, unknown>(undefined, {
+    transform: (v) => (v == null ? undefined : booleanAttribute(v)),
+  });
 
   /** Optional lazy content template (`<ng-template #content>`). */
   protected readonly content = contentChild<TemplateRef<unknown>>('content');
@@ -327,10 +329,18 @@ export class UiTabList {
 
     event.preventDefault();
     switch (event.key) {
-      case nextKey: pos = (pos + 1) % enabled.length; break;
-      case prevKey: pos = (pos - 1 + enabled.length) % enabled.length; break;
-      case 'Home': pos = 0; break;
-      case 'End': pos = enabled.length - 1; break;
+      case nextKey:
+        pos = (pos + 1) % enabled.length;
+        break;
+      case prevKey:
+        pos = (pos - 1 + enabled.length) % enabled.length;
+        break;
+      case 'Home':
+        pos = 0;
+        break;
+      case 'End':
+        pos = enabled.length - 1;
+        break;
     }
     const target = enabled[pos];
     target.focus();
@@ -488,7 +498,10 @@ export class UiTabs {
   readonly id = `ui-tabs-${nextUid++}`;
 
   /** @ignore All tabs projected under this container (across the list boundary). */
-  private readonly tabs = contentChildren(forwardRef(() => UiTab), { descendants: true });
+  private readonly tabs = contentChildren(
+    forwardRef(() => UiTab),
+    { descendants: true },
+  );
 
   /** @ignore id of the tab button for a given value. */
   tabId(value: UiTabValue): string {

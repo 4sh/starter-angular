@@ -45,10 +45,14 @@ export class UiFileUploadList {
   protected readonly sizeLabel = computed(() => formatFileSize(this.file().size));
 
   /** @ignore Accessible name of the upload spinner (`{0}` filled with the file name). */
-  protected readonly uploadingAriaLabel = computed(() => formatLabel(this.uploadingLabel(), this.file().name));
+  protected readonly uploadingAriaLabel = computed(() =>
+    formatLabel(this.uploadingLabel(), this.file().name),
+  );
 
   /** @ignore Accessible name of the progress bar (`{0}` filled with the file name). */
-  protected readonly progressAriaLabel = computed(() => formatLabel(this.progressLabel(), this.file().name));
+  protected readonly progressAriaLabel = computed(() =>
+    formatLabel(this.progressLabel(), this.file().name),
+  );
 
   /** @ignore Uploading in progress → show the spinner + progress bar. */
   protected readonly isUploading = computed(() => this.file().status === 'uploading');

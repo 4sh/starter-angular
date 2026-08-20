@@ -8,27 +8,21 @@
       "id": "breakpoint",
       "prefix": "breakpoint",
       "preserveCase": true,
-      "files": [
-        "breakpoint.json"
-      ],
+      "files": ["breakpoint.json"],
       "modeAxes": []
     },
     {
       "id": "metrics",
       "prefix": "",
       "preserveCase": false,
-      "files": [
-        "metrics.json"
-      ],
+      "files": ["metrics.json"],
       "modeAxes": []
     },
     {
       "id": "primitives",
       "prefix": "primitives",
       "preserveCase": false,
-      "files": [
-        "primitives.json"
-      ],
+      "files": ["primitives.json"],
       "modeAxes": [
         {
           "name": "brand",
@@ -47,9 +41,7 @@
       "id": "responsive",
       "prefix": "",
       "preserveCase": false,
-      "files": [
-        "responsive.json"
-      ],
+      "files": ["responsive.json"],
       "modeAxes": [
         {
           "name": "viewport",
@@ -66,9 +58,7 @@
       "id": "semantics",
       "prefix": "",
       "preserveCase": false,
-      "files": [
-        "semantics.json"
-      ],
+      "files": ["semantics.json"],
       "modeAxes": [
         {
           "name": "theme",
@@ -86,18 +76,14 @@
       "id": "transitions",
       "prefix": "",
       "preserveCase": false,
-      "files": [
-        "transitions.json"
-      ],
+      "files": ["transitions.json"],
       "modeAxes": []
     },
     {
       "id": "typography",
       "prefix": "",
       "preserveCase": false,
-      "files": [
-        "typography.json"
-      ],
+      "files": ["typography.json"],
       "modeAxes": [],
       "fontStacks": {
         "group": "fontFamily",
@@ -111,13 +97,7 @@
           "sans-serif"
         ],
         "byFamily": {
-          "monospace": [
-            "ui-monospace",
-            "SFMono-Regular",
-            "Menlo",
-            "Consolas",
-            "monospace"
-          ],
+          "monospace": ["ui-monospace", "SFMono-Regular", "Menlo", "Consolas", "monospace"],
           "icon": []
         }
       }
@@ -126,9 +106,7 @@
       "id": "styles",
       "prefix": "",
       "preserveCase": false,
-      "files": [
-        "styles.json"
-      ],
+      "files": ["styles.json"],
       "modeAxes": []
     }
   ],
@@ -150,17 +128,13 @@
       "id": "scss",
       "format": "scss-vars",
       "destination": "projects/ui-kit/styles/generated",
-      "collections": [
-        "breakpoint"
-      ]
+      "collections": ["breakpoint"]
     },
     {
       "id": "styles",
       "format": "composite-styles",
       "destination": "projects/ui-kit/styles/generated",
-      "collections": [
-        "styles"
-      ]
+      "collections": ["styles"]
     }
   ]
 }

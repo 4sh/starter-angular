@@ -18,7 +18,12 @@ const ICON_MODEL: UiMenuItem[] = [
   { label: 'Mettre à jour', icon: 'refresh' },
   { label: 'Supprimer', icon: 'trash' },
   { separator: true },
-  { label: 'Angular', icon: 'arrow-up-right-from-square', url: 'https://angular.dev', target: '_blank' },
+  {
+    label: 'Angular',
+    icon: 'arrow-up-right-from-square',
+    url: 'https://angular.dev',
+    target: '_blank',
+  },
   { label: 'Voir le profil', icon: 'user' },
 ];
 
@@ -67,7 +72,8 @@ const meta: Meta<UiButtonSplit> = {
   argTypes: {
     model: {
       control: false,
-      description: 'Options additionnelles révélées par le déroulant (modèle déclaratif UiMenuItem[]).',
+      description:
+        'Options additionnelles révélées par le déroulant (modèle déclaratif UiMenuItem[]).',
       table: { type: { summary: 'UiMenuItem[]' }, defaultValue: { summary: '[]' } },
     },
     label: {
@@ -106,7 +112,8 @@ const meta: Meta<UiButtonSplit> = {
     variant: {
       control: { type: 'select' },
       options: ['filled', 'outlined', 'ghost'],
-      description: 'Apparence : filled (défaut, plein) · outlined (bordure) · ghost (texte seul), appliquée aux deux boutons.',
+      description:
+        'Apparence : filled (défaut, plein) · outlined (bordure) · ghost (texte seul), appliquée aux deux boutons.',
       table: { type: { summary: 'ButtonVariant' }, defaultValue: { summary: '"filled"' } },
     },
     onColor: {
@@ -200,7 +207,10 @@ const meta: Meta<UiButtonSplit> = {
     itemClick: {
       action: 'itemClick',
       description: "Émis à l'activation d'une option (clic / clavier).",
-      table: { type: { summary: 'EventEmitter<UiMenuItemCommandEvent>' }, defaultValue: { summary: '—' } },
+      table: {
+        type: { summary: 'EventEmitter<UiMenuItemCommandEvent>' },
+        defaultValue: { summary: '—' },
+      },
     },
   },
   args: {

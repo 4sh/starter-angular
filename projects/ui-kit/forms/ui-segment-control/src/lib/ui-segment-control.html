@@ -38,7 +38,9 @@
         <ui-icon class="ui-segment-control-icon" [name]="option.icon" [size]="iconSize()" />
       }
       @if (option.label) {
-        <span class="ui-segment-control-label" [attr.data-label]="option.label">{{ option.label }}</span>
+        <span class="ui-segment-control-label" [attr.data-label]="option.label">{{
+          option.label
+        }}</span>
       }
     }
   </button>

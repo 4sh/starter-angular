@@ -24,8 +24,18 @@ const HEADER = `/* ${CONFIG.header ?? 'Generated — do not edit.'} */\n\n`;
 // --- Naming helpers (shared by the name transform and the manifest) ----------
 
 const kebab = (parts) =>
-  parts.filter(Boolean).join('-').toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
-const slug = (id) => String(id).replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-|-$/g, '').toLowerCase();
+  parts
+    .filter(Boolean)
+    .join('-')
+    .toLowerCase()
+    .replace(/[^a-z0-9-]/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+const slug = (id) =>
+  String(id)
+    .replace(/[^a-zA-Z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+    .toLowerCase();
 
 // --- Font family stacks -------------------------------------------------------
 // A font family token carries the BARE family name: that is what Figma's
@@ -106,7 +116,9 @@ function leaves(node, path = [], out = []) {
 
 const leavesByCol = {};
 for (const c of CONFIG.collections) {
-  leavesByCol[c.id] = (c.files ?? []).flatMap((f) => leaves(JSON.parse(readFileSync(join(SRC, f), 'utf8'))));
+  leavesByCol[c.id] = (c.files ?? []).flatMap((f) =>
+    leaves(JSON.parse(readFileSync(join(SRC, f), 'utf8'))),
+  );
 }
 
 /** Detect all mode names from the JSON structure for a given axis. */
@@ -160,7 +172,12 @@ function baseSelector(col) {
 function autoDetectMediaQuery(col, mode) {
   for (const l of leavesByCol[col.id]) {
     // Look for screen.{mode}.width pattern
-    if (l.path.length >= 3 && l.path[0] === 'screen' && l.path[1] === mode && l.path[2] === 'width') {
+    if (
+      l.path.length >= 3 &&
+      l.path[0] === 'screen' &&
+      l.path[1] === mode &&
+      l.path[2] === 'width'
+    ) {
       const value = l.token.$value;
       if (value && typeof value === 'string') {
         const pxValue = value.replace('px', '');
@@ -204,7 +221,10 @@ function setLeaf(tree, path, token) {
   }
   let node = tree;
   for (const seg of path.slice(0, -1)) node = node[seg] ??= {};
-  node[path.at(-1)] = { $value: Array.isArray(value) ? JSON.stringify(value) : value, $type: token.$type ?? undefined };
+  node[path.at(-1)] = {
+    $value: Array.isArray(value) ? JSON.stringify(value) : value,
+    $type: token.$type ?? undefined,
+  };
 }
 
 /** Mode-stripped default-mode tree of a collection (used to resolve {…} references). */
@@ -236,7 +256,7 @@ function buildTokens(col) {
     const g = leafGroup(col, l);
     const key = `${g.media}||${g.selector}`;
     let entry = byKey.get(key);
-    if (!entry) byKey.set(key, (entry = { ...g, leaves: [] })), groups.push(entry);
+    if (!entry) (byKey.set(key, (entry = { ...g, leaves: [] })), groups.push(entry));
     entry.leaves.push(l);
   }
   const rank = (g) => (g.media ? 2 : g.selector === ':root' ? 0 : 1);
@@ -249,8 +269,13 @@ function buildTokens(col) {
     const isBase = !g.media && g.selector === ':root';
     const root = isBase ? primaryKey : `__grp__${i}`;
     groupSpecs.push({ root, media: g.media, selector: isBase ? baseSelector(col) : g.selector });
-    const target = isBase ? ((tokens[primaryKey] ??= {})) : ((tokens[root] = {})[primaryKey] = {});
-    for (const l of g.leaves) setLeaf(target, l.path.filter((p) => !strip.has(p)), l.token);
+    const target = isBase ? (tokens[primaryKey] ??= {}) : ((tokens[root] = {})[primaryKey] = {});
+    for (const l of g.leaves)
+      setLeaf(
+        target,
+        l.path.filter((p) => !strip.has(p)),
+        l.token,
+      );
   });
   for (const key of refKeys(col).slice(1)) tokens[key] = tokens[primaryKey];
   for (const other of CONFIG.collections) {
@@ -320,7 +345,8 @@ StyleDictionary.registerFormat({
     let css = options.header;
     for (const g of options.groupSpecs) {
       const lines = cssLines(buckets.get(g.root), dictionary, options).join('\n');
-      if (g.media) css += `${g.media} {\n  ${g.selector} {\n${lines.replace(/^/gm, '  ')}\n  }\n}\n`;
+      if (g.media)
+        css += `${g.media} {\n  ${g.selector} {\n${lines.replace(/^/gm, '  ')}\n  }\n}\n`;
       else css += `${g.selector} {\n${lines}\n}\n`;
     }
     return css;
@@ -363,7 +389,8 @@ const FORMATS = { 'css-vars': 'starter/css-modes', 'scss-vars': 'starter/scss-va
 // Usable in SCSS (box-shadow: var(--shadow-default-md)) or in HTML (class).
 
 /** `{effects.default}` → `var(--effects-default)`. */
-const refToVar = (str) => String(str).replace(/\{([^}]+)\}/g, (_, ref) => `var(--${kebab(ref.split('.'))})`);
+const refToVar = (str) =>
+  String(str).replace(/\{([^}]+)\}/g, (_, ref) => `var(--${kebab(ref.split('.'))})`);
 
 /** Compose a shadow object $value into a CSS box-shadow value. */
 function composeShadow(v) {
@@ -392,7 +419,9 @@ function buildCompositeStyles(col) {
 const compositeCols = new Set(
   (CONFIG.outputs ?? [])
     .filter((o) => o.format === 'composite-styles')
-    .flatMap((o) => (o.collections === 'all' ? CONFIG.collections.map((c) => c.id) : o.collections)),
+    .flatMap((o) =>
+      o.collections === 'all' ? CONFIG.collections.map((c) => c.id) : o.collections,
+    ),
 );
 
 // --- Build -----------------------------------------------------------------------
@@ -407,7 +436,8 @@ function emit(destRel, name, content) {
 
 const partialsByDest = {};
 for (const output of CONFIG.outputs ?? []) {
-  const ids = output.collections === 'all' ? CONFIG.collections.map((c) => c.id) : output.collections;
+  const ids =
+    output.collections === 'all' ? CONFIG.collections.map((c) => c.id) : output.collections;
   for (const col of CONFIG.collections) {
     if (!ids.includes(col.id)) continue;
 
@@ -455,7 +485,13 @@ function buildManifest() {
       const name = varName(col, body);
       let e = byName.get(name);
       if (!e) {
-        e = { name, collection: col.id, category: body[0] ?? col.id, type: l.token.$type ?? null, modes: [] };
+        e = {
+          name,
+          collection: col.id,
+          category: body[0] ?? col.id,
+          type: l.token.$type ?? null,
+          modes: [],
+        };
         byName.set(name, e);
         out.push(e);
       }
@@ -470,7 +506,10 @@ const manifest = JSON.stringify({ tokens: buildManifest() }, null, 2) + '\n';
 for (const dest of new Set((CONFIG.outputs ?? []).map((o) => o.destination))) {
   const partials = partialsByDest[dest] ?? [];
   if (partials.length) {
-    const index = HEADER + partials.map((f) => `@use './${f.replace(/^_/, '').replace(/\.scss$/, '')}';`).join('\n') + '\n';
+    const index =
+      HEADER +
+      partials.map((f) => `@use './${f.replace(/^_/, '').replace(/\.scss$/, '')}';`).join('\n') +
+      '\n';
     emit(dest, '_tokens.scss', index);
   }
   if (CONFIG.manifest) emit(dest, 'tokens.manifest.json', manifest);

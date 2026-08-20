@@ -61,7 +61,10 @@
               (click)="goToPage(item)"
             >
               @if (pageLinkTemplate(); as tpl) {
-                <ng-container [ngTemplateOutlet]="tpl" [ngTemplateOutletContext]="pageLinkContext(item)" />
+                <ng-container
+                  [ngTemplateOutlet]="tpl"
+                  [ngTemplateOutletContext]="pageLinkContext(item)"
+                />
               } @else {
                 {{ item + 1 }}
               }

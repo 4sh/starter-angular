@@ -21,7 +21,9 @@
   @if (mode() === 'field') {
     <!-- Field mode: compact summary + Browse trigger (whole label opens picker) -->
     <label class="ui-file-upload-field" [attr.for]="inputId">
-      <span class="ui-file-upload-field-text" [class._placeholder]="!hasFiles()">{{ fieldSummary() }}</span>
+      <span class="ui-file-upload-field-text" [class._placeholder]="!hasFiles()">{{
+        fieldSummary()
+      }}</span>
       <span class="ui-file-upload-browse" aria-hidden="true">{{ browseLabel() }}</span>
     </label>
   } @else {
@@ -44,7 +46,12 @@
       <div class="ui-file-upload-toolbar">
         <ng-container
           [ngTemplateOutlet]="tpl"
-          [ngTemplateOutletContext]="{ $implicit: files(), choose: chooseFn, upload: uploadFn, clear: clearFn }"
+          [ngTemplateOutletContext]="{
+            $implicit: files(),
+            choose: chooseFn,
+            upload: uploadFn,
+            clear: clearFn,
+          }"
         />
       </div>
     } @else if (showControls() && hasFiles()) {

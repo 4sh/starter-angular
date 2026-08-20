@@ -141,7 +141,7 @@ function badge(kind) {
         whiteSpace: 'nowrap',
       },
     },
-    meta.label
+    meta.label,
   );
 }
 
@@ -150,9 +150,7 @@ function inlineCode(text) {
   if (!text) return '—';
   return text
     .split(/`([^`]+)`/)
-    .map((part, index) =>
-      index % 2 ? el('code', { key: `${part}-${index}` }, part) : part
-    );
+    .map((part, index) => (index % 2 ? el('code', { key: `${part}-${index}` }, part) : part));
 }
 
 /** Chaîne d'indirections : `Forms · $form-field-height → $control-stroke-width`. */
@@ -170,11 +168,11 @@ function chain(steps) {
           ? el(
               'a',
               { href: `?path=/docs/${manifest.groups[step.group].docId}--docs` },
-              `${manifest.groups[step.group].label} · ${step.name}`
+              `${manifest.groups[step.group].label} · ${step.name}`,
             )
-          : el('code', null, step.name)
-      )
-    )
+          : el('code', null, step.name),
+      ),
+    ),
   );
 }
 
@@ -202,20 +200,17 @@ function defaultCell(row) {
   const kind = resolved.steps.some((s) => s.via === 'shared') ? 'shared' : resolved.kind;
   // Map : lister les clés plutôt que le mot « map », que le badge dit déjà.
   const inlineItems =
-    resolved.kind === 'list' ? resolved.items
-    : resolved.kind === 'map' ? (resolved.entries ?? []).map((e) => e.key)
-    : null;
+    resolved.kind === 'list'
+      ? resolved.items
+      : resolved.kind === 'map'
+        ? (resolved.entries ?? []).map((e) => e.key)
+        : null;
 
-  const head =
-    inlineItems
-      ? inlineItems.map((item, i) =>
-          el(React.Fragment, { key: item }, i > 0 ? ', ' : null, el('code', null, item))
-        )
-      : el(
-          'code',
-          null,
-          resolved.cssVar ? `var(${resolved.cssVar})` : (resolved.literal ?? 'map')
-        );
+  const head = inlineItems
+    ? inlineItems.map((item, i) =>
+        el(React.Fragment, { key: item }, i > 0 ? ', ' : null, el('code', null, item)),
+      )
+    : el('code', null, resolved.cssVar ? `var(${resolved.cssVar})` : (resolved.literal ?? 'map'));
 
   return el('td', null, head, badge(kind), chain(resolved.steps));
 }
@@ -236,7 +231,7 @@ function valueCell(resolved, values) {
         'td',
         null,
         el('code', null, fallbackValue),
-        el('span', { style: { color: 'var(--sb-text-subtle)', fontSize: 12 } }, ' (défaut)')
+        el('span', { style: { color: 'var(--sb-text-subtle)', fontSize: 12 } }, ' (défaut)'),
       );
     }
     return el('td', { style: { color: 'var(--sb-text-subtle)' } }, 'non défini');
@@ -261,13 +256,13 @@ function mapRows(name, resolved, values, withHook, prefix = '') {
         el(
           'td',
           { style: { paddingLeft: 32, color: 'var(--sb-text-subtle)' } },
-          el('code', null, `${path}`)
+          el('code', null, `${path}`),
         ),
         el('td', { style: { color: 'var(--sb-text-subtle)' } }, '↳ entrée de map'),
         ...(withHook ? [entry.value ? hookCell(entry.value) : el('td', null, '—')] : []),
         entry.value ? defaultCell(entry.value) : el('td', null, '—'),
-        entry.value ? valueCell(entry.value, values) : el('td', null, '—')
-      )
+        entry.value ? valueCell(entry.value, values) : el('td', null, '—'),
+      ),
     );
   }
   return rows;
@@ -295,8 +290,8 @@ function table(caption, rows, values, withHook) {
           el('th', { style: { width: 200 } }, 'Rôle'),
           ...(withHook ? [el('th', { style: { width: 260 } }, 'Hook exposé')] : []),
           el('th', { style: { width: 200 } }, 'Défaut (starter)'),
-          el('th', { style: { width: 130 } }, 'Valeur résolue')
-        )
+          el('th', { style: { width: 130 } }, 'Valeur résolue'),
+        ),
       ),
       el(
         'tbody',
@@ -309,12 +304,12 @@ function table(caption, rows, values, withHook) {
             el('td', null, inlineCode(row.role)),
             ...(withHook ? [hookCell(row.default)] : []),
             defaultCell(row.default),
-            valueCell(row.default, values)
+            valueCell(row.default, values),
           ),
           ...mapRows(row.name, row.default, values, withHook),
-        ])
-      )
-    )
+        ]),
+      ),
+    ),
   );
 }
 
@@ -349,7 +344,7 @@ export function SharedConfigTable({ group, prefix, exclude }) {
       el('strong', null, `SharedConfigTable : aucune constante pour le groupe « ${group} ». `),
       'Lance ',
       el('code', null, 'npm run docs:config'),
-      '.'
+      '.',
     );
   }
 
@@ -361,12 +356,15 @@ export function SharedConfigTable({ group, prefix, exclude }) {
       { style: { margin: '0 0 12px', fontSize: 12, color: 'var(--sb-text-subtle)' } },
       el(
         'span',
-        { title: ORIGIN_TOOLTIP, style: { cursor: 'help', borderBottom: '1px dotted currentColor' } },
+        {
+          title: ORIGIN_TOOLTIP,
+          style: { cursor: 'help', borderBottom: '1px dotted currentColor' },
+        },
         'ⓘ générée depuis ',
-        el('code', null, manifest.$source.shared)
-      )
+        el('code', null, manifest.$source.shared),
+      ),
     ),
-    table(null, rows, values, true)
+    table(null, rows, values, true),
   );
 }
 
@@ -396,7 +394,7 @@ export function ConfigTable({ of, only, hooks = true, label }) {
       el('code', null, 'npm run docs:config'),
       ' (ou vérifie que le composant déclare bien des variables documentées par un commentaire ',
       el('code', null, '///'),
-      ').'
+      ').',
     );
   }
 
@@ -418,15 +416,22 @@ export function ConfigTable({ of, only, hooks = true, label }) {
           style: { cursor: 'help', borderBottom: '1px dotted currentColor' },
         },
         'ⓘ générée depuis ',
-        el('code', null, component.file)
-      )
+        el('code', null, component.file),
+      ),
     ),
     // `label` : à passer quand une page documente plusieurs composants, pour
     // qu'on sache à quel `.scss` chaque table appartient.
     vars.length ? table(label ? el('code', null, label) : null, vars, values, true) : null,
     hookRows.length
-      ? table(label ? ['Custom properties exposées — ', el('code', { key: label }, label)] : 'Custom properties exposées', hookRows, values, false)
-      : null
+      ? table(
+          label
+            ? ['Custom properties exposées — ', el('code', { key: label }, label)]
+            : 'Custom properties exposées',
+          hookRows,
+          values,
+          false,
+        )
+      : null,
   );
 }
 

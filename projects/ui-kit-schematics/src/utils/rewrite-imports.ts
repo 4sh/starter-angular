@@ -27,10 +27,12 @@ import { buildExportMap } from './export-map';
  * ni export par défaut ni import de namespace, et un `import *` doit échouer
  * bruyamment plutôt que d'être réécrit de travers.
  */
-const NAMED_IMPORT_RE = /^[ \t]*import\s+(type\s+)?\{([^}]*)\}\s+from\s+['"]@4sh\/ui-kit\/([^'"]+)['"]\s*;?[ \t]*$/gm;
+const NAMED_IMPORT_RE =
+  /^[ \t]*import\s+(type\s+)?\{([^}]*)\}\s+from\s+['"]@4sh\/ui-kit\/([^'"]+)['"]\s*;?[ \t]*$/gm;
 
 /** Toute autre forme d'import du kit — non gérée, donc signalée. */
-const ANY_KIT_IMPORT_RE = /^[ \t]*import\s+(?!(?:type\s+)?\{)[^;\n]*['"]@4sh\/ui-kit(?:\/[^'"]*)?['"]/gm;
+const ANY_KIT_IMPORT_RE =
+  /^[ \t]*import\s+(?!(?:type\s+)?\{)[^;\n]*['"]@4sh\/ui-kit(?:\/[^'"]*)?['"]/gm;
 
 /** Cache par unité : `buildExportMap` relit tous les fichiers de l'unité, et une
  * même unité est consultée par chaque fichier qui l'importe. */
@@ -53,7 +55,10 @@ function relativeSpecifier(fromFileTargetPath: string, toTargetPath: string): st
 
 /** Un symbole importé, avec son éventuel alias : `UiIcon`, `UiIcon as Icon`. */
 function symbolName(clause: string): string {
-  return clause.trim().split(/\s+as\s+/)[0].trim();
+  return clause
+    .trim()
+    .split(/\s+as\s+/)[0]
+    .trim();
 }
 
 export interface RewriteResult {

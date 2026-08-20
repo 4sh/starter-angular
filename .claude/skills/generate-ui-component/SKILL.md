@@ -26,6 +26,7 @@ depends on the stack (Angular CDK + signals); the shared layer = **design tokens
 ## Workflow
 
 ### 1. Analyze the sources
+
 1. Read the YAML: `props` (→ inputs), `variants` (→ visual states), `anatomy` (→ DOM structure), tokens in `styles.fills/strokes/...`.
 2. Read the **reference pattern** `src/app/shared/components/ui/actions/ui-button/` (ts/html/scss).
 3. Read the **closest sibling** based on the category:
@@ -35,7 +36,9 @@ depends on the stack (Angular CDK + signals); the shared layer = **design tokens
 4. If PrimeNG is provided: read it for the API (inputs, keyboard behavior, CVA).
 
 ### 2. Category & location
+
 Infer the category from the tokens used / the role:
+
 - `actions.*` tokens → `ui/actions/` · `form.*` tokens → `ui/forms/` · `informative.*` tokens → `ui/informative/` · generic → `ui/`.
 
 Files **all co-located** in the component's directory:
@@ -43,18 +46,24 @@ Files **all co-located** in the component's directory:
 (**Global** docs — foundations/guidelines — would go in `storybook/docs/`, not here.)
 
 ### 3. Map the tokens (see table below)
+
 For **every** color/spacing/typography value in the YAML, find the corresponding generated
 CSS var in `src/styles/src/generated/`. **Verify that it exists**
 (`grep` in `generated/`). Zero hardcoded values.
 
 ### 4. Types
+
 - Levels: reuse `@app/shared/types/ui-level.ts` (`UiLevel`, `UiFeedbackLevel`, `UiSubLevel`). Extend this file only if a new shared level emerges.
 - Sizes: local type `type {Name}Size = 'default' | 'small' | ...` (the starter uses `default` as the base, not `undefined`).
 
 ### 5. Write the component (see "Angular conventions")
+
 ### 6. Write the SCSS, including `///` theming comments (see "SCSS conventions")
+
 ### 7. Write stories + MDX, `## Theming` as the last section (see "Storybook")
+
 ### 8. Integrate: check off `components-index.md` (⬜→✅), add the card to `Overview.mdx` (correct category section), **add the entry to `CHANGELOG.md`** (`[Unreleased]` section), and — if a shared variable was added — update the `config/` docs (see "Shared variables").
+
 ### 9. Verify (see "Verification").
 
 ## Figma tokens → CSS var mapping
@@ -62,20 +71,21 @@ CSS var in `src/styles/src/generated/`. **Verify that it exists**
 The YAML references tokens as `{group.path.in.camelCase}`. The generated CSS var
 is **kebab/flat**, prefixed per collection:
 
-| Figma YAML | CSS var |
-|---|---|
-| `{informative.errorLow.content.default}` | `var(--informative-errorlow-content-default)` |
-| `{informative.{level}{Sub}.surface.default}` | `var(--informative-{level}{sub}-surface-default)` (all lowercase, concatenated) |
-| `{form.high.surface.checked}` | `var(--form-high-surface-checked)` |
-| `{form.low.content.default}` | `var(--form-low-content-default)` |
-| `{actions.high.surface.hover}` | `var(--actions-high-surface-hover)` |
-| `{units.sm}` / `{units.xs}` / `{units.2xs}` | `var(--units-sm)` … |
-| `cornerRadius: 999` | `var(--radius-full)` |
-| `cornerRadius: <n>` | `var(--radius-{2xs..2xl})` depending on the value |
-| `strokeWeight: 1 / 2 / 4` | `var(--stroke-sm)` / `var(--stroke-default)` / `var(--stroke-lg)` |
-| `textStyleId: text/{weight}/{size}` | `font-weight: var(--weight-{weight})` + `font-size: var(--size-typography-text-{size})` |
+| Figma YAML                                   | CSS var                                                                                 |
+| -------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `{informative.errorLow.content.default}`     | `var(--informative-errorlow-content-default)`                                           |
+| `{informative.{level}{Sub}.surface.default}` | `var(--informative-{level}{sub}-surface-default)` (all lowercase, concatenated)         |
+| `{form.high.surface.checked}`                | `var(--form-high-surface-checked)`                                                      |
+| `{form.low.content.default}`                 | `var(--form-low-content-default)`                                                       |
+| `{actions.high.surface.hover}`               | `var(--actions-high-surface-hover)`                                                     |
+| `{units.sm}` / `{units.xs}` / `{units.2xs}`  | `var(--units-sm)` …                                                                     |
+| `cornerRadius: 999`                          | `var(--radius-full)`                                                                    |
+| `cornerRadius: <n>`                          | `var(--radius-{2xs..2xl})` depending on the value                                       |
+| `strokeWeight: 1 / 2 / 4`                    | `var(--stroke-sm)` / `var(--stroke-default)` / `var(--stroke-lg)`                       |
+| `textStyleId: text/{weight}/{size}`          | `font-weight: var(--weight-{weight})` + `font-size: var(--size-typography-text-{size})` |
 
 Rules:
+
 - **semantics** (`--actions-*`, `--form-*`, `--informative-*`, `--global-*`): **no prefix**.
 - **metrics**: `--units-*`, `--radius-*`, `--stroke-*`. **typography**: `--fontfamily-*`, `--weight-*`, `--size-typography-*`. **transitions**: `--transition-*`.
 - Always `grep -rhoE '\--<pattern>' src/styles/src/generated/` to confirm existence BEFORE using.
@@ -107,18 +117,18 @@ The doc's "Theming" table is **generated** from the `.scss` by `npm run docs:con
 (`scripts/docs.config.mjs` → `storybook/generated/ui-config.json`). So the SCSS comments are
 what write the doc: nothing to copy elsewhere.
 
-| Marker | Meaning |
-|---|---|
-| `///` | **public contract**, in **French** → appears in the doc |
-| `//` | internal note (implementation), in English like the rest of the file → invisible |
+| Marker | Meaning                                                                          |
+| ------ | -------------------------------------------------------------------------------- |
+| `///`  | **public contract**, in **French** → appears in the doc                          |
+| `//`   | internal note (implementation), in English like the rest of the file → invisible |
 
 - The `///` goes **at the end of the declaration**, vertically aligned with its **visual group**
   (blank lines separate groups; a long line doesn't stretch its neighbors):
 
   ```scss
   // --- Config ---------------------------------------------------
-  $card-padding: var(--units-lg);       /// Inset du corps.
-  $card-radius: var(--radius-md);       /// Rayon des coins.
+  $card-padding: var(--units-lg); /// Inset du corps.
+  $card-radius: var(--radius-md); /// Rayon des coins.
   ```
 
 - Only exception: a **multi-line map** carries its `///` on the line above.
@@ -157,6 +167,7 @@ link to the group page) and the resolved value.
 ## Form controls (`forms/` category)
 
 If the component holds a value (checked, selection, input):
+
 - `extends BaseControlValueAccessor<T>` (`@app/core/controlValueAccessor/BaseControlValueAccessor`), `T = boolean` by default if relevant.
 - Provider: `{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => Ui{Name}), multi: true }`.
 - **Real native input** (`<input>`), invisible (`opacity:0`, `position:absolute; inset:0`) covering the styled control → keyboard/screen reader/clickable `<label>`/native forms. Appropriate ARIA role (`role="switch"` for a toggle) + `aria-checked`/`aria-invalid`.
@@ -176,6 +187,7 @@ If the component holds a value (checked, selection, input):
 ## Storybook
 
 **stories.ts**:
+
 - `title: 'Components/ui/{cat}/ui-{name}'`, `component`, `decorators: [moduleMetadata({ imports: [...] })]` (+ `FormsModule` if `ngModel`).
 - `parameters.design.url` Figma (UI Kit file `GZww5hdUA49LB8XWeWP6tl`) — point to the ComponentSet's `node-id` if known.
 - `argTypes` documented (control, description in French, `table.type`/`defaultValue`).
@@ -214,7 +226,7 @@ import { ConfigTable } from '<…>/storybook/blocks/config-table';
 
 1. `npx tsc --noEmit -p tsconfig.json` → must pass.
 2. Compile the SCSS: `node_modules/.bin/sass --load-path=src/styles --no-source-map --quiet <file.scss>` and check the generated selectors/values.
-2bis. `npm run docs:config` → the component must appear, with **0 variables missing a `///`
+   2bis. `npm run docs:config` → the component must appear, with **0 variables missing a `///`
    comment** (the script prints the count), and every line resolved to a token, a map, a list, or
    an accepted literal value.
 3. **Live Storybook** (already running on `:6006`, HMR): via the browser tools, open `iframe.html?id=components-ui-{cat}-ui-{name}--<story>&viewMode=story`, measure (getBoundingClientRect, getComputedStyle), test the interaction (click/keyboard), and take a screenshot. Wait for transitions to settle before measuring.

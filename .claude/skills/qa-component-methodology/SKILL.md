@@ -87,6 +87,6 @@ npx tsc --noEmit -p tsconfig.app.json | grep <composant>
 - **Commentaire Jira détaillé** : points vérifiés OK + bug/fix avec hash de commit,
   ou mention explicite "aucun bug trouvé".
 - **Transition** :
-  - *Fermée* si tout est clean/corrigé.
-  - *Waiting for design* si un écart nécessite une décision produit qu'on ne peut pas
+  - _Fermée_ si tout est clean/corrigé.
+  - _Waiting for design_ si un écart nécessite une décision produit qu'on ne peut pas
     trancher seul (jamais deviner/corriger à l'aveugle dans ce cas).

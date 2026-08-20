@@ -113,7 +113,9 @@ describe('UiModal — focus trap', () => {
 describe('UiModal — Escape to close', () => {
   it('closes the dialog on Escape when closeOnEscape is enabled (default)', async () => {
     const { fixture, host, dialog } = await setup(EscapeHost);
-    dialog.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }));
+    dialog.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }),
+    );
     fixture.detectChanges();
     await fixture.whenStable();
 
@@ -126,7 +128,9 @@ describe('UiModal — Escape to close', () => {
     fixture.detectChanges();
     await fixture.whenStable();
 
-    dialog.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }));
+    dialog.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }),
+    );
     fixture.detectChanges();
     await fixture.whenStable();
 

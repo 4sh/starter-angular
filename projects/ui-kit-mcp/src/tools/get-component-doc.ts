@@ -38,7 +38,11 @@ export function getComponentDoc(name: string) {
     content: [
       {
         type: 'text' as const,
-        text: JSON.stringify({ name, title: sections[0].title, source: sections[0].source, sections: bySection }, null, 2),
+        text: JSON.stringify(
+          { name, title: sections[0].title, source: sections[0].source, sections: bySection },
+          null,
+          2,
+        ),
       },
     ],
   };

@@ -22,47 +22,177 @@ const meta: Meta<UiDatepicker> = {
   argTypes: {
     label: { control: 'text', table: { type: { summary: 'string' } } },
     placeholder: { control: 'text', table: { type: { summary: 'string' } } },
-    helperText: { control: 'text', description: "Texte d'aide (via ui-helper).", table: { type: { summary: 'string' } } },
-    errorText: { control: 'text', description: "Message affiché à la place de l'aide quand en erreur.", table: { type: { summary: 'string' } } },
+    helperText: {
+      control: 'text',
+      description: "Texte d'aide (via ui-helper).",
+      table: { type: { summary: 'string' } },
+    },
+    errorText: {
+      control: 'text',
+      description: "Message affiché à la place de l'aide quand en erreur.",
+      table: { type: { summary: 'string' } },
+    },
     valueType: {
       control: 'inline-radio',
       options: ['date', 'iso'],
-      description: '**Obligatoire, aucun défaut** — force un choix explicite plutôt qu\'un défaut silencieux qui ne correspondrait pas au type réel du modèle. `writeValue` accepte toujours `Date` **ou** string ISO (auto-détecté). `valueType` pilote uniquement ce qui est **émis** (`valueChange`/`dateSelect`, donc ce qui atterrit dans le `FormControl`) : `\'date\'` — un `Date`, calé sur un DTO `class-transformer` ; `\'iso\'` — une string `"yyyy-MM-dd"`, pour une valeur lue/écrite directement contre un `LocalDate` backend.',
+      description:
+        "**Obligatoire, aucun défaut** — force un choix explicite plutôt qu'un défaut silencieux qui ne correspondrait pas au type réel du modèle. `writeValue` accepte toujours `Date` **ou** string ISO (auto-détecté). `valueType` pilote uniquement ce qui est **émis** (`valueChange`/`dateSelect`, donc ce qui atterrit dans le `FormControl`) : `'date'` — un `Date`, calé sur un DTO `class-transformer` ; `'iso'` — une string `\"yyyy-MM-dd\"`, pour une valeur lue/écrite directement contre un `LocalDate` backend.",
       table: { type: { summary: "'date' | 'iso'" } },
     },
-    size: { control: 'inline-radio', options: ['default', 'small'], table: { type: { summary: 'FieldSize' }, defaultValue: { summary: '"default"' } } },
-    level: { control: 'inline-radio', options: ['default', 'success', 'error'], table: { type: { summary: 'FieldLevel' }, defaultValue: { summary: '"default"' } } },
-    selectionMode: { control: 'inline-radio', options: ['single', 'multiple', 'range'], table: { type: { summary: 'DatepickerSelectionMode' }, defaultValue: { summary: '"single"' } } },
-    view: { control: 'inline-radio', options: ['date', 'month', 'year'], description: 'Granularité de base (aussi MonthPicker/YearPicker).', table: { type: { summary: 'DatepickerView' }, defaultValue: { summary: '"date"' } } },
-    numberOfMonths: { control: { type: 'number', min: 1, max: 3 }, table: { type: { summary: 'number' }, defaultValue: { summary: '1' } } },
-    icon: { control: 'text', table: { type: { summary: 'string' }, defaultValue: { summary: '"calendar"' } } },
-    showIcon: { control: 'boolean', description: "Affiche le bouton bascule (calendrier/horloge) du déclencheur.", table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } } },
-    firstDayOfWeek: { control: { type: 'number', min: 0, max: 6 }, table: { type: { summary: 'number' }, defaultValue: { summary: '1' } } },
+    size: {
+      control: 'inline-radio',
+      options: ['default', 'small'],
+      table: { type: { summary: 'FieldSize' }, defaultValue: { summary: '"default"' } },
+    },
+    level: {
+      control: 'inline-radio',
+      options: ['default', 'success', 'error'],
+      table: { type: { summary: 'FieldLevel' }, defaultValue: { summary: '"default"' } },
+    },
+    selectionMode: {
+      control: 'inline-radio',
+      options: ['single', 'multiple', 'range'],
+      table: {
+        type: { summary: 'DatepickerSelectionMode' },
+        defaultValue: { summary: '"single"' },
+      },
+    },
+    view: {
+      control: 'inline-radio',
+      options: ['date', 'month', 'year'],
+      description: 'Granularité de base (aussi MonthPicker/YearPicker).',
+      table: { type: { summary: 'DatepickerView' }, defaultValue: { summary: '"date"' } },
+    },
+    numberOfMonths: {
+      control: { type: 'number', min: 1, max: 3 },
+      table: { type: { summary: 'number' }, defaultValue: { summary: '1' } },
+    },
+    icon: {
+      control: 'text',
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"calendar"' } },
+    },
+    showIcon: {
+      control: 'boolean',
+      description: 'Affiche le bouton bascule (calendrier/horloge) du déclencheur.',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
+    },
+    firstDayOfWeek: {
+      control: { type: 'number', min: 0, max: 6 },
+      table: { type: { summary: 'number' }, defaultValue: { summary: '1' } },
+    },
     locale: { control: 'text', table: { type: { summary: 'string' } } },
-    minDate: { control: 'text', description: 'Date minimale sélectionnable. `Date` ou ISO `"yyyy-MM-dd"`.', table: { type: { summary: 'Date | string | null' } } },
-    maxDate: { control: 'text', description: 'Date maximale sélectionnable. `Date` ou ISO `"yyyy-MM-dd"`.', table: { type: { summary: 'Date | string | null' } } },
-    disabledDates: { control: false, description: 'Dates ponctuelles désactivées. `Date` ou ISO `"yyyy-MM-dd"`, mixables.', table: { type: { summary: '(Date | string)[]' } } },
-    disabledDays: { control: false, description: 'Jours de la semaine désactivés (0 = dimanche … 6 = samedi).', table: { type: { summary: 'number[]' } } },
-    dateFormat: { control: false, description: "Formatteur d'affichage custom (symétrique de `parseDate`).", table: { type: { summary: '(date: Date) => string' } } },
-    parseDate: { control: false, description: 'Parseur custom de la saisie clavier (symétrique de `dateFormat`).', table: { type: { summary: '(value: string) => Date | null' } } },
-    showTime: { control: 'boolean', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
-    timeOnly: { control: 'boolean', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
-    hourFormat: { control: 'inline-radio', options: ['24', '12'], table: { type: { summary: "'12' | '24'" }, defaultValue: { summary: '"24"' } } },
-    stepMinute: { control: { type: 'number', min: 1, max: 30 }, description: "Incrément des minutes aux chevrons / flèches clavier (la frappe reste exacte).", table: { type: { summary: 'number' }, defaultValue: { summary: '1' } } },
-    editableTime: { control: 'boolean', description: 'Autorise la frappe des heures / minutes (AM/PM reste une bascule).', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } } },
-    showButtonBar: { control: 'boolean', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
-    todayLabel: { control: 'text', description: 'Libellé du bouton « Aujourd\'hui » par défaut.', table: { type: { summary: 'string' }, defaultValue: { summary: '"Aujourd\'hui"' } } },
-    clearLabel: { control: 'text', description: 'Libellé du bouton « Effacer » par défaut (et de la croix `showClear`).', table: { type: { summary: 'string' }, defaultValue: { summary: '"Effacer"' } } },
-    inline: { control: 'boolean', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
-    showClear: { control: 'boolean', description: 'Affiche une croix pour effacer la valeur quand elle est renseignée.', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
-    autoFlip: { control: 'boolean', description: "Retourne le panneau vers le haut si l'espace manque en bas.", table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } } },
-    closeOnSelect: { control: 'boolean', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } } },
-    allowInput: { control: 'boolean', description: 'Autorise la saisie clavier de la date dans le champ (mode single, hors timeOnly). Parsée au blur / Entrée.', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
-    panelStyleClass: { control: 'text', description: 'Classe(s) supplémentaire(s) appliquée(s) au panneau (personnalisation scoped).', table: { type: { summary: 'string' } } },
-    required: { control: 'boolean', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
-    disabled: { control: 'boolean', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
-    readonly: { control: 'boolean', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
-    invalid: { control: 'boolean', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
+    minDate: {
+      control: 'text',
+      description: 'Date minimale sélectionnable. `Date` ou ISO `"yyyy-MM-dd"`.',
+      table: { type: { summary: 'Date | string | null' } },
+    },
+    maxDate: {
+      control: 'text',
+      description: 'Date maximale sélectionnable. `Date` ou ISO `"yyyy-MM-dd"`.',
+      table: { type: { summary: 'Date | string | null' } },
+    },
+    disabledDates: {
+      control: false,
+      description: 'Dates ponctuelles désactivées. `Date` ou ISO `"yyyy-MM-dd"`, mixables.',
+      table: { type: { summary: '(Date | string)[]' } },
+    },
+    disabledDays: {
+      control: false,
+      description: 'Jours de la semaine désactivés (0 = dimanche … 6 = samedi).',
+      table: { type: { summary: 'number[]' } },
+    },
+    dateFormat: {
+      control: false,
+      description: "Formatteur d'affichage custom (symétrique de `parseDate`).",
+      table: { type: { summary: '(date: Date) => string' } },
+    },
+    parseDate: {
+      control: false,
+      description: 'Parseur custom de la saisie clavier (symétrique de `dateFormat`).',
+      table: { type: { summary: '(value: string) => Date | null' } },
+    },
+    showTime: {
+      control: 'boolean',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    timeOnly: {
+      control: 'boolean',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    hourFormat: {
+      control: 'inline-radio',
+      options: ['24', '12'],
+      table: { type: { summary: "'12' | '24'" }, defaultValue: { summary: '"24"' } },
+    },
+    stepMinute: {
+      control: { type: 'number', min: 1, max: 30 },
+      description: 'Incrément des minutes aux chevrons / flèches clavier (la frappe reste exacte).',
+      table: { type: { summary: 'number' }, defaultValue: { summary: '1' } },
+    },
+    editableTime: {
+      control: 'boolean',
+      description: 'Autorise la frappe des heures / minutes (AM/PM reste une bascule).',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
+    },
+    showButtonBar: {
+      control: 'boolean',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    todayLabel: {
+      control: 'text',
+      description: "Libellé du bouton « Aujourd'hui » par défaut.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Aujourd\'hui"' } },
+    },
+    clearLabel: {
+      control: 'text',
+      description: 'Libellé du bouton « Effacer » par défaut (et de la croix `showClear`).',
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Effacer"' } },
+    },
+    inline: {
+      control: 'boolean',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    showClear: {
+      control: 'boolean',
+      description: 'Affiche une croix pour effacer la valeur quand elle est renseignée.',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    autoFlip: {
+      control: 'boolean',
+      description: "Retourne le panneau vers le haut si l'espace manque en bas.",
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
+    },
+    closeOnSelect: {
+      control: 'boolean',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
+    },
+    allowInput: {
+      control: 'boolean',
+      description:
+        'Autorise la saisie clavier de la date dans le champ (mode single, hors timeOnly). Parsée au blur / Entrée.',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    panelStyleClass: {
+      control: 'text',
+      description: 'Classe(s) supplémentaire(s) appliquée(s) au panneau (personnalisation scoped).',
+      table: { type: { summary: 'string' } },
+    },
+    required: {
+      control: 'boolean',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    disabled: {
+      control: 'boolean',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    readonly: {
+      control: 'boolean',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    invalid: {
+      control: 'boolean',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
     valueChange: { action: 'valueChange', table: { disable: true } },
     dateSelect: { action: 'dateSelect', table: { disable: true } },
     monthChange: { action: 'monthChange', table: { disable: true } },
@@ -139,9 +269,15 @@ const story =
 const sample = new Date(2026, 6, 8); // 8 July 2026
 
 export const Default: Story = { render: story() };
-export const WithValue: Story = { render: story(sample), args: { helperText: 'Sélectionnez une date.' } };
+export const WithValue: Story = {
+  render: story(sample),
+  args: { helperText: 'Sélectionnez une date.' },
+};
 export const Small: Story = { render: story(sample), args: { size: 'small' } };
-export const Required: Story = { render: story(), args: { required: true, helperText: 'Champ obligatoire.' } };
+export const Required: Story = {
+  render: story(),
+  args: { required: true, helperText: 'Champ obligatoire.' },
+};
 
 export const Error: Story = {
   render: story(),
@@ -153,17 +289,30 @@ export const Error: Story = {
 // les deux. Ouvrir le panneau Actions pour voir `valueChange` émettre une string après sélection.
 export const IsoValueType: Story = {
   render: story('2026-07-08'),
-  args: { valueType: 'iso', label: 'Date (mode ISO)', helperText: 'Valeur : string "yyyy-MM-dd" (au lieu de Date).' },
+  args: {
+    valueType: 'iso',
+    label: 'Date (mode ISO)',
+    helperText: 'Valeur : string "yyyy-MM-dd" (au lieu de Date).',
+  },
 };
 
 export const WithTime: Story = {
   render: story(new Date(2026, 6, 8, 14, 30)),
-  args: { showTime: true, label: 'Rendez-vous', helperText: 'Heures et minutes saisissables au clavier.' },
+  args: {
+    showTime: true,
+    label: 'Rendez-vous',
+    helperText: 'Heures et minutes saisissables au clavier.',
+  },
 };
 
 export const StepperOnlyTime: Story = {
   render: story(new Date(2026, 6, 8, 14, 30)),
-  args: { showTime: true, editableTime: false, label: 'Rendez-vous', helperText: 'Réglage aux chevrons / flèches uniquement.' },
+  args: {
+    showTime: true,
+    editableTime: false,
+    label: 'Rendez-vous',
+    helperText: 'Réglage aux chevrons / flèches uniquement.',
+  },
 };
 
 export const Time12h: Story = {
@@ -178,7 +327,7 @@ export const TimeOnly: Story = {
 
 export const ButtonBar: Story = {
   render: story(),
-  args: { showButtonBar: true, helperText: '« Aujourd\'hui » et « Effacer ».' },
+  args: { showButtonBar: true, helperText: "« Aujourd'hui » et « Effacer »." },
 };
 
 // Plage restreinte : ±10 jours autour du 8 juillet 2026. `minDate`/`maxDate` en `Date`
@@ -186,7 +335,12 @@ export const ButtonBar: Story = {
 // acceptent l'un ou l'autre indépendamment de `valueType`, qui ne pilote que la valeur du champ).
 export const MinMax: Story = {
   render: (args) => ({
-    props: { ...args, model: sample, minDate: new Date(2026, 5, 28), maxDate: new Date(2026, 6, 18) },
+    props: {
+      ...args,
+      model: sample,
+      minDate: new Date(2026, 5, 28),
+      maxDate: new Date(2026, 6, 18),
+    },
     template: TEMPLATE,
   }),
   args: { label: 'Date (plage limitée)', helperText: 'Du 28 juin au 18 juillet 2026.' },
@@ -199,7 +353,10 @@ export const MinMaxIso: Story = {
     props: { ...args, model: sample, minDate: '2026-06-28', maxDate: '2026-07-18' },
     template: TEMPLATE,
   }),
-  args: { label: 'Date (bornes ISO)', helperText: 'minDate/maxDate passées en string "yyyy-MM-dd".' },
+  args: {
+    label: 'Date (bornes ISO)',
+    helperText: 'minDate/maxDate passées en string "yyyy-MM-dd".',
+  },
 };
 
 // Week-ends (dimanche = 0, samedi = 6) désactivés.
@@ -211,7 +368,11 @@ export const DisabledWeekends: Story = {
 // Dates ponctuelles désactivées, mixant `Date` et ISO pour montrer que les deux formes coexistent.
 export const DisabledDates: Story = {
   render: (args) => ({
-    props: { ...args, model: null, disabledDates: ['2026-07-08', new Date(2026, 6, 15), '2026-07-22'] },
+    props: {
+      ...args,
+      model: null,
+      disabledDates: ['2026-07-08', new Date(2026, 6, 15), '2026-07-22'],
+    },
     template: TEMPLATE,
   }),
   args: { label: 'Jours indisponibles', helperText: '8, 15 et 22 juillet 2026 désactivés.' },
@@ -304,11 +465,29 @@ export const CustomFormat: Story = {
     props: {
       ...args,
       model: sample,
-      dateFormat: (d: Date) => new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }).format(d),
+      dateFormat: (d: Date) =>
+        new Intl.DateTimeFormat('fr-FR', {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric',
+        }).format(d),
       parseDate: (text: string): Date | null => {
         const m = /^(\d{1,2})\s+([a-zéûî.]+)\.?\s+(\d{4})$/i.exec(text.trim());
         if (!m) return null;
-        const months = ['janv', 'févr', 'mars', 'avr', 'mai', 'juin', 'juil', 'août', 'sept', 'oct', 'nov', 'déc'];
+        const months = [
+          'janv',
+          'févr',
+          'mars',
+          'avr',
+          'mai',
+          'juin',
+          'juil',
+          'août',
+          'sept',
+          'oct',
+          'nov',
+          'déc',
+        ];
         const idx = months.findIndex((mo) => m[2].toLowerCase().startsWith(mo));
         if (idx < 0) return null;
         return new Date(Number(m[3]), idx, Number(m[1]));
@@ -316,7 +495,13 @@ export const CustomFormat: Story = {
     },
     template: TEMPLATE,
   }),
-  args: { label: 'Format personnalisé', allowInput: true, showClear: true, locale: 'fr-FR', helperText: 'Affichage « 8 juil. 2026 », parseDate symétrique.' },
+  args: {
+    label: 'Format personnalisé',
+    allowInput: true,
+    showClear: true,
+    locale: 'fr-FR',
+    helperText: 'Affichage « 8 juil. 2026 », parseDate symétrique.',
+  },
 };
 
 // Calendrier affiché en permanence (pas de champ déclencheur ni d'overlay).
@@ -406,8 +591,16 @@ export const SmartPosition: Story = {
   imports: [UiDatepicker, FormField, CommonModule],
   template: `
     <div style="width:260px; display:grid; gap:12px; justify-items:start;">
-      <ui-datepicker [formField]="birth" valueType="date" label="Date de naissance" placeholder="jj/mm/aaaa" />
-      <code>value = {{ (birth().value() | date: 'dd/MM/yyyy') ?? 'null' }} · valid = {{ birth().valid() }}</code>
+      <ui-datepicker
+        [formField]="birth"
+        valueType="date"
+        label="Date de naissance"
+        placeholder="jj/mm/aaaa"
+      />
+      <code
+        >value = {{ (birth().value() | date: 'dd/MM/yyyy') ?? 'null' }} · valid =
+        {{ birth().valid() }}</code
+      >
     </div>
   `,
 })
@@ -430,7 +623,8 @@ export const DateTemplate: Story = {
   render: () => ({
     props: {
       model: new Date(2026, 6, 8),
-      hasEvent: (d: { day: number; otherMonth: boolean }) => !d.otherMonth && [3, 8, 12, 19, 24].includes(d.day),
+      hasEvent: (d: { day: number; otherMonth: boolean }) =>
+        !d.otherMonth && [3, 8, 12, 19, 24].includes(d.day),
     },
     template: `<div style="width:320px"><ui-datepicker [(ngModel)]="model" valueType="date" inline label="Agenda">
       <ng-template #date let-d let-selected="selected">

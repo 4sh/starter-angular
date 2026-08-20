@@ -30,7 +30,7 @@ export class ThemeService {
   }
 
   toggle() {
-    this.currentMode.update(mode => (mode === 'light' ? 'dark' : 'light'));
+    this.currentMode.update((mode) => (mode === 'light' ? 'dark' : 'light'));
   }
 
   get isDark(): boolean {

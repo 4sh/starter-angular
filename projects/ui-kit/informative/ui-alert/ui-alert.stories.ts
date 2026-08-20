@@ -15,7 +15,9 @@ import { UiAlert } from '@4sh/ui-kit/informative/ui-alert';
   selector: 'demo-alert-life',
   imports: [UiAlert, UiButton],
   template: `
-    <div style="display:flex; flex-direction:column; gap:12px; max-width:520px; align-items:flex-start;">
+    <div
+      style="display:flex; flex-direction:column; gap:12px; max-width:520px; align-items:flex-start;"
+    >
       <ui-button label="Afficher l'alerte (3s)" icon="bell" (buttonClick)="show()" />
       @if (visible()) {
         <ui-alert
@@ -184,21 +186,39 @@ type Story = StoryObj<UiAlert>;
 export const Basic: Story = {};
 
 // --- Level : la sévérité du message ---------------------------------
-export const Info: Story = { args: { level: 'default', title: 'Information', text: 'Un message informatif.' } };
-export const Highlight: Story = { args: { level: 'highlight', title: 'À noter', text: 'Une information mise en avant.' } };
-export const Success: Story = { args: { level: 'success', title: 'Succès', text: 'Opération réalisée.' } };
-export const Warning: Story = { args: { level: 'warning', title: 'Attention', text: 'Vérifiez les informations.' } };
-export const Error: Story = { args: { level: 'error', title: 'Erreur', text: "L'opération a échoué." } };
+export const Info: Story = {
+  args: { level: 'default', title: 'Information', text: 'Un message informatif.' },
+};
+export const Highlight: Story = {
+  args: { level: 'highlight', title: 'À noter', text: 'Une information mise en avant.' },
+};
+export const Success: Story = {
+  args: { level: 'success', title: 'Succès', text: 'Opération réalisée.' },
+};
+export const Warning: Story = {
+  args: { level: 'warning', title: 'Attention', text: 'Vérifiez les informations.' },
+};
+export const Error: Story = {
+  args: { level: 'error', title: 'Erreur', text: "L'opération a échoué." },
+};
 
 /** Icon : icône personnalisée ou masquée. */
-export const CustomIcon: Story = { args: { level: 'highlight', icon: 'bell', title: 'Notification', text: 'Icône surchargée.' } };
-export const NoIcon: Story = { args: { level: 'success', icon: false, title: 'Sans icône', text: 'Icône masquée.' } };
+export const CustomIcon: Story = {
+  args: { level: 'highlight', icon: 'bell', title: 'Notification', text: 'Icône surchargée.' },
+};
+export const NoIcon: Story = {
+  args: { level: 'success', icon: false, title: 'Sans icône', text: 'Icône masquée.' },
+};
 
 /** Variant : sous-niveau low (discret) vs high (soutenu). */
-export const SubLevelLow: Story = { args: { level: 'error', subLevel: 'low', title: 'Erreur', text: 'Variante low.' } };
+export const SubLevelLow: Story = {
+  args: { level: 'error', subLevel: 'low', title: 'Erreur', text: 'Variante low.' },
+};
 
 /** Sizes : default et large. */
-export const Large: Story = { args: { level: 'success', size: 'large', title: 'Succès', text: 'Taille large.' } };
+export const Large: Story = {
+  args: { level: 'success', size: 'large', title: 'Succès', text: 'Taille large.' },
+};
 
 /** Dynamic : plusieurs messages via un bloc `@for`, retirés à la fermeture. */
 export const Dynamic: Story = {

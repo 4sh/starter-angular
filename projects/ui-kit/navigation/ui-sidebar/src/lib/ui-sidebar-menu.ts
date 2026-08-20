@@ -135,7 +135,9 @@ export class UiSidebarMenu {
   private readonly parent = inject(UiSidebar, { optional: true });
 
   /** @ignore Effective icon-rail state (parent sidebar wins). */
-  protected readonly isCollapsed = computed(() => this.parent?.effectiveCollapsed() ?? this.collapsed());
+  protected readonly isCollapsed = computed(
+    () => this.parent?.effectiveCollapsed() ?? this.collapsed(),
+  );
 
   /** @ignore Show label tooltips (collapsed rail + `tooltips` enabled). */
   protected readonly showTooltips = computed(() => this.tooltips() && this.isCollapsed());
@@ -187,7 +189,9 @@ export class UiSidebarMenu {
 
   /** @ignore Accessible name / tooltip target for the collapsed rail. */
   protected railTitle(node: UiSidebarMenuNode): string | null {
-    return this.isCollapsed() ? (node.item.ariaLabel ?? node.item.label ?? null) : (node.item.ariaLabel ?? null);
+    return this.isCollapsed()
+      ? (node.item.ariaLabel ?? node.item.label ?? null)
+      : (node.item.ariaLabel ?? null);
   }
 
   /** @ignore Resolve the raw model into render nodes. */

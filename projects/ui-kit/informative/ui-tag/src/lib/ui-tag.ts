@@ -1,11 +1,4 @@
-import {
-  booleanAttribute,
-  Component,
-  computed,
-  effect,
-  input,
-  isDevMode,
-} from '@angular/core';
+import { booleanAttribute, Component, computed, effect, input, isDevMode } from '@angular/core';
 import { UiIcon, UiIconSize } from '@4sh/ui-kit/base/ui-icon';
 import { UiFeedbackLevel, UiSubLevel } from '@4sh/ui-kit/types';
 

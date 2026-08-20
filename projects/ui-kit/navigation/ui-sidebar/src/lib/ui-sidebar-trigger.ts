@@ -53,6 +53,8 @@ export class UiSidebarTrigger {
 
   /** @ignore The real interactive node when hosted on a component wrapper (e.g. `ui-button`). */
   private resolveInteractiveEl(): HTMLElement {
-    return this.hostEl.querySelector<HTMLElement>('button, a[href], [role="button"]') ?? this.hostEl;
+    return (
+      this.hostEl.querySelector<HTMLElement>('button, a[href], [role="button"]') ?? this.hostEl
+    );
   }
 }

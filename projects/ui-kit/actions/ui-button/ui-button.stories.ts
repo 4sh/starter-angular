@@ -17,7 +17,8 @@ const meta: Meta<UiButton> = {
   argTypes: {
     label: {
       control: { type: 'text' },
-      description: 'Texte du bouton (absent = bouton icon-only, ou contenu projeté via <ng-content>).',
+      description:
+        'Texte du bouton (absent = bouton icon-only, ou contenu projeté via <ng-content>).',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     ariaLabel: {
@@ -34,13 +35,15 @@ const meta: Meta<UiButton> = {
     level: {
       control: { type: 'select' },
       options: ['high', 'low', 'success', 'warning', 'error'],
-      description: "Niveau sémantique : high/low pour l'importance, success/warning/error pour un retour contextuel.",
+      description:
+        "Niveau sémantique : high/low pour l'importance, success/warning/error pour un retour contextuel.",
       table: { type: { summary: 'UiLevel' }, defaultValue: { summary: '"high"' } },
     },
     variant: {
       control: { type: 'select' },
       options: ['filled', 'outlined', 'ghost'],
-      description: 'Apparence : filled (défaut, plein) · outlined (bordure) · ghost (texte seul). Compose avec level et onColor.',
+      description:
+        'Apparence : filled (défaut, plein) · outlined (bordure) · ghost (texte seul). Compose avec level et onColor.',
       table: { type: { summary: 'ButtonVariant' }, defaultValue: { summary: '"filled"' } },
     },
     onColor: {
@@ -104,7 +107,8 @@ const meta: Meta<UiButton> = {
     },
     href: {
       control: { type: 'text' },
-      description: "URL externe : bascule l'hôte sur un <a> stylé bouton (comportement natif préservé).",
+      description:
+        "URL externe : bascule l'hôte sur un <a> stylé bouton (comportement natif préservé).",
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     routerLink: {
@@ -124,7 +128,8 @@ const meta: Meta<UiButton> = {
     },
     buttonProps: {
       control: false,
-      description: 'Attributs natifs additionnels forwardés sur le <button>Button</button> (ex : { form: "login", value: "1" }).',
+      description:
+        'Attributs natifs additionnels forwardés sur le <button>Button</button> (ex : { form: "login", value: "1" }).',
       table: { type: { summary: 'ButtonNativeProps' }, defaultValue: { summary: 'undefined' } },
     },
     iconTemplate: {
@@ -233,10 +238,18 @@ export const OnColorOmitted: Story = {
 export const Small: Story = { args: { label: 'Small', level: 'high', size: 'small' } };
 
 // Icônes
-export const IconLeft: Story = { args: { label: 'Valider', level: 'success', icon: 'check', iconPos: 'left' } };
-export const IconRight: Story = { args: { label: 'Suivant', level: 'high', icon: 'arrow-right', iconPos: 'right' } };
-export const IconTop: Story = { args: { label: 'Ajouter', level: 'high', icon: 'plus', iconPos: 'top' } };
-export const IconBottom: Story = { args: { label: 'Télécharger', level: 'low', icon: 'download', iconPos: 'bottom' } };
+export const IconLeft: Story = {
+  args: { label: 'Valider', level: 'success', icon: 'check', iconPos: 'left' },
+};
+export const IconRight: Story = {
+  args: { label: 'Suivant', level: 'high', icon: 'arrow-right', iconPos: 'right' },
+};
+export const IconTop: Story = {
+  args: { label: 'Ajouter', level: 'high', icon: 'plus', iconPos: 'top' },
+};
+export const IconBottom: Story = {
+  args: { label: 'Télécharger', level: 'low', icon: 'download', iconPos: 'bottom' },
+};
 export const IconOnly: Story = { args: { level: 'high', icon: 'plus', ariaLabel: 'Ajouter' } };
 export const IconOnlyForced: Story = {
   args: { label: 'Ignoré', level: 'low', icon: 'gear', iconOnly: true, ariaLabel: 'Paramètres' },
@@ -254,21 +267,34 @@ export const Expanded: Story = {
   parameters: { layout: 'padded' },
 };
 export const Rounded: Story = { args: { label: 'Rounded', level: 'high', rounded: true } };
-export const RoundedIconOnly: Story = { args: { level: 'high', icon: 'plus', ariaLabel: 'Ajouter', rounded: true } };
+export const RoundedIconOnly: Story = {
+  args: { level: 'high', icon: 'plus', ariaLabel: 'Ajouter', rounded: true },
+};
 
 // États
 export const Disabled: Story = { args: { label: 'Disabled', level: 'high', disabled: true } };
 
 // Mode lien (rend un <a> stylé bouton)
-export const AsLink: Story = { args: { label: 'Voir la page', level: 'high', href: '#', icon: 'arrow-right', iconPos: 'right' } };
+export const AsLink: Story = {
+  args: { label: 'Voir la page', level: 'high', href: '#', icon: 'arrow-right', iconPos: 'right' },
+};
 export const AsExternalLink: Story = {
-  args: { label: 'Site externe', level: 'low', href: 'https://angular.dev', target: '_blank', icon: 'arrow-up-right-from-square', iconPos: 'right' },
+  args: {
+    label: 'Site externe',
+    level: 'low',
+    href: 'https://angular.dev',
+    target: '_blank',
+    icon: 'arrow-up-right-from-square',
+    iconPos: 'right',
+  },
 };
 export const AsRouterLink: Story = {
   decorators: [applicationConfig({ providers: [provideRouter([{ path: '**', children: [] }])] })],
   args: { label: 'Mon profil', level: 'high', routerLink: '/profil' },
 };
-export const AsLinkDisabled: Story = { args: { label: 'Lien désactivé', level: 'high', href: '#', disabled: true } };
+export const AsLinkDisabled: Story = {
+  args: { label: 'Lien désactivé', level: 'high', href: '#', disabled: true },
+};
 
 // Contenu projeté (<ng-content>)
 export const ProjectedContent: Story = {

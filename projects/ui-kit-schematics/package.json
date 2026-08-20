@@ -13,7 +13,12 @@
   },
   "author": "4SH",
   "license": "Apache-2.0",
-  "keywords": ["angular", "schematics", "design-system", "ui-kit"],
+  "keywords": [
+    "angular",
+    "schematics",
+    "design-system",
+    "ui-kit"
+  ],
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"

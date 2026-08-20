@@ -310,7 +310,8 @@ export class UiTable<T = unknown> {
   /** @ignore `<tr>` of footer cells. */
   protected readonly footerTemplate = contentChild<TemplateRef<unknown>>('footer');
   /** @ignore Extra `<tr>` rendered under an expanded row. */
-  protected readonly expandedRowTemplate = contentChild<TemplateRef<UiTableBodyContext<T>>>('expandedrow');
+  protected readonly expandedRowTemplate =
+    contentChild<TemplateRef<UiTableBodyContext<T>>>('expandedrow');
   /** @ignore Content of the "no rows" cell. */
   protected readonly emptyMessageTemplate = contentChild<TemplateRef<unknown>>('emptymessage');
 
@@ -360,14 +361,21 @@ export class UiTable<T = unknown> {
         if (Object.keys(this.expandedRowKeys()).length && !this.dataKey()) {
           console.warn('[ui-table] `expandedRowKeys` requires `dataKey` to identify rows.');
         }
-        if (this.virtualScroll() && (!this.scrollable() || !this.scrollHeight() || this.scrollHeight() === 'flex')) {
-          console.warn('[ui-table] `virtualScroll` requires `scrollable` and a fixed `scrollHeight`.');
+        if (
+          this.virtualScroll() &&
+          (!this.scrollable() || !this.scrollHeight() || this.scrollHeight() === 'flex')
+        ) {
+          console.warn(
+            '[ui-table] `virtualScroll` requires `scrollable` and a fixed `scrollHeight`.',
+          );
         }
         if (this.totalRecords() !== undefined && !this.lazy()) {
           console.warn('[ui-table] `totalRecords` is ignored without `lazy`.');
         }
         if (this.lazy() && this.paginator() && this.totalRecords() === undefined) {
-          console.warn('[ui-table] `lazy` + `paginator` requires `totalRecords` (server total) for the paginator.');
+          console.warn(
+            '[ui-table] `lazy` + `paginator` requires `totalRecords` (server total) for the paginator.',
+          );
         }
       });
     }
@@ -419,7 +427,8 @@ export class UiTable<T = unknown> {
     if (cells > 0) this.columnCount.set(cells);
     const headerHeight = thead.getBoundingClientRect().height;
     this.frozenRowsTop.set(Math.floor(headerHeight));
-    const frozenBody = thead.parentElement?.querySelector<HTMLTableSectionElement>('tbody._frozen-rows');
+    const frozenBody =
+      thead.parentElement?.querySelector<HTMLTableSectionElement>('tbody._frozen-rows');
     if (!frozenBody) return;
     // Each frozen row sticks below the previous one (heights are unaffected
     // by the sticky shift, unlike offsetTop). Offsets accumulate fractional
@@ -443,14 +452,18 @@ export class UiTable<T = unknown> {
       const sort = this.sortState();
       if (!sort) return data;
       return [...data].sort(
-        (a, b) => sort.order * compareValues(resolveFieldData(a, sort.field), resolveFieldData(b, sort.field)),
+        (a, b) =>
+          sort.order *
+          compareValues(resolveFieldData(a, sort.field), resolveFieldData(b, sort.field)),
       );
     }
     const metas = this.multiSortState();
     if (!metas.length) return data;
     return [...data].sort((a, b) => {
       for (const meta of metas) {
-        const result = meta.order * compareValues(resolveFieldData(a, meta.field), resolveFieldData(b, meta.field));
+        const result =
+          meta.order *
+          compareValues(resolveFieldData(a, meta.field), resolveFieldData(b, meta.field));
         if (result !== 0) return result;
       }
       return 0;
@@ -459,7 +472,9 @@ export class UiTable<T = unknown> {
 
   /** @ignore Paginator total: server-provided in lazy mode, client count otherwise. */
   protected readonly effectiveTotalRecords = computed(() =>
-    this.lazy() ? (this.totalRecords() ?? this.processedData().length) : this.processedData().length,
+    this.lazy()
+      ? (this.totalRecords() ?? this.processedData().length)
+      : this.processedData().length,
   );
   /** @ignore */
   protected readonly pageCount = computed(() =>
@@ -507,7 +522,9 @@ export class UiTable<T = unknown> {
   });
 
   /** @ignore */
-  protected readonly isFlexScroll = computed(() => this.scrollable() && this.scrollHeight() === 'flex');
+  protected readonly isFlexScroll = computed(
+    () => this.scrollable() && this.scrollHeight() === 'flex',
+  );
   /** @ignore Viewport max-height (fixed scrollHeight mode only). */
   protected readonly scrollMaxHeight = computed(() => {
     const height = this.scrollHeight();
@@ -564,7 +581,8 @@ export class UiTable<T = unknown> {
     } else {
       const metas = [...this.multiSortState()];
       const index = metas.findIndex((m) => m.field === field);
-      const metaKey = originalEvent instanceof MouseEvent && (originalEvent.metaKey || originalEvent.ctrlKey);
+      const metaKey =
+        originalEvent instanceof MouseEvent && (originalEvent.metaKey || originalEvent.ctrlKey);
       if (!metaKey) {
         // Plain click: restart a fresh sort on this column alone.
         const existing = index >= 0 ? metas[index] : undefined;
@@ -623,7 +641,9 @@ export class UiTable<T = unknown> {
     return data.every((row) => selection.some((s) => this.rowEquals(s, row)));
   });
   /** @ignore Partial selection (header checkbox indeterminate state). */
-  readonly partiallySelected = computed(() => !this.allSelected() && this.selectionArray().length > 0);
+  readonly partiallySelected = computed(
+    () => !this.allSelected() && this.selectionArray().length > 0,
+  );
 
   /** @ignore Row click / Enter / Space (called by `uiSelectableRow`). */
   handleRowClick(originalEvent: Event, data: T, index: number): void {
@@ -667,7 +687,9 @@ export class UiTable<T = unknown> {
 
   /** @ignore Maps an absolute row index onto `processedData` (page-local in lazy pagination). */
   private dataIndex(index: number): number {
-    return this.lazy() && this.paginator() && !this.virtualScroll() ? index - this.clampedFirst() : index;
+    return this.lazy() && this.paginator() && !this.virtualScroll()
+      ? index - this.clampedFirst()
+      : index;
   }
 
   /** @ignore Shift+click / Shift+Arrow range selection (replaces the selection). */
@@ -769,7 +791,8 @@ export class UiTable<T = unknown> {
     this.draggedRowIndex = null;
     if (dragIndex == null || dragIndex === dropIndex) return;
     const value = [...(this.value() ?? [])];
-    if (dragIndex < 0 || dragIndex >= value.length || dropIndex < 0 || dropIndex >= value.length) return;
+    if (dragIndex < 0 || dragIndex >= value.length || dropIndex < 0 || dropIndex >= value.length)
+      return;
     const [moved] = value.splice(dragIndex, 1);
     value.splice(dropIndex, 0, moved);
     this.rowReorder.emit({ dragIndex, dropIndex, value });
@@ -830,7 +853,12 @@ export class UiTable<T = unknown> {
   }
 
   /** @ignore Fit-mode resize: the delta moves the edge between `cell` and its next sibling. */
-  resizeColumnFit(cell: HTMLElement, startWidth: number, nextStartWidth: number, delta: number): boolean {
+  resizeColumnFit(
+    cell: HTMLElement,
+    startWidth: number,
+    nextStartWidth: number,
+    delta: number,
+  ): boolean {
     const next = cell.nextElementSibling as HTMLElement | null;
     if (!next) return false;
     const width = startWidth + delta;
@@ -960,7 +988,10 @@ export class UiTableSelectableRow<T = unknown> {
     // Registry lookup used by Shift+Arrow (the moving row must resolve the
     // data/index of its target sibling).
     effect(() => {
-      this.table.selectableRowRefs.set(this.el.nativeElement, { data: this.data(), index: this.index() });
+      this.table.selectableRowRefs.set(this.el.nativeElement, {
+        data: this.data(),
+        index: this.index(),
+      });
     });
     inject(DestroyRef).onDestroy(() => this.table.selectableRowRefs.delete(this.el.nativeElement));
   }
@@ -1029,7 +1060,9 @@ export class UiTableSelectableRow<T = unknown> {
 
   /** @ignore First / last selectable row of the table. */
   private findEdgeRow(edge: 'start' | 'end'): HTMLElement | null {
-    const rows = this.el.nativeElement.closest('table')?.querySelectorAll<HTMLElement>('.ui-table-selectable-row');
+    const rows = this.el.nativeElement
+      .closest('table')
+      ?.querySelectorAll<HTMLElement>('.ui-table-selectable-row');
     if (!rows?.length) return null;
     return edge === 'start' ? rows[0] : rows[rows.length - 1];
   }
@@ -1058,7 +1091,9 @@ export class UiTableCheckbox<T = unknown> {
   /** Row this checkbox (un)selects. */
   value = input.required<T>();
   /** Absolute row index (forwarded to the selection events). */
-  index = input<number, unknown>(undefined, { transform: (v) => (v == null ? undefined : Number(v)) });
+  index = input<number, unknown>(undefined, {
+    transform: (v) => (v == null ? undefined : Number(v)),
+  });
   /** Disables the checkbox. */
   disabled = input(false, { transform: booleanAttribute });
   /** Accessible name of the checkbox. */
@@ -1130,7 +1165,9 @@ export class UiTableRadio<T = unknown> {
   /** Row this radio selects. */
   value = input.required<T>();
   /** Absolute row index (forwarded to the selection events). */
-  index = input<number, unknown>(undefined, { transform: (v) => (v == null ? undefined : Number(v)) });
+  index = input<number, unknown>(undefined, {
+    transform: (v) => (v == null ? undefined : Number(v)),
+  });
   /** Native group name (defaults to a per-table group). */
   name = input<string>('ui-table-radio');
   /** Disables the radio. */
@@ -1231,7 +1268,8 @@ export class UiTableFrozenColumn {
       let offset = 0;
       let sibling = cell.previousElementSibling as HTMLElement | null;
       while (sibling) {
-        if (sibling.classList.contains('_frozen-left')) offset += sibling.getBoundingClientRect().width;
+        if (sibling.classList.contains('_frozen-left'))
+          offset += sibling.getBoundingClientRect().width;
         sibling = sibling.previousElementSibling as HTMLElement | null;
       }
       cell.style.left = `${offset}px`;
@@ -1240,7 +1278,8 @@ export class UiTableFrozenColumn {
       let offset = 0;
       let sibling = cell.nextElementSibling as HTMLElement | null;
       while (sibling) {
-        if (sibling.classList.contains('_frozen-right')) offset += sibling.getBoundingClientRect().width;
+        if (sibling.classList.contains('_frozen-right'))
+          offset += sibling.getBoundingClientRect().width;
         sibling = sibling.nextElementSibling as HTMLElement | null;
       }
       cell.style.right = `${offset}px`;
@@ -1347,7 +1386,10 @@ export class UiTableReorderableRow {
   private readonly el = inject<ElementRef<HTMLElement>>(ElementRef);
 
   /** Absolute row index (from the body template context). */
-  index = input.required<number, unknown>({ alias: 'uiReorderableRow', transform: numberAttribute });
+  index = input.required<number, unknown>({
+    alias: 'uiReorderableRow',
+    transform: numberAttribute,
+  });
 
   /** @ignore Visual drop indicator (edge of the hovered row). */
   protected readonly dropPosition = signal<'above' | 'below' | null>(null);

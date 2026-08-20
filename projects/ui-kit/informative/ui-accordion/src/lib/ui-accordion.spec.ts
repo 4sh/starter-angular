@@ -19,7 +19,9 @@ import { UiAccordion, UiAccordionPanel } from './ui-accordion';
     <ui-accordion [(value)]="active">
       <ui-accordion-panel [value]="'a'" header="Section A">Contenu A</ui-accordion-panel>
       <ui-accordion-panel [value]="'b'" header="Section B">Contenu B</ui-accordion-panel>
-      <ui-accordion-panel [value]="'c'" header="Section C" [disabled]="disableThird()">Contenu C</ui-accordion-panel>
+      <ui-accordion-panel [value]="'c'" header="Section C" [disabled]="disableThird()"
+        >Contenu C</ui-accordion-panel
+      >
     </ui-accordion>
   `,
 })
@@ -28,7 +30,11 @@ class Host {
   readonly disableThird = signal(false);
 }
 
-async function setup(): Promise<{ fixture: ComponentFixture<Host>; host: Host; headers: HTMLButtonElement[] }> {
+async function setup(): Promise<{
+  fixture: ComponentFixture<Host>;
+  host: Host;
+  headers: HTMLButtonElement[];
+}> {
   await TestBed.configureTestingModule({ imports: [Host] }).compileComponents();
   const fixture = TestBed.createComponent(Host);
   fixture.detectChanges();

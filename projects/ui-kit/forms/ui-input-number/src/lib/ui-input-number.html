@@ -38,7 +38,13 @@
   />
 
   @if (displayUnit(); as u) {
-    <span uiFieldSuffix class="ui-input-number-unit" [class._small]="unitSmall()" [class._disabled]="isDisabled()">{{ u }}</span>
+    <span
+      uiFieldSuffix
+      class="ui-input-number-unit"
+      [class._small]="unitSmall()"
+      [class._disabled]="isDisabled()"
+      >{{ u }}</span
+    >
   }
 
   @if (showButtons()) {

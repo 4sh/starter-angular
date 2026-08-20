@@ -92,7 +92,10 @@
     <div class="ui-sidebar-header">
       <ng-container
         [ngTemplateOutlet]="tpl"
-        [ngTemplateOutletContext]="{ $implicit: effectiveCollapsed(), collapsed: effectiveCollapsed() }"
+        [ngTemplateOutletContext]="{
+          $implicit: effectiveCollapsed(),
+          collapsed: effectiveCollapsed(),
+        }"
       />
     </div>
   }
@@ -105,7 +108,10 @@
     <div class="ui-sidebar-footer">
       <ng-container
         [ngTemplateOutlet]="tpl"
-        [ngTemplateOutletContext]="{ $implicit: effectiveCollapsed(), collapsed: effectiveCollapsed() }"
+        [ngTemplateOutletContext]="{
+          $implicit: effectiveCollapsed(),
+          collapsed: effectiveCollapsed(),
+        }"
       />
     </div>
   }

@@ -341,7 +341,12 @@ export class UiSegmentControl<T = unknown> extends BaseFieldControl<SegmentContr
     this.modelValue.set(next);
     this.emitChange(next);
     this.selectionChange.emit(next);
-    this.optionClick.emit({ option: option.original as T, value, index: option.index, originalEvent: event });
+    this.optionClick.emit({
+      option: option.original as T,
+      value,
+      index: option.index,
+      originalEvent: event,
+    });
   }
 
   /** @ignore */
@@ -365,10 +370,18 @@ export class UiSegmentControl<T = unknown> extends BaseFieldControl<SegmentContr
     if (pos === -1) pos = 0;
 
     switch (event.key) {
-      case nextKey: pos = (pos + 1) % enabled.length; break;
-      case prevKey: pos = (pos - 1 + enabled.length) % enabled.length; break;
-      case 'Home': pos = 0; break;
-      case 'End': pos = enabled.length - 1; break;
+      case nextKey:
+        pos = (pos + 1) % enabled.length;
+        break;
+      case prevKey:
+        pos = (pos - 1 + enabled.length) % enabled.length;
+        break;
+      case 'Home':
+        pos = 0;
+        break;
+      case 'End':
+        pos = enabled.length - 1;
+        break;
     }
 
     const target = enabled[pos];

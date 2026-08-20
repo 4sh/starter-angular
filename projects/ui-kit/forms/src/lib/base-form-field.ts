@@ -90,7 +90,9 @@ export abstract class BaseFormField<T> extends BaseFieldControl<T> {
   level = input<FieldLevel>('default');
 
   /** @ignore Effective level: error when invalid, otherwise the requested `level`. */
-  protected readonly effectiveLevel = computed<FieldLevel>(() => (this.isInvalid() ? 'error' : this.level()));
+  protected readonly effectiveLevel = computed<FieldLevel>(() =>
+    this.isInvalid() ? 'error' : this.level(),
+  );
   /** @ignore Displayed message: errorText when in error (if provided), otherwise helperText. */
   protected readonly displayMessage = computed(() =>
     this.isInvalid() && this.errorText() ? this.errorText() : this.helperText(),

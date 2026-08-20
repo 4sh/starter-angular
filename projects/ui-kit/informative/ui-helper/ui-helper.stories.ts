@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
-import {UiHelper} from "@4sh/ui-kit/informative/ui-helper";
+import { UiHelper } from '@4sh/ui-kit/informative/ui-helper';
 
 const meta: Meta<UiHelper> = {
   title: 'Components/ui/informative/ui-helper',
@@ -63,17 +63,27 @@ type Story = StoryObj<UiHelper>;
 export const Default: Story = { args: { level: 'default' } };
 export const Highlight: Story = { args: { level: 'highlight' } };
 export const Success: Story = { args: { level: 'success', message: 'Champ valide.' } };
-export const Warning: Story = { args: { level: 'warning', message: 'Vérifiez cette information.' } };
+export const Warning: Story = {
+  args: { level: 'warning', message: 'Vérifiez cette information.' },
+};
 export const Error: Story = { args: { level: 'error', message: 'Ce champ est obligatoire.' } };
 
 // Taille
-export const Small: Story = { args: { level: 'error', size: 'small', message: 'Ce champ est obligatoire.' } };
+export const Small: Story = {
+  args: { level: 'error', size: 'small', message: 'Ce champ est obligatoire.' },
+};
 
 // Sans icône
 export const NoIcon: Story = { args: { level: 'highlight', showIcon: false } };
 
 // Icône personnalisée
-export const CustomIcon: Story = { args: { level: 'highlight', icon: 'lightbulb', message: 'Astuce : utilisez un mot de passe fort.' } };
+export const CustomIcon: Story = {
+  args: {
+    level: 'highlight',
+    icon: 'lightbulb',
+    message: 'Astuce : utilisez un mot de passe fort.',
+  },
+};
 
 // Feedback dynamique (annoncé aux lecteurs d'écran)
 export const LiveError: Story = {

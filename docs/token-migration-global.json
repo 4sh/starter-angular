@@ -2,10 +2,7 @@
   "$description": "Table de migration du groupe sémantique `global` (phase 1 : renommage iso-valeur). Source unique pour le patch des tokens JSON et pour le renommage des variables Figma. `figma[mode]` porte le variableId à renommer ; les bindings Figma étant par ID, un rename ne casse aucun composant. Les entrées `merged` doivent être rebindées vers le survivant AVANT suppression.",
   "phase": 1,
   "generatedFrom": "src/design-tokens/semantics.json",
-  "modes": [
-    "modeLight",
-    "modeDark"
-  ],
+  "modes": ["modeLight", "modeDark"],
   "tokens": [
     {
       "newCssVar": "--global-background-default",
@@ -42,9 +39,7 @@
           "figmaName": "global/default/surface/default",
           "localId": "VariableID:5:103",
           "key": "f7f095c7265df1d331d191ec59d3f57c8dbdbb22",
-          "scopes": [
-            "ALL_FILLS"
-          ],
+          "scopes": ["ALL_FILLS"],
           "bindings": {
             "owner": 475,
             "uiKit": 79
@@ -56,9 +51,7 @@
             "figmaName": "global/high/surface/default",
             "localId": "VariableID:5:107",
             "key": "dbdd1740f2b95c121a51a0ee9e4b011721ded1e2",
-            "scopes": [
-              "FRAME_FILL"
-            ],
+            "scopes": ["FRAME_FILL"],
             "bindings": {
               "owner": 8,
               "uiKit": 6
@@ -92,9 +85,7 @@
           "figmaName": "global/high/surface/hover",
           "localId": "VariableID:5:108",
           "key": "0807f673fe85daee93bfc20677be559b59b66e80",
-          "scopes": [
-            "FRAME_FILL"
-          ],
+          "scopes": ["FRAME_FILL"],
           "bindings": {
             "owner": 0,
             "uiKit": 4
@@ -124,9 +115,7 @@
           "figmaName": "global/low/surface/default",
           "localId": "VariableID:5:116",
           "key": "cf65dfee978699ea9e4d2dc7dd96a39125c7a76a",
-          "scopes": [
-            "FRAME_FILL"
-          ],
+          "scopes": ["FRAME_FILL"],
           "bindings": {
             "owner": 6,
             "uiKit": 27
@@ -156,9 +145,7 @@
           "figmaName": "global/low/surface/hover",
           "localId": "VariableID:5:117",
           "key": "79c92d3b74e9da14d4e9655e94779c98f2c5460e",
-          "scopes": [
-            "FRAME_FILL"
-          ],
+          "scopes": ["FRAME_FILL"],
           "bindings": {
             "owner": 0,
             "uiKit": 12
@@ -188,9 +175,7 @@
           "figmaName": "global/high/surface/focused",
           "localId": "VariableID:5:109",
           "key": "6d69e97e8374148390c4d80a3825a7d02ebf3711",
-          "scopes": [
-            "FRAME_FILL"
-          ],
+          "scopes": ["FRAME_FILL"],
           "bindings": {
             "owner": 0,
             "uiKit": 0
@@ -235,10 +220,7 @@
           "figmaName": "global/high/content/default",
           "localId": "VariableID:5:104",
           "key": "0c98a229d2f11a73ff2cebe8b0b842ff4f65d213",
-          "scopes": [
-            "SHAPE_FILL",
-            "TEXT_FILL"
-          ],
+          "scopes": ["SHAPE_FILL", "TEXT_FILL"],
           "bindings": {
             "owner": 318,
             "uiKit": 103
@@ -250,10 +232,7 @@
             "figmaName": "global/default/content/default",
             "localId": "VariableID:1003:112",
             "key": "9ae5d9a691c26557e6406b23c7e9e1f2dece0d4d",
-            "scopes": [
-              "SHAPE_FILL",
-              "TEXT_FILL"
-            ],
+            "scopes": ["SHAPE_FILL", "TEXT_FILL"],
             "bindings": {
               "owner": 0,
               "uiKit": 13
@@ -283,10 +262,7 @@
           "figmaName": "global/high/content/hover",
           "localId": "VariableID:5:105",
           "key": "4edbb32de3e6f5bde4ff387bcbadf6b6146a64b5",
-          "scopes": [
-            "SHAPE_FILL",
-            "TEXT_FILL"
-          ],
+          "scopes": ["SHAPE_FILL", "TEXT_FILL"],
           "bindings": {
             "owner": 0,
             "uiKit": 0
@@ -316,10 +292,7 @@
           "figmaName": "global/low/content/default",
           "localId": "VariableID:5:113",
           "key": "52e52db89a70671eb374ae21ab49e1ce3c9d4862",
-          "scopes": [
-            "SHAPE_FILL",
-            "TEXT_FILL"
-          ],
+          "scopes": ["SHAPE_FILL", "TEXT_FILL"],
           "bindings": {
             "owner": 6,
             "uiKit": 14
@@ -349,10 +322,7 @@
           "figmaName": "global/low/content/hover",
           "localId": "VariableID:5:114",
           "key": "2e3e6e524648dbe11dad301f53c07ffe80feaf81",
-          "scopes": [
-            "SHAPE_FILL",
-            "TEXT_FILL"
-          ],
+          "scopes": ["SHAPE_FILL", "TEXT_FILL"],
           "bindings": {
             "owner": 0,
             "uiKit": 0
@@ -382,10 +352,7 @@
           "figmaName": "global/high/content/focused",
           "localId": "VariableID:5:106",
           "key": "ff0cb6714a2652c05187961fee792e7df388474b",
-          "scopes": [
-            "SHAPE_FILL",
-            "TEXT_FILL"
-          ],
+          "scopes": ["SHAPE_FILL", "TEXT_FILL"],
           "bindings": {
             "owner": 0,
             "uiKit": 0
@@ -430,9 +397,7 @@
           "figmaName": "global/high/stroke/default",
           "localId": "VariableID:5:110",
           "key": "02d064b7a69fb86b1b6dacee642a5e33561b7e9e",
-          "scopes": [
-            "STROKE_COLOR"
-          ],
+          "scopes": ["STROKE_COLOR"],
           "bindings": {
             "owner": 257,
             "uiKit": 144
@@ -444,9 +409,7 @@
             "figmaName": "global/low/stroke/default",
             "localId": "VariableID:5:119",
             "key": "c8ccca49f183cd3ecd2df6c20104b98c450ad6b4",
-            "scopes": [
-              "STROKE_COLOR"
-            ],
+            "scopes": ["STROKE_COLOR"],
             "bindings": {
               "owner": 6,
               "uiKit": 1
@@ -476,9 +439,7 @@
           "figmaName": "global/high/stroke/hover",
           "localId": "VariableID:5:111",
           "key": "b2c1f3641d3aa41af9306ebe30b4d153eb3c82ee",
-          "scopes": [
-            "STROKE_COLOR"
-          ],
+          "scopes": ["STROKE_COLOR"],
           "bindings": {
             "owner": 0,
             "uiKit": 0
@@ -508,9 +469,7 @@
           "figmaName": "global/default/stroke/default",
           "localId": "VariableID:1003:113",
           "key": "14c07da134dbe5939a1df58987f9618d78da22a7",
-          "scopes": [
-            "STROKE_COLOR"
-          ],
+          "scopes": ["STROKE_COLOR"],
           "bindings": {
             "owner": 0,
             "uiKit": 0
@@ -540,9 +499,7 @@
           "figmaName": "global/high/stroke/focused",
           "localId": "VariableID:5:112",
           "key": "89c5dc9952f6e743c345d1f315015024dfba145f",
-          "scopes": [
-            "STROKE_COLOR"
-          ],
+          "scopes": ["STROKE_COLOR"],
           "bindings": {
             "owner": 0,
             "uiKit": 0

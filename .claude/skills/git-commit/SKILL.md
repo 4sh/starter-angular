@@ -12,12 +12,14 @@ Create a git commit following the project conventions (`.claude/rules/git-conven
 ### 1. Analyze the current state
 
 Run in parallel:
+
 - `git status` — see modified/untracked files
 - `git diff` — see staged and unstaged changes
 - `git log --oneline -20` — see recent commit style
 - `git rev-parse --abbrev-ref HEAD` — check the branch prefix (`feat/`, `fix/`, `chore/`, `breaking/`)
 
 **Edge cases**:
+
 - If `git status` shows no changes → tell the user and stop.
 - If everything is already staged → skip step 5 (staging) and go directly to step 4 (confirm).
 
@@ -47,6 +49,7 @@ split into multiple atomic commits (one logical change each).
 ### 4. Show and confirm
 
 Show the user:
+
 - Files to be staged (including `CHANGELOG.md` if updated)
 - The commit message
 

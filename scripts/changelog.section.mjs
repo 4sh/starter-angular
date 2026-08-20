@@ -55,7 +55,9 @@ const end = rest.findIndex(isSectionHeader);
 const body = (end === -1 ? rest : rest.slice(0, end)).join('\n').trim();
 
 if (!body) {
-  fail(`la section « ${header} » de CHANGELOG.md est vide — une release sans notes n'a pas d'intérêt.`);
+  fail(
+    `la section « ${header} » de CHANGELOG.md est vide — une release sans notes n'a pas d'intérêt.`,
+  );
 }
 
 process.stdout.write(`${body}\n`);

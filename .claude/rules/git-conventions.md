@@ -26,12 +26,12 @@ left as is.
 
 ## Branches
 
-| Prefix | Usage | SemVer |
-|---|---|---|
-| `feat/<name>` | New feature | MINOR |
-| `fix/<name>` | Bug fix | PATCH |
-| `chore/<name>` | Tooling, internal refactoring | no release |
-| `breaking/<name>` | API/tokens breakage | MAJOR |
+| Prefix            | Usage                         | SemVer     |
+| ----------------- | ----------------------------- | ---------- |
+| `feat/<name>`     | New feature                   | MINOR      |
+| `fix/<name>`      | Bug fix                       | PATCH      |
+| `chore/<name>`    | Tooling, internal refactoring | no release |
+| `breaking/<name>` | API/tokens breakage           | MAJOR      |
 
 ## Jira tickets (project `FSHSP`)
 

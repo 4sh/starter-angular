@@ -84,7 +84,9 @@ export class UiReadOnly {
       const has =
         !!el &&
         Array.from(el.childNodes).some(
-          (n) => n.nodeType === Node.ELEMENT_NODE || (n.nodeType === Node.TEXT_NODE && !!n.textContent?.trim()),
+          (n) =>
+            n.nodeType === Node.ELEMENT_NODE ||
+            (n.nodeType === Node.TEXT_NODE && !!n.textContent?.trim()),
         );
       this.hasProjectedContent.set(has);
     });

@@ -192,16 +192,32 @@ export class UiPopover {
   /** @ignore Ordered positions (preferred first, then fallbacks) for CDK auto-flip. */
   protected readonly positions = computed<ConnectedPosition[]>(() => {
     const top: ConnectedPosition = {
-      originX: 'center', originY: 'top', overlayX: 'center', overlayY: 'bottom', offsetY: -ARROW_GAP,
+      originX: 'center',
+      originY: 'top',
+      overlayX: 'center',
+      overlayY: 'bottom',
+      offsetY: -ARROW_GAP,
     };
     const bottom: ConnectedPosition = {
-      originX: 'center', originY: 'bottom', overlayX: 'center', overlayY: 'top', offsetY: ARROW_GAP,
+      originX: 'center',
+      originY: 'bottom',
+      overlayX: 'center',
+      overlayY: 'top',
+      offsetY: ARROW_GAP,
     };
     const left: ConnectedPosition = {
-      originX: 'start', originY: 'center', overlayX: 'end', overlayY: 'center', offsetX: -ARROW_GAP,
+      originX: 'start',
+      originY: 'center',
+      overlayX: 'end',
+      overlayY: 'center',
+      offsetX: -ARROW_GAP,
     };
     const right: ConnectedPosition = {
-      originX: 'end', originY: 'center', overlayX: 'start', overlayY: 'center', offsetX: ARROW_GAP,
+      originX: 'end',
+      originY: 'center',
+      overlayX: 'start',
+      overlayY: 'center',
+      offsetX: ARROW_GAP,
     };
     const order: Record<PopoverPosition, ConnectedPosition[]> = {
       top: [top, bottom, right, left],

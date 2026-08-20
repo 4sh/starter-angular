@@ -1,8 +1,4 @@
-<div
-  [class]="regionClass()"
-  [style.z-index]="zIndex()"
-  [style.gap.px]="stackGap() ?? null"
->
+<div [class]="regionClass()" [style.z-index]="zIndex()" [style.gap.px]="stackGap() ?? null">
   @for (item of items(); track item.id) {
     <div
       class="ui-toast-region-item"
@@ -28,7 +24,9 @@
         (closed)="dismiss(item)"
       >
         @if (template(); as tpl) {
-          <ng-container *ngTemplateOutlet="tpl; context: { $implicit: item, closeFn: closeFn(item) }" />
+          <ng-container
+            *ngTemplateOutlet="tpl; context: { $implicit: item, closeFn: closeFn(item) }"
+          />
         }
       </ui-toast>
     </div>

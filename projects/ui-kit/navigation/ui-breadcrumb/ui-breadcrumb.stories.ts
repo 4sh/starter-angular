@@ -9,7 +9,7 @@ const ITEMS = [
   { icon: 'house', ariaLabel: 'Accueil', url: '#' },
   { label: 'Électronique', url: '#' },
   { label: 'Ordinateurs', url: '#' },
-  { label: 'Accessoires'  },
+  { label: 'Accessoires' },
 ];
 
 const meta: Meta<UiBreadcrumb> = {
@@ -47,7 +47,8 @@ const meta: Meta<UiBreadcrumb> = {
     },
     separator: {
       control: { type: 'text' },
-      description: 'Caractère(s) de séparation entre les éléments (le template #separator prend la main).',
+      description:
+        'Caractère(s) de séparation entre les éléments (le template #separator prend la main).',
       table: { type: { summary: 'string' }, defaultValue: { summary: '"/"' } },
     },
     maxItems: {
@@ -63,8 +64,11 @@ const meta: Meta<UiBreadcrumb> = {
     },
     ellipsisAriaLabel: {
       control: { type: 'text' },
-      description: "Nom accessible du bouton ellipsis qui révèle les éléments masqués.",
-      table: { type: { summary: 'string' }, defaultValue: { summary: '"Afficher les éléments masqués"' } },
+      description: 'Nom accessible du bouton ellipsis qui révèle les éléments masqués.',
+      table: {
+        type: { summary: 'string' },
+        defaultValue: { summary: '"Afficher les éléments masqués"' },
+      },
     },
     styleClass: {
       control: { type: 'text' },
@@ -74,7 +78,10 @@ const meta: Meta<UiBreadcrumb> = {
     itemClick: {
       action: 'itemClick',
       description: 'Émis au clic sur un élément ({ originalEvent, item }, jamais si disabled).',
-      table: { type: { summary: 'EventEmitter<UiBreadcrumbItemCommandEvent>' }, defaultValue: { summary: '—' } },
+      table: {
+        type: { summary: 'EventEmitter<UiBreadcrumbItemCommandEvent>' },
+        defaultValue: { summary: '—' },
+      },
     },
   },
 };

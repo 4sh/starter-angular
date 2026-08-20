@@ -7,21 +7,21 @@ Versionnage : voir [`VERSIONING.md`](./VERSIONING.md).
 
 ## Deux packages, publiés ensemble
 
-| Package | Contenu | Source |
-|---|---|---|
-| `@4sh/ui-kit` | les composants **compilés** (`.mjs` + `.d.ts`) | `projects/ui-kit` |
+| Package                  | Contenu                                                                                               | Source                       |
+| ------------------------ | ----------------------------------------------------------------------------------------------------- | ---------------------------- |
+| `@4sh/ui-kit`            | les composants **compilés** (`.mjs` + `.d.ts`)                                                        | `projects/ui-kit`            |
 | `@4sh/ui-kit-schematics` | les **sources brutes** que le starter recopie chez le consommateur, et les schematics qui les copient | `projects/ui-kit-schematics` |
 
-Le second existe parce que `ng-packagr` *inline* template et SCSS dans le `.mjs`
+Le second existe parce que `ng-packagr` _inline_ template et SCSS dans le `.mjs`
 publié : les sources que les schematics doivent copier n'existent nulle part dans
 le tarball du kit (FSHSP-109).
 
 Chacun sert **un mode de consommation**, et les deux ne se croisent pas
 (FSHSP-122) :
 
-| Mode | Commande | Ce que le consommateur installe |
-|---|---|---|
-| Librairie | `npm i @4sh/ui-kit` | le kit compilé |
+| Mode                      | Commande                        | Ce que le consommateur installe       |
+| ------------------------- | ------------------------------- | ------------------------------------- |
+| Librairie                 | `npm i @4sh/ui-kit`             | le kit compilé                        |
 | Starter (sources copiées) | `ng add @4sh/ui-kit-schematics` | le compagnon seul — **jamais le kit** |
 
 Le kit est absent du parcours starter délibérément : hors de `node_modules`, aucun
@@ -61,32 +61,32 @@ workflow déclarés sur la page du package, et délivre un droit de publication
 
 **Il n'y a donc aucun secret à stocker, ni à faire tourner.**
 
-| | |
-|---|---|
-| Organisation npm | `4sh` — porte les packages `@4sh/*` |
-| Dépôt autorisé | `4sh/starter-angular` |
-| Workflow autorisé | `publish-ui-kit.yml` |
-| Environment | `npm-publish` (approbation humaine, voir plus bas) |
-| Secret GitHub | **aucun** |
+|                   |                                                    |
+| ----------------- | -------------------------------------------------- |
+| Organisation npm  | `4sh` — porte les packages `@4sh/*`                |
+| Dépôt autorisé    | `4sh/starter-angular`                              |
+| Workflow autorisé | `publish-ui-kit.yml`                               |
+| Environment       | `npm-publish` (approbation humaine, voir plus bas) |
+| Secret GitHub     | **aucun**                                          |
 
 ### Configurer (une seule fois, sur npmjs)
 
-**À faire pour *chacun* des deux packages** — la déclaration est portée par le
+**À faire pour _chacun_ des deux packages** — la déclaration est portée par le
 package, pas par l'organisation. Les valeurs sont identiques de part et d'autre
 (même dépôt, même workflow, même environment) ; seule la page change.
 
-Page du package → *Settings* → section **Trusted Publisher** :
+Page du package → _Settings_ → section **Trusted Publisher** :
 
-| Champ | Valeur |
-|---|---|
-| Publisher | GitHub Actions |
-| Organization / user | `4sh` |
-| Repository | `starter-angular` |
-| Workflow filename | `publish-ui-kit.yml` |
-| Environment | `npm-publish` |
+| Champ               | Valeur                       |
+| ------------------- | ---------------------------- |
+| Publisher           | GitHub Actions               |
+| Organization / user | `4sh`                        |
+| Repository          | `starter-angular`            |
+| Workflow filename   | `publish-ui-kit.yml`         |
+| Environment         | `npm-publish`                |
 | **Allowed actions** | **`npm publish` uniquement** |
 
-Le champ *Allowed actions* propose aussi `npm stage publish` (publication en
+Le champ _Allowed actions_ propose aussi `npm stage publish` (publication en
 deux temps : dépôt en zone de staging, puis promotion). Le workflow ne lance que
 `npm publish` : cocher la seconde case élargirait le droit délivré sans usage.
 Réglage modifiable après coup si le staging devenait utile.
@@ -96,7 +96,7 @@ registre : la `0.1.0` a donc été publiée par token, et c'est ce token que la
 bascule supprime.
 
 > ℹ️ **`@4sh/ui-kit-schematics` est tombé dans le même cas** (FSHSP-109) : sa
-> *première* publication ne pouvait pas passer par Trusted Publishing, faute de
+> _première_ publication ne pouvait pas passer par Trusted Publishing, faute de
 > page de package sur laquelle le déclarer. Un lancement du workflow l'a vérifié
 > — échec en `ENEEDAUTH` sur la première étape, l'ordre compagnon→kit ayant
 > empêché le kit de partir seul.
@@ -114,25 +114,25 @@ bascule supprime.
 
 ### Pourquoi c'est strictement mieux qu'un token
 
-| | Token | Trusted Publishing |
-|---|---|---|
-| Secret stocké dans GitHub | oui (`NPM_TOKEN`) | **aucun** |
-| Utilisable par quiconque peut modifier un workflow | oui | **non** — lié au dépôt + workflow déclarés |
-| Expiration / rotation | à gérer | **rien** |
-| « Bypass 2FA » | nécessaire | **inutile** |
-| Provenance | à demander | implicite |
+|                                                    | Token             | Trusted Publishing                         |
+| -------------------------------------------------- | ----------------- | ------------------------------------------ |
+| Secret stocké dans GitHub                          | oui (`NPM_TOKEN`) | **aucun**                                  |
+| Utilisable par quiconque peut modifier un workflow | oui               | **non** — lié au dépôt + workflow déclarés |
+| Expiration / rotation                              | à gérer           | **rien**                                   |
+| « Bypass 2FA »                                     | nécessaire        | **inutile**                                |
+| Provenance                                         | à demander        | implicite                                  |
 
-npm affiche d'ailleurs un avertissement sur l'option *bypass 2FA* d'un token,
+npm affiche d'ailleurs un avertissement sur l'option _bypass 2FA_ d'un token,
 recommandant Trusted Publishing pour tout usage CI/CD.
 
 ### Qui peut publier, qui peut administrer
 
 Deux accès distincts, à ne pas confondre :
 
-| | Ce qu'il faut | Qui l'a |
-|---|---|---|
-| **Publier une version** | lancer le workflow + approuver l'environment `npm-publish` | toute personne *required reviewer* sur GitHub — **aucun compte npm, aucun 2FA** |
-| **Administrer le package** (Trusted Publisher, mainteneurs, révocations) | se connecter au compte `4sh-package-admin` sur npmjs | seulement qui détient le mot de passe **et** un second facteur enrôlé |
+|                                                                          | Ce qu'il faut                                              | Qui l'a                                                                         |
+| ------------------------------------------------------------------------ | ---------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| **Publier une version**                                                  | lancer le workflow + approuver l'environment `npm-publish` | toute personne _required reviewer_ sur GitHub — **aucun compte npm, aucun 2FA** |
+| **Administrer le package** (Trusted Publisher, mainteneurs, révocations) | se connecter au compte `4sh-package-admin` sur npmjs       | seulement qui détient le mot de passe **et** un second facteur enrôlé           |
 
 C'est l'intérêt de l'OIDC : la publication ne dépend plus d'une identité npm.
 Reste l'administration, et elle mérite sa propre discipline, le compte étant
@@ -159,7 +159,7 @@ message clair plutôt qu'avec un `401` obscur.
 
 **Ne pas remettre de token dans la CI.** C'est la tentation évidente en situation
 de panne, et c'est exactement ce que cette bascule a supprimé : un secret
-persistant, publiant *en tant que* son porteur, utilisable par toute personne
+persistant, publiant _en tant que_ son porteur, utilisable par toute personne
 pouvant modifier un workflow. npm restreint d'ailleurs progressivement les tokens
 qui contournent la 2FA — la voie se ferme.
 
@@ -178,7 +178,7 @@ GitHub après la publication de la `0.1.1` — le premier passage réussi par OI
 Le job de publication est rattaché à l'environment **`npm-publish`**. À
 configurer **une fois**, sinon la protection n'existe pas :
 
-*Settings → Environments → New environment → `npm-publish`* puis cocher
+_Settings → Environments → New environment → `npm-publish`_ puis cocher
 **Required reviewers** et y mettre les personnes autorisées à publier.
 
 ⚠️ **Piège** : référencer un environment qui n'existe pas le fait créer
@@ -186,7 +186,7 @@ automatiquement **sans aucune règle de protection**. Le workflow tournerait alo
 sans approbation, en donnant l'illusion d'être protégé. À vérifier explicitement.
 
 ⚠️ **L'approbation reste indispensable, même sans secret à protéger.** L'OIDC
-garantit *d'où* vient la publication, jamais *qui* l'a décidée : sans la porte
+garantit _d'où_ vient la publication, jamais _qui_ l'a décidée : sans la porte
 d'approbation, toute personne pouvant lancer le workflow publierait. Les deux
 mécanismes sont complémentaires, et le nom de l'environment fait partie de la
 déclaration côté npm — le renommer ici casse l'authentification.
@@ -201,14 +201,14 @@ irréversible.
 
 Prérequis, une seule fois :
 
-1. Créer l'environment **`npm-publish`** avec ses *required reviewers* (voir plus haut).
-2. Déclarer le *Trusted Publisher* sur npmjs (voir « Authentification »).
+1. Créer l'environment **`npm-publish`** avec ses _required reviewers_ (voir plus haut).
+2. Déclarer le _Trusted Publisher_ sur npmjs (voir « Authentification »).
 
 Puis, à chaque version :
 
 3. Mettre à jour la version dans `projects/ui-kit/package.json` et l'entrée
    `CHANGELOG.md` correspondante, puis merger sur `main`.
-4. *Actions → Publish @4sh/ui-kit to npm → Run workflow* avec **`dry_run: true`** :
+4. _Actions → Publish @4sh/ui-kit to npm → Run workflow_ avec **`dry_run: true`** :
    le job `verify` affiche le contenu exact du tarball. Aucune approbation ni
    secret requis à ce stade.
 5. Relancer avec **`dry_run: false`** : le job `verify` rejoue, puis `publish`
@@ -297,7 +297,7 @@ provenance, puisqu'il n'est produit par aucun workflow vérifiable.
 ## Points d'attention
 
 - **`publishConfig.access: "public"`** est déclaré dans le `package.json` du
-  package. Sans lui, un package *scopé* est `restricted` par défaut et la
+  package. Sans lui, un package _scopé_ est `restricted` par défaut et la
   publication échoue en 402 (les packages privés sont payants).
 - **On publie `dist/ui-kit/`, pas le dépôt.** Le `package.json` de
   `projects/ui-kit/` est un modèle : `ng-packagr` le recopie dans `dist/` en y
@@ -337,7 +337,7 @@ Côté branchement dans le projet consommateur (feuille à charger, `data-theme`
 [`projects/ui-kit/README.md`](../projects/ui-kit/README.md#theme-brand-and-overrides) —
 c'est ce fichier que voit l'utilisateur sur npmjs.
 
-Pour éprouver le **starter**, le compagnon suffit — il porte les sources *et* les
+Pour éprouver le **starter**, le compagnon suffit — il porte les sources _et_ les
 schematics, et le parcours n'installe pas le kit :
 
 ```bash

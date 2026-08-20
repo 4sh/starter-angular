@@ -83,7 +83,8 @@ export class UiContextMenu {
   /** Custom menuitem content: `<ng-template #item let-item>` (forwarded to the menu). */
   protected readonly itemTemplateContent = contentChild<TemplateRef<unknown>>('item');
   /** Custom group-header content: `<ng-template #submenuheader let-item>` (forwarded). */
-  protected readonly submenuHeaderTemplateContent = contentChild<TemplateRef<unknown>>('submenuheader');
+  protected readonly submenuHeaderTemplateContent =
+    contentChild<TemplateRef<unknown>>('submenuheader');
 
   /** @ignore Embedded menu (roving focus entry point). */
   private readonly menu = viewChild<UiMenu>('menu');

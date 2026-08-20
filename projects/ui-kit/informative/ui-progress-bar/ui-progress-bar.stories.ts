@@ -12,7 +12,9 @@ const meta: Meta<UiProgressBar> = {
     // ui-progress-bar is fill-width: bound the width so the bar stays visible
     // in shrink-wrap contexts (e.g. the centered Overview card) instead of the
     // track collapsing to 0 and leaving only the value label.
-    componentWrapperDecorator((story) => `<div style="width:320px; max-width:100%;">${story}</div>`),
+    componentWrapperDecorator(
+      (story) => `<div style="width:320px; max-width:100%;">${story}</div>`,
+    ),
   ],
   parameters: {
     layout: 'padded',
@@ -42,8 +44,12 @@ const meta: Meta<UiProgressBar> = {
     valuePosition: {
       control: { type: 'inline-radio' },
       options: ['right', 'bottom', 'inside'],
-      description: 'Emplacement du libellé : à droite, sous la barre, ou dans le remplissage (`inside`).',
-      table: { type: { summary: 'UiProgressBarValuePosition' }, defaultValue: { summary: '"right"' } },
+      description:
+        'Emplacement du libellé : à droite, sous la barre, ou dans le remplissage (`inside`).',
+      table: {
+        type: { summary: 'UiProgressBarValuePosition' },
+        defaultValue: { summary: '"right"' },
+      },
     },
     showValue: {
       control: { type: 'boolean' },
@@ -79,7 +85,7 @@ const meta: Meta<UiProgressBar> = {
     showValue: true,
     unit: '%',
     steps: 0,
-    ariaLabel: "Progression du téléchargement",
+    ariaLabel: 'Progression du téléchargement',
   },
 };
 

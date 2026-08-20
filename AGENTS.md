@@ -8,14 +8,14 @@
 
 ## Stack
 
-| Technology | Role |
-|---|---|
-| Angular 22 | Framework — standalone, Signals API mandatory, zoneless |
+| Technology          | Role                                                                            |
+| ------------------- | ------------------------------------------------------------------------------- |
+| Angular 22          | Framework — standalone, Signals API mandatory, zoneless                         |
 | Headless components | No proprietary UI library; Angular CDK where needed (overlay, a11y, focus-trap) |
-| Design Tokens JSON | `src/design-tokens/*.json` (DTCG) → Style Dictionary → generated CSS variables |
-| Gridaflex 1.0.0 | Flexbox grid (24 col) + breakpoints, configured by the tokens |
-| FontAwesome Free | Icons, via the `ui-icon` component |
-| Storybook 10 | **Source of truth** — components, tokens, foundations |
+| Design Tokens JSON  | `src/design-tokens/*.json` (DTCG) → Style Dictionary → generated CSS variables  |
+| Gridaflex 1.0.0     | Flexbox grid (24 col) + breakpoints, configured by the tokens                   |
+| FontAwesome Free    | Icons, via the `ui-icon` component                                              |
+| Storybook 10        | **Source of truth** — components, tokens, foundations                           |
 
 Fonts embedded locally (DM Sans + Inter, variable fonts): `src/styles/src/vendors/_fonts.scss`.
 
@@ -25,23 +25,23 @@ Fonts embedded locally (DM Sans + Inter, variable fonts): `src/styles/src/vendor
 
 **Storybook is the source of truth.** Never guess a component's API, its variants or its tokens.
 
-| Question | Where to look |
-|---|---|
-| Existing components / roadmap | `docs/components-index.md` |
+| Question                                       | Where to look                                                                         |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------- |
+| Existing components / roadmap                  | `docs/components-index.md`                                                            |
 | A component's API (`inputs`, `outputs`, types) | `projects/ui-kit/<category>/ui-<name>/ui-<name>.stories.ts` → `argTypes` (co-located) |
-| Colors, semantic tokens | Storybook → `Foundations / Colors` (brand + mode explorer) |
-| Typography | Storybook → `Foundations / Typography` |
-| Shadows & effects | Storybook → `Foundations / Shadows` |
-| Tokens pipeline, theme, responsive | Storybook → `Spécifications / *` |
-| Source Angular component | `projects/ui-kit/<category>/ui-<name>/src/lib/` |
-| **Reference pattern** | `projects/ui-kit/actions/ui-button/` (+ `base/ui-icon`) |
+| Colors, semantic tokens                        | Storybook → `Foundations / Colors` (brand + mode explorer)                            |
+| Typography                                     | Storybook → `Foundations / Typography`                                                |
+| Shadows & effects                              | Storybook → `Foundations / Shadows`                                                   |
+| Tokens pipeline, theme, responsive             | Storybook → `Spécifications / *`                                                      |
+| Source Angular component                       | `projects/ui-kit/<category>/ui-<name>/src/lib/`                                       |
+| **Reference pattern**                          | `projects/ui-kit/actions/ui-button/` (+ `base/ui-icon`)                               |
 
 ---
 
 ## The `ui-*` kit lives in the `@4sh/ui-kit` package (FSHSP-83)
 
 All 54 `ui-*` components live in `projects/ui-kit/` — an `ng-packagr` library
-published as a **single** npm package with one *secondary entry point* per
+published as a **single** npm package with one _secondary entry point_ per
 component. `src/app/` now only holds the demo application and its `domain/`
 components.
 
@@ -150,21 +150,21 @@ holds what is specific to the demo app (aggregator, fonts, grid settings, layout
 
 ### UI components (generic)
 
-| Element | Convention | Example |
-|---|---|---|
-| Angular selector | `ui-<name>` | `ui-button` |
-| TypeScript class | `Ui<Name>` | `UiButton` |
-| File | `ui-<name>.ts` (without `.component`) | `ui-button.ts` |
-| Story & doc | co-located: `projects/ui-kit/<category>/ui-<name>/ui-<name>.stories.ts` + `ui-<name>.mdx` | `ui-button.stories.ts` |
-| Import alias | Kit components: `@4sh/ui-kit/<category>/<entry>` · app code: `@app/` | `@4sh/ui-kit/actions/ui-button` |
+| Element          | Convention                                                                                | Example                         |
+| ---------------- | ----------------------------------------------------------------------------------------- | ------------------------------- |
+| Angular selector | `ui-<name>`                                                                               | `ui-button`                     |
+| TypeScript class | `Ui<Name>`                                                                                | `UiButton`                      |
+| File             | `ui-<name>.ts` (without `.component`)                                                     | `ui-button.ts`                  |
+| Story & doc      | co-located: `projects/ui-kit/<category>/ui-<name>/ui-<name>.stories.ts` + `ui-<name>.mdx` | `ui-button.stories.ts`          |
+| Import alias     | Kit components: `@4sh/ui-kit/<category>/<entry>` · app code: `@app/`                      | `@4sh/ui-kit/actions/ui-button` |
 
 ### Business components (domain)
 
-| Element | Convention | Example |
-|---|---|---|
-| Angular selector | `<prefix>-<name>` | `ds-button-critical` |
-| TypeScript class | `<Prefix><Name>` | `DsButtonCritical` |
-| File | `<prefix>-<name>.ts` | `ds-button-critical.ts` |
+| Element          | Convention           | Example                 |
+| ---------------- | -------------------- | ----------------------- |
+| Angular selector | `<prefix>-<name>`    | `ds-button-critical`    |
+| TypeScript class | `<Prefix><Name>`     | `DsButtonCritical`      |
+| File             | `<prefix>-<name>.ts` | `ds-button-critical.ts` |
 
 > ⚠️ The **prefix** is defined by the project (e.g. `ds`, `myapp`, `crm`). It is not fixed in
 > the starter — ask the project before creating a business component. `domain/` components
@@ -192,7 +192,7 @@ buttonClick = output<MouseEvent>();
 
 ```html
 <!-- ✅ -->
-[label]="label()"   [disabled]="disabled()"
+[label]="label()" [disabled]="disabled()"
 
 <!-- ❌ -->
 [label]="label"
@@ -258,8 +258,8 @@ The `///` goes **at the end of the declaration**, vertically aligned with its vi
 lines separate groups):
 
 ```scss
-$card-padding: var(--units-lg);       /// Inset du corps.
-$card-radius: var(--radius-md);       /// Rayon des coins.
+$card-padding: var(--units-lg); /// Inset du corps.
+$card-radius: var(--radius-md); /// Rayon des coins.
 ```
 
 - **Never a resolved value in a role** (`(12px)`): the doc measures it at runtime, in the active
@@ -275,16 +275,22 @@ $card-radius: var(--radius-md);       /// Rayon des coins.
 #### Every structural value is read through a `--ui-*` hook
 
 In **package mode** the kit's SCSS is already compiled, so `_ui-config.scss` and a component's
-local variables are out of reach. Each structural value is therefore read *through* a custom
+local variables are out of reach. Each structural value is therefore read _through_ a custom
 property whose fallback is the shipped default — the hook goes on the **config variable**, never
 on the usage sites:
 
 ```scss
 // --- Config ---
-$radius: var(--ui-button-radius, var(--radius-sm));                     /// Rayon des coins.
-$stroke-width: var(--ui-button-stroke-width, #{utils.$control-stroke-width}); /// Épaisseur de la bordure.
+$radius: var(--ui-button-radius, var(--radius-sm)); /// Rayon des coins.
+$stroke-width: var(
+  --ui-button-stroke-width,
+  #{utils.$control-stroke-width}
+); /// Épaisseur de la bordure.
 
-.ui-button { border-radius: $radius; border: $stroke-width solid transparent; }
+.ui-button {
+  border-radius: $radius;
+  border: $stroke-width solid transparent;
+}
 ```
 
 - **Naming**: `--ui-{family}[-{part}]-{property}[-{modifier}]`, modifier **last** (same rule as
@@ -304,7 +310,9 @@ $stroke-width: var(--ui-button-stroke-width, #{utils.$control-stroke-width}); //
   a variable (read by a sub-component, re-read by the consumer), declare a **private mirror** and
   read the public hook in its fallback:
   ```scss
-  :host { --_width: var(--ui-sidebar-width, #{$width-default}); } /// Largeur du panneau déployé.
+  :host {
+    --_width: var(--ui-sidebar-width, #{$width-default});
+  } /// Largeur du panneau déployé.
   ```
   The `///` stays on the mirror: that is what publishes the public hook's role.
 - Never a value hardcoded inline in a rule when it is structural: promote it to a config variable
@@ -320,7 +328,7 @@ $stroke-width: var(--ui-button-stroke-width, #{utils.$control-stroke-width}); //
   this on its own — nothing to annotate.
 - **`_ui-config.scss` carries hooks too**, named `--ui-<scss name>` (`$form-control-size` →
   `--ui-form-control-size`). They sit between the token and the component hook, and reach every
-  consumer for free since components *interpolate* them:
+  consumer for free since components _interpolate_ them:
   `var(--ui-checkbox-box-size, var(--ui-form-control-size, var(--size-components-2xs)))`. Use
   this layer when a value is shared by a category and the token it points at is used elsewhere
   too (`--size-components-2xs` also feeds `ui-tag`, so retuning the token would overshoot).
@@ -338,7 +346,7 @@ component.
 ```scss
 // In a component: consume the category value via a LOCAL variable.
 $focus-ring-width: utils.$form-focus-ring-width; // ← replace the value here to
-                                                 //    adjust THIS component only
+//    adjust THIS component only
 ```
 
 - Changing a value in `_ui-config.scss` = the whole kit follows at once.
@@ -350,11 +358,11 @@ $focus-ring-width: utils.$form-focus-ring-width; // ← replace the value here t
 
 ### Theme, brand, modes (runtime)
 
-| Dimension | Attribute on `<html>` | Service |
-|---|---|---|
-| Light / Dark | `[data-theme='dark']` (light = default) | `ThemeService` (`src/app/core/service/theme.service.ts`) |
-| Brand | `[data-brand='brand2'\|'brand3']` (brand1 = default) | `BrandService` (derived from the subdomain) |
-| Viewport | `@media (min-width: …)` | — (responsive tokens) |
+| Dimension    | Attribute on `<html>`                                | Service                                                  |
+| ------------ | ---------------------------------------------------- | -------------------------------------------------------- |
+| Light / Dark | `[data-theme='dark']` (light = default)              | `ThemeService` (`src/app/core/service/theme.service.ts`) |
+| Brand        | `[data-brand='brand2'\|'brand3']` (brand1 = default) | `BrandService` (derived from the subdomain)              |
+| Viewport     | `@media (min-width: …)`                              | — (responsive tokens)                                    |
 
 > ❌ The `.light-mode` / `.dark-mode` classes no longer exist. See Storybook →
 > `Spécifications / Thème & Système de Tokens` for the services API.

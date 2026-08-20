@@ -17,11 +17,7 @@ import { UiSeparator } from '@4sh/ui-kit/informative/ui-separator';
 /** Identifier of a panel within an accordion (its `value`). */
 export type UiAccordionValue = string | number;
 /** Active value(s): a single value (single mode) or an array (multiple mode). */
-export type UiAccordionActiveValue =
-  | UiAccordionValue
-  | UiAccordionValue[]
-  | null
-  | undefined;
+export type UiAccordionActiveValue = UiAccordionValue | UiAccordionValue[] | null | undefined;
 
 /** Payload of the accordion open/close outputs. */
 export interface UiAccordionChangeEvent {
@@ -221,16 +217,26 @@ export class UiAccordion {
     if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) return;
     const items = this.panels().filter((p) => !p.disabled());
     if (!items.length) return;
-    const current = items.findIndex((p) => p.headerButton().nativeElement === document.activeElement);
+    const current = items.findIndex(
+      (p) => p.headerButton().nativeElement === document.activeElement,
+    );
     if (current === -1) return; // focus is not on a header — let the event through.
 
     event.preventDefault();
     let next = current;
     switch (event.key) {
-      case 'ArrowDown': next = (current + 1) % items.length; break;
-      case 'ArrowUp': next = (current - 1 + items.length) % items.length; break;
-      case 'Home': next = 0; break;
-      case 'End': next = items.length - 1; break;
+      case 'ArrowDown':
+        next = (current + 1) % items.length;
+        break;
+      case 'ArrowUp':
+        next = (current - 1 + items.length) % items.length;
+        break;
+      case 'Home':
+        next = 0;
+        break;
+      case 'End':
+        next = items.length - 1;
+        break;
     }
     items[next].focus();
   }

@@ -96,7 +96,10 @@ const meta: Meta<UiDrawer> = {
     drawerStyle: {
       control: false,
       description: 'Styles inline appliqués au panneau (ex : `{ width: "30rem" }`).',
-      table: { type: { summary: 'Record<string, string>' }, defaultValue: { summary: 'undefined' } },
+      table: {
+        type: { summary: 'Record<string, string>' },
+        defaultValue: { summary: 'undefined' },
+      },
     },
     shown: { action: 'shown', description: 'Émis après ouverture.' },
     hidden: { action: 'hidden', description: 'Émis après fermeture.' },

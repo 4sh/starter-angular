@@ -232,7 +232,9 @@ export class UiDrawer {
     () => this.ariaLabelledBy() ?? (this.showHeader() && this.header() ? this.titleId : null),
   );
   /** @ignore Fallback accessible name when nothing is referenced. */
-  protected readonly resolvedAriaLabel = computed(() => (this.labelledBy() ? null : this.ariaLabel()));
+  protected readonly resolvedAriaLabel = computed(() =>
+    this.labelledBy() ? null : this.ariaLabel(),
+  );
 
   constructor() {
     const destroyRef = inject(DestroyRef);

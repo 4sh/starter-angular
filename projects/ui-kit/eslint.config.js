@@ -1,26 +1,26 @@
 // @ts-check
-const { defineConfig } = require("eslint/config");
-const rootConfig = require("../../eslint.config.js");
+const { defineConfig } = require('eslint/config');
+const rootConfig = require('../../eslint.config.js');
 
 module.exports = defineConfig([
   ...rootConfig,
   {
-    files: ["**/*.ts"],
+    files: ['**/*.ts'],
     rules: {
-      "@angular-eslint/directive-selector": [
-        "error",
+      '@angular-eslint/directive-selector': [
+        'error',
         {
-          type: "attribute",
-          prefix: "ui",
-          style: "camelCase",
+          type: 'attribute',
+          prefix: 'ui',
+          style: 'camelCase',
         },
       ],
-      "@angular-eslint/component-selector": [
-        "error",
+      '@angular-eslint/component-selector': [
+        'error',
         {
-          type: "element",
-          prefix: "ui",
-          style: "kebab-case",
+          type: 'element',
+          prefix: 'ui',
+          style: 'kebab-case',
         },
       ],
     },
@@ -32,20 +32,20 @@ module.exports = defineConfig([
     // packaged output by ng-packagr (default) same as `.stories.ts` — either way the `ui`
     // prefix, which reserves the kit's public element namespace, would be a lie here.
     // The rule stays fully enforced on everything that IS packaged.
-    files: ["**/*.stories.ts", "**/*.spec.ts"],
+    files: ['**/*.stories.ts', '**/*.spec.ts'],
     rules: {
-      "@angular-eslint/component-selector": [
-        "error",
+      '@angular-eslint/component-selector': [
+        'error',
         {
-          type: "element",
-          prefix: "demo",
-          style: "kebab-case",
+          type: 'element',
+          prefix: 'demo',
+          style: 'kebab-case',
         },
       ],
     },
   },
   {
-    files: ["**/*.html"],
+    files: ['**/*.html'],
     rules: {},
   },
 ]);

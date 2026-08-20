@@ -3,73 +3,47 @@
   "collections": {
     "breakpoint": {
       "modes": {
-        "Mode 1": [
-          "breakpoint.json"
-        ]
+        "Mode 1": ["breakpoint.json"]
       }
     },
     "metrics": {
       "modes": {
-        "Mode 1": [
-          "metrics.json"
-        ]
+        "Mode 1": ["metrics.json"]
       }
     },
     "primitives": {
       "modes": {
-        "modeBrand1": [
-          "primitives.json"
-        ],
-        "modeBrand2": [
-          "primitives.json"
-        ],
-        "modeBrand3": [
-          "primitives.json"
-        ]
+        "modeBrand1": ["primitives.json"],
+        "modeBrand2": ["primitives.json"],
+        "modeBrand3": ["primitives.json"]
       }
     },
     "responsive": {
       "modes": {
-        "modeDesktop": [
-          "responsive.json"
-        ],
-        "modeMobile": [
-          "responsive.json"
-        ],
-        "modeTablet": [
-          "responsive.json"
-        ]
+        "modeDesktop": ["responsive.json"],
+        "modeMobile": ["responsive.json"],
+        "modeTablet": ["responsive.json"]
       }
     },
     "semantics": {
       "modes": {
-        "modeLight": [
-          "semantics.json"
-        ],
-        "modeDark": [
-          "semantics.json"
-        ]
+        "modeLight": ["semantics.json"],
+        "modeDark": ["semantics.json"]
       }
     },
     "transitions": {
       "modes": {
-        "Mode 1": [
-          "transitions.json"
-        ]
+        "Mode 1": ["transitions.json"]
       }
     },
     "typography": {
       "modes": {
-        "Mode 1": [
-          "typography.json"
-        ]
+        "Mode 1": ["typography.json"]
       }
     },
     "styles": {
       "modes": {
-        "Mode 1": [
-          "styles.json"
-        ]
+        "Mode 1": ["styles.json"]
       }
     }
   }

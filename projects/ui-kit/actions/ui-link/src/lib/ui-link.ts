@@ -97,7 +97,9 @@ export class UiLink {
   protected readonly useRouterLink = computed(() => this.routerLink() != null);
 
   /** @ignore Effective anchor target (external forces _blank). */
-  protected readonly computedTarget = computed(() => this.target() ?? (this.external() ? '_blank' : null));
+  protected readonly computedTarget = computed(
+    () => this.target() ?? (this.external() ? '_blank' : null),
+  );
 
   /** @ignore Anchor rel: explicit, or a safe default for _blank / external. */
   protected readonly computedRel = computed(() => {
@@ -107,7 +109,9 @@ export class UiLink {
   });
 
   /** @ignore Tabindex: -1 when disabled (an <a> has no native disabled). */
-  protected readonly linkTabindex = computed(() => (this.disabled() ? -1 : (this.tabindex() ?? null)));
+  protected readonly linkTabindex = computed(() =>
+    this.disabled() ? -1 : (this.tabindex() ?? null),
+  );
 
   /** @ignore Accessible name: explicit, or the label when icon-only. */
   protected readonly accessibleLabel = computed(() => {

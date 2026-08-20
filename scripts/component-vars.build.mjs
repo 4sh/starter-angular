@@ -53,12 +53,50 @@ const REM_BASE = 16;
 // tokens (`actions-high-surface-hover`). An unparsable name fails the build.
 
 const MODIFIERS = new Set([
-  'small', 'large', 'tiny', 'compact', 'dense',
-  '2xs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl',
-  'active', 'disabled', 'hover', 'focus', 'pressed', 'checked', 'selected', 'indeterminate',
-  'vertical', 'horizontal', 'inline', 'rounded', 'square', 'open', 'closed', 'collapsed', 'expanded',
-  'flush', 'first', 'last', 'dark', 'light', 'overlay', 'inset', 'removable',
-  'custom', 'multiline', 'side', 'edge', 'outside', 'default',
+  'small',
+  'large',
+  'tiny',
+  'compact',
+  'dense',
+  '2xs',
+  'xs',
+  'sm',
+  'md',
+  'lg',
+  'xl',
+  '2xl',
+  '3xl',
+  'active',
+  'disabled',
+  'hover',
+  'focus',
+  'pressed',
+  'checked',
+  'selected',
+  'indeterminate',
+  'vertical',
+  'horizontal',
+  'inline',
+  'rounded',
+  'square',
+  'open',
+  'closed',
+  'collapsed',
+  'expanded',
+  'flush',
+  'first',
+  'last',
+  'dark',
+  'light',
+  'overlay',
+  'inset',
+  'removable',
+  'custom',
+  'multiline',
+  'side',
+  'edge',
+  'outside',
+  'default',
 ]);
 
 /**
@@ -69,14 +107,40 @@ const PROPERTIES = {
   // Dimensions
   size: { fr: 'Taille', group: 'dimensions', type: 'FLOAT', scopes: ['WIDTH_HEIGHT'] },
   height: { fr: 'Hauteur', group: 'dimensions', type: 'FLOAT', scopes: ['WIDTH_HEIGHT'] },
-  'min-height': { fr: 'Hauteur minimale', group: 'dimensions', type: 'FLOAT', scopes: ['WIDTH_HEIGHT'] },
-  'max-height': { fr: 'Hauteur maximale', group: 'dimensions', type: 'FLOAT', scopes: ['WIDTH_HEIGHT'] },
+  'min-height': {
+    fr: 'Hauteur minimale',
+    group: 'dimensions',
+    type: 'FLOAT',
+    scopes: ['WIDTH_HEIGHT'],
+  },
+  'max-height': {
+    fr: 'Hauteur maximale',
+    group: 'dimensions',
+    type: 'FLOAT',
+    scopes: ['WIDTH_HEIGHT'],
+  },
   width: { fr: 'Largeur', group: 'dimensions', type: 'FLOAT', scopes: ['WIDTH_HEIGHT'] },
-  'min-width': { fr: 'Largeur minimale', group: 'dimensions', type: 'FLOAT', scopes: ['WIDTH_HEIGHT'] },
-  'max-width': { fr: 'Largeur maximale', group: 'dimensions', type: 'FLOAT', scopes: ['WIDTH_HEIGHT'] },
+  'min-width': {
+    fr: 'Largeur minimale',
+    group: 'dimensions',
+    type: 'FLOAT',
+    scopes: ['WIDTH_HEIGHT'],
+  },
+  'max-width': {
+    fr: 'Largeur maximale',
+    group: 'dimensions',
+    type: 'FLOAT',
+    scopes: ['WIDTH_HEIGHT'],
+  },
   length: { fr: 'Longueur', group: 'dimensions', type: 'FLOAT', scopes: ['WIDTH_HEIGHT'] },
   thickness: { fr: 'Épaisseur', group: 'dimensions', type: 'FLOAT', scopes: ['WIDTH_HEIGHT'] },
-  'aspect-ratio': { fr: 'Ratio', group: 'dimensions', type: 'FLOAT', scopes: ['ALL_SCOPES'], bindable: false },
+  'aspect-ratio': {
+    fr: 'Ratio',
+    group: 'dimensions',
+    type: 'FLOAT',
+    scopes: ['ALL_SCOPES'],
+    bindable: false,
+  },
 
   // Spacing
   padding: { fr: 'Inset', group: 'spacing', type: 'FLOAT', scopes: ['GAP'] },
@@ -88,26 +152,66 @@ const PROPERTIES = {
   'padding-right': { fr: 'Inset droit', group: 'spacing', type: 'FLOAT', scopes: ['GAP'] },
   'padding-inline': { fr: 'Inset horizontal', group: 'spacing', type: 'FLOAT', scopes: ['GAP'] },
   'padding-block': { fr: 'Inset vertical', group: 'spacing', type: 'FLOAT', scopes: ['GAP'] },
-  'padding-inline-start': { fr: 'Inset de début', group: 'spacing', type: 'FLOAT', scopes: ['GAP'] },
+  'padding-inline-start': {
+    fr: 'Inset de début',
+    group: 'spacing',
+    type: 'FLOAT',
+    scopes: ['GAP'],
+  },
   'padding-inline-end': { fr: 'Inset de fin', group: 'spacing', type: 'FLOAT', scopes: ['GAP'] },
   gap: { fr: 'Espacement', group: 'spacing', type: 'FLOAT', scopes: ['GAP'] },
   indent: { fr: 'Retrait', group: 'spacing', type: 'FLOAT', scopes: ['GAP'] },
   overlap: { fr: 'Chevauchement', group: 'spacing', type: 'FLOAT', scopes: ['GAP'] },
   offset: { fr: 'Décalage', group: 'spacing', type: 'FLOAT', scopes: ['WIDTH_HEIGHT'] },
-  'offset-x': { fr: 'Décalage horizontal', group: 'spacing', type: 'FLOAT', scopes: ['WIDTH_HEIGHT'] },
-  'offset-y': { fr: 'Décalage vertical', group: 'spacing', type: 'FLOAT', scopes: ['WIDTH_HEIGHT'] },
+  'offset-x': {
+    fr: 'Décalage horizontal',
+    group: 'spacing',
+    type: 'FLOAT',
+    scopes: ['WIDTH_HEIGHT'],
+  },
+  'offset-y': {
+    fr: 'Décalage vertical',
+    group: 'spacing',
+    type: 'FLOAT',
+    scopes: ['WIDTH_HEIGHT'],
+  },
   distance: { fr: 'Distance', group: 'spacing', type: 'FLOAT', scopes: ['WIDTH_HEIGHT'] },
 
   // Borders & radii
   radius: { fr: 'Rayon des coins', group: 'border', type: 'FLOAT', scopes: ['CORNER_RADIUS'] },
-  'stroke-width': { fr: 'Épaisseur de bordure', group: 'border', type: 'FLOAT', scopes: ['STROKE_FLOAT'] },
-  'border-width': { fr: 'Épaisseur de bordure', group: 'border', type: 'FLOAT', scopes: ['STROKE_FLOAT'] },
-  'focus-ring-width': { fr: "Épaisseur de l'anneau de focus", group: 'border', type: 'FLOAT', scopes: ['STROKE_FLOAT'] },
+  'stroke-width': {
+    fr: 'Épaisseur de bordure',
+    group: 'border',
+    type: 'FLOAT',
+    scopes: ['STROKE_FLOAT'],
+  },
+  'border-width': {
+    fr: 'Épaisseur de bordure',
+    group: 'border',
+    type: 'FLOAT',
+    scopes: ['STROKE_FLOAT'],
+  },
+  'focus-ring-width': {
+    fr: "Épaisseur de l'anneau de focus",
+    group: 'border',
+    type: 'FLOAT',
+    scopes: ['STROKE_FLOAT'],
+  },
 
   // Typography
-  'font-size': { fr: 'Taille de police', group: 'typography', type: 'FLOAT', scopes: ['FONT_SIZE'] },
+  'font-size': {
+    fr: 'Taille de police',
+    group: 'typography',
+    type: 'FLOAT',
+    scopes: ['FONT_SIZE'],
+  },
   'line-height': { fr: 'Interligne', group: 'typography', type: 'FLOAT', scopes: ['LINE_HEIGHT'] },
-  weight: { fr: 'Graisse', group: 'typography', type: 'STRING', scopes: ['FONT_WEIGHT', 'FONT_STYLE'] },
+  weight: {
+    fr: 'Graisse',
+    group: 'typography',
+    type: 'STRING',
+    scopes: ['FONT_WEIGHT', 'FONT_STYLE'],
+  },
 
   // Colours
   color: { fr: 'Couleur', group: 'color', type: 'COLOR', scopes: ['ALL_FILLS'] },
@@ -115,22 +219,64 @@ const PROPERTIES = {
   surface: { fr: 'Fond', group: 'color', type: 'COLOR', scopes: ['FRAME_FILL', 'SHAPE_FILL'] },
   stroke: { fr: 'Couleur de bordure', group: 'color', type: 'COLOR', scopes: ['STROKE_COLOR'] },
   shine: { fr: 'Teinte du reflet', group: 'color', type: 'COLOR', scopes: ['ALL_FILLS'] },
-  fill: { fr: 'Remplissage', group: 'color', type: 'FLOAT', scopes: ['ALL_SCOPES'], bindable: false },
+  fill: {
+    fr: 'Remplissage',
+    group: 'color',
+    type: 'FLOAT',
+    scopes: ['ALL_SCOPES'],
+    bindable: false,
+  },
 
   // Motion
-  duration: { fr: 'Durée', group: 'motion', type: 'FLOAT', scopes: ['ALL_SCOPES'], bindable: false },
+  duration: {
+    fr: 'Durée',
+    group: 'motion',
+    type: 'FLOAT',
+    scopes: ['ALL_SCOPES'],
+    bindable: false,
+  },
   delay: { fr: 'Délai', group: 'motion', type: 'FLOAT', scopes: ['ALL_SCOPES'], bindable: false },
-  easing: { fr: 'Courbe de transition', group: 'motion', type: 'STRING', scopes: ['ALL_SCOPES'], bindable: false },
+  easing: {
+    fr: 'Courbe de transition',
+    group: 'motion',
+    type: 'STRING',
+    scopes: ['ALL_SCOPES'],
+    bindable: false,
+  },
   scale: { fr: 'Échelle', group: 'motion', type: 'FLOAT', scopes: ['ALL_SCOPES'], bindable: false },
 
   // Misc
   opacity: { fr: 'Opacité', group: 'misc', type: 'FLOAT', scopes: ['OPACITY'] },
   shadow: { fr: 'Ombre', group: 'misc', type: 'FLOAT', scopes: ['EFFECT_FLOAT'] },
-  'z-index': { fr: 'Plan de superposition', group: 'misc', type: 'FLOAT', scopes: ['ALL_SCOPES'], bindable: false },
-  top: { fr: 'Décalage haut', group: 'spacing', type: 'FLOAT', scopes: ['WIDTH_HEIGHT'], bindable: false },
+  'z-index': {
+    fr: 'Plan de superposition',
+    group: 'misc',
+    type: 'FLOAT',
+    scopes: ['ALL_SCOPES'],
+    bindable: false,
+  },
+  top: {
+    fr: 'Décalage haut',
+    group: 'spacing',
+    type: 'FLOAT',
+    scopes: ['WIDTH_HEIGHT'],
+    bindable: false,
+  },
   cursor: { fr: 'Curseur', group: 'misc', type: 'STRING', scopes: ['ALL_SCOPES'], bindable: false },
-  'object-fit': { fr: 'Cadrage du média', group: 'misc', type: 'STRING', scopes: ['ALL_SCOPES'], bindable: false },
-  columns: { fr: 'Colonnes', group: 'misc', type: 'FLOAT', scopes: ['ALL_SCOPES'], bindable: false },
+  'object-fit': {
+    fr: 'Cadrage du média',
+    group: 'misc',
+    type: 'STRING',
+    scopes: ['ALL_SCOPES'],
+    bindable: false,
+  },
+  columns: {
+    fr: 'Colonnes',
+    group: 'misc',
+    type: 'FLOAT',
+    scopes: ['ALL_SCOPES'],
+    bindable: false,
+  },
 };
 
 const GROUPS = [
@@ -319,12 +465,17 @@ function stripDeprecated(value) {
 // --- 3. Token index (to link the Figma aliases) ---------------------------
 
 const kebab = (parts) =>
-  parts.filter(Boolean).join('-').toLowerCase()
-    .replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+  parts
+    .filter(Boolean)
+    .join('-')
+    .toLowerCase()
+    .replace(/[^a-z0-9-]/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
 
 function leaves(node, path = [], out = []) {
   if (!node || typeof node !== 'object') return out;
-  if ('$value' in node) return out.push({ path, token: node }), out;
+  if ('$value' in node) return (out.push({ path, token: node }), out);
   for (const k of Object.keys(node)) if (!k.startsWith('$')) leaves(node[k], [...path, k], out);
   return out;
 }
@@ -407,7 +558,11 @@ function throughHooks(raw) {
 /** Figma value of a CSS default: token alias, literal, or not representable. */
 function figmaValue(rawInput, expectedType) {
   const raw = throughHooks(rawInput);
-  if (!raw) return { type: 'NONE', reason: "hook sans défaut : point de surcharge pur, le composant ne pose rien." };
+  if (!raw)
+    return {
+      type: 'NONE',
+      reason: 'hook sans défaut : point de surcharge pur, le composant ne pose rien.',
+    };
 
   const single = raw.match(SINGLE_VAR);
   if (single) {
@@ -415,7 +570,11 @@ function figmaValue(rawInput, expectedType) {
     if (target) {
       return { type: 'ALIAS', collection: target.collection, name: target.name, cssVar: single[1] };
     }
-    return { type: 'UNSUPPORTED', raw, reason: `\`${single[1]}\` n'est pas un token du pipeline : rien à aliaser.` };
+    return {
+      type: 'UNSUPPORTED',
+      raw,
+      reason: `\`${single[1]}\` n'est pas un token du pipeline : rien à aliaser.`,
+    };
   }
 
   const num = raw.match(NUMBER);
@@ -525,7 +684,7 @@ for (const [hook, { defaults, files: seen }] of [...found].sort(([a], [b]) => a.
     // (`[style.--x]`, `setProperty`). Otherwise it is an undocumented public hook,
     // which is an error.
     const family = [...(declaredBy.get(hook)?.keys() ?? [])].find(
-      (f) => f && hook.startsWith(`--ui-${f}-`)
+      (f) => f && hook.startsWith(`--ui-${f}-`),
     );
     const ref = family ? familyIndex.get(family) : null;
     if (!ref) {
@@ -537,7 +696,7 @@ for (const [hook, { defaults, files: seen }] of [...found].sort(([a], [b]) => a.
   const parts = parseHook(hook, info.family);
   if (!parts.conforms) {
     problems.push(
-      `${hook} (${info.file}) — hors convention \`--ui-${info.family}[-partie]-propriété[-modifieur]\`.`
+      `${hook} (${info.file}) — hors convention \`--ui-${info.family}[-partie]-propriété[-modifieur]\`.`,
     );
   }
   const spec = PROPERTIES[parts.property] ?? {};
@@ -591,7 +750,9 @@ for (const [hook, { defaults, files: seen }] of [...found].sort(([a], [b]) => a.
       bindable: spec.bindable !== false,
       type: spec.type ?? 'STRING',
       scopes:
-        spec.type === 'COLOR' && TEXT_PARTS.has(parts.part ?? '') ? ['TEXT_FILL'] : (spec.scopes ?? ['ALL_SCOPES']),
+        spec.type === 'COLOR' && TEXT_PARTS.has(parts.part ?? '')
+          ? ['TEXT_FILL']
+          : (spec.scopes ?? ['ALL_SCOPES']),
       name: [info.family, parts.part, [parts.property, parts.modifier].filter(Boolean).join('-')]
         .filter(Boolean)
         .join('/'),
@@ -605,7 +766,9 @@ const figmaNames = new Set(hooks.map((h) => h.figma.name));
 for (const n of figmaNames) {
   for (const other of figmaNames) {
     if (other !== n && other.startsWith(`${n}/`)) {
-      problems.push(`Collision Figma : « ${n} » est à la fois une variable et un dossier (« ${other} »).`);
+      problems.push(
+        `Collision Figma : « ${n} » est à la fois une variable et un dossier (« ${other} »).`,
+      );
     }
   }
 }
@@ -637,14 +800,16 @@ function themeScss() {
   L.push('// Copy into `src/styles/presets/`, import it from `main.scss`, change what you');
   L.push('// need. As shipped it changes nothing: it restates the defaults.');
   L.push('//');
-  L.push('//   @use \'presets/component-vars\';   // src/styles/main.scss');
+  L.push("//   @use 'presets/component-vars';   // src/styles/main.scss");
   L.push('//');
   L.push('// Load order is irrelevant: the kit only reads these names, never declares them.');
   L.push('// For a value shared by the whole kit (spacing, radius, control size), retune the');
   L.push('// design token instead — it follows brand, light/dark and viewport.');
   L.push('//');
   L.push(`// Generated by \`npm run docs:config\`, values read from the compiled CSS — do not`);
-  L.push(`// edit here. ${themable.length} variables; ${perInstance.length} more exist whose value depends on the`);
+  L.push(
+    `// edit here. ${themable.length} variables; ${perInstance.length} more exist whose value depends on the`,
+  );
   L.push('// rendered variant, listed in each component’s “Theming” section in Storybook.');
   L.push('// =====================================================================');
   L.push('');
@@ -701,10 +866,10 @@ function figmaJson() {
   // Internal plumbing is not a design decision: it has no place in a Figma
   // collection (the component overwrites it anyway).
   const importable = hooks.filter(
-    (h) => h.figma.bindable && !h.plumbing && !['UNSUPPORTED', 'NONE'].includes(h.figma.value.type)
+    (h) => h.figma.bindable && !h.plumbing && !['UNSUPPORTED', 'NONE'].includes(h.figma.value.type),
   );
   const skipped = hooks.filter(
-    (h) => !h.figma.bindable || h.plumbing || ['UNSUPPORTED', 'NONE'].includes(h.figma.value.type)
+    (h) => !h.figma.bindable || h.plumbing || ['UNSUPPORTED', 'NONE'].includes(h.figma.value.type),
   );
 
   // Nested tree: `toggle/track/width` → toggle → track → width.
@@ -715,7 +880,7 @@ function figmaJson() {
     for (const seg of path.slice(0, -1)) {
       if (node[seg] && '$value' in node[seg]) {
         problems.push(
-          `Collision DTCG : « ${seg} » est à la fois un token et un groupe (${h.figma.name}).`
+          `Collision DTCG : « ${seg} » est à la fois un token et un groupe (${h.figma.name}).`,
         );
       }
       node = node[seg] ??= {};
@@ -727,7 +892,12 @@ function figmaJson() {
       problems.push(`Alias mort : ${h.name} → ${dtcgRef(v)} n'existe pas dans src/design-tokens.`);
     }
     node[leaf] = {
-      $value: v.type === 'ALIAS' ? dtcgRef(v) : v.type === 'FLOAT' ? (v.css ?? String(v.value)) : String(v.value),
+      $value:
+        v.type === 'ALIAS'
+          ? dtcgRef(v)
+          : v.type === 'FLOAT'
+            ? (v.css ?? String(v.value))
+            : String(v.value),
       $type: dtcgType(v, h.figma.type),
       $description: h.description,
       $extensions: {
@@ -752,8 +922,7 @@ function figmaJson() {
     $extensions: {
       'com.4sh.ui-kit': {
         generatedBy: 'scripts/component-vars.build.mjs',
-        what:
-          "Les hooks `--ui-*` des composants, au format DTCG, prêts à être importés dans UNE collection Figma dédiée. Ce ne sont pas des design tokens : ils appartiennent à un composant, et la plupart ne font que POINTER vers un token (alias `{collection.chemin}`).",
+        what: 'Les hooks `--ui-*` des composants, au format DTCG, prêts à être importés dans UNE collection Figma dédiée. Ce ne sont pas des design tokens : ils appartiennent à un composant, et la plupart ne font que POINTER vers un token (alias `{collection.chemin}`).',
         figmaCollection: COLLECTION,
         targetFileKey: TARGET_FILE_KEY,
         modes: ['Mode 1'],
@@ -766,13 +935,18 @@ function figmaJson() {
         },
         aliasTargets: [
           ...new Set(
-            importable.filter((h) => h.figma.value.type === 'ALIAS').map((h) => h.figma.value.collection)
+            importable
+              .filter((h) => h.figma.value.type === 'ALIAS')
+              .map((h) => h.figma.value.collection),
           ),
         ].sort(),
         skipped: skipped.map((h) => ({
           cssVar: h.name,
           component: h.component,
-          reason: h.figma.value.reason ?? h.reason ?? 'sans équivalent variable Figma (durée, easing, curseur, plan d’empilement, ratio).',
+          reason:
+            h.figma.value.reason ??
+            h.reason ??
+            'sans équivalent variable Figma (durée, easing, curseur, plan d’empilement, ratio).',
         })),
       },
     },
@@ -788,8 +962,10 @@ function readmeCountMismatches(counts) {
   const text = readFileSync(JSON_README, 'utf8');
   const claims = [
     {
+      // `[*_]` plutôt que `\*` seul : Prettier normalise l'emphase Markdown en
+      // `_alias_` (style souligné), et ce README n'est pas exclu du formatage.
       what: 'alias / total',
-      re: /(\d+) of the (\d+) entries merely \*alias\*/,
+      re: /(\d+) of the (\d+) entries merely [*_]alias[*_]/,
       expected: [counts.alias, counts.tokens],
     },
     {
@@ -803,12 +979,16 @@ function readmeCountMismatches(counts) {
   for (const { what, re, expected } of claims) {
     const found = text.match(re);
     if (!found) {
-      errors.push(`${what} : phrase introuvable (motif ${re.source}) — le README a été reformulé, adapte le motif.`);
+      errors.push(
+        `${what} : phrase introuvable (motif ${re.source}) — le README a été reformulé, adapte le motif.`,
+      );
       continue;
     }
     const actual = found.slice(1).map(Number);
     if (actual.join() !== expected.join()) {
-      errors.push(`${what} : le README annonce ${actual.join(' / ')}, le fichier en compte ${expected.join(' / ')}.`);
+      errors.push(
+        `${what} : le README annonce ${actual.join(' / ')}, le fichier en compte ${expected.join(' / ')}.`,
+      );
     }
   }
   return errors;
@@ -826,7 +1006,9 @@ if (problems.length) {
   if (check) process.exit(1);
 }
 if (undocumented.length) {
-  console.error(`✗ ${undocumented.length} hook(s) sans commentaire \`///\` (invisibles dans le thème) :`);
+  console.error(
+    `✗ ${undocumented.length} hook(s) sans commentaire \`///\` (invisibles dans le thème) :`,
+  );
   for (const u of undocumented) console.error(`  - ${u}`);
   if (check) process.exit(1);
 }
@@ -838,11 +1020,13 @@ if (check) {
   ].filter(([f, t]) => (existsSync(f) ? readFileSync(f, 'utf8') : null) !== t);
   if (stale.length) {
     console.error(
-      `✗ périmé(s) : ${stale.map(([f]) => relative(ROOT, f).split(sep).join('/')).join(', ')} — lance \`npm run docs:config\`.`
+      `✗ périmé(s) : ${stale.map(([f]) => relative(ROOT, f).split(sep).join('/')).join(', ')} — lance \`npm run docs:config\`.`,
     );
     process.exit(1);
   }
-  const readmeErrors = readmeCountMismatches(JSON.parse(jsonText).$extensions['com.4sh.ui-kit'].counts);
+  const readmeErrors = readmeCountMismatches(
+    JSON.parse(jsonText).$extensions['com.4sh.ui-kit'].counts,
+  );
   if (readmeErrors.length) {
     console.error(`✗ figma/README.md : ${readmeErrors.length} chiffre(s) périmé(s) :`);
     for (const e of readmeErrors) console.error(`  - ${e}`);
@@ -861,9 +1045,9 @@ if (check) {
   sass.compileString(scssText, { loadPaths: [STYLES] }); // never ship a broken file
   const c = figmaJson().$extensions['com.4sh.ui-kit'].counts;
   console.log(
-    `✓ component-vars.scss : ${hooks.filter((h) => h.themable).length} hooks exposés (+ ${hooks.length - hooks.filter((h) => h.themable).length} hors réglage global).`
+    `✓ component-vars.scss : ${hooks.filter((h) => h.themable).length} hooks exposés (+ ${hooks.length - hooks.filter((h) => h.themable).length} hors réglage global).`,
   );
   console.log(
-    `✓ figma/component-vars.json (DTCG) : ${c.tokens} tokens (${c.alias} alias, ${c.literal} valeurs), ${c.skipped} écartés.`
+    `✓ figma/component-vars.json (DTCG) : ${c.tokens} tokens (${c.alias} alias, ${c.literal} valeurs), ${c.skipped} écartés.`,
   );
 }

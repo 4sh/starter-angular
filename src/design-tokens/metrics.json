@@ -10,11 +10,7 @@
           "collectionId": "VariableCollectionId:5:363",
           "modeId": "5:1",
           "resolvedType": "FLOAT",
-          "scopes": [
-            "WIDTH_HEIGHT",
-            "GAP",
-            "FONT_VARIATIONS"
-          ]
+          "scopes": ["WIDTH_HEIGHT", "GAP", "FONT_VARIATIONS"]
         }
       }
     },
@@ -27,11 +23,7 @@
           "collectionId": "VariableCollectionId:5:363",
           "modeId": "5:1",
           "resolvedType": "FLOAT",
-          "scopes": [
-            "WIDTH_HEIGHT",
-            "GAP",
-            "FONT_VARIATIONS"
-          ]
+          "scopes": ["WIDTH_HEIGHT", "GAP", "FONT_VARIATIONS"]
         }
       }
     },
@@ -44,11 +36,7 @@
           "collectionId": "VariableCollectionId:5:363",
           "modeId": "5:1",
           "resolvedType": "FLOAT",
-          "scopes": [
-            "WIDTH_HEIGHT",
-            "GAP",
-            "FONT_VARIATIONS"
-          ]
+          "scopes": ["WIDTH_HEIGHT", "GAP", "FONT_VARIATIONS"]
         }
       }
     },
@@ -61,11 +49,7 @@
           "collectionId": "VariableCollectionId:5:363",
           "modeId": "5:1",
           "resolvedType": "FLOAT",
-          "scopes": [
-            "WIDTH_HEIGHT",
-            "GAP",
-            "FONT_VARIATIONS"
-          ]
+          "scopes": ["WIDTH_HEIGHT", "GAP", "FONT_VARIATIONS"]
         }
       }
     },
@@ -78,11 +62,7 @@
           "collectionId": "VariableCollectionId:5:363",
           "modeId": "5:1",
           "resolvedType": "FLOAT",
-          "scopes": [
-            "WIDTH_HEIGHT",
-            "GAP",
-            "FONT_VARIATIONS"
-          ]
+          "scopes": ["WIDTH_HEIGHT", "GAP", "FONT_VARIATIONS"]
         }
       }
     },
@@ -95,11 +75,7 @@
           "collectionId": "VariableCollectionId:5:363",
           "modeId": "5:1",
           "resolvedType": "FLOAT",
-          "scopes": [
-            "WIDTH_HEIGHT",
-            "GAP",
-            "FONT_VARIATIONS"
-          ]
+          "scopes": ["WIDTH_HEIGHT", "GAP", "FONT_VARIATIONS"]
         }
       }
     },
@@ -112,11 +88,7 @@
           "collectionId": "VariableCollectionId:5:363",
           "modeId": "5:1",
           "resolvedType": "FLOAT",
-          "scopes": [
-            "WIDTH_HEIGHT",
-            "GAP",
-            "FONT_VARIATIONS"
-          ]
+          "scopes": ["WIDTH_HEIGHT", "GAP", "FONT_VARIATIONS"]
         }
       }
     },
@@ -129,11 +101,7 @@
           "collectionId": "VariableCollectionId:5:363",
           "modeId": "5:1",
           "resolvedType": "FLOAT",
-          "scopes": [
-            "WIDTH_HEIGHT",
-            "GAP",
-            "FONT_VARIATIONS"
-          ]
+          "scopes": ["WIDTH_HEIGHT", "GAP", "FONT_VARIATIONS"]
         }
       }
     },
@@ -146,11 +114,7 @@
           "collectionId": "VariableCollectionId:5:363",
           "modeId": "5:1",
           "resolvedType": "FLOAT",
-          "scopes": [
-            "WIDTH_HEIGHT",
-            "GAP",
-            "FONT_VARIATIONS"
-          ]
+          "scopes": ["WIDTH_HEIGHT", "GAP", "FONT_VARIATIONS"]
         }
       }
     },
@@ -163,11 +127,7 @@
           "collectionId": "VariableCollectionId:5:363",
           "modeId": "5:1",
           "resolvedType": "FLOAT",
-          "scopes": [
-            "WIDTH_HEIGHT",
-            "GAP",
-            "FONT_VARIATIONS"
-          ]
+          "scopes": ["WIDTH_HEIGHT", "GAP", "FONT_VARIATIONS"]
         }
       }
     }
@@ -182,9 +142,7 @@
           "collectionId": "VariableCollectionId:5:363",
           "modeId": "5:1",
           "resolvedType": "FLOAT",
-          "scopes": [
-            "CORNER_RADIUS"
-          ]
+          "scopes": ["CORNER_RADIUS"]
         }
       }
     },
@@ -197,9 +155,7 @@
           "collectionId": "VariableCollectionId:5:363",
           "modeId": "5:1",
           "resolvedType": "FLOAT",
-          "scopes": [
-            "CORNER_RADIUS"
-          ]
+          "scopes": ["CORNER_RADIUS"]
         }
       }
     },
@@ -212,9 +168,7 @@
           "collectionId": "VariableCollectionId:5:363",
           "modeId": "5:1",
           "resolvedType": "FLOAT",
-          "scopes": [
-            "CORNER_RADIUS"
-          ]
+          "scopes": ["CORNER_RADIUS"]
         }
       }
     },
@@ -227,9 +181,7 @@
           "collectionId": "VariableCollectionId:5:363",
           "modeId": "5:1",
           "resolvedType": "FLOAT",
-          "scopes": [
-            "CORNER_RADIUS"
-          ]
+          "scopes": ["CORNER_RADIUS"]
         }
       }
     },
@@ -242,9 +194,7 @@
           "collectionId": "VariableCollectionId:5:363",
           "modeId": "5:1",
           "resolvedType": "FLOAT",
-          "scopes": [
-            "CORNER_RADIUS"
-          ]
+          "scopes": ["CORNER_RADIUS"]
         }
       }
     },
@@ -257,9 +207,7 @@
           "collectionId": "VariableCollectionId:5:363",
           "modeId": "5:1",
           "resolvedType": "FLOAT",
-          "scopes": [
-            "CORNER_RADIUS"
-          ]
+          "scopes": ["CORNER_RADIUS"]
         }
       }
     },
@@ -272,9 +220,7 @@
           "collectionId": "VariableCollectionId:5:363",
           "modeId": "5:1",
           "resolvedType": "FLOAT",
-          "scopes": [
-            "CORNER_RADIUS"
-          ]
+          "scopes": ["CORNER_RADIUS"]
         }
       }
     },
@@ -287,9 +233,7 @@
           "collectionId": "VariableCollectionId:5:363",
           "modeId": "5:1",
           "resolvedType": "FLOAT",
-          "scopes": [
-            "CORNER_RADIUS"
-          ]
+          "scopes": ["CORNER_RADIUS"]
         }
       }
     }
@@ -304,9 +248,7 @@
           "collectionId": "VariableCollectionId:5:363",
           "modeId": "5:1",
           "resolvedType": "FLOAT",
-          "scopes": [
-            "STROKE_FLOAT"
-          ]
+          "scopes": ["STROKE_FLOAT"]
         }
       }
     },
@@ -319,9 +261,7 @@
           "collectionId": "VariableCollectionId:5:363",
           "modeId": "5:1",
           "resolvedType": "FLOAT",
-          "scopes": [
-            "STROKE_FLOAT"
-          ]
+          "scopes": ["STROKE_FLOAT"]
         }
       }
     },
@@ -334,9 +274,7 @@
           "collectionId": "VariableCollectionId:5:363",
           "modeId": "5:1",
           "resolvedType": "FLOAT",
-          "scopes": [
-            "STROKE_FLOAT"
-          ]
+          "scopes": ["STROKE_FLOAT"]
         }
       }
     }
@@ -352,9 +290,7 @@
             "collectionId": "VariableCollectionId:5:363",
             "modeId": "5:1",
             "resolvedType": "FLOAT",
-            "scopes": [
-              "EFFECT_FLOAT"
-            ]
+            "scopes": ["EFFECT_FLOAT"]
           }
         }
       },
@@ -367,9 +303,7 @@
             "collectionId": "VariableCollectionId:5:363",
             "modeId": "5:1",
             "resolvedType": "FLOAT",
-            "scopes": [
-              "EFFECT_FLOAT"
-            ]
+            "scopes": ["EFFECT_FLOAT"]
           }
         }
       },
@@ -382,9 +316,7 @@
             "collectionId": "VariableCollectionId:5:363",
             "modeId": "5:1",
             "resolvedType": "FLOAT",
-            "scopes": [
-              "EFFECT_FLOAT"
-            ]
+            "scopes": ["EFFECT_FLOAT"]
           }
         }
       },
@@ -397,9 +329,7 @@
             "collectionId": "VariableCollectionId:5:363",
             "modeId": "5:1",
             "resolvedType": "FLOAT",
-            "scopes": [
-              "EFFECT_FLOAT"
-            ]
+            "scopes": ["EFFECT_FLOAT"]
           }
         }
       }
@@ -414,9 +344,7 @@
             "collectionId": "VariableCollectionId:5:363",
             "modeId": "5:1",
             "resolvedType": "FLOAT",
-            "scopes": [
-              "EFFECT_FLOAT"
-            ]
+            "scopes": ["EFFECT_FLOAT"]
           }
         }
       },
@@ -429,9 +357,7 @@
             "collectionId": "VariableCollectionId:5:363",
             "modeId": "5:1",
             "resolvedType": "FLOAT",
-            "scopes": [
-              "EFFECT_FLOAT"
-            ]
+            "scopes": ["EFFECT_FLOAT"]
           }
         }
       },
@@ -444,9 +370,7 @@
             "collectionId": "VariableCollectionId:5:363",
             "modeId": "5:1",
             "resolvedType": "FLOAT",
-            "scopes": [
-              "EFFECT_FLOAT"
-            ]
+            "scopes": ["EFFECT_FLOAT"]
           }
         }
       },
@@ -459,9 +383,7 @@
             "collectionId": "VariableCollectionId:5:363",
             "modeId": "5:1",
             "resolvedType": "FLOAT",
-            "scopes": [
-              "EFFECT_FLOAT"
-            ]
+            "scopes": ["EFFECT_FLOAT"]
           }
         }
       }
@@ -476,9 +398,7 @@
             "collectionId": "VariableCollectionId:5:363",
             "modeId": "5:1",
             "resolvedType": "FLOAT",
-            "scopes": [
-              "EFFECT_FLOAT"
-            ]
+            "scopes": ["EFFECT_FLOAT"]
           }
         }
       },
@@ -491,9 +411,7 @@
             "collectionId": "VariableCollectionId:5:363",
             "modeId": "5:1",
             "resolvedType": "FLOAT",
-            "scopes": [
-              "EFFECT_FLOAT"
-            ]
+            "scopes": ["EFFECT_FLOAT"]
           }
         }
       },
@@ -506,9 +424,7 @@
             "collectionId": "VariableCollectionId:5:363",
             "modeId": "5:1",
             "resolvedType": "FLOAT",
-            "scopes": [
-              "EFFECT_FLOAT"
-            ]
+            "scopes": ["EFFECT_FLOAT"]
           }
         }
       },
@@ -521,9 +437,7 @@
             "collectionId": "VariableCollectionId:5:363",
             "modeId": "5:1",
             "resolvedType": "FLOAT",
-            "scopes": [
-              "EFFECT_FLOAT"
-            ]
+            "scopes": ["EFFECT_FLOAT"]
           }
         }
       }

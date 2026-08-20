@@ -93,15 +93,23 @@ export class UiImage {
 
   protected readonly isRemote = computed(() => !!this.src());
   /** Inline SVG is reserved for LOCAL assets — a remote `.svg` renders through `<img>` (no XSS surface). */
-  protected readonly isInlineSvg = computed(() => !this.isRemote() && !!this.name()?.toLowerCase().endsWith('.svg'));
+  protected readonly isInlineSvg = computed(
+    () => !this.isRemote() && !!this.name()?.toLowerCase().endsWith('.svg'),
+  );
 
   protected readonly localSrc = computed(() => this.resolveLocal(this.name()));
   protected readonly fallbackSrc = computed(() => this.resolveLocal(this.fallback()));
   protected readonly primarySrc = computed(() => this.src() || this.localSrc());
 
   // Failure flags auto-reset when their source URL changes (theme/brand/src swap → automatic retry).
-  private readonly primaryImgFailed = linkedSignal({ source: this.primarySrc, computation: () => false });
-  private readonly fallbackImgFailed = linkedSignal({ source: this.fallbackSrc, computation: () => false });
+  private readonly primaryImgFailed = linkedSignal({
+    source: this.primarySrc,
+    computation: () => false,
+  });
+  private readonly fallbackImgFailed = linkedSignal({
+    source: this.fallbackSrc,
+    computation: () => false,
+  });
 
   private readonly svgResource = httpResource.text(() => {
     if (!this.isInlineSvg()) return undefined;
@@ -113,7 +121,8 @@ export class UiImage {
     if (!this.isInlineSvg()) return null;
     const url = this.localSrc();
     if (!url) return null;
-    const raw = SVG_CACHE.get(url) ?? (this.svgResource.hasValue() ? this.svgResource.value() : undefined);
+    const raw =
+      SVG_CACHE.get(url) ?? (this.svgResource.hasValue() ? this.svgResource.value() : undefined);
     return raw === undefined ? null : this.sanitizer.bypassSecurityTrustHtml(raw);
   });
 
@@ -124,9 +133,13 @@ export class UiImage {
     () => this.primaryFailed() && !!this.fallbackSrc() && !this.fallbackImgFailed(),
   );
   protected readonly showPlaceholder = computed(
-    () => !this.primarySrc() || (this.primaryFailed() && (!this.fallbackSrc() || this.fallbackImgFailed())),
+    () =>
+      !this.primarySrc() ||
+      (this.primaryFailed() && (!this.fallbackSrc() || this.fallbackImgFailed())),
   );
-  protected readonly displayedSrc = computed(() => (this.showFallback() ? this.fallbackSrc() : this.primarySrc()));
+  protected readonly displayedSrc = computed(() =>
+    this.showFallback() ? this.fallbackSrc() : this.primarySrc(),
+  );
 
   protected readonly cssWidth = computed(() =>
     this.width() != null ? `${this.width()}${this.widthUnit() || 'px'}` : null,
@@ -148,7 +161,9 @@ export class UiImage {
           console.warn('[ui-image] `src` and `name` are both set — `src` takes precedence.');
         }
         if (!this.src() && !this.name()) {
-          console.warn('[ui-image] Neither `src` nor `name` is set — the placeholder is displayed.');
+          console.warn(
+            '[ui-image] Neither `src` nor `name` is set — the placeholder is displayed.',
+          );
         }
       });
     }
@@ -200,7 +215,12 @@ export class UiImage {
     return null;
   }
 
-  private buildPath(themeName: string, variants: ModeMap, currentMode: 'light' | 'dark', filename: string): string {
+  private buildPath(
+    themeName: string,
+    variants: ModeMap,
+    currentMode: 'light' | 'dark',
+    filename: string,
+  ): string {
     if (variants[currentMode]) {
       const type = variants[currentMode]!;
       return `assets/img/${themeName}/${type}/${currentMode}/${filename}`;

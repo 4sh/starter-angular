@@ -1,9 +1,9 @@
 # @4sh/ui-kit-schematics
 
-***English** · [Français](./README.fr.md)*
+_**English** · [Français](./README.fr.md)_
 
 Companion package of **[`@4sh/ui-kit`](https://www.npmjs.com/package/@4sh/ui-kit)**:
-it carries the *raw sources* of the Design System components, and the Angular
+it carries the _raw sources_ of the Design System components, and the Angular
 schematics that copy them into a consuming project.
 
 **Full documentation (Storybook)**:
@@ -37,15 +37,15 @@ against newer sources, to accept or skip.
 > so `ng generate component` in your project keeps generating SCSS afterwards too —
 > Angular's plain-CSS default is intentionally overridden.
 
-| | |
-|---|---|
-| `ng add @4sh/ui-kit-schematics` | foundation **and** components, in one go |
-| `ng add @4sh/ui-kit-schematics --skip-components` | foundation only, pick components later |
-| `ng add @4sh/ui-kit-schematics --skip-install` | skip `npm install` (project drives its own lockfile) |
-| `ng add @4sh/ui-kit-schematics --skip-storybook` | do not set up a Storybook (see below) |
-| `ng add @4sh/ui-kit-schematics --skip-mcp` | do not declare the MCP server (see below) |
-| `ng generate @4sh/ui-kit-schematics:add` | copy more components (interactive, or `--components`, or `--all`) |
-| `ng generate @4sh/ui-kit-schematics:update` | diff copied components against the published sources |
+|                                                   |                                                                   |
+| ------------------------------------------------- | ----------------------------------------------------------------- |
+| `ng add @4sh/ui-kit-schematics`                   | foundation **and** components, in one go                          |
+| `ng add @4sh/ui-kit-schematics --skip-components` | foundation only, pick components later                            |
+| `ng add @4sh/ui-kit-schematics --skip-install`    | skip `npm install` (project drives its own lockfile)              |
+| `ng add @4sh/ui-kit-schematics --skip-storybook`  | do not set up a Storybook (see below)                             |
+| `ng add @4sh/ui-kit-schematics --skip-mcp`        | do not declare the MCP server (see below)                         |
+| `ng generate @4sh/ui-kit-schematics:add`          | copy more components (interactive, or `--components`, or `--all`) |
+| `ng generate @4sh/ui-kit-schematics:update`       | diff copied components against the published sources              |
 
 `ui-kit.json` sits at the root of your project, next to `package.json`.
 
@@ -65,11 +65,11 @@ npm run storybook
 
 Each component arrives with its story and its MDX page, next to its sources. The
 config lands in `storybook/` — `main.js`, `preview.ts`, the manager theme, the
-brand switcher, and the shared *Foundations* / *Specifications* / *Configuration*
+brand switcher, and the shared _Foundations_ / _Specifications_ / _Configuration_
 pages. The `storybook` and `build-storybook` targets are added to `angular.json`,
 the devDependencies to `package.json`.
 
-Two things make the doc *yours* rather than a snapshot of ours. The *Theming*
+Two things make the doc _yours_ rather than a snapshot of ours. The _Theming_
 tables are read off your own `.scss` at build time (`scripts/docs.config.mjs`
 collects the `///` roles), so they describe your values, rebranding included. And
 the globs cover `src/app/shared/components/**` whole: a story you write next to
@@ -116,7 +116,7 @@ The two modes do not combine: pick the one that fits the project.
 
 ## Why a separate package
 
-`ng-packagr` *inlines* templates and SCSS into the published `.mjs`. The sources
+`ng-packagr` _inlines_ templates and SCSS into the published `.mjs`. The sources
 these schematics copy therefore exist nowhere in the kit's own tarball, which is
 why they live here. That split has a deliberate consequence in both directions: a
 library-mode consumer never downloads the raw sources, and a starter-mode consumer
@@ -126,7 +126,7 @@ never downloads the compiled kit.
 
 **The two packages always carry the same version number**, stamped from the kit's
 at assembly time. This package embeds a copy of the kit's sources, and that shared
-number is what identifies *which* kit a copied file came from — it is written into
+number is what identifies _which_ kit a copied file came from — it is written into
 the traceability header of every copied file, and into `ui-kit.json`.
 
 > Reading the sources, do not trust the `version` of this package's own

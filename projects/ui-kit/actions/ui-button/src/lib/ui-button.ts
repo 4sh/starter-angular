@@ -99,7 +99,8 @@ export class UiButton {
         !!el &&
         Array.from(el.childNodes).some(
           (n) =>
-            n.nodeType === Node.ELEMENT_NODE || (n.nodeType === Node.TEXT_NODE && !!n.textContent?.trim()),
+            n.nodeType === Node.ELEMENT_NODE ||
+            (n.nodeType === Node.TEXT_NODE && !!n.textContent?.trim()),
         );
       this.hasProjectedContent.set(has);
     });
@@ -174,7 +175,9 @@ export class UiButton {
   });
 
   /** @ignore Anchor tabindex: -1 when disabled (an <a> has no native disabled). */
-  protected readonly linkTabindex = computed(() => (this.disabled() ? -1 : (this.tabindex() ?? null)));
+  protected readonly linkTabindex = computed(() =>
+    this.disabled() ? -1 : (this.tabindex() ?? null),
+  );
 
   /** @ignore */
   protected readonly classes = computed(() => {

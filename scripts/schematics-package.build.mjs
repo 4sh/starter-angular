@@ -45,7 +45,9 @@ copyFileSync(join(PKG, 'collection.json'), join(DEST, 'collection.json'));
 // l'installation. Le numéro écrit dans `projects/ui-kit-schematics/package.json`
 // n'est donc qu'un repère de développement — c'est celui du kit qui est publié.
 const companionPkg = JSON.parse(readFileSync(join(PKG, 'package.json'), 'utf8'));
-const kitVersion = JSON.parse(readFileSync(join(ROOT, 'projects/ui-kit/package.json'), 'utf8')).version;
+const kitVersion = JSON.parse(
+  readFileSync(join(ROOT, 'projects/ui-kit/package.json'), 'utf8'),
+).version;
 companionPkg.version = kitVersion;
 writeFileSync(join(DEST, 'package.json'), JSON.stringify(companionPkg, null, 2) + '\n');
 // LICENSE inclus : l'Apache-2.0 (§4a) demande que toute redistribution en

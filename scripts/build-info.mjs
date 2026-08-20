@@ -51,6 +51,6 @@ const label = [
 mkdirSync(dirname(OUT_FILE), { recursive: true });
 writeFileSync(
   OUT_FILE,
-  `${JSON.stringify({ version, commit, lastPublished, isReleased, label }, null, 2)}\n`
+  `${JSON.stringify({ version, commit, lastPublished, isReleased, label }, null, 2)}\n`,
 );
 console.log(`✓ build-info.json : ${label}`);

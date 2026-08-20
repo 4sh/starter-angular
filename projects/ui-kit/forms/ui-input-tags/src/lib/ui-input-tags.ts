@@ -145,7 +145,9 @@ type TagRow =
   imports: [NgTemplateOutlet, OverlayModule, UiField, UiIcon, UiChip, UiMotion],
   templateUrl: './ui-input-tags.html',
   styleUrl: './ui-input-tags.scss',
-  providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => UiInputTags), multi: true }],
+  providers: [
+    { provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => UiInputTags), multi: true },
+  ],
 })
 export class UiInputTags<T = unknown> extends BaseFormField<T[]> {
   /** Native placeholder shown when the input is empty (and no tag exists). */
@@ -234,7 +236,8 @@ export class UiInputTags<T = unknown> extends BaseFormField<T[]> {
   /** Custom tag template: `<ng-template #item let-value let-remove="onRemove">`. */
   protected readonly itemTemplate = contentChild<TemplateRef<InputTagsItemContext<T>>>('item');
   /** Custom suggestion template: `<ng-template #option let-option>`. */
-  protected readonly optionTemplate = contentChild<TemplateRef<InputTagsOptionContext<T>>>('option');
+  protected readonly optionTemplate =
+    contentChild<TemplateRef<InputTagsOptionContext<T>>>('option');
   /** Custom group-header template: `<ng-template #group let-group>`. */
   protected readonly groupTemplate = contentChild<TemplateRef<InputTagsGroupContext>>('group');
 
@@ -309,9 +312,13 @@ export class UiInputTags<T = unknown> extends BaseFormField<T[]> {
     return max != null && max > 0 && this.tagValues().length >= max;
   });
   /** @ignore The input accepts typing. */
-  protected readonly canType = computed(() => !this.isDisabled() && !this.readonly() && !this.isFull());
+  protected readonly canType = computed(
+    () => !this.isDisabled() && !this.readonly() && !this.isFull(),
+  );
   /** @ignore The placeholder is shown only while there is no tag. */
-  protected readonly effectivePlaceholder = computed(() => (this.tagValues().length ? '' : (this.placeholder() ?? '')));
+  protected readonly effectivePlaceholder = computed(() =>
+    this.tagValues().length ? '' : (this.placeholder() ?? ''),
+  );
 
   /** @ignore Flat entries (no groups). */
   private readonly flatEntries = computed<TagEntry[]>(() => {
@@ -352,7 +359,12 @@ export class UiInputTags<T = unknown> extends BaseFormField<T[]> {
     if (this.group()) {
       this.groupEntries().forEach((g, gi) => {
         if (!g.entries.length) return;
-        rows.push({ kind: 'group', key: `${this.panelListId()}-group-${gi}`, label: g.label, original: g.original });
+        rows.push({
+          kind: 'group',
+          key: `${this.panelListId()}-group-${gi}`,
+          label: g.label,
+          original: g.original,
+        });
         g.entries.forEach(pushOption);
       });
     } else {
@@ -465,7 +477,10 @@ export class UiInputTags<T = unknown> extends BaseFormField<T[]> {
   private flushDelimited(event: Event): void {
     const parts = this.split(this.inputText());
     const remainder = parts.pop() ?? '';
-    parts.map((p) => p.trim()).filter(Boolean).forEach((p) => this.addValue(p as T, event));
+    parts
+      .map((p) => p.trim())
+      .filter(Boolean)
+      .forEach((p) => this.addValue(p as T, event));
     this.inputText.set(remainder);
   }
 
@@ -543,7 +558,8 @@ export class UiInputTags<T = unknown> extends BaseFormField<T[]> {
   protected onInputFocus(event: FocusEvent): void {
     if (this.isDisabled()) return;
     this.focusedTag.set(-1);
-    if (this.typeahead() && !this.queryDirty && this.completeOnFocus()) this.runSearch(event, this.inputText());
+    if (this.typeahead() && !this.queryDirty && this.completeOnFocus())
+      this.runSearch(event, this.inputText());
     this.inputFocus.emit(event);
   }
 
@@ -562,7 +578,8 @@ export class UiInputTags<T = unknown> extends BaseFormField<T[]> {
   /** @ignore Focus / clicks on the field box (but not a tag / button) land on the input. */
   protected onBoxMousedown(event: MouseEvent): void {
     const target = event.target as HTMLElement;
-    if (target.closest('button') || target.closest('.ui-input-tags-tag') || target.closest('input')) return;
+    if (target.closest('button') || target.closest('.ui-input-tags-tag') || target.closest('input'))
+      return;
     event.preventDefault();
     this.focusInput();
   }
@@ -625,10 +642,13 @@ export class UiInputTags<T = unknown> extends BaseFormField<T[]> {
   private open(): void {
     if (!this.canType() || this.panelOpen()) return;
     const origin =
-      this.containerEl().nativeElement.querySelector('.ui-field-box') ?? this.containerEl().nativeElement;
+      this.containerEl().nativeElement.querySelector('.ui-field-box') ??
+      this.containerEl().nativeElement;
     this.overlayOrigin.set(origin);
     this.overlayWidth.set(origin.getBoundingClientRect().width);
-    this.focusedOption.set(this.autoOptionFocus() ? this.visibleOptions().findIndex((o) => !o.entry.disabled) : -1);
+    this.focusedOption.set(
+      this.autoOptionFocus() ? this.visibleOptions().findIndex((o) => !o.entry.disabled) : -1,
+    );
     this.panelOpen.set(true);
     this.opened.emit();
   }
@@ -700,7 +720,9 @@ export class UiInputTags<T = unknown> extends BaseFormField<T[]> {
 
   /** @ignore */
   private scrollOptionIntoView(id: string): void {
-    this.panelEl()?.nativeElement.querySelector(`[id="${id}"]`)?.scrollIntoView({ block: 'nearest' });
+    this.panelEl()
+      ?.nativeElement.querySelector(`[id="${id}"]`)
+      ?.scrollIntoView({ block: 'nearest' });
   }
 
   // --- Option resolution ---------------------------------------------------

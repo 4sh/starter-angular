@@ -12,7 +12,9 @@ type SidebarArgs = UiSidebar & { tooltips: boolean };
 const meta: Meta<SidebarArgs> = {
   title: 'Components/ui/navigation/ui-sidebar',
   component: UiSidebar,
-  decorators: [moduleMetadata({ imports: [UiSidebar, UiSidebarMenu, UiSidebarTrigger, UiButton, UiIcon] })],
+  decorators: [
+    moduleMetadata({ imports: [UiSidebar, UiSidebarMenu, UiSidebarTrigger, UiButton, UiIcon] }),
+  ],
   parameters: {
     layout: 'fullscreen',
     design: {
@@ -77,7 +79,8 @@ const meta: Meta<SidebarArgs> = {
     },
     contained: {
       control: { type: 'boolean' },
-      description: "Scope l'overlay à l'ancêtre positionné (embarquer la barre dans une région bornée).",
+      description:
+        "Scope l'overlay à l'ancêtre positionné (embarquer la barre dans une région bornée).",
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     ariaLabel: {
@@ -88,7 +91,7 @@ const meta: Meta<SidebarArgs> = {
     tooltips: {
       control: { type: 'boolean' },
       description:
-        "En rail replié, révèle le libellé de chaque item en info-bulle au survol (via `[uiTooltip]`, entrée de `ui-sidebar-menu`).",
+        'En rail replié, révèle le libellé de chaque item en info-bulle au survol (via `[uiTooltip]`, entrée de `ui-sidebar-menu`).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
   },

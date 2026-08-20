@@ -1,10 +1,19 @@
 <nav
-  [class]="'ui-sidebar-menu _' + level() + (size() !== 'default' ? ' _' + size() : '') + (isCollapsed() ? ' _collapsed' : '') + (motion() ? '' : ' _no-motion')"
+  [class]="
+    'ui-sidebar-menu _' +
+    level() +
+    (size() !== 'default' ? ' _' + size() : '') +
+    (isCollapsed() ? ' _collapsed' : '') +
+    (motion() ? '' : ' _no-motion')
+  "
   [attr.aria-label]="ariaLabel() || null"
   [attr.aria-labelledby]="ariaLabelledBy() || null"
 >
   <ul class="ui-sidebar-menu-list" role="list">
-    <ng-container [ngTemplateOutlet]="nodesTpl" [ngTemplateOutletContext]="{ $implicit: nodes() }" />
+    <ng-container
+      [ngTemplateOutlet]="nodesTpl"
+      [ngTemplateOutletContext]="{ $implicit: nodes() }"
+    />
   </ul>
 </nav>
 
@@ -25,7 +34,10 @@
             <span class="ui-sidebar-menu-label">{{ node.item.label }}</span>
           </span>
           <ul class="ui-sidebar-menu-sub" role="list" [attr.aria-labelledby]="node.key + '-h'">
-            <ng-container [ngTemplateOutlet]="nodesTpl" [ngTemplateOutletContext]="{ $implicit: node.children }" />
+            <ng-container
+              [ngTemplateOutlet]="nodesTpl"
+              [ngTemplateOutletContext]="{ $implicit: node.children }"
+            />
           </ul>
         </li>
       }
@@ -55,10 +67,20 @@
             }
             <span class="ui-sidebar-menu-label">{{ node.item.label }}</span>
             @if (node.item.badge; as badge) {
-              <ui-badge class="ui-sidebar-menu-badge" [value]="badge" [level]="node.item.badgeLevel ?? 'default'" size="small" />
+              <ui-badge
+                class="ui-sidebar-menu-badge"
+                [value]="badge"
+                [level]="node.item.badgeLevel ?? 'default'"
+                size="small"
+              />
             }
             <!-- `_open` (not `_expanded`: a global width:100% helper class exists). -->
-            <ui-icon class="ui-sidebar-menu-chevron" [class._open]="isExpanded(node)" name="chevron-down" size="sm" />
+            <ui-icon
+              class="ui-sidebar-menu-chevron"
+              [class._open]="isExpanded(node)"
+              name="chevron-down"
+              size="sm"
+            />
           </button>
 
           <div
@@ -69,7 +91,10 @@
           >
             <div class="ui-sidebar-menu-collapse-inner">
               <ul class="ui-sidebar-menu-sub _nested" role="list">
-                <ng-container [ngTemplateOutlet]="nodesTpl" [ngTemplateOutletContext]="{ $implicit: node.children }" />
+                <ng-container
+                  [ngTemplateOutlet]="nodesTpl"
+                  [ngTemplateOutletContext]="{ $implicit: node.children }"
+                />
               </ul>
             </div>
           </div>
@@ -84,10 +109,20 @@
             }
             <span class="ui-sidebar-menu-label">{{ node.item.label }}</span>
             @if (isExternal(node)) {
-              <ui-icon class="ui-sidebar-menu-external" name="arrow-up-right-from-square" size="sm" aria-hidden="true" />
+              <ui-icon
+                class="ui-sidebar-menu-external"
+                name="arrow-up-right-from-square"
+                size="sm"
+                aria-hidden="true"
+              />
             }
             @if (node.item.badge; as badge) {
-              <ui-badge class="ui-sidebar-menu-badge" [value]="badge" [level]="node.item.badgeLevel ?? 'default'" size="small" />
+              <ui-badge
+                class="ui-sidebar-menu-badge"
+                [value]="badge"
+                [level]="node.item.badgeLevel ?? 'default'"
+                size="small"
+              />
             }
           </ng-template>
 

@@ -33,7 +33,10 @@
               [attr.aria-current]="entry.last ? 'page' : null"
               (click)="onItemClick($event, item)"
             >
-              <ng-container [ngTemplateOutlet]="crumb" [ngTemplateOutletContext]="{ $implicit: item }" />
+              <ng-container
+                [ngTemplateOutlet]="crumb"
+                [ngTemplateOutletContext]="{ $implicit: item }"
+              />
             </a>
           } @else if (isHrefCrumb(item)) {
             <a
@@ -45,7 +48,10 @@
               [attr.aria-current]="entry.last ? 'page' : null"
               (click)="onItemClick($event, item)"
             >
-              <ng-container [ngTemplateOutlet]="crumb" [ngTemplateOutletContext]="{ $implicit: item }" />
+              <ng-container
+                [ngTemplateOutlet]="crumb"
+                [ngTemplateOutletContext]="{ $implicit: item }"
+              />
             </a>
           } @else if (isActionCrumb(item)) {
             <button
@@ -55,7 +61,10 @@
               [attr.aria-current]="entry.last ? 'page' : null"
               (click)="onItemClick($event, item)"
             >
-              <ng-container [ngTemplateOutlet]="crumb" [ngTemplateOutletContext]="{ $implicit: item }" />
+              <ng-container
+                [ngTemplateOutlet]="crumb"
+                [ngTemplateOutletContext]="{ $implicit: item }"
+              />
             </button>
           } @else {
             <span
@@ -65,7 +74,10 @@
               [attr.aria-label]="item.ariaLabel"
               [attr.aria-current]="entry.last ? 'page' : null"
             >
-              <ng-container [ngTemplateOutlet]="crumb" [ngTemplateOutletContext]="{ $implicit: item }" />
+              <ng-container
+                [ngTemplateOutlet]="crumb"
+                [ngTemplateOutletContext]="{ $implicit: item }"
+              />
             </span>
           }
         </li>

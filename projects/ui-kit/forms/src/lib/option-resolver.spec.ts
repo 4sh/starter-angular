@@ -133,7 +133,11 @@ describe('createOptionResolver', () => {
   describe('toEntry', () => {
     it('bundles resolved value/label/disabled with the original option', () => {
       const resolver = createOptionResolver(
-        fields({ optionValue: () => 'id', optionLabel: () => 'name', optionDisabled: () => 'locked' }),
+        fields({
+          optionValue: () => 'id',
+          optionLabel: () => 'name',
+          optionDisabled: () => 'locked',
+        }),
       );
       const option = { id: 1, name: 'Ada', locked: true };
       expect(resolver.toEntry(option)).toEqual({

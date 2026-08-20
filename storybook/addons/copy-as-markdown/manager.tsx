@@ -32,7 +32,8 @@ interface SearchDoc {
   source: string;
 }
 
-type IndexState = { status: 'idle' | 'loading' } | { status: 'ready'; docs: SearchDoc[] } | { status: 'error' };
+type IndexState =
+  { status: 'idle' | 'loading' } | { status: 'ready'; docs: SearchDoc[] } | { status: 'error' };
 type CopyState = 'idle' | 'copied' | 'error';
 
 /**
@@ -94,7 +95,15 @@ const Trigger = styled.button(({ theme }) => ({
 
 const MarkdownGlyph = () => (
   <svg width="13" height="13" viewBox="0 0 20 14" fill="none" aria-hidden="true">
-    <rect x="0.75" y="0.75" width="18.5" height="12.5" rx="1.5" stroke="currentColor" strokeWidth="1.4" />
+    <rect
+      x="0.75"
+      y="0.75"
+      width="18.5"
+      height="12.5"
+      rx="1.5"
+      stroke="currentColor"
+      strokeWidth="1.4"
+    />
     <path
       d="M3 10V4l2.6 3L8.2 4v6M12 4v4.2M10 6.6l2 2 2-2M17 6l-2.2 4"
       stroke="currentColor"
@@ -107,7 +116,13 @@ const MarkdownGlyph = () => (
 
 const CheckGlyph = () => (
   <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-    <path d="M2.5 7.3 5.6 10.4 11.5 3.6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    <path
+      d="M2.5 7.3 5.6 10.4 11.5 3.6"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
   </svg>
 );
 
@@ -156,13 +171,17 @@ function CopyAsMarkdownTool() {
   }, [markdown]);
 
   const label =
-    copyState === 'copied' ? 'Copié !' : copyState === 'error' ? 'Échec de la copie' : 'Copier en Markdown';
+    copyState === 'copied'
+      ? 'Copié !'
+      : copyState === 'error'
+        ? 'Échec de la copie'
+        : 'Copier en Markdown';
   const title =
     index.status === 'error'
       ? 'Index introuvable — lance `npm run docs:search`.'
       : disabled
         ? 'Doc non indexée pour cette page.'
-        : "Copier cette page (API, theming, exemples…) en Markdown, pour la coller à un assistant IA.";
+        : 'Copier cette page (API, theming, exemples…) en Markdown, pour la coller à un assistant IA.';
 
   return (
     <Trigger type="button" disabled={disabled} onClick={onClick} title={title}>

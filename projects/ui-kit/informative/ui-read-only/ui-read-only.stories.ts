@@ -24,16 +24,21 @@ const meta: Meta<UiReadOnly> = {
     value: {
       control: { type: 'text' },
       description: 'Valeur affichée. Ignorée si du contenu est projeté via `<ng-content>`.',
-      table: { type: { summary: 'string | number | null | undefined' }, defaultValue: { summary: 'undefined' } },
+      table: {
+        type: { summary: 'string | number | null | undefined' },
+        defaultValue: { summary: 'undefined' },
+      },
     },
     required: {
       control: { type: 'boolean' },
-      description: 'Affiche le marqueur requis (*) sur le label (parité visuelle avec un champ requis).',
+      description:
+        'Affiche le marqueur requis (*) sur le label (parité visuelle avec un champ requis).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     labelTemplate: {
       control: false,
-      description: 'Markup de label entièrement personnalisé (`TemplateRef`), remplace le `ui-label` par défaut.',
+      description:
+        'Markup de label entièrement personnalisé (`TemplateRef`), remplace le `ui-label` par défaut.',
       table: { type: { summary: 'TemplateRef' }, defaultValue: { summary: 'undefined' } },
     },
     fallback: {
@@ -43,33 +48,39 @@ const meta: Meta<UiReadOnly> = {
     },
     emptyLabel: {
       control: { type: 'text' },
-      description: 'Texte accessible annoncé à la place du symbole `fallback` quand la valeur est vide (ex. « Non renseigné »). Le `fallback` reste décoratif.',
+      description:
+        'Texte accessible annoncé à la place du symbole `fallback` quand la valeur est vide (ex. « Non renseigné »). Le `fallback` reste décoratif.',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     layout: {
       control: { type: 'inline-radio' },
       options: ['vertical', 'horizontal', 'grid'],
-      description: 'Disposition : label au-dessus (`vertical`), à côté (`horizontal`), ou pilotée par un système de grille (`grid` + `rowClass`/`labelClass`/`valueClass`).',
+      description:
+        'Disposition : label au-dessus (`vertical`), à côté (`horizontal`), ou pilotée par un système de grille (`grid` + `rowClass`/`labelClass`/`valueClass`).',
       table: { type: { summary: 'ReadOnlyLayout' }, defaultValue: { summary: '"vertical"' } },
     },
     matchField: {
       control: { type: 'boolean' },
-      description: 'Adapte la mise en page pour cohabiter avec des champs : reprend l’écart label→valeur ET la hauteur d’un `ui-field` (valeur centrée, sans padding horizontal). Désactivé par défaut → un read-only autonome reste compact.',
+      description:
+        'Adapte la mise en page pour cohabiter avec des champs : reprend l’écart label→valeur ET la hauteur d’un `ui-field` (valeur centrée, sans padding horizontal). Désactivé par défaut → un read-only autonome reste compact.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     rowClass: {
       control: { type: 'text' },
-      description: 'Classes ajoutées sur la rangée (`<dl>`), ex. une classe de rangée de grille comme `flex-x`.',
+      description:
+        'Classes ajoutées sur la rangée (`<dl>`), ex. une classe de rangée de grille comme `flex-x`.',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     labelClass: {
       control: { type: 'text' },
-      description: 'Classes ajoutées sur la cellule de label (`<dt>`), ex. `cell phone-24 desktop-auto`.',
+      description:
+        'Classes ajoutées sur la cellule de label (`<dt>`), ex. `cell phone-24 desktop-auto`.',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     valueClass: {
       control: { type: 'text' },
-      description: 'Classes ajoutées sur la cellule de valeur (`<dd>`), ex. `cell phone-24 desktop-auto`.',
+      description:
+        'Classes ajoutées sur la cellule de valeur (`<dd>`), ex. `cell phone-24 desktop-auto`.',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     size: {
@@ -86,7 +97,8 @@ const meta: Meta<UiReadOnly> = {
     },
     labelWidth: {
       control: { type: 'text' },
-      description: 'Largeur de la colonne label en horizontal (longueur CSS, ex. `160px`). Vide = ajusté au contenu.',
+      description:
+        'Largeur de la colonne label en horizontal (longueur CSS, ex. `160px`). Vide = ajusté au contenu.',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     multiline: {

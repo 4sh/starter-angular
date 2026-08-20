@@ -19,39 +19,79 @@ const meta: Meta<UiInput> = {
   },
   argTypes: {
     label: { control: 'text', table: { type: { summary: 'string' } } },
-    helperText: { control: 'text', description: "Texte d'aide (via ui-helper).", table: { type: { summary: 'string' } } },
-    errorText: { control: 'text', description: "Message affiché à la place de l'aide quand en erreur.", table: { type: { summary: 'string' } } },
+    helperText: {
+      control: 'text',
+      description: "Texte d'aide (via ui-helper).",
+      table: { type: { summary: 'string' } },
+    },
+    errorText: {
+      control: 'text',
+      description: "Message affiché à la place de l'aide quand en erreur.",
+      table: { type: { summary: 'string' } },
+    },
     placeholder: { control: 'text', table: { type: { summary: 'string' } } },
     type: {
       control: 'select',
       options: ['text', 'password', 'email', 'tel', 'url', 'search'],
       table: { type: { summary: 'InputType' }, defaultValue: { summary: '"text"' } },
     },
-    size: { control: 'inline-radio', options: ['default', 'small'], table: { type: { summary: 'FieldSize' }, defaultValue: { summary: '"default"' } } },
-    level: { control: 'inline-radio', options: ['default', 'success', 'error'], table: { type: { summary: 'FieldLevel' }, defaultValue: { summary: '"default"' } } },
-    unit: { control: 'text', description: 'Unité suffixe.', table: { type: { summary: 'string' } } },
+    size: {
+      control: 'inline-radio',
+      options: ['default', 'small'],
+      table: { type: { summary: 'FieldSize' }, defaultValue: { summary: '"default"' } },
+    },
+    level: {
+      control: 'inline-radio',
+      options: ['default', 'success', 'error'],
+      table: { type: { summary: 'FieldLevel' }, defaultValue: { summary: '"default"' } },
+    },
+    unit: {
+      control: 'text',
+      description: 'Unité suffixe.',
+      table: { type: { summary: 'string' } },
+    },
     iconLeft: { control: 'text', table: { type: { summary: 'string' } } },
     iconRight: { control: 'text', table: { type: { summary: 'string' } } },
     iconLeftTemplate: {
       control: false,
-      description: "Template d'icône gauche fourni par code (équivalent du `<ng-template #iconLeft>` projeté, qui reste prioritairement lisible côté app).",
+      description:
+        "Template d'icône gauche fourni par code (équivalent du `<ng-template #iconLeft>` projeté, qui reste prioritairement lisible côté app).",
       table: { type: { summary: 'TemplateRef<UiInputIconContext>' } },
     },
     iconRightTemplate: {
       control: false,
-      description: "Template d'icône droite fourni par code — c'est ce que `ui-datepicker` utilise pour forwarder son `#icon` vers le déclencheur.",
+      description:
+        "Template d'icône droite fourni par code — c'est ce que `ui-datepicker` utilise pour forwarder son `#icon` vers le déclencheur.",
       table: { type: { summary: 'TemplateRef<UiInputIconContext>' } },
     },
-    required: { control: 'boolean', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
-    disabled: { control: 'boolean', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
-    readonly: { control: 'boolean', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
-    invalid: { control: 'boolean', table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } } },
+    required: {
+      control: 'boolean',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    disabled: {
+      control: 'boolean',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    readonly: {
+      control: 'boolean',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    invalid: {
+      control: 'boolean',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
     valueChange: { action: 'valueChange', table: { disable: true } },
     iconRightClick: { action: 'iconRightClick', table: { disable: true } },
     inputFocus: { action: 'inputFocus', table: { disable: true } },
     inputBlur: { action: 'inputBlur', table: { disable: true } },
   },
-  args: { label: 'Label', placeholder: 'Placeholder', type: 'text', size: 'default', level: 'default' },
+  args: {
+    label: 'Label',
+    placeholder: 'Placeholder',
+    type: 'text',
+    size: 'default',
+    level: 'default',
+  },
 };
 
 export default meta;
@@ -65,19 +105,51 @@ const TEMPLATE = `<div style="width:260px"><ui-input
     [required]="required" [disabled]="disabled" [readonly]="readonly" [invalid]="invalid"
     (valueChange)="valueChange($event)" /></div>`;
 
-const story = (value = ''): Story['render'] => (args) => ({ props: { ...args, model: value }, template: TEMPLATE });
+const story =
+  (value = ''): Story['render'] =>
+  (args) => ({ props: { ...args, model: value }, template: TEMPLATE });
 
 export const Default: Story = { render: story(), args: { label: 'Nom', placeholder: 'Votre nom' } };
 export const WithValue: Story = { render: story('Robin'), args: { label: 'Nom' } };
-export const WithHelper: Story = { render: story(), args: { label: 'Email', placeholder: 'nom@exemple.fr', helperText: 'Nous ne partagerons jamais votre email.' } };
+export const WithHelper: Story = {
+  render: story(),
+  args: {
+    label: 'Email',
+    placeholder: 'nom@exemple.fr',
+    helperText: 'Nous ne partagerons jamais votre email.',
+  },
+};
 export const Required: Story = { render: story(), args: { label: 'Nom', required: true } };
-export const Success: Story = { render: story('robin'), args: { label: "Nom d'utilisateur", level: 'success', helperText: 'Disponible.' } };
-export const Error: Story = { render: story('robin@'), args: { label: 'Email', level: 'error', helperText: 'Adresse e-mail invalide.' } };
-export const ErrorText: Story = { render: story('robin@'), args: { label: 'Email', invalid: true, helperText: 'Aide neutre.', errorText: 'Adresse e-mail invalide.' } };
-export const Small: Story = { render: story(), args: { label: 'Compact', size: 'small', placeholder: 'Placeholder' } };
+export const Success: Story = {
+  render: story('robin'),
+  args: { label: "Nom d'utilisateur", level: 'success', helperText: 'Disponible.' },
+};
+export const Error: Story = {
+  render: story('robin@'),
+  args: { label: 'Email', level: 'error', helperText: 'Adresse e-mail invalide.' },
+};
+export const ErrorText: Story = {
+  render: story('robin@'),
+  args: {
+    label: 'Email',
+    invalid: true,
+    helperText: 'Aide neutre.',
+    errorText: 'Adresse e-mail invalide.',
+  },
+};
+export const Small: Story = {
+  render: story(),
+  args: { label: 'Compact', size: 'small', placeholder: 'Placeholder' },
+};
 export const WithUnit: Story = { render: story('50'), args: { label: 'Remise', unit: '%' } };
-export const Disabled: Story = { render: story('Non modifiable'), args: { label: 'Champ', disabled: true } };
-export const Readonly: Story = { render: story('Lecture seule'), args: { label: 'Champ', readonly: true } };
+export const Disabled: Story = {
+  render: story('Non modifiable'),
+  args: { label: 'Champ', disabled: true },
+};
+export const Readonly: Story = {
+  render: story('Lecture seule'),
+  args: { label: 'Champ', readonly: true },
+};
 
 // Zone d'action droite : recherche → icône « effacer » visible seulement avec du texte, clic vide.
 export const Search: Story = {
@@ -115,8 +187,13 @@ export const Password: Story = {
   imports: [UiInput, FormField],
   template: `
     <div style="width:260px; display:grid; gap:12px; justify-items:start;">
-      <ui-input [formField]="field" label="Nom" placeholder="Votre nom"
-                helperText="3 caractères minimum." errorText="3 caractères minimum." />
+      <ui-input
+        [formField]="field"
+        label="Nom"
+        placeholder="Votre nom"
+        helperText="3 caractères minimum."
+        errorText="3 caractères minimum."
+      />
       <code>value = {{ field().value() }} · valid = {{ field().valid() }}</code>
     </div>
   `,

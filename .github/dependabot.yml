@@ -7,43 +7,43 @@ updates:
   # Storybook 10, ng-packagr, Style Dictionary), le bruit ferait abandonner
   # l'outil (FSHSP-94). Une PR de sécurité individuelle sort quand même du lot
   # : Dependabot ne groupe jamais les alertes de sécurité.
-  - package-ecosystem: "npm"
-    directory: "/"
+  - package-ecosystem: 'npm'
+    directory: '/'
     schedule:
-      interval: "weekly"
+      interval: 'weekly'
     groups:
       angular:
         patterns:
-          - "@angular/*"
-          - "@angular-devkit/*"
-          - "angular-eslint"
+          - '@angular/*'
+          - '@angular-devkit/*'
+          - 'angular-eslint'
       storybook:
         patterns:
-          - "@storybook/*"
-          - "@storybook-community/*"
-          - "storybook"
+          - '@storybook/*'
+          - '@storybook-community/*'
+          - 'storybook'
       eslint:
         patterns:
-          - "eslint*"
-          - "@eslint/*"
-          - "typescript-eslint"
+          - 'eslint*'
+          - '@eslint/*'
+          - 'typescript-eslint'
       dev-tooling:
         patterns:
-          - "*"
+          - '*'
         exclude-patterns:
-          - "@angular/*"
-          - "@angular-devkit/*"
-          - "angular-eslint"
-          - "@storybook/*"
-          - "@storybook-community/*"
-          - "storybook"
-          - "eslint*"
-          - "@eslint/*"
-          - "typescript-eslint"
+          - '@angular/*'
+          - '@angular-devkit/*'
+          - 'angular-eslint'
+          - '@storybook/*'
+          - '@storybook-community/*'
+          - 'storybook'
+          - 'eslint*'
+          - '@eslint/*'
+          - 'typescript-eslint'
 
   # GitHub Actions : peu de dépendances (checkout, setup-node, deploy-pages…),
   # pas besoin de regroupement.
-  - package-ecosystem: "github-actions"
-    directory: "/"
+  - package-ecosystem: 'github-actions'
+    directory: '/'
     schedule:
-      interval: "weekly"
+      interval: 'weekly'

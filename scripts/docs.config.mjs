@@ -98,7 +98,8 @@ function stripTrailingComment(value) {
       continue;
     }
     if (c === '"' || c === "'") quote = c;
-    else if (c === '/' && value[i + 1] === '/') return { value: value.slice(0, i), comment: value.slice(i) };
+    else if (c === '/' && value[i + 1] === '/')
+      return { value: value.slice(0, i), comment: value.slice(i) };
   }
   return { value, comment: '' };
 }
@@ -116,6 +117,34 @@ function parenDelta(text) {
 const SECTION_RE = /^\/\/\s*-{2,}\s*(.+?)\s*-*\s*$/;
 const DOC_RE = /^\/\/\/\s?(.*)$/;
 const DECL_RE = /^(\$[\w-]+|--[\w-]+)\s*:\s*([\s\S]*)$/;
+
+/**
+ * Recolle un appel `var(...)` que Prettier renvoie à la ligne (`printWidth`)
+ * en une seule ligne logique, AVANT le scan schéma 2 (`prop: var(--ui-x, défaut);
+ * /// rôle`, voir `collectComponents`) : sans ça, la ligne de fermeture
+ * (`);  /// rôle`) ne porte plus de `var(...)` pour matcher, et le hook passe
+ * pour non documenté après un simple passage de formateur — schéma 1 (déclaré
+ * via `$var`/`--custom-prop`) n'a pas ce problème, `parseDeclarations`
+ * accumule déjà les lignes jusqu'au `;` d'équilibre.
+ *
+ * Ciblé sur `var(` plutôt que sur toute parenthèse ouverte : élargir
+ * recollerait un sélecteur multi-lignes par erreur (`button:focus,\n.foo {`).
+ */
+function joinWrappedVarCalls(text) {
+  const lines = text.split('\n');
+  const out = [];
+  for (let i = 0; i < lines.length; i++) {
+    let line = lines[i];
+    let depth = parenDelta(stripTrailingComment(line).value);
+    while (/\bvar\(/.test(line) && depth > 0 && i + 1 < lines.length) {
+      i++;
+      depth += parenDelta(stripTrailingComment(lines[i]).value);
+      line = `${line.trimEnd()} ${lines[i].trim()}`;
+    }
+    out.push(line);
+  }
+  return out.join('\n');
+}
 
 /**
  * Parse les déclarations `$var:` / `--custom-prop:` d'un texte SCSS.
@@ -198,7 +227,9 @@ function parseDeclarations(text, { topLevelOnly = true } = {}) {
 function configRegion(text) {
   const lines = text.split('\n');
   let start = 0;
-  const markerIdx = lines.findIndex((l) => /^\/\/\s*-{2,}\s*(Config|Local structural config)/i.test(l.trim()));
+  const markerIdx = lines.findIndex((l) =>
+    /^\/\/\s*-{2,}\s*(Config|Local structural config)/i.test(l.trim()),
+  );
   if (markerIdx !== -1) start = markerIdx;
 
   let end = lines.length;
@@ -312,7 +343,11 @@ function resolveBinding(rawValue, { shared, local }) {
       const target = inShared ? shared.get(localMatch[1]) : local.get(localMatch[1]);
       if (!target || seen.has(localMatch[1])) break;
       seen.add(localMatch[1]);
-      steps.push({ via: inShared ? 'shared' : 'local', name: localMatch[1], group: target.group ?? null });
+      steps.push({
+        via: inShared ? 'shared' : 'local',
+        name: localMatch[1],
+        group: target.group ?? null,
+      });
       value = unwrapInterpolation(target.value);
       continue;
     }
@@ -417,7 +452,10 @@ function collectComponents(shared) {
 
   for (const file of files) {
     const text = readFileSync(file, 'utf8');
-    const name = file.split(sep).pop().replace(/\.scss$/, '');
+    const name = file
+      .split(sep)
+      .pop()
+      .replace(/\.scss$/, '');
     if (!/^(ui|sp)-/.test(name)) continue;
 
     const region = configRegion(text);
@@ -430,10 +468,10 @@ function collectComponents(shared) {
     // Le cas 2 est le point d'override pur : jamais déclaré par le composant,
     // c'est son fallback qui s'applique tant que le consommateur ne le pose pas.
     const hooks = parseDeclarations(text, { topLevelOnly: false }).filter(
-      (d) => d.name.startsWith('--') && d.doc
+      (d) => d.name.startsWith('--') && d.doc,
     );
     const declared = new Set(hooks.map((h) => h.name));
-    for (const line of text.split('\n')) {
+    for (const line of joinWrappedVarCalls(text).split('\n')) {
       const { value: code, comment } = stripTrailingComment(line);
       const doc = comment.trim().match(DOC_RE);
       if (!doc || DECL_RE.test(code.trim())) continue;
@@ -506,11 +544,16 @@ if (process.argv.includes('--check')) {
   mkdirSync(dirname(OUT_FILE), { recursive: true });
   writeFileSync(OUT_FILE, serialized);
   const count = Object.keys(manifest.components).length;
-  const rows = Object.values(manifest.components).reduce((n, c) => n + c.vars.length + c.hooks.length, 0);
+  const rows = Object.values(manifest.components).reduce(
+    (n, c) => n + c.vars.length + c.hooks.length,
+    0,
+  );
   const missing = Object.entries(manifest.components).filter(([, c]) => c.undocumented.length);
   console.log(`✓ ui-config.json : ${count} composants, ${rows} lignes documentées.`);
   if (missing.length) {
     const total = missing.reduce((n, [, c]) => n + c.undocumented.length, 0);
-    console.log(`  ${total} variables sans commentaire /// (non affichées) sur ${missing.length} composants.`);
+    console.log(
+      `  ${total} variables sans commentaire /// (non affichées) sur ${missing.length} composants.`,
+    );
   }
 }

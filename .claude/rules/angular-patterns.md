@@ -1,7 +1,7 @@
 ---
 paths:
-  - "src/**/*.ts"
-  - "src/**/*.html"
+  - 'src/**/*.ts'
+  - 'src/**/*.html'
 ---
 
 # Angular patterns
@@ -16,21 +16,15 @@ Never `*ngIf` / `*ngFor` / `ngSwitch`, never `[ngClass]` / `[ngStyle]` (use `[cl
 
 ```html
 @if (loading()) {
-  <ui-spinner />
+<ui-spinner />
 } @else {
-  <p>Content</p>
-}
-
-@for (item of items(); track item.id) {
-  <ui-chip [label]="item.label()" />
+<p>Content</p>
+} @for (item of items(); track item.id) {
+<ui-chip [label]="item.label()" />
 } @empty {
-  <p>No items</p>
-}
-
-@switch (state()) {
-  @case ('error') { <ui-icon name="circle-exclamation" /> }
-  @default { <ui-icon name="circle-info" /> }
-}
+<p>No items</p>
+} @switch (state()) { @case ('error') { <ui-icon name="circle-exclamation" /> } @default {
+<ui-icon name="circle-info" /> } }
 ```
 
 `@for` track is mandatory. Context variables: `$index`, `$first`, `$last`, `$even`, `$odd`, `$count`.
@@ -49,13 +43,13 @@ protected readonly brandService = inject(BrandService);  // used in template
 
 ## Signals beyond inputs
 
-| Type | Usage |
-|---|---|
-| `signal()` | Local mutable state |
-| `computed()` | Derived read-only value (CSS classes, derived state) |
-| `linkedSignal()` | Derived but writable, auto-reset when the source changes |
-| `toSignal(obs$, { initialValue })` | Observable → signal (`initialValue` mandatory) |
-| `effect()` | Side effects ONLY (DOM sync, logging) — never data transformation |
+| Type                               | Usage                                                             |
+| ---------------------------------- | ----------------------------------------------------------------- |
+| `signal()`                         | Local mutable state                                               |
+| `computed()`                       | Derived read-only value (CSS classes, derived state)              |
+| `linkedSignal()`                   | Derived but writable, auto-reset when the source changes          |
+| `toSignal(obs$, { initialValue })` | Observable → signal (`initialValue` mandatory)                    |
+| `effect()`                         | Side effects ONLY (DOM sync, logging) — never data transformation |
 
 - All signals `readonly`.
 - No side effects in `computed()`; prefer `computed()` over `effect()` for transformations.
