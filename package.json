@@ -34,14 +34,14 @@
     "mcp:test": "vitest run --root projects/ui-kit-mcp"
   },
   "dependencies": {
-    "@angular/animations": "22.1.1",
+    "@angular/animations": "22.1.2",
     "@angular/cdk": "22.1.2",
     "@angular/common": "22.1.2",
     "@angular/compiler": "22.1.2",
     "@angular/core": "22.1.2",
     "@angular/forms": "22.1.2",
     "@angular/platform-browser": "22.1.2",
-    "@angular/platform-browser-dynamic": "22.1.1",
+    "@angular/platform-browser-dynamic": "22.1.2",
     "@angular/router": "22.1.2",
     "@fortawesome/fontawesome-free": "7.0.0",
     "gridaflex": "1.0.0",
