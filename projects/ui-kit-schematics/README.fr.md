@@ -39,22 +39,23 @@ accepter ou à sauter.
 > générer du SCSS dans votre projet — le CSS pur par défaut d'Angular est
 > délibérément surchargé.
 
-|                                                   |                                                                             |
-| ------------------------------------------------- | --------------------------------------------------------------------------- |
-| `ng add @4sh/ui-kit-schematics`                   | fondation **et** composants, d'un coup                                      |
-| `ng add @4sh/ui-kit-schematics --skip-components` | fondation seule, composants choisis plus tard                               |
-| `ng add @4sh/ui-kit-schematics --skip-install`    | ne pas lancer `npm install` (projet qui pilote son lockfile)                |
-| `ng add @4sh/ui-kit-schematics --skip-storybook`  | ne pas poser de Storybook (voir ci-dessous)                                 |
-| `ng add @4sh/ui-kit-schematics --skip-mcp`        | ne pas déclarer le serveur MCP (voir ci-dessous)                            |
-| `ng add @4sh/ui-kit-schematics --gridaflex`       | poser la grille Gridaflex sans question (`--no-gridaflex` pour s'en passer) |
-| `ng generate @4sh/ui-kit-schematics:add`          | copier d'autres composants (interactif, ou `--components`, ou `--all`)      |
-| `ng generate @4sh/ui-kit-schematics:update`       | diff des composants copiés face aux sources publiées                        |
+|                                                     |                                                                                       |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `ng add @4sh/ui-kit-schematics`                     | fondation **et** composants, d'un coup                                                |
+| `ng add @4sh/ui-kit-schematics --skip-components`   | fondation seule, composants choisis plus tard                                         |
+| `ng add @4sh/ui-kit-schematics --skip-install`      | ne pas lancer `npm install` (projet qui pilote son lockfile)                          |
+| `ng add @4sh/ui-kit-schematics --skip-storybook`    | ne pas poser de Storybook (voir ci-dessous)                                           |
+| `ng add @4sh/ui-kit-schematics --skip-mcp`          | ne pas déclarer le serveur MCP (voir ci-dessous)                                      |
+| `ng add @4sh/ui-kit-schematics --gridaflex`         | poser la grille Gridaflex sans question (`--no-gridaflex` pour s'en passer)           |
+| `ng generate @4sh/ui-kit-schematics:add`            | copier d'autres composants (interactif, ou `--components`, ou `--all`)                |
+| `ng generate @4sh/ui-kit-schematics:update`         | diff des composants copiés face aux sources publiées                                  |
+| `ng generate @4sh/ui-kit-schematics:update --force` | applique toutes les mises à jour sans diff ni confirmation (**écrase vos retouches**) |
 
 `ui-kit.json` se trouve à la racine de votre projet, à côté de `package.json`.
 
 > ⚠️ **`update` remplace, il ne fusionne pas.** Accepter un composant écrit la version
 > publiée par-dessus la vôtre : **vos modifications sont perdues**. Lisez le diff, reportez
-> à la main ce que vous voulez garder, ou sautez le composant. `--yes` accepte tout sans
+> à la main ce que vous voulez garder, ou sautez le composant. `--force` accepte tout sans
 > afficher un seul diff : à réserver aux composants que vous n'avez pas touchés.
 
 ### Rattraper la fondation
