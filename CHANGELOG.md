@@ -24,6 +24,7 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 ### Changed
 
 - **Toutes les dépendances du repo sont épinglées en version exacte** (FSHSP-149), y compris `tslib` dans `projects/ui-kit/package.json` (`^2.3.0` → `2.8.1`) : un range laissait deux `npm install` à des dates différentes résoudre des versions différentes, y compris pour le tarball publié. `save-exact=true` (`.npmrc`) pour que ça reste épinglé. Les `peerDependencies` restent en range — leur rôle est d'exprimer une compatibilité, pas une résolution.
+- **`@4sh/ui-kit-schematics` déclare maintenant `diff@9.0.0`** (au lieu de `^5.2.0`), aligné sur la version déjà utilisée par le tooling du repo — la seule fonction consommée (`createTwoFilesPatch`, dans `update/index.ts`) est inchangée entre les deux versions.
 
 ### Fixed
 

@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "@inquirer/prompts": "7.0.0",
-    "diff": "5.2.0"
+    "diff": "9.0.0"
   },
   "sideEffects": false
 }
