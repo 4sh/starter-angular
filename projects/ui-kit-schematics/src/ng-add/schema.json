@@ -28,6 +28,10 @@
       "type": "boolean",
       "default": false,
       "description": "Ne pas déclarer le serveur MCP `ui-kit` (.mcp.json) ni l'instruction agent (AGENTS.md). Par défaut, les deux sont posés."
+    },
+    "gridaflex": {
+      "type": "boolean",
+      "description": "Poser la grille Gridaflex : dépendance + src/styles/vendors/_gridaflex-settings.scss importé par main.scss."
     }
   }
 }

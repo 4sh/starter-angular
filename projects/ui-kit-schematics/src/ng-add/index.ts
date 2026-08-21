@@ -12,6 +12,7 @@
  */
 import type { JsonValue, workspaces } from '@angular-devkit/core';
 import { chain, Rule, SchematicContext, Tree } from '@angular-devkit/schematics';
+import { confirm } from '@inquirer/prompts';
 import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
 import { updateWorkspace } from '@schematics/angular/utility/workspace';
 import { readFileSync, readdirSync } from 'node:fs';
@@ -681,6 +682,106 @@ function scaffoldAgentsInstructions(): Rule {
   };
 }
 
+/** Version alignée sur celle du starter (`package.json` racine). */
+const GRIDAFLEX_VERSION = '^1.0.0';
+const GRIDAFLEX_SETTINGS_PATH = 'src/styles/vendors/_gridaflex-settings.scss';
+const MAIN_SCSS_PATH = 'src/styles/main.scss';
+/** Résolu par l'includePath `src/styles` déjà écrit dans `angular.json`. */
+const GRIDAFLEX_USE = '@use "vendors/gridaflex-settings";';
+
+/**
+ * Réponse à la question Gridaflex : l'option la tranche sans prompt (usage
+ * scripté), sinon on demande. Hors terminal interactif (CI, `--all` dans un
+ * script), on ne pose rien : ajouter une dépendance sans que personne ne
+ * puisse répondre est le pire des deux défauts.
+ */
+async function resolveGridaflexChoice(
+  options: Schema,
+  context: SchematicContext,
+): Promise<boolean> {
+  if (options.gridaflex !== undefined) return options.gridaflex;
+  if (!process.stdin.isTTY) {
+    context.logger.info(
+      'Gridaflex : pas de terminal interactif, question sautée (`--gridaflex` pour le poser).',
+    );
+    return false;
+  }
+  return confirm({
+    message: 'Utiliser Gridaflex (grille flexbox 24 colonnes, réglée par les breakpoints du kit) ?',
+    default: true,
+  });
+}
+
+/**
+ * Ajoute le `@use` des réglages en TÊTE des `@use` de `main.scss` : configurer
+ * un module Sass (`with (…)`) n'est possible que s'il n'a pas déjà été chargé.
+ * Idempotent : un `ng add` rejoué ne duplique pas la ligne.
+ */
+function importGridaflexInMainScss(tree: Tree): 'added' | 'already-there' | 'no-main' {
+  const buffer = tree.read(`/${MAIN_SCSS_PATH}`);
+  if (!buffer) return 'no-main';
+  const content = buffer.toString('utf8');
+  if (content.includes('vendors/gridaflex-settings')) return 'already-there';
+
+  const lines = content.split('\n');
+  const block = [
+    '// ✏️ Grille Gridaflex : colonnes, breakpoints et gouttières.',
+    GRIDAFLEX_USE,
+    '',
+  ];
+  const firstUse = lines.findIndex((line) => /^\s*@use\b/.test(line));
+  const charset = lines.findIndex((line) => /^\s*@charset\b/.test(line));
+  let at = firstUse !== -1 ? firstUse : charset !== -1 ? charset + 1 : 0;
+  // Remonter les lignes de commentaire collées au premier `@use` : elles le
+  // décrivent, s'insérer entre les deux les séparerait.
+  while (firstUse !== -1 && at > 0 && lines[at - 1].trim().startsWith('//')) at--;
+  lines.splice(at, 0, ...block);
+  tree.overwrite(`/${MAIN_SCSS_PATH}`, lines.join('\n'));
+  return 'added';
+}
+
+/**
+ * Pose Gridaflex si le consommateur en veut : les réglages sous
+ * `src/styles/vendors/`, leur import dans `main.scss`, la dépendance.
+ *
+ * Le scaffold est un fichier du consommateur (il y règle SES colonnes et SES
+ * gouttières) : créé une seule fois, jamais réécrasé. Un refus ne défait rien
+ * d'une install précédente : supprimer les réglages d'un projet qui s'en sert
+ * déjà casserait sa feuille globale.
+ */
+function setupGridaflexRule(options: Schema): Rule {
+  return async (tree: Tree, context: SchematicContext) => {
+    if (!(await resolveGridaflexChoice(options, context))) {
+      context.logger.info(
+        '✔ Gridaflex non posé. Les stories de `ui-card` et `ui-read-only` utilisent ses classes ' +
+          "(`flex-x`, `flex-gap-x`…) : leur mise en page s'affichera à plat.",
+      );
+      return tree;
+    }
+
+    if (!tree.exists(GRIDAFLEX_SETTINGS_PATH)) {
+      tree.create(
+        GRIDAFLEX_SETTINGS_PATH,
+        readFileSync(join(__dirname, 'files', 'vendors', '_gridaflex-settings.scss'), 'utf8'),
+      );
+    }
+    const imported = importGridaflexInMainScss(tree);
+    addDependency(tree, 'gridaflex', GRIDAFLEX_VERSION, 'dependencies');
+
+    if (imported === 'no-main') {
+      context.logger.warn(
+        `Gridaflex posé (${GRIDAFLEX_SETTINGS_PATH}) mais ${MAIN_SCSS_PATH} est introuvable : ` +
+          `ajoutez-y \`${GRIDAFLEX_USE}\` avant vos autres \`@use\`.`,
+      );
+      return tree;
+    }
+    context.logger.info(
+      `✔ Gridaflex posé (${GRIDAFLEX_SETTINGS_PATH}, importé par ${MAIN_SCSS_PATH}).`,
+    );
+    return tree;
+  };
+}
+
 function createManifest(withStorybook: boolean): Rule {
   return (tree: Tree, context: SchematicContext) => {
     if (tree.exists(MANIFEST_PATH)) return tree; // ré-exécution de `ng add` : on ne réinitialise pas
@@ -777,6 +878,7 @@ export function ngAdd(options: Schema): Rule {
   if (options.skipComponents) {
     return chain([
       ...foundation,
+      setupGridaflexRule(options),
       ...storybook,
       (_tree: Tree, context: SchematicContext) => {
         context.logger.info(
@@ -795,6 +897,9 @@ export function ngAdd(options: Schema): Rule {
     // rendrait pas le service que rend déjà cet écran, deux secondes plus tard.
     // Elle reste sur `ng generate …:add`, pour un usage scripté.
     add({ all: options.all, withStorybook }),
+    // Après la sélection : la question Gridaflex suit le choix des composants,
+    // pas l'inverse : c'est la mise en page de ce qu'on vient de copier.
+    setupGridaflexRule(options),
     ...storybook,
     logNextSteps(withStorybook, withMcp),
     ...install,

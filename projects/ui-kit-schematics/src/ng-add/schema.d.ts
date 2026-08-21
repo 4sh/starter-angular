@@ -10,4 +10,6 @@ export interface Schema {
   /** Ne pas déclarer le serveur MCP `ui-kit` (.mcp.json) ni l'instruction
    * agent (AGENTS.md). Posé par défaut. */
   skipMcp?: boolean;
+  /** Poser la grille Gridaflex (réglages + dépendance). */
+  gridaflex?: boolean;
 }
