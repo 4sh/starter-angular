@@ -73,6 +73,11 @@ export class UiCard {
    * with `padding-inline: var(--ui-card-gutter)`.
    */
   contentFlush = input(false, { transform: booleanAttribute });
+  /**
+   * Classes applied to the default content region, gutter kept: lets the consumer lay
+   * the content out (Gridaflex, utilities) without an intermediate wrapper.
+   */
+  contentClass = input<string>('');
   /** Accessible name for the card region (use when the card conveys a landmark). */
   ariaLabel = input<string>();
   /** Id of the element labelling the card region. */
@@ -126,6 +131,16 @@ export class UiCard {
   protected readonly showSubheaderString = computed(
     () => !!this.subheader() && !this.subtitleSlot(),
   );
+
+  /** @ignore */
+  protected readonly contentClasses = computed(() => {
+    const c = ['ui-card-content'];
+    if (!this.hasContent()) c.push('_empty');
+    if (this.contentFlush()) c.push('_flush');
+    const extra = this.contentClass().trim();
+    if (extra) c.push(extra);
+    return c.join(' ');
+  });
 
   /** @ignore */
   protected readonly classes = computed(() => {

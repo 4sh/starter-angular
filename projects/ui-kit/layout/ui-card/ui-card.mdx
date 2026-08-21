@@ -93,6 +93,22 @@ importer dans le composant hôte.
 <Canvas of={CardStories.WithMedia} />
 <Canvas of={CardStories.RichTitle} />
 
+## Mise en page du contenu (`contentClass`)
+
+Plutôt que d'envelopper votre contenu dans des balises supplémentaires pour gérer sa mise
+en page, `contentClass` vous donne accès au conteneur structurel existant.
+En y passant vos classes utilitaires (grille, flex, alignements), vous organisez directement
+l'intérieur de la carte sans alourdir le DOM.
+
+```html
+<ui-card header="Trafic" contentClass="flex-x flex-gap-x align-justify">
+  <div>1 284</div>
+  <div>99,8 %</div>
+</ui-card>
+```
+
+<Canvas of={CardStories.ContentClass} />
+
 ## Contenu full-bleed (`contentFlush`)
 
 Par défaut le contenu porte la gouttière de la carte. `contentFlush` la **retire**
@@ -110,6 +126,35 @@ CSS `--ui-card-gutter` (à ré-appliquer sur les blocs qui doivent rester en ret
 ```
 
 <Canvas of={CardStories.ContentFlush} />
+
+### Quel levier choisir
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Besoin</th>
+      <th>Levier</th>
+      <th>Gouttière</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Disposer le contenu (ligne, colonne, grille)</td>
+      <td><code>contentClass</code></td>
+      <td>Conservée</td>
+    </tr>
+    <tr>
+      <td>Contenu edge-to-edge (bande média, tableau pleine largeur)</td>
+      <td><code>contentFlush</code></td>
+      <td>Retirée, à ré-appliquer via <code>--ui-card-gutter</code></td>
+    </tr>
+    <tr>
+      <td>Les deux : mise en page <em>et</em> edge-to-edge</td>
+      <td><code>contentClass</code> + <code>contentFlush</code></td>
+      <td>Retirée</td>
+    </tr>
+  </tbody>
+</table>
 
 ## Footer
 

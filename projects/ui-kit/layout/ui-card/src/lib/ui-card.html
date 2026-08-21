@@ -32,12 +32,7 @@
       </div>
     }
 
-    <div
-      class="ui-card-content"
-      #contentWrap
-      [class._empty]="!hasContent()"
-      [class._flush]="contentFlush()"
-    >
+    <div #contentWrap [class]="contentClasses()">
       <ng-content />
     </div>
 
