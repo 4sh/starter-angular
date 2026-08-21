@@ -16,6 +16,8 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-08-21
+
 ### Added
 
 - **`ui-card` accepte un input `fluid`** (FSHSP-154). Sans dimension intrinsèque, la carte prenait la largeur de son contenu dans un parent `flex`, ce qui obligeait à poser un `width` en dur (toutes les stories le faisaient) ou un `flex: 1` côté consommateur. `fluid` lui fait occuper toute la largeur du parent, avec la même API que `ui-segment-control`.
