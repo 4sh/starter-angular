@@ -54,6 +54,12 @@ const meta: Meta<UiCard> = {
         'Retire la gouttière horizontale du contenu (pleine largeur) : le consommateur gère la mise en page interne. Regouttiérer avec `padding-inline: var(--ui-card-gutter)`.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
+    contentClass: {
+      control: { type: 'text' },
+      description:
+        'Classes posées sur le conteneur du contenu, gouttière conservée : met en page le contenu (grille Gridaflex, utilitaires) sans wrapper intermédiaire.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: '""' } },
+    },
     ariaLabel: {
       control: { type: 'text' },
       description: 'Nom accessible (transforme la carte en région `role="region"`).',
@@ -175,6 +181,32 @@ export const RichTitle: Story = {
       </ui-card>`,
   }),
   args: { variant: 'elevated' },
+};
+
+// Mise en page du contenu sans wrapper : `contentClass` pose les utilitaires
+// (ici une piste Gridaflex) directement sur le conteneur, qui garde sa gouttière.
+export const ContentClass: Story = {
+  render: (args) => ({
+    props: { ...args },
+    template: `
+      <ui-card [header]="header" [subheader]="subheader" [variant]="variant"
+               [contentClass]="contentClass" style="width:340px">
+        <div>
+          <div style="font-family:var(--fontfamily-title);font-size:var(--size-typography-title-default);font-weight:var(--weight-bold)">1 284</div>
+          <div style="color:var(--global-text-muted)">Requêtes</div>
+        </div>
+        <div>
+          <div style="font-family:var(--fontfamily-title);font-size:var(--size-typography-title-default);font-weight:var(--weight-bold)">99,8 %</div>
+          <div style="color:var(--global-text-muted)">Disponibilité</div>
+        </div>
+      </ui-card>`,
+  }),
+  args: {
+    header: 'Trafic',
+    subheader: 'Sur les 30 derniers jours',
+    variant: 'outlined',
+    contentClass: 'flex-x flex-gap-x align-justify',
+  },
 };
 
 // Contenu « full » : le slot par défaut est mis en pleine largeur via `contentFlush`,

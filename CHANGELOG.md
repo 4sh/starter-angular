@@ -19,6 +19,7 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 ### Added
 
 - **`ng add @4sh/ui-kit-schematics` propose maintenant Gridaflex** (FSHSP-144). La grille autour de laquelle le kit est pensé n'était ni installée ni posée par la schematic : un projet fraîchement généré n'avait ni la dépendance, ni ses réglages, et les stories copiées de `ui-card`/`ui-read-only` s'affichaient à plat. Une question posée juste après le choix des composants pose désormais `gridaflex` en dépendance, `src/styles/vendors/_gridaflex-settings.scss` (réglages du consommateur, créé une fois) et son `@use` en tête de `src/styles/main.scss`. Un refus ne pose aucun des trois. `--gridaflex` / `--no-gridaflex` répond sans prompt ; hors terminal interactif, la question est sautée et rien n'est posé. Le mode librairie (`@4sh/ui-kit`) est inchangé : `styles.css` ne contient pas la grille.
+- **`ui-card` accepte un input `contentClass`** (FSHSP-147). Mettre en page le contenu d'une carte imposait soit un `<div>` wrapper juste pour porter des classes utilitaires, soit `contentFlush` (qui retire la gouttière et oblige à la ré-appliquer à la main). `contentClass` pose les classes directement sur `.ui-card-content`, gouttière conservée ; `contentFlush` reste le levier du contenu edge-to-edge, et les deux se combinent.
 
 ### Fixed
 
