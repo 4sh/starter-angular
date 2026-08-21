@@ -48,6 +48,12 @@ const meta: Meta<UiCard> = {
       description: 'Traitement de la surface : bordure, ombre, ou aucun.',
       table: { type: { summary: 'CardVariant' }, defaultValue: { summary: '"outlined"' } },
     },
+    fluid: {
+      control: { type: 'boolean' },
+      description:
+        'Occupe toute la largeur du parent. Sans lui, un parent flex ou grid dimensionne la carte sur son contenu.',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
     contentFlush: {
       control: { type: 'boolean' },
       description:
@@ -150,6 +156,35 @@ export const WithFooter: Story = {
       </ui-card>`,
   }),
   args: { header: 'Confirmation' },
+};
+
+// Largeur : sans `fluid`, un parent flex dimensionne la carte sur son contenu.
+export const Fluid: Story = {
+  render: (args) => ({
+    props: { ...args },
+    template: `
+      <div style="display:flex;gap:var(--units-md);width:560px;padding:var(--units-sm);
+                  outline:1px dashed var(--global-border-subtle)">
+        <ui-card [variant]="variant" header="Par défaut">Largeur du contenu.</ui-card>
+        <ui-card [variant]="variant" [fluid]="true" header="fluid">Prend la place restante.</ui-card>
+      </div>`,
+  }),
+  args: { variant: 'outlined' },
+};
+
+// Hauteur : la boîte visible remplit son hôte, donc une rangée de cartes
+// s'aligne sans CSS supplémentaire, quelle que soit la longueur du contenu.
+export const EqualHeight: Story = {
+  render: (args) => ({
+    props: { ...args, lorem: LOREM },
+    template: `
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--units-md);width:640px">
+        <ui-card [variant]="variant" header="Court">Une ligne.</ui-card>
+        <ui-card [variant]="variant" header="Long">{{ lorem }}</ui-card>
+        <ui-card [variant]="variant" header="Moyen">Deux lignes de contenu, à peu près.</ui-card>
+      </div>`,
+  }),
+  args: { variant: 'outlined' },
 };
 
 // Variantes de surface.
