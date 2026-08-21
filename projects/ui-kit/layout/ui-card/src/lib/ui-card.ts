@@ -52,12 +52,18 @@ export class UiCardFooter {}
  * dropping content into the card — needs no imports (default `<ng-content>`); title and
  * subtitle also accept the `header`/`subheader` string inputs. Richer slots use the
  * exported marker directives (`UiCardMedia`, `UiCardTitle`, `UiCardSubtitle`, `UiCardFooter`).
+ *
+ * Sizing: no intrinsic width (a block parent gives 100%, `fluid` fills a flex/grid one) and
+ * the visible box fills the host's height, so a row of cards lines up on its own.
  */
 @Component({
   selector: 'ui-card',
   imports: [],
   templateUrl: './ui-card.html',
   styleUrl: './ui-card.scss',
+  host: {
+    '[class._fluid]': 'fluid()',
+  },
 })
 export class UiCard {
   /** Title text (convenience shorthand for the `uiCardTitle` slot). */
@@ -66,6 +72,8 @@ export class UiCard {
   subheader = input<string>();
   /** Visual treatment of the surface. */
   variant = input<CardVariant>('outlined');
+  /** Span the full width of the parent (a flex/grid parent otherwise sizes the card to its content). */
+  fluid = input(false, { transform: booleanAttribute });
   /**
    * Removes the horizontal gutter of the default content region so it bleeds to
    * the card edges — lets the consumer own the inner layout (e.g. a full-bleed

@@ -19,9 +19,17 @@ $card-footer-gap: var(--ui-card-footer-gap, var(--units-sm));      /// Espacemen
 $card-radius: var(--ui-card-radius, var(--radius-md));             /// Rayon des coins.
 $card-stroke-width: var(--ui-card-stroke-width, var(--stroke-sm)); /// Épaisseur de bordure.
 
-// Block host so consumer width/height (and layout) apply to the card box.
+// The host IS the card box: it carries the consumer's width/height and the
+// visible box fills it on both axes (equal-height rows need no extra CSS).
 :host {
-  display: block;
+  display: flex;
+  flex-direction: column;
+}
+
+// No intrinsic width: a block parent already gives 100%, a flex/grid parent
+// sizes to content unless asked otherwise.
+:host._fluid {
+  width: 100%;
 }
 
 .ui-card {
@@ -33,6 +41,7 @@ $card-stroke-width: var(--ui-card-stroke-width, var(--stroke-sm)); /// Épaisseu
 
   display: flex;
   flex-direction: column;
+  flex: 1 1 auto; // fills the host height, whatever sets it (grid cell, flex row, explicit height)
   overflow: hidden; // clips full-bleed media to the rounded corners
   background-color: var(--global-background-default);
   border: $card-stroke-width solid transparent;

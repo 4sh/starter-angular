@@ -93,6 +93,46 @@ importer dans le composant hôte.
 <Canvas of={CardStories.WithMedia} />
 <Canvas of={CardStories.RichTitle} />
 
+## Dimensions et conteneur
+
+La carte n'a **aucune dimension intrinsèque** : c'est son conteneur qui la
+dimensionne, et les dimensions se posent sur l'élément `<ui-card>` lui-même,
+jamais sur un élément interne.
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Parent</th>
+      <th>Largeur par défaut</th>
+      <th>Avec <code>fluid</code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Bloc (<code>div</code>, colonne de grille…)</td>
+      <td>100 % du parent</td>
+      <td>Identique</td>
+    </tr>
+    <tr>
+      <td><code>display: flex</code></td>
+      <td>Largeur du contenu</td>
+      <td>Toute la largeur disponible</td>
+    </tr>
+    <tr>
+      <td><code>display: grid</code></td>
+      <td>Largeur de la piste</td>
+      <td>Identique</td>
+    </tr>
+  </tbody>
+</table>
+
+En **hauteur**, la boîte visible (fond, bordure, ombre) remplit toujours son
+hôte : une rangée de cartes de contenus inégaux s'aligne sans CSS
+supplémentaire, et `height` posé sur `<ui-card>` s'applique bien à la boîte.
+
+<Canvas of={CardStories.Fluid} />
+<Canvas of={CardStories.EqualHeight} />
+
 ## Mise en page du contenu (`contentClass`)
 
 Plutôt que d'envelopper votre contenu dans des balises supplémentaires pour gérer sa mise
