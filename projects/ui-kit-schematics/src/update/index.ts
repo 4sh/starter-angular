@@ -18,6 +18,38 @@ import { kitVersion as readKitVersion } from '../utils/kit-manifest';
 
 type Action = 'apply' | 'skip' | 'view-diff';
 
+/**
+ * Version à partir de laquelle l'arborescence copiée est aplatie (FSHSP-121,
+ * livré en 0.3.0) : `src/` et `lib/` retirés, barrel `public-api.ts` supprimé.
+ *
+ * Un composant copié AVANT cette version vit donc à des chemins que
+ * `renderUnitFiles` ne calcule plus. `update` écrirait les nouveaux fichiers à
+ * côté des anciens sans les remplacer — que des CREATE — en laissant
+ * l'application compiler l'ancien code par ses imports vers `src/public-api`.
+ * C'est ce qui a fait passer une montée sans aucun effet pour un succès
+ * (FSHSP-150, remonté par le REX FSHSP-146).
+ */
+const FLATTENED_LAYOUT_SINCE = '0.3.0';
+
+/**
+ * Comparaison de deux `x.y.z`. Pas de `semver` en dépendance pour ça : les
+ * versions du kit sont toujours de cette forme (cf. `docs/VERSIONING.md`), et
+ * on ne compare ici que des numéros que ce package a lui-même écrits.
+ */
+function compareVersions(a: string, b: string): number {
+  const parse = (v: string) =>
+    v
+      .split('-')[0]
+      .split('.')
+      .map((part) => Number.parseInt(part, 10) || 0);
+  const [left, right] = [parse(a), parse(b)];
+  for (let i = 0; i < 3; i++) {
+    const diff = (left[i] ?? 0) - (right[i] ?? 0);
+    if (diff !== 0) return diff;
+  }
+  return 0;
+}
+
 function diffFor(tree: Tree, targetPath: string, newContent: string): string {
   const oldContent = tree.read(targetPath)?.toString('utf8') ?? '';
   return createTwoFilesPatch(targetPath, targetPath, oldContent, newContent, 'installé', 'kit');
@@ -51,6 +83,35 @@ export function update(options: Schema): Rule {
     if (!outdated.length) {
       context.logger.info(`Rien à mettre à jour — tout est déjà en ${kitVersion}.`);
       return tree;
+    }
+
+    // Refus AVANT la première écriture, et sur tout le lot : appliquer les
+    // composants dont les chemins coïncident tout en sautant les autres
+    // laisserait un arbre mi-ancien mi-nouveau et un `ui-kit.json` qui ne
+    // décrit ni l'un ni l'autre. Un projet dans cet état a besoin d'une
+    // décision de migration, pas d'une montée partielle.
+    const staleLayout = outdated.filter(
+      ([, entry]) => compareVersions(entry.version, FLATTENED_LAYOUT_SINCE) < 0,
+    );
+    if (staleLayout.length) {
+      const names = staleLayout.map(([name, entry]) => `${name} (${entry.version})`).join(', ');
+      throw new SchematicsException(
+        `Rien n'a été écrit. ${staleLayout.length} composant(s) ont été copiés avant la ` +
+          `${FLATTENED_LAYOUT_SINCE} — ${names} —, quand l'arborescence copiée portait encore ` +
+          `\`src/\`, \`lib/\` et un barrel \`public-api.ts\`. Ces chemins ont tous changé en ` +
+          `${FLATTENED_LAYOUT_SINCE} (FSHSP-121) : \`update\` écrirait les fichiers de la ` +
+          `${kitVersion} À CÔTÉ des anciens sans les remplacer, et votre application ` +
+          `continuerait de compiler les anciens par ses imports vers \`src/public-api\`.\n\n` +
+          `Deux voies :\n` +
+          `  1. repartir d'un « add » propre — supprimer les arborescences copiées et ` +
+          `\`ui-kit.json\`, puis relancer \`ng g @4sh/ui-kit-schematics:add\`. Le plus sûr, ` +
+          `mais les retouches locales sont perdues.\n` +
+          `  2. migrer à la main — déplacer les fichiers vers la nouvelle disposition ` +
+          `(\`{ui-nom}/{ui-nom}.ts\`, bases partagées sous \`ui-core/\`), réadresser les ` +
+          `imports de votre application, monter les versions dans \`ui-kit.json\`, puis ` +
+          `relancer \`update\`. À préférer si vous avez retouché les copies.\n\n` +
+          `Voir la section 0.3.0 du CHANGELOG du kit pour la disposition cible.`,
+      );
     }
 
     let applied = 0;
@@ -91,11 +152,25 @@ export function update(options: Schema): Rule {
       }
     }
 
-    manifest.kitVersion = kitVersion;
+    // Le manifeste est écrit dans tous les cas — les entrées par composant
+    // appliquées doivent être persistées — mais `kitVersion` ne monte que si
+    // TOUT l'est. Écrit inconditionnellement, il annonçait une version que
+    // l'arborescence ne portait pas, y compris après zéro application
+    // (FSHSP-150).
+    const complete = applied === outdated.length;
+    if (complete) manifest.kitVersion = kitVersion;
     writeManifest(tree, manifest);
-    context.logger.info(
-      `✔ ${applied}/${outdated.length} composant(s) mis à jour vers ${kitVersion}.`,
-    );
+    if (complete) {
+      context.logger.info(
+        `✔ ${applied}/${outdated.length} composant(s) mis à jour vers ${kitVersion}.`,
+      );
+    } else {
+      context.logger.warn(
+        `${applied}/${outdated.length} composant(s) mis à jour vers ${kitVersion} — ` +
+          `${outdated.length - applied} restant(s). \`ui-kit.json\` reste en ` +
+          `${manifest.kitVersion} : relancez \`update\` pour les traiter.`,
+      );
+    }
     return tree;
   };
 }
