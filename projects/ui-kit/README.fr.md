@@ -87,12 +87,19 @@ voie n'a pas de hook à l'installation — ajoutez-le vous-même, une fois, dans
 {
   "mcpServers": {
     "ui-kit": {
-      "command": "node",
-      "args": ["node_modules/@4sh/ui-kit/mcp/index.js"]
+      "command": "npx",
+      "args": ["--no-install", "ui-kit-mcp"]
     }
   }
 }
 ```
+
+`npm install` pose `ui-kit-mcp` dans le `node_modules/.bin/` du projet : cette forme
+se résout donc quel que soit le dossier depuis lequel votre client MCP lance le
+serveur — un `node node_modules/@4sh/ui-kit/mcp/index.js` en dur est relatif au
+répertoire courant et casse dès que ce n'est pas la racine du projet. Gardez
+`--no-install` : npx échoue franchement si le binaire manque, au lieu d'aller
+chercher sur le registre un paquet homonyme sans rapport.
 
 Rien à installer au-delà de `@4sh/ui-kit` lui-même, et rien à aller chercher sur le
 registre npm à l'usage — le fichier est déjà sur le disque une fois `npm install`

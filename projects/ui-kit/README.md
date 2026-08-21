@@ -86,12 +86,19 @@ install-time hook — add it yourself, once, to your `.mcp.json`:
 {
   "mcpServers": {
     "ui-kit": {
-      "command": "node",
-      "args": ["node_modules/@4sh/ui-kit/mcp/index.js"]
+      "command": "npx",
+      "args": ["--no-install", "ui-kit-mcp"]
     }
   }
 }
 ```
+
+`npm install` links `ui-kit-mcp` into your project's `node_modules/.bin/`, so this
+form resolves no matter which directory your MCP client starts the server from — a
+hardcoded `node node_modules/@4sh/ui-kit/mcp/index.js` is relative to the working
+directory and breaks as soon as that isn't the project root. Keep `--no-install`: it
+makes npx fail loudly when the bin is missing, rather than fetching an unrelated
+package of that name from the registry.
 
 Nothing to install beyond `@4sh/ui-kit` itself, and nothing to reach on the npm
 registry at run time — the file is already on disk once `npm install` has run. Tools:

@@ -1,7 +1,7 @@
 {
   "name": "@4sh/ui-kit",
   "version": "0.5.0",
-  "description": "Headless Angular components from the 4SH Design System: signals + Angular CDK, styled exclusively through design tokens.",
+  "description": "Headless Angular components from the 4SH Design System: signals + Angular CDK, styled exclusively through design tokens. Ships a companion MCP server exposing the kit catalog and doc to AI coding agents.",
   "homepage": "https://4sh.github.io/starter-angular/?path=/docs/introduction--docs",
   "repository": {
     "type": "git",
@@ -21,13 +21,19 @@
     "design-tokens",
     "ui-kit",
     "accessibility",
-    "a11y"
+    "a11y",
+    "mcp",
+    "mcp-server",
+    "ai-agent"
   ],
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
   "schematics": "./collection.json",
+  "bin": {
+    "ui-kit-mcp": "./mcp/index.js"
+  },
   "peerDependencies": {
     "@angular/cdk": "^22.0.0",
     "@angular/common": "^22.0.0",

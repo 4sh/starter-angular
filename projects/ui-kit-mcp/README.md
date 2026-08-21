@@ -45,6 +45,12 @@ Le serveur ne lit jamais le repo en live : il embarque une copie figée du manif
 (`storybook/public/text-search-docs.json`, `storybook/generated/ui-config.json`), prise au
 moment du build — voir `src/data.ts`.
 
+Le `version` du `package.json` ci-contre **ne sert à rien** : ne le montez pas à la main.
+La version annoncée au client MCP est celle de `@4sh/ui-kit`, tamponnée à l'assemblage par
+`scripts/mcp-bundle.build.mjs` — ce que le serveur annonce, c'est la version de la doc
+qu'il sert. Le numéro d'ici n'est qu'un repère de développement, comme celui de
+`projects/ui-kit-schematics/package.json`.
+
 Pour tester le bundle en conditions réelles (dialogue JSON-RPC brut sur stdio) :
 
 ```bash

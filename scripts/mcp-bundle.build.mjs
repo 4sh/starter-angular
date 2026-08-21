@@ -18,7 +18,7 @@
  * Usage : node scripts/mcp-bundle.build.mjs
  */
 import { execSync } from 'node:child_process';
-import { copyFileSync, cpSync, mkdirSync, rmSync } from 'node:fs';
+import { copyFileSync, cpSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as esbuild from 'esbuild';
@@ -60,10 +60,35 @@ await esbuild.build({
 
 // 3. Fichiers statiques copiés tels quels à côté du bundle.
 cpSync(join(PKG, 'data'), join(DEST, 'data'), { recursive: true });
-// `package.json` : lu au runtime par `src/server.ts` pour le numéro de version
-// annoncé au client MCP — pas pour la résolution de dépendances (le bundle
-// n'en a aucune).
-copyFileSync(join(PKG, 'package.json'), join(DEST, 'package.json'));
+// `package.json` : NE PAS supprimer de l'artefact, malgré son air de métadonnée
+// inerte. Il porte deux choses dont le bundle dépend au runtime :
+//   - `type: module`, qui fait lire `index.js` comme ESM. En mode starter la
+//     copie atterrit dans un projet Angular (CommonJS) : sans lui, Node 18 —
+//     le plancher déclaré par `engines` — échoue sèchement, et les versions
+//     plus récentes ne s'en sortent qu'en émettant un avertissement sur
+//     stderr, c'est-à-dire dans le transport stdio du serveur ;
+//   - `version`, lue par `src/server.ts` et annoncée au client MCP. Sans ce
+//     fichier, la lecture remonte d'un cran et rapporte la version du paquet
+//     hôte (l'appli du consommateur en mode starter).
+//
+// Cette `version` est tamponnée depuis celle du kit, au moment de l'assemblage —
+// même parti que `scripts/schematics-package.build.mjs`. Ce que le serveur
+// annonce au client, c'est la version de la doc qu'il sert : un agent qui
+// interroge le MCP doit pouvoir la rapprocher du `@4sh/ui-kit` installé. Un
+// numéro propre au serveur ne voulait rien dire pour personne, et figeait à
+// 0.1.0 quel que soit le kit embarquant le bundle. Le numéro écrit dans
+// `projects/ui-kit-mcp/package.json` n'est donc qu'un repère de développement.
+//
+// `private: true` en revanche n'a pas sa place dans un paquet publié : au mieux
+// inerte, au pire trompeur (il a déjà fait conclure à tort que le serveur MCP
+// n'était pas livré, cf. FSHSP-146). Il reste dans la source, où il garde son
+// sens de garde-fou contre un `npm publish` lancé depuis `projects/ui-kit-mcp/`.
+const mcpManifest = JSON.parse(readFileSync(join(PKG, 'package.json'), 'utf8'));
+delete mcpManifest.private;
+mcpManifest.version = JSON.parse(
+  readFileSync(join(ROOT, 'projects/ui-kit/package.json'), 'utf8'),
+).version;
+writeFileSync(join(DEST, 'package.json'), `${JSON.stringify(mcpManifest, null, 2)}\n`);
 // Apache-2.0 (§4a) : toute redistribution doit fournir une copie de la licence
 // — et ce bundle est redistribué, deux fois (voir les deux embed scripts).
 copyFileSync(join(PKG, 'LICENSE'), join(DEST, 'LICENSE'));
