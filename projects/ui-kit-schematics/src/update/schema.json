@@ -4,10 +4,10 @@
   "title": "ng generate @4sh/ui-kit-schematics:update",
   "type": "object",
   "properties": {
-    "yes": {
+    "force": {
       "type": "boolean",
       "default": false,
-      "description": "Applique toutes les mises à jour sans confirmation composant par composant."
+      "description": "Applique toutes les mises à jour sans afficher les diffs ni demander confirmation. Écrase vos retouches locales sur les composants concernés."
     }
   }
 }

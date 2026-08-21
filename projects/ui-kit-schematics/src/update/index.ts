@@ -1,5 +1,5 @@
 /**
- * update — `ng generate @4sh/ui-kit-schematics:update [--yes]`.
+ * update — `ng generate @4sh/ui-kit-schematics:update [--force]`.
  * Pour chaque composant du manifeste dont la version diffère de la version
  * installée de `@4sh/ui-kit`, affiche un diff par fichier et propose
  * Appliquer / Ignorer / Voir le diff. Jamais de merge automatique : une fois
@@ -159,7 +159,7 @@ export function update(options: Schema): Rule {
       });
 
       while (true) {
-        const action = options.yes
+        const action = options.force
           ? 'apply'
           : await promptAction(`${name} (${entry.version} → ${kitVersion})`);
         if (action === 'view-diff') {
