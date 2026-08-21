@@ -39,23 +39,50 @@ accepter ou à sauter.
 > générer du SCSS dans votre projet — le CSS pur par défaut d'Angular est
 > délibérément surchargé.
 
-|                                                   |                                                                             |
-| ------------------------------------------------- | --------------------------------------------------------------------------- |
-| `ng add @4sh/ui-kit-schematics`                   | fondation **et** composants, d'un coup                                      |
-| `ng add @4sh/ui-kit-schematics --skip-components` | fondation seule, composants choisis plus tard                               |
-| `ng add @4sh/ui-kit-schematics --skip-install`    | ne pas lancer `npm install` (projet qui pilote son lockfile)                |
-| `ng add @4sh/ui-kit-schematics --skip-storybook`  | ne pas poser de Storybook (voir ci-dessous)                                 |
-| `ng add @4sh/ui-kit-schematics --skip-mcp`        | ne pas déclarer le serveur MCP (voir ci-dessous)                            |
-| `ng add @4sh/ui-kit-schematics --gridaflex`       | poser la grille Gridaflex sans question (`--no-gridaflex` pour s'en passer) |
-| `ng generate @4sh/ui-kit-schematics:add`          | copier d'autres composants (interactif, ou `--components`, ou `--all`)      |
-| `ng generate @4sh/ui-kit-schematics:update`       | diff des composants copiés face aux sources publiées                        |
+|                                                     |                                                                                       |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `ng add @4sh/ui-kit-schematics`                     | fondation **et** composants, d'un coup                                                |
+| `ng add @4sh/ui-kit-schematics --skip-components`   | fondation seule, composants choisis plus tard                                         |
+| `ng add @4sh/ui-kit-schematics --skip-install`      | ne pas lancer `npm install` (projet qui pilote son lockfile)                          |
+| `ng add @4sh/ui-kit-schematics --skip-storybook`    | ne pas poser de Storybook (voir ci-dessous)                                           |
+| `ng add @4sh/ui-kit-schematics --skip-mcp`          | ne pas déclarer le serveur MCP (voir ci-dessous)                                      |
+| `ng add @4sh/ui-kit-schematics --gridaflex`         | poser la grille Gridaflex sans question (`--no-gridaflex` pour s'en passer)           |
+| `ng generate @4sh/ui-kit-schematics:add`            | copier d'autres composants (interactif, ou `--components`, ou `--all`)                |
+| `ng generate @4sh/ui-kit-schematics:update`         | diff des composants copiés face aux sources publiées                                  |
+| `ng generate @4sh/ui-kit-schematics:update --force` | applique toutes les mises à jour sans diff ni confirmation (**écrase vos retouches**) |
 
 `ui-kit.json` se trouve à la racine de votre projet, à côté de `package.json`.
 
 > ⚠️ **`update` remplace, il ne fusionne pas.** Accepter un composant écrit la version
 > publiée par-dessus la vôtre : **vos modifications sont perdues**. Lisez le diff, reportez
-> à la main ce que vous voulez garder, ou sautez le composant. `--yes` accepte tout sans
+> à la main ce que vous voulez garder, ou sautez le composant. `--force` accepte tout sans
 > afficher un seul diff : à réserver aux composants que vous n'avez pas touchés.
+
+### Rattraper la fondation
+
+`update` ne touche jamais qu'aux composants listés dans `ui-kit.json`. Tout le reste
+de ce que `ng add` a posé — serveur MCP, config Storybook, chaîne de tokens, cibles
+d'`angular.json`, dépendances — reste à la version de votre installation d'origine.
+Un projet installé avant une version donnée ne récupère jamais ce que cette version a
+ajouté autour des composants : c'est ainsi qu'un projet installé en `0.2.0` et monté
+en `0.5.0` n'a jamais eu le serveur MCP, arrivé en `0.4.0`.
+
+Pour réappliquer la fondation, relancez `ng add` en sautant les composants :
+
+```bash
+ng add @4sh/ui-kit-schematics --skip-components
+```
+
+La commande est sûre sur un projet existant. Vos composants copiés ne sont pas
+touchés, un `.mcp.json` existant est fusionné et non remplacé (vos autres serveurs
+sont conservés), et votre config Prettier comme vos feuilles de style retouchées sont
+laissées telles quelles — ces règles n'écrivent que ce qui est absent. Une réserve à
+connaître : une dépendance que **vous** auriez épinglée peut être ré-élargie vers la
+plage demandée par le kit.
+
+`update` ne le fait pas à votre place, et c'est volontaire : rien ne consigne si une
+pièce manque parce qu'elle n'existait pas encore, ou parce que vous l'avez écartée
+avec `--skip-mcp` ou `--skip-storybook`. La réappliquer sans demander imposerait.
 
 ### Votre propre Storybook
 

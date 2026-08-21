@@ -71,7 +71,11 @@ predecessor should not exist.
    - **If any `ui-*` component changed** (`projects/ui-kit/**`) since the last
      release, refresh the MCP server's embedded manifest before committing — it
      is a build-time snapshot, not a live read of the repo, and goes stale
-     otherwise (see `data.ts` in `projects/ui-kit-mcp/src/`):
+     otherwise (see `data.ts` in `projects/ui-kit-mcp/src/`). Run this **after**
+     the version bump above, never before: the manifest also carries the version
+     the server announces to MCP clients, stamped from the kit's at assembly
+     time, so refreshing first would publish a server announcing the previous
+     release:
      ```
      npm run docs:config
      npm run mcp:assets

@@ -1,5 +1,5 @@
 /**
- * update — `ng generate @4sh/ui-kit-schematics:update [--yes]`.
+ * update — `ng generate @4sh/ui-kit-schematics:update [--force]`.
  * Pour chaque composant du manifeste dont la version diffère de la version
  * installée de `@4sh/ui-kit`, affiche un diff par fichier et propose
  * Appliquer / Ignorer / Voir le diff. Jamais de merge automatique : une fois
@@ -66,6 +66,33 @@ async function promptAction(componentName: string): Promise<Action> {
   });
 }
 
+/**
+ * `update` ne traite que les composants de `ui-kit.json`. Tout ce que `ng add`
+ * a posé autour — serveur MCP, config Storybook, chaîne de tokens, cibles
+ * d'`angular.json`, dépendances — reste à la version du `ng add` initial, sans
+ * que rien ne le signale : c'est ainsi qu'un projet installé en 0.2.0 puis
+ * monté en 0.5.0 n'a jamais eu le serveur MCP, arrivé en 0.4.0 (FSHSP-151,
+ * remonté par le REX FSHSP-146).
+ *
+ * On le DIT plutôt que de le rattraper d'office. `update` ne peut pas
+ * distinguer ce qui manque parce que ça n'existait pas encore de ce que le
+ * consommateur a délibérément écarté (`--skip-mcp`, `--skip-storybook`) : rien
+ * ne le consigne. Poser d'autorité imposerait ; le rattrapage reste donc une
+ * commande qu'on choisit de lancer.
+ */
+function logUncoveredConcerns(context: SchematicContext): void {
+  context.logger.info(
+    `\nÀ noter : \`update\` ne couvre que les composants. La fondation posée par ` +
+      `\`ng add\` — serveur MCP, config Storybook, chaîne de tokens, cibles ` +
+      `d'\`angular.json\`, dépendances — n'est pas mise à jour ici. Si vous venez ` +
+      `d'une version plus ancienne du kit, \`ng add @4sh/ui-kit-schematics ` +
+      `--skip-components\` réapplique ce qui peut l'être sans risque : vos composants, ` +
+      `votre \`.mcp.json\`, votre config Prettier et vos styles retouchés sont ` +
+      `préservés. Seule réserve mesurée : une dépendance que vous auriez épinglée peut ` +
+      `y être ré-élargie vers la plage du kit.`,
+  );
+}
+
 export function update(options: Schema): Rule {
   return async (tree: Tree, context: SchematicContext) => {
     const manifest = readManifest(tree);
@@ -82,6 +109,7 @@ export function update(options: Schema): Rule {
 
     if (!outdated.length) {
       context.logger.info(`Rien à mettre à jour — tout est déjà en ${kitVersion}.`);
+      logUncoveredConcerns(context);
       return tree;
     }
 
@@ -131,7 +159,7 @@ export function update(options: Schema): Rule {
       });
 
       while (true) {
-        const action = options.yes
+        const action = options.force
           ? 'apply'
           : await promptAction(`${name} (${entry.version} → ${kitVersion})`);
         if (action === 'view-diff') {
@@ -171,6 +199,7 @@ export function update(options: Schema): Rule {
           `${manifest.kitVersion} : relancez \`update\` pour les traiter.`,
       );
     }
+    logUncoveredConcerns(context);
     return tree;
   };
 }
