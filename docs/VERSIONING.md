@@ -68,6 +68,15 @@ predecessor should not exist.
    - Bump the version in **`projects/ui-kit/package.json`** — that is the one that
      gets published, and the one the tag is named after. The root `package.json`
      is left untouched.
+   - **If any `ui-*` component changed** (`projects/ui-kit/**`) since the last
+     release, refresh the MCP server's embedded manifest before committing — it
+     is a build-time snapshot, not a live read of the repo, and goes stale
+     otherwise (see `data.ts` in `projects/ui-kit-mcp/src/`):
+     ```
+     npm run docs:config
+     npm run mcp:assets
+     npm run mcp:bundle
+     ```
    - Commit and push (no tag needed — see below)
 5. Run the publish workflow ([`PUBLISHING.md`](./PUBLISHING.md))
 
