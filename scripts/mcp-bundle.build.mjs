@@ -70,12 +70,24 @@ cpSync(join(PKG, 'data'), join(DEST, 'data'), { recursive: true });
 //   - `version`, lue par `src/server.ts` et annoncée au client MCP. Sans ce
 //     fichier, la lecture remonte d'un cran et rapporte la version du paquet
 //     hôte (l'appli du consommateur en mode starter).
+//
+// Cette `version` est tamponnée depuis celle du kit, au moment de l'assemblage —
+// même parti que `scripts/schematics-package.build.mjs`. Ce que le serveur
+// annonce au client, c'est la version de la doc qu'il sert : un agent qui
+// interroge le MCP doit pouvoir la rapprocher du `@4sh/ui-kit` installé. Un
+// numéro propre au serveur ne voulait rien dire pour personne, et figeait à
+// 0.1.0 quel que soit le kit embarquant le bundle. Le numéro écrit dans
+// `projects/ui-kit-mcp/package.json` n'est donc qu'un repère de développement.
+//
 // `private: true` en revanche n'a pas sa place dans un paquet publié : au mieux
 // inerte, au pire trompeur (il a déjà fait conclure à tort que le serveur MCP
 // n'était pas livré, cf. FSHSP-146). Il reste dans la source, où il garde son
 // sens de garde-fou contre un `npm publish` lancé depuis `projects/ui-kit-mcp/`.
 const mcpManifest = JSON.parse(readFileSync(join(PKG, 'package.json'), 'utf8'));
 delete mcpManifest.private;
+mcpManifest.version = JSON.parse(
+  readFileSync(join(ROOT, 'projects/ui-kit/package.json'), 'utf8'),
+).version;
 writeFileSync(join(DEST, 'package.json'), `${JSON.stringify(mcpManifest, null, 2)}\n`);
 // Apache-2.0 (§4a) : toute redistribution doit fournir une copie de la licence
 // — et ce bundle est redistribué, deux fois (voir les deux embed scripts).
