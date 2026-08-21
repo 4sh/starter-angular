@@ -18,6 +18,7 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ### Fixed
 
+- **Les images de la doc Storybook posée par `ng add @4sh/ui-kit-schematics` étaient illisibles** (FSHSP-156). La copie des assets Storybook lisait chaque fichier en texte avant de l'écrire : sur un binaire, le décodage UTF-8 remplace tout octet invalide par U+FFFD, donc les 5 `doc-*.png` de la page `Introduction` arrivaient corrompus, signature PNG détruite et poids gonflé de 80 % (`doc-token.png` : 80 180 octets au lieu de 44 440). Seuls les `.mdx` sont désormais décodés, pour la réécriture des chemins du kit ; tout le reste est copié en binaire, octet pour octet.
 - **`ng add @4sh/ui-kit-schematics` échouait dès qu'on acceptait Gridaflex** (FSHSP-155). Le scaffold `src/ng-add/files/vendors/_gridaflex-settings.scss` n'avait jamais été commité : présent sur le poste de dev, donc invisible en local, mais absent du dépôt et du tarball 0.6.0. Répondre « oui » à la question s'arrêtait sur `ENOENT` et laissait l'installation à moitié faite. Le fichier est maintenant versionné.
 
 ## [0.6.0] - 2026-08-21

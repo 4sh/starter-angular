@@ -350,7 +350,7 @@ function scaffoldStorybook(): Rule {
     const assets = join(stylesFoundationDir(), '..', 'storybook');
     const scaffolds = join(__dirname, 'files', 'storybook');
 
-    const create = (targetPath: string, content: string) => {
+    const create = (targetPath: string, content: string | Buffer) => {
       if (tree.exists(targetPath)) return; // fichier du consommateur dès la première pose
       tree.create(targetPath, content);
     };
@@ -362,13 +362,17 @@ function scaffoldStorybook(): Rule {
           copyAll(full, `${targetDir}/${entry.name}`);
           continue;
         }
-        const source = readFileSync(full, 'utf8');
         // Les pages transverses citent la fondation de styles — `Colors.mdx`
         // va jusqu'à importer le manifeste de tokens. Aux chemins du monorepo,
         // le build échoue sur un module introuvable.
+        //
+        // Tout le reste passe en Buffer : décoder en utf8 remplace chaque octet
+        // invalide par U+FFFD, ce qui détruit les images de la doc.
         create(
           `${targetDir}/${entry.name}`,
-          entry.name.endsWith('.mdx') ? rewriteKitPaths(source) : source,
+          entry.name.endsWith('.mdx')
+            ? rewriteKitPaths(readFileSync(full, 'utf8'))
+            : readFileSync(full),
         );
       }
     };
