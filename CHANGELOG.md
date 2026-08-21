@@ -16,6 +16,10 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+### Fixed
+
+- **`ng add @4sh/ui-kit-schematics` échouait dès qu'on acceptait Gridaflex** (FSHSP-155). Le scaffold `src/ng-add/files/vendors/_gridaflex-settings.scss` n'avait jamais été commité : présent sur le poste de dev, donc invisible en local, mais absent du dépôt et du tarball 0.6.0. Répondre « oui » à la question s'arrêtait sur `ENOENT` et laissait l'installation à moitié faite. Le fichier est maintenant versionné.
+
 ## [0.6.0] - 2026-08-21
 
 ### Added

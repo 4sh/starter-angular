@@ -1,0 +1,29 @@
+// _gridaflex-settings.scss (votre projet)
+@use 'gridaflex/src/settings' with (
+  $breakpoints: (
+    'phone': 0,
+    'tablet-portrait': 600px,
+    'tablet-landscape': 900px,
+    'desktop': 1200px,
+    'medium-desktop': 1440px,
+    'big-desktop': 1800px,
+  ),
+  $breakpoint-classes: (phone tablet-portrait tablet-landscape desktop medium-desktop big-desktop),
+  $flex-columns: 24,
+  $flex-margin-gutters: ('phone': 16px, 'tablet-portrait': 24px),
+
+  // Tailles de gouttières nommées pour flex-gap-{size}-{axis}
+  $gutters: (
+    'default': 16px,  // → flex-gap-x / -y / -xy
+    // 'sm': 8px,     // → flex-gap-sm-x / -sm-y / -sm-xy
+    // 'lg': 32px,    // → flex-gap-lg-x / -lg-y / -lg-xy
+  ),
+
+  // Tailles de padding nommées pour flex-padding-{size}-{axis}
+  $padding-gutters: (
+    'default': 16px,
+    // 'sm': 8px,
+    // 'lg': 32px,
+  ),
+);
+@use 'gridaflex/src/classes';   // émet toutes les classes avec VOS réglages
