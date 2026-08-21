@@ -195,6 +195,25 @@ function relaxAnyComponentStyleBudget(target: workspaces.TargetDefinition): void
  * Passe par `updateWorkspace` plutôt qu'un `JSON.parse`/`stringify` maison :
  * l'API préserve commentaires et mise en forme du fichier existant.
  */
+/**
+ * La cible de test accepte-t-elle `styles` / `stylePreprocessorOptions` /
+ * `inlineStyleLanguage` ?
+ *
+ * Seuls les builders Karma les déclarent. `@angular/build:unit-test` (défaut
+ * depuis Angular 20) a un schéma en `additionalProperties: false` qui n'en
+ * déclare aucune : les écrire rendait `angular.json` invalide et cassait
+ * `ng test` pour tout le projet, sans message exploitable (FSHSP-152). Il n'en
+ * a d'ailleurs pas besoin — il dérive sa configuration de build du
+ * `buildTarget`, donc de la cible `build` que `updateAngularJson` traite déjà.
+ *
+ * On énumère donc ce qui ACCEPTE plutôt que ce qui refuse : un builder inconnu
+ * est présumé dériver du `build` — c'est le sens de l'évolution d'Angular —
+ * plutôt que de casser `ng test` par défaut.
+ */
+function acceptsStyleOptions(target: workspaces.TargetDefinition): boolean {
+  return target.builder.includes(':karma');
+}
+
 function updateAngularJson(): Rule {
   return updateWorkspace((workspace) => {
     for (const project of workspace.projects.values()) {
@@ -205,6 +224,7 @@ function updateAngularJson(): Rule {
       for (const targetName of ['build', 'test'] as const) {
         const target = project.targets.get(targetName);
         if (!target) continue;
+        if (targetName === 'test' && !acceptsStyleOptions(target)) continue;
         const options = (target.options ??= {});
 
         const styles = ((options['styles'] as string[] | undefined) ?? []).slice();
