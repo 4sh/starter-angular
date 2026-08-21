@@ -16,6 +16,10 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+### Added
+
+- **`ng add @4sh/ui-kit-schematics` propose maintenant Gridaflex** (FSHSP-144). La grille autour de laquelle le kit est pensé n'était ni installée ni posée par la schematic : un projet fraîchement généré n'avait ni la dépendance, ni ses réglages, et les stories copiées de `ui-card`/`ui-read-only` s'affichaient à plat. Une question posée juste après le choix des composants pose désormais `gridaflex` en dépendance, `src/styles/vendors/_gridaflex-settings.scss` (réglages du consommateur, créé une fois) et son `@use` en tête de `src/styles/main.scss`. Un refus ne pose aucun des trois. `--gridaflex` / `--no-gridaflex` répond sans prompt ; hors terminal interactif, la question est sautée et rien n'est posé. Le mode librairie (`@4sh/ui-kit`) est inchangé : `styles.css` ne contient pas la grille.
+
 ### Fixed
 
 - **La page `Introduction` du Storybook posé par `ng add @4sh/ui-kit-schematics` renvoyait vers la démo et les fichiers Figma du starter** (FSHSP-145). `scripts/schematics-assets.build.mjs` copiait `Introduction.mdx` tel quel en le traitant comme sans dépendance au monorepo, alors que ses sections « Application de démonstration » et « Ressources Figma » sont propres à ce dépôt. `scaffoldStorybook` pose désormais un scaffold (`src/ng-add/files/storybook/docs/Introduction.mdx`, sans ces deux sections) avant la copie brute des assets, pour la court-circuiter sur ce fichier précis.
