@@ -16,6 +16,8 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+## [0.6.1] - 2026-08-22
+
 ### Fixed
 
 - **Les images de la doc Storybook posée par `ng add @4sh/ui-kit-schematics` étaient illisibles** (FSHSP-156). La copie des assets Storybook lisait chaque fichier en texte avant de l'écrire : sur un binaire, le décodage UTF-8 remplace tout octet invalide par U+FFFD, donc les 5 `doc-*.png` de la page `Introduction` arrivaient corrompus, signature PNG détruite et poids gonflé de 80 % (`doc-token.png` : 80 180 octets au lieu de 44 440). Seuls les `.mdx` sont désormais décodés, pour la réécriture des chemins du kit ; tout le reste est copié en binaire, octet pour octet.
