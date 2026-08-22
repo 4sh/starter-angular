@@ -227,6 +227,24 @@ color: #333;
 > `--shadow-*` (metrics, **without the `metrics-` prefix**), semantics without prefix
 > (`--actions-high-surface-default`), `--fontfamily-*`, `--transition-*`.
 
+### Layout: the Gridaflex grid (optional package)
+
+Gridaflex is **offered, not imposed**: `ng add` asks for it, and a consumer project may
+have declined it. Never assume the classes exist outside this repo.
+
+- **A component never sits between the group and its cells.** Angular renders the host
+  element (`<ui-card>`, `<sp-block>`) as a real DOM node, so `.flex-x > ui-card > .cell`
+  makes the cells grandchildren: they stop being flex items, the `> .cell` rules
+  (`flex-padding-*`, `[bp]-up-[n]`, `[bp]-padding-collapse`) no longer match, and the
+  width percentages resolve against the host box. `display: contents` does not fix it.
+- **Group and cells are native elements of the same template.** To lay out components,
+  put each one _inside_ a `.cell`, never _as_ a cell.
+- Need the grid inside a component? Pass the classes through its class inputs
+  (`ui-card` `contentClass`, `ui-read-only` `rowClass`/`labelClass`/`valueClass`), or, when
+  writing the component, put the group on the element that directly wraps `<ng-content />`.
+
+Full rules and examples: `storybook/docs/specifications/responsive.mdx` (section 3).
+
 ### SASS comments (to respect in AI generation)
 
 Stay **restrained**: the code speaks for itself, only comment the **non-obvious** (recipe,
