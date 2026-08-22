@@ -4,7 +4,15 @@ import { Meta } from '@storybook/addon-docs/blocks';
 
 # Responsive Design
 
-Le projet utilise **[Gridaflex](https://www.npmjs.com/package/gridaflex)** (v1.0.0) comme système de mise en page responsive. Gridaflex est un système **flexbox** à axes X / Y sur un moteur `gap` moderne (jamais de marges négatives), reprenant l'API XY de Foundation, modernisée.
+**[Gridaflex](https://www.npmjs.com/package/gridaflex)** (v1.0.0) est le système de mise
+en page responsive **proposé en option** par ce starter, celui autour duquel le kit est
+pensé. Il n'est pas imposé : `ng add @4sh/ui-kit-schematics` demande si le projet le veut
+(`--gridaflex` / `--no-gridaflex` répond à votre place). Sans la grille, aucune des classes
+de cette page n'existe dans le projet, et les stories qui s'appuient dessus (`ui-card`,
+`ui-read-only`) s'affichent à plat.
+
+Techniquement, c'est un système **flexbox** à axes X / Y sur un moteur `gap` moderne
+, reprenant l'API XY de Foundation, modernisée.
 
 > Préfixe des classes : `flex-` : ce n'est **pas** CSS Grid.
 
@@ -60,6 +68,7 @@ Les paliers sont définis dans les design tokens (`src/design-tokens/responsive.
 2. Un **groupe** définit l'axe : `.flex-x` (horizontal) ou `.flex-y` (vertical).
 3. Les **cellules** `.cell` se placent dans le groupe et reçoivent une taille responsive `[breakpoint]-[n]` (n de 1 à **24** dans ce projet, cf. `$flex-columns: 24`).
 4. Les **gouttières** sont posées **sur le groupe** : `.flex-gap-x` (horizontal), `.flex-gap-y` (vertical), `.flex-gap-xy` (les deux).
+5. La **contiguïté** fait partie du contrat : les `.cell` sont les **enfants directs** du groupe. Aucun élément intermédiaire, et surtout aucun composant Angular (voir la section 3).
 
 > Règle d'or : la **taille** (`desktop-8`) va sur la **cellule** ; la **gouttière** (`flex-gap-x`) va sur le **groupe**. Ne pas inverser.
 
@@ -77,7 +86,119 @@ Les paliers sont définis dans les design tokens (`src/design-tokens/responsive.
 - Mobile-first : `phone-*` s'applique partout, puis surchargé vers le haut.
 - Les fractions sont **gap-aware** : 3× `desktop-8` (3 × 8 = 24 colonnes) tiennent exactement, gouttière comprise.
 
-## 3. Utilisation dans SASS/SCSS
+## 3. Grille et composants Angular : le nœud hôte
+
+Piège numéro un dans un template Angular : **un composant ne peut pas s'intercaler entre
+le groupe (`flex-x` / `flex-y`) et ses cellules (`.cell`)**. Angular rend l'élément hôte du
+composant (`<ui-step-panel>`, `<sp-mon-bloc>`) comme un vrai nœud du DOM. C'est lui qui
+devient l'enfant direct du groupe, les `.cell` ne sont plus que des petits-enfants, et la
+grille ne s'applique plus.
+
+### ❌ Ce qui casse : un composant entre le groupe et les cellules
+
+```html
+<div class="flex-x flex-gap-x">
+  <ui-step-panel [value]="1">
+    <div class="cell phone-24 desktop-12">A</div>
+    <div class="cell phone-24 desktop-12">B</div>
+  </ui-step-panel>
+</div>
+```
+
+Ce que le navigateur voit réellement :
+
+```html
+<div class="flex-x flex-gap-x">      <!-- display: flex -->
+  <ui-step-panel>                    <!-- nœud hôte Angular : le seul item flex -->
+    <div class="ui-step-panel-...">   <!-- et son template ajoute encore des niveaux -->
+      <div class="cell desktop-12">   <!-- plus un item flex, plus une cellule de grille -->
+      <div class="cell desktop-12">
+    </div>
+  </ui-step-panel>
+</div>
+```
+
+Trois choses lâchent en même temps :
+
+1. `display: flex` ne transforme que les **enfants directs** en items flex. L'unique item
+   est l'hôte ; les cellules redeviennent des blocs et s'empilent verticalement.
+2. Les règles Gridaflex écrites en enfant direct ne matchent plus, car un sélecteur `>`
+   suit l'arbre DOM : `flex-padding-x/y/xy`, le block grid `[bp]-up-[n]`,
+   `[bp]-padding-collapse` et les tailles verticales (`.flex-y > .[bp]-[n]`) ciblent
+   tous `> .cell`.
+3. Les classes de largeur (`desktop-12`) s'appliquent encore, mais leur pourcentage se
+   résout sur la boîte de l'hôte et non sur celle du groupe : la largeur obtenue n'est
+   plus celle de la grille, gouttière comprise.
+
+> `display: contents` sur l'hôte n'est **pas** le correctif : il rend les cellules items
+> flex mais ne répare pas les sélecteurs `> .cell` (un sélecteur matche l'arbre DOM, pas
+> l'arbre de boîtes), et il supprime la boîte de l'hôte donc tout style porté par le
+> composant.
+
+### ✅ Ce qui fonctionne : groupe et cellules dans le même template
+
+Le groupe et ses cellules sont des éléments natifs voisins, sans composant entre les deux :
+
+```html
+<ui-step-panel [value]="1">
+  <div class="flex-x flex-gap-x">
+    <div class="cell phone-24 desktop-12">A</div>
+    <div class="cell phone-24 desktop-12">B</div>
+  </div>
+</ui-step-panel>
+```
+
+Pour disposer des composants dans la grille, chaque composant va **dans** une cellule,
+jamais à la place d'une cellule :
+
+```html
+<div class="flex-x flex-gap-x">
+  <div class="cell phone-24 desktop-12"><ui-card header="A" /></div>
+  <div class="cell phone-24 desktop-12"><ui-card header="B" /></div>
+</div>
+```
+
+### Quand la grille doit vivre dans un composant
+
+Deux voies, selon que vous consommez le composant ou que vous l'écrivez.
+
+**Vous consommez un composant du kit** : passez les classes par les entrées prévues pour
+ça. Elles atterrissent sur les éléments du template du composant, donc groupe et cellules
+redeviennent voisins. `ui-card` expose `contentClass`, `ui-read-only` expose `rowClass` /
+`labelClass` / `valueClass` :
+
+```html
+<ui-card header="Coordonnées" contentClass="flex-x flex-gap-x">
+  <div class="cell phone-24 desktop-12">A</div>
+  <div class="cell phone-24 desktop-12">B</div>
+</ui-card>
+
+<ui-read-only
+  layout="grid"
+  rowClass="flex-x flex-gap-x"
+  labelClass="cell phone-24 desktop-6"
+  valueClass="cell phone-24 desktop-18"
+  label="Client"
+  value="Société Générale"
+/>
+```
+
+**Vous écrivez le composant** : posez le groupe sur l'élément qui contient directement le
+`<ng-content />`. Les nœuds projetés deviennent ses enfants directs dans le DOM, la grille
+matche.
+
+```html
+<!-- template du composant -->
+<div class="flex-x flex-gap-x">
+  <ng-content />
+</div>
+```
+
+> Vérification en deux secondes : dans l'inspecteur, le `.cell` doit être l'enfant
+> **immédiat** du `flex-x`. S'il y a un tag `<ui-…>` ou `<sp-…>` entre les deux, la grille
+> est déjà cassée.
+
+## 4. Utilisation dans SASS/SCSS
 
 Pour appliquer des styles conditionnels, utilisez le mixin `breakpoint()` exposé par l'API Sass de Gridaflex.
 
@@ -135,7 +256,7 @@ Applique les styles à partir du palier spécifié et au-dessus.
 }
 ```
 
-## 4. Cheatsheet des classes utilitaires
+## 5. Cheatsheet des classes utilitaires
 
 <table className="doc-table">
     <thead>
@@ -163,7 +284,7 @@ Applique les styles à partir du palier spécifié et au-dessus.
     </tbody>
 </table>
 
-## 5. Surcharge ponctuelle via variables CSS
+## 6. Surcharge ponctuelle via variables CSS
 
 Pour ajuster une gouttière sur une seule instance, sans toucher à la config :
 
@@ -172,7 +293,7 @@ Pour ajuster une gouttière sur une seule instance, sans toucher à la config :
 <div class="flex-x flex-gap-xy" style="--flex-gap-x: 8px; --flex-gap-y: 16px">…</div>
 ```
 
-## 6. Configuration projet
+## 7. Configuration projet
 
 La configuration Gridaflex est centralisée dans `src/styles/src/vendors/gridaflex-settings.scss` et alimentée par les design tokens responsive :
 
@@ -183,9 +304,10 @@ La configuration Gridaflex est centralisée dans `src/styles/src/vendors/gridafl
 
 > Toute modification de ces réglages doit passer par les design tokens, jamais en dur dans un composant.
 
-## 7. Erreurs à ne pas commettre
+## 8. Erreurs à ne pas commettre
 
 - ❌ Mettre la **taille** (`desktop-8`) sur le groupe, ou la **gouttière** (`flex-gap-x`) sur la cellule.
+- ❌ Intercaler un composant (`ui-*`, `sp-*`) entre le groupe `flex-x` / `flex-y` et ses `.cell` : voir la section « Grille et composants Angular ».
 - ❌ Utiliser des marges négatives ou `overflow-x: hidden` pour « corriger » des débordements : inutile, le moteur `gap` n'en crée pas.
 - ❌ Confondre avec **CSS Grid** (`grid-template-*`) : c'est du **flexbox**.
 - ❌ Inventer un breakpoint ou une taille hors de la config (n va de 1 à 24 dans ce projet).
