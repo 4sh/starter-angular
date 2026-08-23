@@ -65,6 +65,12 @@ export class UiTextarea extends BaseFormField<string> {
   );
   /** @ignore Current character count. */
   protected readonly charCount = computed(() => (this.modelValue() ?? '').length);
+  /** @ignore Keeps a floating label raised once focus leaves. */
+  protected readonly isFilled = computed(() => this.charCount() > 0);
+  /** @ignore At rest the floating label already holds that spot. */
+  protected readonly effectivePlaceholder = computed(() =>
+    this.hasFloatLabel() ? '' : (this.placeholder() ?? ''),
+  );
   /** @ignore Over the maxlength (only reachable programmatically). */
   protected readonly overLimit = computed(() => {
     const max = this.maxlength();

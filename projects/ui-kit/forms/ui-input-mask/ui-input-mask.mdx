@@ -86,6 +86,20 @@ atteignable par préfixe (`0` est accepté sur `1-31`, en attente du `1`-`9` sui
 > (`9_:__`) reste possible : la complétude relève de la validation du formulaire (`required`, ou un
 > validateur dédié), pas du masque.
 
+## Libellé flottant
+
+`floatLabel` fait descendre le libellé **dans** le champ, où il tient le rôle du placeholder,
+et le fait remonter au focus ou dès que le champ porte une valeur. Trois positions hautes :
+`over` (au-dessus de la boîte), `in` (dans une bande réservée en haut de la boîte, qui grandit
+d'autant) et `on` (à cheval sur le trait, qu'il entaille). Le `placeholder` est neutralisé tant
+que `floatLabel` et `label` sont tous les deux renseignés : les deux textes se superposeraient.
+
+
+<Canvas of={MaskStories.FloatLabel} />
+
+Le mécanisme est celui du shell partagé `ui-field`, commun à tous les champs à boîte : détail
+des trois variantes, du déclenchement et des conséquences de mise en page sur [`ui-input`](?path=/docs/components-ui-forms-ui-input--docs).
+
 ## Exemples
 
 <Canvas of={MaskStories.Date} />

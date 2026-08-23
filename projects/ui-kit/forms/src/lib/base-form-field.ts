@@ -5,6 +5,13 @@ import { UiFeedbackLevel } from '@4sh/ui-kit/types';
 export type FieldSize = 'default' | 'small';
 /** Visual validation status (subset of `UiFeedbackLevel`, shared with `ui-helper`). */
 export type FieldLevel = Extract<UiFeedbackLevel, 'default' | 'success' | 'error'>;
+/**
+ * Placement of the floating label ("float label" mode):
+ * - `over`: rises above the box, where a classic label sits,
+ * - `in`: rises to a band reserved at the top **inside** the box,
+ * - `on`: rises **onto** the top border, notching it.
+ */
+export type FieldFloatLabel = 'over' | 'in' | 'on';
 
 let nextUid = 0;
 
@@ -88,6 +95,16 @@ export abstract class BaseFormField<T> extends BaseFieldControl<T> {
   size = input<FieldSize>('default');
   /** Explicit validation status (`error` is forced when the control is invalid + touched). */
   level = input<FieldLevel>('default');
+  /**
+   * Floating label placement. Unset = classic label above the box.
+   *
+   * The label then plays the placeholder role while at rest, so the native
+   * `placeholder` is neutralised (see `hasFloatLabel`).
+   */
+  floatLabel = input<FieldFloatLabel>();
+
+  /** @ignore There is a label to float: a `floatLabel` alone has nothing to move. */
+  protected readonly hasFloatLabel = computed(() => !!this.floatLabel() && !!this.label());
 
   /** @ignore Effective level: error when invalid, otherwise the requested `level`. */
   protected readonly effectiveLevel = computed<FieldLevel>(() =>

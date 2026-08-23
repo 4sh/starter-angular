@@ -76,6 +76,18 @@
   }
 }
 
+/// Vertical room a floating `in` label reserves at the top of the field box.
+/// Carried by the CONTROL, never by the box: affixes, actions and spinners then
+/// keep centring on the box, and the control still spans it edge to edge (hit
+/// area, caret zone, autofill background). Only for a DIRECT child of the box,
+/// stretched to its height. `$extra` adds the control's own vertical inset.
+/// e.g. @include utils.field-float-inset($padding-block);
+@mixin field-float-inset($extra: 0px) {
+  // `--_field-inset-block-start` is set by `ui-field` on `.ui-field-box` in
+  // `_float-in` mode, and inherits down to the projected control.
+  padding-block-start: calc(#{$extra} + var(--_field-inset-block-start, 0px));
+}
+
 /// Bare native <input>/<textarea> filling the field box (no border/bg).
 /// `$inset` = horizontal field inset owned by the control (see
 /// `field-inset-edges`); pass `false` when the control is nested in a wrapper
@@ -94,7 +106,11 @@
   font-size: var(--size-typography-text-default);
   color: var(--form-high-content-default);
 
-  @if $inset { @include field-inset-edges('padding', $inset); }
+  // `$inset: false` = nested in a wrapper that already carries both insets.
+  @if $inset {
+    @include field-inset-edges('padding', $inset);
+    @include field-float-inset;
+  }
 
   &::placeholder {
     color: var(--form-low-content-default);

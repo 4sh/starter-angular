@@ -111,6 +111,14 @@ const meta: Meta<UiInputTags> = {
       description: 'Taille du champ.',
       table: { type: { summary: "'default' | 'small'" }, defaultValue: { summary: "'default'" } },
     },
+    floatLabel: {
+      control: 'select',
+      options: [undefined, 'over', 'in', 'on'],
+      labels: { undefined: 'aucun (libellé classique)' },
+      description:
+        'Libellé flottant : le libellé descend dans le champ, où il tient le rôle du placeholder, et remonte au focus ou dès que le champ porte une valeur. Le `placeholder` est alors neutralisé.',
+      table: { type: { summary: 'FieldFloatLabel' }, defaultValue: { summary: 'undefined' } },
+    },
     chipLevel: {
       control: 'inline-radio',
       options: ['default', 'highlight', 'success', 'warning', 'error'],
@@ -400,6 +408,26 @@ export const Sizes: Story = {
       <div style="display: flex; flex-direction: column; gap: 1.5rem; width: 22rem">
         <ui-input-tags label="Default" size="default" placeholder="Ajouter…" [(ngModel)]="a" />
         <ui-input-tags label="Small" size="small" placeholder="Ajouter…" [(ngModel)]="b" />
+      </div>
+    `,
+  }),
+};
+
+// --- Libellé flottant ---------------------------------------------------
+/**
+ * `floatLabel` fait descendre le libellé **dans** le champ, où il tient le rôle du
+ * placeholder, puis le fait remonter au focus ou dès qu'une valeur est présente. Trois
+ * positions hautes : `over` (au-dessus de la boîte), `in` (dans une bande réservée en haut
+ * de la boîte, qui grandit d'autant) et `on` (à cheval sur le trait, qu'il entaille).
+ */
+export const FloatLabel: Story = {
+  render: () => ({
+    props: { a: [] as string[], b: [] as string[], c: ['Angular', 'TypeScript'] },
+    template: `
+      <div style="display:grid; grid-template-columns:repeat(2, 260px); gap:28px 20px; align-items:start;">
+        <ui-input-tags floatLabel="over" label="Over label" [(ngModel)]="a" />
+        <ui-input-tags floatLabel="in" label="In label" [(ngModel)]="b" />
+        <ui-input-tags floatLabel="on" label="On label" [(ngModel)]="c" />
       </div>
     `,
   }),

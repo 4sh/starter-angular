@@ -265,6 +265,14 @@ const meta: Meta<UiAutocomplete> = {
       description: 'Taille du champ.',
       table: { type: { summary: "'default' | 'small'" }, defaultValue: { summary: "'default'" } },
     },
+    floatLabel: {
+      control: 'select',
+      options: [undefined, 'over', 'in', 'on'],
+      labels: { undefined: 'aucun (libellé classique)' },
+      description:
+        'Libellé flottant : le libellé descend dans le champ, où il tient le rôle du placeholder, et remonte au focus ou dès que le champ porte une valeur. Le `placeholder` est alors neutralisé.',
+      table: { type: { summary: 'FieldFloatLabel' }, defaultValue: { summary: 'undefined' } },
+    },
     disabled: {
       control: 'boolean',
       description: 'Désactive le champ (attribut natif).',
@@ -758,6 +766,36 @@ export const VirtualScroll: Story = {
         (completeMethod)="complete($event)"
         style="width: 20rem"
       />
+    `,
+  }),
+};
+
+// --- Libellé flottant ---------------------------------------------------
+/**
+ * `floatLabel` fait descendre le libellé **dans** le champ, où il tient le rôle du
+ * placeholder, puis le fait remonter au focus ou dès qu'une valeur est présente. Trois
+ * positions hautes : `over` (au-dessus de la boîte), `in` (dans une bande réservée en haut
+ * de la boîte, qui grandit d'autant) et `on` (à cheval sur le trait, qu'il entaille).
+ */
+export const FloatLabel: Story = {
+  render: () => ({
+    props: {
+      over: completer(COUNTRY_NAMES, (x) => x),
+      inside: completer(COUNTRY_NAMES, (x) => x),
+      on: completer(COUNTRY_NAMES, (x) => x),
+      a: null,
+      b: null,
+      c: 'France',
+    },
+    template: `
+      <div style="display:grid; grid-template-columns:repeat(3, 200px); gap:28px 20px; align-items:start;">
+        <ui-autocomplete floatLabel="over" label="Over label" [(ngModel)]="a"
+                         [suggestions]="over.results" (completeMethod)="over.complete($event)" />
+        <ui-autocomplete floatLabel="in" label="In label" [(ngModel)]="b"
+                         [suggestions]="inside.results" (completeMethod)="inside.complete($event)" />
+        <ui-autocomplete floatLabel="on" label="On label" [(ngModel)]="c" [dropdown]="true"
+                         [suggestions]="on.results" (completeMethod)="on.complete($event)" />
+      </div>
     `,
   }),
 };

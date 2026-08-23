@@ -70,6 +70,12 @@ export class UiInputMask extends BaseFormField<string> {
   private readonly inputEl = viewChild.required<ElementRef<HTMLInputElement>>('inputEl');
   /** @ignore Masked displayed text. */
   protected readonly text = signal('');
+  /** @ignore Keeps a floating label raised once focus leaves. */
+  protected readonly isFilled = computed(() => this.text() !== '');
+  /** @ignore At rest the floating label already holds that spot. */
+  protected readonly effectivePlaceholder = computed(() =>
+    this.hasFloatLabel() ? '' : (this.placeholder() ?? ''),
+  );
 
   /** @ignore */
   protected readonly iconSize = computed<UiIconSize>(() => (this.size() === 'small' ? 'sm' : 'md'));

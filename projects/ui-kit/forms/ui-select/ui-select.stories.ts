@@ -259,6 +259,14 @@ const meta: Meta<UiSelect> = {
       description: 'Taille du champ.',
       table: { type: { summary: 'FieldSize' }, defaultValue: { summary: "'default'" } },
     },
+    floatLabel: {
+      control: 'select',
+      options: [undefined, 'over', 'in', 'on'],
+      labels: { undefined: 'aucun (libellé classique)' },
+      description:
+        'Libellé flottant : le libellé descend dans le champ, où il tient le rôle du placeholder, et remonte au focus ou dès que le champ porte une valeur. Le `placeholder` est alors neutralisé.',
+      table: { type: { summary: 'FieldFloatLabel' }, defaultValue: { summary: 'undefined' } },
+    },
     required: {
       control: 'boolean',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
@@ -325,7 +333,7 @@ export const Basic: Story = {
         <ui-select
           [(ngModel)]="city"
           [options]="cities" optionLabel="name" optionValue="code"
-          [label]="label" [placeholder]="placeholder" [size]="size"
+          [label]="label" [placeholder]="placeholder" [size]="size" [floatLabel]="floatLabel"
           [helperText]="helperText" [errorText]="errorText"
           [multiple]="multiple" [checkmark]="checkmark" [checkbox]="checkbox"
           [showClear]="showClear" [filter]="filter" [editable]="editable" [loading]="loading"
@@ -732,4 +740,30 @@ export const LazyVirtualScroll: Story = {
       `,
     };
   },
+};
+
+// --- Libellé flottant ---------------------------------------------------
+/**
+ * `floatLabel` fait descendre le libellé **dans** le champ, où il tient le rôle du
+ * placeholder, puis le fait remonter au focus ou dès qu'une valeur est présente. Trois
+ * positions hautes : `over` (au-dessus de la boîte), `in` (dans une bande réservée en haut
+ * de la boîte, qui grandit d'autant) et `on` (à cheval sur le trait, qu'il entaille).
+ */
+export const FloatLabel: Story = {
+  render: () => ({
+    props: { cities: CITIES, a: null, b: null, c: 'LYO', d: ['PAR', 'LYO'] },
+    template: `
+      <div style="display:grid; grid-template-columns:repeat(2, 240px); gap:28px 20px; align-items:start;">
+        <ui-select floatLabel="over" label="Over label" [(ngModel)]="a"
+                   [options]="cities" optionLabel="name" optionValue="code" />
+        <ui-select floatLabel="in" label="In label" [(ngModel)]="b"
+                   [options]="cities" optionLabel="name" optionValue="code" />
+        <ui-select floatLabel="on" label="On label" [(ngModel)]="c" [showClear]="true"
+                   [options]="cities" optionLabel="name" optionValue="code" />
+        <ui-select floatLabel="on" label="Villes (multiple)" [(ngModel)]="d"
+                   [options]="cities" optionLabel="name" optionValue="code"
+                   [multiple]="true" [checkmark]="true" />
+      </div>
+    `,
+  }),
 };

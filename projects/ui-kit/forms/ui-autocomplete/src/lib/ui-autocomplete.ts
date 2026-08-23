@@ -491,10 +491,16 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
     })),
   );
 
-  /** @ignore Placeholder hidden as soon as values are selected (`multiple`). */
+  /** @ignore Placeholder hidden as soon as values are selected (`multiple`), and
+   *  while a floating label is at rest: it already holds that spot. */
   protected readonly effectivePlaceholder = computed(() =>
-    this.multiple() && this.selectedValues().length ? '' : (this.placeholder() ?? ''),
+    this.hasFloatLabel() || (this.multiple() && this.selectedValues().length)
+      ? ''
+      : (this.placeholder() ?? ''),
   );
+
+  /** @ignore Keeps a floating label raised once focus leaves. */
+  protected readonly isFilled = computed(() => this.hasText() || this.selectedValues().length > 0);
 
   /** @ignore Chips are removable unless the field is disabled/readonly. */
   protected readonly canRemove = computed(() => !this.isDisabled() && !this.readonly());

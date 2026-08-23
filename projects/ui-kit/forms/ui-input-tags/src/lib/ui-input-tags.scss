@@ -59,6 +59,7 @@ $input-min-width: var(--ui-input-tags-input-min-width, #{utils.rem-calc(80)});  
     gap: $tag-gap;
     min-width: 0;
     @include utils.field-inset-edges;
+    @include utils.field-float-inset;
   }
 
   // Accessibility wrapper only (role="listbox" around the tags): no box of its

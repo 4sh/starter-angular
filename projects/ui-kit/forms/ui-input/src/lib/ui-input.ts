@@ -110,6 +110,14 @@ export class UiInput extends BaseFormField<string> {
 
   /** @ignore Icon size aligned with the field size. */
   protected readonly iconSize = computed<UiIconSize>(() => (this.size() === 'small' ? 'sm' : 'md'));
+  /** @ignore Text rendered in the input: display-only `value` wins over the model. */
+  protected readonly renderedValue = computed(() => this.value() ?? this.displayValue());
+  /** @ignore Keeps a floating label raised once focus leaves. */
+  protected readonly isFilled = computed(() => this.renderedValue() !== '');
+  /** @ignore At rest the floating label already holds that spot. */
+  protected readonly effectivePlaceholder = computed(() =>
+    this.hasFloatLabel() ? '' : (this.placeholder() ?? ''),
+  );
   /** @ignore Input wins over the projected `#iconLeft` template. */
   protected readonly resolvedIconLeftTemplate = computed(
     () => this.iconLeftTemplate() ?? this.iconLeftTemplateContent(),

@@ -44,6 +44,14 @@ const meta: Meta<UiDatepicker> = {
       options: ['default', 'small'],
       table: { type: { summary: 'FieldSize' }, defaultValue: { summary: '"default"' } },
     },
+    floatLabel: {
+      control: 'select',
+      options: [undefined, 'over', 'in', 'on'],
+      labels: { undefined: 'aucun (libellé classique)' },
+      description:
+        'Libellé flottant : le libellé descend dans le champ, où il tient le rôle du placeholder, et remonte au focus ou dès que le champ porte une valeur. Le `placeholder` est alors neutralisé.',
+      table: { type: { summary: 'FieldFloatLabel' }, defaultValue: { summary: 'undefined' } },
+    },
     level: {
       control: 'inline-radio',
       options: ['default', 'success', 'error'],
@@ -246,7 +254,7 @@ const TEMPLATE = `<div style="width:260px"><ui-datepicker
     [(ngModel)]="model"
     [valueType]="valueType"
     [label]="label" [placeholder]="placeholder" [helperText]="helperText" [errorText]="errorText"
-    [size]="size" [level]="level" [icon]="icon" [showIcon]="showIcon" [firstDayOfWeek]="firstDayOfWeek" [locale]="locale"
+    [size]="size" [level]="level" [floatLabel]="floatLabel" [icon]="icon" [showIcon]="showIcon" [firstDayOfWeek]="firstDayOfWeek" [locale]="locale"
     [selectionMode]="selectionMode" [view]="view" [numberOfMonths]="numberOfMonths"
     [showTime]="showTime" [timeOnly]="timeOnly" [hourFormat]="hourFormat" [stepMinute]="stepMinute" [editableTime]="editableTime"
     [showButtonBar]="showButtonBar" [todayLabel]="todayLabel" [clearLabel]="clearLabel"
@@ -689,5 +697,25 @@ export const ScopedIconFamily: Story = {
     props: { model: new Date(2026, 6, 8) },
     template: `<div style="width:280px"><ui-datepicker uiIconFamily="demo"
       [(ngModel)]="model" valueType="date" label="Rendez-vous" showTime /></div>`,
+  }),
+};
+
+// --- Libellé flottant ---------------------------------------------------
+/**
+ * `floatLabel` fait descendre le libellé **dans** le champ, où il tient le rôle du
+ * placeholder, puis le fait remonter au focus ou dès qu'une valeur est présente. Trois
+ * positions hautes : `over` (au-dessus de la boîte), `in` (dans une bande réservée en haut
+ * de la boîte, qui grandit d'autant) et `on` (à cheval sur le trait, qu'il entaille).
+ */
+export const FloatLabel: Story = {
+  render: () => ({
+    props: { a: null, b: null, c: sample },
+    template: `
+      <div style="display:grid; grid-template-columns:repeat(3, 200px); gap:28px 20px; align-items:start;">
+        <ui-datepicker floatLabel="over" label="Over label" valueType="date" [(ngModel)]="a" />
+        <ui-datepicker floatLabel="in" label="In label" valueType="date" [(ngModel)]="b" />
+        <ui-datepicker floatLabel="on" label="On label" valueType="date" [(ngModel)]="c" />
+      </div>
+    `,
   }),
 };

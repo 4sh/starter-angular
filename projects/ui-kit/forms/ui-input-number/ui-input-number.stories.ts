@@ -25,6 +25,14 @@ const meta: Meta<UiInputNumber> = {
       options: ['default', 'small'],
       table: { defaultValue: { summary: '"default"' } },
     },
+    floatLabel: {
+      control: 'select',
+      options: [undefined, 'over', 'in', 'on'],
+      labels: { undefined: 'aucun (libellé classique)' },
+      description:
+        'Libellé flottant : le libellé descend dans le champ, où il tient le rôle du placeholder, et remonte au focus ou dès que le champ porte une valeur. Le `placeholder` est alors neutralisé.',
+      table: { type: { summary: 'FieldFloatLabel' }, defaultValue: { summary: 'undefined' } },
+    },
     level: {
       control: 'inline-radio',
       options: ['default', 'success', 'error'],
@@ -84,7 +92,7 @@ type Story = StoryObj<UiInputNumber>;
 const TEMPLATE = `<div style="width:220px"><ui-input-number
     [(ngModel)]="model"
     [label]="label" [helperText]="helperText" [placeholder]="placeholder"
-    [size]="size" [level]="level" [min]="min" [max]="max" [step]="step"
+    [size]="size" [level]="level" [floatLabel]="floatLabel" [min]="min" [max]="max" [step]="step"
     [allowDecimals]="allowDecimals" [unit]="unit" [showButtons]="showButtons"
     [locale]="locale" [currency]="currency" [useGrouping]="useGrouping"
     [required]="required" [disabled]="disabled" [readonly]="readonly" [invalid]="invalid"
@@ -158,4 +166,24 @@ export const SignalForms: Story = {
   name: 'Signal Forms',
   render: () => ({ template: `<demo-input-number-signal-forms />` }),
   decorators: [moduleMetadata({ imports: [SignalFormsDemo] })],
+};
+
+// --- Libellé flottant ---------------------------------------------------
+/**
+ * `floatLabel` fait descendre le libellé **dans** le champ, où il tient le rôle du
+ * placeholder, puis le fait remonter au focus ou dès qu'une valeur est présente. Trois
+ * positions hautes : `over` (au-dessus de la boîte), `in` (dans une bande réservée en haut
+ * de la boîte, qui grandit d'autant) et `on` (à cheval sur le trait, qu'il entaille).
+ */
+export const FloatLabel: Story = {
+  render: () => ({
+    props: { a: null, b: null, c: 42 },
+    template: `
+      <div style="display:grid; grid-template-columns:repeat(3, 180px); gap:28px 20px; align-items:start;">
+        <ui-input-number floatLabel="over" label="Over label" [(ngModel)]="a" />
+        <ui-input-number floatLabel="in" label="In label" [(ngModel)]="b" />
+        <ui-input-number floatLabel="on" label="On label" [(ngModel)]="c" unit="kg" />
+      </div>
+    `,
+  }),
 };

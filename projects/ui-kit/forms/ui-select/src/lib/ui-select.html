@@ -180,6 +180,8 @@
     [required]="required()"
     [size]="size()"
     [level]="effectiveLevel()"
+    [floatLabel]="floatLabel()"
+    [filled]="hasValue()"
     [disabled]="isDisabled()"
     [readonly]="readonly()"
     [autoHeight]="multiple()"
@@ -197,7 +199,7 @@
         aria-autocomplete="list"
         [id]="resolvedId()"
         [value]="selectedLabel()"
-        [placeholder]="placeholder() ?? ''"
+        [placeholder]="effectivePlaceholder()"
         [disabled]="isDisabled()"
         [readOnly]="readonly()"
         [required]="required()"
@@ -266,7 +268,7 @@
         } @else if (hasValue()) {
           <span class="ui-select-value" [class._wrap]="multiple()">{{ selectedLabel() }}</span>
         } @else {
-          <span class="ui-select-placeholder">{{ placeholder() ?? '' }}</span>
+          <span class="ui-select-placeholder">{{ effectivePlaceholder() }}</span>
         }
       </button>
     }

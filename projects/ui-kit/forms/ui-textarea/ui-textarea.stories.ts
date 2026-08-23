@@ -60,6 +60,14 @@ const meta: Meta<UiTextarea> = {
       options: ['default', 'small'],
       table: { type: { summary: 'FieldSize' }, defaultValue: { summary: '"default"' } },
     },
+    floatLabel: {
+      control: 'select',
+      options: [undefined, 'over', 'in', 'on'],
+      labels: { undefined: 'aucun (libellé classique)' },
+      description:
+        'Libellé flottant : le libellé descend dans le champ, où il tient le rôle du placeholder, et remonte au focus ou dès que le champ porte une valeur. Le `placeholder` est alors neutralisé.',
+      table: { type: { summary: 'FieldFloatLabel' }, defaultValue: { summary: 'undefined' } },
+    },
     level: {
       control: 'inline-radio',
       options: ['default', 'success', 'error'],
@@ -105,7 +113,7 @@ const TEMPLATE = `<div style="width:280px"><ui-textarea
     [(ngModel)]="model"
     [label]="label" [helperText]="helperText" [errorText]="errorText" [placeholder]="placeholder"
     [rows]="rows" [maxlength]="maxlength" [autoResize]="autoResize" [resize]="resize" [showCount]="showCount"
-    [size]="size" [level]="level"
+    [size]="size" [level]="level" [floatLabel]="floatLabel"
     [required]="required" [disabled]="disabled" [readonly]="readonly" [invalid]="invalid"
     (valueChange)="valueChange($event)" /></div>`;
 
@@ -216,4 +224,24 @@ export const SignalForms: Story = {
   name: 'Signal Forms',
   render: () => ({ template: `<demo-textarea-signal-forms />` }),
   decorators: [moduleMetadata({ imports: [SignalFormsDemo] })],
+};
+
+// --- Libellé flottant ---------------------------------------------------
+/**
+ * `floatLabel` fait descendre le libellé **dans** le champ, où il tient le rôle du
+ * placeholder, puis le fait remonter au focus ou dès qu'une valeur est présente. Trois
+ * positions hautes : `over` (au-dessus de la boîte), `in` (dans une bande réservée en haut
+ * de la boîte, qui grandit d'autant) et `on` (à cheval sur le trait, qu'il entaille).
+ */
+export const FloatLabel: Story = {
+  render: () => ({
+    props: { a: '', b: '', c: 'Bonjour,\nvoici un message multiligne.' },
+    template: `
+      <div style="display:grid; grid-template-columns:repeat(3, 220px); gap:20px; align-items:start;">
+        <ui-textarea floatLabel="over" label="Over label" [(ngModel)]="a" [rows]="3" />
+        <ui-textarea floatLabel="in" label="In label" [(ngModel)]="b" [rows]="3" />
+        <ui-textarea floatLabel="on" label="On label" [(ngModel)]="c" [rows]="3" />
+      </div>
+    `,
+  }),
 };

@@ -33,6 +33,71 @@ champ est en erreur (`invalid` explicite, ou automatique : contrôle invalide + 
 <Canvas of={InputStories.Readonly} />
 <Canvas of={InputStories.Small} />
 
+## Libellé flottant
+
+`floatLabel` fait descendre le libellé **dans** le champ, où il tient le rôle du placeholder,
+et le fait remonter dès que le champ prend le focus ou porte une valeur. Trois positions
+hautes, communes à tous les champs bâtis sur `ui-field` :
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Valeur</th>
+      <th>Position haute</th>
+      <th>Effet sur la mise en page</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>over</code></td>
+      <td>Au-dessus de la boîte, sur la rangée d'un libellé classique, mais aligné
+      horizontalement sur le contrôle plutôt que sur le bord du champ.</td>
+      <td>Une bande de la hauteur du libellé est réservée au-dessus du champ : le libellé
+      sort de la boîte sans jamais recouvrir ce qui précède, et rien ne bouge autour.</td>
+    </tr>
+    <tr>
+      <td><code>in</code></td>
+      <td>Dans une bande réservée en haut de la boîte.</td>
+      <td>La boîte grandit de cette bande, de sorte que la rangée du contrôle garde sa
+      hauteur habituelle. La bande est réservée par le contrôle, pas par la boîte : seul
+      le texte saisi descend sous le libellé, tandis qu'affixes, unités, zones d'action et
+      libellé au repos restent centrés sur la boîte.</td>
+    </tr>
+    <tr>
+      <td><code>on</code></td>
+      <td>À cheval sur le trait supérieur, qu'il entaille.</td>
+      <td>Aucune. L'entaille est peinte avec le fond du champ
+      (<code>--form-high-surface-*</code>) : un champ posé sur un autre fond demande donc
+      de retoucher ce token avec lui.</td>
+    </tr>
+  </tbody>
+</table>
+
+<Canvas of={InputStories.FloatLabel} />
+
+```html
+<ui-input [(ngModel)]="name" floatLabel="on" label="Nom" />
+```
+
+Le libellé remonte au **focus**, dès qu'une **valeur** est présente, tant qu'un
+**panneau** ouvert retient le champ (un déclencheur comme `ui-datepicker` confie le focus
+à son calendrier, sans cesser d'être actif pour autant), et sur **autofill** du navigateur
+(qui ne déclenche aucun évènement de saisie). Il redescend quand le champ est vide, sans
+focus et sans panneau. Seuls la position et l'échelle du libellé
+changent : pas de `font-size` animée, donc aucune reprise de mise en page pendant le
+trajet, et la transition est coupée quand l'utilisateur demande moins d'animation.
+
+Avec une **icône gauche**, le libellé au repos se décale pour la laisser voir. Ce retrait est
+calé sur l'échelle des icônes (`--ui-field-float-label-indent`), pas mesuré : un glyphe plus
+large que son pas d'échelle, ou un affixe projeté d'une autre nature, se règle par ce hook.
+
+> Au repos, le libellé flottant occupe la place du `placeholder`. Celui-ci est donc
+> **neutralisé** tant que `floatLabel` et `label` sont tous les deux renseignés, deux textes
+> superposés dans la même boîte n'étant lisibles ni l'un ni l'autre. `floatLabel` sans
+> `label` ne fait rien : le champ garde son rendu habituel, placeholder compris.
+
+<Canvas of={InputStories.FloatLabelStates} />
+
 ## Slots & zone d'action
 
 L'icône droite devient une **zone d'action** (bouton carré pleine hauteur, focusable) dès qu'on
@@ -101,6 +166,10 @@ via l'interop CVA native, ainsi qu'aux formulaires template-driven (`[(ngModel)]
     <tr>
       <td><strong>Label</strong></td>
       <td><code>ui-label</code> natif lié à l'input par <code>for</code>/<code>id</code> (clic sur le label = focus). Sans label visible : <code>ariaLabel</code> / <code>ariaLabelledBy</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Libellé flottant</strong></td>
+      <td>Reste un <code>&lt;label for&gt;</code> natif, marqueur <code>required</code> compris : c'est bien un libellé qui se déplace, pas un placeholder promu. Il n'intercepte pas le pointeur au repos (le clic va au curseur de saisie) et le récupère une fois remonté.</td>
     </tr>
     <tr>
       <td><strong>Aide & erreur</strong></td>

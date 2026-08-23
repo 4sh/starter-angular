@@ -34,6 +34,22 @@ la bordure rouge et `errorText` apparaissent quand le contrôle est **invalide E
 <Canvas of={TextareaStories.Readonly} />
 <Canvas of={TextareaStories.Small} />
 
+## Libellé flottant
+
+`floatLabel` fait descendre le libellé **dans** le champ, où il tient le rôle du placeholder,
+et le fait remonter au focus ou dès que le champ porte une valeur. Trois positions hautes :
+`over` (au-dessus de la boîte), `in` (dans une bande réservée en haut de la boîte, qui grandit
+d'autant) et `on` (à cheval sur le trait, qu'il entaille). Le `placeholder` est neutralisé tant
+que `floatLabel` et `label` sont tous les deux renseignés : les deux textes se superposeraient.
+
+Sur une boîte multiligne, le libellé au repos se cale **en haut**, à la même rangée dans les
+trois variantes, plutôt qu'au milieu d'une boîte qui peut être très haute.
+
+<Canvas of={TextareaStories.FloatLabel} />
+
+Le mécanisme est celui du shell partagé `ui-field`, commun à tous les champs à boîte : détail
+des trois variantes, du déclenchement et des conséquences de mise en page sur [`ui-input`](?path=/docs/components-ui-forms-ui-input--docs).
+
 ## Validation
 
 Le composant est un `ControlValueAccessor` : il se branche sans code additionnel aux
