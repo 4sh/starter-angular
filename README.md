@@ -124,6 +124,26 @@ Details: [`.claude/rules/git-conventions.md`](.claude/rules/git-conventions.md) 
 
 ---
 
+## Releasing a new version
+
+Once all your changes are on `main` (⚠️ **never push directly to `main`**), here's how
+to publish a new version of the `@4sh/ui-kit` and `@4sh/ui-kit-schematics` npm packages
+(same version, same job).
+
+1. **Prepare the release, on `main`**: move `[Unreleased]` to a new
+   `[X.Y.Z] - YYYY-MM-DD` section in `CHANGELOG.md`, bump the version in
+   `projects/ui-kit/package.json`, commit.
+2. **Publish**: _Actions → Publish @4sh/ui-kit to npm → Run workflow_ with
+   `dry_run: true` first, then `dry_run: false` — this waits for reviewer approval on
+   the `npm-publish` environment before actually publishing.
+3. **Tag & release**: created **by the CI** after a successful publish — never tag or
+   release by hand.
+
+Full detail: [`docs/VERSIONING.md`](docs/VERSIONING.md) (when to bump what) ·
+[`docs/PUBLISHING.md`](docs/PUBLISHING.md) (full publish workflow, npm auth).
+
+---
+
 ## Going further
 
 | Topic                           | Where                                                                                         |
