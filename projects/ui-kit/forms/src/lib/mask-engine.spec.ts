@@ -98,6 +98,13 @@ describe('acceptsMaskChar', () => {
     expect(acceptsMaskChar(slots[3], '', '1')).toBe(true);
     expect(acceptsMaskChar(slots[3], '', '3')).toBe(false);
   });
+
+  it('enforceBounds=false accepts a digit the bounds check would otherwise reject', () => {
+    // "3" fails the month leading-digit check above; with the bounds check off (used to
+    // re-derive the mask after a deletion — see FSHSP-118), only the token class still applies.
+    expect(acceptsMaskChar(slots[3], '', '3', false)).toBe(true);
+    expect(acceptsMaskChar(slots[3], '', 'a', false)).toBe(false); // still not a digit
+  });
 });
 
 describe('applyMaskTemplate', () => {
@@ -159,5 +166,29 @@ describe('autoFormatSegments', () => {
     const result = autoFormatSegments(dateSlots(), '');
     expect(result.text).toBe('');
     expect(result.tokenIndices).toEqual([0]);
+  });
+
+  // FSHSP-118: reproduces `ui-datepicker`'s actual mask (day/month bounded, year deliberately
+  // left UNbounded — see its `typingSlots`), not the bounded-year `dateSlots()` above.
+  function dayMonthYearSlots() {
+    return buildMaskSlots(DATE_MASK, [{ min: 1, max: 31 }, { min: 1, max: 12 }, null]);
+  }
+
+  // Deleting the day's leading digit of "08/07/2026" (raw value "8/07/2026" once the browser
+  // removes it) leaves the residual digit stream "8072026". Re-deriving the mask with bounds
+  // enforced (the default — meant to reject an invalid *new* leading digit while typing forward)
+  // instead SKIPS "8" (no valid 1-31 day starts with it) and reassigns the digits meant for
+  // month/year across the segment boundaries, producing a value with no relation to what was on
+  // screen. `enforceBounds: false` keeps each segment to its own positional slice of the stream
+  // instead — segments can show a transient out-of-range value (caught by the final blur/Enter
+  // parse, see `finalizeParsed`), but digits are never stolen from one segment by another.
+  it('without enforceBounds, a deletion can steal digits across segment boundaries', () => {
+    const result = autoFormatSegments(dayMonthYearSlots(), '8072026');
+    expect(result.text).toBe('07/02/6'); // day/month/year no longer match ANY sensible edit
+  });
+
+  it('enforceBounds: false keeps the same deletion positional instead', () => {
+    const result = autoFormatSegments(dayMonthYearSlots(), '8072026', { enforceBounds: false });
+    expect(result.text).toBe('80/72/026'); // each segment keeps its own slice of the stream
   });
 });

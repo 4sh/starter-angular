@@ -82,14 +82,27 @@ export function extractMaskData(raw: string): string {
 }
 
 /**
- * Can `ch` fill this slot? It must match the token class and — when the segment is bounded —
- * the digits typed so far plus `ch` must still admit at least one in-range completion of the
- * remaining positions (`2` then `4` is refused on `0-23`, `2` then `3` is accepted).
+ * Can `ch` fill this slot? It must match the token class and — when the segment is bounded
+ * AND `enforceBounds` — the digits typed so far plus `ch` must still admit at least one in-range
+ * completion of the remaining positions (`2` then `4` is refused on `0-23`, `2` then `3` is
+ * accepted).
+ *
+ * `enforceBounds = false` skips that second check (still requires the token class to match):
+ * meant for re-deriving the mask after characters were REMOVED, not typed. The bounds check
+ * exists to reject an invalid *new* leading digit while typing forward (e.g. `8` can never start
+ * a valid `1-31` day, so it's skipped rather than accepted) — applied instead to the digits left
+ * over after a deletion, that same skip can discard a still-valid residual digit and misalign
+ * every segment after it. See `autoFormatSegments`.
  */
-export function acceptsMaskChar(slot: MaskSlot, segment: string, ch: string): boolean {
+export function acceptsMaskChar(
+  slot: MaskSlot,
+  segment: string,
+  ch: string,
+  enforceBounds = true,
+): boolean {
   if (!slot.rgx?.test(ch)) return false;
   const bound = slot.bound;
-  if (!bound) return true;
+  if (!enforceBounds || !bound) return true;
   const scale = 10 ** (bound.len - bound.pos - 1);
   const low = Number(segment + ch) * scale;
   return low <= bound.max && low + scale - 1 >= bound.min;
@@ -151,6 +164,7 @@ export function caretForMask(tokenIndices: number[], n: number, length: number):
 export function autoFormatSegments(
   slots: MaskSlot[],
   data: string,
+  { enforceBounds = true }: { enforceBounds?: boolean } = {},
 ): { text: string; tokenIndices: number[] } {
   let di = 0;
   let text = '';
@@ -166,7 +180,7 @@ export function autoFormatSegments(
     }
     tokenIndices.push(text.length);
     if (!slot.bound || slot.bound.pos === 0) segment = '';
-    while (di < data.length && !acceptsMaskChar(slot, segment, data[di])) di++;
+    while (di < data.length && !acceptsMaskChar(slot, segment, data[di], enforceBounds)) di++;
     if (di >= data.length) break; // no more data: stop, no filler
     text += data[di];
     if (slot.bound) segment += data[di];
