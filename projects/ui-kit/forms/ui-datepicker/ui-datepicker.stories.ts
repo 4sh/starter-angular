@@ -276,20 +276,39 @@ const story =
 
 const sample = new Date(2026, 6, 8); // 8 July 2026
 
-export const Default: Story = { render: story() };
+// Formatteur numérique partagé par la plupart des démos ci-dessous : "08/07/2026". Sans lui,
+// l'affichage par défaut (hors `allowInput`) suit `Intl` en `dateStyle: 'medium'` sur la locale
+// résolue — qui retombe sur l'anglais quand `LOCALE_ID` n'est pas configuré (le cas ici) et
+// afficherait alors "Jul 8, 2026". `CustomFormat`, plus bas, reste le seul exemple qui s'en
+// écarte volontairement pour montrer qu'un tout autre format est possible.
+const demoDateFormat = (d: Date): string =>
+  new Intl.DateTimeFormat('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(d);
+// Variante avec heure, pour les démos `showTime` : "08/07/2026 14:30".
+const demoDateTimeFormat = (d: Date): string =>
+  `${demoDateFormat(d)} ${new Intl.DateTimeFormat('fr-FR', { hour: '2-digit', minute: '2-digit' }).format(d)}`;
+
+export const Default: Story = { render: story(), args: { dateFormat: demoDateFormat } };
 export const WithValue: Story = {
   render: story(sample),
-  args: { helperText: 'Sélectionnez une date.' },
+  args: { helperText: 'Sélectionnez une date.', dateFormat: demoDateFormat },
 };
-export const Small: Story = { render: story(sample), args: { size: 'small' } };
+export const Small: Story = {
+  render: story(sample),
+  args: { size: 'small', dateFormat: demoDateFormat },
+};
 export const Required: Story = {
   render: story(),
-  args: { required: true, helperText: 'Champ obligatoire.' },
+  args: { required: true, helperText: 'Champ obligatoire.', dateFormat: demoDateFormat },
 };
 
 export const Error: Story = {
   render: story(),
-  args: { level: 'error', invalid: true, errorText: 'Date invalide.' },
+  args: {
+    level: 'error',
+    invalid: true,
+    errorText: 'Date invalide.',
+    dateFormat: demoDateFormat,
+  },
 };
 
 // Contrat en mode `'iso'` : la valeur (entrée ET sortie) est une string "yyyy-MM-dd" — pour un
@@ -301,6 +320,7 @@ export const IsoValueType: Story = {
     valueType: 'iso',
     label: 'Date (mode ISO)',
     helperText: 'Valeur : string "yyyy-MM-dd" (au lieu de Date).',
+    dateFormat: demoDateFormat,
   },
 };
 
@@ -310,6 +330,7 @@ export const WithTime: Story = {
     showTime: true,
     label: 'Rendez-vous',
     helperText: 'Heures et minutes saisissables au clavier.',
+    dateFormat: demoDateTimeFormat,
   },
 };
 
@@ -320,12 +341,18 @@ export const StepperOnlyTime: Story = {
     editableTime: false,
     label: 'Rendez-vous',
     helperText: 'Réglage aux chevrons / flèches uniquement.',
+    dateFormat: demoDateTimeFormat,
   },
 };
 
 export const Time12h: Story = {
   render: story(new Date(2026, 6, 8, 14, 30)),
-  args: { showTime: true, hourFormat: '12', label: 'Rendez-vous' },
+  args: {
+    showTime: true,
+    hourFormat: '12',
+    label: 'Rendez-vous',
+    dateFormat: demoDateTimeFormat,
+  },
 };
 
 export const TimeOnly: Story = {
@@ -335,7 +362,11 @@ export const TimeOnly: Story = {
 
 export const ButtonBar: Story = {
   render: story(),
-  args: { showButtonBar: true, helperText: "« Aujourd'hui » et « Effacer »." },
+  args: {
+    showButtonBar: true,
+    helperText: "« Aujourd'hui » et « Effacer ».",
+    dateFormat: demoDateFormat,
+  },
 };
 
 // Plage restreinte : ±10 jours autour du 8 juillet 2026. `minDate`/`maxDate` en `Date`
@@ -351,7 +382,11 @@ export const MinMax: Story = {
     },
     template: TEMPLATE,
   }),
-  args: { label: 'Date (plage limitée)', helperText: 'Du 28 juin au 18 juillet 2026.' },
+  args: {
+    label: 'Date (plage limitée)',
+    helperText: 'Du 28 juin au 18 juillet 2026.',
+    dateFormat: demoDateFormat,
+  },
 };
 
 // Même contrainte que `MinMax`, bornes passées en ISO plutôt qu'en `Date` — pratique
@@ -364,13 +399,18 @@ export const MinMaxIso: Story = {
   args: {
     label: 'Date (bornes ISO)',
     helperText: 'minDate/maxDate passées en string "yyyy-MM-dd".',
+    dateFormat: demoDateFormat,
   },
 };
 
 // Week-ends (dimanche = 0, samedi = 6) désactivés.
 export const DisabledWeekends: Story = {
   render: (args) => ({ props: { ...args, model: null, disabledDays: [0, 6] }, template: TEMPLATE }),
-  args: { label: 'Jour ouvré', helperText: 'Week-ends indisponibles.' },
+  args: {
+    label: 'Jour ouvré',
+    helperText: 'Week-ends indisponibles.',
+    dateFormat: demoDateFormat,
+  },
 };
 
 // Dates ponctuelles désactivées, mixant `Date` et ISO pour montrer que les deux formes coexistent.
@@ -383,13 +423,23 @@ export const DisabledDates: Story = {
     },
     template: TEMPLATE,
   }),
-  args: { label: 'Jours indisponibles', helperText: '8, 15 et 22 juillet 2026 désactivés.' },
+  args: {
+    label: 'Jours indisponibles',
+    helperText: '8, 15 et 22 juillet 2026 désactivés.',
+    dateFormat: demoDateFormat,
+  },
 };
 
-export const Disabled: Story = { render: story(sample), args: { disabled: true } };
+export const Disabled: Story = {
+  render: story(sample),
+  args: { disabled: true, dateFormat: demoDateFormat },
+};
 
 // Effaçable : une croix apparaît dans le champ dès qu'une valeur est présente.
-export const Clearable: Story = { render: story(sample), args: { label: 'Date', showClear: true } };
+export const Clearable: Story = {
+  render: story(sample),
+  args: { label: 'Date', showClear: true, dateFormat: demoDateFormat },
+};
 
 // Saisie manuelle : tapez la date au clavier (parsée au blur / Entrée). Les "/" s'insèrent
 // automatiquement au fil de la frappe (dès qu'un segment jour/mois est complet, comme une date
@@ -405,20 +455,6 @@ export const EditableInput: Story = {
     locale: 'fr-FR',
     placeholder: '', // vide → placeholder auto dérivé de la locale (jj/mm/aaaa)
     helperText: 'Tapez "08072026" au clavier : les "/" apparaissent seuls (jj/mm/aaaa).',
-  },
-};
-
-// Même saisie assistée, en locale `en-US` : l'ordre mois/jour/année piloté par `dateFieldOrder`
-// s'applique aussi à l'auto-formatage (mm/dd/yyyy plutôt que jj/mm/aaaa).
-export const AutoFormattedInputEnUs: Story = {
-  render: story(sample),
-  args: {
-    label: 'Date',
-    allowInput: true,
-    showClear: true,
-    locale: 'en-US',
-    placeholder: '',
-    helperText: 'Type "08072026": the "/" appear on their own (mm/dd/yyyy).',
   },
 };
 
@@ -467,38 +503,40 @@ export const EditableInputWithTime12h: Story = {
   },
 };
 
-// Formatteur/parseur custom (symétriques) : affichage "8 juil. 2026", saisie au même format.
+// Formatteur/parseur custom (symétriques) : seul exemple qui s'écarte du format classique
+// jj/mm/aaaa utilisé partout ailleurs, pour montrer que `dateFormat`/`parseDate` permettent
+// d'accueillir n'importe quel format d'affichage (ici « Jul 8, 2026 », à l'anglo-saxonne).
 export const CustomFormat: Story = {
   render: (args) => ({
     props: {
       ...args,
       model: sample,
       dateFormat: (d: Date) =>
-        new Intl.DateTimeFormat('fr-FR', {
+        new Intl.DateTimeFormat('en-US', {
           day: 'numeric',
           month: 'short',
           year: 'numeric',
         }).format(d),
       parseDate: (text: string): Date | null => {
-        const m = /^(\d{1,2})\s+([a-zéûî.]+)\.?\s+(\d{4})$/i.exec(text.trim());
+        const m = /^([a-z]+)\s+(\d{1,2}),\s*(\d{4})$/i.exec(text.trim());
         if (!m) return null;
         const months = [
-          'janv',
-          'févr',
-          'mars',
-          'avr',
-          'mai',
-          'juin',
-          'juil',
-          'août',
-          'sept',
+          'jan',
+          'feb',
+          'mar',
+          'apr',
+          'may',
+          'jun',
+          'jul',
+          'aug',
+          'sep',
           'oct',
           'nov',
-          'déc',
+          'dec',
         ];
-        const idx = months.findIndex((mo) => m[2].toLowerCase().startsWith(mo));
+        const idx = months.findIndex((mo) => m[1].toLowerCase().startsWith(mo));
         if (idx < 0) return null;
-        return new Date(Number(m[3]), idx, Number(m[1]));
+        return new Date(Number(m[3]), idx, Number(m[2]));
       },
     },
     template: TEMPLATE,
@@ -507,8 +545,8 @@ export const CustomFormat: Story = {
     label: 'Format personnalisé',
     allowInput: true,
     showClear: true,
-    locale: 'fr-FR',
-    helperText: 'Affichage « 8 juil. 2026 », parseDate symétrique.',
+    locale: 'en-US',
+    helperText: 'Affichage « Jul 8, 2026 », parseDate symétrique.',
   },
 };
 
@@ -582,10 +620,11 @@ export const CustomButtonBar: Story = {
 // Basculer le contrôle `autoFlip` (false) pour verrouiller l'ouverture vers le bas.
 export const SmartPosition: Story = {
   render: (args) => ({
-    props: { ...args, model: null },
+    props: { ...args, model: null, dateFormat: demoDateFormat },
     template: `<div style="height:520px;display:flex;align-items:flex-end;justify-content:center">
       <div style="width:260px"><ui-datepicker
         [(ngModel)]="model" valueType="date" label="Ouverture intelligente" [autoFlip]="autoFlip"
+        [dateFormat]="dateFormat"
         helperText="Ancré en bas : le panneau s'ouvre vers le haut si la place manque." /></div>
     </div>`,
   }),
@@ -674,8 +713,8 @@ export const IconTemplate: Story = {
     moduleMetadata({ imports: [UiDatepicker, UiIcon, FormsModule] }),
   ],
   render: () => ({
-    props: { model: null },
-    template: `<div style="width:280px"><ui-datepicker [(ngModel)]="model" valueType="date" label="Date" showClear>
+    props: { model: null, dateFormat: demoDateFormat },
+    template: `<div style="width:280px"><ui-datepicker [(ngModel)]="model" valueType="date" label="Date" showClear [dateFormat]="dateFormat">
       <ng-template #icon let-name let-size="size">
         <ui-icon [name]="name" family="demo" [size]="size" />
       </ng-template>
@@ -694,9 +733,9 @@ export const ScopedIconFamily: Story = {
     moduleMetadata({ imports: [UiDatepicker, UiIconFamilyScope, FormsModule] }),
   ],
   render: () => ({
-    props: { model: new Date(2026, 6, 8) },
+    props: { model: new Date(2026, 6, 8), dateFormat: demoDateTimeFormat },
     template: `<div style="width:280px"><ui-datepicker uiIconFamily="demo"
-      [(ngModel)]="model" valueType="date" label="Rendez-vous" showTime /></div>`,
+      [(ngModel)]="model" valueType="date" label="Rendez-vous" showTime [dateFormat]="dateFormat" /></div>`,
   }),
 };
 
@@ -709,12 +748,12 @@ export const ScopedIconFamily: Story = {
  */
 export const FloatLabel: Story = {
   render: () => ({
-    props: { a: null, b: null, c: sample },
+    props: { a: null, b: null, c: sample, dateFormat: demoDateFormat },
     template: `
       <div style="display:grid; grid-template-columns:repeat(3, 200px); gap:28px 20px; align-items:start;">
-        <ui-datepicker floatLabel="over" label="Over label" valueType="date" [(ngModel)]="a" />
-        <ui-datepicker floatLabel="in" label="In label" valueType="date" [(ngModel)]="b" />
-        <ui-datepicker floatLabel="on" label="On label" valueType="date" [(ngModel)]="c" />
+        <ui-datepicker floatLabel="over" label="Over label" valueType="date" [(ngModel)]="a" [dateFormat]="dateFormat" />
+        <ui-datepicker floatLabel="in" label="In label" valueType="date" [(ngModel)]="b" [dateFormat]="dateFormat" />
+        <ui-datepicker floatLabel="on" label="On label" valueType="date" [(ngModel)]="c" [dateFormat]="dateFormat" />
       </div>
     `,
   }),

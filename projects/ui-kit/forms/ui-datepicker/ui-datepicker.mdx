@@ -173,10 +173,12 @@ format non numérique rendrait l'auto-slash faux).
 
 Fournissez `parseDate` `(value: string) => Date | null` pour un parsing sur mesure (symétrique
 de `dateFormat`). Ces deux hooks travaillent en `Date` (affichage/saisie libre uniquement) — ils
-ne sont jamais round-trippés à travers la CVA, donc pas concernés par le contrat ISO.
+ne sont jamais round-trippés à travers la CVA, donc pas concernés par le contrat ISO. Les
+exemples ci-dessous restent tous au format classique **jj/mm/aaaa**, à l'exception du dernier
+(`CustomFormat`) qui illustre — via `dateFormat`/`parseDate` — qu'un format totalement différent
+(ici « Jul 8, 2026 ») reste possible.
 
 <Canvas of={DatepickerStories.EditableInput} />
-<Canvas of={DatepickerStories.AutoFormattedInputEnUs} />
 <Canvas of={DatepickerStories.AutoFormattedInputMonthPicker} />
 <Canvas of={DatepickerStories.EditableInputWithTime} />
 <Canvas of={DatepickerStories.EditableInputWithTime12h} />
