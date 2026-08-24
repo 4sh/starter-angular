@@ -240,4 +240,30 @@ describe('autoFormatSegments', () => {
     const result = autoFormatSegments(dateTimeSlots(), '080720261030');
     expect(result.text).toBe('08/07/2026 10:30');
   });
+
+  // FSHSP-118 follow-up: `ui-datepicker`'s `range` mode reuses the single-date mask twice,
+  // joined by its three-character typing separator (" - "). Auto-inserting only the FIRST
+  // literal right after a completed segment (the original behavior) would leave the "-" and
+  // trailing space forever stranded — the fix appends every consecutive literal in one go.
+  function rangeSlots() {
+    return buildMaskSlots('99/99/9999 - 99/99/9999', [
+      { min: 1, max: 31 },
+      { min: 1, max: 12 },
+      null,
+      { min: 1, max: 31 },
+      { min: 1, max: 12 },
+      null,
+    ]);
+  }
+
+  it('auto-inserts every character of a multi-char separator at once', () => {
+    const result = autoFormatSegments(rangeSlots(), '08072026');
+    expect(result.text).toBe('08/07/2026 - '); // all three separator chars, not just the space
+    expect(result.dataEnd).toBe(10); // still right after the last DATA char, before the separator
+  });
+
+  it('keeps typing straight through into the second date', () => {
+    const result = autoFormatSegments(rangeSlots(), '0807202618072026');
+    expect(result.text).toBe('08/07/2026 - 18/07/2026');
+  });
 });

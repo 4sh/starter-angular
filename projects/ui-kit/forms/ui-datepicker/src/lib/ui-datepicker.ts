@@ -125,8 +125,9 @@ let nextPanelUid = 0;
 
 /**
  * Joins the two dates of a TYPED `range` value (FSHSP-118: `"jj/mm/aaaa - jj/mm/aaaa"`) — a
- * plain hyphen, practically typable on a standard keyboard. Used to compose the placeholder and
- * to split typed text back apart in `parseTypedMulti`.
+ * plain hyphen, practically typable on a standard keyboard. Used to compose the placeholder, as
+ * the literal separator of the live auto-"/" mask (`typingSlots`), and to split typed text back
+ * apart in `parseTypedMulti`.
  *
  * Deliberately NOT used for `displayValue` (see `RANGE_DISPLAY_SEPARATOR`): a committed range
  * had always rendered with an en dash, for every `range` consumer, typing or not: reusing this
@@ -403,8 +404,9 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
    * typing in time-only mode isn't implemented (no dedicated parser/formatter for a bare time
    * string), so it's disabled outright here rather than silently mis-parsing. `range`/`multiple`
    * ARE typeable (FSHSP-118: "jj/mm/aaaa - jj/mm/aaaa", "jj/mm/aaaa, jj/mm/aaaa, ...") — see
-   * `parseTypedMulti` — but never through the live auto-"/" mask, which only ever models a
-   * single date (see `typingSlots`'s own `selectionMode` check).
+   * `parseTypedMulti`. `range` gets the same live auto-"/" mask as `single` (see `typingSlots`);
+   * `multiple`'s unbounded date count doesn't fit a fixed mask template, so it stays plain text
+   * parsed on blur/Enter only.
    */
   protected readonly triggerReadonly = computed(
     () => this.readonly() || !this.allowInput() || this.timeOnly(),
@@ -488,37 +490,39 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   );
   /**
    * @ignore Dynamic mask (day/month/year widths in locale order, plus hour/minute — and AM/PM —
-   * widths when `showTime`) driving the auto-"/" (resp. ":") formatting of the typeable trigger.
+   * widths when `showTime`; `range` repeats the same widths a second time, joined by
+   * `RANGE_SEPARATOR`) driving the auto-"/" (resp. ":", " - ") formatting of the typeable trigger.
    * `null` disables it: `triggerReadonly` (covers `timeOnly` — see there), `view === 'year'`
    * (free-form numeric field, out of scope), a custom `parseDate` (a non-numeric format would
-   * make the auto-slash wrong), `hasValue()` (FSHSP-118), or `selectionMode() !== 'single'`
-   * (FSHSP-118: `range`/`multiple` ARE typeable — see `triggerReadonly` — but only ever through
-   * plain text parsed on blur/Enter via `parseTypedMulti`; this mask only ever models one date's
-   * worth of digits, never two dates plus a separator).
+   * make the auto-slash wrong), `hasValue()` (FSHSP-118), or `multiple` (unbounded number of
+   * dates — a fixed mask template can't model it; typed through plain text on blur/Enter only,
+   * via `parseTypedMulti`, same as `range` before this mask covered it too).
    *
-   * That last one: re-deriving the mask from a flat digit stream on every keystroke only ever
-   * behaves well for *constructing* a date from nothing — sequential forward typing, or
-   * backspacing from the end. It has no notion of "this segment was already valid, only touch
-   * it" (day/month are bounds-checked against arbitrary residual digits after any edit; year, the
-   * one unbounded segment, is the sole exception, which is why editing it works and looks like an
-   * inconsistency until you know why). Once a value already exists, editing it in place is common
-   * (fixing a typo, changing the year to file the same form again) and hits exactly that gap.
-   * Disabling the mask there routes typing to the plain passthrough branch below instead — no
-   * live auto-slash, but no corruption either — and defers to `commitTyped`'s parser (already
-   * tolerant of arbitrary separators, see `defaultParse`) on blur/Enter. The mask re-arms on its
-   * own once the field is cleared and `hasValue()` goes back to `false` — see `onTriggerInput`,
-   * which commits the clear the instant the raw text reads empty (not just on blur/Enter): a
-   * transient "text is empty" check here instead would only hold for the one keystroke that
-   * empties the field — `hasValue()` alone, unrefreshed, flips back on with the very next
-   * character typed, since nothing ever committed it to `false` for real.
+   * That `hasValue()` gate: re-deriving the mask from a flat digit stream on every keystroke only
+   * ever behaves well for *constructing* a date (or, in `range`, a pair of dates) from nothing —
+   * sequential forward typing, or backspacing from the end. It has no notion of "this segment was
+   * already valid, only touch it" (day/month are bounds-checked against arbitrary residual digits
+   * after any edit; year, the one unbounded segment, is the sole exception, which is why editing
+   * it works and looks like an inconsistency until you know why). Once a value already exists,
+   * editing it in place is common (fixing a typo, changing the year to file the same form again)
+   * and hits exactly that gap. Disabling the mask there routes typing to the plain passthrough
+   * branch below instead — no live auto-formatting, but no corruption either — and defers to
+   * `commitTyped`'s parser (already tolerant of arbitrary separators, see `defaultParse`/
+   * `parseTypedMulti`) on blur/Enter. The mask re-arms on its own once the field is cleared and
+   * `hasValue()` goes back to `false` — see `onTriggerInput`, which commits the clear the instant
+   * the raw text reads empty (not just on blur/Enter): a transient "text is empty" check here
+   * instead would only hold for the one keystroke that empties the field — `hasValue()` alone,
+   * unrefreshed, flips back on with the very next character typed, since nothing ever committed it
+   * to `false` for real.
    */
   private readonly typingSlots = computed<MaskSlot[] | null>(() => {
+    const mode = this.selectionMode();
     if (
       this.triggerReadonly() ||
       this.view() === 'year' ||
       this.parseDate() ||
       this.hasValue() ||
-      this.selectionMode() !== 'single'
+      (mode !== 'single' && mode !== 'range')
     )
       return null;
     const widths = { day: '99', month: '99', year: '9999' } as const;
@@ -531,12 +535,18 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     let mask = fields.map((f) => widths[f]).join('/');
     const segmentBounds: (MaskBounds | null)[] = fields.map((f) => bounds[f]);
 
-    if (this.showTime() && this.view() === 'date') {
+    if (mode === 'single' && this.showTime() && this.view() === 'date') {
       mask += this.hourFormat() === '12' ? ' 99:99 aa' : ' 99:99';
       segmentBounds.push(this.hourFormat() === '12' ? { min: 1, max: 12 } : { min: 0, max: 23 }, {
         min: 0,
         max: 59,
       });
+    }
+    if (mode === 'range') {
+      // Second date, same widths/bounds, joined by the literal typing separator — no `showTime`
+      // support here (typed `range` is always `startOfDay`, see `parseTypedMulti`).
+      mask += RANGE_SEPARATOR + fields.map((f) => widths[f]).join('/');
+      segmentBounds.push(...fields.map((f) => bounds[f]));
     }
     return buildMaskSlots(mask, segmentBounds);
   });

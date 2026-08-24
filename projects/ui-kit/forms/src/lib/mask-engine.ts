@@ -188,8 +188,14 @@ export function autoFormatSegments(
 
   for (const slot of slots) {
     if (slot.char !== null) {
+      // Keep appending EVERY consecutive literal right after a just-completed segment, not only
+      // the first — `atSegmentEnd` is deliberately left untouched here; the next digit slot below
+      // always overwrites it before it's read again (or the loop ends, so a stale value here is
+      // never read at all). A single-character separator ("/", ":") never told the two paths
+      // apart; a multi-character one (`ui-datepicker`'s range " - ", three literal slots in a
+      // row) needs all of them auto-inserted in one go, exactly like a single one (code-review
+      // follow-up, FSHSP-118: `range` gets a live mask too now).
       if (atSegmentEnd) text += slot.char;
-      atSegmentEnd = false;
       continue;
     }
     tokenIndices.push(text.length);

@@ -8,8 +8,9 @@
  *
  * Scope: the three behaviors chased down (and initially mis-fixed) across FSHSP-118 —
  * `hasValue()`-gated mask on/off, the `enforceBounds`/`dataEnd` deletion fixes, and re-arming the
- * mask on a manual clear. Not covered here: `range`/`multiple` typed parsing (no live mask at
- * all for those — see the component doc) or the format-hint/placeholder derivation.
+ * mask on a manual clear — plus `range`'s own live mask (added later, same gating). Not covered
+ * here: `multiple` typed parsing (no live mask — unbounded date count, see the component doc) or
+ * the format-hint/placeholder derivation.
  */
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -32,9 +33,40 @@ class DatepickerHost {
   readonly control = new FormControl<Date | null>(null);
 }
 
+@Component({
+  imports: [ReactiveFormsModule, UiDatepicker],
+  template: `<ui-datepicker
+    label="Période"
+    valueType="date"
+    locale="fr-FR"
+    selectionMode="range"
+    [formControl]="control"
+  />`,
+})
+class DatepickerRangeHost {
+  readonly control = new FormControl<Date[] | null>(null);
+}
+
 async function setup(initial: Date | null = null) {
   await TestBed.configureTestingModule({ imports: [DatepickerHost] }).compileComponents();
   const fixture: ComponentFixture<DatepickerHost> = TestBed.createComponent(DatepickerHost);
+  const host = fixture.componentInstance;
+  if (initial) host.control.setValue(initial);
+  fixture.detectChanges();
+  await fixture.whenStable();
+  const input = fixture.nativeElement.querySelector(
+    '.ui-datepicker-trigger input.ui-input-native',
+  ) as HTMLInputElement;
+  return { fixture, host, input };
+}
+
+/** Same as {@link setup}, for the `range`-mode host (own component: `selectionMode` is a
+ *  static template attribute, not reactively settable on the single-mode host). */
+async function setupRange(initial: Date[] | null = null) {
+  await TestBed.configureTestingModule({ imports: [DatepickerRangeHost] }).compileComponents();
+  const fixture: ComponentFixture<DatepickerRangeHost> = TestBed.createComponent(
+    DatepickerRangeHost,
+  );
   const host = fixture.componentInstance;
   if (initial) host.control.setValue(initial);
   fixture.detectChanges();
@@ -145,6 +177,25 @@ describe('UiDatepicker — keyboard entry masking (FSHSP-118)', () => {
 
       await typeSequentially(input, '08072026', fixture);
       expect(input.value).toBe('08/07/2026');
+    });
+  });
+
+  // FSHSP-118 follow-up: `range` reuses the same live mask (own describe block, own host — it
+  // never applied before this, see `typingSlots`).
+  describe('range mode also gets the live auto-"/" mask (mask-engine follow-up)', () => {
+    it('auto-formats both dates, joined by " - ", while constructing a fresh range', async () => {
+      const { input, fixture } = await setupRange();
+      await typeSequentially(input, '0807202618072026', fixture);
+      expect(input.value).toBe('08/07/2026 - 18/07/2026');
+    });
+
+    it('does not auto-format once a complete range already exists — plain text instead', async () => {
+      const { input, fixture } = await setupRange([new Date(2026, 6, 8), new Date(2026, 6, 18)]);
+      expect(input.value).toBe('08/07/2026 – 18/07/2026'); // en dash: displayValue, not the mask
+      // Same probe as the single-mode equivalent above: a raw digit string, if the mask were
+      // still on, would get reformatted instead of echoed back verbatim.
+      await typeInto(input, '0101199901012000', 16, fixture);
+      expect(input.value).toBe('0101199901012000');
     });
   });
 });
