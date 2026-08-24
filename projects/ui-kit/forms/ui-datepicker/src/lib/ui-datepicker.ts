@@ -123,10 +123,24 @@ export interface DatepickerMonthPanel {
 
 let nextPanelUid = 0;
 
-/** Joins the two dates of a typed/displayed `range` value (FSHSP-118: `"jj/mm/aaaa - jj/mm/aaaa"`).
- *  Used both to render `displayValue` and to split typed text back apart in `parseTypedMulti`. */
+/**
+ * Joins the two dates of a TYPED `range` value (FSHSP-118: `"jj/mm/aaaa - jj/mm/aaaa"`) — a
+ * plain hyphen, practically typable on a standard keyboard. Used to compose the placeholder and
+ * to split typed text back apart in `parseTypedMulti`.
+ *
+ * Deliberately NOT used for `displayValue` (see `RANGE_DISPLAY_SEPARATOR`): a committed range
+ * had always rendered with an en dash, for every `range` consumer, typing or not: reusing this
+ * hyphen there too was a code-review-caught regression — it silently changed that display text
+ * for every existing grid-only range consumer that never opted into typed entry at all.
+ */
 const RANGE_SEPARATOR = ' - ';
-/** Joins the dates of a typed/displayed `multiple` value (`"jj/mm/aaaa, jj/mm/aaaa, ..."`). */
+/** Joins the two dates of a DISPLAYED (committed) `range` value — unchanged from before typed
+ *  entry existed. Typing a plain hyphen (`RANGE_SEPARATOR`) still round-trips to this on commit;
+ *  parsing and display are deliberately decoupled so the pre-existing look survives untouched. */
+const RANGE_DISPLAY_SEPARATOR = ' – ';
+/** Joins the dates of a typed/displayed `multiple` value (`"jj/mm/aaaa, jj/mm/aaaa, ..."`) — one
+ *  separator for both: unlike `range`, `multiple`'s display never had an en-dash-style
+ *  convention to preserve. */
 const MULTIPLE_SEPARATOR = ', ';
 
 /**
@@ -700,7 +714,7 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     }
     const mode = this.selectionMode();
     if (mode === 'multiple') return dates.map((d) => this.formatDate(d)).join(MULTIPLE_SEPARATOR);
-    if (mode === 'range') return dates.map((d) => this.formatDate(d)).join(RANGE_SEPARATOR);
+    if (mode === 'range') return dates.map((d) => this.formatDate(d)).join(RANGE_DISPLAY_SEPARATOR);
     return this.formatDate(dates[0]);
   });
 
@@ -853,8 +867,14 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     this.overlayOrigin.set(this.resolveOverlayOrigin());
     this.panelOpen.set(true);
     this.opened.emit();
-    // Keep focus in the input when it's typeable; otherwise rove into the (active) grid.
-    if (this.showCalendar() && this.triggerReadonly()) {
+    // Keep focus in the input when it's typeable in single mode (so typing can continue
+    // uninterrupted); otherwise rove into the (active) grid. `range`/`multiple` always rove,
+    // regardless of `triggerReadonly()`: typing there is a plain-text complement (no live mask,
+    // see `typingSlots`), never the primary interaction — the grid is, exactly as before
+    // `allowInput` covered these modes, and opening via the calendar icon signals "I want the
+    // grid" (code review finding: this used to be implicit in `triggerReadonly` hardcoding
+    // non-single modes read-only; restored explicitly now that it no longer does).
+    if (this.showCalendar() && (this.triggerReadonly() || this.selectionMode() !== 'single')) {
       if (this.currentView() === 'date') this.queueDayFocus();
       else if (this.currentView() === 'month') this.queueMonthFocus();
       else this.queueYearFocus();
@@ -964,12 +984,33 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   }
 
   /**
+   * @ignore Whether `text` already carries a time portion too, when one is required
+   * (`showTime`, single-date `view === 'date'`) — code-review fix, FSHSP-118. `defaultParse`'s
+   * own `requireComplete` only checks day/month/year are present, never the trailing hour/minute
+   * groups, so `previewTyped` (below) used to treat the date-only prefix as "complete" the
+   * moment day/month/year were typed. That flipped `hasValue()` true — and so, per `typingSlots`,
+   * turned the live mask off — before a single time digit had been typed: the very next keystroke
+   * (the first hour digit) then landed with no mask active to insert the "HH:MM" separators,
+   * concatenating straight onto the year (e.g. `"08/07/20261030"`) and corrupting the eventual
+   * parse. Gating the PREVIEW specifically (not `commitTyped`'s own completeness check — a
+   * date-only value typed then immediately blurred is still a legitimate final commit, time
+   * defaulting to the steppers, exactly as before) on the time portion also being present keeps
+   * `hasValue()` — and the mask — off until the whole thing, date and time, is actually done.
+   */
+  private hasCompleteTimeIfNeeded(text: string): boolean {
+    if (!this.showTime() || this.view() !== 'date') return true;
+    const groups = text.match(/\d+/g) ?? [];
+    return groups.length >= this.activeFields().length + 2;
+  }
+
+  /**
    * @ignore Reflect a fully-typed date (or `range`/`multiple` set) in the open panel
    * (navigate + highlight) without reformatting the field, so the caret stays put while typing.
    */
   private previewTyped(): void {
     const raw = this.typedValue();
     if (raw === null || !raw.trim()) return;
+    if (this.selectionMode() === 'single' && !this.hasCompleteTimeIfNeeded(raw.trim())) return;
     const picked = this.parseTypedValue(raw.trim(), true);
     if (!picked) return;
     const first = Array.isArray(picked) ? picked[0] : picked;
@@ -1044,22 +1085,20 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
 
   /**
    * @ignore `range`/`multiple` typed entry (FSHSP-118): splits on `RANGE_SEPARATOR`/
-   * `MULTIPLE_SEPARATOR` and parses each part with the very same single-date logic as `single`
-   * mode — `parseTyped`, so a custom `parseDate` applies per part too, symmetric with how a
-   * custom `dateFormat` already applies per date via `formatDate`. `range` requires exactly two
-   * parts, reordered chronologically (mirrors the grid's own reordering in `selectDay`);
-   * `multiple` accepts any number, duplicates collapsed (mirrors the grid's click-to-toggle). Any
+   * `MULTIPLE_SEPARATOR` (via `splitTypedSegments` — see there for why a plain `String.split`
+   * isn't safe) and parses each part with the very same single-date logic as `single` mode —
+   * `parseTyped`, so a custom `parseDate` applies per part too, symmetric with how a custom
+   * `dateFormat` already applies per date via `formatDate`. `range` requires exactly two parts,
+   * reordered chronologically (mirrors the grid's own reordering in `selectDay`); `multiple`
+   * accepts any number, duplicates collapsed (mirrors the grid's click-to-toggle). Any
    * unparseable or disabled part fails the whole thing — never a partial commit. Always
    * `startOfDay` (no `showTime` support here: a "jj/mm/aaaa hh:mm - jj/mm/aaaa hh:mm" format is a
    * further chantier of its own, out of scope for now).
    */
   private parseTypedMulti(text: string, requireComplete: boolean): Date[] | null {
     const mode = this.selectionMode();
-    const sep = mode === 'range' ? RANGE_SEPARATOR.trim() : MULTIPLE_SEPARATOR.trim();
-    const parts = text
-      .split(sep)
-      .map((p) => p.trim())
-      .filter((p) => p.length > 0);
+    const sep = mode === 'range' ? RANGE_SEPARATOR : MULTIPLE_SEPARATOR;
+    const parts = this.splitTypedSegments(text, sep);
     if (mode === 'range' && parts.length !== 2) return null;
     if (mode === 'multiple' && parts.length < 1) return null;
     const parsed = parts.map((p) => this.parseTyped(p, requireComplete));
@@ -1067,6 +1106,48 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     const dates = (parsed as Date[]).map(startOfDay);
     if (mode === 'range') return dates.sort((a, b) => a.getTime() - b.getTime());
     return dates.filter((d, i) => dates.findIndex((o) => isSameDay(o, d)) === i);
+  }
+
+  /**
+   * @ignore Splits typed `range`/`multiple` text into per-date segments (code-review fix,
+   * FSHSP-118). A plain `text.split(sep)` breaks the moment a single date's own formatted text
+   * contains the separator character — a custom `dateFormat` producing `"Jul 8, 2026"` already
+   * contains the `", "` `multiple` splits on; an ISO/dash `dateFormat` like `"2026-07-08"`
+   * already contains the `-` `range` splits on.
+   *
+   * Instead of splitting blindly, this scans for each occurrence of `sep` and only commits to a
+   * boundary once the text *up to* it already parses as a complete date via `parseTyped` — the
+   * same single-date parser used everywhere else, so a custom `parseDate` decides completeness
+   * exactly as it does for `single` mode. An in-progress prefix (`"Jul 8"`, still missing its
+   * year) fails that check and is skipped in favor of the next `sep` occurrence, so a date's own
+   * internal separator is never mistaken for the boundary between two dates. Falls back to
+   * treating the remainder as one final segment once no more `sep` occurrences parse or exist —
+   * this is also what naturally reports "still incomplete" (e.g. only the first date typed so
+   * far in `range`) up to the part-count check in `parseTypedMulti`.
+   */
+  private splitTypedSegments(text: string, sep: string): string[] {
+    const segments: string[] = [];
+    let rest = text.trim();
+    while (rest.length) {
+      let boundary = -1;
+      let searchFrom = 0;
+      for (;;) {
+        const idx = rest.indexOf(sep, searchFrom);
+        if (idx === -1) break;
+        if (this.parseTyped(rest.slice(0, idx), true)) {
+          boundary = idx;
+          break;
+        }
+        searchFrom = idx + 1;
+      }
+      if (boundary === -1) {
+        segments.push(rest.trim());
+        break;
+      }
+      segments.push(rest.slice(0, boundary).trim());
+      rest = rest.slice(boundary + sep.length).trim();
+    }
+    return segments.filter((s) => s.length > 0);
   }
 
   /**

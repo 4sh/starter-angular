@@ -67,9 +67,16 @@ export function buildMaskSlots(
     }
   }
 
+  // Every digit segment gets a `.bound` (position tracking is needed regardless of whether the
+  // segment has a real min/max), even one with no entry in `bounds` — an unranged segment (e.g.
+  // ui-datepicker's year, deliberately left unbounded so its 2-digit shortcut keeps working)
+  // still uses ±Infinity as a no-op range: `acceptsMaskChar`'s scale check always passes, but
+  // `pos`/`len` become available for `atSegmentEnd` to detect the segment's last slot. Without
+  // this, an unranged segment never triggers its OWN following literal (e.g. the space before a
+  // showTime segment never auto-inserts once a bare 4-digit year is typed — code-review fix,
+  // FSHSP-118) because that check used to require a real range to have been attached at all.
   segments.forEach((seg, i) => {
-    const range = bounds[i];
-    if (!range) return;
+    const range = bounds[i] ?? { min: -Infinity, max: Infinity };
     seg.forEach((slot, pos) => (slot.bound = { ...range, pos, len: seg.length }));
   });
 
