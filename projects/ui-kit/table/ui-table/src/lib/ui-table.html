@@ -9,6 +9,7 @@
     <div
       #wrapperEl
       class="ui-table-wrapper"
+      [attr.tabindex]="scrollable() ? 0 : null"
       [style.max-height]="scrollMaxHeight()"
       [style.--ui-table-frozen-top.px]="frozenRowsTop()"
       (scroll)="onWrapperScroll()"
