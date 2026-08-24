@@ -190,7 +190,8 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   firstDayOfWeek = input<number, unknown>(1, { transform: numberAttribute });
   /** BCP-47 locale for names and default formatting. Defaults to `LOCALE_ID`. */
   locale = input<string>();
-  /** Custom display formatter for a single date (overrides the default `Intl` format). */
+  /** Custom display formatter for a single date (overrides the default `Intl` format) — also
+   *  used, unchanged, as the time formatter in `timeOnly` mode. */
   dateFormat = input<(date: Date) => string>();
 
   /**
@@ -552,6 +553,19 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     return new Intl.DateTimeFormat(this.resolvedLocale(), options).format(date);
   }
 
+  /** @ignore `timeOnly` display — respects `hourFormat` (never the locale's own AM/PM-vs-24h
+   *  default) and `dateFormat` when provided (symmetric with `formatDate`/`formatMonth`, used
+   *  here as a time formatter). */
+  private formatTime(date: Date): string {
+    const custom = this.dateFormat();
+    if (custom) return custom(date);
+    return new Intl.DateTimeFormat(this.resolvedLocale(), {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: this.hourFormat() === '12',
+    }).format(date);
+  }
+
   /** @ignore Month-view display (numeric + round-trippable when the trigger is typeable). */
   private formatMonth(date: Date): string {
     if (this.allowInput() && !this.dateFormat()) {
@@ -580,9 +594,7 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     if (base === 'year') return String(dates[0].getFullYear());
 
     if (this.timeOnly()) {
-      return new Intl.DateTimeFormat(this.resolvedLocale(), { timeStyle: 'short' }).format(
-        dates[0],
-      );
+      return this.formatTime(dates[0]);
     }
     const mode = this.selectionMode();
     if (mode === 'multiple') return dates.map((d) => this.formatDate(d)).join(', ');

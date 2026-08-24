@@ -31,6 +31,10 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 - **La boîte de `ui-field` est désormais enveloppée dans un `.ui-field-control`** (FSHSP-157). C'est le contexte de positionnement du libellé flottant, et il est rendu dans les deux modes plutôt que conditionnellement, pour que le DOM d'un champ ne dépende pas de l'option. Aucun impact visuel ni sur les sélecteurs publics ; un consommateur qui aurait écrit du CSS sur l'enchaînement direct `.ui-field > .ui-field-box` doit passer par le descendant.
 - **`ui-label` tronque son texte quand il est contraint** au lieu de déborder (`text-overflow: ellipsis` sur `.ui-label-text`, `max-width: 100%` sur la racine). Sans contrainte de largeur, le comportement est inchangé : le texte passe à la ligne comme avant.
 
+### Fixed
+
+- **`ui-datepicker` en mode `timeOnly` ignorait `hourFormat` et `dateFormat`** (FSHSP-163). L'affichage formatait directement via `Intl` en `timeStyle: 'short'` sur la locale résolue, sans jamais consulter ces deux inputs : `hourFormat="24"` (le défaut) n'avait aucun effet — l'heure basculait en AM/PM dès que la locale résolue en avait un par défaut (ex. `en-US`) — et un `dateFormat` custom n'avait aucune prise sur ce mode. `hourFormat` est maintenant respecté (`hour12` forcé en conséquence, jamais laissé au défaut de la locale), et `dateFormat`, quand fourni, s'applique aussi en `timeOnly` (symétrique de son usage en `date`/`month`).
+
 ## [0.6.1] - 2026-08-22
 
 ### Fixed
