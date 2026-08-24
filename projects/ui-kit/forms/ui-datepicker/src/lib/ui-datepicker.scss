@@ -187,6 +187,9 @@ $buttonbar-padding-top: var(--ui-datepicker-buttonbar-padding-top, var(--units-s
     gap: $picker-gap;
     width: $panel-width;
 
+    // The `role="row"` wrappers exist for ARIA only: the cells stay direct grid items.
+    &-row { display: contents; }
+
     &._month { grid-template-columns: repeat(3, 1fr); }
     &._year { grid-template-columns: repeat(2, 1fr); }
   }

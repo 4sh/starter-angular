@@ -132,6 +132,13 @@ const RANGE_DISPLAY_SEPARATOR = ' – ';
 /** Typed/displayed `multiple` separator (`"jj/mm/aaaa, jj/mm/aaaa, ..."`) — one separator for both. */
 const MULTIPLE_SEPARATOR = ', ';
 
+/** Splits a flat cell list into rows of `size` (month/year pickers need `role="row"` wrappers). */
+function chunk<T>(items: readonly T[], size: number): T[][] {
+  const rows: T[][] = [];
+  for (let i = 0; i < items.length; i += size) rows.push(items.slice(i, i + size));
+  return rows;
+}
+
 /**
  * ui-datepicker — headless date / month / year (and optional time) picker.
  *
@@ -796,6 +803,14 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
       };
     });
   });
+
+  /** @ignore Month/year cells chunked into the rows the CSS actually renders (3 and 2 columns,
+   *  see `.ui-datepicker-picker._month` / `._year`). A `role="grid"` requires its `gridcell`s to
+   *  sit inside a `role="row"`; without it the whole grid is invalid ARIA and screen readers get
+   *  no row structure to walk. Keep the chunk sizes in step with the SCSS column counts. */
+  protected readonly monthRows = computed<DatepickerMonthCell[][]>(() => chunk(this.months(), 3));
+  /** @ignore Year-picker rows — 2 columns, see `.ui-datepicker-picker._year`. */
+  protected readonly yearRows = computed<DatepickerYearCell[][]>(() => chunk(this.years(), 2));
 
   /** @ignore Hours as shown in the 12h stepper (1–12). */
   protected readonly displayHours = computed(() => {
