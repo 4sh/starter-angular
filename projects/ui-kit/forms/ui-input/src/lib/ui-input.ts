@@ -68,6 +68,13 @@ export class UiInput extends BaseFormField<string> {
   ariaControls = input<string>();
   /** Native placeholder. */
   placeholder = input<string>();
+  /**
+   * id of an external element describing this control further (e.g. a composite host's own
+   * format hint), chained onto `aria-describedby` alongside the helper/error message rather than
+   * replacing it — a plain `[attr.aria-describedby]` override on the host would clobber whichever
+   * of the two lands last.
+   */
+  ariaDescribedBy = input<string>();
   /** Suffix unit (e.g. "%", "@domain"). Shown when provided. */
   unit = input<string>();
   /** Left FontAwesome icon name (decorative). */
@@ -142,6 +149,14 @@ export class UiInput extends BaseFormField<string> {
   protected readonly hasRightAction = computed(
     () => (!!this.iconRight() || !!this.resolvedIconRightTemplate()) && !!this.iconRightAriaLabel(),
   );
+  /** @ignore Full `aria-describedby`: the helper/error message id (only when a message is
+   *  actually rendered) plus the externally supplied `ariaDescribedBy`, space-joined — `null`
+   *  when neither applies (native attribute is then omitted, not left dangling). */
+  protected readonly resolvedAriaDescribedBy = computed(() => {
+    const ids = [this.displayMessage() ? this.messageId() : null, this.ariaDescribedBy() || null];
+    const joined = ids.filter((id): id is string => !!id).join(' ');
+    return joined || null;
+  });
 
   /** Focuses the input. */
   focus(options?: FocusOptions): void {

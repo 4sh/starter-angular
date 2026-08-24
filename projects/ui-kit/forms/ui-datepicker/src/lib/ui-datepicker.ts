@@ -124,6 +124,27 @@ export interface DatepickerMonthPanel {
 let nextPanelUid = 0;
 
 /**
+ * Joins the two dates of a TYPED `range` value (FSHSP-118: `"jj/mm/aaaa - jj/mm/aaaa"`) — a
+ * plain hyphen, practically typable on a standard keyboard. Used to compose the placeholder, as
+ * the literal separator of the live auto-"/" mask (`typingSlots`), and to split typed text back
+ * apart in `parseTypedMulti`.
+ *
+ * Deliberately NOT used for `displayValue` (see `RANGE_DISPLAY_SEPARATOR`): a committed range
+ * had always rendered with an en dash, for every `range` consumer, typing or not: reusing this
+ * hyphen there too was a code-review-caught regression — it silently changed that display text
+ * for every existing grid-only range consumer that never opted into typed entry at all.
+ */
+const RANGE_SEPARATOR = ' - ';
+/** Joins the two dates of a DISPLAYED (committed) `range` value — unchanged from before typed
+ *  entry existed. Typing a plain hyphen (`RANGE_SEPARATOR`) still round-trips to this on commit;
+ *  parsing and display are deliberately decoupled so the pre-existing look survives untouched. */
+const RANGE_DISPLAY_SEPARATOR = ' – ';
+/** Joins the dates of a typed/displayed `multiple` value (`"jj/mm/aaaa, jj/mm/aaaa, ..."`) — one
+ *  separator for both: unlike `range`, `multiple`'s display never had an en-dash-style
+ *  convention to preserve. */
+const MULTIPLE_SEPARATOR = ', ';
+
+/**
  * ui-datepicker — headless date / month / year (and optional time) picker.
  *
  * A readonly {@link UiInput} trigger opens a token-styled panel in a CDK overlay
@@ -159,8 +180,14 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   showIcon = input(true, { transform: booleanAttribute });
   /** Accessible name of the toggle button (a11y). */
   iconAriaLabel = input<string>('Ouvrir le calendrier');
-  /** Show a clear (×) button in the trigger when a value is set. */
-  showClear = input(false, { transform: booleanAttribute });
+  /**
+   * Show a clear (×) button in the trigger when a value is set. **Default `true`** (FSHSP-118):
+   * only takes effect when `showIcon` is `false` — the calendar/clock toggle otherwise always
+   * wins the trigger's single icon slot, so the panel stays reachable by click even once a value
+   * is set. With `showIcon` at its own default (`true`), clearing goes through the keyboard
+   * (`allowInput`, itself `true` by default) instead: select the text and delete it.
+   */
+  showClear = input(true, { transform: booleanAttribute });
 
   /**
    * Shape of the emitted value: `'date'` (a plain `Date` — matches a DTO round-tripped through
@@ -190,17 +217,33 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   firstDayOfWeek = input<number, unknown>(1, { transform: numberAttribute });
   /** BCP-47 locale for names and default formatting. Defaults to `LOCALE_ID`. */
   locale = input<string>();
-  /** Custom display formatter for a single date (overrides the default `Intl` format). */
+  /** Custom display formatter for a single date (overrides the default `Intl` format) — also
+   *  used, unchanged, as the time formatter in `timeOnly` mode. */
   dateFormat = input<(date: Date) => string>();
 
   /**
-   * Allow typing the date directly in the trigger (single selection only).
-   * The typed text is parsed on blur / `Enter`; an unparsable value reverts to
-   * the previously displayed one. When enabled (and no custom `dateFormat`), the
-   * value is displayed in a numeric locale format so it round-trips with typing.
-   * Has no effect in `timeOnly` mode: the trigger stays read-only there.
+   * Allow typing the date directly in the trigger. **Default `true`** (FSHSP-118): a calendar
+   * grid alone forces a screen-reader user through ~30 cells to pick a date, when typing it is
+   * far faster — set `false` to force the grid-only path instead. The typed text is parsed on
+   * blur / `Enter`; an unparsable value reverts to the previously displayed one. When enabled
+   * (and no custom `dateFormat`), the value is displayed in a numeric locale format so it
+   * round-trips with typing.
+   *
+   * `single` gets the full experience: a live auto-"/" mask while constructing a date from an
+   * empty field (see `typingSlots`), free-form text editing once a value exists (no live
+   * reformatting, parsed on blur/Enter — editing a segment in place, e.g. just the month, no
+   * longer shifts what follows, FSHSP-118).
+   *
+   * `range`/`multiple` are typeable too (FSHSP-118), but always as plain text — no live mask,
+   * only parsed on blur/Enter: `"jj/mm/aaaa - jj/mm/aaaa"` for `range` (exactly two dates,
+   * reordered chronologically if typed backwards), `"jj/mm/aaaa, jj/mm/aaaa, ..."` for `multiple`
+   * (any count, duplicates collapsed) — see `parseTypedMulti`. The grid keeps working exactly as
+   * before either way; typing is a complement, not a replacement.
+   *
+   * Has no effect in `timeOnly` mode: the trigger stays read-only there (no parser/formatter for
+   * a bare time string).
    */
-  allowInput = input(false, { transform: booleanAttribute });
+  allowInput = input(true, { transform: booleanAttribute });
   /**
    * Custom parser for the typed text (symmetric with `dateFormat`). Return `null`
    * to reject the input. When omitted, a locale-aware numeric parser is used.
@@ -226,6 +269,16 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   todayLabel = input<string>("Aujourd'hui");
   /** Label of the default "Clear" button. */
   clearLabel = input<string>('Effacer');
+
+  /**
+   * Accessible hint announcing the expected typed format, chained onto the trigger's
+   * `aria-describedby` (alongside the helper/error message, never replacing it) whenever it's
+   * typeable (FSHSP-118): the `placeholder` alone is unreliable across screen readers, and it
+   * disappears the moment the user starts typing. Defaults to a sentence built from the resolved
+   * placeholder (e.g. "Format attendu : jj/mm/aaaa"); pass an explicit string to override it, or
+   * `''` to omit it.
+   */
+  formatHintLabel = input<string>();
 
   /** Accessible name of the calendar panel (fallback when no `label`/`ariaLabel`). */
   panelAriaLabel = input<string>('Calendrier');
@@ -347,24 +400,25 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     (this.disabledDates() ?? []).map(normalizeDateInput).filter((d): d is Date => d !== null),
   );
   /**
-   * @ignore The trigger is not typeable: manual input off, not single, read-only, or
-   * `timeOnly` — free-form typing in time-only mode isn't implemented (no dedicated
-   * parser/formatter for a bare time string), so it's disabled outright here rather than
-   * silently mis-parsing.
+   * @ignore The trigger is not typeable: manual input off, read-only, or `timeOnly` — free-form
+   * typing in time-only mode isn't implemented (no dedicated parser/formatter for a bare time
+   * string), so it's disabled outright here rather than silently mis-parsing. `range`/`multiple`
+   * ARE typeable (FSHSP-118: "jj/mm/aaaa - jj/mm/aaaa", "jj/mm/aaaa, jj/mm/aaaa, ...") — see
+   * `parseTypedMulti`. `range` gets the same live auto-"/" mask as `single` (see `typingSlots`);
+   * `multiple`'s unbounded date count doesn't fit a fixed mask template, so it stays plain text
+   * parsed on blur/Enter only.
    */
   protected readonly triggerReadonly = computed(
-    () =>
-      this.readonly() || !this.allowInput() || this.selectionMode() !== 'single' || this.timeOnly(),
+    () => this.readonly() || !this.allowInput() || this.timeOnly(),
   );
-  /**
-   * @ignore Placeholder shown in the typeable trigger. Falls back to a hint derived
-   * from the resolved locale's field order (e.g. `jj/mm/aaaa` in French, `mm/dd/yyyy`
-   * in en-US) so the field never advertises the wrong format.
-   */
-  protected readonly resolvedPlaceholder = computed(() => {
-    const explicit = this.placeholder();
-    // Keep the consumer's placeholder, and don't auto-hint on a read-only trigger.
-    if (explicit || this.triggerReadonly()) return explicit;
+  /** @ignore Single-date placeholder token (e.g. `jj/mm/aaaa`) — the building block
+   *  `resolvedPlaceholder` composes for `range`/`multiple`. With a custom `dateFormat`, the
+   *  locale's numeric token would be flatly wrong (it describes a format nothing actually
+   *  produces or accepts) — showing that custom formatter's own output for an illustrative date
+   *  instead at least matches what the field really expects. */
+  private readonly singleDatePlaceholder = computed(() => {
+    const custom = this.dateFormat();
+    if (custom) return custom(new Date(2023, 10, 22));
     const fr = this.resolvedLocale().toLowerCase().startsWith('fr');
     const token = { day: fr ? 'jj' : 'dd', month: 'mm', year: fr ? 'aaaa' : 'yyyy' };
     const view = this.view();
@@ -386,6 +440,37 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
       )
       .join('');
   });
+  /**
+   * @ignore Placeholder shown in the typeable trigger. Falls back to a hint derived from the
+   * resolved locale's field order (e.g. `jj/mm/aaaa` in French, `mm/dd/yyyy` in en-US) — or, with
+   * a custom `dateFormat`, from that formatter's own output for an illustrative date (see
+   * `singleDatePlaceholder`), since the locale-numeric token would describe a format nothing
+   * actually produces or accepts — so the field never advertises the wrong format. Composed into
+   * `"jj/mm/aaaa - jj/mm/aaaa"` (`range`) or `"jj/mm/aaaa, ..."` (`multiple`), matching
+   * `RANGE_SEPARATOR`/`MULTIPLE_SEPARATOR` (see `parseTypedMulti`).
+   */
+  protected readonly resolvedPlaceholder = computed(() => {
+    const explicit = this.placeholder();
+    // Keep the consumer's placeholder, and don't auto-hint on a read-only trigger.
+    if (explicit || this.triggerReadonly()) return explicit;
+    const single = this.singleDatePlaceholder();
+    const mode = this.selectionMode();
+    if (mode === 'range') return `${single}${RANGE_SEPARATOR}${single}`;
+    if (mode === 'multiple') return `${single}${MULTIPLE_SEPARATOR}...`;
+    return single;
+  });
+  /**
+   * @ignore Format hint text, or `null` when there's nothing to announce: the trigger isn't
+   * typeable, or `formatHintLabel` was explicitly set to `''` to opt out.
+   */
+  protected readonly resolvedFormatHint = computed(() => {
+    if (this.triggerReadonly()) return null;
+    const explicit = this.formatHintLabel();
+    if (explicit === '') return null;
+    return explicit || `Format attendu : ${this.resolvedPlaceholder()}`;
+  });
+  /** @ignore Stable id for the hint element `resolvedFormatHint` renders into. */
+  protected readonly formatHintId = computed(() => `${this.resolvedId()}-format-hint`);
 
   /** @ignore Order of day/month/year for the resolved locale (drives numeric parsing). */
   private readonly dateFieldOrder = computed<('day' | 'month' | 'year')[]>(() => {
@@ -405,17 +490,41 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   );
   /**
    * @ignore Dynamic mask (day/month/year widths in locale order, plus hour/minute — and AM/PM —
-   * widths when `showTime`) driving the auto-"/" (resp. ":") formatting of the typeable trigger.
+   * widths when `showTime`; `range` repeats the same widths a second time, joined by
+   * `RANGE_SEPARATOR`) driving the auto-"/" (resp. ":", " - ") formatting of the typeable trigger.
    * `null` disables it: `triggerReadonly` (covers `timeOnly` — see there), `view === 'year'`
-   * (free-form numeric field, out of scope), or a custom `parseDate` (a non-numeric format would
-   * make the auto-slash wrong). The `year` segment is deliberately left unbounded so the existing
-   * 2-digit shortcut (`normalizeYear`) keeps working — strict validation still happens at
-   * `finalizeParsed`. `defaultParse` already expects these trailing hour/minute digits (see its
-   * `nums.slice(fields.length)`) — this only keeps the auto-formatting mask in sync with it, so
-   * typed hour/minute digits aren't truncated by `autoFormatSegments` before they reach it.
+   * (free-form numeric field, out of scope), a custom `parseDate` (a non-numeric format would
+   * make the auto-slash wrong), `hasValue()` (FSHSP-118), or `multiple` (unbounded number of
+   * dates — a fixed mask template can't model it; typed through plain text on blur/Enter only,
+   * via `parseTypedMulti`, same as `range` before this mask covered it too).
+   *
+   * That `hasValue()` gate: re-deriving the mask from a flat digit stream on every keystroke only
+   * ever behaves well for *constructing* a date (or, in `range`, a pair of dates) from nothing —
+   * sequential forward typing, or backspacing from the end. It has no notion of "this segment was
+   * already valid, only touch it" (day/month are bounds-checked against arbitrary residual digits
+   * after any edit; year, the one unbounded segment, is the sole exception, which is why editing
+   * it works and looks like an inconsistency until you know why). Once a value already exists,
+   * editing it in place is common (fixing a typo, changing the year to file the same form again)
+   * and hits exactly that gap. Disabling the mask there routes typing to the plain passthrough
+   * branch below instead — no live auto-formatting, but no corruption either — and defers to
+   * `commitTyped`'s parser (already tolerant of arbitrary separators, see `defaultParse`/
+   * `parseTypedMulti`) on blur/Enter. The mask re-arms on its own once the field is cleared and
+   * `hasValue()` goes back to `false` — see `onTriggerInput`, which commits the clear the instant
+   * the raw text reads empty (not just on blur/Enter): a transient "text is empty" check here
+   * instead would only hold for the one keystroke that empties the field — `hasValue()` alone,
+   * unrefreshed, flips back on with the very next character typed, since nothing ever committed it
+   * to `false` for real.
    */
   private readonly typingSlots = computed<MaskSlot[] | null>(() => {
-    if (this.triggerReadonly() || this.view() === 'year' || this.parseDate()) return null;
+    const mode = this.selectionMode();
+    if (
+      this.triggerReadonly() ||
+      this.view() === 'year' ||
+      this.parseDate() ||
+      this.hasValue() ||
+      (mode !== 'single' && mode !== 'range')
+    )
+      return null;
     const widths = { day: '99', month: '99', year: '9999' } as const;
     const bounds: Record<'day' | 'month' | 'year', MaskBounds | null> = {
       day: { min: 1, max: 31 },
@@ -426,12 +535,18 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     let mask = fields.map((f) => widths[f]).join('/');
     const segmentBounds: (MaskBounds | null)[] = fields.map((f) => bounds[f]);
 
-    if (this.showTime() && this.view() === 'date') {
+    if (mode === 'single' && this.showTime() && this.view() === 'date') {
       mask += this.hourFormat() === '12' ? ' 99:99 aa' : ' 99:99';
       segmentBounds.push(this.hourFormat() === '12' ? { min: 1, max: 12 } : { min: 0, max: 23 }, {
         min: 0,
         max: 59,
       });
+    }
+    if (mode === 'range') {
+      // Second date, same widths/bounds, joined by the literal typing separator — no `showTime`
+      // support here (typed `range` is always `startOfDay`, see `parseTypedMulti`).
+      mask += RANGE_SEPARATOR + fields.map((f) => widths[f]).join('/');
+      segmentBounds.push(...fields.map((f) => bounds[f]));
     }
     return buildMaskSlots(mask, segmentBounds);
   });
@@ -444,11 +559,23 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
 
   /** @ignore A value is currently set. */
   protected readonly hasValue = computed(() => this.selectedDates().length > 0);
-  /** @ignore The trigger's right action clears the value (instead of toggling the panel). */
+  /**
+   * @ignore The trigger's right action clears the value (instead of toggling the panel). Gated
+   * on `!showIcon()` (FSHSP-118): the calendar/clock toggle always wins the trigger's single icon
+   * slot when it's shown, so there's always a click target to reopen the panel and pick a
+   * different date directly — the cross only replaces it in configs that hid it (`showIcon`
+   * false), where it's the sole remaining affordance to empty the field without a keyboard.
+   */
   protected readonly showClearButton = computed(
-    () => this.showClear() && this.hasValue() && !this.isDisabled() && !this.readonly(),
+    () =>
+      this.showClear() &&
+      this.hasValue() &&
+      !this.isDisabled() &&
+      !this.readonly() &&
+      !this.showIcon(),
   );
-  /** @ignore Right-side icon: clear (×) when clearable + set, else the calendar/clock toggle. */
+  /** @ignore Right-side icon: clear (×) when clearable + set + no calendar toggle to show
+   *  (see `showClearButton`), else the calendar/clock toggle. */
   protected readonly triggerIcon = computed(() => {
     if (this.showClearButton()) return 'xmark';
     if (!this.showIcon()) return undefined;
@@ -552,6 +679,19 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     return new Intl.DateTimeFormat(this.resolvedLocale(), options).format(date);
   }
 
+  /** @ignore `timeOnly` display — respects `hourFormat` (never the locale's own AM/PM-vs-24h
+   *  default) and `dateFormat` when provided (symmetric with `formatDate`/`formatMonth`, used
+   *  here as a time formatter). */
+  private formatTime(date: Date): string {
+    const custom = this.dateFormat();
+    if (custom) return custom(date);
+    return new Intl.DateTimeFormat(this.resolvedLocale(), {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: this.hourFormat() === '12',
+    }).format(date);
+  }
+
   /** @ignore Month-view display (numeric + round-trippable when the trigger is typeable). */
   private formatMonth(date: Date): string {
     if (this.allowInput() && !this.dateFormat()) {
@@ -580,13 +720,11 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     if (base === 'year') return String(dates[0].getFullYear());
 
     if (this.timeOnly()) {
-      return new Intl.DateTimeFormat(this.resolvedLocale(), { timeStyle: 'short' }).format(
-        dates[0],
-      );
+      return this.formatTime(dates[0]);
     }
     const mode = this.selectionMode();
-    if (mode === 'multiple') return dates.map((d) => this.formatDate(d)).join(', ');
-    if (mode === 'range') return dates.map((d) => this.formatDate(d)).join(' – ');
+    if (mode === 'multiple') return dates.map((d) => this.formatDate(d)).join(MULTIPLE_SEPARATOR);
+    if (mode === 'range') return dates.map((d) => this.formatDate(d)).join(RANGE_DISPLAY_SEPARATOR);
     return this.formatDate(dates[0]);
   });
 
@@ -739,8 +877,14 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     this.overlayOrigin.set(this.resolveOverlayOrigin());
     this.panelOpen.set(true);
     this.opened.emit();
-    // Keep focus in the input when it's typeable; otherwise rove into the (active) grid.
-    if (this.showCalendar() && this.triggerReadonly()) {
+    // Keep focus in the input when it's typeable in single mode (so typing can continue
+    // uninterrupted); otherwise rove into the (active) grid. `range`/`multiple` always rove,
+    // regardless of `triggerReadonly()`: typing there is a plain-text complement (no live mask,
+    // see `typingSlots`), never the primary interaction — the grid is, exactly as before
+    // `allowInput` covered these modes, and opening via the calendar icon signals "I want the
+    // grid" (code review finding: this used to be implicit in `triggerReadonly` hardcoding
+    // non-single modes read-only; restored explicitly now that it no longer does).
+    if (this.showCalendar() && (this.triggerReadonly() || this.selectionMode() !== 'single')) {
       if (this.currentView() === 'date') this.queueDayFocus();
       else if (this.currentView() === 'month') this.queueMonthFocus();
       else this.queueYearFocus();
@@ -803,6 +947,12 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     const slots = this.typingSlots();
     if (!slots) {
       this.typedValue.set(value);
+      // The mask is off because a value already exists (see `typingSlots`) — but the field was
+      // just emptied by hand, with no blur/Enter to go through `commitTyped`'s own clear. Commit
+      // it right here instead of waiting for a commit that may never come: `hasValue()` flips to
+      // `false` for real, so `typingSlots()` re-arms the mask on the very next keystroke, for
+      // whatever fresh date comes next (FSHSP-118).
+      if (!value.trim() && this.hasValue()) this.clear();
       if (this.panelOpen()) this.previewTyped();
       return;
     }
@@ -810,26 +960,70 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     const caret = el?.selectionStart ?? value.length;
     // Number of data characters located BEFORE the caret (stable anchor, same trick as ui-input-mask).
     const dataBeforeCaret = extractMaskData(value.slice(0, caret)).length;
-    const { text, tokenIndices } = autoFormatSegments(slots, extractMaskData(value));
+    const newData = extractMaskData(value);
+    // A deletion (Backspace/Delete/selection-clear) leaves only ALREADY-valid digits behind —
+    // re-running the bounds check against them (meant to reject a just-typed invalid leading
+    // digit, e.g. "8" can't start a 1-31 day) can instead skip a still-valid residual one and
+    // misalign every segment after it (FSHSP-118: only the year, which carries no bound, always
+    // survived editing untouched). Comparing data lengths (not `event.inputType`, unavailable
+    // here) distinguishes typing/pasting (grows or holds, still bounds-checked) from deleting
+    // (shrinks, bounds-checked only up to the final blur/Enter parse — see `finalizeParsed`).
+    // Baseline is `displayValue()` (what's actually shown before this edit — typed text OR a
+    // calendar-committed date, `typedValue` alone would miss the latter), read before any
+    // signal write below still reflects the state.
+    const enforceBounds = newData.length >= extractMaskData(this.displayValue()).length;
+    const { text, tokenIndices, dataEnd } = autoFormatSegments(slots, newData, { enforceBounds });
     this.typedValue.set(text);
     if (el) {
       el.value = text;
-      const pos = caretForMask(tokenIndices, dataBeforeCaret, text.length);
+      // A deletion (!enforceBounds) whose caret sat at/past all remaining data (editing at the
+      // tail, by far the common case — see `enforceBounds` above) always lands on `dataEnd`,
+      // never on `caretForMask`'s result: that function answers "where's the next slot to type
+      // INTO", which for a just-emptied segment is the position right after its
+      // eagerly-auto-inserted trailing separator — landing there makes the very next Backspace
+      // delete that decorative separator (silently re-inserted next render) instead of the
+      // segment's last digit, so deleting looks stuck one keystroke short forever (FSHSP-118).
+      // A mid-string deletion (more data still sits after the caret) falls back to the normal
+      // computation unchanged — still an approximation (see the class doc), just not this trap.
+      const atTail = dataBeforeCaret >= newData.length;
+      const pos =
+        !enforceBounds && atTail ? dataEnd : caretForMask(tokenIndices, dataBeforeCaret, dataEnd);
       el.setSelectionRange(pos, pos);
     }
     if (this.panelOpen()) this.previewTyped();
   }
 
   /**
-   * @ignore Reflect a fully-typed date in the open panel (navigate + highlight)
-   * without reformatting the field, so the caret stays put while typing.
+   * @ignore Whether `text` already carries a time portion too, when one is required
+   * (`showTime`, single-date `view === 'date'`) — code-review fix, FSHSP-118. `defaultParse`'s
+   * own `requireComplete` only checks day/month/year are present, never the trailing hour/minute
+   * groups, so `previewTyped` (below) used to treat the date-only prefix as "complete" the
+   * moment day/month/year were typed. That flipped `hasValue()` true — and so, per `typingSlots`,
+   * turned the live mask off — before a single time digit had been typed: the very next keystroke
+   * (the first hour digit) then landed with no mask active to insert the "HH:MM" separators,
+   * concatenating straight onto the year (e.g. `"08/07/20261030"`) and corrupting the eventual
+   * parse. Gating the PREVIEW specifically (not `commitTyped`'s own completeness check — a
+   * date-only value typed then immediately blurred is still a legitimate final commit, time
+   * defaulting to the steppers, exactly as before) on the time portion also being present keeps
+   * `hasValue()` — and the mask — off until the whole thing, date and time, is actually done.
+   */
+  private hasCompleteTimeIfNeeded(text: string): boolean {
+    if (!this.showTime() || this.view() !== 'date') return true;
+    const groups = text.match(/\d+/g) ?? [];
+    return groups.length >= this.activeFields().length + 2;
+  }
+
+  /**
+   * @ignore Reflect a fully-typed date (or `range`/`multiple` set) in the open panel
+   * (navigate + highlight) without reformatting the field, so the caret stays put while typing.
    */
   private previewTyped(): void {
     const raw = this.typedValue();
     if (raw === null || !raw.trim()) return;
-    const parsed = this.parseTyped(raw.trim(), true);
-    if (!parsed || this.isParsedDisabled(parsed)) return;
-    const picked = this.showTime() ? parsed : startOfDay(parsed);
+    if (this.selectionMode() === 'single' && !this.hasCompleteTimeIfNeeded(raw.trim())) return;
+    const picked = this.parseTypedValue(raw.trim(), true);
+    if (!picked) return;
+    const first = Array.isArray(picked) ? picked[0] : picked;
     // Update the model (drives the selected-day highlight + live value) but keep
     // `typedValue` so `displayValue` still returns the raw text (no caret jump).
     this.internalValue.set(picked);
@@ -837,8 +1031,8 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     this.modelValue.set(external ?? undefined);
     this.emitChange(external);
     this.valueChange.emit(external);
-    this.viewDate.set(firstOfMonth(picked));
-    this.focusedDate.set(startOfDay(picked));
+    this.viewDate.set(firstOfMonth(first));
+    this.focusedDate.set(startOfDay(first));
   }
 
   /** @ignore Parse the typed text on blur, then forward the blur. */
@@ -849,7 +1043,8 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     this.inputBlur.emit(event);
   }
 
-  /** @ignore Parse and apply the typed text; revert to the previous value if invalid. */
+  /** @ignore Parse and apply the typed text (single date, or `range`/`multiple` set — see
+   *  `parseTypedValue`); revert to the previous value if invalid. */
   protected commitTyped(): void {
     if (this.triggerReadonly()) return;
     const raw = this.typedValue();
@@ -860,13 +1055,16 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
       if (this.hasValue()) this.clear();
       return;
     }
-    const parsed = this.parseTyped(text, true);
-    if (parsed && !this.isParsedDisabled(parsed)) {
-      const picked = this.showTime() ? parsed : startOfDay(parsed);
-      this.commit(picked); // single-only → clears typedValue and reformats
-      this.dateSelect.emit(this.serializeValue(picked));
-      this.viewDate.set(firstOfMonth(picked));
-      this.focusedDate.set(startOfDay(picked));
+    const picked = this.parseTypedValue(text, true);
+    if (picked) {
+      this.commit(picked); // clears typedValue and reformats
+      const first = Array.isArray(picked) ? picked[0] : picked;
+      // `dateSelect` reports "which single day was just picked" — no such thing for a typed
+      // range/list committed all at once, so it's single-mode only (matches its `Date | string`
+      // output type, which couldn't carry an array anyway).
+      if (!Array.isArray(picked)) this.dateSelect.emit(this.serializeValue(picked));
+      this.viewDate.set(firstOfMonth(first));
+      this.focusedDate.set(startOfDay(first));
     } else {
       this.typedValue.set(null); // revert: displayValue reformats the current value
     }
@@ -880,6 +1078,86 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   private parseTyped(text: string, requireComplete = false): Date | null {
     const custom = this.parseDate();
     return custom ? custom(text) : this.defaultParse(text, requireComplete);
+  }
+
+  /**
+   * @ignore Parses typed text into whatever shape the current `selectionMode` commits: a single
+   * `Date` for `single`, a `Date[]` for `range`/`multiple` (see `parseTypedMulti`). `null` means
+   * "not a complete, enabled value for this mode" — the caller reverts.
+   */
+  private parseTypedValue(text: string, requireComplete: boolean): Date | Date[] | null {
+    if (this.selectionMode() === 'single') {
+      const parsed = this.parseTyped(text, requireComplete);
+      return parsed && !this.isParsedDisabled(parsed) ? parsed : null;
+    }
+    return this.parseTypedMulti(text, requireComplete);
+  }
+
+  /**
+   * @ignore `range`/`multiple` typed entry (FSHSP-118): splits on `RANGE_SEPARATOR`/
+   * `MULTIPLE_SEPARATOR` (via `splitTypedSegments` — see there for why a plain `String.split`
+   * isn't safe) and parses each part with the very same single-date logic as `single` mode —
+   * `parseTyped`, so a custom `parseDate` applies per part too, symmetric with how a custom
+   * `dateFormat` already applies per date via `formatDate`. `range` requires exactly two parts,
+   * reordered chronologically (mirrors the grid's own reordering in `selectDay`); `multiple`
+   * accepts any number, duplicates collapsed (mirrors the grid's click-to-toggle). Any
+   * unparseable or disabled part fails the whole thing — never a partial commit. Always
+   * `startOfDay` (no `showTime` support here: a "jj/mm/aaaa hh:mm - jj/mm/aaaa hh:mm" format is a
+   * further chantier of its own, out of scope for now).
+   */
+  private parseTypedMulti(text: string, requireComplete: boolean): Date[] | null {
+    const mode = this.selectionMode();
+    const sep = mode === 'range' ? RANGE_SEPARATOR : MULTIPLE_SEPARATOR;
+    const parts = this.splitTypedSegments(text, sep);
+    if (mode === 'range' && parts.length !== 2) return null;
+    if (mode === 'multiple' && parts.length < 1) return null;
+    const parsed = parts.map((p) => this.parseTyped(p, requireComplete));
+    if (parsed.some((d) => d === null || this.isParsedDisabled(d))) return null;
+    const dates = (parsed as Date[]).map(startOfDay);
+    if (mode === 'range') return dates.sort((a, b) => a.getTime() - b.getTime());
+    return dates.filter((d, i) => dates.findIndex((o) => isSameDay(o, d)) === i);
+  }
+
+  /**
+   * @ignore Splits typed `range`/`multiple` text into per-date segments (code-review fix,
+   * FSHSP-118). A plain `text.split(sep)` breaks the moment a single date's own formatted text
+   * contains the separator character — a custom `dateFormat` producing `"Jul 8, 2026"` already
+   * contains the `", "` `multiple` splits on; an ISO/dash `dateFormat` like `"2026-07-08"`
+   * already contains the `-` `range` splits on.
+   *
+   * Instead of splitting blindly, this scans for each occurrence of `sep` and only commits to a
+   * boundary once the text *up to* it already parses as a complete date via `parseTyped` — the
+   * same single-date parser used everywhere else, so a custom `parseDate` decides completeness
+   * exactly as it does for `single` mode. An in-progress prefix (`"Jul 8"`, still missing its
+   * year) fails that check and is skipped in favor of the next `sep` occurrence, so a date's own
+   * internal separator is never mistaken for the boundary between two dates. Falls back to
+   * treating the remainder as one final segment once no more `sep` occurrences parse or exist —
+   * this is also what naturally reports "still incomplete" (e.g. only the first date typed so
+   * far in `range`) up to the part-count check in `parseTypedMulti`.
+   */
+  private splitTypedSegments(text: string, sep: string): string[] {
+    const segments: string[] = [];
+    let rest = text.trim();
+    while (rest.length) {
+      let boundary = -1;
+      let searchFrom = 0;
+      for (;;) {
+        const idx = rest.indexOf(sep, searchFrom);
+        if (idx === -1) break;
+        if (this.parseTyped(rest.slice(0, idx), true)) {
+          boundary = idx;
+          break;
+        }
+        searchFrom = idx + 1;
+      }
+      if (boundary === -1) {
+        segments.push(rest.trim());
+        break;
+      }
+      segments.push(rest.slice(0, boundary).trim());
+      rest = rest.slice(boundary + sep.length).trim();
+    }
+    return segments.filter((s) => s.length > 0);
   }
 
   /**

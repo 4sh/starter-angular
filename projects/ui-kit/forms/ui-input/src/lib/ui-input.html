@@ -46,7 +46,7 @@
     [attr.aria-controls]="ariaControls() || null"
     [attr.aria-label]="label() ? null : ariaLabel() || null"
     [attr.aria-labelledby]="ariaLabelledBy() || null"
-    [attr.aria-describedby]="displayMessage() ? messageId() : null"
+    [attr.aria-describedby]="resolvedAriaDescribedBy()"
     [attr.aria-invalid]="effectiveLevel() === 'error' ? 'true' : null"
     (input)="onInput()"
     (focus)="inputFocus.emit($event)"

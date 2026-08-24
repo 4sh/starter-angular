@@ -53,9 +53,21 @@ describe('buildMaskSlots', () => {
     expect(slots[9].bound).toEqual({ min: 1900, max: 2100, pos: 3, len: 4 });
   });
 
-  it('leaves a segment unbounded when no matching range was provided', () => {
+  it('still tracks pos/len for a segment with no matching range (±Infinity, no-op validation)', () => {
+    // FSHSP-118 code-review fix: `.bound` used to stay entirely undefined for an unranged
+    // segment, which also meant `atSegmentEnd` (driven by `bound.pos`/`bound.len`) could never
+    // fire for it — an unranged 4-digit segment (e.g. ui-datepicker's year) never triggered its
+    // own trailing literal once fully typed. `pos`/`len` are now always attached; only the
+    // min/max become a no-op sentinel.
     const slots = buildMaskSlots('99', []);
-    expect(slots[0].bound).toBeUndefined();
+    expect(slots[0].bound).toEqual({ min: -Infinity, max: Infinity, pos: 0, len: 2 });
+    expect(slots[1].bound).toEqual({ min: -Infinity, max: Infinity, pos: 1, len: 2 });
+  });
+
+  it('an unranged segment still accepts any digit regardless of value (no-op bounds check)', () => {
+    const slots = buildMaskSlots('99', []);
+    expect(acceptsMaskChar(slots[0], '', '9')).toBe(true);
+    expect(acceptsMaskChar(slots[1], '9', '9')).toBe(true);
   });
 });
 
@@ -97,6 +109,13 @@ describe('acceptsMaskChar', () => {
     expect(acceptsMaskChar(slots[3], '', '0')).toBe(true);
     expect(acceptsMaskChar(slots[3], '', '1')).toBe(true);
     expect(acceptsMaskChar(slots[3], '', '3')).toBe(false);
+  });
+
+  it('enforceBounds=false accepts a digit the bounds check would otherwise reject', () => {
+    // "3" fails the month leading-digit check above; with the bounds check off (used to
+    // re-derive the mask after a deletion — see FSHSP-118), only the token class still applies.
+    expect(acceptsMaskChar(slots[3], '', '3', false)).toBe(true);
+    expect(acceptsMaskChar(slots[3], '', 'a', false)).toBe(false); // still not a digit
   });
 });
 
@@ -159,5 +178,92 @@ describe('autoFormatSegments', () => {
     const result = autoFormatSegments(dateSlots(), '');
     expect(result.text).toBe('');
     expect(result.tokenIndices).toEqual([0]);
+  });
+
+  // FSHSP-118: `dataEnd` stops right before an eagerly-inserted trailing separator that has no
+  // data typed past it yet — never at `text.length`, which includes it. That's what lets the
+  // caller park the caret BEFORE the separator instead of after it (see ui-datepicker).
+  it('dataEnd stops right after the last data character, before any dangling separator', () => {
+    expect(autoFormatSegments(dateSlots(), '1501').dataEnd).toBe(5); // "15/01/" — before the "/"
+    expect(autoFormatSegments(dateSlots(), '15').dataEnd).toBe(2); // "15/" — before the "/"
+    expect(autoFormatSegments(dateSlots(), '').dataEnd).toBe(0); // "" — nothing typed at all
+    expect(autoFormatSegments(dateSlots(), '15012024').dataEnd).toBe(10); // fully filled, no dangling separator
+  });
+
+  // FSHSP-118: reproduces `ui-datepicker`'s actual mask (day/month bounded, year deliberately
+  // left UNbounded — see its `typingSlots`), not the bounded-year `dateSlots()` above.
+  function dayMonthYearSlots() {
+    return buildMaskSlots(DATE_MASK, [{ min: 1, max: 31 }, { min: 1, max: 12 }, null]);
+  }
+
+  // Deleting the day's leading digit of "08/07/2026" (raw value "8/07/2026" once the browser
+  // removes it) leaves the residual digit stream "8072026". Re-deriving the mask with bounds
+  // enforced (the default — meant to reject an invalid *new* leading digit while typing forward)
+  // instead SKIPS "8" (no valid 1-31 day starts with it) and reassigns the digits meant for
+  // month/year across the segment boundaries, producing a value with no relation to what was on
+  // screen. `enforceBounds: false` keeps each segment to its own positional slice of the stream
+  // instead — segments can show a transient out-of-range value (caught by the final blur/Enter
+  // parse, see `finalizeParsed`), but digits are never stolen from one segment by another.
+  it('without enforceBounds, a deletion can steal digits across segment boundaries', () => {
+    const result = autoFormatSegments(dayMonthYearSlots(), '8072026');
+    expect(result.text).toBe('07/02/6'); // day/month/year no longer match ANY sensible edit
+  });
+
+  it('enforceBounds: false keeps the same deletion positional instead', () => {
+    const result = autoFormatSegments(dayMonthYearSlots(), '8072026', { enforceBounds: false });
+    expect(result.text).toBe('80/72/026'); // each segment keeps its own slice of the stream
+  });
+
+  // FSHSP-118 code-review fix: an unranged segment (year) used to never trigger its own
+  // trailing literal, because `atSegmentEnd` (mask-engine.ts) required a real bound to have been
+  // attached at all — so the space before a showTime segment never auto-inserted once a bare
+  // 4-digit year was typed, and the next digit typed (the hour) landed glued straight onto the
+  // year with no separator (e.g. ui-datepicker's "08/07/2026" + "10" typed next used to become
+  // "08/07/202610", which a later parse misreads as a single corrupted year).
+  function dateTimeSlots() {
+    return buildMaskSlots('99/99/9999 99:99', [
+      { min: 1, max: 31 },
+      { min: 1, max: 12 },
+      null, // year: deliberately unranged, same as ui-datepicker's typingSlots
+      { min: 0, max: 23 },
+      { min: 0, max: 59 },
+    ]);
+  }
+
+  it('auto-inserts the trailing literal after an unranged (year) segment too', () => {
+    // Day, month, and all 4 year digits typed — nothing of the time yet.
+    const result = autoFormatSegments(dateTimeSlots(), '08072026');
+    expect(result.text).toBe('08/07/2026 '); // space auto-inserted, ready for the hour digits
+  });
+
+  it('keeps date and time cleanly separated once time digits follow', () => {
+    const result = autoFormatSegments(dateTimeSlots(), '080720261030');
+    expect(result.text).toBe('08/07/2026 10:30');
+  });
+
+  // FSHSP-118 follow-up: `ui-datepicker`'s `range` mode reuses the single-date mask twice,
+  // joined by its three-character typing separator (" - "). Auto-inserting only the FIRST
+  // literal right after a completed segment (the original behavior) would leave the "-" and
+  // trailing space forever stranded — the fix appends every consecutive literal in one go.
+  function rangeSlots() {
+    return buildMaskSlots('99/99/9999 - 99/99/9999', [
+      { min: 1, max: 31 },
+      { min: 1, max: 12 },
+      null,
+      { min: 1, max: 31 },
+      { min: 1, max: 12 },
+      null,
+    ]);
+  }
+
+  it('auto-inserts every character of a multi-char separator at once', () => {
+    const result = autoFormatSegments(rangeSlots(), '08072026');
+    expect(result.text).toBe('08/07/2026 - '); // all three separator chars, not just the space
+    expect(result.dataEnd).toBe(10); // still right after the last DATA char, before the separator
+  });
+
+  it('keeps typing straight through into the second date', () => {
+    const result = autoFormatSegments(rangeSlots(), '0807202618072026');
+    expect(result.text).toBe('08/07/2026 - 18/07/2026');
   });
 });

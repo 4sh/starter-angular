@@ -7,8 +7,9 @@ import { ConfigTable } from '../../../../storybook/blocks/config-table';
 # ui-datepicker
 
 Sélecteur de **date / mois / année** (et d'**heure** optionnelle) headless. Un champ
-déclencheur [`ui-input`](?path=/docs/components-ui-forms-ui-input--docs) en lecture seule ouvre
-un calendrier stylé (tokens `form.*` / `actions.*`) dans un overlay Angular CDK — ou rendu
+déclencheur [`ui-input`](?path=/docs/components-ui-forms-ui-input--docs), saisissable au clavier
+par défaut (`allowInput`, tous modes de sélection), ouvre un calendrier stylé (tokens `form.*` /
+`actions.*`) dans un overlay Angular CDK — ou rendu
 **inline**. Sélection `single` / `multiple` / `range`, vues à tiroir (jour → mois → année),
 modes `MonthPicker` / `YearPicker`, plusieurs mois côte à côte, navigation mensuelle, focus
 roving et support clavier complet (motif WAI-ARIA date picker).
@@ -118,8 +119,12 @@ dégrade silencieusement en « pas de contrainte » plutôt que de lever une err
 <Canvas of={DatepickerStories.Small} />
 <Canvas of={DatepickerStories.Disabled} />
 
-`showClear` ajoute une croix dans le champ (dès qu'une valeur est présente) pour réinitialiser
-la sélection. En mode `timeOnly`, l'icône du déclencheur devient une horloge.
+`showClear` (vrai par défaut) ajoute une croix dans le champ pour réinitialiser la sélection —
+mais seulement quand `showIcon` est à `false` : sinon le calendrier garde l'icône, pour rester
+cliquable et rouvrir le panneau même une fois une date choisie (le point de vue retenu, FSHSP-118 :
+le calendrier reste le raccourci pour **changer** la date, la croix le seul recours pour
+l'**effacer** dans une configuration qui n'a pas d'icône calendrier — sinon la frappe au clavier,
+`allowInput`, s'en charge). En mode `timeOnly`, l'icône du déclencheur devient une horloge.
 
 <Canvas of={DatepickerStories.Clearable} />
 <Canvas of={DatepickerStories.TimeOnly} />
@@ -143,15 +148,20 @@ des trois variantes, du déclenchement et des conséquences de mise en page sur 
 
 ## Saisie manuelle (`allowInput`)
 
-Par défaut le champ est en lecture seule : la date se choisit uniquement dans le panneau.
-Activez `allowInput` pour autoriser la **frappe au clavier** dans le champ (mode `single`
-uniquement). Le texte est parsé au **blur** et sur **Entrée** ; une saisie invalide revient
-à la dernière valeur affichée. `↓` ouvre le panneau et entre dans la grille.
+**`allowInput` est vrai par défaut** (FSHSP-118) : la frappe au clavier dans le champ est
+autorisée d'emblée, quel que soit `selectionMode`, pas seulement la sélection dans le panneau —
+pour un non-voyant, taper une date est bien plus rapide que naviguer une grille de ~30 cases au
+lecteur d'écran. Le texte est parsé au **blur** et sur **Entrée** ; une saisie invalide revient à
+la dernière valeur affichée. `↓` ouvre le panneau et entre dans la grille. Mettez `allowInput` à
+`false` pour revenir à un champ lecture seule, calendrier uniquement.
+
+`allowInput` est **sans effet** en `timeOnly` (pas de parseur/formatteur dédié à une heure
+seule) : le champ y reste toujours en lecture seule.
 
 Quand `showTime` est actif (hors `timeOnly`), le masque couvre aussi les segments heure/minute
 (et AM/PM en `hourFormat="12"`) : `allowInput` reste utilisable pour taper la date **et** l'heure
-d'une traite. `allowInput` est en revanche **sans effet en `timeOnly`** (pas de parseur/formatteur
-dédié à une heure seule) : le champ y reste toujours en lecture seule.
+d'une traite — en mode `single` uniquement (voir plus bas pour `range`/`multiple`, qui n'en
+profitent pas encore).
 
 Quand `allowInput` est actif (et sans `dateFormat` custom), la valeur s'affiche au **format
 numérique** de la locale (ex. `08/07/2026`) pour un aller-retour fiable avec le parser.
@@ -164,6 +174,18 @@ comportement partage son moteur avec [`ui-input-mask`](?path=/docs/components-ui
 (`mask-engine.ts`) et se désactive automatiquement dès qu'un `parseDate` custom est fourni (un
 format non numérique rendrait l'auto-slash faux).
 
+> **L'auto-"/" ne s'applique que pour construire une date depuis un champ vide** (FSHSP-118) : dès
+> qu'une valeur existe (saisie complétée, ou déjà présente au chargement), il se désactive et la
+> frappe redevient un champ texte ordinaire, sans reformatage en direct — seul le parsing au
+> blur/Entrée s'applique. Cette bascule est nécessaire : le masque re-dérive l'intégralité du texte
+> à chaque frappe depuis le flux de chiffres, ce qui n'a de sens que pour une construction
+> séquentielle (taper vers l'avant, ou supprimer depuis la fin) — corriger un segment déjà valide
+> en le retapant sur place (ex. cliquer dans le mois pour le seul corriger) redevient alors une
+> édition de texte tout à fait normale plutôt que de rejouer ce re-dérivage. Le masque se
+> réactive de lui-même dès que le champ se lit vide (`null`) — y compris en le vidant à la main
+> puis en retapant aussitôt, sans passer par un blur ou par la croix : le vidage est commité dès
+> que le texte lu est vide, pas seulement au blur/Entrée.
+
 > **L'ordre des champs suit la locale résolue** (`locale` ou, à défaut, `LOCALE_ID`). En
 > `fr-FR` c'est **jj/mm/aaaa** ; en `en-US` c'est **mm/dd/yyyy** — l'auto-formatage suit le même
 > ordre. Si `LOCALE_ID` n'est pas configuré, Angular tombe sur `en-US` : passez `locale="fr-FR"`
@@ -171,16 +193,57 @@ format non numérique rendrait l'auto-slash faux).
 > automatiquement** de cet ordre quand il n'est pas fourni, pour ne jamais afficher un format
 > trompeur.
 
+Le format attendu est aussi annoncé aux lecteurs d'écran via `aria-describedby` (FSHSP-118) :
+le `placeholder` seul est un support inégal selon les lecteurs d'écran, et il disparaît dès la
+première frappe. Un hint dédié (« Format attendu : jj/mm/aaaa »), dérivé du même `resolvedPlaceholder`,
+est chaîné à côté du message d'aide/erreur — jamais à sa place (`formatHintLabel` pour le
+personnaliser, `''` pour le désactiver).
+
 Fournissez `parseDate` `(value: string) => Date | null` pour un parsing sur mesure (symétrique
 de `dateFormat`). Ces deux hooks travaillent en `Date` (affichage/saisie libre uniquement) — ils
 ne sont jamais round-trippés à travers la CVA, donc pas concernés par le contrat ISO.
 
+Avec un `dateFormat` custom, le placeholder auto-dérivé (et le hint qui en découle) bascule sur
+**la sortie de ce formatteur pour une date d'illustration** plutôt que sur le jeton numérique
+`jj/mm/aaaa` — ce dernier décrirait un format que le champ n'affiche ni n'accepte réellement.
+Voir `CustomFormat` : placeholder « Nov 22, 2023 » (date d'illustration passée dans le même
+`dateFormat`), pas « jj/mm/aaaa ».
+
+Les exemples ci-dessous restent tous au format classique **jj/mm/aaaa**, à l'exception du dernier
+(`CustomFormat`) qui illustre — via `dateFormat`/`parseDate` — qu'un format totalement différent
+(ici « Jul 8, 2026 ») reste possible.
+
 <Canvas of={DatepickerStories.EditableInput} />
-<Canvas of={DatepickerStories.AutoFormattedInputEnUs} />
 <Canvas of={DatepickerStories.AutoFormattedInputMonthPicker} />
 <Canvas of={DatepickerStories.EditableInputWithTime} />
 <Canvas of={DatepickerStories.EditableInputWithTime12h} />
 <Canvas of={DatepickerStories.CustomFormat} />
+
+### `range` et `multiple`
+
+`allowInput` couvre aussi `range` et `multiple` (FSHSP-118), toujours en **complément** de la
+grille — cliquer un jour continue de fonctionner exactement comme avant, la saisie clavier
+alimente le même modèle. Une entrée incomplète ou invalide revient à la dernière valeur affichée,
+comme en mode `single`.
+
+- **`range`** : les deux dates dans le même champ, séparées par `" - "` — ex.
+  `"08/07/2026 - 18/07/2026"`. Bénéficie du même masque auto-"/" en direct qu'en `single` : les
+  deux dates, puis leur séparateur, se construisent au fil de la frappe. Tapées dans le désordre
+  (fin avant début), elles sont réordonnées chronologiquement au commit, comme le ferait un
+  second clic dans la grille.
+- **`multiple`** : une liste séparée par `", "` — ex. `"08/07/2026, 15/07/2026, 23/07/2026"`,
+  nombre de dates non borné. Pas de masque en direct ici — un nombre de dates non borné ne rentre
+  pas dans un masque à gabarit fixe : texte libre, parsé au **blur**/**Entrée** uniquement. Une
+  date en double est supprimée (même règle que le clic qui bascule une case déjà sélectionnée).
+
+Dans les deux cas, un `parseDate` custom s'applique **par date individuelle** (chaque partie
+séparée par `" - "`/`", "` lui est passée l'une après l'autre) — symétrique de la façon dont
+`dateFormat` s'applique déjà par date à l'affichage. `showTime` combiné à `range`/`multiple` n'est
+pas couvert par la saisie clavier (les dates tapées sont toujours calées à minuit) — seule la
+grille gère ce cas-là pour l'instant.
+
+<Canvas of={DatepickerStories.RangeTypedInput} />
+<Canvas of={DatepickerStories.MultipleTypedInput} />
 
 ## Templates
 
@@ -192,9 +255,10 @@ Trois points d'extension via `<ng-template>` projetés, résolus par `contentChi
 - **`#buttonbar`** — barre de boutons personnalisée. Contexte : `todayCallback` et `clearCallback`
   (fonctions à câbler sur `(click)`).
 - **`#icon`** — icône du **déclencheur** (forwardée au `ui-input` sous-jacent). Contexte :
-  `$implicit` = le nom résolu par le composant (`calendar`, `clock` en `timeOnly`, ou `xmark`
-  quand `showClear` a une valeur à effacer), `size` = la taille calée sur le champ, `disabled` =
-  l'état du champ. Sans effet quand `showIcon="false"` : il n'y a alors aucune zone d'icône.
+  `$implicit` = le nom résolu par le composant (`calendar`, `clock` en `timeOnly`, ou `xmark` —
+  seulement quand `showIcon` est à `false` et qu'une valeur est présente, voir la doc de
+  `showClear`), `size` = la taille calée sur le champ, `disabled` = l'état du champ. `showIcon`
+  ne coupe donc pas systématiquement la zone d'icône : la croix peut encore y apparaître.
 
 <Canvas of={DatepickerStories.DateTemplate} />
 <Canvas of={DatepickerStories.CustomButtonBar} />
@@ -313,9 +377,10 @@ via l'interop CVA native, ainsi qu'aux formulaires template-driven (`[(ngModel)]
   </tbody>
 </table>
 
-> **Périmètre / choix** : le champ déclencheur est en **lecture seule par défaut** (choix par le
-> calendrier uniquement) ; `allowInput` (mode `single`, hors `timeOnly`) l'ouvre à la **saisie
-> clavier avec masque** — voir [Saisie manuelle](#saisie-manuelle-allowinput). Le tiroir de vues
+> **Périmètre / choix** : le champ déclencheur est **saisissable au clavier par défaut**
+> (`allowInput`, tous modes de sélection sauf `timeOnly` — voir
+> [Saisie manuelle](#saisie-manuelle-allowinput)) ; mettre `allowInput` à `false` revient à un
+> champ lecture seule, choix par le calendrier uniquement. Le tiroir de vues
 > (jour → mois → année) et le focus roving clavier sont actifs en **mono-mois** — désormais aussi
 > dans les grilles `MonthPicker`/`YearPicker` ; en multi-mois les entêtes sont fixes avec flèches
 > aux extrémités. Les états interactifs (hover/focus/pressed) sont des **pseudo-classes CSS**

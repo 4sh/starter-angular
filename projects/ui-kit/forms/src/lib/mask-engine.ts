@@ -67,9 +67,16 @@ export function buildMaskSlots(
     }
   }
 
+  // Every digit segment gets a `.bound` (position tracking is needed regardless of whether the
+  // segment has a real min/max), even one with no entry in `bounds` — an unranged segment (e.g.
+  // ui-datepicker's year, deliberately left unbounded so its 2-digit shortcut keeps working)
+  // still uses ±Infinity as a no-op range: `acceptsMaskChar`'s scale check always passes, but
+  // `pos`/`len` become available for `atSegmentEnd` to detect the segment's last slot. Without
+  // this, an unranged segment never triggers its OWN following literal (e.g. the space before a
+  // showTime segment never auto-inserts once a bare 4-digit year is typed — code-review fix,
+  // FSHSP-118) because that check used to require a real range to have been attached at all.
   segments.forEach((seg, i) => {
-    const range = bounds[i];
-    if (!range) return;
+    const range = bounds[i] ?? { min: -Infinity, max: Infinity };
     seg.forEach((slot, pos) => (slot.bound = { ...range, pos, len: seg.length }));
   });
 
@@ -82,14 +89,27 @@ export function extractMaskData(raw: string): string {
 }
 
 /**
- * Can `ch` fill this slot? It must match the token class and — when the segment is bounded —
- * the digits typed so far plus `ch` must still admit at least one in-range completion of the
- * remaining positions (`2` then `4` is refused on `0-23`, `2` then `3` is accepted).
+ * Can `ch` fill this slot? It must match the token class and — when the segment is bounded
+ * AND `enforceBounds` — the digits typed so far plus `ch` must still admit at least one in-range
+ * completion of the remaining positions (`2` then `4` is refused on `0-23`, `2` then `3` is
+ * accepted).
+ *
+ * `enforceBounds = false` skips that second check (still requires the token class to match):
+ * meant for re-deriving the mask after characters were REMOVED, not typed. The bounds check
+ * exists to reject an invalid *new* leading digit while typing forward (e.g. `8` can never start
+ * a valid `1-31` day, so it's skipped rather than accepted) — applied instead to the digits left
+ * over after a deletion, that same skip can discard a still-valid residual digit and misalign
+ * every segment after it. See `autoFormatSegments`.
  */
-export function acceptsMaskChar(slot: MaskSlot, segment: string, ch: string): boolean {
+export function acceptsMaskChar(
+  slot: MaskSlot,
+  segment: string,
+  ch: string,
+  enforceBounds = true,
+): boolean {
   if (!slot.rgx?.test(ch)) return false;
   const bound = slot.bound;
-  if (!bound) return true;
+  if (!enforceBounds || !bound) return true;
   const scale = 10 ** (bound.len - bound.pos - 1);
   const low = Number(segment + ch) * scale;
   return low <= bound.max && low + scale - 1 >= bound.min;
@@ -151,27 +171,42 @@ export function caretForMask(tokenIndices: number[], n: number, length: number):
 export function autoFormatSegments(
   slots: MaskSlot[],
   data: string,
-): { text: string; tokenIndices: number[] } {
+  { enforceBounds = true }: { enforceBounds?: boolean } = {},
+): { text: string; tokenIndices: number[]; dataEnd: number } {
   let di = 0;
   let text = '';
   let segment = '';
   let atSegmentEnd = false;
   const tokenIndices: number[] = [];
+  // Position right after the last DATA character appended — unlike `text.length`, never lands
+  // after a separator inserted eagerly (see the "auto-insert" doc above) with nothing typed past
+  // it yet. Landing the caret there instead (see call sites) means a Backspace right after a
+  // just-completed segment removes that segment's last digit, not the decorative separator —
+  // which would otherwise be silently re-inserted next render, making Backspace look like it did
+  // nothing (FSHSP-118).
+  let dataEnd = 0;
 
   for (const slot of slots) {
     if (slot.char !== null) {
+      // Keep appending EVERY consecutive literal right after a just-completed segment, not only
+      // the first — `atSegmentEnd` is deliberately left untouched here; the next digit slot below
+      // always overwrites it before it's read again (or the loop ends, so a stale value here is
+      // never read at all). A single-character separator ("/", ":") never told the two paths
+      // apart; a multi-character one (`ui-datepicker`'s range " - ", three literal slots in a
+      // row) needs all of them auto-inserted in one go, exactly like a single one (code-review
+      // follow-up, FSHSP-118: `range` gets a live mask too now).
       if (atSegmentEnd) text += slot.char;
-      atSegmentEnd = false;
       continue;
     }
     tokenIndices.push(text.length);
     if (!slot.bound || slot.bound.pos === 0) segment = '';
-    while (di < data.length && !acceptsMaskChar(slot, segment, data[di])) di++;
+    while (di < data.length && !acceptsMaskChar(slot, segment, data[di], enforceBounds)) di++;
     if (di >= data.length) break; // no more data: stop, no filler
     text += data[di];
+    dataEnd = text.length;
     if (slot.bound) segment += data[di];
     atSegmentEnd = !!slot.bound && slot.bound.pos === slot.bound.len - 1;
     di++;
   }
-  return { text, tokenIndices };
+  return { text, tokenIndices, dataEnd };
 }
