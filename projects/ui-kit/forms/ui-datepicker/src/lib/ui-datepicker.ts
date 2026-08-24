@@ -560,6 +560,16 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   /** @ignore A value is currently set. */
   protected readonly hasValue = computed(() => this.selectedDates().length > 0);
   /**
+   * @ignore A `range` whose two ends are both picked. Between the first and the second click
+   * the start is selected but there is no zone yet: the grid must then show its chip alone,
+   * never a half band running off toward an end that does not exist.
+   */
+  protected readonly rangeComplete = computed(() => {
+    if (this.selectionMode() !== 'range') return false;
+    const [start, end] = this.selectedDates();
+    return !!start && !!end;
+  });
+  /**
    * @ignore The trigger's right action clears the value (instead of toggling the panel). Gated
    * on `!showIcon()` (FSHSP-118): the calendar/clock toggle always wins the trigger's single icon
    * slot when it's shown, so there's always a click target to reopen the panel and pick a

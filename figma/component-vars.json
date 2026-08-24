@@ -10,8 +10,8 @@
         "Mode 1"
       ],
       "counts": {
-        "tokens": 580,
-        "alias": 459,
+        "tokens": 582,
+        "alias": 461,
         "literal": 121,
         "skipped": 46,
         "derivedDescriptions": 197
@@ -3746,6 +3746,53 @@
           },
           "com.4sh.ui-kit": {
             "cssVar": "--ui-datepicker-picker-gap",
+            "component": "ui-datepicker",
+            "entryPoint": "@4sh/ui-kit/forms/ui-datepicker",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "range": {
+      "background": {
+        "$value": "{semantics.informative.highlightLow.surface.hover}",
+        "$type": "color",
+        "$description": "Fond continu de la plage sélectionnée (`range`).",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "COLOR",
+            "scopes": [
+              "FRAME_FILL",
+              "SHAPE_FILL"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-datepicker-range-background)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-datepicker-range-background",
+            "component": "ui-datepicker",
+            "entryPoint": "@4sh/ui-kit/forms/ui-datepicker",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "color": {
+        "$value": "{semantics.informative.highlightLow.content.default}",
+        "$type": "color",
+        "$description": "Couleur du chiffre d'un jour posé sur la plage.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "COLOR",
+            "scopes": [
+              "ALL_FILLS"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-datepicker-range-color)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-datepicker-range-color",
             "component": "ui-datepicker",
             "entryPoint": "@4sh/ui-kit/forms/ui-datepicker",
             "descriptionSource": "scss"

@@ -5,6 +5,7 @@
     class="ui-datepicker-panel"
     [class]="panelStyleClass()"
     [class._inline]="inline()"
+    [class._range-complete]="rangeComplete()"
     [attr.id]="panelId"
     role="dialog"
     [attr.aria-modal]="inline() ? null : 'true'"

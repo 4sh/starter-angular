@@ -20,6 +20,9 @@ $day-radius: var(--ui-datepicker-day-radius, var(--radius-full));               
 $day-font-size: var(--ui-datepicker-day-font-size, var(--size-typography-text-default)); /// Taille du chiffre d'une cellule jour.
 $day-opacity-other-month: var(--ui-datepicker-day-opacity-outside, 0.6);             /// Opacité d'un jour appartenant au mois adjacent.
 $day-opacity-disabled: var(--ui-datepicker-day-opacity-disabled, 0.45);                  /// Opacité d'un jour désactivé.
+
+$range-background: var(--ui-datepicker-range-background, var(--informative-highlightlow-surface-hover)); /// Fond continu de la plage sélectionnée (`range`).
+$range-color: var(--ui-datepicker-range-color, var(--informative-highlightlow-content-default));         /// Couleur du chiffre d'un jour posé sur la plage.
 $nav-size: var(--ui-datepicker-nav-size, var(--size-components-default));                /// Taille des boutons de navigation mensuelle
 $time-field-width: var(--ui-datepicker-time-field-width, #{utils.rem-calc(48)});         /// Largeur des champs heures / minutes / AM-PM
 $focus-ring-width: var(--ui-datepicker-focus-ring-width, #{utils.$focus-ring-width});    /// Anneau de focus (jours, navigation)
@@ -239,7 +242,8 @@ $buttonbar-padding-top: var(--ui-datepicker-buttonbar-padding-top, var(--units-s
   &-grid { display: flex; flex-direction: column; gap: $grid-gap; }
 
   // --- Day cell ------------------------------------------------------
-  $range-bg: var(--informative-highlightlow-surface-hover); /// Fond continu de la plage sélectionnée (`range`).
+  // Gutter left by a chip inside its (wider) grid column — where the range band's caps land.
+  $cap-inset: calc((100% - #{$day-size}) / 2);
 
   &-day {
     position: relative;
@@ -265,6 +269,7 @@ $buttonbar-padding-top: var(--ui-datepicker-buttonbar-padding-top, var(--units-s
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
+      box-sizing: border-box;
       width: $day-size;
       height: $day-size;
       border: $stroke-width solid transparent;
@@ -303,18 +308,54 @@ $buttonbar-padding-top: var(--ui-datepicker-buttonbar-padding-top, var(--units-s
       }
     }
 
-    // Range: continuous bar on the full-width cell. The top/bottom rule reuses the same
-    // stroke token as `._today` so the range reads even without color (WCAG: not color-only).
-    &._in-range,
-    &._range-start,
-    &._range-end {
-      border-top: $stroke-width solid var(--actions-high-stroke-default);
-      border-bottom: $stroke-width solid var(--actions-high-stroke-default);
+    // Range: the band is its own layer, sized exactly like the endpoint chip and stopped
+    // at its centre — it can no longer overrun the zone, in height or on the sides.
+    &._in-range::after,
+    &._range-start::after,
+    &._range-end::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      inset-inline: 0;
+      height: $day-size;
+      transform: translateY(-50%);
+      background-color: $range-background;
+      z-index: -2;
     }
-    &._in-range { background-color: $range-bg; }
-    &._range-start { background: linear-gradient(to right, transparent 50%, #{$range-bg} 50%); }
-    &._range-end { background: linear-gradient(to left, transparent 50%, #{$range-bg} 50%); }
-    &._range-start._range-end { background: transparent; }
+    &._range-start::after { inset-inline-start: 50%; }
+    &._range-end::after { inset-inline-end: 50%; }
+    &._range-start._range-end::after { content: none; }
+    // A start whose end is not picked yet is not a zone — the chip stands alone until the
+    // second click lands. Only the panel knows: the grid alone cannot tell this cell from
+    // the start of a finished range whose end sits in a month it is not showing.
+    .ui-datepicker-panel:not(._range-complete) &._range-start::after { content: none; }
+
+    // Only the two ends of a week row are capped, and they stop where a chip's edge falls
+    // rather than at the cell's: a zone ending on the last column then lines up with the row
+    // above it, instead of stopping half a gutter short of it.
+    &:first-child::after {
+      inset-inline-start: $cap-inset;
+      border-start-start-radius: $day-radius;
+      border-end-start-radius: $day-radius;
+    }
+    &:last-child::after {
+      inset-inline-end: $cap-inset;
+      border-start-end-radius: $day-radius;
+      border-end-end-radius: $day-radius;
+    }
+
+    // Inside the zone the digit sits on the band, never on the panel surface: it takes the
+    // content token paired with it, which is identical in light and dark — unlike
+    // `--form-high-content-default`, which turns near-white in dark over a light band.
+    &._in-range {
+      color: $range-color;
+      &:disabled { color: $range-color; }
+      &:hover:not(:disabled),
+      &:focus-visible {
+        color: var(--informative-highlighthigh-content-default);
+        &::before { background-color: var(--informative-highlighthigh-surface-default); }
+      }
+    }
 
     &:disabled {
       color: var(--form-high-content-disabled);
