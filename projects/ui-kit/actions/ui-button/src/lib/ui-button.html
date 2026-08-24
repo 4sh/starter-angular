@@ -56,14 +56,15 @@
     <ng-container [ngTemplateOutlet]="iconSlot" />
   }
 
-  @if (label() || !isIconOnly()) {
-    <span class="ui-button-content" #contentWrap>
-      @if (label() && !isIconOnly()) {
-        <span class="ui-button-label">{{ label() }}</span>
-      }
-      <ng-content />
-    </span>
-  }
+  <!-- Always rendered: `hasProjectedContent` is detected from this very element, so gating it on
+       `isIconOnly()` (which itself derives from that detection) made projected-only content
+       undetectable — and silently dropped. Collapsed by `.ui-button-content:empty` when unused. -->
+  <span class="ui-button-content" #contentWrap>
+    @if (label() && !isIconOnly()) {
+      <span class="ui-button-label">{{ label() }}</span>
+    }
+    <ng-content />
+  </span>
 
   @if (!iconBefore()) {
     <ng-container [ngTemplateOutlet]="iconSlot" />
