@@ -438,15 +438,24 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
    * @ignore Dynamic mask (day/month/year widths in locale order, plus hour/minute — and AM/PM —
    * widths when `showTime`) driving the auto-"/" (resp. ":") formatting of the typeable trigger.
    * `null` disables it: `triggerReadonly` (covers `timeOnly` — see there), `view === 'year'`
-   * (free-form numeric field, out of scope), or a custom `parseDate` (a non-numeric format would
-   * make the auto-slash wrong). The `year` segment is deliberately left unbounded so the existing
-   * 2-digit shortcut (`normalizeYear`) keeps working — strict validation still happens at
-   * `finalizeParsed`. `defaultParse` already expects these trailing hour/minute digits (see its
-   * `nums.slice(fields.length)`) — this only keeps the auto-formatting mask in sync with it, so
-   * typed hour/minute digits aren't truncated by `autoFormatSegments` before they reach it.
+   * (free-form numeric field, out of scope), a custom `parseDate` (a non-numeric format would
+   * make the auto-slash wrong), or `hasValue()` (FSHSP-118).
+   *
+   * That last one: re-deriving the mask from a flat digit stream on every keystroke only ever
+   * behaves well for *constructing* a date from nothing — sequential forward typing, or
+   * backspacing from the end. It has no notion of "this segment was already valid, only touch
+   * it" (day/month are bounds-checked against arbitrary residual digits after any edit; year, the
+   * one unbounded segment, is the sole exception, which is why editing it works and looks like an
+   * inconsistency until you know why). Once a value already exists, editing it in place is common
+   * (fixing a typo, changing the year to file the same form again) and hits exactly that gap.
+   * Disabling the mask there routes typing to the plain passthrough branch below instead — no
+   * live auto-slash, but no corruption either — and defers to `commitTyped`'s parser (already
+   * tolerant of arbitrary separators, see `defaultParse`) on blur/Enter. The mask re-arms on its
+   * own once the field is cleared and `hasValue()` goes back to `false`.
    */
   private readonly typingSlots = computed<MaskSlot[] | null>(() => {
-    if (this.triggerReadonly() || this.view() === 'year' || this.parseDate()) return null;
+    if (this.triggerReadonly() || this.view() === 'year' || this.parseDate() || this.hasValue())
+      return null;
     const widths = { day: '99', month: '99', year: '9999' } as const;
     const bounds: Record<'day' | 'month' | 'year', MaskBounds | null> = {
       day: { min: 1, max: 31 },
