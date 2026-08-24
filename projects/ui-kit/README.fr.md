@@ -308,6 +308,23 @@ Pour changer une valeur, trois niveaux, du plus large au plus étroit :
 Référence complète (chaque variable, son rôle, sa valeur mesurée) : Storybook →
 _Spécifications → Thème & Système de Tokens_.
 
+### Motion, et sa désactivation
+
+Chaque transition et animation du kit est pilotée par les tokens `--transition-*`
+et les presets `UiMotion` — aucun composant ne code une durée en dur. Désactiver
+le motion est donc un seul interrupteur global, pas un réglage par composant :
+
+```html
+<html data-motion="off"></html>
+```
+
+Ça neutralise d'un coup toutes les animations et transitions du kit — la même
+réinitialisation déjà appliquée automatiquement quand la préférence système
+`prefers-reduced-motion: reduce` est active. Il existe aussi un opt-out par
+élément (`[motionDisabled]` sur la directive `UiMotion`, depuis
+`@4sh/ui-kit/motion`). Référence complète, presets d'animation compris :
+Storybook → **Foundations → Motion**.
+
 ---
 
 ## `@4sh/ui-kit/forms` — socle des champs

@@ -133,6 +133,21 @@ savoir : les stories de `ui-card` et `ui-read-only` s'appuient sur les classes
 Gridaflex (`flex-x`, `flex-gap-x`…) pour leur mise en page : sans la grille, ces
 deux-là s'affichent à plat.
 
+### Motion, et sa désactivation
+
+Copiés sous `src/app/shared/ui-core/motion/` : la directive `UiMotion` et ses
+presets d'animation, entièrement pilotés par les tokens `--transition-*` —
+aucun composant ne code une durée en dur. Un consommateur qui ne veut aucun
+motion pose un seul attribut, rien à toucher composant par composant :
+
+```html
+<html data-motion="off"></html>
+```
+
+Même réinitialisation que celle déjà appliquée automatiquement pour
+`prefers-reduced-motion: reduce`. Référence complète, une fois votre Storybook
+posé (voir ci-dessus) : **Foundations → Motion**.
+
 ### Agent IA (serveur MCP)
 
 Posé par défaut aussi : un petit serveur MCP copié dans `.ui-kit-mcp/` (un fichier

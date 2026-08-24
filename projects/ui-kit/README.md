@@ -302,6 +302,22 @@ To change a value, three levels, from the broadest to the narrowest:
 Full reference (every variable, its role and its measured value): Storybook →
 _Spécifications → Thème & Système de Tokens_.
 
+### Motion, and turning it off
+
+Every transition and animation in the kit is driven by the `--transition-*`
+tokens and the `UiMotion` presets — no component hardcodes a duration. Turning
+motion off is therefore a single global switch, not a per-component setting:
+
+```html
+<html data-motion="off"></html>
+```
+
+This neutralizes every animation and transition in the kit at once — the same
+reset already applied automatically when the OS-level `prefers-reduced-motion:
+reduce` preference is on. A per-element opt-out also exists (`[motionDisabled]`
+on the `UiMotion` directive, from `@4sh/ui-kit/motion`). Full reference,
+including the animation presets: Storybook → **Foundations → Motion**.
+
 ---
 
 ## `@4sh/ui-kit/forms` — form field foundation

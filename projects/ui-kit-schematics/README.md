@@ -128,6 +128,21 @@ later never removes what an earlier install put in place. Note that the `ui-card
 and `ui-read-only` stories use Gridaflex classes (`flex-x`, `flex-gap-x`…) for
 their layout: without the grid, those two render flat.
 
+### Motion, and turning it off
+
+Copied under `src/app/shared/ui-core/motion/`: the `UiMotion` directive and its
+animation presets, driven entirely by `--transition-*` tokens — no component
+hardcodes a duration. A consumer who wants no motion at all sets one attribute,
+nothing to touch component by component:
+
+```html
+<html data-motion="off"></html>
+```
+
+Same reset the kit already applies automatically for `prefers-reduced-motion:
+reduce`. Full reference, once your own Storybook is up (see above): **Foundations
+→ Motion**.
+
 ### AI agent (MCP server)
 
 Also set up by default: a small MCP server copied into `.ui-kit-mcp/` (a bundled,
