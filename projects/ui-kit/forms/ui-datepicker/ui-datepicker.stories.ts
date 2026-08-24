@@ -162,8 +162,9 @@ const meta: Meta<UiDatepicker> = {
     },
     showClear: {
       control: 'boolean',
-      description: 'Affiche une croix pour effacer la valeur quand elle est renseignée.',
-      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+      description:
+        "Affiche une croix pour effacer la valeur quand elle est renseignée — seulement quand `showIcon` est à `false` (sinon le calendrier garde l'icône, voir `Clearable`).",
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
     autoFlip: {
       control: 'boolean',
@@ -178,7 +179,13 @@ const meta: Meta<UiDatepicker> = {
       control: 'boolean',
       description:
         'Autorise la saisie clavier de la date dans le champ (mode single, hors timeOnly). Parsée au blur / Entrée.',
-      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
+    },
+    formatHintLabel: {
+      control: 'text',
+      description:
+        'Hint accessible (aria-describedby) annonçant le format attendu quand le champ est saisissable. Vide (`""`) pour le désactiver. `undefined` (défaut) dérive « Format attendu : jj/mm/aaaa ».',
+      table: { type: { summary: 'string' } },
     },
     panelStyleClass: {
       control: 'text',
@@ -234,10 +241,10 @@ const meta: Meta<UiDatepicker> = {
     todayLabel: "Aujourd'hui",
     clearLabel: 'Effacer',
     inline: false,
-    showClear: false,
+    showClear: true,
     autoFlip: true,
     closeOnSelect: true,
-    allowInput: false,
+    allowInput: true,
     required: false,
     disabled: false,
     readonly: false,
@@ -435,10 +442,14 @@ export const Disabled: Story = {
   args: { disabled: true, dateFormat: demoDateFormat },
 };
 
-// Effaçable : une croix apparaît dans le champ dès qu'une valeur est présente.
+// `showClear` est vrai par défaut, mais ne prend effet que si `showIcon` est à `false` : sinon
+// le calendrier garde l'icône, pour rester cliquable et rouvrir le panneau même une fois une
+// valeur choisie (voir la doc de `showClear`). Ici `showIcon` est explicitement coupé pour
+// montrer la croix — la valeur reste sinon effaçable au clavier (`allowInput`, sélectionner +
+// supprimer le texte).
 export const Clearable: Story = {
   render: story(sample),
-  args: { label: 'Date', showClear: true, dateFormat: demoDateFormat },
+  args: { label: 'Date', showIcon: false, dateFormat: demoDateFormat },
 };
 
 // Saisie manuelle : tapez la date au clavier (parsée au blur / Entrée). Les "/" s'insèrent
@@ -704,8 +715,10 @@ const demoFamily = { classes: (name: string) => `fa-solid fa-${DEMO_GLYPHS[name]
 /**
  * `#icon` remplace le markup de l'icône du **déclencheur** — et rien d'autre : les dix chevrons du
  * panneau restent sur la famille par défaut. Contexte reçu : `$implicit` = le nom que le composant
- * a résolu (`calendar`, `clock` en `timeOnly`, ou `xmark` quand `showClear` a une valeur à effacer),
- * `size` = la taille calée sur le champ, `disabled` = l'état du champ.
+ * a résolu (`calendar`, `clock` en `timeOnly`, ou `xmark` — cette dernière seulement si `showIcon`
+ * est à `false`, voir la doc de `showClear`), `size` = la taille calée sur le champ, `disabled` =
+ * l'état du champ. Deux instances ci-dessous pour voir les deux : la première résout `calendar`
+ * (config par défaut), la seconde `xmark` (`showIcon` coupé + valeur déjà présente).
  */
 export const IconTemplate: Story = {
   decorators: [
@@ -713,12 +726,19 @@ export const IconTemplate: Story = {
     moduleMetadata({ imports: [UiDatepicker, UiIcon, FormsModule] }),
   ],
   render: () => ({
-    props: { model: null, dateFormat: demoDateFormat },
-    template: `<div style="width:280px"><ui-datepicker [(ngModel)]="model" valueType="date" label="Date" showClear [dateFormat]="dateFormat">
-      <ng-template #icon let-name let-size="size">
-        <ui-icon [name]="name" family="demo" [size]="size" />
-      </ng-template>
-    </ui-datepicker></div>`,
+    props: { a: null, b: sample, dateFormat: demoDateFormat },
+    template: `<div style="display:flex;gap:20px">
+      <div style="width:280px"><ui-datepicker [(ngModel)]="a" valueType="date" label="Date" [dateFormat]="dateFormat">
+        <ng-template #icon let-name let-size="size">
+          <ui-icon [name]="name" family="demo" [size]="size" />
+        </ng-template>
+      </ui-datepicker></div>
+      <div style="width:280px"><ui-datepicker [(ngModel)]="b" valueType="date" label="Date (sans icône calendrier)" [showIcon]="false" [dateFormat]="dateFormat">
+        <ng-template #icon let-name let-size="size">
+          <ui-icon [name]="name" family="demo" [size]="size" />
+        </ng-template>
+      </ui-datepicker></div>
+    </div>`,
   }),
 };
 

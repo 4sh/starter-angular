@@ -159,8 +159,14 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   showIcon = input(true, { transform: booleanAttribute });
   /** Accessible name of the toggle button (a11y). */
   iconAriaLabel = input<string>('Ouvrir le calendrier');
-  /** Show a clear (×) button in the trigger when a value is set. */
-  showClear = input(false, { transform: booleanAttribute });
+  /**
+   * Show a clear (×) button in the trigger when a value is set. **Default `true`** (FSHSP-118):
+   * only takes effect when `showIcon` is `false` — the calendar/clock toggle otherwise always
+   * wins the trigger's single icon slot, so the panel stays reachable by click even once a value
+   * is set. With `showIcon` at its own default (`true`), clearing goes through the keyboard
+   * (`allowInput`, itself `true` by default) instead: select the text and delete it.
+   */
+  showClear = input(true, { transform: booleanAttribute });
 
   /**
    * Shape of the emitted value: `'date'` (a plain `Date` — matches a DTO round-tripped through
@@ -195,13 +201,15 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   dateFormat = input<(date: Date) => string>();
 
   /**
-   * Allow typing the date directly in the trigger (single selection only).
-   * The typed text is parsed on blur / `Enter`; an unparsable value reverts to
-   * the previously displayed one. When enabled (and no custom `dateFormat`), the
-   * value is displayed in a numeric locale format so it round-trips with typing.
-   * Has no effect in `timeOnly` mode: the trigger stays read-only there.
+   * Allow typing the date directly in the trigger (single selection only). **Default `true`**
+   * (FSHSP-118): a calendar grid alone forces a screen-reader user through ~30 cells to pick a
+   * date, when typing it is far faster — set `false` to force the grid-only path instead. The
+   * typed text is parsed on blur / `Enter`; an unparsable value reverts to the previously
+   * displayed one. When enabled (and no custom `dateFormat`), the value is displayed in a
+   * numeric locale format so it round-trips with typing. Has no effect in `multiple`/`range`
+   * (no parser defined yet for either) or `timeOnly` mode: the trigger stays read-only there.
    */
-  allowInput = input(false, { transform: booleanAttribute });
+  allowInput = input(true, { transform: booleanAttribute });
   /**
    * Custom parser for the typed text (symmetric with `dateFormat`). Return `null`
    * to reject the input. When omitted, a locale-aware numeric parser is used.
@@ -227,6 +235,16 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   todayLabel = input<string>("Aujourd'hui");
   /** Label of the default "Clear" button. */
   clearLabel = input<string>('Effacer');
+
+  /**
+   * Accessible hint announcing the expected typed format, chained onto the trigger's
+   * `aria-describedby` (alongside the helper/error message, never replacing it) whenever it's
+   * typeable (FSHSP-118): the `placeholder` alone is unreliable across screen readers, and it
+   * disappears the moment the user starts typing. Defaults to a sentence built from the resolved
+   * placeholder (e.g. "Format attendu : jj/mm/aaaa"); pass an explicit string to override it, or
+   * `''` to omit it.
+   */
+  formatHintLabel = input<string>();
 
   /** Accessible name of the calendar panel (fallback when no `label`/`ariaLabel`). */
   panelAriaLabel = input<string>('Calendrier');
@@ -387,6 +405,18 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
       )
       .join('');
   });
+  /**
+   * @ignore Format hint text, or `null` when there's nothing to announce: the trigger isn't
+   * typeable, or `formatHintLabel` was explicitly set to `''` to opt out.
+   */
+  protected readonly resolvedFormatHint = computed(() => {
+    if (this.triggerReadonly()) return null;
+    const explicit = this.formatHintLabel();
+    if (explicit === '') return null;
+    return explicit || `Format attendu : ${this.resolvedPlaceholder()}`;
+  });
+  /** @ignore Stable id for the hint element `resolvedFormatHint` renders into. */
+  protected readonly formatHintId = computed(() => `${this.resolvedId()}-format-hint`);
 
   /** @ignore Order of day/month/year for the resolved locale (drives numeric parsing). */
   private readonly dateFieldOrder = computed<('day' | 'month' | 'year')[]>(() => {
@@ -445,11 +475,23 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
 
   /** @ignore A value is currently set. */
   protected readonly hasValue = computed(() => this.selectedDates().length > 0);
-  /** @ignore The trigger's right action clears the value (instead of toggling the panel). */
+  /**
+   * @ignore The trigger's right action clears the value (instead of toggling the panel). Gated
+   * on `!showIcon()` (FSHSP-118): the calendar/clock toggle always wins the trigger's single icon
+   * slot when it's shown, so there's always a click target to reopen the panel and pick a
+   * different date directly — the cross only replaces it in configs that hid it (`showIcon`
+   * false), where it's the sole remaining affordance to empty the field without a keyboard.
+   */
   protected readonly showClearButton = computed(
-    () => this.showClear() && this.hasValue() && !this.isDisabled() && !this.readonly(),
+    () =>
+      this.showClear() &&
+      this.hasValue() &&
+      !this.isDisabled() &&
+      !this.readonly() &&
+      !this.showIcon(),
   );
-  /** @ignore Right-side icon: clear (×) when clearable + set, else the calendar/clock toggle. */
+  /** @ignore Right-side icon: clear (×) when clearable + set + no calendar toggle to show
+   *  (see `showClearButton`), else the calendar/clock toggle. */
   protected readonly triggerIcon = computed(() => {
     if (this.showClearButton()) return 'xmark';
     if (!this.showIcon()) return undefined;
@@ -822,7 +864,16 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     const caret = el?.selectionStart ?? value.length;
     // Number of data characters located BEFORE the caret (stable anchor, same trick as ui-input-mask).
     const dataBeforeCaret = extractMaskData(value.slice(0, caret)).length;
-    const { text, tokenIndices } = autoFormatSegments(slots, extractMaskData(value));
+    const newData = extractMaskData(value);
+    // A deletion (Backspace/Delete/selection-clear) leaves only ALREADY-valid digits behind —
+    // re-running the bounds check against them (meant to reject a just-typed invalid leading
+    // digit, e.g. "8" can't start a 1-31 day) can instead skip a still-valid residual one and
+    // misalign every segment after it (FSHSP-118: only the year, which carries no bound, always
+    // survived editing untouched). Comparing data lengths (not `event.inputType`, unavailable
+    // here) distinguishes typing/pasting (grows or holds, still bounds-checked) from deleting
+    // (shrinks, bounds-checked only up to the final blur/Enter parse — see `finalizeParsed`).
+    const enforceBounds = newData.length >= extractMaskData(this.typedValue() ?? '').length;
+    const { text, tokenIndices } = autoFormatSegments(slots, newData, { enforceBounds });
     this.typedValue.set(text);
     if (el) {
       el.value = text;

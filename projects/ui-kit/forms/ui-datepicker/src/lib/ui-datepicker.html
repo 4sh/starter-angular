@@ -362,6 +362,7 @@
       [inputId]="resolvedId()"
       [ariaLabel]="ariaLabel()"
       [ariaLabelledBy]="ariaLabelledBy()"
+      [ariaDescribedBy]="resolvedFormatHint() ? formatHintId() : undefined"
       [tabindex]="tabindex()"
       [value]="displayValue()"
       [iconRight]="triggerIcon()"
@@ -375,6 +376,9 @@
       (inputFocus)="inputFocus.emit($event)"
       (inputBlur)="onTriggerBlur($event)"
     />
+    @if (resolvedFormatHint(); as hint) {
+      <span [id]="formatHintId()" class="ui-datepicker-format-hint">{{ hint }}</span>
+    }
   </div>
 
   <ng-template
