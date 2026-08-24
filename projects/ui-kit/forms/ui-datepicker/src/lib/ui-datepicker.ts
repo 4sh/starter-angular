@@ -451,7 +451,11 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
    * Disabling the mask there routes typing to the plain passthrough branch below instead — no
    * live auto-slash, but no corruption either — and defers to `commitTyped`'s parser (already
    * tolerant of arbitrary separators, see `defaultParse`) on blur/Enter. The mask re-arms on its
-   * own once the field is cleared and `hasValue()` goes back to `false`.
+   * own once the field is cleared and `hasValue()` goes back to `false` — see `onTriggerInput`,
+   * which commits the clear the instant the raw text reads empty (not just on blur/Enter): a
+   * transient "text is empty" check here instead would only hold for the one keystroke that
+   * empties the field — `hasValue()` alone, unrefreshed, flips back on with the very next
+   * character typed, since nothing ever committed it to `false` for real.
    */
   private readonly typingSlots = computed<MaskSlot[] | null>(() => {
     if (this.triggerReadonly() || this.view() === 'year' || this.parseDate() || this.hasValue())
@@ -866,6 +870,12 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     const slots = this.typingSlots();
     if (!slots) {
       this.typedValue.set(value);
+      // The mask is off because a value already exists (see `typingSlots`) — but the field was
+      // just emptied by hand, with no blur/Enter to go through `commitTyped`'s own clear. Commit
+      // it right here instead of waiting for a commit that may never come: `hasValue()` flips to
+      // `false` for real, so `typingSlots()` re-arms the mask on the very next keystroke, for
+      // whatever fresh date comes next (FSHSP-118).
+      if (!value.trim() && this.hasValue()) this.clear();
       if (this.panelOpen()) this.previewTyped();
       return;
     }

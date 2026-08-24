@@ -182,7 +182,9 @@ format non numérique rendrait l'auto-slash faux).
 > séquentielle (taper vers l'avant, ou supprimer depuis la fin) — corriger un segment déjà valide
 > en le retapant sur place (ex. cliquer dans le mois pour le seul corriger) redevient alors une
 > édition de texte tout à fait normale plutôt que de rejouer ce re-dérivage. Le masque se
-> réactive de lui-même une fois le champ vidé (`null`).
+> réactive de lui-même dès que le champ se lit vide (`null`) — y compris en le vidant à la main
+> puis en retapant aussitôt, sans passer par un blur ou par la croix : le vidage est commité dès
+> que le texte lu est vide, pas seulement au blur/Entrée.
 
 > **L'ordre des champs suit la locale résolue** (`locale` ou, à défaut, `LOCALE_ID`). En
 > `fr-FR` c'est **jj/mm/aaaa** ; en `en-US` c'est **mm/dd/yyyy** — l'auto-formatage suit le même
