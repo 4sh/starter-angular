@@ -65,6 +65,9 @@ $focus-ring-width: var(--ui-autocomplete-focus-ring-width, #{utils.$form-focus-r
   // --- Selected value chip (role=option, roving focus, `multiple`) ----
   // The chip IS the focusable option; fill/padding/remove come from
   // `ui-chip` — this rule only handles layout + the roving focus ring.
+  // The `role="listbox"` wrapper is ARIA-only: the tags stay direct children of the box.
+  &-tags { display: contents; }
+
   &-tag {
     display: inline-flex;
     align-items: center;
