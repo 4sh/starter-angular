@@ -1,4 +1,4 @@
-<span [class]="classes()" [attr.aria-label]="ariaLabel() ?? null">
+<span [class]="classes()" [attr.role]="ariaLabel() ? 'img' : null" [attr.aria-label]="ariaLabel() ?? null">
   @if (iconLeft(); as name) {
     <ui-icon class="ui-tag-icon" [name]="name" [size]="iconSize()" />
   }
