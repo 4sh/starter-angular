@@ -8,7 +8,7 @@ import { ConfigTable } from '../../../../storybook/blocks/config-table';
 
 Sélecteur de **date / mois / année** (et d'**heure** optionnelle) headless. Un champ
 déclencheur [`ui-input`](?path=/docs/components-ui-forms-ui-input--docs), saisissable au clavier
-par défaut (`allowInput`, mode `single`), ouvre un calendrier stylé (tokens `form.*` /
+par défaut (`allowInput`, tous modes de sélection), ouvre un calendrier stylé (tokens `form.*` /
 `actions.*`) dans un overlay Angular CDK — ou rendu
 **inline**. Sélection `single` / `multiple` / `range`, vues à tiroir (jour → mois → année),
 modes `MonthPicker` / `YearPicker`, plusieurs mois côte à côte, navigation mensuelle, focus
@@ -149,19 +149,19 @@ des trois variantes, du déclenchement et des conséquences de mise en page sur 
 ## Saisie manuelle (`allowInput`)
 
 **`allowInput` est vrai par défaut** (FSHSP-118) : la frappe au clavier dans le champ est
-autorisée d'emblée (mode `single` uniquement), pas seulement la sélection dans le panneau — pour
-un non-voyant, taper une date est bien plus rapide que naviguer une grille de ~30 cases au
+autorisée d'emblée, quel que soit `selectionMode`, pas seulement la sélection dans le panneau —
+pour un non-voyant, taper une date est bien plus rapide que naviguer une grille de ~30 cases au
 lecteur d'écran. Le texte est parsé au **blur** et sur **Entrée** ; une saisie invalide revient à
 la dernière valeur affichée. `↓` ouvre le panneau et entre dans la grille. Mettez `allowInput` à
 `false` pour revenir à un champ lecture seule, calendrier uniquement.
 
-`allowInput` est **sans effet** dans deux cas : en mode `multiple`/`range` (aucun parseur défini
-pour deux dates ou une liste — chantier séparé, non résolu) et en `timeOnly` (pas de
-parseur/formatteur dédié à une heure seule) — le champ y reste toujours en lecture seule.
+`allowInput` est **sans effet** en `timeOnly` (pas de parseur/formatteur dédié à une heure
+seule) : le champ y reste toujours en lecture seule.
 
 Quand `showTime` est actif (hors `timeOnly`), le masque couvre aussi les segments heure/minute
 (et AM/PM en `hourFormat="12"`) : `allowInput` reste utilisable pour taper la date **et** l'heure
-d'une traite.
+d'une traite — en mode `single` uniquement (voir plus bas pour `range`/`multiple`, qui n'en
+profitent pas encore).
 
 Quand `allowInput` est actif (et sans `dateFormat` custom), la valeur s'affiche au **format
 numérique** de la locale (ex. `08/07/2026`) pour un aller-retour fiable avec le parser.
@@ -211,6 +211,30 @@ exemples ci-dessous restent tous au format classique **jj/mm/aaaa**, à l'except
 <Canvas of={DatepickerStories.EditableInputWithTime} />
 <Canvas of={DatepickerStories.EditableInputWithTime12h} />
 <Canvas of={DatepickerStories.CustomFormat} />
+
+### `range` et `multiple`
+
+`allowInput` couvre aussi `range` et `multiple` (FSHSP-118), toujours en **complément** de la
+grille — cliquer un jour continue de fonctionner exactement comme avant, la saisie clavier
+alimente le même modèle. Aucun masque auto-"/" ici (contrairement à `single`) : texte libre,
+parsé au **blur**/**Entrée** uniquement — une entrée incomplète ou invalide revient à la dernière
+valeur affichée, comme en mode `single`.
+
+- **`range`** : les deux dates dans le même champ, séparées par `" - "` — ex.
+  `"08/07/2026 - 18/07/2026"`. Tapées dans le désordre (fin avant début), elles sont réordonnées
+  chronologiquement au commit, comme le ferait un second clic dans la grille.
+- **`multiple`** : une liste séparée par `", "` — ex. `"08/07/2026, 15/07/2026, 23/07/2026"`,
+  nombre de dates non borné. Une date en double est supprimée (même règle que le clic qui
+  bascule une case déjà sélectionnée).
+
+Dans les deux cas, un `parseDate` custom s'applique **par date individuelle** (chaque partie
+séparée par `" - "`/`", "` lui est passée l'une après l'autre) — symétrique de la façon dont
+`dateFormat` s'applique déjà par date à l'affichage. `showTime` combiné à `range`/`multiple` n'est
+pas couvert par la saisie clavier (les dates tapées sont toujours calées à minuit) — seule la
+grille gère ce cas-là pour l'instant.
+
+<Canvas of={DatepickerStories.RangeTypedInput} />
+<Canvas of={DatepickerStories.MultipleTypedInput} />
 
 ## Templates
 
@@ -345,7 +369,7 @@ via l'interop CVA native, ainsi qu'aux formulaires template-driven (`[(ngModel)]
 </table>
 
 > **Périmètre / choix** : le champ déclencheur est **saisissable au clavier par défaut**
-> (`allowInput`, mode `single`, hors `timeOnly`/`multiple`/`range` — voir
+> (`allowInput`, tous modes de sélection sauf `timeOnly` — voir
 > [Saisie manuelle](#saisie-manuelle-allowinput)) ; mettre `allowInput` à `false` revient à un
 > champ lecture seule, choix par le calendrier uniquement. Le tiroir de vues
 > (jour → mois → année) et le focus roving clavier sont actifs en **mono-mois** — désormais aussi

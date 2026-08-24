@@ -588,6 +588,45 @@ export const Range: Story = {
   args: { inline: true, selectionMode: 'range', label: 'Période' },
 };
 
+// Saisie clavier en mode range (FSHSP-118) : les deux dates dans le même champ, séparées par
+// " - ". Le clic dans la grille continue de fonctionner exactement comme avant (voir `Range`) —
+// la saisie clavier ne fait que s'y ajouter. Pas de masque auto-"/" ici (voir doc `allowInput`) :
+// texte libre, parsé au blur/Entrée uniquement.
+export const RangeTypedInput: Story = {
+  render: (args) => ({
+    props: { ...args, model: [new Date(2026, 6, 8), new Date(2026, 6, 18)], dateFormat: demoDateFormat },
+    template: TEMPLATE,
+  }),
+  args: {
+    selectionMode: 'range',
+    label: 'Période',
+    locale: 'fr-FR', // ordre jj/mm/aaaa — sans ça, la locale résolue retombe sur en-US (mm/dd/yyyy)
+    placeholder: '', // vide → placeholder auto dérivé pour range ("jj/mm/aaaa - jj/mm/aaaa")
+    helperText: 'Tapez "08/07/2026 - 18/07/2026" (jj/mm/aaaa - jj/mm/aaaa).',
+  },
+};
+
+// Saisie clavier en mode multiple (FSHSP-118) : une liste de dates séparées par ", " dans le
+// même champ. Même principe que `RangeTypedInput` — texte libre, parsé au blur/Entrée, la grille
+// reste utilisable en parallèle (clic = bascule).
+export const MultipleTypedInput: Story = {
+  render: (args) => ({
+    props: {
+      ...args,
+      model: [new Date(2026, 6, 8), new Date(2026, 6, 15), new Date(2026, 6, 23)],
+      dateFormat: demoDateFormat,
+    },
+    template: TEMPLATE,
+  }),
+  args: {
+    selectionMode: 'multiple',
+    label: 'Dates',
+    locale: 'fr-FR', // ordre jj/mm/aaaa — sans ça, la locale résolue retombe sur en-US (mm/dd/yyyy)
+    placeholder: '', // vide → placeholder auto dérivé pour multiple ("jj/mm/aaaa, ...")
+    helperText: 'Tapez "08/07/2026, 15/07/2026, 23/07/2026" (jj/mm/aaaa, ...).',
+  },
+};
+
 // MonthPicker : le clic sur un mois sélectionne le mois (valeur = 1er du mois).
 export const MonthPicker: Story = {
   render: story(new Date(2027, 1, 1)),
