@@ -293,3 +293,16 @@ jobs:
             --target "$GITHUB_SHA" \
             --title "$tag" \
             --notes-file release-notes.md
+
+      # Guarded on dry_run even though `release` already only runs when `publish`
+      # did (needs: publish is skipped whenever publish's own `if` is false, and
+      # a job depending on a skipped job is skipped too): belt and suspenders
+      # against ever pinging Slack for a run that didn't actually publish.
+      - name: Notify Slack
+        if: ${{ success() && inputs.dry_run == false }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          VERSION: ${{ needs.publish.outputs.version }}
+        run: |
+          curl -sf -X POST --data-urlencode "payload={\"username\": \"incoming-webhook\", \"text\": \":package: @4sh/ui-kit v${VERSION} publié — <https://github.com/${GITHUB_REPOSITORY}/releases/tag/v${VERSION}|release notes>\", \"icon_emoji\": \":rocket:\"}" \
+            "$SLACK_WEBHOOK_URL"
