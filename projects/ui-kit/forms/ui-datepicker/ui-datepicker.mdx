@@ -201,8 +201,15 @@ personnaliser, `''` pour le désactiver).
 
 Fournissez `parseDate` `(value: string) => Date | null` pour un parsing sur mesure (symétrique
 de `dateFormat`). Ces deux hooks travaillent en `Date` (affichage/saisie libre uniquement) — ils
-ne sont jamais round-trippés à travers la CVA, donc pas concernés par le contrat ISO. Les
-exemples ci-dessous restent tous au format classique **jj/mm/aaaa**, à l'exception du dernier
+ne sont jamais round-trippés à travers la CVA, donc pas concernés par le contrat ISO.
+
+Avec un `dateFormat` custom, le placeholder auto-dérivé (et le hint qui en découle) bascule sur
+**la sortie de ce formatteur pour une date d'illustration** plutôt que sur le jeton numérique
+`jj/mm/aaaa` — ce dernier décrirait un format que le champ n'affiche ni n'accepte réellement.
+Voir `CustomFormat` : placeholder « Nov 22, 2023 » (date d'illustration passée dans le même
+`dateFormat`), pas « jj/mm/aaaa ».
+
+Les exemples ci-dessous restent tous au format classique **jj/mm/aaaa**, à l'exception du dernier
 (`CustomFormat`) qui illustre — via `dateFormat`/`parseDate` — qu'un format totalement différent
 (ici « Jul 8, 2026 ») reste possible.
 

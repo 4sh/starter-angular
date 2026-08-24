@@ -557,6 +557,7 @@ export const CustomFormat: Story = {
     allowInput: true,
     showClear: true,
     locale: 'en-US',
+    placeholder: '', // vide → placeholder auto dérivé du dateFormat custom lui-même (« Nov 22, 2023 »)
     helperText: 'Affichage « Jul 8, 2026 », parseDate symétrique.',
   },
 };

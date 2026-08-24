@@ -396,8 +396,13 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     () => this.readonly() || !this.allowInput() || this.timeOnly(),
   );
   /** @ignore Single-date placeholder token (e.g. `jj/mm/aaaa`) — the building block
-   *  `resolvedPlaceholder` composes for `range`/`multiple`. */
+   *  `resolvedPlaceholder` composes for `range`/`multiple`. With a custom `dateFormat`, the
+   *  locale's numeric token would be flatly wrong (it describes a format nothing actually
+   *  produces or accepts) — showing that custom formatter's own output for an illustrative date
+   *  instead at least matches what the field really expects. */
   private readonly singleDatePlaceholder = computed(() => {
+    const custom = this.dateFormat();
+    if (custom) return custom(new Date(2023, 10, 22));
     const fr = this.resolvedLocale().toLowerCase().startsWith('fr');
     const token = { day: fr ? 'jj' : 'dd', month: 'mm', year: fr ? 'aaaa' : 'yyyy' };
     const view = this.view();
@@ -420,9 +425,11 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
       .join('');
   });
   /**
-   * @ignore Placeholder shown in the typeable trigger. Falls back to a hint derived
-   * from the resolved locale's field order (e.g. `jj/mm/aaaa` in French, `mm/dd/yyyy`
-   * in en-US) so the field never advertises the wrong format — composed into
+   * @ignore Placeholder shown in the typeable trigger. Falls back to a hint derived from the
+   * resolved locale's field order (e.g. `jj/mm/aaaa` in French, `mm/dd/yyyy` in en-US) — or, with
+   * a custom `dateFormat`, from that formatter's own output for an illustrative date (see
+   * `singleDatePlaceholder`), since the locale-numeric token would describe a format nothing
+   * actually produces or accepts — so the field never advertises the wrong format. Composed into
    * `"jj/mm/aaaa - jj/mm/aaaa"` (`range`) or `"jj/mm/aaaa, ..."` (`multiple`), matching
    * `RANGE_SEPARATOR`/`MULTIPLE_SEPARATOR` (see `parseTypedMulti`).
    */
