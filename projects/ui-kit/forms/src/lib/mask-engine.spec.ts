@@ -54,11 +54,8 @@ describe('buildMaskSlots', () => {
   });
 
   it('still tracks pos/len for a segment with no matching range (±Infinity, no-op validation)', () => {
-    // FSHSP-118 code-review fix: `.bound` used to stay entirely undefined for an unranged
-    // segment, which also meant `atSegmentEnd` (driven by `bound.pos`/`bound.len`) could never
-    // fire for it — an unranged 4-digit segment (e.g. ui-datepicker's year) never triggered its
-    // own trailing literal once fully typed. `pos`/`len` are now always attached; only the
-    // min/max become a no-op sentinel.
+    // FSHSP-118: `.bound` used to stay undefined for an unranged segment, so `atSegmentEnd`
+    // never fired for it either (e.g. ui-datepicker's year never triggered its trailing literal).
     const slots = buildMaskSlots('99', []);
     expect(slots[0].bound).toEqual({ min: -Infinity, max: Infinity, pos: 0, len: 2 });
     expect(slots[1].bound).toEqual({ min: -Infinity, max: Infinity, pos: 1, len: 2 });
@@ -196,14 +193,10 @@ describe('autoFormatSegments', () => {
     return buildMaskSlots(DATE_MASK, [{ min: 1, max: 31 }, { min: 1, max: 12 }, null]);
   }
 
-  // Deleting the day's leading digit of "08/07/2026" (raw value "8/07/2026" once the browser
-  // removes it) leaves the residual digit stream "8072026". Re-deriving the mask with bounds
-  // enforced (the default — meant to reject an invalid *new* leading digit while typing forward)
-  // instead SKIPS "8" (no valid 1-31 day starts with it) and reassigns the digits meant for
-  // month/year across the segment boundaries, producing a value with no relation to what was on
-  // screen. `enforceBounds: false` keeps each segment to its own positional slice of the stream
-  // instead — segments can show a transient out-of-range value (caught by the final blur/Enter
-  // parse, see `finalizeParsed`), but digits are never stolen from one segment by another.
+  // Deleting the day's leading "0" of "08/07/2026" leaves "8072026". Enforcing bounds (meant to
+  // reject an invalid new leading digit while typing forward) skips the "8" (no 1-31 day starts
+  // with it) and shifts every digit after it into the wrong segment. `enforceBounds: false` keeps
+  // each segment to its own positional slice instead — never stealing digits across segments.
   it('without enforceBounds, a deletion can steal digits across segment boundaries', () => {
     const result = autoFormatSegments(dayMonthYearSlots(), '8072026');
     expect(result.text).toBe('07/02/6'); // day/month/year no longer match ANY sensible edit
@@ -214,12 +207,9 @@ describe('autoFormatSegments', () => {
     expect(result.text).toBe('80/72/026'); // each segment keeps its own slice of the stream
   });
 
-  // FSHSP-118 code-review fix: an unranged segment (year) used to never trigger its own
-  // trailing literal, because `atSegmentEnd` (mask-engine.ts) required a real bound to have been
-  // attached at all — so the space before a showTime segment never auto-inserted once a bare
-  // 4-digit year was typed, and the next digit typed (the hour) landed glued straight onto the
-  // year with no separator (e.g. ui-datepicker's "08/07/2026" + "10" typed next used to become
-  // "08/07/202610", which a later parse misreads as a single corrupted year).
+  // FSHSP-118: an unranged year used to never trigger its own trailing literal (the space before
+  // showTime), so the next digit (the hour) glued straight onto it — "08/07/2026" + "10" typed
+  // became "08/07/202610", misread as a corrupted year.
   function dateTimeSlots() {
     return buildMaskSlots('99/99/9999 99:99', [
       { min: 1, max: 31 },
@@ -241,10 +231,8 @@ describe('autoFormatSegments', () => {
     expect(result.text).toBe('08/07/2026 10:30');
   });
 
-  // FSHSP-118 follow-up: `ui-datepicker`'s `range` mode reuses the single-date mask twice,
-  // joined by its three-character typing separator (" - "). Auto-inserting only the FIRST
-  // literal right after a completed segment (the original behavior) would leave the "-" and
-  // trailing space forever stranded — the fix appends every consecutive literal in one go.
+  // FSHSP-118: ui-datepicker's `range` mode reuses the single-date mask twice, joined by its
+  // 3-char separator (" - ") — needs every consecutive literal appended, not just the first.
   function rangeSlots() {
     return buildMaskSlots('99/99/9999 - 99/99/9999', [
       { min: 1, max: 31 },
