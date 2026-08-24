@@ -168,6 +168,16 @@ describe('autoFormatSegments', () => {
     expect(result.tokenIndices).toEqual([0]);
   });
 
+  // FSHSP-118: `dataEnd` stops right before an eagerly-inserted trailing separator that has no
+  // data typed past it yet — never at `text.length`, which includes it. That's what lets the
+  // caller park the caret BEFORE the separator instead of after it (see ui-datepicker).
+  it('dataEnd stops right after the last data character, before any dangling separator', () => {
+    expect(autoFormatSegments(dateSlots(), '1501').dataEnd).toBe(5); // "15/01/" — before the "/"
+    expect(autoFormatSegments(dateSlots(), '15').dataEnd).toBe(2); // "15/" — before the "/"
+    expect(autoFormatSegments(dateSlots(), '').dataEnd).toBe(0); // "" — nothing typed at all
+    expect(autoFormatSegments(dateSlots(), '15012024').dataEnd).toBe(10); // fully filled, no dangling separator
+  });
+
   // FSHSP-118: reproduces `ui-datepicker`'s actual mask (day/month bounded, year deliberately
   // left UNbounded — see its `typingSlots`), not the bounded-year `dateSlots()` above.
   function dayMonthYearSlots() {

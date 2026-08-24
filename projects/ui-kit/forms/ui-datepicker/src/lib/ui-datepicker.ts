@@ -872,12 +872,26 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     // survived editing untouched). Comparing data lengths (not `event.inputType`, unavailable
     // here) distinguishes typing/pasting (grows or holds, still bounds-checked) from deleting
     // (shrinks, bounds-checked only up to the final blur/Enter parse — see `finalizeParsed`).
-    const enforceBounds = newData.length >= extractMaskData(this.typedValue() ?? '').length;
-    const { text, tokenIndices } = autoFormatSegments(slots, newData, { enforceBounds });
+    // Baseline is `displayValue()` (what's actually shown before this edit — typed text OR a
+    // calendar-committed date, `typedValue` alone would miss the latter), read before any
+    // signal write below still reflects the state.
+    const enforceBounds = newData.length >= extractMaskData(this.displayValue()).length;
+    const { text, tokenIndices, dataEnd } = autoFormatSegments(slots, newData, { enforceBounds });
     this.typedValue.set(text);
     if (el) {
       el.value = text;
-      const pos = caretForMask(tokenIndices, dataBeforeCaret, text.length);
+      // A deletion (!enforceBounds) whose caret sat at/past all remaining data (editing at the
+      // tail, by far the common case — see `enforceBounds` above) always lands on `dataEnd`,
+      // never on `caretForMask`'s result: that function answers "where's the next slot to type
+      // INTO", which for a just-emptied segment is the position right after its
+      // eagerly-auto-inserted trailing separator — landing there makes the very next Backspace
+      // delete that decorative separator (silently re-inserted next render) instead of the
+      // segment's last digit, so deleting looks stuck one keystroke short forever (FSHSP-118).
+      // A mid-string deletion (more data still sits after the caret) falls back to the normal
+      // computation unchanged — still an approximation (see the class doc), just not this trap.
+      const atTail = dataBeforeCaret >= newData.length;
+      const pos =
+        !enforceBounds && atTail ? dataEnd : caretForMask(tokenIndices, dataBeforeCaret, dataEnd);
       el.setSelectionRange(pos, pos);
     }
     if (this.panelOpen()) this.previewTyped();

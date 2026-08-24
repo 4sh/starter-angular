@@ -165,12 +165,19 @@ export function autoFormatSegments(
   slots: MaskSlot[],
   data: string,
   { enforceBounds = true }: { enforceBounds?: boolean } = {},
-): { text: string; tokenIndices: number[] } {
+): { text: string; tokenIndices: number[]; dataEnd: number } {
   let di = 0;
   let text = '';
   let segment = '';
   let atSegmentEnd = false;
   const tokenIndices: number[] = [];
+  // Position right after the last DATA character appended — unlike `text.length`, never lands
+  // after a separator inserted eagerly (see the "auto-insert" doc above) with nothing typed past
+  // it yet. Landing the caret there instead (see call sites) means a Backspace right after a
+  // just-completed segment removes that segment's last digit, not the decorative separator —
+  // which would otherwise be silently re-inserted next render, making Backspace look like it did
+  // nothing (FSHSP-118).
+  let dataEnd = 0;
 
   for (const slot of slots) {
     if (slot.char !== null) {
@@ -183,9 +190,10 @@ export function autoFormatSegments(
     while (di < data.length && !acceptsMaskChar(slot, segment, data[di], enforceBounds)) di++;
     if (di >= data.length) break; // no more data: stop, no filler
     text += data[di];
+    dataEnd = text.length;
     if (slot.bound) segment += data[di];
     atSegmentEnd = !!slot.bound && slot.bound.pos === slot.bound.len - 1;
     di++;
   }
-  return { text, tokenIndices };
+  return { text, tokenIndices, dataEnd };
 }
