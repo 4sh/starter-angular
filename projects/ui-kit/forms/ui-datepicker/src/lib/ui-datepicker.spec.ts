@@ -1,16 +1,11 @@
 /**
- * TestBed spec for `ui-datepicker`'s keyboard-entry masking (FSHSP-118). Follows the pattern
- * from `ui-select.spec.ts`/`ui-autocomplete.spec.ts`: a minimal host component +
- * `TestBed.configureTestingModule`, native `input` events dispatched directly on the trigger's
- * `<input>` — set the raw value + caret, dispatch `input`, flush CD — mirroring exactly what a
- * real keystroke does (`ui-datepicker` reads `nativeInputElement().value`/`.selectionStart`
- * itself in `onTriggerInput`, not anything carried on the event).
+ * TestBed spec for `ui-datepicker`'s keyboard-entry masking (FSHSP-118), pattern from
+ * `ui-select.spec.ts`: native `input` events dispatched on the trigger's `<input>` — set value +
+ * caret, dispatch, flush CD — mirroring a real keystroke.
  *
- * Scope: the three behaviors chased down (and initially mis-fixed) across FSHSP-118 —
- * `hasValue()`-gated mask on/off, the `enforceBounds`/`dataEnd` deletion fixes, and re-arming the
- * mask on a manual clear — plus `range`'s own live mask (added later, same gating). Not covered
- * here: `multiple` typed parsing (no live mask — unbounded date count, see the component doc) or
- * the format-hint/placeholder derivation.
+ * Covers: `hasValue()`-gated mask on/off (`single` and `range`), the `enforceBounds`/`dataEnd`
+ * deletion fixes, re-arming the mask on a manual clear. Not covered: `multiple` (no live mask)
+ * or the format-hint/placeholder derivation.
  */
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';

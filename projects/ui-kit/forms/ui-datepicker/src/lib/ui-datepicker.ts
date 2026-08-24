@@ -123,25 +123,13 @@ export interface DatepickerMonthPanel {
 
 let nextPanelUid = 0;
 
-/**
- * Joins the two dates of a TYPED `range` value (FSHSP-118: `"jj/mm/aaaa - jj/mm/aaaa"`) — a
- * plain hyphen, practically typable on a standard keyboard. Used to compose the placeholder, as
- * the literal separator of the live auto-"/" mask (`typingSlots`), and to split typed text back
- * apart in `parseTypedMulti`.
- *
- * Deliberately NOT used for `displayValue` (see `RANGE_DISPLAY_SEPARATOR`): a committed range
- * had always rendered with an en dash, for every `range` consumer, typing or not: reusing this
- * hyphen there too was a code-review-caught regression — it silently changed that display text
- * for every existing grid-only range consumer that never opted into typed entry at all.
- */
+/** Typed `range` separator (FSHSP-118: `"jj/mm/aaaa - jj/mm/aaaa"`) — placeholder, live mask,
+ *  and `parseTypedMulti` splitting. A plain hyphen, distinct from the DISPLAYED en dash below —
+ *  reusing this one for display used to silently change the look of every non-typing consumer. */
 const RANGE_SEPARATOR = ' - ';
-/** Joins the two dates of a DISPLAYED (committed) `range` value — unchanged from before typed
- *  entry existed. Typing a plain hyphen (`RANGE_SEPARATOR`) still round-trips to this on commit;
- *  parsing and display are deliberately decoupled so the pre-existing look survives untouched. */
+/** Displayed (committed) `range` separator — unchanged since before typed entry existed. */
 const RANGE_DISPLAY_SEPARATOR = ' – ';
-/** Joins the dates of a typed/displayed `multiple` value (`"jj/mm/aaaa, jj/mm/aaaa, ..."`) — one
- *  separator for both: unlike `range`, `multiple`'s display never had an en-dash-style
- *  convention to preserve. */
+/** Typed/displayed `multiple` separator (`"jj/mm/aaaa, jj/mm/aaaa, ..."`) — one separator for both. */
 const MULTIPLE_SEPARATOR = ', ';
 
 /**
@@ -399,15 +387,8 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   private readonly resolvedDisabledDates = computed(() =>
     (this.disabledDates() ?? []).map(normalizeDateInput).filter((d): d is Date => d !== null),
   );
-  /**
-   * @ignore The trigger is not typeable: manual input off, read-only, or `timeOnly` — free-form
-   * typing in time-only mode isn't implemented (no dedicated parser/formatter for a bare time
-   * string), so it's disabled outright here rather than silently mis-parsing. `range`/`multiple`
-   * ARE typeable (FSHSP-118: "jj/mm/aaaa - jj/mm/aaaa", "jj/mm/aaaa, jj/mm/aaaa, ...") — see
-   * `parseTypedMulti`. `range` gets the same live auto-"/" mask as `single` (see `typingSlots`);
-   * `multiple`'s unbounded date count doesn't fit a fixed mask template, so it stays plain text
-   * parsed on blur/Enter only.
-   */
+  /** @ignore Not typeable: manual input off, read-only, or `timeOnly` (no bare-time parser).
+   *  `range`/`multiple` ARE typeable (FSHSP-118) — see `parseTypedMulti`/`typingSlots`. */
   protected readonly triggerReadonly = computed(
     () => this.readonly() || !this.allowInput() || this.timeOnly(),
   );
@@ -489,31 +470,17 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     this.dateFieldOrder().filter((f) => (this.view() === 'month' ? f !== 'day' : true)),
   );
   /**
-   * @ignore Dynamic mask (day/month/year widths in locale order, plus hour/minute — and AM/PM —
-   * widths when `showTime`; `range` repeats the same widths a second time, joined by
-   * `RANGE_SEPARATOR`) driving the auto-"/" (resp. ":", " - ") formatting of the typeable trigger.
-   * `null` disables it: `triggerReadonly` (covers `timeOnly` — see there), `view === 'year'`
-   * (free-form numeric field, out of scope), a custom `parseDate` (a non-numeric format would
-   * make the auto-slash wrong), `hasValue()` (FSHSP-118), or `multiple` (unbounded number of
-   * dates — a fixed mask template can't model it; typed through plain text on blur/Enter only,
-   * via `parseTypedMulti`, same as `range` before this mask covered it too).
+   * @ignore Dynamic mask (day/month/year widths, `+` time if `showTime`, `+` a second date for
+   * `range`) driving the auto-"/"/":"/" - " formatting of the typeable trigger. `null` disables
+   * it: `triggerReadonly`, `view === 'year'` (free-form field), a custom `parseDate` (non-numeric
+   * format), `hasValue()`, or `multiple` (unbounded date count, no fixed template fits — plain
+   * text on blur/Enter instead, see `parseTypedMulti`).
    *
-   * That `hasValue()` gate: re-deriving the mask from a flat digit stream on every keystroke only
-   * ever behaves well for *constructing* a date (or, in `range`, a pair of dates) from nothing —
-   * sequential forward typing, or backspacing from the end. It has no notion of "this segment was
-   * already valid, only touch it" (day/month are bounds-checked against arbitrary residual digits
-   * after any edit; year, the one unbounded segment, is the sole exception, which is why editing
-   * it works and looks like an inconsistency until you know why). Once a value already exists,
-   * editing it in place is common (fixing a typo, changing the year to file the same form again)
-   * and hits exactly that gap. Disabling the mask there routes typing to the plain passthrough
-   * branch below instead — no live auto-formatting, but no corruption either — and defers to
-   * `commitTyped`'s parser (already tolerant of arbitrary separators, see `defaultParse`/
-   * `parseTypedMulti`) on blur/Enter. The mask re-arms on its own once the field is cleared and
-   * `hasValue()` goes back to `false` — see `onTriggerInput`, which commits the clear the instant
-   * the raw text reads empty (not just on blur/Enter): a transient "text is empty" check here
-   * instead would only hold for the one keystroke that empties the field — `hasValue()` alone,
-   * unrefreshed, flips back on with the very next character typed, since nothing ever committed it
-   * to `false` for real.
+   * `hasValue()`: re-deriving the mask from the raw digit stream only works for *constructing* a
+   * value from nothing, not editing one in place (day/month re-validate arbitrary residual digits
+   * after any edit — see `onTriggerInput`). So it's off once a value exists — plain text instead,
+   * parsed on blur/Enter — and re-arms the moment the field reads empty (`onTriggerInput` commits
+   * the clear right there, not just on blur, so `hasValue()` actually flips before the next key).
    */
   private readonly typingSlots = computed<MaskSlot[] | null>(() => {
     const mode = this.selectionMode();
@@ -1003,20 +970,11 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     if (this.panelOpen()) this.previewTyped();
   }
 
-  /**
-   * @ignore Whether `text` already carries a time portion too, when one is required
-   * (`showTime`, single-date `view === 'date'`) — code-review fix, FSHSP-118. `defaultParse`'s
-   * own `requireComplete` only checks day/month/year are present, never the trailing hour/minute
-   * groups, so `previewTyped` (below) used to treat the date-only prefix as "complete" the
-   * moment day/month/year were typed. That flipped `hasValue()` true — and so, per `typingSlots`,
-   * turned the live mask off — before a single time digit had been typed: the very next keystroke
-   * (the first hour digit) then landed with no mask active to insert the "HH:MM" separators,
-   * concatenating straight onto the year (e.g. `"08/07/20261030"`) and corrupting the eventual
-   * parse. Gating the PREVIEW specifically (not `commitTyped`'s own completeness check — a
-   * date-only value typed then immediately blurred is still a legitimate final commit, time
-   * defaulting to the steppers, exactly as before) on the time portion also being present keeps
-   * `hasValue()` — and the mask — off until the whole thing, date and time, is actually done.
-   */
+  /** @ignore Whether `text` already has its time portion too, when `showTime` requires one.
+   *  `previewTyped` needs this: without it, `hasValue()` (and the mask) flipped off the moment
+   *  day/month/year were typed, before a single time digit — the next digit then glued onto the
+   *  year with no mask to insert "HH:MM" (FSHSP-118). `commitTyped` doesn't use this: a date typed
+   *  and blurred without a time is still a legitimate commit (time defaults to the steppers). */
   private hasCompleteTimeIfNeeded(text: string): boolean {
     if (!this.showTime() || this.view() !== 'date') return true;
     const groups = text.match(/\d+/g) ?? [];
@@ -1103,18 +1061,11 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     return this.parseTypedMulti(text, requireComplete);
   }
 
-  /**
-   * @ignore `range`/`multiple` typed entry (FSHSP-118): splits on `RANGE_SEPARATOR`/
-   * `MULTIPLE_SEPARATOR` (via `splitTypedSegments` — see there for why a plain `String.split`
-   * isn't safe) and parses each part with the very same single-date logic as `single` mode —
-   * `parseTyped`, so a custom `parseDate` applies per part too, symmetric with how a custom
-   * `dateFormat` already applies per date via `formatDate`. `range` requires exactly two parts,
-   * reordered chronologically (mirrors the grid's own reordering in `selectDay`); `multiple`
-   * accepts any number, duplicates collapsed (mirrors the grid's click-to-toggle). Any
-   * unparseable or disabled part fails the whole thing — never a partial commit. Always
-   * `startOfDay` (no `showTime` support here: a "jj/mm/aaaa hh:mm - jj/mm/aaaa hh:mm" format is a
-   * further chantier of its own, out of scope for now).
-   */
+  /** @ignore `range`/`multiple` typed entry (FSHSP-118): splits via `splitTypedSegments`, parses
+   *  each part with `parseTyped` (a custom `parseDate` applies per part, like `dateFormat` does
+   *  per date on display). `range` needs exactly 2 parts, reordered chronologically; `multiple`
+   *  takes any count, deduped. One bad/disabled part fails the whole thing. Always `startOfDay` —
+   *  no `showTime` support here. */
   private parseTypedMulti(text: string, requireComplete: boolean): Date[] | null {
     const mode = this.selectionMode();
     const sep = mode === 'range' ? RANGE_SEPARATOR : MULTIPLE_SEPARATOR;
@@ -1128,23 +1079,10 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     return dates.filter((d, i) => dates.findIndex((o) => isSameDay(o, d)) === i);
   }
 
-  /**
-   * @ignore Splits typed `range`/`multiple` text into per-date segments (code-review fix,
-   * FSHSP-118). A plain `text.split(sep)` breaks the moment a single date's own formatted text
-   * contains the separator character — a custom `dateFormat` producing `"Jul 8, 2026"` already
-   * contains the `", "` `multiple` splits on; an ISO/dash `dateFormat` like `"2026-07-08"`
-   * already contains the `-` `range` splits on.
-   *
-   * Instead of splitting blindly, this scans for each occurrence of `sep` and only commits to a
-   * boundary once the text *up to* it already parses as a complete date via `parseTyped` — the
-   * same single-date parser used everywhere else, so a custom `parseDate` decides completeness
-   * exactly as it does for `single` mode. An in-progress prefix (`"Jul 8"`, still missing its
-   * year) fails that check and is skipped in favor of the next `sep` occurrence, so a date's own
-   * internal separator is never mistaken for the boundary between two dates. Falls back to
-   * treating the remainder as one final segment once no more `sep` occurrences parse or exist —
-   * this is also what naturally reports "still incomplete" (e.g. only the first date typed so
-   * far in `range`) up to the part-count check in `parseTypedMulti`.
-   */
+  /** @ignore Splits typed `range`/`multiple` text into per-date segments (FSHSP-118). A plain
+   *  `text.split(sep)` breaks when a date's own formatted text contains `sep` (e.g. a `", "`
+   *  `dateFormat` in `multiple`, or an ISO dash in `range`) — instead, a `sep` occurrence is only
+   *  accepted as a boundary once the text before it already parses as a complete date. */
   private splitTypedSegments(text: string, sep: string): string[] {
     const segments: string[] = [];
     let rest = text.trim();

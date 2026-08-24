@@ -67,14 +67,9 @@ export function buildMaskSlots(
     }
   }
 
-  // Every digit segment gets a `.bound` (position tracking is needed regardless of whether the
-  // segment has a real min/max), even one with no entry in `bounds` — an unranged segment (e.g.
-  // ui-datepicker's year, deliberately left unbounded so its 2-digit shortcut keeps working)
-  // still uses ±Infinity as a no-op range: `acceptsMaskChar`'s scale check always passes, but
-  // `pos`/`len` become available for `atSegmentEnd` to detect the segment's last slot. Without
-  // this, an unranged segment never triggers its OWN following literal (e.g. the space before a
-  // showTime segment never auto-inserts once a bare 4-digit year is typed — code-review fix,
-  // FSHSP-118) because that check used to require a real range to have been attached at all.
+  // Every segment gets a `.bound`, even unranged ones (±Infinity = no-op range): `pos`/`len` are
+  // needed for `atSegmentEnd` regardless, else an unranged segment (e.g. ui-datepicker's year)
+  // never auto-inserts its own following literal (FSHSP-118).
   segments.forEach((seg, i) => {
     const range = bounds[i] ?? { min: -Infinity, max: Infinity };
     seg.forEach((slot, pos) => (slot.bound = { ...range, pos, len: seg.length }));
@@ -188,13 +183,9 @@ export function autoFormatSegments(
 
   for (const slot of slots) {
     if (slot.char !== null) {
-      // Keep appending EVERY consecutive literal right after a just-completed segment, not only
-      // the first — `atSegmentEnd` is deliberately left untouched here; the next digit slot below
-      // always overwrites it before it's read again (or the loop ends, so a stale value here is
-      // never read at all). A single-character separator ("/", ":") never told the two paths
-      // apart; a multi-character one (`ui-datepicker`'s range " - ", three literal slots in a
-      // row) needs all of them auto-inserted in one go, exactly like a single one (code-review
-      // follow-up, FSHSP-118: `range` gets a live mask too now).
+      // Append EVERY consecutive literal after a completed segment, not just the first — needed
+      // for a multi-char separator like range's " - " (FSHSP-118). `atSegmentEnd` is left as-is
+      // here; the next digit slot always resets it before it's read again.
       if (atSegmentEnd) text += slot.char;
       continue;
     }
