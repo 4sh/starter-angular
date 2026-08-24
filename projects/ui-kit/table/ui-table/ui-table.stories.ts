@@ -502,7 +502,7 @@ export const SelectionRadio: Story = {
       <ui-table [value]="products" dataKey="id" selectionMode="single">
         <ng-template #header>
           <tr>
-            <th style="width: 3rem"></th>
+            <th style="width: 3rem"><span class="sr-only">Sélection</span></th>
             <th>Code</th>
             <th>Nom</th>
             <th>Catégorie</th>
@@ -804,7 +804,7 @@ export const RowExpansion: Story = {
       <ui-table [value]="products" dataKey="id">
         <ng-template #header>
           <tr>
-            <th style="width: 4rem"></th>
+            <th style="width: 4rem"><span class="sr-only">Détail de la ligne</span></th>
             <th>Code</th>
             <th>Nom</th>
             <th>Catégorie</th>
