@@ -102,6 +102,11 @@ export class UiInputNumber extends BaseFormField<number | null> {
     const min = this.min();
     return v != null && min != null && v <= min;
   });
+  /** @ignore `numberAttribute(undefined)` yields NaN, and `aria-valuemin="NaN"` is an invalid
+   *  ARIA value — omit the attribute entirely rather than advertise a bound that does not exist. */
+  protected readonly ariaValueMin = computed(() => (Number.isFinite(this.min()) ? this.min() : null));
+  /** @ignore Same as `ariaValueMin`, for the upper bound. */
+  protected readonly ariaValueMax = computed(() => (Number.isFinite(this.max()) ? this.max() : null));
 
   /** @ignore Group/decimal separators of the current locale. */
   private readonly separators = computed(() => {
