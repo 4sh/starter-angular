@@ -843,7 +843,11 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
 
   // --- Panel open/close ------------------------------------------------
 
-  open(): void {
+  /**
+   * @param viaIcon Whether this open was specifically triggered by the calendar icon (vs.
+   *   clicking the field itself, or a keyboard shortcut) — see the rove-into-grid comment below.
+   */
+  open(viaIcon = false): void {
     if (this.inline() || this.isDisabled() || this.readonly() || this.panelOpen()) return;
     const base = this.firstSelectedFrom(this.internalValue() ?? null) ?? startOfDay(new Date());
     this.viewDate.set(firstOfMonth(base));
@@ -854,14 +858,13 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     this.overlayOrigin.set(this.resolveOverlayOrigin());
     this.panelOpen.set(true);
     this.opened.emit();
-    // Keep focus in the input when it's typeable in single mode (so typing can continue
-    // uninterrupted); otherwise rove into the (active) grid. `range`/`multiple` always rove,
-    // regardless of `triggerReadonly()`: typing there is a plain-text complement (no live mask,
-    // see `typingSlots`), never the primary interaction — the grid is, exactly as before
-    // `allowInput` covered these modes, and opening via the calendar icon signals "I want the
-    // grid" (code review finding: this used to be implicit in `triggerReadonly` hardcoding
-    // non-single modes read-only; restored explicitly now that it no longer does).
-    if (this.showCalendar() && (this.triggerReadonly() || this.selectionMode() !== 'single')) {
+    // Keep focus in the input whenever it's typeable; only rove into the grid when it isn't
+    // (`triggerReadonly`) or when opened via the icon specifically (`viaIcon` — "I want the
+    // grid"). Used to key off `selectionMode() !== 'single'` instead, which broke once `range`
+    // got its own live mask: the field's own click ALSO calls `open()` (see the template), so
+    // roving on every non-`single` mode stole focus back out of the field the moment you clicked
+    // it to type (FSHSP-118 follow-up).
+    if (this.showCalendar() && (this.triggerReadonly() || viaIcon)) {
       if (this.currentView() === 'date') this.queueDayFocus();
       else if (this.currentView() === 'month') this.queueMonthFocus();
       else this.queueYearFocus();
@@ -877,16 +880,17 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   }
 
   /** @ignore */
-  protected toggle(): void {
-    this.panelOpen() ? this.close() : this.open();
+  protected toggle(viaIcon = false): void {
+    this.panelOpen() ? this.close() : this.open(viaIcon);
   }
 
-  /** @ignore Right action: clear when clearable + set, otherwise toggle the panel.
-   *  `stopPropagation` keeps the click from bubbling to the field (which opens it). */
+  /** @ignore Right action: clear when clearable + set, otherwise toggle the panel (via the icon —
+   *  see `open`'s `viaIcon`). `stopPropagation` keeps the click from bubbling to the field (which
+   *  would otherwise also call `open()`, without `viaIcon`, right behind this one). */
   protected onIconClick(event: MouseEvent): void {
     event.stopPropagation();
     if (this.showClearButton()) this.clear();
-    else this.toggle();
+    else this.toggle(true);
   }
 
   /** @ignore */
