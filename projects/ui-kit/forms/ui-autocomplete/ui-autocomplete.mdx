@@ -174,6 +174,20 @@ instant — indispensable pour de très grandes listes. `virtualScroll` l'active
 
 <Canvas of={AutocompleteStories.VirtualScroll} />
 
+## Libellé flottant
+
+`floatLabel` fait descendre le libellé **dans** le champ, où il tient le rôle du placeholder,
+et le fait remonter au focus ou dès que le champ porte une valeur. Trois positions hautes :
+`over` (au-dessus de la boîte), `in` (dans une bande réservée en haut de la boîte, qui grandit
+d'autant) et `on` (à cheval sur le trait, qu'il entaille). Le `placeholder` est neutralisé tant
+que `floatLabel` et `label` sont tous les deux renseignés : les deux textes se superposeraient.
+
+
+<Canvas of={AutocompleteStories.FloatLabel} />
+
+Le mécanisme est celui du shell partagé `ui-field`, commun à tous les champs à boîte : détail
+des trois variantes, du déclenchement et des conséquences de mise en page sur [`ui-input`](?path=/docs/components-ui-forms-ui-input--docs).
+
 ## API
 
 <ArgTypes of={AutocompleteStories} />

@@ -13,11 +13,21 @@ $font-size-small: var(--ui-label-font-size-small, var(--size-typography-text-sm)
   display: inline-flex;
   align-items: center;
   gap: $gap;
+  max-width: 100%;
+  min-width: 0;
   font-family: var(--fontfamily-base);
   font-weight: var(--weight-regular);
   font-size: $font-size;
   color: var(--ui-label-color, var(--form-high-content-default)); /// Couleur du texte, pilotable par un composant de formulaire parent (hover, disabled…).
   cursor: inherit;
+
+  // Truncates only where the label is actually constrained (a floating label
+  // bounded by the field box). Free-flowing, it still wraps as before.
+  &-text {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
   &-marker {
     color: var(--informative-errorlow-content-default);

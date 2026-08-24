@@ -79,6 +79,12 @@ export class UiInputNumber extends BaseFormField<number | null> {
   private readonly inputEl = viewChild.required<ElementRef<HTMLInputElement>>('inputEl');
   /** @ignore Raw displayed text (independent from the model while typing). */
   protected readonly text = signal('');
+  /** @ignore Keeps a floating label raised once focus leaves. */
+  protected readonly isFilled = computed(() => this.text() !== '');
+  /** @ignore At rest the floating label already holds that spot. */
+  protected readonly effectivePlaceholder = computed(() =>
+    this.hasFloatLabel() ? '' : (this.placeholder() ?? ''),
+  );
 
   /** @ignore Suffix unit, ignored when `currency` is set (the formatted value already carries it). */
   protected readonly displayUnit = computed(() => (this.currency() ? null : (this.unit() ?? null)));

@@ -59,6 +59,7 @@ $focus-ring-width: var(--ui-autocomplete-focus-ring-width, #{utils.$form-focus-r
     gap: $tag-gap;
     min-width: 0;
     @include utils.field-inset-edges;
+    @include utils.field-float-inset;
   }
 
   // --- Selected value chip (role=option, roving focus, `multiple`) ----

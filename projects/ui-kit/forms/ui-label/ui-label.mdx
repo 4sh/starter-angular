@@ -11,6 +11,10 @@ composants (`ui-checkbox`, `ui-radio`, `ui-input`… via `ui-field`). Le texte v
 `label` ou d'un contenu projeté via `<ng-content>` ; `for` relie le label à l'id de l'élément
 de formulaire labellisé.
 
+Le texte passe à la ligne tant que rien ne le contraint ; contraint en largeur (cas du libellé
+flottant de `ui-field`, borné par la boîte du champ), il tronque avec une ellipse plutôt que de
+déborder.
+
 <Canvas of={LabelStories.Default} />
 
 ## API

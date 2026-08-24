@@ -16,6 +16,21 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+### Added
+
+- **Les champs à boîte acceptent un mode `floatLabel`, avec ses trois variantes** (FSHSP-157). Le libellé n'avait qu'une place possible, au-dessus du champ : un formulaire dense n'avait pas d'autre levier que de le retirer et de rabattre l'information sur le `placeholder`, qui disparaît à la première frappe et n'est pas un libellé pour un lecteur d'écran. `floatLabel` le fait descendre **dans** le champ, où il tient le rôle du placeholder, et remonter au focus, dès qu'une valeur est présente, tant qu'un panneau ouvert retient le champ (un déclencheur comme `ui-datepicker` confie le focus à son calendrier sans cesser d'être actif), ou sur autofill du navigateur (qui ne déclenche aucun évènement de saisie). Trois positions hautes, alignées sur celles de PrimeNG : `over` (au-dessus de la boîte), `in` (bande réservée en haut de la boîte, qui grandit d'autant pour que la rangée du contrôle garde sa hauteur) et `on` (à cheval sur le trait, qu'il entaille). Disponible sur les huit champs bâtis sur le shell `ui-field` : `ui-input`, `ui-textarea`, `ui-select`, `ui-autocomplete`, `ui-input-number`, `ui-input-mask`, `ui-input-tags` et `ui-datepicker` (qui le transmet à son déclencheur). L'input est porté par `BaseFormField`, donc un champ écrit sur cette base l'hérite sans code supplémentaire. Non renseigné, rien ne change : le libellé classique reste le défaut, sur tous les champs.
+  - Le libellé flottant reste un `<label for>` natif, marqueur `required` compris : il n'intercepte pas le pointeur au repos (le clic va au curseur de saisie) et le récupère une fois remonté. Seuls sa position et son échelle sont animées, jamais une `font-size` : le trajet ne provoque aucune reprise de mise en page, et la transition est coupée sous `prefers-reduced-motion`.
+  - Aucun recouvrement de mise en page : `over` réserve la bande où le libellé monte, `on` la moitié qui dépasse du trait, `in` grandit la boîte. Deux champs collés verticalement ne se chevauchent pas.
+  - En variante `in`, la bande est réservée par le **contrôle**, pas par la boîte : celui-ci continue de couvrir la boîte bord à bord (zone de clic, zone du curseur, fond d'autofill), seul le texte saisi descend sous le libellé. Affixes, unités, spinner, chevron, bouton d'effacement et libellé au repos restent centrés sur la boîte, qui se lit alors comme un tout.
+  - Le `placeholder` natif est neutralisé tant que `floatLabel` et `label` sont tous les deux renseignés : les deux textes occupent la même place et ne seraient lisibles ni l'un ni l'autre. `floatLabel` sans `label` ne fait rien.
+  - Nouveau mixin partagé `utils.field-float-inset($extra)`, dans la surface SCSS publiée : c'est par lui qu'un contrôle réserve la bande du libellé `in`. Un champ écrit hors du kit sur `ui-field` l'inclut sur son contrôle (les mixins `utils.field-native-input` le font déjà).
+  - Neuf nouveaux réglages `--ui-field-float-label-*` (taille, interligne, échelle au repos, décalages, entaille de la variante `on`, retrait derrière une icône gauche), plus les trois valeurs dérivées qui en découlent : voir la table « Theming » de la doc.
+
+### Changed
+
+- **La boîte de `ui-field` est désormais enveloppée dans un `.ui-field-control`** (FSHSP-157). C'est le contexte de positionnement du libellé flottant, et il est rendu dans les deux modes plutôt que conditionnellement, pour que le DOM d'un champ ne dépende pas de l'option. Aucun impact visuel ni sur les sélecteurs publics ; un consommateur qui aurait écrit du CSS sur l'enchaînement direct `.ui-field > .ui-field-box` doit passer par le descendant.
+- **`ui-label` tronque son texte quand il est contraint** au lieu de déborder (`text-overflow: ellipsis` sur `.ui-label-text`, `max-width: 100%` sur la racine). Sans contrainte de largeur, le comportement est inchangé : le texte passe à la ligne comme avant.
+
 ## [0.6.1] - 2026-08-22
 
 ### Fixed

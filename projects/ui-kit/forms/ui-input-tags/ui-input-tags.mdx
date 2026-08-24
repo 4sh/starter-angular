@@ -95,6 +95,21 @@ Tailles `default` et `small`.
 
 <Canvas of={InputTagsStories.Sizes} />
 
+## Libellé flottant
+
+`floatLabel` fait descendre le libellé **dans** le champ, où il tient le rôle du placeholder,
+et le fait remonter au focus ou dès que le champ porte une valeur. Trois positions hautes :
+`over` (au-dessus de la boîte), `in` (dans une bande réservée en haut de la boîte, qui grandit
+d'autant) et `on` (à cheval sur le trait, qu'il entaille). Le `placeholder` est neutralisé tant
+que `floatLabel` et `label` sont tous les deux renseignés : les deux textes se superposeraient.
+
+La boîte grandissant avec les tags, le libellé se cale sur la première rangée.
+
+<Canvas of={InputTagsStories.FloatLabel} />
+
+Le mécanisme est celui du shell partagé `ui-field`, commun à tous les champs à boîte : détail
+des trois variantes, du déclenchement et des conséquences de mise en page sur [`ui-input`](?path=/docs/components-ui-forms-ui-input--docs).
+
 ## Formulaires (ngModel / Reactive / Signal Forms)
 
 `ui-input-tags` est un `ControlValueAccessor` standard : sa valeur est un `string[]` (ou `T[]`).

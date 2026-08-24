@@ -80,6 +80,7 @@ $focus-ring-width: var(--ui-select-focus-ring-width, #{utils.$form-focus-ring-wi
     color: var(--form-high-content-default);
     cursor: pointer;
     @include utils.field-inset-edges;
+    @include utils.field-float-inset;
 
     &._small { font-size: map.get($size-small, font-size); }
     &:disabled { cursor: not-allowed; color: var(--form-high-content-disabled); }
@@ -105,9 +106,11 @@ $focus-ring-width: var(--ui-select-focus-ring-width, #{utils.$form-focus-ring-wi
   &-values {
     display: flex;
     align-items: center;
+    align-self: stretch;
     flex-wrap: wrap;
     gap: $values-gap;
     min-width: 0;
+    @include utils.field-float-inset;
   }
 
   // Collapsed-count indicator (`maxSelectedLabels`).

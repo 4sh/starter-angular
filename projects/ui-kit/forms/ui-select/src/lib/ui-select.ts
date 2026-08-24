@@ -492,6 +492,11 @@ export class UiSelect<T = unknown> extends BaseFormField<SelectValue<T>> {
     return this.overflowCount() > 0 ? `${shown} ${this.overflowText()}` : shown;
   });
 
+  /** @ignore At rest the floating label already holds that spot. */
+  protected readonly effectivePlaceholder = computed(() =>
+    this.hasFloatLabel() ? '' : (this.placeholder() ?? ''),
+  );
+
   /** @ignore The clear action is shown. */
   protected readonly showClearButton = computed(
     () => this.showClear() && this.hasValue() && !this.isDisabled() && !this.readonly(),

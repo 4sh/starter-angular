@@ -10,10 +10,10 @@
         "Mode 1"
       ],
       "counts": {
-        "tokens": 575,
-        "alias": 455,
-        "literal": 120,
-        "skipped": 42,
+        "tokens": 580,
+        "alias": 459,
+        "literal": 121,
+        "skipped": 46,
         "derivedDescriptions": 197
       },
       "aliasTargets": [
@@ -76,6 +76,26 @@
         },
         {
           "cssVar": "--ui-field-box-cursor",
+          "component": "ui-field",
+          "reason": "sans équivalent variable Figma (durée, easing, curseur, plan d’empilement, ratio)."
+        },
+        {
+          "cssVar": "--ui-field-float-label-indent",
+          "component": "ui-field",
+          "reason": "expression calc() : une variable Figma ne porte pas de calcul."
+        },
+        {
+          "cssVar": "--ui-field-float-label-indent-small",
+          "component": "ui-field",
+          "reason": "expression calc() : une variable Figma ne porte pas de calcul."
+        },
+        {
+          "cssVar": "--ui-field-float-label-scale",
+          "component": "ui-field",
+          "reason": "sans équivalent variable Figma (durée, easing, curseur, plan d’empilement, ratio)."
+        },
+        {
+          "cssVar": "--ui-field-float-label-scale-small",
           "component": "ui-field",
           "reason": "sans équivalent variable Figma (durée, easing, curseur, plan d’empilement, ratio)."
         },
@@ -4627,6 +4647,118 @@
           },
           "com.4sh.ui-kit": {
             "cssVar": "--ui-field-box-gap",
+            "component": "ui-field",
+            "entryPoint": "@4sh/ui-kit/forms/ui-field",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "float-label": {
+      "font-size": {
+        "$value": "{responsive.size.typography.text.sm}",
+        "$type": "dimension",
+        "$description": "Taille de police du libellé flottant en position haute.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "FONT_SIZE"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-field-float-label-font-size)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-field-float-label-font-size",
+            "component": "ui-field",
+            "entryPoint": "@4sh/ui-kit/forms/ui-field",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "line-height": {
+        "$value": "1.25",
+        "$type": "number",
+        "$description": "Interligne du libellé flottant : c'est lui qui fixe la hauteur de la bande réservée.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "LINE_HEIGHT"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-field-float-label-line-height)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-field-float-label-line-height",
+            "component": "ui-field",
+            "entryPoint": "@4sh/ui-kit/forms/ui-field",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "offset-x": {
+        "$value": "{metrics.units.md}",
+        "$type": "dimension",
+        "$description": "Décalage horizontal du libellé flottant, aligné sur l'inset du contrôle.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-field-float-label-offset-x)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-field-float-label-offset-x",
+            "component": "ui-field",
+            "entryPoint": "@4sh/ui-kit/forms/ui-field",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "offset-y": {
+        "$value": "{metrics.units.2xs}",
+        "$type": "dimension",
+        "$description": "Respiration au-dessus du libellé flottant dans la boîte, variante `in`.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-field-float-label-offset-y)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-field-float-label-offset-y",
+            "component": "ui-field",
+            "entryPoint": "@4sh/ui-kit/forms/ui-field",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "padding-x": {
+        "$value": "{metrics.units.2xs}",
+        "$type": "dimension",
+        "$description": "Inset horizontal du libellé flottant, variante `on` : c'est lui qui entaille le trait.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-field-float-label-padding-x)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-field-float-label-padding-x",
             "component": "ui-field",
             "entryPoint": "@4sh/ui-kit/forms/ui-field",
             "descriptionSource": "scss"

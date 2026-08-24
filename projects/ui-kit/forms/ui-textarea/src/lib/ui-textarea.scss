@@ -25,11 +25,13 @@ $count-font-size-small: var(--ui-textarea-count-font-size-small, var(--size-typo
     line-height: $line-height;
     padding-block: $padding-block;
     max-width: 100%;
+    @include utils.field-float-inset($padding-block);
 
     &._small {
       min-height: $min-height-small;
       padding-block: $padding-block-small;
       font-size: $font-size-small;
+      @include utils.field-float-inset($padding-block-small);
     }
 
     &._auto-resize { overflow: hidden; }

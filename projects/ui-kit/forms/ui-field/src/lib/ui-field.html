@@ -1,5 +1,5 @@
 <div [class]="classes()">
-  @if (label()) {
+  @if (label() && !isFloating()) {
     <ui-label
       class="ui-field-label"
       [for]="for()"
@@ -10,10 +10,28 @@
     />
   }
 
-  <div class="ui-field-box" (mousedown)="onBoxMouseDown($event)">
-    <ng-content select="[uiFieldPrefix]" />
-    <ng-content />
-    <ng-content select="[uiFieldSuffix]" />
+  <!-- Positioning context of the floating label: this wrapper's box IS the field
+       box's, so the label's offsets read against it whatever the box height.
+       The label is a SIBLING of the box, never a child: `utils.field-inset-edges`
+       hands the horizontal inset to the box's first/last child, and one extra
+       element in there would silently steal it from the control. -->
+  <div class="ui-field-control">
+    <div class="ui-field-box" (mousedown)="onBoxMouseDown($event)">
+      <ng-content select="[uiFieldPrefix]" />
+      <ng-content />
+      <ng-content select="[uiFieldSuffix]" />
+    </div>
+
+    @if (isFloating()) {
+      <ui-label
+        class="ui-field-float-label"
+        [for]="for()"
+        [label]="label()!"
+        [required]="required()"
+        [size]="size()"
+        [disabled]="disabled()"
+      />
+    }
   </div>
 
   @if (message() || hasFooter()) {

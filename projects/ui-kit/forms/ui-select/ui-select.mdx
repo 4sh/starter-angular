@@ -206,6 +206,23 @@ dans `options`.
 
 <Canvas of={SelectStories.LazyVirtualScroll} />
 
+## Libellé flottant
+
+`floatLabel` fait descendre le libellé **dans** le champ, où il tient le rôle du placeholder,
+et le fait remonter au focus ou dès que le champ porte une valeur. Trois positions hautes :
+`over` (au-dessus de la boîte), `in` (dans une bande réservée en haut de la boîte, qui grandit
+d'autant) et `on` (à cheval sur le trait, qu'il entaille). Le `placeholder` est neutralisé tant
+que `floatLabel` et `label` sont tous les deux renseignés : les deux textes se superposeraient.
+
+En mode `multiple`, la boîte à hauteur automatique suit : le libellé se cale sur la première
+rangée de valeurs, pas au milieu d'une boîte qui a grandi. Le chevron, le bouton d'effacement
+et l'indicateur de chargement restent centrés sur la boîte dans les trois variantes.
+
+<Canvas of={SelectStories.FloatLabel} />
+
+Le mécanisme est celui du shell partagé `ui-field`, commun à tous les champs à boîte : détail
+des trois variantes, du déclenchement et des conséquences de mise en page sur [`ui-input`](?path=/docs/components-ui-forms-ui-input--docs).
+
 ## API
 
 <ArgTypes of={SelectStories} />

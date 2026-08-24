@@ -45,6 +45,14 @@ const meta: Meta<UiInput> = {
       options: ['default', 'success', 'error'],
       table: { type: { summary: 'FieldLevel' }, defaultValue: { summary: '"default"' } },
     },
+    floatLabel: {
+      control: 'select',
+      options: [undefined, 'over', 'in', 'on'],
+      labels: { undefined: 'aucun (libellé classique)' },
+      description:
+        'Libellé flottant : le libellé descend dans le champ, où il tient le rôle du placeholder, et remonte au focus ou dès que le champ porte une valeur. Le `placeholder` natif est alors neutralisé.',
+      table: { type: { summary: 'FieldFloatLabel' }, defaultValue: { summary: 'undefined' } },
+    },
     unit: {
       control: 'text',
       description: 'Unité suffixe.',
@@ -100,7 +108,7 @@ type Story = StoryObj<UiInput>;
 const TEMPLATE = `<div style="width:260px"><ui-input
     [(ngModel)]="model"
     [label]="label" [helperText]="helperText" [errorText]="errorText" [placeholder]="placeholder"
-    [type]="type" [size]="size" [level]="level" [unit]="unit"
+    [type]="type" [size]="size" [level]="level" [unit]="unit" [floatLabel]="floatLabel"
     [iconLeft]="iconLeft" [iconRight]="iconRight"
     [required]="required" [disabled]="disabled" [readonly]="readonly" [invalid]="invalid"
     (valueChange)="valueChange($event)" /></div>`;
@@ -149,6 +157,47 @@ export const Disabled: Story = {
 export const Readonly: Story = {
   render: story('Lecture seule'),
   args: { label: 'Champ', readonly: true },
+};
+
+// --- Libellé flottant ---------------------------------------------------
+/**
+ * `floatLabel` fait descendre le libellé **dans** le champ, où il tient le rôle du
+ * placeholder, puis le fait remonter au focus ou dès qu'une valeur est présente. Trois
+ * positions hautes : `over` (au-dessus de la boîte, là où se place un libellé classique),
+ * `in` (dans une bande réservée en haut de la boîte, qui grandit d'autant) et `on` (à
+ * cheval sur le trait, qu'il entaille).
+ *
+ * Ligne du haut au repos, ligne du bas avec une valeur : c'est le même champ dans ses deux
+ * états. Cliquer dans un champ vide fait la transition.
+ */
+export const FloatLabel: Story = {
+  render: () => ({
+    props: { a: '', b: '', c: '', d: 'Robin', e: 'Robin', f: 'Robin' },
+    template: `<div style="display:grid; grid-template-columns:repeat(3, 200px); gap:28px 20px; align-items:end">
+      <ui-input [(ngModel)]="a" floatLabel="over" label="Over label" />
+      <ui-input [(ngModel)]="b" floatLabel="in" label="In label" />
+      <ui-input [(ngModel)]="c" floatLabel="on" label="On label" />
+      <ui-input [(ngModel)]="d" floatLabel="over" label="Over label" />
+      <ui-input [(ngModel)]="e" floatLabel="in" label="In label" />
+      <ui-input [(ngModel)]="f" floatLabel="on" label="On label" />
+    </div>`,
+  }),
+};
+
+/**
+ * Le mode flottant ne retire rien : marqueur `required`, niveaux, message d'aide ou
+ * d'erreur, `small`, icônes et zone d'action se composent comme sur un libellé classique.
+ */
+export const FloatLabelStates: Story = {
+  render: () => ({
+    props: { a: '', b: 'robin@', c: 'Non modifiable', d: '' },
+    template: `<div style="display:grid; grid-template-columns:repeat(2, 220px); gap:28px 20px; align-items:start">
+      <ui-input [(ngModel)]="a" floatLabel="on" label="Nom" required helperText="Tel qu'il figure sur la pièce d'identité." />
+      <ui-input [(ngModel)]="b" floatLabel="on" label="Email" invalid errorText="Adresse e-mail invalide." />
+      <ui-input [(ngModel)]="c" floatLabel="in" label="Champ" disabled />
+      <ui-input [(ngModel)]="d" floatLabel="in" label="Recherche" size="small" iconLeft="magnifying-glass" />
+    </div>`,
+  }),
 };
 
 // Zone d'action droite : recherche → icône « effacer » visible seulement avec du texte, clic vide.

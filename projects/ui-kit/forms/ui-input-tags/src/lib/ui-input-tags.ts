@@ -315,9 +315,14 @@ export class UiInputTags<T = unknown> extends BaseFormField<T[]> {
   protected readonly canType = computed(
     () => !this.isDisabled() && !this.readonly() && !this.isFull(),
   );
-  /** @ignore The placeholder is shown only while there is no tag. */
+  /** @ignore The placeholder is shown only while there is no tag, and never
+   *  under a floating label at rest: it already holds that spot. */
   protected readonly effectivePlaceholder = computed(() =>
-    this.tagValues().length ? '' : (this.placeholder() ?? ''),
+    this.hasFloatLabel() || this.tagValues().length ? '' : (this.placeholder() ?? ''),
+  );
+  /** @ignore Keeps a floating label raised once focus leaves. */
+  protected readonly isFilled = computed(
+    () => this.tagValues().length > 0 || this.inputText() !== '',
   );
 
   /** @ignore Flat entries (no groups). */
