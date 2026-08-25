@@ -15,7 +15,7 @@ import { chain, Rule, SchematicContext, Tree } from '@angular-devkit/schematics'
 import { confirm } from '@inquirer/prompts';
 import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
 import { updateWorkspace } from '@schematics/angular/utility/workspace';
-import { readFileSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Schema } from './schema';
 import { addDependency, addNpmScript, readPackageJson } from '../utils/package-json';
@@ -25,6 +25,7 @@ import {
   docsPipelineDir,
   mcpServerDir,
   prettierConfigDir,
+  projectAssetsDir,
   stylesFoundationDir,
 } from '../utils/component-registry';
 import { readKitManifestInfo } from '../utils/kit-manifest';
@@ -72,9 +73,9 @@ function copyStylesFoundationRule(): Rule {
   };
 }
 
-/** Scaffolds `main.scss` / `variables.scss` : le point d'entrée global du projet.
- * Créés une seule fois — ce sont des fichiers du consommateur dès la première
- * copie, jamais réécrasés ensuite (FSHSP-109). */
+const FONTS_MODULE = 'vendors/fonts';
+const FONTS_PATH = 'src/styles/vendors/_fonts.scss';
+
 function createStyleScaffolds(): Rule {
   return (tree: Tree, context: SchematicContext) => {
     const filesDir = join(__dirname, 'files');
@@ -83,7 +84,136 @@ function createStyleScaffolds(): Rule {
       if (tree.exists(targetPath)) continue;
       tree.create(targetPath, readFileSync(join(filesDir, name), 'utf8'));
     }
-    context.logger.info('✔ Scaffolds src/styles/main.scss et src/styles/variables.scss créés.');
+    if (!tree.exists(FONTS_PATH)) {
+      tree.create(FONTS_PATH, readFileSync(join(filesDir, 'vendors', '_fonts.scss'), 'utf8'));
+    }
+    importInMainScss(tree, FONTS_MODULE, '// ✏️ Vos polices (`@font-face` + `--fontfamily-*`).');
+
+    context.logger.info(
+      `✔ Scaffolds ${MAIN_SCSS_PATH}, src/styles/variables.scss et ${FONTS_PATH} créés.`,
+    );
+    return tree;
+  };
+}
+
+/** Racine des assets du projet. Servie sous `/assets/` par le builder (entrée
+ * ajoutée à `angular.json` par {@link updateAngularJson}) : c'est ce chemin-là
+ * que `ui-image` et les stories du kit résolvent. */
+const ASSETS_ROOT = 'src/assets';
+/** Index des images locales lues par `ui-image`. Posé vide : le composant ne
+ * peut pas deviner l'arborescence d'un projet, et un nom absent affiche son
+ * placeholder tokenisé plutôt que de casser la compilation. */
+const ASSETS_MAP_PATH = `${ASSETS_ROOT}/assets-map.json`;
+/** Marques telles que `BrandService` les émet — `brand1` est le défaut. */
+const ASSET_BRANDS = ['common', 'brand1', 'brand2', 'brand3'];
+/** Types de fichier, chacun pouvant contenir un sous-dossier `light/`/`dark/`
+ * quand le visuel a des variantes de mode (voir `resolvePath` de `ui-image`).
+ * Ces deux-là ne sont PAS échafaudés : ils sont l'exception, pas la règle, et
+ * les poser partout ferait 24 `.gitkeep` au lieu de 12, le README les décrit. */
+const ASSET_IMAGE_TYPES = ['jpg', 'png', 'svg'];
+
+/**
+ * Squelette de l'arborescence : un `Tree` de schematic ne porte que des
+ * fichiers, et git ne versionne pas un dossier vide. Le `.gitkeep` est donc la
+ * seule façon de livrer un emplacement, à supprimer dès qu'on y dépose
+ * quelque chose.
+ */
+function projectAssetDirs(): string[] {
+  const dirs = ['fonts/police', 'fonts/icon'];
+  for (const brand of ASSET_BRANDS) {
+    for (const type of ASSET_IMAGE_TYPES) dirs.push(`img/${brand}/${type}`);
+  }
+  return dirs;
+}
+
+/**
+ * Pose l'arborescence d'assets maison sous `src/assets/`.
+ *
+ * Avant, `ng add` n'y écrivait qu'un `assets-map.json` vide, et seulement si
+ * `ui-image` faisait partie des composants copiés : le consommateur héritait
+ * d'un composant qui résout `assets/img/{marque}/{type}/…` sans un seul dossier
+ * pour l'accueillir, ni rien qui dise où déposer une police ou un favicon.
+ *
+ * Trois natures de fichier, trois traitements :
+ *   - le SQUELETTE (`.gitkeep`), calculé ici — voir {@link projectAssetDirs} ;
+ *   - les fichiers TRANSPOSABLES tels quels (drapeaux, favicon placeholder),
+ *     copiés depuis les assets du package, en binaire;
+ *   - le README et l'`assets-map.json`, scaffolds destinés à être édités.
+ *
+ * `create()` uniquement, jamais `overwrite()` : tout ce qui est ici appartient
+ * au consommateur dès la première pose. Un `ng add` rejoué complète les trous
+ * sans rien écraser.
+ */
+function copyProjectAssetsRule(): Rule {
+  return (tree: Tree, context: SchematicContext) => {
+    const create = (targetPath: string, content: string | Buffer) => {
+      if (tree.exists(targetPath)) return;
+      tree.create(targetPath, content);
+    };
+
+    for (const dir of projectAssetDirs()) create(`${ASSETS_ROOT}/${dir}/.gitkeep`, '');
+
+    const root = projectAssetsDir();
+    const copyAll = (srcDir: string, targetDir: string) => {
+      for (const entry of readdirSync(srcDir, { withFileTypes: true })) {
+        const full = join(srcDir, entry.name);
+        if (entry.isDirectory()) copyAll(full, `${targetDir}/${entry.name}`);
+        else create(`${targetDir}/${entry.name}`, readFileSync(full));
+      }
+    };
+    if (existsSync(root)) copyAll(root, ASSETS_ROOT);
+
+    create(ASSETS_MAP_PATH, '{}\n');
+    create(
+      `${ASSETS_ROOT}/README.md`,
+      readFileSync(join(__dirname, 'files', 'assets', 'README.md'), 'utf8'),
+    );
+
+    context.logger.info(
+      `✔ Arborescence d'assets posée (${ASSETS_ROOT}/ : fonts, img, favicon — voir son README).`,
+    );
+    return tree;
+  };
+}
+
+/**
+ * Bascule le `<link rel="icon">` de chaque `index.html` d'application sur le
+ * favicon placeholder de l'arborescence maison.
+ *
+ * Conservateur par construction : on ne réécrit QUE le `favicon.ico` d'`ng new`.
+ * Un `href` déjà personnalisé est le choix du projet, et le réécrire lui
+ * remplacerait sa marque par notre placeholder — l'inverse du service rendu.
+ *
+ * Le `public/favicon.ico` d'`ng new` n'est pas supprimé : c'est un fichier du
+ * consommateur, qui peut vouloir le garder (ou y revenir). Il devient seulement
+ * non référencé — le README le signale.
+ */
+const NG_NEW_FAVICON_LINK = /<link\b[^>]*\brel=(["'])(?:shortcut\s+)?icon\1[^>]*>/gi;
+const NG_NEW_FAVICON_HREF = /\bhref=(["'])\.?\/?favicon\.ico\1/i;
+
+function retargetFaviconRule(): Rule {
+  return (tree: Tree, context: SchematicContext) => {
+    let retargeted = 0;
+    for (const path of applicationIndexPaths(tree)) {
+      const buffer = tree.read(`/${path}`);
+      if (!buffer) continue;
+      const content = buffer.toString('utf8');
+      const updated = content.replace(NG_NEW_FAVICON_LINK, (link) =>
+        NG_NEW_FAVICON_HREF.test(link)
+          ? link
+              .replace(NG_NEW_FAVICON_HREF, 'href="assets/favicon.png"')
+              .replace(/\btype=(["'])[^"']*\1/i, 'type="image/png"')
+          : link,
+      );
+      if (updated === content) continue;
+      tree.overwrite(`/${path}`, updated);
+      retargeted++;
+    }
+    if (retargeted) {
+      context.logger.info(
+        '✔ Favicon : <link rel="icon"> pointé sur assets/favicon.png (placeholder, à remplacer). L\'ancien public/favicon.ico n\'est plus référencé.',
+      );
+    }
     return tree;
   };
 }
@@ -226,6 +356,37 @@ function updateAngularJson(): Rule {
         if (!target) continue;
         if (targetName === 'test' && !acceptsStyleOptions(target)) continue;
         const options = (target.options ??= {});
+
+        // Arborescence d'assets maison (FSHSP-164), servie sous `/assets/` :
+        // c'est ce préfixe que `ui-image` construit (`assets/img/{marque}/…`)
+        // et que la story `ui-input-group` code en dur pour ses drapeaux.
+        // Sans cette entrée, `ng new` ne sert que `public/` et tout ce que le
+        // kit résout sous `/assets/` répond 404 — le composant tombant alors
+        // sur son placeholder, sans rien dire de la cause.
+        //
+        // AJOUTÉE à l'existant, jamais substituée : `public/` reste servi.
+        const assets = ((options['assets'] as JsonValue[] | undefined) ?? []).slice();
+        const hasAssetsRoot = assets.some((asset) =>
+          typeof asset === 'string'
+            ? asset === ASSETS_ROOT
+            : !!asset &&
+              typeof asset === 'object' &&
+              !Array.isArray(asset) &&
+              asset['input'] === ASSETS_ROOT,
+        );
+        if (!hasAssetsRoot) {
+          assets.push({
+            glob: '**/*',
+            input: ASSETS_ROOT,
+            output: './assets/',
+            // Le README documente l'arborescence pour le développeur, et les
+            // `.gitkeep` ne tiennent que des dossiers vides : ni l'un ni les
+            // autres n'ont à être servis en production. `ignore` est accepté
+            // par le builder d'application ET par celui de Storybook.
+            ignore: ['README.md', '**/.gitkeep'],
+          });
+        }
+        options['assets'] = assets;
 
         const styles = ((options['styles'] as string[] | undefined) ?? []).slice();
         for (const entry of [
@@ -399,9 +560,10 @@ function scaffoldStorybook(): Rule {
       hasUiImage ? preview.replace(UI_IMAGE_MARKER_RE, '') : preview.replace(UI_IMAGE_BLOCK_RE, ''),
     );
 
-    // `ui-image` résout ses images dans cette map. Vide, ses stories affichent
-    // le placeholder plutôt que de faire échouer la compilation de la preview.
-    if (hasUiImage) create('src/assets/assets-map.json', '{}\n');
+    // La map que `preview.ts` importe dans son bloc `<ui-image>` n'est plus
+    // créée ici : elle fait partie de l'arborescence d'assets, posée par
+    // `copyProjectAssetsRule` quels que soient les composants copiés
+    // (FSHSP-164). Elle est donc là avant que cette règle ne tourne.
 
     context.logger.info('✔ Configuration Storybook posée (storybook/).');
     return tree;
@@ -442,7 +604,12 @@ function addStorybookTargets(): Rule {
       const shared = {
         configDir: 'storybook',
         browserTarget: `${name}:build`,
-        assets: [{ glob: '**/*', input: 'src/assets', output: './assets/' }],
+        // Repris de `build`, pas réécrit : `updateAngularJson` y a déjà ajouté
+        // `src/assets` (FSHSP-164) et normalisé les `output`. L'entrée était
+        // codée en dur ici, ce qui rendait la preview le SEUL endroit où
+        // `/assets/` était servi — et faisait disparaître le `public/`
+        // d'`ng new` des stories qui s'en servaient.
+        assets: build.options?.['assets'],
         styles: build.options?.['styles'],
         stylePreprocessorOptions: build.options?.['stylePreprocessorOptions'],
         compodoc: true,
@@ -477,6 +644,51 @@ function firstApplicationName(tree: Tree): string | null {
     if (project.projectType === 'application') return name;
   }
   return null;
+}
+
+/**
+ * `index.html` de chaque application, lu dans `angular.json` plutôt que
+ * supposé à `src/index.html` : l'option `index` peut être déplacée, et elle
+ * accepte aussi bien une chaîne qu'un objet `{ input, output }`.
+ *
+ * Elle peut aussi être ABSENTE — c'est même le cas d'`ng new` depuis Angular 22,
+ * qui laisse le builder appliquer son défaut, `{sourceRoot}/index.html` (lui-même
+ * `{root}/src` par défaut). Sans ce repli, un projet fraîchement créé n'a aucun
+ * `index.html` à nos yeux. `index: false` (pas de page générée) ne compte pas.
+ *
+ * `architect` ou `targets` : les deux clés sont valides dans `angular.json` et
+ * `updateWorkspace` accepte l'une comme l'autre — un parse maison doit donc
+ * regarder les deux, sans quoi un workspace en `targets` ne trouverait rien.
+ */
+function applicationIndexPaths(tree: Tree): string[] {
+  const buffer = tree.read('/angular.json');
+  if (!buffer) return [];
+  type Target = { options?: { index?: string | false | { input?: string } } };
+  type Project = {
+    projectType?: string;
+    root?: string;
+    sourceRoot?: string;
+    architect?: Record<string, Target>;
+    targets?: Record<string, Target>;
+  };
+  const workspace = JSON.parse(buffer.toString('utf8')) as { projects?: Record<string, Project> };
+  const paths: string[] = [];
+  for (const project of Object.values(workspace.projects ?? {})) {
+    if (project.projectType !== 'application') continue;
+    const index = (project.architect ?? project.targets)?.['build']?.options?.index;
+    if (index === false) continue;
+    if (typeof index === 'string') {
+      paths.push(index);
+      continue;
+    }
+    if (index?.input) {
+      paths.push(index.input);
+      continue;
+    }
+    const sourceRoot = project.sourceRoot ?? [project.root, 'src'].filter(Boolean).join('/');
+    paths.push(`${sourceRoot}/index.html`);
+  }
+  return paths;
 }
 
 /**
@@ -711,7 +923,7 @@ const GRIDAFLEX_VERSION = '^1.0.0';
 const GRIDAFLEX_SETTINGS_PATH = 'src/styles/vendors/_gridaflex-settings.scss';
 const MAIN_SCSS_PATH = 'src/styles/main.scss';
 /** Résolu par l'includePath `src/styles` déjà écrit dans `angular.json`. */
-const GRIDAFLEX_USE = '@use "vendors/gridaflex-settings";';
+const GRIDAFLEX_MODULE = 'vendors/gridaflex-settings';
 
 /**
  * Réponse à la question Gridaflex : l'option la tranche sans prompt (usage
@@ -737,22 +949,29 @@ async function resolveGridaflexChoice(
 }
 
 /**
- * Ajoute le `@use` des réglages en TÊTE des `@use` de `main.scss` : configurer
- * un module Sass (`with (…)`) n'est possible que s'il n'a pas déjà été chargé.
- * Idempotent : un `ng add` rejoué ne duplique pas la ligne.
+ * Ajoute un `@use` en TÊTE des `@use` de `main.scss`.
+ *
+ * En tête, et pas en queue, parce que Gridaflex l'exige : configurer un module
+ * Sass (`with (…)`) n'est possible que s'il n'a pas déjà été chargé. Les autres
+ * couches s'en accommodent (un `@font-face` n'a pas d'ordre de cascade), donc
+ * une seule règle d'insertion pour tout le monde.
+ *
+ * Idempotent : un `ng add` rejoué ne duplique pas la ligne. Le scaffold
+ * `main.scss` porte déjà ces `@use` — cette fonction sert les projets installés
+ * avant, dont `main.scss` (fichier du consommateur) n'est jamais réécrasé.
  */
-function importGridaflexInMainScss(tree: Tree): 'added' | 'already-there' | 'no-main' {
+function importInMainScss(
+  tree: Tree,
+  moduleId: string,
+  comment: string,
+): 'added' | 'already-there' | 'no-main' {
   const buffer = tree.read(`/${MAIN_SCSS_PATH}`);
   if (!buffer) return 'no-main';
   const content = buffer.toString('utf8');
-  if (content.includes('vendors/gridaflex-settings')) return 'already-there';
+  if (content.includes(moduleId)) return 'already-there';
 
   const lines = content.split('\n');
-  const block = [
-    '// ✏️ Grille Gridaflex : colonnes, breakpoints et gouttières.',
-    GRIDAFLEX_USE,
-    '',
-  ];
+  const block = [comment, `@use "${moduleId}";`, ''];
   const firstUse = lines.findIndex((line) => /^\s*@use\b/.test(line));
   const charset = lines.findIndex((line) => /^\s*@charset\b/.test(line));
   let at = firstUse !== -1 ? firstUse : charset !== -1 ? charset + 1 : 0;
@@ -789,13 +1008,17 @@ function setupGridaflexRule(options: Schema): Rule {
         readFileSync(join(__dirname, 'files', 'vendors', '_gridaflex-settings.scss'), 'utf8'),
       );
     }
-    const imported = importGridaflexInMainScss(tree);
+    const imported = importInMainScss(
+      tree,
+      GRIDAFLEX_MODULE,
+      '// ✏️ Grille Gridaflex : colonnes, breakpoints et gouttières.',
+    );
     addDependency(tree, 'gridaflex', GRIDAFLEX_VERSION, 'dependencies');
 
     if (imported === 'no-main') {
       context.logger.warn(
         `Gridaflex posé (${GRIDAFLEX_SETTINGS_PATH}) mais ${MAIN_SCSS_PATH} est introuvable : ` +
-          `ajoutez-y \`${GRIDAFLEX_USE}\` avant vos autres \`@use\`.`,
+          `ajoutez-y \`@use "${GRIDAFLEX_MODULE}";\` avant vos autres \`@use\`.`,
       );
       return tree;
     }
@@ -871,6 +1094,11 @@ export function ngAdd(options: Schema): Rule {
   const foundation = [
     copyStylesFoundationRule(),
     createStyleScaffolds(),
+    // Avant `updateAngularJson`, qui déclare `src/assets` au builder : la
+    // règle qui pose l'arborescence et celle qui la fait servir se lisent
+    // ainsi dans l'ordre où elles prennent effet.
+    copyProjectAssetsRule(),
+    retargetFaviconRule(),
     copyPrettierConfigRule(),
     copyTokensPipeline(),
     // La chaîne de doc ne sert qu'aux MDX copiés : sans eux, ce sont deux

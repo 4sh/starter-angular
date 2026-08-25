@@ -19,6 +19,10 @@
 // serif du navigateur. Gardez cette queue de pile quand vous surchargez.
 // -----------------------------------------------------------------------------
 
+// ✏️ Vos polices : `@font-face` + surcharge de `--fontfamily-*`. Vide par
+// défaut — voir le fichier et `src/assets/README.md`.
+@use "vendors/fonts";
+
 // 🔒 Tokens générés — régénérés par `npm run tokens:build`, jamais édités à la main.
 @use "ui-kit/generated/tokens";
 

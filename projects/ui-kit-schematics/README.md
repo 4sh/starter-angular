@@ -111,6 +111,30 @@ Not carried over: the `parameters.design` links to our Figma file — you cannot
 open it, so it is stripped at copy time. Put your own `node-id` back if you have
 one.
 
+### Assets (fonts, images, favicon)
+
+The foundation lays the house asset tree under `src/assets/`, and declares it to
+the builder so it is served under `/assets/`, the prefix `ui-image` resolves
+(`assets/img/{brand}/{type}/…`) and the one the `ui-input-group` story hardcodes
+for its dial-code flags. The `public/` folder `ng new` created keeps being served
+alongside it.
+
+```
+src/assets/
+├── favicon.png       ← placeholder, wired into your index.html
+├── assets-map.json   ← the local-image index ui-image reads (starts empty)
+├── fonts/{police,icon}/
+└── img/{common,brand1,brand2,brand3}/{jpg,png,svg}/
+```
+
+**No font file ships.** The tokens only _name_ families (`--fontfamily-base`),
+each ending in a system stack, so a project with no embedded font falls back to
+the OS sans-serif rather than the browser serif. Declare yours in
+`src/styles/vendors/_fonts.scss`, created with the `variable-font` mixin, a
+commented example, and already `@use`d by `main.scss`; it emits nothing until you
+uncomment something. Same reasoning for the `ui-image` demo fixtures: they are our
+demo, not your foundation.
+
 ### Grid system (Gridaflex)
 
 Asked, right after you pick your components: whether the project uses

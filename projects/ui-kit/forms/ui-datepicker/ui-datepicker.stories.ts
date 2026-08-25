@@ -642,8 +642,17 @@ export const YearPicker: Story = {
 
 // Plusieurs mois côte à côte (numberOfMonths).
 export const TwoMonths: Story = {
-  render: story(new Date(2026, 6, 8)),
-  args: { inline: true, numberOfMonths: 2, label: 'Deux mois' },
+  render: () => ({
+    props: { model: new Date(2026, 6, 8), inline: true, numberOfMonths: 2, label: 'Deux mois', valueType: 'date', dateFormat: demoDateFormat },
+    template: `<ui-datepicker
+    [(ngModel)]="model"
+    [valueType]="valueType"
+    [label]="label"
+    [inline]="inline"
+    [numberOfMonths]="numberOfMonths"
+    [dateFormat]="dateFormat" />`,
+  }),
+  parameters: { layout: 'centered' },
 };
 
 // Barre de boutons personnalisée via le template #buttonbar (contexte todayCallback / clearCallback).

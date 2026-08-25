@@ -12,11 +12,13 @@
 // -----------------------------------------------------------------------------
 
 /** Chemins des images */
-$path-img: "../assets/images/" !default;
-$path-jpg: "#{$path-img}jpg/" !default;
-$path-png: "#{$path-img}png/" !default;
-$path-svg: "#{$path-img}svg/" !default;
+$path-img: "../assets/img/" !default;
+$path-common: "#{$path-img}common/" !default;
+$path-jpg: "#{$path-common}jpg/" !default;
+$path-png: "#{$path-common}png/" !default;
+$path-svg: "#{$path-common}svg/" !default;
 
 /** Chemins des polices */
 $path-font: "../assets/fonts/" !default;
+$path-police: "#{$path-font}police/" !default;
 $path-icon: "#{$path-font}icon/" !default;

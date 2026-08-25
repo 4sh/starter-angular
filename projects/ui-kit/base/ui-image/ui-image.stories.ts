@@ -90,7 +90,7 @@ class StorybookWrapper {
 
 // --- 4. CONFIGURATION ---
 const meta: Meta<StorybookWrapper> = {
-  title: 'Components/ui/ui-image',
+  title: 'Components/ui/base/ui-image',
   component: StorybookWrapper,
   decorators: [
     applicationConfig({

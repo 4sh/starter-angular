@@ -3,7 +3,7 @@ import { applicationConfig, moduleMetadata } from '@storybook/angular';
 import { UiIcon, UiIconFamilyScope, provideUiIconFamilies } from '@4sh/ui-kit/base/ui-icon';
 
 const meta: Meta<UiIcon> = {
-  title: 'Components/ui/ui-icon',
+  title: 'Components/ui/base/ui-icon',
   component: UiIcon,
   decorators: [moduleMetadata({ imports: [UiIcon] })],
   parameters: { layout: 'centered' },

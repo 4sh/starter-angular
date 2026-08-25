@@ -98,6 +98,15 @@ export function mcpServerDir(): string {
 }
 
 /**
+ * Assets de projet transposables tels quels: drapeaux SVG et
+ * favicon placeholder. Ni les polices ni les fixtures de démo n'en font partie
+ * : voir `scripts/schematics-assets.build.mjs` pour le pourquoi.
+ */
+export function projectAssetsDir(): string {
+  return join(ASSETS_ROOT, 'project-assets');
+}
+
+/**
  * `.prettierrc`/`.prettierignore` du kit (FSHSP-140) : posés tels quels chez
  * le consommateur pour que `ng generate …:update` compare deux copies
  * reformatées avec LA MÊME config — sinon le CLI Angular reformate les
