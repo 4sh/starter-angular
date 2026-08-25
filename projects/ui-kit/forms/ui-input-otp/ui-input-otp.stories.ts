@@ -17,6 +17,10 @@ const meta: Meta<UiInputOtp> = {
   ],
   parameters: {
     layout: 'centered',
+    design: {
+      type: 'figma',
+      url: 'https://www.figma.com/design/GZww5hdUA49LB8XWeWP6tl/-Projet----UI-Kit?node-id=3614-33400&t=hED8P0S1ohO6dLVA-1',
+    },
   },
   argTypes: {
     length: {
