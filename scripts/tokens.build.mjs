@@ -189,6 +189,51 @@ function autoDetectMediaQuery(col, mode) {
   return null;
 }
 
+/** px value of a CSS length found in a media feature (`16px`, `64rem`, `40em`, `900`). */
+function toPx(raw) {
+  const m = /^\s*(-?[\d.]+)(px|rem|em)?\s*$/.exec(raw);
+  if (!m) return null;
+  return Number(m[1]) * (m[2] === 'rem' || m[2] === 'em' ? 16 : 1);
+}
+
+/**
+ * Width window of a media query, used to order the emitted blocks.
+ * `min` = widest lower bound, `max` = narrowest upper bound (0 / Infinity when absent).
+ * Range syntax (`width >= 900px`, `900px <= width`) is understood alongside the
+ * `(min-width: …)` / `(max-width: …)` features.
+ */
+function mediaWidthWindow(media) {
+  let min = 0;
+  let max = Infinity;
+  const bump = (kind, raw) => {
+    const px = toPx(raw);
+    if (px === null) return;
+    if (kind === 'min') min = Math.max(min, px);
+    else max = Math.min(max, px);
+  };
+  for (const [, kind, raw] of media.matchAll(/\((min|max)-width\s*:\s*([^)]+)\)/g)) bump(kind, raw);
+  for (const [, op, raw] of media.matchAll(/width\s*(<=|>=|<|>)\s*([^)\s]+)/g))
+    bump(op.startsWith('>') ? 'min' : 'max', raw);
+  for (const [, raw, op] of media.matchAll(/([^(\s]+)\s*(<=|>=|<|>)\s*width/g))
+    bump(op.startsWith('<') ? 'min' : 'max', raw);
+  return { min, max };
+}
+
+/**
+ * Cascade order of two media groups: ascending `min-width` (mobile first), then
+ * descending `max-width` (desktop first). Both conventions end up with the most
+ * specific block last, so a viewport matching several blocks keeps the narrowest
+ * one — without this the JSON mode order leaks into the CSS and, e.g., a tablet
+ * block emitted after the desktop one would win on a 1440px screen.
+ */
+function compareMedia(a, b) {
+  const wa = mediaWidthWindow(a);
+  const wb = mediaWidthWindow(b);
+  if (wa.min !== wb.min) return wa.min - wb.min;
+  if (wa.max !== wb.max) return wb.max - wa.max; // never Infinity - Infinity
+  return 0;
+}
+
 /** Selector/media group of a leaf. Base group is { media: '', selector: ':root' }. */
 function leafGroup(col, leaf) {
   const selectors = [];
@@ -260,7 +305,10 @@ function buildTokens(col) {
     entry.leaves.push(l);
   }
   const rank = (g) => (g.media ? 2 : g.selector === ':root' ? 0 : 1);
-  const ordered = groups.slice().sort((a, b) => rank(a) - rank(b));
+  const ordered = groups
+    .map((g, i) => ({ g, i }))
+    .sort((a, b) => rank(a.g) - rank(b.g) || compareMedia(a.g.media, b.g.media) || a.i - b.i)
+    .map((e) => e.g);
 
   const primaryKey = refKeys(col)[0];
   const tokens = {};
