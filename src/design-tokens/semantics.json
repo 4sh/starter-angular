@@ -2459,7 +2459,7 @@
         },
         "surface": {
           "default": {
-            "$value": "{primitives.orange.500}",
+            "$value": "{primitives.orange.700}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -2472,7 +2472,7 @@
             }
           },
           "hover": {
-            "$value": "{primitives.orange.700}",
+            "$value": "{primitives.orange.800}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -15789,7 +15789,7 @@
         },
         "surface": {
           "default": {
-            "$value": "{primitives.orange.500}",
+            "$value": "{primitives.orange.700}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -15802,7 +15802,7 @@
             }
           },
           "hover": {
-            "$value": "{primitives.orange.700}",
+            "$value": "{primitives.orange.800}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
