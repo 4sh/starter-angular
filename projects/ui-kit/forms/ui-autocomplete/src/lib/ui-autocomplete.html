@@ -153,14 +153,6 @@
   >
     <div
       class="ui-autocomplete-control"
-      [attr.role]="multiple() && !selectedItemTemplate() ? 'listbox' : null"
-      [attr.aria-orientation]="multiple() && !selectedItemTemplate() ? 'horizontal' : null"
-      [attr.aria-label]="
-        multiple() && !selectedItemTemplate() && !label() ? ariaLabel() || null : null
-      "
-      [attr.aria-labelledby]="
-        multiple() && !selectedItemTemplate() ? ariaLabelledBy() || null : null
-      "
       (mousedown)="onBoxMousedown($event)"
     >
       @if (multiple()) {
@@ -169,6 +161,16 @@
             <ng-container [ngTemplateOutlet]="tpl" [ngTemplateOutletContext]="ctx" />
           }
         } @else {
+          <!-- The listbox wraps ONLY the option tags: it may contain neither the combobox input
+               nor the informative overflow chip. `display: contents` keeps the tags flowing in
+               the box exactly as before. -->
+          <div
+            class="ui-autocomplete-tags"
+            role="listbox"
+            aria-orientation="horizontal"
+            [attr.aria-label]="ariaLabelledBy() ? null : ariaLabel() || label() || null"
+            [attr.aria-labelledby]="ariaLabelledBy() || null"
+          >
           @for (tag of visibleTagRows(); track $index) {
             <ui-chip
               #tagEl
@@ -190,6 +192,7 @@
               (remove)="removeAt(tag.index)"
             />
           }
+          </div>
         }
         @if (overflowCount() > 0) {
           <!-- Collapsed remainder (`maxSelectedLabels`): informative only, not removable. -->

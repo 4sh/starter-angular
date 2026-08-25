@@ -110,7 +110,7 @@
         role="listbox"
         aria-orientation="horizontal"
         [attr.id]="listboxId()"
-        [attr.aria-label]="label() ? null : ariaLabel() || null"
+        [attr.aria-label]="ariaLabelledBy() ? null : ariaLabel() || label() || null"
         [attr.aria-labelledby]="ariaLabelledBy() || null"
       >
         @for (tag of tagRows(); track $index) {

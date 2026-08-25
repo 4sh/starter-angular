@@ -49,20 +49,24 @@
       @if (currentView() === 'year') {
         <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
         <div class="ui-datepicker-picker _year" role="grid" (keydown)="onYearGridKeydown($event)">
-          @for (y of years(); track y.year) {
-            <button
-              type="button"
-              role="gridcell"
-              class="ui-datepicker-cell"
-              [class._selected]="y.selected"
-              [class._focusable]="isFocusableYear(y)"
-              [disabled]="y.disabled"
-              [attr.tabindex]="isFocusableYear(y) ? 0 : -1"
-              [attr.aria-selected]="y.selected"
-              (click)="selectYear(y)"
-            >
-              {{ y.year }}
-            </button>
+          @for (row of yearRows(); track $index) {
+            <div class="ui-datepicker-picker-row" role="row">
+              @for (y of row; track y.year) {
+                <button
+                  type="button"
+                  role="gridcell"
+                  class="ui-datepicker-cell"
+                  [class._selected]="y.selected"
+                  [class._focusable]="isFocusableYear(y)"
+                  [disabled]="y.disabled"
+                  [attr.tabindex]="isFocusableYear(y) ? 0 : -1"
+                  [attr.aria-selected]="y.selected"
+                  (click)="selectYear(y)"
+                >
+                  {{ y.year }}
+                </button>
+              }
+            </div>
           }
         </div>
       }
@@ -71,20 +75,24 @@
       @else if (currentView() === 'month') {
         <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
         <div class="ui-datepicker-picker _month" role="grid" (keydown)="onMonthGridKeydown($event)">
-          @for (m of months(); track m.index) {
-            <button
-              type="button"
-              role="gridcell"
-              class="ui-datepicker-cell"
-              [class._selected]="m.selected"
-              [class._focusable]="isFocusableMonth(m)"
-              [disabled]="m.disabled"
-              [attr.tabindex]="isFocusableMonth(m) ? 0 : -1"
-              [attr.aria-selected]="m.selected"
-              (click)="selectMonth(m)"
-            >
-              {{ m.label }}
-            </button>
+          @for (row of monthRows(); track $index) {
+            <div class="ui-datepicker-picker-row" role="row">
+              @for (m of row; track m.index) {
+                <button
+                  type="button"
+                  role="gridcell"
+                  class="ui-datepicker-cell"
+                  [class._selected]="m.selected"
+                  [class._focusable]="isFocusableMonth(m)"
+                  [disabled]="m.disabled"
+                  [attr.tabindex]="isFocusableMonth(m) ? 0 : -1"
+                  [attr.aria-selected]="m.selected"
+                  (click)="selectMonth(m)"
+                >
+                  {{ m.label }}
+                </button>
+              }
+            </div>
           }
         </div>
       }

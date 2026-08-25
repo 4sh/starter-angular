@@ -206,6 +206,12 @@ export class UiModal {
   /** Emitted when a resize gesture ends. */
   resizeEnd = output<{ width: number; height: number }>();
 
+  /** @ignore Scrollable body region (see `contentNeedsFocus`). */
+  private readonly contentRef = viewChild<ElementRef<HTMLElement>>('contentEl');
+  /** @ignore The body overflows and holds no focusable element of its own — it then needs to be
+   *  focusable itself so the scroll is keyboard-reachable (axe `scrollable-region-focusable`). */
+  protected readonly contentNeedsFocus = signal(false);
+
   /** @ignore */
   private readonly dialogRef = viewChild<ElementRef<HTMLElement>>('dialog');
   /** @ignore Scrim host (for imperative `maskStyleClass` — a bound `[class]` would
@@ -338,6 +344,27 @@ export class UiModal {
         }
       });
     });
+
+    // Watch the body region: it only earns a tab stop once it actually overflows and holds no
+    // focusable element of its own. Measured rather than derived: the content is projected, so
+    // neither its height nor what it contains is known from the inputs.
+    if (this.isBrowser && typeof ResizeObserver !== 'undefined') {
+      let observed: HTMLElement | null = null;
+      const ro = new ResizeObserver(() => this.measureContentFocusability());
+      effect(() => {
+        const el = this.contentRef()?.nativeElement ?? null;
+        if (el === observed) return;
+        if (observed) ro.unobserve(observed);
+        observed = el;
+        if (el) {
+          ro.observe(el);
+          this.measureContentFocusability();
+        } else {
+          this.contentNeedsFocus.set(false);
+        }
+      });
+      destroyRef.onDestroy(() => ro.disconnect());
+    }
 
     // Rebuild the responsive width stylesheet when `breakpoints` changes.
     effect(() => {
@@ -546,6 +573,20 @@ export class UiModal {
   }
 
   // --- Internals -------------------------------------------------------
+
+  /** @ignore Recomputes `contentNeedsFocus` from the rendered body. */
+  private measureContentFocusability(): void {
+    const el = this.contentRef()?.nativeElement;
+    if (!el) {
+      this.contentNeedsFocus.set(false);
+      return;
+    }
+    const overflows = el.scrollHeight > el.clientHeight + 1;
+    const hasFocusable = !!el.querySelector(
+      'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+    );
+    this.contentNeedsFocus.set(overflows && !hasFocusable);
+  }
 
   /** @ignore Release this instance's scroll lock, if held. */
   private releaseLock(): void {

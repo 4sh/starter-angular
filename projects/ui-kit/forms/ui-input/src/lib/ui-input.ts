@@ -62,7 +62,12 @@ export class UiInput extends BaseFormField<string> {
   value = input<string>();
   /** `aria-haspopup` forwarded to the native input (popup trigger hosts). */
   ariaHasPopup = input<'menu' | 'listbox' | 'tree' | 'grid' | 'dialog'>();
-  /** `aria-expanded` forwarded to the native input (popup trigger hosts). */
+  /**
+   * `aria-expanded` forwarded to the native input (popup trigger hosts).
+   * Setting it also promotes the input to `role="combobox"`: `aria-expanded`
+   * is not allowed on the implicit `textbox` role, so screen readers would
+   * silently drop the popup state without it.
+   */
   ariaExpanded = input<boolean>();
   /** `aria-controls` forwarded to the native input (popup trigger hosts). */
   ariaControls = input<string>();
@@ -157,6 +162,10 @@ export class UiInput extends BaseFormField<string> {
     const joined = ids.filter((id): id is string => !!id).join(' ');
     return joined || null;
   });
+  /** @ignore ARIA 1.2: only `combobox` (not the implicit `textbox`) accepts
+   *  `aria-expanded`. Stays null for plain text fields so their announcement
+   *  ("edit text") is untouched. */
+  protected readonly nativeRole = computed(() => (this.ariaExpanded() === undefined ? null : 'combobox'));
 
   /** Focuses the input. */
   focus(options?: FocusOptions): void {

@@ -67,10 +67,19 @@
               />
             </button>
           } @else {
+            <!-- A disabled crumb always lands here (every isXxxCrumb() guard requires
+                 !item.disabled), and only a CSS class marked it as such: assistive tech had no
+                 way to know. `role="link"` + `aria-disabled` states it — the pattern for a link
+                 that would exist were it enabled. The role is required for the attribute to be
+                 legal at all (aria-disabled is not global, a role-less span rejects it), and it
+                 is what makes WCAG 1.4.3's exemption for inactive components apply to the
+                 contrast of its faded label. -->
             <span
               class="ui-breadcrumb-text"
               [class._current]="entry.last"
               [class._disabled]="item.disabled ?? false"
+              [attr.role]="item.disabled ? 'link' : null"
+              [attr.aria-disabled]="item.disabled ? 'true' : null"
               [attr.aria-label]="item.ariaLabel"
               [attr.aria-current]="entry.last ? 'page' : null"
             >

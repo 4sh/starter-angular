@@ -18,6 +18,7 @@ $panel-max-width: var(--ui-datepicker-panel-max-width, calc(100vw - var(--units-
 $day-size: var(--ui-datepicker-day-size, var(--size-components-default));                /// Diamètre d'une cellule jour
 $day-radius: var(--ui-datepicker-day-radius, var(--radius-full));                        /// Rayon des cellules jour (cercle)
 $day-font-size: var(--ui-datepicker-day-font-size, var(--size-typography-text-default)); /// Taille du chiffre d'une cellule jour.
+$day-color-other-month: var(--ui-datepicker-day-color-outside, var(--global-text-default)); /// Couleur d'un jour appartenant au mois adjacent, avant atténuation.
 $day-opacity-other-month: var(--ui-datepicker-day-opacity-outside, 0.6);             /// Opacité d'un jour appartenant au mois adjacent.
 $day-opacity-disabled: var(--ui-datepicker-day-opacity-disabled, 0.45);                  /// Opacité d'un jour désactivé.
 
@@ -187,6 +188,9 @@ $buttonbar-padding-top: var(--ui-datepicker-buttonbar-padding-top, var(--units-s
     gap: $picker-gap;
     width: $panel-width;
 
+    // The `role="row"` wrappers exist for ARIA only: the cells stay direct grid items.
+    &-row { display: contents; }
+
     &._month { grid-template-columns: repeat(3, 1fr); }
     &._year { grid-template-columns: repeat(2, 1fr); }
   }
@@ -287,7 +291,7 @@ $buttonbar-padding-top: var(--ui-datepicker-buttonbar-padding-top, var(--units-s
     }
 
     // Previous/next month + disabled
-    &._other-month { color: var(--form-low-content-default); opacity: $day-opacity-other-month; }
+    &._other-month { color: $day-color-other-month; opacity: $day-opacity-other-month; }
 
     // Today (outlined chip) — only when not selected.
     &._today::before { border-color: var(--actions-high-stroke-default); }

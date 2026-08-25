@@ -146,7 +146,11 @@ export class UiStep {
   styleUrl: './ui-step-panel.scss',
   host: {
     class: 'ui-step-panel',
-    role: 'tabpanel',
+    // Horizontal: a real tabpanel, owned by the stepper's tablist (see ui-step.html).
+    // Vertical: role="region" instead — matching its header's accordion pattern
+    // (ui-accordion-panel uses the same role+aria-labelledby pairing) — a tabpanel
+    // with no tablist ancestor is invalid ARIA, and the vertical layout has none.
+    '[attr.role]': "stepper.orientation() === 'vertical' ? 'region' : 'tabpanel'",
     '[id]': 'stepper.panelId(value())',
     '[attr.aria-labelledby]': 'stepper.stepId(value())',
     '[attr.tabindex]': 'active() ? 0 : null',
@@ -312,8 +316,11 @@ export class UiStepItem {
   host: {
     class: 'ui-stepper',
     '[class._vertical]': "orientation() === 'vertical'",
-    '[attr.role]': "orientation() === 'vertical' ? 'tablist' : null",
-    '[attr.aria-orientation]': "orientation() === 'vertical' ? 'vertical' : null",
+    // Vertical interleaves each step's panel right under its own header (ui-step-item),
+    // so the container cannot be a tablist there — a tab containing its own tabpanel is
+    // invalid ARIA. role="group" instead: same accessible name, no tab semantics implied
+    // (headers/panels switch to the accordion pattern too, see ui-step.html/ui-step-panel).
+    '[attr.role]': "orientation() === 'vertical' ? 'group' : null",
     '[attr.aria-label]': "orientation() === 'vertical' ? (ariaLabel() || null) : null",
     '[attr.id]': 'id',
   },
@@ -347,6 +354,13 @@ export class UiStepper {
     forwardRef(() => UiStep),
     { descendants: true },
   );
+  /** @ignore All panels projected under this container — a stepper used as a plain "steps only"
+   *  progress indicator (see `UiStepList` doc) has none at all: `aria-controls` must not point
+   *  at an id that resolves to nothing. */
+  private readonly panels = contentChildren(
+    forwardRef(() => UiStepPanel),
+    { descendants: true },
+  );
 
   /** @ignore Ordered step values (the progression sequence). */
   private readonly orderedValues = computed(() => this.steps().map((s) => s.value()));
@@ -358,9 +372,10 @@ export class UiStepper {
   stepId(value: UiStepValue | undefined): string {
     return `${this.id}-step-${value}`;
   }
-  /** @ignore id of the panel for a given value. */
-  panelId(value: UiStepValue | undefined): string {
-    return `${this.id}-panel-${value}`;
+  /** @ignore id of the panel for a given value — `null` when that panel is not actually
+   *  rendered (see `panels` above), so the step omits `aria-controls` rather than dangle it. */
+  panelId(value: UiStepValue | undefined): string | null {
+    return this.panels().some((p) => p.value() === value) ? `${this.id}-panel-${value}` : null;
   }
 
   /** @ignore Whether the given value is the active step. */

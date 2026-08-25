@@ -92,8 +92,11 @@
         </div>
       }
 
-      <!-- Body: long content scrolls inside this region. -->
-      <div class="ui-modal-content">
+      <!-- Body: long content scrolls inside this region. It becomes focusable ONLY once it
+           actually overflows AND holds nothing focusable of its own: a keyboard user must be able
+           to reach the scrollbar (the footer buttons sit outside this region), but an unconditional
+           tab stop would insert itself into the focus order of every dialog. -->
+      <div #contentEl class="ui-modal-content" [attr.tabindex]="contentNeedsFocus() ? 0 : null">
         <ng-content />
       </div>
 

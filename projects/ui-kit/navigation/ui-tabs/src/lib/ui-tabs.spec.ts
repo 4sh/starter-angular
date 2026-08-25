@@ -51,6 +51,21 @@ class Host {
   readonly disableThird = signal(false);
 }
 
+/** `ui-tabs` as a navigation menu: tabs, but no `ui-tab-panels` at all (the content lives
+ *  behind a router outlet). See the `TabMenu` story. */
+@Component({
+  imports: [UiTabs, UiTabList, UiTab],
+  template: `
+    <ui-tabs [value]="0">
+      <ui-tab-list ariaLabel="Navigation">
+        <ui-tab [value]="0">Un</ui-tab>
+        <ui-tab [value]="1">Deux</ui-tab>
+      </ui-tab-list>
+    </ui-tabs>
+  `,
+})
+class PanellessHost {}
+
 async function setup(): Promise<{
   fixture: ComponentFixture<Host>;
   host: Host;
@@ -166,5 +181,46 @@ describe('UiTabList — roving tabindex', () => {
       fixture.detectChanges();
       expect(document.activeElement).toBe(buttons[0]);
     });
+  });
+});
+
+/**
+ * The tab label is projected through `<ng-content>`, and the `aria-controls` wiring depends on
+ * whether panels exist at all — neither was asserted anywhere before.
+ *
+ * Motivated by FSHSP-106, where a content-query change in the container silently dropped every
+ * projected label but the first. Note these tests would NOT have caught that one: verified by
+ * reintroducing the faulty query, and they still pass. The defect only shows in a real compiled
+ * build, not under TestBed/jsdom — the Storybook a11y run is what surfaced it (as `button-name`
+ * on the tabs whose label vanished). Kept anyway: they pin the two contracts cheaply.
+ */
+describe('UiTab — projected label', () => {
+  it('renders every tab label, not just the first', async () => {
+    const { buttons } = await setup();
+    expect(buttons.map((b) => b.textContent?.trim())).toEqual(['Un', 'Deux', 'Trois']);
+  });
+});
+
+describe('UiTab — aria-controls', () => {
+  it('points at the panel id when panels are projected', async () => {
+    const { buttons } = await setup();
+    for (const button of buttons) {
+      expect(button.getAttribute('aria-controls')).toMatch(/^ui-tabs-\d+-panel-/);
+    }
+  });
+
+  it('is omitted entirely when no panel is projected', async () => {
+    await TestBed.configureTestingModule({ imports: [PanellessHost] }).compileComponents();
+    const fixture = TestBed.createComponent(PanellessHost);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const buttons = Array.from(
+      (fixture.nativeElement as HTMLElement).querySelectorAll('button.ui-tab-button'),
+    ) as HTMLButtonElement[];
+
+    expect(buttons.map((b) => b.textContent?.trim())).toEqual(['Un', 'Deux']);
+    for (const button of buttons) {
+      expect(button.hasAttribute('aria-controls')).toBe(false);
+    }
   });
 });

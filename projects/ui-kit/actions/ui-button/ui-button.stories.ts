@@ -198,7 +198,11 @@ export const GhostLevels: Story = variantRow('ghost');
 // `onColor` n'a de sens que POSÉ sur un fond de couleur : ces planches
 // reproduisent le bandeau, sinon il n'y a rien à démontrer. Fonds pris sur des
 // tokens (jamais une couleur en dur) et choisis dans le domaine de validité de
-// chaque polarité : primary.500 pour `dark`, warning/orange.500 pour `light`.
+// chaque polarité : `actions.high.surface.default` (primary.500) pour `dark`,
+// `informative.warningLow.surface.default` (orange.50) pour `light`.
+// Ce dernier remplace `actions.warning.surface.default`, qui a été assombri en
+// orange.700 pour passer AA sous du texte blanc (FSHSP-106) : il n'est donc plus
+// un fond clair et mettait la polarité `light` en échec (3,42:1).
 const onColorBanner = (polarity: 'dark' | 'light', surface: string): Story => ({
   render: () => ({
     template: `
@@ -216,7 +220,7 @@ const onColorBanner = (polarity: 'dark' | 'light', surface: string): Story => ({
 });
 
 export const OnColorDark: Story = onColorBanner('dark', '--actions-high-surface-default');
-export const OnColorLight: Story = onColorBanner('light', '--actions-warning-surface-default');
+export const OnColorLight: Story = onColorBanner('light', '--informative-warninglow-surface-default');
 
 // Sans `onColor`, le même bandeau met le bouton en échec : c'est le problème
 // que l'axe résout, et la comparaison vaut mieux qu'un paragraphe.
@@ -231,7 +235,13 @@ export const OnColorOmitted: Story = {
       </div>
     `,
   }),
-  parameters: { layout: 'padded' },
+  // The failing contrast IS the subject of this story — it shows what `onColor`
+  // exists to fix. Waived rather than corrected (FSHSP-106): correcting it would
+  // delete the demonstration.
+  parameters: {
+    layout: 'padded',
+    a11y: { config: { rules: [{ id: 'color-contrast', enabled: false }] } },
+  },
 };
 
 // Tailles

@@ -13,6 +13,7 @@
 } @else {
   <span
     [class]="classes()"
+    [attr.role]="rootAriaLabel() || ariaLabelledBy() ? (showRemove() ? 'group' : 'img') : null"
     [attr.aria-label]="rootAriaLabel()"
     [attr.aria-labelledby]="ariaLabelledBy() ?? null"
   >
