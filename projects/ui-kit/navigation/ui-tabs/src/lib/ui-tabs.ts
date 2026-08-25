@@ -502,14 +502,22 @@ export class UiTabs {
     forwardRef(() => UiTab),
     { descendants: true },
   );
+  /** @ignore All panels projected under this container — some consumers use `ui-tabs` as a
+   *  navigation menu with no panel at all (a router outlet renders the content instead, see
+   *  the `TabMenu` story). `aria-controls` must not point at an id that resolves to nothing. */
+  private readonly panels = contentChildren(
+    forwardRef(() => UiTabPanel),
+    { descendants: true },
+  );
 
   /** @ignore id of the tab button for a given value. */
   tabId(value: UiTabValue): string {
     return `${this.id}-tab-${value}`;
   }
-  /** @ignore id of the panel for a given value. */
-  panelId(value: UiTabValue): string {
-    return `${this.id}-panel-${value}`;
+  /** @ignore id of the panel for a given value — `null` when that panel is not actually
+   *  rendered (see `panels` above), so the tab omits `aria-controls` rather than dangle it. */
+  panelId(value: UiTabValue): string | null {
+    return this.panels().some((p) => p.value() === value) ? `${this.id}-panel-${value}` : null;
   }
 
   /** @ignore Whether the given value is the active tab. */

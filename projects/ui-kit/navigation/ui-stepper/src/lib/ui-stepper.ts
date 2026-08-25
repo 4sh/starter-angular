@@ -347,6 +347,13 @@ export class UiStepper {
     forwardRef(() => UiStep),
     { descendants: true },
   );
+  /** @ignore All panels projected under this container — a stepper used as a plain "steps only"
+   *  progress indicator (see `UiStepList` doc) has none at all: `aria-controls` must not point
+   *  at an id that resolves to nothing. */
+  private readonly panels = contentChildren(
+    forwardRef(() => UiStepPanel),
+    { descendants: true },
+  );
 
   /** @ignore Ordered step values (the progression sequence). */
   private readonly orderedValues = computed(() => this.steps().map((s) => s.value()));
@@ -358,9 +365,10 @@ export class UiStepper {
   stepId(value: UiStepValue | undefined): string {
     return `${this.id}-step-${value}`;
   }
-  /** @ignore id of the panel for a given value. */
-  panelId(value: UiStepValue | undefined): string {
-    return `${this.id}-panel-${value}`;
+  /** @ignore id of the panel for a given value — `null` when that panel is not actually
+   *  rendered (see `panels` above), so the step omits `aria-controls` rather than dangle it. */
+  panelId(value: UiStepValue | undefined): string | null {
+    return this.panels().some((p) => p.value() === value) ? `${this.id}-panel-${value}` : null;
   }
 
   /** @ignore Whether the given value is the active step. */
