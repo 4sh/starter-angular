@@ -1790,7 +1790,7 @@
         },
         "surface": {
           "default": {
-            "$value": "{primitives.green.500}",
+            "$value": "{primitives.green.650}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -15617,7 +15617,7 @@
         },
         "surface": {
           "default": {
-            "$value": "{primitives.green.500}",
+            "$value": "{primitives.green.650}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
