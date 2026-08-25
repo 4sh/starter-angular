@@ -1,0 +1,159 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as EditorStories from './ui-editor.stories';
+import { ConfigTable } from '../../../../storybook/blocks/config-table';
+
+<Meta of={EditorStories} />
+
+# ui-editor
+
+Éditeur de texte **riche** bâti sur le shell partagé
+[`ui-field`](?path=/docs/components-ui-forms-ui-field--docs) (label + boîte + helper) en mode
+**multiline** : une barre d'outils configurable et une zone `contenteditable`. Couleurs via tokens
+`form.*`, bordure pilotée par le `level`.
+
+**Aucun moteur d'édition tiers** : la mise en forme s'appuie sur l'API d'édition native du
+navigateur, isolée dans `ui-editor-commands`. Le kit reste sans dépendance runtime.
+
+La valeur est une **chaîne HTML**, assainie par `DomSanitizer` avant tout affichage, et réduite à
+une liste blanche de balises au collage (`b`, `strong`, `i`, `em`, `u`, `a`, `ul`, `ol`, `li`, `p`,
+`br`, `div`, `span`).
+
+Autonome, `[(ngModel)]` ou reactive forms (`ControlValueAccessor` via `BaseFormField`). Pour une
+saisie multiligne **sans mise en forme** →
+[`ui-textarea`](?path=/docs/components-ui-forms-ui-textarea--docs).
+
+<Canvas of={EditorStories.WithValue} />
+
+## API
+
+<ArgTypes of={EditorStories} />
+
+## Barre d'outils
+
+`tools` liste les outils rendus, dans l'ordre. La valeur `separator` insère un séparateur visuel.
+Outils disponibles : `bold`, `italic`, `underline`, `bulletList`, `orderedList`, `link`,
+`clearFormat`.
+
+<Canvas of={EditorStories.MinimalToolbar} />
+<Canvas of={EditorStories.ToolbarBottom} />
+
+L'outil `link` ouvre en v1 une invite native (`window.prompt`) : valider avec une adresse pose le
+lien sur la sélection, valider à vide le retire.
+
+## Niveaux & états
+
+`level` (`default`/`success`/`error`) pilote la bordure. Le niveau `success` est un état **visuel
+manuel**. L'état d'**erreur** est piloté par la validation : bordure rouge et `errorText`
+apparaissent quand le contrôle est **invalide ET touché/modifié** (règle `showError`).
+
+En `readonly` la zone reste focusable et sélectionnable mais n'accepte plus d'édition, et les outils
+sont désactivés. En `disabled` elle sort du parcours de tabulation.
+
+<Canvas of={EditorStories.Success} />
+<Canvas of={EditorStories.Disabled} />
+<Canvas of={EditorStories.Readonly} />
+<Canvas of={EditorStories.Small} />
+
+## Compteur & limite
+
+`showCount` affiche un compteur, `maxlength` le borne. Les deux mesurent le **texte**, jamais le
+balisage : `<strong>ok</strong>` compte 2 caractères. Au-delà de la limite, les insertions sont
+refusées mais les suppressions et la mise en forme restent disponibles.
+
+<Canvas of={EditorStories.CharacterCount} />
+
+## Formulaires
+
+<Canvas of={EditorStories.Required} />
+<Canvas of={EditorStories.SignalForms} />
+
+```html
+<!-- Template-driven -->
+<ui-editor [(ngModel)]="description" label="Description" />
+
+<!-- Signal Forms -->
+<ui-editor [formField]="field" label="Description" />
+
+<!-- Reactive forms + message d'erreur -->
+<ui-editor formControlName="bio" label="Bio" errorText="Champ obligatoire" required />
+
+<!-- Barre réduite + compteur -->
+<ui-editor
+  [(ngModel)]="note"
+  label="Note"
+  [tools]="['bold', 'italic']"
+  [maxlength]="280"
+  showCount
+/>
+```
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Point</th>
+      <th>Comportement</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Rôle</td>
+      <td>
+        La zone porte <code>role="textbox"</code> + <code>aria-multiline="true"</code>, et relaie{' '}
+        <code>aria-required</code>, <code>aria-readonly</code>, <code>aria-disabled</code>,{' '}
+        <code>aria-invalid</code>.
+      </td>
+    </tr>
+    <tr>
+      <td>Nom accessible</td>
+      <td>
+        Un <code>contenteditable</code> n'est pas un contrôle de formulaire : il ne peut pas être
+        ciblé par un <code>&lt;label for&gt;</code>. Le libellé est donc repris en{' '}
+        <code>aria-label</code> (ou fournir <code>ariaLabelledBy</code>).
+      </td>
+    </tr>
+    <tr>
+      <td>Barre d'outils</td>
+      <td>
+        <code>role="toolbar"</code> avec <strong>un seul arrêt de tabulation</strong> : ⭠ ⭢ passent
+        d'un outil à l'autre, <kbd>Home</kbd>/<kbd>End</kbd> aux extrémités, <kbd>Échap</kbd> rend
+        le focus à la zone de saisie.
+      </td>
+    </tr>
+    <tr>
+      <td>État des outils</td>
+      <td>
+        Les bascules (gras, italique, souligné, listes) portent <code>aria-pressed</code>, recalculé
+        à chaque déplacement du curseur. Les actions ponctuelles (lien, effacer le formatage) n'en
+        portent pas.
+      </td>
+    </tr>
+    <tr>
+      <td>Raccourcis</td>
+      <td>
+        <kbd>Ctrl</kbd>/<kbd>Cmd</kbd> + <kbd>B</kbd> / <kbd>I</kbd> / <kbd>U</kbd> — pris en charge
+        nativement, l'état de la barre suit.
+      </td>
+    </tr>
+    <tr>
+      <td>Focus</td>
+      <td>
+        L'anneau de focus est porté par la boîte <code>ui-field</code> ; cliquer un outil ne
+        déplace pas le focus et préserve la sélection.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+## Theming
+
+La boîte est fournie par le shell `ui-field` en mode multiline ; les constantes partagées vivent
+dans le groupe [Forms](?path=/docs/components-configuration-forms--docs).
+
+Le contenu produit par l'éditeur (listes, liens, gras, paragraphes) est créé hors du template : il
+est stylé via `::ng-deep`, cantonné à la zone de saisie, et pilotable par les hooks ci-dessous.
+
+<ConfigTable of="ui-field" label="ui-field" />
+
+<ConfigTable of="ui-editor" label="ui-editor" />

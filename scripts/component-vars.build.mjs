@@ -270,6 +270,13 @@ const PROPERTIES = {
     scopes: ['ALL_SCOPES'],
     bindable: false,
   },
+  'text-decoration': {
+    fr: 'Décoration du texte',
+    group: 'misc',
+    type: 'STRING',
+    scopes: ['ALL_SCOPES'],
+    bindable: false,
+  },
   columns: {
     fr: 'Colonnes',
     group: 'misc',

@@ -1,0 +1,107 @@
+<ui-field
+  multiline
+  [label]="label()"
+  [required]="required()"
+  [size]="size()"
+  [level]="effectiveLevel()"
+  [floatLabel]="floatLabel()"
+  [filled]="isFilled()"
+  [disabled]="isDisabled()"
+  [readonly]="readonly()"
+  [message]="displayMessage()"
+  [messageId]="messageId()"
+  [hasFooter]="showCount()"
+>
+  <div class="ui-editor" [class._small]="size() === 'small'" [style.--_rows]="minRows()">
+    @if (toolbarPosition() === 'top') {
+      <ng-container [ngTemplateOutlet]="toolbarTpl" />
+    }
+
+    <div class="ui-editor-area">
+      <div
+        #contentEl
+        class="ui-editor-content"
+        [class._small]="size() === 'small'"
+        [id]="resolvedId()"
+        role="textbox"
+        aria-multiline="true"
+        [attr.contenteditable]="isEditable() ? 'true' : 'false'"
+        [attr.tabindex]="isDisabled() ? -1 : (tabindex() ?? 0)"
+        [attr.aria-label]="ariaLabel() || label() || null"
+        [attr.aria-labelledby]="ariaLabelledBy() || null"
+        [attr.aria-describedby]="describedByIds()"
+        [attr.aria-required]="required() ? 'true' : null"
+        [attr.aria-readonly]="readonly() ? 'true' : null"
+        [attr.aria-disabled]="isDisabled() ? 'true' : null"
+        [attr.aria-invalid]="effectiveLevel() === 'error' ? 'true' : null"
+        (input)="onInput()"
+        (beforeinput)="onBeforeInput($any($event))"
+        (paste)="onPaste($event)"
+        (keydown)="onContentKeydown($event)"
+        (keyup)="refreshState()"
+        (mouseup)="refreshState()"
+        (focus)="editorFocus.emit($event)"
+        (blur)="onBlur($event)"
+      ></div>
+
+      @if (showPlaceholder()) {
+        <span class="ui-editor-placeholder" aria-hidden="true">{{ placeholder() }}</span>
+      }
+    </div>
+
+    @if (toolbarPosition() === 'bottom') {
+      <ng-container [ngTemplateOutlet]="toolbarTpl" />
+    }
+  </div>
+
+  @if (showCount()) {
+    <span
+      uiFieldFooter
+      class="ui-editor-count"
+      [class._small]="size() === 'small'"
+      [class._disabled]="isDisabled()"
+      [class._over]="overLimit()"
+      [attr.id]="countId()"
+    >
+      {{ charCount() }}
+      @if (maxlength(); as max) {
+        &nbsp;/&nbsp;{{ max }}
+      }
+    </span>
+  }
+</ui-field>
+
+<ng-template #toolbarTpl>
+  @if (hasToolbar()) {
+    <!-- One tab stop for the whole toolbar: arrows move between the tools. -->
+    <div
+      class="ui-editor-toolbar"
+      [class._bottom]="toolbarPosition() === 'bottom'"
+      role="toolbar"
+      aria-label="Mise en forme"
+      aria-orientation="horizontal"
+      (mousedown)="onToolbarMousedown($event)"
+      (keydown)="onToolbarKeydown($event)"
+    >
+      @for (entry of toolbar(); track entry.index) {
+        @if (entry.isSeparator) {
+          <span class="ui-editor-toolbar-separator" aria-hidden="true"></span>
+        } @else {
+          <ui-button
+            class="ui-editor-tool"
+            variant="ghost"
+            level="low"
+            size="small"
+            iconOnly
+            [icon]="entry.meta!.icon"
+            [ariaLabel]="entry.meta!.label"
+            [disabled]="!isEditable()"
+            [tabindex]="entry.index === tabStop() ? 0 : -1"
+            [buttonProps]="toolProps(entry.tool)"
+            (buttonClick)="runTool(entry.tool, entry.index)"
+          />
+        }
+      }
+    </div>
+  }
+</ng-template>

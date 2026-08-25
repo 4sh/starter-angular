@@ -1,0 +1,177 @@
+@use 'utils';
+
+// =====================================================================
+// ui-editor : projected parts only. The box/label/helper/states live in
+// `ui-field`; this file owns the toolbar, the editing area and the markup
+// the editor produces inside it.
+//
+// The rich content is created by the editing commands, not by the template,
+// so it carries no scoping attribute: those rules go through `::ng-deep`,
+// contained under `.ui-editor-content` (same reason as `ui-card`/`ui-image`).
+// =====================================================================
+
+// --- Frame ------------------------------------------------------------
+$radius: var(--ui-editor-radius, inherit); /// Rayon des coins de l'éditeur, aligné par défaut sur la boîte de champ.
+
+// --- Toolbar ----------------------------------------------------------
+$toolbar-gap: var(--ui-editor-toolbar-gap, var(--units-2xs));                             /// Espace entre deux outils.
+$toolbar-padding-x: var(--ui-editor-toolbar-padding-x, var(--units-xs));                  /// Inset horizontal de la barre d'outils.
+$toolbar-padding-y: var(--ui-editor-toolbar-padding-y, var(--units-2xs));                 /// Inset vertical de la barre d'outils.
+// `form.low.surface` is transparent in both modes — it cannot set the toolbar
+// apart from the field it sits in, which is the whole point of the bar.
+$toolbar-surface: var(--ui-editor-toolbar-surface, var(--global-background-muted));        /// Fond de la barre d'outils.
+$toolbar-stroke: var(--ui-editor-toolbar-stroke, var(--form-low-stroke-default));         /// Couleur du trait séparant la barre d'outils de la zone de saisie.
+$toolbar-stroke-width: var(--ui-editor-toolbar-stroke-width, #{utils.$control-stroke-width}); /// Épaisseur de ce trait.
+
+$separator-width: var(--ui-editor-separator-width, var(--stroke-sm));                      /// Épaisseur d'un séparateur d'outils.
+$separator-height: var(--ui-editor-separator-height, var(--size-typography-text-default)); /// Hauteur d'un séparateur d'outils.
+$separator-color: var(--ui-editor-separator-color, var(--form-low-stroke-default));        /// Couleur d'un séparateur d'outils.
+
+// --- Editing area -----------------------------------------------------
+$padding-x: var(--ui-editor-padding-x, #{utils.$form-field-padding-x});      /// Inset horizontal de la zone de saisie.
+$padding-y: var(--ui-editor-padding-y, #{utils.$form-textarea-padding-y});   /// Inset vertical de la zone de saisie.
+$padding-y-small: var(--ui-editor-padding-y-small, #{utils.$form-textarea-padding-y-small}); /// Inset vertical de la zone de saisie, variante `small`.
+$line-height: var(--ui-editor-line-height, 1.5);                             /// Interlignage du texte saisi.
+$font-size: var(--ui-editor-font-size, var(--size-typography-text-default));  /// Taille de police du texte saisi.
+$font-size-small: var(--ui-editor-font-size-small, var(--size-typography-text-md)); /// Taille de police du texte saisi, variante `small`.
+
+// `--_rows` is set inline from the `minRows` input; the hook wins over it so a
+// theme can pin an absolute height regardless of the requested line count.
+$min-height: var(--ui-editor-min-height, calc(var(--_rows, 4) * #{$line-height} * 1em)); /// Hauteur minimale de la zone de saisie (par défaut `minRows` lignes).
+$max-height: var(--ui-editor-max-height, none);                                          /// Hauteur au-delà de laquelle la zone défile plutôt que de grandir.
+
+$placeholder-color: var(--ui-editor-placeholder-color, var(--form-low-content-default)); /// Couleur du texte indicatif.
+
+// --- Rich content -----------------------------------------------------
+$block-gap: var(--ui-editor-block-gap, var(--units-sm));                          /// Espace entre deux paragraphes ou blocs.
+$list-inset: var(--ui-editor-list-padding-inline-start, var(--units-xl));         /// Retrait des puces et numéros de liste.
+$list-item-gap: var(--ui-editor-list-item-gap, var(--units-2xs));                 /// Espace entre deux éléments de liste.
+$bold-weight: var(--ui-editor-bold-weight, var(--weight-bold));                   /// Graisse appliquée par l'outil « gras ».
+$link-color: var(--ui-editor-link-color, var(--global-text-brand));               /// Couleur d'un lien inséré.
+$link-decoration: var(--ui-editor-link-text-decoration, underline);               /// Décoration d'un lien inséré.
+
+// --- Counter ----------------------------------------------------------
+$count-font-size: var(--ui-editor-count-font-size, var(--size-typography-text-md));             /// Taille de police du compteur de caractères.
+$count-font-size-small: var(--ui-editor-count-font-size-small, var(--size-typography-text-sm)); /// Taille de police du compteur de caractères, variante `small`.
+
+.ui-editor {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+  // Keeps the toolbar's own surface inside the field's rounded corners.
+  border-radius: $radius;
+  overflow: hidden;
+
+  // --- Toolbar --------------------------------------------------------
+  &-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: $toolbar-gap;
+    flex-shrink: 0;
+    padding: $toolbar-padding-y $toolbar-padding-x;
+    background-color: $toolbar-surface;
+    border-block-end: $toolbar-stroke-width solid $toolbar-stroke;
+
+    &._bottom {
+      border-block-end: none;
+      border-block-start: $toolbar-stroke-width solid $toolbar-stroke;
+    }
+
+    &-separator {
+      flex-shrink: 0;
+      inline-size: $separator-width;
+      block-size: $separator-height;
+      background-color: $separator-color;
+    }
+  }
+
+  // --- Editing area ---------------------------------------------------
+  &-area {
+    position: relative;
+    display: flex;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  &-content {
+    @include utils.field-native-input(false);
+    box-sizing: border-box;
+    width: 100%;
+    min-height: $min-height;
+    max-height: $max-height;
+    padding: $padding-y $padding-x;
+    overflow-y: auto;
+    line-height: $line-height;
+    font-size: $font-size;
+    // The caret must stay inside the box even on a long unbroken paste.
+    overflow-wrap: break-word;
+
+    &._small {
+      padding-block: $padding-y-small;
+      font-size: $font-size-small;
+    }
+
+    // The field box already draws the focus ring around the whole editor.
+    &:focus,
+    &:focus-visible { outline: none; }
+
+    &[contenteditable='false'] { cursor: default; }
+  }
+
+  &-placeholder {
+    position: absolute;
+    inset-block-start: $padding-y;
+    inset-inline-start: $padding-x;
+    line-height: $line-height;
+    font-family: var(--fontfamily-base);
+    font-size: $font-size;
+    color: $placeholder-color;
+    pointer-events: none;
+    user-select: none;
+  }
+  &._small &-placeholder {
+    inset-block-start: $padding-y-small;
+    font-size: $font-size-small;
+  }
+
+  // --- Content produced by the editing commands -----------------------
+  // Generated outside the template: unreachable without ::ng-deep.
+  &-content ::ng-deep {
+    p { margin-block: 0 $block-gap; }
+    p:last-child { margin-block-end: 0; }
+
+    ul,
+    ol {
+      margin-block: 0 $block-gap;
+      padding-inline-start: $list-inset;
+    }
+    ul:last-child,
+    ol:last-child { margin-block-end: 0; }
+
+    li + li { margin-block-start: $list-item-gap; }
+
+    b,
+    strong { font-weight: $bold-weight; }
+
+    a {
+      color: $link-color;
+      text-decoration: $link-decoration;
+    }
+  }
+}
+
+// --- Character counter (projected into the field footer) --------------
+.ui-editor-count {
+  margin-left: auto;
+  flex-shrink: 0;
+  font-family: var(--fontfamily-base);
+  font-size: $count-font-size;
+  color: var(--form-low-content-default);
+  user-select: none;
+
+  &._small { font-size: $count-font-size-small; }
+  &._over { color: var(--form-error-content-default); }
+  &._disabled { color: var(--form-high-content-disabled); }
+}
