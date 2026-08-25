@@ -92,7 +92,6 @@
                command restores the caret before it runs. -->
           <select
             class="ui-editor-select"
-            [class._wide]="select !== 'fontSize'"
             [attr.aria-label]="selectLabel(select)"
             [disabled]="!isEditable()"
             [value]="selectValue(select)"
@@ -100,28 +99,31 @@
             (mousedown)="$event.stopPropagation()"
             (change)="onSelectChange(select, $event, entry.index)"
           >
-            <!-- Shown when the caret sits in something the list does not offer
-                 (a code block, a list item): claiming "Normal" would be wrong. -->
-            <option value="" disabled>{{ selectPlaceholder(select) }}</option>
+            <!-- Blank entry, only reachable for the block level: when the caret
+                 sits in a code block or a list item there is no honest level to
+                 show, and claiming "Normal" would be wrong. -->
+            @if (select === 'blockFormat') {
+              <option value="" disabled></option>
+            }
 
             @switch (select) {
               @case ('blockFormat') {
                 @for (block of blocks; track block.key) {
-                  <option [value]="block.key" [selected]="currentBlock() === block.key">
+                  <option [value]="block.key" [selected]="selectValue(select) === block.key">
                     {{ block.label }}
                   </option>
                 }
               }
               @case ('fontFamily') {
                 @for (font of fonts(); track font.key) {
-                  <option [value]="font.key" [selected]="currentFont() === font.key">
+                  <option [value]="font.key" [selected]="selectValue(select) === font.key">
                     {{ font.label }}
                   </option>
                 }
               }
               @case ('fontSize') {
                 @for (size of sizes; track size.key) {
-                  <option [value]="size.key" [selected]="currentSize() === size.key">
+                  <option [value]="size.key" [selected]="selectValue(select) === size.key">
                     {{ size.label }}
                   </option>
                 }

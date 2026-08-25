@@ -276,9 +276,34 @@ function convertMarkers(root: ParentNode, selector: string, className: string): 
   }
 }
 
-/** Type family active at the caret, or `null` when the text uses the default. */
+/**
+ * Type family in force at the caret.
+ *
+ * Falls back to the family the text is actually rendered with when no class was
+ * applied: a heading carries `--fontfamily-title` from its own styling, and
+ * reporting the base family there would name a font the reader does not see.
+ * `null` only when the computed face matches none of the system families.
+ */
 export function readFontFamily(node: Node | null): EditorFont | null {
-  return findClassKey(node, EDITOR_FONTS);
+  const tagged = findClassKey(node, EDITOR_FONTS);
+  if (tagged) return tagged;
+
+  const el: HTMLElement | null =
+    node?.nodeType === Node.ELEMENT_NODE ? (node as HTMLElement) : (node?.parentElement ?? null);
+  if (!el || typeof getComputedStyle !== 'function') return null;
+
+  const rendered = firstFace(getComputedStyle(el).fontFamily);
+  return (
+    EDITOR_FONTS.find((f) => firstFace(resolveFontLabel(f.cssVar, '')) === rendered)?.key ?? null
+  );
+}
+
+/** @internal Head of a font stack, unquoted and lowercased for comparison. */
+function firstFace(stack: string): string {
+  return (stack.split(',')[0] ?? '')
+    .trim()
+    .replace(/^["']|["']$/g, '')
+    .toLowerCase();
 }
 
 // --- Font size ----------------------------------------------------------

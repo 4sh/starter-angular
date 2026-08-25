@@ -27,7 +27,7 @@ $select-padding-x: var(--ui-editor-select-padding-x, var(--units-xs));          
 $select-font-size: var(--ui-editor-select-font-size, var(--size-typography-text-md));      /// Taille de police des listes déroulantes.
 $select-color: var(--ui-editor-select-color, var(--form-high-content-default));            /// Couleur des listes déroulantes.
 $select-radius: var(--ui-editor-select-radius, var(--radius-2xs));                         /// Rayon des coins des listes déroulantes.
-$select-max-width: var(--ui-editor-select-max-width, 12ch);                                /// Largeur maximale d'une liste déroulante large (niveau, police).
+$select-width: var(--ui-editor-select-width, utils.rem-calc(132));                         /// Largeur d'une liste déroulante de la barre, identique pour toutes.
 
 $separator-width: var(--ui-editor-separator-width, var(--stroke-sm));                      /// Épaisseur d'un séparateur d'outils.
 $separator-height: var(--ui-editor-separator-height, var(--size-typography-text-default)); /// Hauteur d'un séparateur d'outils.
@@ -114,6 +114,10 @@ $count-font-size-small: var(--ui-editor-count-font-size-small, var(--size-typogr
   // --- Dropdowns (block level, family, size) --------------------------
   &-select {
     flex-shrink: 0;
+    // Fixed, and the same for every dropdown: sized on the content it has to
+    // fit, so the toolbar keeps its layout when a longer value is picked
+    // instead of shifting every button that follows.
+    inline-size: $select-width;
     padding-inline: $select-padding-x;
     border: none;
     border-radius: $select-radius;
@@ -122,9 +126,8 @@ $count-font-size-small: var(--ui-editor-count-font-size-small, var(--size-typogr
     font-size: $select-font-size;
     color: $select-color;
     cursor: pointer;
+    text-overflow: ellipsis;
     @include utils.control-transition(background-color);
-
-    &._wide { max-inline-size: $select-max-width; }
 
     &:hover:not(:disabled) { background-color: var(--form-low-surface-hover); }
     &:focus-visible { outline: $separator-width solid var(--global-border-focus); }

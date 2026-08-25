@@ -69,8 +69,17 @@ proposer côte à côte revient à inviter des titres qui n'en sont pas, et donc
 structure. Il reste disponible pour un projet qui l'ajoute explicitement à `tools`, par exemple
 pour mettre en avant une portion de texte sans en faire un titre.
 
-Quand le curseur est dans un bloc que la liste ne propose pas (bloc de code, élément de liste),
-`blockFormat` n'affiche aucune valeur plutôt que d'annoncer « Normal » à tort.
+Chaque liste affiche **la valeur en vigueur**, jamais son propre nom : au repos on lit « Normal »
+et « Inter », c'est-à-dire ce que le texte utilise réellement. La police est lue sur le rendu
+effectif, pas devinée — dans un titre la liste affiche « DM Sans », puisque c'est la fonte que le
+titre porte. Le nom de chaque liste reste disponible pour les lecteurs d'écran via `aria-label`.
+
+Seule exception, `blockFormat` n'affiche **aucune** valeur quand le curseur est dans un bloc qu'il
+ne propose pas (bloc de code, élément de liste) : il n'y a là rien d'honnête à afficher, et
+annoncer « Normal » inviterait un clic qui reformaterait le bloc.
+
+Les listes ont toutes la **même largeur, fixe** : une largeur ajustée au contenu ferait sauter la
+barre entière à chaque changement de valeur.
 
 Les choix sont **fermés aux tokens** : `--fontfamily-base` / `--fontfamily-title` /
 `--fontfamily-monospace` pour la famille, l'échelle `--size-typography-text-*` pour la taille. Une

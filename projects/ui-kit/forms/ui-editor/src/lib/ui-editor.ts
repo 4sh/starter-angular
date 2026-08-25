@@ -398,11 +398,21 @@ export class UiEditor extends BaseFormField<string> {
     this.onInput();
   }
 
-  /** @ignore Current value of a dropdown, so it reflects the caret. */
+  /**
+   * @ignore Current value of a dropdown, so it reflects the caret.
+   *
+   * Family and size fall back to the value actually in force: text carrying no
+   * class really is rendered with `--fontfamily-base` at the default size, so
+   * naming them states a fact rather than a placeholder.
+   *
+   * The block level has no such fallback. When the caret sits in something the
+   * list does not offer — a code block, a list item — there is no honest value to
+   * show, and claiming "Normal" would invite a click that reformats the block.
+   */
   protected selectValue(tool: EditorSelectTool): string {
     if (tool === 'blockFormat') return this.currentBlock() ?? '';
-    if (tool === 'fontFamily') return this.currentFont() ?? '';
-    return this.currentSize() ?? '';
+    if (tool === 'fontFamily') return this.currentFont() ?? 'base';
+    return this.currentSize() ?? 'default';
   }
 
   /** @ignore Accessible name of a dropdown — spelled out, it is never truncated. */
@@ -413,16 +423,13 @@ export class UiEditor extends BaseFormField<string> {
   }
 
   /**
-   * @ignore Text shown while the dropdown has no value to display.
+   * @ignore The dropdown shows no value at all.
    *
-   * Shorter than the accessible name on purpose: the control is narrow, and the
-   * spelled-out name would be cut off mid-word in the closed state.
+   * Only reachable for the block level (see {@link selectValue}). Left blank
+   * rather than labelled with the control's own name: the closed state is where
+   * the current formatting is read, not where the control introduces itself.
    */
-  protected selectPlaceholder(tool: EditorSelectTool): string {
-    if (tool === 'blockFormat') return 'Niveau';
-    if (tool === 'fontFamily') return 'Police';
-    return 'Taille';
-  }
+  protected readonly hasNoValue = computed(() => this.currentBlock() === null);
 
   /**
    * @ignore v1 link flow: the native prompt.
