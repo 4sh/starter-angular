@@ -1,11 +1,17 @@
+<!-- Horizontal: a real tab in the stepper's own tablist (role="tab" + aria-selected).
+     Vertical: the panel sits right under its header inside the same ui-step-item, so the
+     stepper cannot be a tablist there without a tab containing its own tabpanel — invalid ARIA.
+     Vertical drops the tab semantics for the accordion pattern instead (aria-expanded, no role),
+     matching how ui-step-panel switches its own role the same way (see below). -->
 <button
   #stepBtn
   type="button"
-  role="tab"
+  [attr.role]="stepper.orientation() === 'vertical' ? null : 'tab'"
   class="ui-step-header"
   [id]="stepper.stepId(value())"
   [attr.aria-controls]="stepper.panelId(value())"
-  [attr.aria-selected]="state() === 'active'"
+  [attr.aria-selected]="stepper.orientation() === 'vertical' ? null : state() === 'active'"
+  [attr.aria-expanded]="stepper.orientation() === 'vertical' ? state() === 'active' : null"
   [attr.aria-current]="state() === 'active' ? 'step' : null"
   [attr.aria-label]="ariaLabel() || null"
   [disabled]="isDisabled()"
