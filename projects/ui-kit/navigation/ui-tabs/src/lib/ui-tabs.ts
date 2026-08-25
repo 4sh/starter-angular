@@ -502,11 +502,16 @@ export class UiTabs {
     forwardRef(() => UiTab),
     { descendants: true },
   );
-  /** @ignore All panels projected under this container — some consumers use `ui-tabs` as a
-   *  navigation menu with no panel at all (a router outlet renders the content instead, see
-   *  the `TabMenu` story). `aria-controls` must not point at an id that resolves to nothing. */
-  private readonly panels = contentChildren(
-    forwardRef(() => UiTabPanel),
+  /** @ignore Whether a `ui-tab-panels` wrapper is projected at all — some consumers use
+   *  `ui-tabs` as a navigation menu with no panel (a router outlet renders the content
+   *  instead, see the `TabMenu` story). `aria-controls` must not point at an id that resolves
+   *  to nothing. A single presence check on the wrapper (rather than a second
+   *  `contentChildren` query matched per tab value) — two sibling content-children queries on
+   *  this component broke `<ng-content>` projection for every `UiTab` but the first, a real
+   *  Angular/Ivy interaction, not something worth chasing further; this is the query-count-1
+   *  workaround. */
+  private readonly hasPanels = contentChild(
+    forwardRef(() => UiTabPanels),
     { descendants: true },
   );
 
@@ -514,10 +519,11 @@ export class UiTabs {
   tabId(value: UiTabValue): string {
     return `${this.id}-tab-${value}`;
   }
-  /** @ignore id of the panel for a given value — `null` when that panel is not actually
-   *  rendered (see `panels` above), so the tab omits `aria-controls` rather than dangle it. */
+  /** @ignore id of the panel for a given value — `null` when no `ui-tab-panels` wrapper is
+   *  projected at all (see `hasPanels` above), so the tab omits `aria-controls` rather than
+   *  dangle it. */
   panelId(value: UiTabValue): string | null {
-    return this.panels().some((p) => p.value() === value) ? `${this.id}-panel-${value}` : null;
+    return this.hasPanels() ? `${this.id}-panel-${value}` : null;
   }
 
   /** @ignore Whether the given value is the active tab. */
