@@ -1050,7 +1050,7 @@
       "low": {
         "content": {
           "default": {
-            "$value": "{primitives.slate.500}",
+            "$value": "{primitives.slate.600}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -1063,7 +1063,7 @@
             }
           },
           "hover": {
-            "$value": "{primitives.slate.600}",
+            "$value": "{primitives.slate.700}",
             "$description": "semantics",
             "$type": "color",
             "$extensions": {
@@ -17226,7 +17226,7 @@
             }
           },
           "hover": {
-            "$value": "{primitives.primary.500}",
+            "$value": "{primitives.primary.600}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
@@ -17265,7 +17265,7 @@
             }
           },
           "active": {
-            "$value": "{primitives.primary.500}",
+            "$value": "{primitives.primary.600}",
             "$type": "color",
             "$extensions": {
               "com.figma": {
