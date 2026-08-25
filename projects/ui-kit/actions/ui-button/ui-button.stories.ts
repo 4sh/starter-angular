@@ -235,7 +235,13 @@ export const OnColorOmitted: Story = {
       </div>
     `,
   }),
-  parameters: { layout: 'padded' },
+  // The failing contrast IS the subject of this story — it shows what `onColor`
+  // exists to fix. Waived rather than corrected (FSHSP-106): correcting it would
+  // delete the demonstration.
+  parameters: {
+    layout: 'padded',
+    a11y: { config: { rules: [{ id: 'color-contrast', enabled: false }] } },
+  },
 };
 
 // Tailles

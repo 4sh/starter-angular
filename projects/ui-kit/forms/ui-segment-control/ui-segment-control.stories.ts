@@ -207,7 +207,7 @@ export const Template: Story = {
         <ng-template #item let-plan>
           <span style="display:flex; flex-direction:column; align-items:center; line-height:1.1;">
             <strong>{{ plan.label }}</strong>
-            <small style="opacity:.75;">{{ plan.hint }}</small>
+            <small>{{ plan.hint }}</small>
           </span>
         </ng-template>
         <code>model = {{ model }}</code>
