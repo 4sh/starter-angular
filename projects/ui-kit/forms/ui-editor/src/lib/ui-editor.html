@@ -75,6 +75,7 @@
   @if (hasToolbar()) {
     <!-- One tab stop for the whole toolbar: arrows move between the tools. -->
     <div
+      #toolbarEl
       class="ui-editor-toolbar"
       [class._bottom]="toolbarPosition() === 'bottom'"
       role="toolbar"
@@ -86,6 +87,25 @@
       @for (entry of toolbar(); track entry.index) {
         @if (entry.isSeparator) {
           <span class="ui-editor-toolbar-separator" aria-hidden="true"></span>
+        } @else if (entry.isFont) {
+          <!-- A picker, not a toggle: the dropdown takes the focus, so the
+               command restores the caret before it runs. -->
+          <select
+            class="ui-editor-font"
+            aria-label="Police"
+            [disabled]="!isEditable()"
+            [value]="currentFont() ?? ''"
+            [attr.tabindex]="entry.index === tabStop() ? 0 : -1"
+            (mousedown)="$event.stopPropagation()"
+            (change)="onFontChange($event, entry.index)"
+          >
+            <option value="" disabled>Police</option>
+            @for (font of fonts; track font.key) {
+              <option [value]="font.key" [selected]="currentFont() === font.key">
+                {{ font.label }}
+              </option>
+            }
+          </select>
         } @else {
           <ui-button
             class="ui-editor-tool"

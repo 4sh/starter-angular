@@ -23,6 +23,11 @@ $toolbar-surface: var(--ui-editor-toolbar-surface, var(--global-background-muted
 $toolbar-stroke: var(--ui-editor-toolbar-stroke, var(--form-low-stroke-default));         /// Couleur du trait séparant la barre d'outils de la zone de saisie.
 $toolbar-stroke-width: var(--ui-editor-toolbar-stroke-width, #{utils.$control-stroke-width}); /// Épaisseur de ce trait.
 
+$font-select-padding-x: var(--ui-editor-font-padding-x, var(--units-xs));               /// Inset horizontal du sélecteur de police.
+$font-select-font-size: var(--ui-editor-font-font-size, var(--size-typography-text-md)); /// Taille de police du sélecteur de police.
+$font-select-color: var(--ui-editor-font-color, var(--form-high-content-default));       /// Couleur du sélecteur de police.
+$font-select-radius: var(--ui-editor-font-radius, var(--radius-2xs));                    /// Rayon des coins du sélecteur de police.
+
 $separator-width: var(--ui-editor-separator-width, var(--stroke-sm));                      /// Épaisseur d'un séparateur d'outils.
 $separator-height: var(--ui-editor-separator-height, var(--size-typography-text-default)); /// Hauteur d'un séparateur d'outils.
 $separator-color: var(--ui-editor-separator-color, var(--form-low-stroke-default));        /// Couleur d'un séparateur d'outils.
@@ -49,6 +54,13 @@ $list-item-gap: var(--ui-editor-list-item-gap, var(--units-2xs));               
 $bold-weight: var(--ui-editor-bold-weight, var(--weight-bold));                   /// Graisse appliquée par l'outil « gras ».
 $link-color: var(--ui-editor-link-color, var(--global-text-brand));               /// Couleur d'un lien inséré.
 $link-decoration: var(--ui-editor-link-text-decoration, underline);               /// Décoration d'un lien inséré.
+
+$code-padding-x: var(--ui-editor-code-padding-x, var(--units-md));                    /// Inset horizontal d'un bloc de code.
+$code-padding-y: var(--ui-editor-code-padding-y, var(--units-sm));                    /// Inset vertical d'un bloc de code.
+$code-radius: var(--ui-editor-code-radius, var(--radius-xs));                         /// Rayon des coins d'un bloc de code.
+$code-surface: var(--ui-editor-code-surface, var(--global-background-muted));         /// Fond d'un bloc de code.
+$code-color: var(--ui-editor-code-color, var(--global-text-default));                 /// Couleur du texte d'un bloc de code.
+$code-font-size: var(--ui-editor-code-font-size, var(--size-typography-text-md));     /// Taille de police d'un bloc de code.
 
 // --- Counter ----------------------------------------------------------
 $count-font-size: var(--ui-editor-count-font-size, var(--size-typography-text-md));             /// Taille de police du compteur de caractères.
@@ -85,6 +97,25 @@ $count-font-size-small: var(--ui-editor-count-font-size-small, var(--size-typogr
       block-size: $separator-height;
       background-color: $separator-color;
     }
+  }
+
+  // --- Font picker ----------------------------------------------------
+  &-font {
+    flex-shrink: 0;
+    max-inline-size: 10ch;
+    padding-inline: $font-select-padding-x;
+    border: none;
+    border-radius: $font-select-radius;
+    background: transparent;
+    font-family: var(--fontfamily-base);
+    font-size: $font-select-font-size;
+    color: $font-select-color;
+    cursor: pointer;
+    @include utils.control-transition(background-color);
+
+    &:hover:not(:disabled) { background-color: var(--form-low-surface-hover); }
+    &:focus-visible { outline: $separator-width solid var(--global-border-focus); }
+    &:disabled { cursor: not-allowed; color: var(--form-high-content-disabled); }
   }
 
   // --- Editing area ---------------------------------------------------
@@ -159,6 +190,26 @@ $count-font-size-small: var(--ui-editor-count-font-size-small, var(--size-typogr
       color: $link-color;
       text-decoration: $link-decoration;
     }
+
+    pre {
+      margin-block: 0 $block-gap;
+      padding: $code-padding-y $code-padding-x;
+      border-radius: $code-radius;
+      background-color: $code-surface;
+      color: $code-color;
+      font-family: var(--fontfamily-monospace);
+      font-size: $code-font-size;
+      white-space: pre-wrap;
+      overflow-wrap: break-word;
+    }
+    pre:last-child { margin-block-end: 0; }
+
+    code { font-family: var(--fontfamily-monospace); }
+
+    // Type families the font picker applies, bound to the typography tokens.
+    .ui-editor-font-base { font-family: var(--fontfamily-base); }
+    .ui-editor-font-title { font-family: var(--fontfamily-title); }
+    .ui-editor-font-monospace { font-family: var(--fontfamily-monospace); }
   }
 }
 

@@ -16,7 +16,7 @@ navigateur, isolée dans `ui-editor-commands`. Le kit reste sans dépendance run
 
 La valeur est une **chaîne HTML**, assainie par `DomSanitizer` avant tout affichage, et réduite à
 une liste blanche de balises au collage (`b`, `strong`, `i`, `em`, `u`, `a`, `ul`, `ol`, `li`, `p`,
-`br`, `div`, `span`).
+`br`, `div`, `span`, `pre`, `code`).
 
 Autonome, `[(ngModel)]` ou reactive forms (`ControlValueAccessor` via `BaseFormField`). Pour une
 saisie multiligne **sans mise en forme** →
@@ -31,14 +31,35 @@ saisie multiligne **sans mise en forme** →
 ## Barre d'outils
 
 `tools` liste les outils rendus, dans l'ordre. La valeur `separator` insère un séparateur visuel.
-Outils disponibles : `bold`, `italic`, `underline`, `bulletList`, `orderedList`, `link`,
-`clearFormat`.
+Outils disponibles : `fontFamily`, `bold`, `italic`, `underline`, `bulletList`, `orderedList`,
+`link`, `codeBlock`, `clearFormat`.
 
 <Canvas of={EditorStories.MinimalToolbar} />
 <Canvas of={EditorStories.ToolbarBottom} />
 
 L'outil `link` ouvre en v1 une invite native (`window.prompt`) : valider avec une adresse pose le
 lien sur la sélection, valider à vide le retire.
+
+### Bloc de code
+
+`codeBlock` bascule le bloc sous le curseur entre `<pre>` et un paragraphe. La coloration
+syntaxique n'est **pas** fournie : elle imposerait une dépendance tierce, ce que le composant évite
+par construction.
+
+<Canvas of={EditorStories.CodeBlock} />
+
+### Police
+
+`fontFamily` rend une liste déroulante, et non un bouton : elle choisit parmi des valeurs au lieu
+d'en basculer une. Le choix est **fermé aux trois familles du système** — `--fontfamily-base`,
+`--fontfamily-title`, `--fontfamily-monospace`. Une liste libre façon traitement de texte
+écrirait une police arbitraire dans la valeur, donc hors tokens.
+
+La famille est écrite sous forme de **classe** (`ui-editor-font-*`), jamais en style en ligne : la
+valeur reste liée au token, et un projet qui rebinde `--fontfamily-title` déplace tout le contenu
+déjà saisi avec lui. Ces classes sont les seules que la liste blanche laisse passer au collage.
+
+<Canvas of={EditorStories.FontFamily} />
 
 ## Niveaux & états
 

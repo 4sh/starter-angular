@@ -11,7 +11,6 @@ import {
   SecurityContext,
   signal,
   viewChild,
-  viewChildren,
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
@@ -21,9 +20,13 @@ import { UiField } from '@4sh/ui-kit/forms/ui-field';
 import { UiButton } from '@4sh/ui-kit/actions/ui-button';
 import {
   applyCommand,
+  applyFontFamily,
   applyLink,
+  convertFontMarkers,
   DEFAULT_EDITOR_TOOLS,
+  EDITOR_FONTS,
   EDITOR_TOOL_META,
+  EditorFont,
   EditorState,
   EditorTool,
   emptyEditorState,
@@ -33,8 +36,10 @@ import {
   isEmptyHtml,
   normalizeHtml,
   readEditorState,
+  readFontFamily,
   removeLink,
   scrubInPlace,
+  toggleCodeBlock,
 } from './ui-editor-commands';
 
 /** Where the toolbar sits relative to the editing area. */
@@ -97,8 +102,8 @@ export class UiEditor extends BaseFormField<string> {
   private readonly sanitizer = inject(DomSanitizer);
   /** @ignore */
   private readonly contentEl = viewChild<ElementRef<HTMLElement>>('contentEl');
-  /** @ignore Toolbar buttons, in DOM order — the roving tabindex ring. */
-  private readonly toolButtons = viewChildren(UiButton);
+  /** @ignore The rendered toolbar — holds the roving tabindex ring, in DOM order. */
+  private readonly toolbarEl = viewChild<ElementRef<HTMLElement>>('toolbarEl');
 
   /**
    * @ignore Last HTML this component wrote out.
@@ -112,8 +117,19 @@ export class UiEditor extends BaseFormField<string> {
 
   /** @ignore Formatting active at the caret. */
   protected readonly state = signal<EditorState>(emptyEditorState());
+  /** @ignore Type family at the caret (`null` = the default family). */
+  protected readonly currentFont = signal<EditorFont | null>(null);
   /** @ignore Index of the toolbar button reachable with Tab (roving tabindex). */
   protected readonly activeTool = signal(0);
+
+  /**
+   * @ignore Last selection seen inside the editing area.
+   *
+   * The buttons cancel their own mousedown and never take the focus, but opening
+   * the font dropdown does — and a `contenteditable` loses its selection with it.
+   * The range is therefore kept here and restored before the command runs.
+   */
+  private savedRange: Range | null = null;
 
   /** @ignore Sanitised value — never inject `modelValue` into the DOM raw. */
   private readonly safeValue = computed(
@@ -142,9 +158,12 @@ export class UiEditor extends BaseFormField<string> {
       tool,
       index,
       isSeparator: tool === 'separator',
-      meta: tool === 'separator' ? null : EDITOR_TOOL_META[tool],
+      isFont: tool === 'fontFamily',
+      meta: tool === 'separator' || tool === 'fontFamily' ? null : EDITOR_TOOL_META[tool],
     })),
   );
+  /** @ignore Type families offered by the `fontFamily` dropdown. */
+  protected readonly fonts = EDITOR_FONTS;
   /** @ignore The toolbar has at least one actionable entry. */
   protected readonly hasToolbar = computed(() => this.tools().some((t) => t !== 'separator'));
   /**
@@ -261,6 +280,9 @@ export class UiEditor extends BaseFormField<string> {
 
   /** @ignore Recomputes the active formatting and notifies the consumer. */
   protected refreshState(): void {
+    this.rememberSelection();
+    this.currentFont.set(readFontFamily(document.getSelection()?.anchorNode ?? null));
+
     const next = readEditorState();
     const prev = this.state();
     if ((Object.keys(next) as (keyof EditorState)[]).every((k) => next[k] === prev[k])) return;
@@ -268,15 +290,54 @@ export class UiEditor extends BaseFormField<string> {
     this.selectionChange.emit(next);
   }
 
+  /** @ignore Keeps the caret position around for controls that steal the focus. */
+  private rememberSelection(): void {
+    const el = this.contentEl()?.nativeElement;
+    const selection = document.getSelection();
+    if (!el || !selection?.rangeCount) return;
+    const range = selection.getRangeAt(0);
+    if (el.contains(range.commonAncestorContainer)) this.savedRange = range.cloneRange();
+  }
+
+  /** @ignore Puts the remembered caret back before running a command. */
+  private restoreSelection(): void {
+    this.focus();
+    const range = this.savedRange;
+    if (!range) return;
+    const selection = document.getSelection();
+    selection?.removeAllRanges();
+    selection?.addRange(range);
+  }
+
   // --- Toolbar ----------------------------------------------------------
 
   /** @ignore Runs a tool against the selection the mousedown handler preserved. */
   protected runTool(tool: EditorTool, index: number): void {
-    if (!this.isEditable() || tool === 'separator') return;
+    if (!this.isEditable() || tool === 'separator' || tool === 'fontFamily') return;
     this.activeTool.set(index);
     this.focus();
     if (tool === 'link') this.promptForLink();
+    else if (tool === 'codeBlock') toggleCodeBlock();
     else applyCommand(tool);
+    this.onInput();
+  }
+
+  /**
+   * @ignore Applies the picked type family to the selection.
+   *
+   * The dropdown took the focus, so the caret is put back first; `fontName` then
+   * emits `<font face>` elements that are immediately rewritten into a class.
+   */
+  protected onFontChange(event: Event, index: number): void {
+    const select = event.target as HTMLSelectElement;
+    const choice = this.fonts.find((f) => f.key === select.value);
+    this.activeTool.set(index);
+    if (!this.isEditable() || !choice) return;
+
+    this.restoreSelection();
+    applyFontFamily();
+    const el = this.contentEl()?.nativeElement;
+    if (el) convertFontMarkers(el, choice.className);
     this.onInput();
   }
 
@@ -333,10 +394,17 @@ export class UiEditor extends BaseFormField<string> {
     this.focusTool(next);
   }
 
-  /** @ignore Moves the DOM focus onto the button now holding the tab stop. */
+  /**
+   * @ignore Moves the DOM focus onto the control now holding the tab stop.
+   *
+   * Queried from the live toolbar rather than from the `ui-button` children: the
+   * ring mixes buttons and the font `<select>`, and DOM order is the visual order.
+   */
   private focusTool(index: number): void {
     const position = this.toolbar().filter((e) => !e.isSeparator && e.index <= index).length - 1;
-    this.toolButtons()[position]?.focus();
+    const controls =
+      this.toolbarEl()?.nativeElement.querySelectorAll<HTMLElement>('button, select');
+    controls?.[position]?.focus();
   }
 
   /**

@@ -152,6 +152,29 @@ export const MinimalToolbar: Story = {
   args: { label: 'Note', tools: ['bold', 'italic'] },
 };
 
+/**
+ * `codeBlock` bascule le bloc sous le curseur entre `<pre>` et paragraphe. Pas de
+ * coloration syntaxique : elle imposerait une dépendance tierce.
+ */
+export const CodeBlock: Story = {
+  render: story('<p>Un exemple :</p><pre>npm run ui-kit:build</pre><p>et la suite.</p>'),
+  args: { label: 'Documentation' },
+};
+
+/**
+ * Le choix de police est **fermé aux trois familles du système**
+ * (`--fontfamily-base`, `--fontfamily-title`, `--fontfamily-monospace`). Une liste
+ * libre écrirait une police arbitraire dans la valeur, hors tokens.
+ */
+export const FontFamily: Story = {
+  render: story(
+    '<p><span class="ui-editor-font-title">Une accroche en police de titre</span></p>' +
+      '<p>Un paragraphe en police standard.</p>' +
+      '<p><span class="ui-editor-font-monospace">const x = 1;</span></p>',
+  ),
+  args: { label: 'Contenu' },
+};
+
 export const ToolbarBottom: Story = {
   render: story('<p>La barre d’outils est sous la zone de saisie.</p>'),
   args: { label: 'Message', toolbarPosition: 'bottom' },

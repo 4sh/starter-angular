@@ -10,8 +10,8 @@
         "Mode 1"
       ],
       "counts": {
-        "tokens": 610,
-        "alias": 486,
+        "tokens": 620,
+        "alias": 496,
         "literal": 124,
         "skipped": 48,
         "derivedDescriptions": 197
@@ -4504,6 +4504,141 @@
         }
       }
     },
+    "code": {
+      "color": {
+        "$value": "{semantics.global.text.default}",
+        "$type": "color",
+        "$description": "Couleur du texte d'un bloc de code.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "COLOR",
+            "scopes": [
+              "ALL_FILLS"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-editor-code-color)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-editor-code-color",
+            "component": "ui-editor",
+            "entryPoint": "@4sh/ui-kit/forms/ui-editor",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "font-size": {
+        "$value": "{responsive.size.typography.text.md}",
+        "$type": "dimension",
+        "$description": "Taille de police d'un bloc de code.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "FONT_SIZE"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-editor-code-font-size)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-editor-code-font-size",
+            "component": "ui-editor",
+            "entryPoint": "@4sh/ui-kit/forms/ui-editor",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "padding-x": {
+        "$value": "{metrics.units.md}",
+        "$type": "dimension",
+        "$description": "Inset horizontal d'un bloc de code.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-editor-code-padding-x)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-editor-code-padding-x",
+            "component": "ui-editor",
+            "entryPoint": "@4sh/ui-kit/forms/ui-editor",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "padding-y": {
+        "$value": "{metrics.units.sm}",
+        "$type": "dimension",
+        "$description": "Inset vertical d'un bloc de code.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-editor-code-padding-y)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-editor-code-padding-y",
+            "component": "ui-editor",
+            "entryPoint": "@4sh/ui-kit/forms/ui-editor",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "radius": {
+        "$value": "{metrics.radius.xs}",
+        "$type": "dimension",
+        "$description": "Rayon des coins d'un bloc de code.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "CORNER_RADIUS"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-editor-code-radius)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-editor-code-radius",
+            "component": "ui-editor",
+            "entryPoint": "@4sh/ui-kit/forms/ui-editor",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "surface": {
+        "$value": "{semantics.global.background.muted}",
+        "$type": "color",
+        "$description": "Fond d'un bloc de code.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "COLOR",
+            "scopes": [
+              "FRAME_FILL",
+              "SHAPE_FILL"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-editor-code-surface)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-editor-code-surface",
+            "component": "ui-editor",
+            "entryPoint": "@4sh/ui-kit/forms/ui-editor",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
     "count": {
       "font-size": {
         "$value": "{responsive.size.typography.text.md}",
@@ -4543,6 +4678,96 @@
           },
           "com.4sh.ui-kit": {
             "cssVar": "--ui-editor-count-font-size-small",
+            "component": "ui-editor",
+            "entryPoint": "@4sh/ui-kit/forms/ui-editor",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "font": {
+      "color": {
+        "$value": "{semantics.form.high.content.default}",
+        "$type": "color",
+        "$description": "Couleur du sélecteur de police.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "COLOR",
+            "scopes": [
+              "ALL_FILLS"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-editor-font-color)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-editor-font-color",
+            "component": "ui-editor",
+            "entryPoint": "@4sh/ui-kit/forms/ui-editor",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "font-size": {
+        "$value": "{responsive.size.typography.text.md}",
+        "$type": "dimension",
+        "$description": "Taille de police du sélecteur de police.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "FONT_SIZE"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-editor-font-font-size)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-editor-font-font-size",
+            "component": "ui-editor",
+            "entryPoint": "@4sh/ui-kit/forms/ui-editor",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "padding-x": {
+        "$value": "{metrics.units.xs}",
+        "$type": "dimension",
+        "$description": "Inset horizontal du sélecteur de police.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-editor-font-padding-x)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-editor-font-padding-x",
+            "component": "ui-editor",
+            "entryPoint": "@4sh/ui-kit/forms/ui-editor",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "radius": {
+        "$value": "{metrics.radius.2xs}",
+        "$type": "dimension",
+        "$description": "Rayon des coins du sélecteur de police.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "CORNER_RADIUS"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-editor-font-radius)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-editor-font-radius",
             "component": "ui-editor",
             "entryPoint": "@4sh/ui-kit/forms/ui-editor",
             "descriptionSource": "scss"

@@ -8,13 +8,20 @@
  * Range implementation only has to replace these functions.
  */
 
-/** A formatting action the toolbar can trigger. `separator` is purely visual. */
+/**
+ * A formatting action the toolbar can trigger.
+ *
+ * `separator` is purely visual; `fontFamily` renders a dropdown rather than a
+ * button, since it picks among values instead of toggling one.
+ */
 export type EditorTool =
   | 'bold'
   | 'italic'
   | 'underline'
   | 'bulletList'
   | 'orderedList'
+  | 'codeBlock'
+  | 'fontFamily'
   | 'link'
   | 'clearFormat'
   | 'separator';
@@ -22,14 +29,33 @@ export type EditorTool =
 /** Commands whose active/inactive state the toolbar reflects via `aria-pressed`. */
 export type EditorToggleTool = Extract<
   EditorTool,
-  'bold' | 'italic' | 'underline' | 'bulletList' | 'orderedList'
+  'bold' | 'italic' | 'underline' | 'bulletList' | 'orderedList' | 'codeBlock'
 >;
 
 /** Active formatting at the caret, recomputed after every interaction. */
 export type EditorState = Record<EditorToggleTool, boolean>;
 
+/**
+ * Type families the editor can apply.
+ *
+ * A closed list on purpose: a free font picker would write an arbitrary family
+ * into the value and step outside the `--fontfamily-*` tokens.
+ */
+export type EditorFont = 'base' | 'title' | 'monospace';
+
+/** Font key → class written into the value + French label for the dropdown. */
+export const EDITOR_FONTS: readonly { key: EditorFont; className: string; label: string }[] = [
+  { key: 'base', className: 'ui-editor-font-base', label: 'Standard' },
+  { key: 'title', className: 'ui-editor-font-title', label: 'Titre' },
+  { key: 'monospace', className: 'ui-editor-font-monospace', label: 'Monospace' },
+];
+
+const FONT_CLASSES = new Set(EDITOR_FONTS.map((f) => f.className));
+
 /** The tools enabled when the consumer does not provide a `tools` list. */
 export const DEFAULT_EDITOR_TOOLS: readonly EditorTool[] = [
+  'fontFamily',
+  'separator',
   'bold',
   'italic',
   'underline',
@@ -38,12 +64,13 @@ export const DEFAULT_EDITOR_TOOLS: readonly EditorTool[] = [
   'orderedList',
   'separator',
   'link',
+  'codeBlock',
   'clearFormat',
 ];
 
-/** Toolbar metadata per tool: icon (FontAwesome) + French accessible name. */
+/** Toolbar metadata per button tool: icon (FontAwesome) + French accessible name. */
 export const EDITOR_TOOL_META: Record<
-  Exclude<EditorTool, 'separator'>,
+  Exclude<EditorTool, 'separator' | 'fontFamily'>,
   {
     icon: string;
     label: string;
@@ -54,12 +81,16 @@ export const EDITOR_TOOL_META: Record<
   underline: { icon: 'underline', label: 'Souligné' },
   bulletList: { icon: 'list-ul', label: 'Liste à puces' },
   orderedList: { icon: 'list-ol', label: 'Liste numérotée' },
+  codeBlock: { icon: 'code', label: 'Bloc de code' },
   link: { icon: 'link', label: 'Lien' },
   clearFormat: { icon: 'text-slash', label: 'Effacer le formatage' },
 };
 
 /** Tool → legacy command name. */
-const NATIVE_COMMAND: Record<Exclude<EditorTool, 'separator' | 'link'>, string> = {
+const NATIVE_COMMAND: Record<
+  Exclude<EditorTool, 'separator' | 'link' | 'fontFamily' | 'codeBlock'>,
+  string
+> = {
   bold: 'bold',
   italic: 'italic',
   underline: 'underline',
@@ -68,7 +99,7 @@ const NATIVE_COMMAND: Record<Exclude<EditorTool, 'separator' | 'link'>, string> 
   clearFormat: 'removeFormat',
 };
 
-const TOGGLE_TOOLS: readonly EditorToggleTool[] = [
+const TOGGLE_TOOLS: readonly Exclude<EditorToggleTool, 'codeBlock'>[] = [
   'bold',
   'italic',
   'underline',
@@ -78,12 +109,76 @@ const TOGGLE_TOOLS: readonly EditorToggleTool[] = [
 
 /** Every state off — the value used before the first render and on SSR. */
 export function emptyEditorState(): EditorState {
-  return { bold: false, italic: false, underline: false, bulletList: false, orderedList: false };
+  return {
+    bold: false,
+    italic: false,
+    underline: false,
+    bulletList: false,
+    orderedList: false,
+    codeBlock: false,
+  };
 }
 
 /** Applies a formatting command to the current selection. */
-export function applyCommand(tool: Exclude<EditorTool, 'separator' | 'link'>): void {
+export function applyCommand(
+  tool: Exclude<EditorTool, 'separator' | 'link' | 'fontFamily' | 'codeBlock'>,
+): void {
   document.execCommand(NATIVE_COMMAND[tool], false);
+}
+
+// --- Code block ---------------------------------------------------------
+
+/** Toggles the block under the caret between `<pre>` and a plain paragraph. */
+export function toggleCodeBlock(): void {
+  document.execCommand('formatBlock', false, isInCodeBlock() ? 'p' : 'pre');
+}
+
+/** The caret sits in a code block. */
+export function isInCodeBlock(): boolean {
+  try {
+    return (document.queryCommandValue('formatBlock') || '').toLowerCase() === 'pre';
+  } catch {
+    return false;
+  }
+}
+
+// --- Font family --------------------------------------------------------
+
+/**
+ * Marker handed to `fontName`, immediately rewritten into a class.
+ *
+ * `fontName` is the only command that can apply a family to an arbitrary
+ * selection, but it emits `<font face="…">` — an obsolete tag carrying a raw
+ * family name. We let it run, then convert its output so the value only ever
+ * holds a class bound to a `--fontfamily-*` token.
+ */
+const FONT_MARKER = '__ui-editor-font__';
+
+/** Applies a type family to the selection (see {@link convertFontMarkers}). */
+export function applyFontFamily(): void {
+  document.execCommand('fontName', false, FONT_MARKER);
+}
+
+/** Rewrites the `<font>` elements `fontName` just produced into `<span class>`. */
+export function convertFontMarkers(root: ParentNode, className: string): void {
+  for (const el of Array.from(root.querySelectorAll(`font[face="${FONT_MARKER}"]`))) {
+    const span = document.createElement('span');
+    span.className = className;
+    span.append(...Array.from(el.childNodes));
+    el.replaceWith(span);
+  }
+}
+
+/** Type family active at the caret, or `null` when the text uses the default. */
+export function readFontFamily(node: Node | null): EditorFont | null {
+  let el: HTMLElement | null =
+    node?.nodeType === Node.ELEMENT_NODE ? (node as HTMLElement) : (node?.parentElement ?? null);
+  while (el) {
+    const match = EDITOR_FONTS.find((f) => el!.classList?.contains(f.className));
+    if (match) return match.key;
+    el = el.parentElement;
+  }
+  return null;
 }
 
 /** Wraps the current selection in a link (`removeFormat` alone cannot unlink). */
@@ -107,6 +202,7 @@ export function readEditorState(): EditorState {
       state[tool] = false;
     }
   }
+  state.codeBlock = isInCodeBlock();
   return state;
 }
 
@@ -137,6 +233,8 @@ const ALLOWED_TAGS = new Set([
   'BR',
   'DIV',
   'SPAN',
+  'PRE',
+  'CODE',
 ]);
 
 /**
@@ -187,6 +285,14 @@ function scrubNode(root: ParentNode): void {
       continue;
     }
     for (const attr of Array.from(el.attributes)) {
+      if (attr.name === 'class') {
+        // Only the editor's own font classes survive — anything else pasted in
+        // would style the value against a foreign stylesheet.
+        const kept = attr.value.split(/\s+/).filter((c) => FONT_CLASSES.has(c));
+        if (kept.length) el.setAttribute('class', kept.join(' '));
+        else el.removeAttribute('class');
+        continue;
+      }
       const keep = el.tagName === 'A' && attr.name === 'href' && isSafeHref(attr.value);
       if (!keep) el.removeAttribute(attr.name);
     }
