@@ -363,19 +363,18 @@ export const Default: Story = {
   render: (args) => ({
     props: args,
     template: `
-      <div style="width:360px;">
-        <ui-toast
-          [title]="title"
-          [text]="text"
-          [level]="level"
-          [subLevel]="subLevel"
-          [icon]="icon"
-          [closable]="closable"
-          [expanded]="expanded"
-        />
-      </div>
+      <ui-toast
+        [title]="title"
+        [text]="text"
+        [level]="level"
+        [subLevel]="subLevel"
+        [icon]="icon"
+        [closable]="closable"
+        [expanded]="expanded"
+      />
     `,
   }),
+  parameters: { layout: 'centered' },
 };
 
 /** Usage nominal : un bouton pousse un toast via le service. */
