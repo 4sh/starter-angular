@@ -23,10 +23,11 @@ $toolbar-surface: var(--ui-editor-toolbar-surface, var(--global-background-muted
 $toolbar-stroke: var(--ui-editor-toolbar-stroke, var(--form-low-stroke-default));         /// Couleur du trait séparant la barre d'outils de la zone de saisie.
 $toolbar-stroke-width: var(--ui-editor-toolbar-stroke-width, #{utils.$control-stroke-width}); /// Épaisseur de ce trait.
 
-$font-select-padding-x: var(--ui-editor-font-padding-x, var(--units-xs));               /// Inset horizontal du sélecteur de police.
-$font-select-font-size: var(--ui-editor-font-font-size, var(--size-typography-text-md)); /// Taille de police du sélecteur de police.
-$font-select-color: var(--ui-editor-font-color, var(--form-high-content-default));       /// Couleur du sélecteur de police.
-$font-select-radius: var(--ui-editor-font-radius, var(--radius-2xs));                    /// Rayon des coins du sélecteur de police.
+$select-padding-x: var(--ui-editor-select-padding-x, var(--units-xs));                     /// Inset horizontal des listes déroulantes de la barre.
+$select-font-size: var(--ui-editor-select-font-size, var(--size-typography-text-md));      /// Taille de police des listes déroulantes.
+$select-color: var(--ui-editor-select-color, var(--form-high-content-default));            /// Couleur des listes déroulantes.
+$select-radius: var(--ui-editor-select-radius, var(--radius-2xs));                         /// Rayon des coins des listes déroulantes.
+$select-max-width: var(--ui-editor-select-max-width, 12ch);                                /// Largeur maximale d'une liste déroulante large (niveau, police).
 
 $separator-width: var(--ui-editor-separator-width, var(--stroke-sm));                      /// Épaisseur d'un séparateur d'outils.
 $separator-height: var(--ui-editor-separator-height, var(--size-typography-text-default)); /// Hauteur d'un séparateur d'outils.
@@ -61,6 +62,17 @@ $code-radius: var(--ui-editor-code-radius, var(--radius-xs));                   
 $code-surface: var(--ui-editor-code-surface, var(--global-background-muted));         /// Fond d'un bloc de code.
 $code-color: var(--ui-editor-code-color, var(--global-text-default));                 /// Couleur du texte d'un bloc de code.
 $code-font-size: var(--ui-editor-code-font-size, var(--size-typography-text-md));     /// Taille de police d'un bloc de code.
+
+$heading-weight: var(--ui-editor-heading-weight, var(--weight-bold));                    /// Graisse des titres.
+$heading-line-height: var(--ui-editor-heading-line-height, 1.25);                        /// Interlignage des titres.
+$heading-1-font-size: var(--ui-editor-heading-1-font-size, var(--size-typography-title-lg)); /// Taille de police du titre 1.
+$heading-2-font-size: var(--ui-editor-heading-2-font-size, var(--size-typography-title-md)); /// Taille de police du titre 2.
+$heading-3-font-size: var(--ui-editor-heading-3-font-size, var(--size-typography-title-sm)); /// Taille de police du titre 3.
+
+$size-sm: var(--ui-editor-size-sm-font-size, var(--size-typography-text-sm));           /// Taille de police du texte « Petit ».
+$size-default: var(--ui-editor-size-default-font-size, var(--size-typography-text-default)); /// Taille de police du texte « Normal ».
+$size-lg: var(--ui-editor-size-lg-font-size, var(--size-typography-text-lg));           /// Taille de police du texte « Grand ».
+$size-xl: var(--ui-editor-size-xl-font-size, var(--size-typography-text-xl));           /// Taille de police du texte « Très grand ».
 
 // --- Counter ----------------------------------------------------------
 $count-font-size: var(--ui-editor-count-font-size, var(--size-typography-text-md));             /// Taille de police du compteur de caractères.
@@ -99,19 +111,20 @@ $count-font-size-small: var(--ui-editor-count-font-size-small, var(--size-typogr
     }
   }
 
-  // --- Font picker ----------------------------------------------------
-  &-font {
+  // --- Dropdowns (block level, family, size) --------------------------
+  &-select {
     flex-shrink: 0;
-    max-inline-size: 10ch;
-    padding-inline: $font-select-padding-x;
+    padding-inline: $select-padding-x;
     border: none;
-    border-radius: $font-select-radius;
+    border-radius: $select-radius;
     background: transparent;
     font-family: var(--fontfamily-base);
-    font-size: $font-select-font-size;
-    color: $font-select-color;
+    font-size: $select-font-size;
+    color: $select-color;
     cursor: pointer;
     @include utils.control-transition(background-color);
+
+    &._wide { max-inline-size: $select-max-width; }
 
     &:hover:not(:disabled) { background-color: var(--form-low-surface-hover); }
     &:focus-visible { outline: $separator-width solid var(--global-border-focus); }
@@ -206,10 +219,33 @@ $count-font-size-small: var(--ui-editor-count-font-size-small, var(--size-typogr
 
     code { font-family: var(--fontfamily-monospace); }
 
+    // Headings carry document structure, so they keep the title face and scale.
+    h1,
+    h2,
+    h3 {
+      margin-block: 0 $block-gap;
+      font-family: var(--fontfamily-title);
+      font-weight: $heading-weight;
+      line-height: $heading-line-height;
+    }
+    h1:last-child,
+    h2:last-child,
+    h3:last-child { margin-block-end: 0; }
+
+    h1 { font-size: $heading-1-font-size; }
+    h2 { font-size: $heading-2-font-size; }
+    h3 { font-size: $heading-3-font-size; }
+
     // Type families the font picker applies, bound to the typography tokens.
     .ui-editor-font-base { font-family: var(--fontfamily-base); }
     .ui-editor-font-title { font-family: var(--fontfamily-title); }
     .ui-editor-font-monospace { font-family: var(--fontfamily-monospace); }
+
+    // Text sizes, as steps on the typography scale rather than raw values.
+    .ui-editor-size-sm { font-size: $size-sm; }
+    .ui-editor-size-default { font-size: $size-default; }
+    .ui-editor-size-lg { font-size: $size-lg; }
+    .ui-editor-size-xl { font-size: $size-xl; }
   }
 }
 

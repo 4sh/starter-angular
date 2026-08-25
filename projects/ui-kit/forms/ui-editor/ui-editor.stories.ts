@@ -35,7 +35,8 @@ const meta: Meta<UiEditor> = {
     },
     tools: {
       control: 'object',
-      description: "Outils affichés dans la barre, dans l'ordre (`separator` = séparateur).",
+      description:
+        "Outils affichés dans la barre, dans l'ordre (`separator` = séparateur ; `blockFormat`, `fontFamily` et `fontSize` sont des listes déroulantes).",
       table: {
         type: { summary: 'EditorTool[]' },
         defaultValue: { summary: 'DEFAULT_EDITOR_TOOLS' },
@@ -163,8 +164,9 @@ export const CodeBlock: Story = {
 
 /**
  * Le choix de police est **fermé aux trois familles du système**
- * (`--fontfamily-base`, `--fontfamily-title`, `--fontfamily-monospace`). Une liste
- * libre écrirait une police arbitraire dans la valeur, hors tokens.
+ * (`--fontfamily-base`, `--fontfamily-title`, `--fontfamily-monospace`), et la
+ * taille à l'échelle `--size-typography-text-*`. La liste affiche le nom réel de
+ * chaque fonte, lu depuis le token à l'exécution.
  */
 export const FontFamily: Story = {
   render: story(
@@ -173,6 +175,37 @@ export const FontFamily: Story = {
       '<p><span class="ui-editor-font-monospace">const x = 1;</span></p>',
   ),
   args: { label: 'Contenu' },
+};
+
+/**
+ * `fontSize` n'est **pas** dans la barre par défaut : il ferait doublon avec
+ * `blockFormat` à l'écran, sans porter la structure du document. Il s'ajoute
+ * explicitement quand un projet en a besoin.
+ */
+export const FontSize: Story = {
+  render: story(
+    '<p><span class="ui-editor-size-xl">Très grand</span>, ' +
+      '<span class="ui-editor-size-lg">grand</span>, normal, ' +
+      '<span class="ui-editor-size-sm">petit</span>.</p>',
+  ),
+  args: {
+    label: 'Contenu',
+    tools: ['blockFormat', 'fontFamily', 'fontSize', 'separator', 'bold', 'italic'],
+  },
+};
+
+/**
+ * `blockFormat` change ce que le bloc **est**, pas seulement son apparence : un
+ * titre porte la structure du document, et un lecteur d'écran navigue de titre en
+ * titre.
+ */
+export const Headings: Story = {
+  render: story(
+    '<h1>Titre de niveau 1</h1><p>Un paragraphe.</p>' +
+      '<h2>Titre de niveau 2</h2><p>Un autre paragraphe.</p>' +
+      '<h3>Titre de niveau 3</h3><p>Encore un.</p>',
+  ),
+  args: { label: 'Article', minRows: 8 },
 };
 
 export const ToolbarBottom: Story = {

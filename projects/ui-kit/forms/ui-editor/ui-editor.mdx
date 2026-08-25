@@ -31,8 +31,8 @@ saisie multiligne **sans mise en forme** →
 ## Barre d'outils
 
 `tools` liste les outils rendus, dans l'ordre. La valeur `separator` insère un séparateur visuel.
-Outils disponibles : `fontFamily`, `bold`, `italic`, `underline`, `bulletList`, `orderedList`,
-`link`, `codeBlock`, `clearFormat`.
+Outils disponibles : `blockFormat`, `fontFamily`, `fontSize`, `bold`, `italic`, `underline`,
+`bulletList`, `orderedList`, `link`, `codeBlock`, `clearFormat`.
 
 <Canvas of={EditorStories.MinimalToolbar} />
 <Canvas of={EditorStories.ToolbarBottom} />
@@ -48,18 +48,47 @@ par construction.
 
 <Canvas of={EditorStories.CodeBlock} />
 
-### Police
+### Les trois listes déroulantes
 
-`fontFamily` rend une liste déroulante, et non un bouton : elle choisit parmi des valeurs au lieu
-d'en basculer une. Le choix est **fermé aux trois familles du système** — `--fontfamily-base`,
-`--fontfamily-title`, `--fontfamily-monospace`. Une liste libre façon traitement de texte
-écrirait une police arbitraire dans la valeur, donc hors tokens.
+`blockFormat`, `fontFamily` et `fontSize` rendent une liste déroulante et non un bouton : elles
+choisissent parmi des valeurs au lieu d'en basculer une.
 
-La famille est écrite sous forme de **classe** (`ui-editor-font-*`), jamais en style en ligne : la
-valeur reste liée au token, et un projet qui rebinde `--fontfamily-title` déplace tout le contenu
-déjà saisi avec lui. Ces classes sont les seules que la liste blanche laisse passer au collage.
+| Liste         | Rôle                                                                          | Par défaut |
+| ------------- | ----------------------------------------------------------------------------- | ---------- |
+| `blockFormat` | **Ce que le bloc est** : Normal, Titre 1, Titre 2, Titre 3 (`<p>`, `<h1-h3>`) | oui        |
+| `fontFamily`  | **La famille de caractères** appliquée au texte sélectionné                   | oui        |
+| `fontSize`    | **La taille** d'une portion : Petit, Normal, Grand, Très grand                | non        |
 
+Le niveau et la police sont deux choses distinctes : un titre porte la **structure** du document —
+un lecteur d'écran navigue de titre en titre — là où la police ne change que l'apparence. Mettre la
+police de titre sur un paragraphe n'en fait pas un titre.
+
+`fontSize` **n'est pas dans la barre par défaut**, et c'est délibéré : à l'écran il fait doublon
+avec `blockFormat` — les deux grossissent le texte — mais lui seul est purement décoratif. Les
+proposer côte à côte revient à inviter des titres qui n'en sont pas, et donc des documents sans
+structure. Il reste disponible pour un projet qui l'ajoute explicitement à `tools`, par exemple
+pour mettre en avant une portion de texte sans en faire un titre.
+
+Quand le curseur est dans un bloc que la liste ne propose pas (bloc de code, élément de liste),
+`blockFormat` n'affiche aucune valeur plutôt que d'annoncer « Normal » à tort.
+
+Les choix sont **fermés aux tokens** : `--fontfamily-base` / `--fontfamily-title` /
+`--fontfamily-monospace` pour la famille, l'échelle `--size-typography-text-*` pour la taille. Une
+liste libre façon traitement de texte écrirait une police ou un `font-size` arbitraire dans la
+valeur, donc hors du système.
+
+La liste des polices affiche le **nom réel** de chaque fonte, lu depuis le token à l'exécution
+(« Inter », « DM Sans », « Roboto Mono »). Il n'est pas écrit en dur : un projet qui rebinde
+`--fontfamily-base` verrait sinon un menu nommant une police qu'il n'utilise plus.
+
+Famille et taille sont écrites sous forme de **classe** (`ui-editor-font-*`, `ui-editor-size-*`),
+jamais en style en ligne : la valeur reste liée au token, et rebinder celui-ci déplace tout le
+contenu déjà saisi avec lui. Ces classes sont les seules que la liste blanche laisse passer au
+collage.
+
+<Canvas of={EditorStories.Headings} />
 <Canvas of={EditorStories.FontFamily} />
+<Canvas of={EditorStories.FontSize} />
 
 ## Niveaux & états
 

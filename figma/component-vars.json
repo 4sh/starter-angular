@@ -10,10 +10,10 @@
         "Mode 1"
       ],
       "counts": {
-        "tokens": 620,
-        "alias": 496,
-        "literal": 124,
-        "skipped": 48,
+        "tokens": 629,
+        "alias": 504,
+        "literal": 125,
+        "skipped": 49,
         "derivedDescriptions": 197
       },
       "aliasTargets": [
@@ -78,6 +78,11 @@
           "cssVar": "--ui-editor-min-height",
           "component": "ui-editor",
           "reason": "expression calc() : une variable Figma ne porte pas de calcul."
+        },
+        {
+          "cssVar": "--ui-editor-select-max-width",
+          "component": "ui-editor",
+          "reason": "unité relative `ch` : sa valeur dépend du contexte de rendu, une variable Figma ne peut pas la porter."
         },
         {
           "cssVar": "--ui-empty-state-max-width",
@@ -4685,96 +4690,6 @@
         }
       }
     },
-    "font": {
-      "color": {
-        "$value": "{semantics.form.high.content.default}",
-        "$type": "color",
-        "$description": "Couleur du sélecteur de police.",
-        "$extensions": {
-          "com.figma": {
-            "resolvedType": "COLOR",
-            "scopes": [
-              "ALL_FILLS"
-            ],
-            "codeSyntax": {
-              "WEB": "var(--ui-editor-font-color)"
-            }
-          },
-          "com.4sh.ui-kit": {
-            "cssVar": "--ui-editor-font-color",
-            "component": "ui-editor",
-            "entryPoint": "@4sh/ui-kit/forms/ui-editor",
-            "descriptionSource": "scss"
-          }
-        }
-      },
-      "font-size": {
-        "$value": "{responsive.size.typography.text.md}",
-        "$type": "dimension",
-        "$description": "Taille de police du sélecteur de police.",
-        "$extensions": {
-          "com.figma": {
-            "resolvedType": "FLOAT",
-            "scopes": [
-              "FONT_SIZE"
-            ],
-            "codeSyntax": {
-              "WEB": "var(--ui-editor-font-font-size)"
-            }
-          },
-          "com.4sh.ui-kit": {
-            "cssVar": "--ui-editor-font-font-size",
-            "component": "ui-editor",
-            "entryPoint": "@4sh/ui-kit/forms/ui-editor",
-            "descriptionSource": "scss"
-          }
-        }
-      },
-      "padding-x": {
-        "$value": "{metrics.units.xs}",
-        "$type": "dimension",
-        "$description": "Inset horizontal du sélecteur de police.",
-        "$extensions": {
-          "com.figma": {
-            "resolvedType": "FLOAT",
-            "scopes": [
-              "GAP"
-            ],
-            "codeSyntax": {
-              "WEB": "var(--ui-editor-font-padding-x)"
-            }
-          },
-          "com.4sh.ui-kit": {
-            "cssVar": "--ui-editor-font-padding-x",
-            "component": "ui-editor",
-            "entryPoint": "@4sh/ui-kit/forms/ui-editor",
-            "descriptionSource": "scss"
-          }
-        }
-      },
-      "radius": {
-        "$value": "{metrics.radius.2xs}",
-        "$type": "dimension",
-        "$description": "Rayon des coins du sélecteur de police.",
-        "$extensions": {
-          "com.figma": {
-            "resolvedType": "FLOAT",
-            "scopes": [
-              "CORNER_RADIUS"
-            ],
-            "codeSyntax": {
-              "WEB": "var(--ui-editor-font-radius)"
-            }
-          },
-          "com.4sh.ui-kit": {
-            "cssVar": "--ui-editor-font-radius",
-            "component": "ui-editor",
-            "entryPoint": "@4sh/ui-kit/forms/ui-editor",
-            "descriptionSource": "scss"
-          }
-        }
-      }
-    },
     "font-size": {
       "$value": "{responsive.size.typography.text.default}",
       "$type": "dimension",
@@ -4816,6 +4731,125 @@
           "component": "ui-editor",
           "entryPoint": "@4sh/ui-kit/forms/ui-editor",
           "descriptionSource": "scss"
+        }
+      }
+    },
+    "heading-1": {
+      "font-size": {
+        "$value": "{responsive.size.typography.title.lg}",
+        "$type": "dimension",
+        "$description": "Taille de police du titre 1.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "FONT_SIZE"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-editor-heading-1-font-size)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-editor-heading-1-font-size",
+            "component": "ui-editor",
+            "entryPoint": "@4sh/ui-kit/forms/ui-editor",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "heading-2": {
+      "font-size": {
+        "$value": "{responsive.size.typography.title.md}",
+        "$type": "dimension",
+        "$description": "Taille de police du titre 2.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "FONT_SIZE"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-editor-heading-2-font-size)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-editor-heading-2-font-size",
+            "component": "ui-editor",
+            "entryPoint": "@4sh/ui-kit/forms/ui-editor",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "heading-3": {
+      "font-size": {
+        "$value": "{responsive.size.typography.title.sm}",
+        "$type": "dimension",
+        "$description": "Taille de police du titre 3.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "FONT_SIZE"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-editor-heading-3-font-size)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-editor-heading-3-font-size",
+            "component": "ui-editor",
+            "entryPoint": "@4sh/ui-kit/forms/ui-editor",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "heading": {
+      "line-height": {
+        "$value": "1.25",
+        "$type": "number",
+        "$description": "Interlignage des titres.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "LINE_HEIGHT"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-editor-heading-line-height)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-editor-heading-line-height",
+            "component": "ui-editor",
+            "entryPoint": "@4sh/ui-kit/forms/ui-editor",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "weight": {
+        "$value": "{typography.weight.bold}",
+        "$type": "string",
+        "$description": "Graisse des titres.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "STRING",
+            "scopes": [
+              "FONT_WEIGHT",
+              "FONT_STYLE"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-editor-heading-weight)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-editor-heading-weight",
+            "component": "ui-editor",
+            "entryPoint": "@4sh/ui-kit/forms/ui-editor",
+            "descriptionSource": "scss"
+          }
         }
       }
     },
@@ -5047,6 +5081,96 @@
         }
       }
     },
+    "select": {
+      "color": {
+        "$value": "{semantics.form.high.content.default}",
+        "$type": "color",
+        "$description": "Couleur des listes déroulantes.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "COLOR",
+            "scopes": [
+              "ALL_FILLS"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-editor-select-color)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-editor-select-color",
+            "component": "ui-editor",
+            "entryPoint": "@4sh/ui-kit/forms/ui-editor",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "font-size": {
+        "$value": "{responsive.size.typography.text.md}",
+        "$type": "dimension",
+        "$description": "Taille de police des listes déroulantes.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "FONT_SIZE"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-editor-select-font-size)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-editor-select-font-size",
+            "component": "ui-editor",
+            "entryPoint": "@4sh/ui-kit/forms/ui-editor",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "padding-x": {
+        "$value": "{metrics.units.xs}",
+        "$type": "dimension",
+        "$description": "Inset horizontal des listes déroulantes de la barre.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-editor-select-padding-x)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-editor-select-padding-x",
+            "component": "ui-editor",
+            "entryPoint": "@4sh/ui-kit/forms/ui-editor",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "radius": {
+        "$value": "{metrics.radius.2xs}",
+        "$type": "dimension",
+        "$description": "Rayon des coins des listes déroulantes.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "CORNER_RADIUS"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-editor-select-radius)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-editor-select-radius",
+            "component": "ui-editor",
+            "entryPoint": "@4sh/ui-kit/forms/ui-editor",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
     "separator": {
       "color": {
         "$value": "{semantics.form.low.stroke.default}",
@@ -5108,6 +5232,102 @@
           },
           "com.4sh.ui-kit": {
             "cssVar": "--ui-editor-separator-width",
+            "component": "ui-editor",
+            "entryPoint": "@4sh/ui-kit/forms/ui-editor",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "size-default": {
+      "font-size": {
+        "$value": "{responsive.size.typography.text.default}",
+        "$type": "dimension",
+        "$description": "Taille de police du texte « Normal ».",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "FONT_SIZE"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-editor-size-default-font-size)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-editor-size-default-font-size",
+            "component": "ui-editor",
+            "entryPoint": "@4sh/ui-kit/forms/ui-editor",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "size-lg": {
+      "font-size": {
+        "$value": "{responsive.size.typography.text.lg}",
+        "$type": "dimension",
+        "$description": "Taille de police du texte « Grand ».",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "FONT_SIZE"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-editor-size-lg-font-size)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-editor-size-lg-font-size",
+            "component": "ui-editor",
+            "entryPoint": "@4sh/ui-kit/forms/ui-editor",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "size-sm": {
+      "font-size": {
+        "$value": "{responsive.size.typography.text.sm}",
+        "$type": "dimension",
+        "$description": "Taille de police du texte « Petit ».",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "FONT_SIZE"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-editor-size-sm-font-size)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-editor-size-sm-font-size",
+            "component": "ui-editor",
+            "entryPoint": "@4sh/ui-kit/forms/ui-editor",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "size-xl": {
+      "font-size": {
+        "$value": "{responsive.size.typography.text.xl}",
+        "$type": "dimension",
+        "$description": "Taille de police du texte « Très grand ».",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "FONT_SIZE"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-editor-size-xl-font-size)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-editor-size-xl-font-size",
             "component": "ui-editor",
             "entryPoint": "@4sh/ui-kit/forms/ui-editor",
             "descriptionSource": "scss"

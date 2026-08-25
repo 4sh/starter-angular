@@ -21,10 +21,24 @@ export type EditorTool =
   | 'bulletList'
   | 'orderedList'
   | 'codeBlock'
+  | 'blockFormat'
   | 'fontFamily'
+  | 'fontSize'
   | 'link'
   | 'clearFormat'
   | 'separator';
+
+/** Tools rendered as a dropdown: they pick among values instead of toggling one. */
+export type EditorSelectTool = 'blockFormat' | 'fontFamily' | 'fontSize';
+
+/** Tools rendered as an icon button. */
+export type EditorButtonTool = Exclude<EditorTool, 'separator' | EditorSelectTool>;
+
+export const EDITOR_SELECT_TOOLS: readonly EditorSelectTool[] = [
+  'blockFormat',
+  'fontFamily',
+  'fontSize',
+];
 
 /** Commands whose active/inactive state the toolbar reflects via `aria-pressed`. */
 export type EditorToggleTool = Extract<
@@ -39,21 +53,120 @@ export type EditorState = Record<EditorToggleTool, boolean>;
  * Type families the editor can apply.
  *
  * A closed list on purpose: a free font picker would write an arbitrary family
- * into the value and step outside the `--fontfamily-*` tokens.
+ * into the value and step outside the `--fontfamily-*` tokens. The system has no
+ * serif face, so the list is the three families the tokens actually carry.
  */
 export type EditorFont = 'base' | 'title' | 'monospace';
 
-/** Font key → class written into the value + French label for the dropdown. */
-export const EDITOR_FONTS: readonly { key: EditorFont; className: string; label: string }[] = [
-  { key: 'base', className: 'ui-editor-font-base', label: 'Standard' },
-  { key: 'title', className: 'ui-editor-font-title', label: 'Titre' },
-  { key: 'monospace', className: 'ui-editor-font-monospace', label: 'Monospace' },
+/**
+ * Font key → class written into the value, token holding the family, and the
+ * fallback label used when the real name cannot be read (SSR, unset token).
+ *
+ * The dropdown shows the **actual** face name, resolved from the token at runtime
+ * (see {@link resolveFontLabel}) rather than hardcoded: a project that rebinds
+ * `--fontfamily-base` would otherwise see a menu naming a font it no longer uses.
+ */
+export const EDITOR_FONTS: readonly {
+  key: EditorFont;
+  className: string;
+  cssVar: string;
+  label: string;
+}[] = [
+  { key: 'base', className: 'ui-editor-font-base', cssVar: '--fontfamily-base', label: 'Standard' },
+  {
+    key: 'title',
+    className: 'ui-editor-font-title',
+    cssVar: '--fontfamily-title',
+    label: 'Titre',
+  },
+  {
+    key: 'monospace',
+    className: 'ui-editor-font-monospace',
+    cssVar: '--fontfamily-monospace',
+    label: 'Monospace',
+  },
 ];
+
+/**
+ * First face named by a font token — what the family dropdown displays.
+ *
+ * `--fontfamily-base` holds a whole stack (`Inter, system-ui, …`); only the head
+ * of it is a name a person recognises.
+ */
+export function resolveFontLabel(cssVar: string, fallback: string): string {
+  if (typeof document === 'undefined') return fallback;
+  const raw = getComputedStyle(document.documentElement).getPropertyValue(cssVar).trim();
+  const first = raw
+    .split(',')[0]
+    ?.trim()
+    .replace(/^["']|["']$/g, '');
+  return first || fallback;
+}
+
+/** Text sizes the editor can apply, as a step on the typography scale. */
+export type EditorSize = 'sm' | 'default' | 'lg' | 'xl';
+
+/** Size key → class written into the value + French label for the dropdown. */
+export const EDITOR_SIZES: readonly { key: EditorSize; className: string; label: string }[] = [
+  { key: 'sm', className: 'ui-editor-size-sm', label: 'Petit' },
+  { key: 'default', className: 'ui-editor-size-default', label: 'Normal' },
+  { key: 'lg', className: 'ui-editor-size-lg', label: 'Grand' },
+  { key: 'xl', className: 'ui-editor-size-xl', label: 'Très grand' },
+];
+
+const SIZE_CLASSES = new Set(EDITOR_SIZES.map((s) => s.className));
+
+/**
+ * Block levels the editor can apply — the "Normal / Titre" dropdown.
+ *
+ * Distinct from the font family: this one sets what the block *is* (a heading
+ * carries document structure, and screen readers navigate by it), while the font
+ * only changes how it looks.
+ */
+export type EditorBlock = 'p' | 'h1' | 'h2' | 'h3';
+
+/** Block tag → French label for the dropdown. */
+export const EDITOR_BLOCKS: readonly { key: EditorBlock; label: string }[] = [
+  { key: 'p', label: 'Normal' },
+  { key: 'h1', label: 'Titre 1' },
+  { key: 'h2', label: 'Titre 2' },
+  { key: 'h3', label: 'Titre 3' },
+];
+
+const BLOCK_KEYS = new Set<string>(EDITOR_BLOCKS.map((b) => b.key));
+
+/** Applies a block level to the block under the caret. */
+export function applyBlockFormat(tag: EditorBlock): void {
+  document.execCommand('formatBlock', false, tag);
+}
+
+/**
+ * Block level under the caret, or `null` when it is something else.
+ *
+ * `null` covers the code block and list items, which the dropdown does not offer:
+ * showing "Normal" there would misreport what the caret actually sits in.
+ */
+export function readBlockFormat(): EditorBlock | null {
+  try {
+    const value = (document.queryCommandValue('formatBlock') || '').toLowerCase();
+    return BLOCK_KEYS.has(value) ? (value as EditorBlock) : null;
+  } catch {
+    return null;
+  }
+}
 
 const FONT_CLASSES = new Set(EDITOR_FONTS.map((f) => f.className));
 
-/** The tools enabled when the consumer does not provide a `tools` list. */
+/**
+ * The tools enabled when the consumer does not provide a `tools` list.
+ *
+ * `fontSize` is deliberately absent: it would duplicate `blockFormat` on screen —
+ * both make text bigger — while only the latter carries document structure.
+ * Leaving both in the default bar invites headings made of merely large text.
+ * It stays available for a project that explicitly asks for it in `tools`.
+ */
 export const DEFAULT_EDITOR_TOOLS: readonly EditorTool[] = [
+  'blockFormat',
   'fontFamily',
   'separator',
   'bold',
@@ -69,13 +182,7 @@ export const DEFAULT_EDITOR_TOOLS: readonly EditorTool[] = [
 ];
 
 /** Toolbar metadata per button tool: icon (FontAwesome) + French accessible name. */
-export const EDITOR_TOOL_META: Record<
-  Exclude<EditorTool, 'separator' | 'fontFamily'>,
-  {
-    icon: string;
-    label: string;
-  }
-> = {
+export const EDITOR_TOOL_META: Record<EditorButtonTool, { icon: string; label: string }> = {
   bold: { icon: 'bold', label: 'Gras' },
   italic: { icon: 'italic', label: 'Italique' },
   underline: { icon: 'underline', label: 'Souligné' },
@@ -87,10 +194,7 @@ export const EDITOR_TOOL_META: Record<
 };
 
 /** Tool → legacy command name. */
-const NATIVE_COMMAND: Record<
-  Exclude<EditorTool, 'separator' | 'link' | 'fontFamily' | 'codeBlock'>,
-  string
-> = {
+const NATIVE_COMMAND: Record<Exclude<EditorButtonTool, 'link' | 'codeBlock'>, string> = {
   bold: 'bold',
   italic: 'italic',
   underline: 'underline',
@@ -120,9 +224,7 @@ export function emptyEditorState(): EditorState {
 }
 
 /** Applies a formatting command to the current selection. */
-export function applyCommand(
-  tool: Exclude<EditorTool, 'separator' | 'link' | 'fontFamily' | 'codeBlock'>,
-): void {
+export function applyCommand(tool: Exclude<EditorButtonTool, 'link' | 'codeBlock'>): void {
   document.execCommand(NATIVE_COMMAND[tool], false);
 }
 
@@ -161,7 +263,12 @@ export function applyFontFamily(): void {
 
 /** Rewrites the `<font>` elements `fontName` just produced into `<span class>`. */
 export function convertFontMarkers(root: ParentNode, className: string): void {
-  for (const el of Array.from(root.querySelectorAll(`font[face="${FONT_MARKER}"]`))) {
+  convertMarkers(root, `font[face="${FONT_MARKER}"]`, className);
+}
+
+/** @internal Replaces the matched legacy `<font>` elements with a classed span. */
+function convertMarkers(root: ParentNode, selector: string, className: string): void {
+  for (const el of Array.from(root.querySelectorAll(selector))) {
     const span = document.createElement('span');
     span.className = className;
     span.append(...Array.from(el.childNodes));
@@ -171,10 +278,44 @@ export function convertFontMarkers(root: ParentNode, className: string): void {
 
 /** Type family active at the caret, or `null` when the text uses the default. */
 export function readFontFamily(node: Node | null): EditorFont | null {
+  return findClassKey(node, EDITOR_FONTS);
+}
+
+// --- Font size ----------------------------------------------------------
+
+/**
+ * Marker handed to `fontSize`, immediately rewritten into a class.
+ *
+ * Same trick as the family: `fontSize` is the only command that can size an
+ * arbitrary selection, but it emits `<font size="7">` — a legacy 1-7 scale with
+ * no relation to the typography tokens.
+ */
+const SIZE_MARKER = '7';
+
+/** Applies a text size to the selection (see {@link convertSizeMarkers}). */
+export function applyFontSize(): void {
+  document.execCommand('fontSize', false, SIZE_MARKER);
+}
+
+/** Rewrites the `<font>` elements `fontSize` just produced into `<span class>`. */
+export function convertSizeMarkers(root: ParentNode, className: string): void {
+  convertMarkers(root, `font[size="${SIZE_MARKER}"]`, className);
+}
+
+/** Text size active at the caret, or `null` when the text uses the default. */
+export function readFontSize(node: Node | null): EditorSize | null {
+  return findClassKey(node, EDITOR_SIZES);
+}
+
+/** @internal Nearest ancestor carrying one of the given classes. */
+function findClassKey<T extends string>(
+  node: Node | null,
+  table: readonly { key: T; className: string }[],
+): T | null {
   let el: HTMLElement | null =
     node?.nodeType === Node.ELEMENT_NODE ? (node as HTMLElement) : (node?.parentElement ?? null);
   while (el) {
-    const match = EDITOR_FONTS.find((f) => el!.classList?.contains(f.className));
+    const match = table.find((entry) => el!.classList?.contains(entry.className));
     if (match) return match.key;
     el = el.parentElement;
   }
@@ -235,6 +376,9 @@ const ALLOWED_TAGS = new Set([
   'SPAN',
   'PRE',
   'CODE',
+  'H1',
+  'H2',
+  'H3',
 ]);
 
 /**
@@ -286,9 +430,11 @@ function scrubNode(root: ParentNode): void {
     }
     for (const attr of Array.from(el.attributes)) {
       if (attr.name === 'class') {
-        // Only the editor's own font classes survive — anything else pasted in
-        // would style the value against a foreign stylesheet.
-        const kept = attr.value.split(/\s+/).filter((c) => FONT_CLASSES.has(c));
+        // Only the editor's own font/size classes survive — anything else pasted
+        // in would style the value against a foreign stylesheet.
+        const kept = attr.value
+          .split(/\s+/)
+          .filter((c) => FONT_CLASSES.has(c) || SIZE_CLASSES.has(c));
         if (kept.length) el.setAttribute('class', kept.join(' '));
         else el.removeAttribute('class');
         continue;

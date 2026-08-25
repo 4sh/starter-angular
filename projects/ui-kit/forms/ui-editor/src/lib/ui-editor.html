@@ -87,23 +87,45 @@
       @for (entry of toolbar(); track entry.index) {
         @if (entry.isSeparator) {
           <span class="ui-editor-toolbar-separator" aria-hidden="true"></span>
-        } @else if (entry.isFont) {
+        } @else if (entry.select; as select) {
           <!-- A picker, not a toggle: the dropdown takes the focus, so the
                command restores the caret before it runs. -->
           <select
-            class="ui-editor-font"
-            aria-label="Police"
+            class="ui-editor-select"
+            [class._wide]="select !== 'fontSize'"
+            [attr.aria-label]="selectLabel(select)"
             [disabled]="!isEditable()"
-            [value]="currentFont() ?? ''"
+            [value]="selectValue(select)"
             [attr.tabindex]="entry.index === tabStop() ? 0 : -1"
             (mousedown)="$event.stopPropagation()"
-            (change)="onFontChange($event, entry.index)"
+            (change)="onSelectChange(select, $event, entry.index)"
           >
-            <option value="" disabled>Police</option>
-            @for (font of fonts; track font.key) {
-              <option [value]="font.key" [selected]="currentFont() === font.key">
-                {{ font.label }}
-              </option>
+            <!-- Shown when the caret sits in something the list does not offer
+                 (a code block, a list item): claiming "Normal" would be wrong. -->
+            <option value="" disabled>{{ selectPlaceholder(select) }}</option>
+
+            @switch (select) {
+              @case ('blockFormat') {
+                @for (block of blocks; track block.key) {
+                  <option [value]="block.key" [selected]="currentBlock() === block.key">
+                    {{ block.label }}
+                  </option>
+                }
+              }
+              @case ('fontFamily') {
+                @for (font of fonts(); track font.key) {
+                  <option [value]="font.key" [selected]="currentFont() === font.key">
+                    {{ font.label }}
+                  </option>
+                }
+              }
+              @case ('fontSize') {
+                @for (size of sizes; track size.key) {
+                  <option [value]="size.key" [selected]="currentSize() === size.key">
+                    {{ size.label }}
+                  </option>
+                }
+              }
             }
           </select>
         } @else {
@@ -117,8 +139,8 @@
             [ariaLabel]="entry.meta!.label"
             [disabled]="!isEditable()"
             [tabindex]="entry.index === tabStop() ? 0 : -1"
-            [buttonProps]="toolProps(entry.tool)"
-            (buttonClick)="runTool(entry.tool, entry.index)"
+            [buttonProps]="toolProps(entry.buttonTool!)"
+            (buttonClick)="runTool(entry.buttonTool!, entry.index)"
           />
         }
       }

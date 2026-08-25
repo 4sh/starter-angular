@@ -1,4 +1,5 @@
 import {
+  afterNextRender,
   booleanAttribute,
   Component,
   computed,
@@ -19,14 +20,24 @@ import { BaseFormField } from '@4sh/ui-kit/forms';
 import { UiField } from '@4sh/ui-kit/forms/ui-field';
 import { UiButton } from '@4sh/ui-kit/actions/ui-button';
 import {
+  applyBlockFormat,
   applyCommand,
   applyFontFamily,
+  applyFontSize,
   applyLink,
   convertFontMarkers,
+  convertSizeMarkers,
   DEFAULT_EDITOR_TOOLS,
+  EDITOR_BLOCKS,
   EDITOR_FONTS,
+  EDITOR_SELECT_TOOLS,
+  EDITOR_SIZES,
   EDITOR_TOOL_META,
+  EditorBlock,
+  EditorButtonTool,
   EditorFont,
+  EditorSelectTool,
+  EditorSize,
   EditorState,
   EditorTool,
   emptyEditorState,
@@ -35,9 +46,12 @@ import {
   insertText,
   isEmptyHtml,
   normalizeHtml,
+  readBlockFormat,
   readEditorState,
   readFontFamily,
+  readFontSize,
   removeLink,
+  resolveFontLabel,
   scrubInPlace,
   toggleCodeBlock,
 } from './ui-editor-commands';
@@ -119,6 +133,10 @@ export class UiEditor extends BaseFormField<string> {
   protected readonly state = signal<EditorState>(emptyEditorState());
   /** @ignore Type family at the caret (`null` = the default family). */
   protected readonly currentFont = signal<EditorFont | null>(null);
+  /** @ignore Text size at the caret (`null` = the default size). */
+  protected readonly currentSize = signal<EditorSize | null>(null);
+  /** @ignore Block level at the caret (`null` = neither a paragraph nor a heading). */
+  protected readonly currentBlock = signal<EditorBlock | null>(null);
   /** @ignore Index of the toolbar button reachable with Tab (roving tabindex). */
   protected readonly activeTool = signal(0);
 
@@ -158,12 +176,29 @@ export class UiEditor extends BaseFormField<string> {
       tool,
       index,
       isSeparator: tool === 'separator',
-      isFont: tool === 'fontFamily',
-      meta: tool === 'separator' || tool === 'fontFamily' ? null : EDITOR_TOOL_META[tool],
+      select: (EDITOR_SELECT_TOOLS.includes(tool as EditorSelectTool)
+        ? tool
+        : null) as EditorSelectTool | null,
+      buttonTool: (tool === 'separator' || EDITOR_SELECT_TOOLS.includes(tool as EditorSelectTool)
+        ? null
+        : tool) as EditorButtonTool | null,
+      meta:
+        tool === 'separator' || EDITOR_SELECT_TOOLS.includes(tool as EditorSelectTool)
+          ? null
+          : EDITOR_TOOL_META[tool as EditorButtonTool],
     })),
   );
-  /** @ignore Type families offered by the `fontFamily` dropdown. */
-  protected readonly fonts = EDITOR_FONTS;
+  /** @ignore Block levels offered by the `blockFormat` dropdown. */
+  protected readonly blocks = EDITOR_BLOCKS;
+  /** @ignore Text sizes offered by the `fontSize` dropdown. */
+  protected readonly sizes = EDITOR_SIZES;
+  /**
+   * @ignore Type families, labelled with the face each token actually resolves to.
+   *
+   * Read once the view exists, since the value comes from the computed style: a
+   * hardcoded "Inter" would lie as soon as a project rebinds the token.
+   */
+  protected readonly fonts = signal(EDITOR_FONTS.map((f) => ({ ...f })));
   /** @ignore The toolbar has at least one actionable entry. */
   protected readonly hasToolbar = computed(() => this.tools().some((t) => t !== 'separator'));
   /**
@@ -192,6 +227,12 @@ export class UiEditor extends BaseFormField<string> {
 
   constructor() {
     super();
+    // Label each family with the face its token actually resolves to.
+    afterNextRender(() => {
+      this.fonts.set(
+        EDITOR_FONTS.map((f) => ({ ...f, label: resolveFontLabel(f.cssVar, f.label) })),
+      );
+    });
     // Sync the DOM when the value comes from outside (form write, reset).
     effect(() => {
       const value = this.safeValue();
@@ -281,7 +322,10 @@ export class UiEditor extends BaseFormField<string> {
   /** @ignore Recomputes the active formatting and notifies the consumer. */
   protected refreshState(): void {
     this.rememberSelection();
-    this.currentFont.set(readFontFamily(document.getSelection()?.anchorNode ?? null));
+    const anchor = document.getSelection()?.anchorNode ?? null;
+    this.currentFont.set(readFontFamily(anchor));
+    this.currentSize.set(readFontSize(anchor));
+    this.currentBlock.set(readBlockFormat());
 
     const next = readEditorState();
     const prev = this.state();
@@ -311,9 +355,9 @@ export class UiEditor extends BaseFormField<string> {
 
   // --- Toolbar ----------------------------------------------------------
 
-  /** @ignore Runs a tool against the selection the mousedown handler preserved. */
-  protected runTool(tool: EditorTool, index: number): void {
-    if (!this.isEditable() || tool === 'separator' || tool === 'fontFamily') return;
+  /** @ignore Runs a button tool against the selection the mousedown handler preserved. */
+  protected runTool(tool: EditorButtonTool, index: number): void {
+    if (!this.isEditable()) return;
     this.activeTool.set(index);
     this.focus();
     if (tool === 'link') this.promptForLink();
@@ -323,22 +367,61 @@ export class UiEditor extends BaseFormField<string> {
   }
 
   /**
-   * @ignore Applies the picked type family to the selection.
+   * @ignore Applies a dropdown choice to the selection.
    *
-   * The dropdown took the focus, so the caret is put back first; `fontName` then
-   * emits `<font face>` elements that are immediately rewritten into a class.
+   * The dropdown took the focus, so the caret is put back first. The family and
+   * size commands emit legacy `<font>` elements, immediately rewritten into a
+   * class; the block command writes a real tag and needs no conversion.
    */
-  protected onFontChange(event: Event, index: number): void {
-    const select = event.target as HTMLSelectElement;
-    const choice = this.fonts.find((f) => f.key === select.value);
+  protected onSelectChange(tool: EditorSelectTool, event: Event, index: number): void {
+    const value = (event.target as HTMLSelectElement).value;
     this.activeTool.set(index);
-    if (!this.isEditable() || !choice) return;
+    if (!this.isEditable() || !value) return;
 
     this.restoreSelection();
-    applyFontFamily();
     const el = this.contentEl()?.nativeElement;
-    if (el) convertFontMarkers(el, choice.className);
+
+    if (tool === 'blockFormat') {
+      applyBlockFormat(value as EditorBlock);
+    } else if (tool === 'fontFamily') {
+      const choice = this.fonts().find((f) => f.key === value);
+      if (!choice) return;
+      applyFontFamily();
+      if (el) convertFontMarkers(el, choice.className);
+    } else {
+      const choice = this.sizes.find((s) => s.key === value);
+      if (!choice) return;
+      applyFontSize();
+      if (el) convertSizeMarkers(el, choice.className);
+    }
+
     this.onInput();
+  }
+
+  /** @ignore Current value of a dropdown, so it reflects the caret. */
+  protected selectValue(tool: EditorSelectTool): string {
+    if (tool === 'blockFormat') return this.currentBlock() ?? '';
+    if (tool === 'fontFamily') return this.currentFont() ?? '';
+    return this.currentSize() ?? '';
+  }
+
+  /** @ignore Accessible name of a dropdown — spelled out, it is never truncated. */
+  protected selectLabel(tool: EditorSelectTool): string {
+    if (tool === 'blockFormat') return 'Niveau de texte';
+    if (tool === 'fontFamily') return 'Police';
+    return 'Taille du texte';
+  }
+
+  /**
+   * @ignore Text shown while the dropdown has no value to display.
+   *
+   * Shorter than the accessible name on purpose: the control is narrow, and the
+   * spelled-out name would be cut off mid-word in the closed state.
+   */
+  protected selectPlaceholder(tool: EditorSelectTool): string {
+    if (tool === 'blockFormat') return 'Niveau';
+    if (tool === 'fontFamily') return 'Police';
+    return 'Taille';
   }
 
   /**
