@@ -936,11 +936,6 @@
           }
         }
       },
-      "650": {
-        "$value": "#0b835c",
-        "$type": "color",
-        "$description": "Palier intermédiaire 600/700. Le vert le plus clair conforme AA (4,76:1) sous du texte blanc : le 600 échoue (3,77) et le 700 est déjà pris par l'état hover. À créer côté Figma (pas encore de variableId)."
-      },
       "700": {
         "$value": "#047857",
         "$type": "color",
@@ -1073,11 +1068,6 @@
           }
         }
       },
-      "650": {
-        "$value": "#0b835c",
-        "$type": "color",
-        "$description": "Palier intermédiaire 600/700. Le vert le plus clair conforme AA (4,76:1) sous du texte blanc : le 600 échoue (3,77) et le 700 est déjà pris par l'état hover. À créer côté Figma (pas encore de variableId)."
-      },
       "700": {
         "$value": "#047857",
         "$type": "color",
@@ -1209,11 +1199,6 @@
             "scopes": ["ALL_SCOPES"]
           }
         }
-      },
-      "650": {
-        "$value": "#0b835c",
-        "$type": "color",
-        "$description": "Palier intermédiaire 600/700. Le vert le plus clair conforme AA (4,76:1) sous du texte blanc : le 600 échoue (3,77) et le 700 est déjà pris par l'état hover. À créer côté Figma (pas encore de variableId)."
       },
       "700": {
         "$value": "#047857",
