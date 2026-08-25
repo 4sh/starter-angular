@@ -314,6 +314,18 @@ function main() {
     docFiles++;
   }
 
+  const logoImages = [
+    'storybook-projet-logo.png',
+    'storybook-projet-logo-white.png',
+  ];
+  for (const name of logoImages) {
+    const src = join(ROOT, 'storybook/public', name);
+    if (!existsSync(src)) continue;
+    mkdirSync(join(ASSETS, 'storybook/public'), { recursive: true });
+    copyFileSync(src, join(ASSETS, 'storybook/public', name));
+    docFiles++;
+  }
+
   // Serveur MCP compagnon (FSHSP-115) : bundlé (esbuild, un seul fichier ESM,
   // zéro dépendance) puis copié tel quel — c'est CE dossier que `ng-add`
   // recopiera chez le consommateur (`.ui-kit-mcp/`), jamais publié à part.
