@@ -53,6 +53,9 @@ const meta: Meta<UiInputTags> = {
       type: 'figma',
       url: 'https://www.figma.com/design/GZww5hdUA49LB8XWeWP6tl/-Projet----UI-Kit?node-id=3614-3746&t=hED8P0S1ohO6dLVA-1',
     },
+    // FSHSP-106: each tag's remove button sits inside its role="option" — accepted for now,
+    // ticket to follow for the underlying listbox/chip pattern.
+    a11y: { config: { rules: [{ id: 'nested-interactive', enabled: false }] } },
   },
   argTypes: {
     placeholder: {

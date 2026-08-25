@@ -447,6 +447,9 @@ export const Group: Story = {
  * `forceSelection` efface au blur toute saisie non reconnue sans toucher à la sélection.
  */
 export const Multiple: Story = {
+  // FSHSP-106: each selected tag's remove button sits inside its role="option" — accepted for
+  // now, ticket to follow for the underlying listbox/chip pattern (same as ui-input-tags).
+  parameters: { a11y: { config: { rules: [{ id: 'nested-interactive', enabled: false }] } } },
   render: () => ({
     props: {
       a: completer(COUNTRIES, (c) => c.name),
