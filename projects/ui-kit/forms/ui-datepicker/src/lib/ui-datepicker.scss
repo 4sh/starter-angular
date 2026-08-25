@@ -291,11 +291,6 @@ $buttonbar-padding-top: var(--ui-datepicker-buttonbar-padding-top, var(--units-s
     }
 
     // Previous/next month + disabled
-    // Base colour, not the placeholder token: these days are clickable, so their faded
-    // rendering has to clear AA on its own. `form.low.content.default` (grey-500) only
-    // passes at full opacity — dimmed to 60 % it lands at 2,33:1. Every other consumer of
-    // that token renders it undimmed, so darkening the token itself would have made 12
-    // components pay for this one case (FSHSP-106).
     &._other-month { color: $day-color-other-month; opacity: $day-opacity-other-month; }
 
     // Today (outlined chip) — only when not selected.
