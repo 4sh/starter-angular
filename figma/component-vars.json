@@ -10,8 +10,8 @@
         "Mode 1"
       ],
       "counts": {
-        "tokens": 582,
-        "alias": 461,
+        "tokens": 583,
+        "alias": 462,
         "literal": 121,
         "skipped": 46,
         "derivedDescriptions": 197
@@ -3362,6 +3362,28 @@
       }
     },
     "day": {
+      "color-outside": {
+        "$value": "{semantics.global.text.default}",
+        "$type": "color",
+        "$description": "Couleur d'un jour appartenant au mois adjacent, avant atténuation.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "COLOR",
+            "scopes": [
+              "ALL_FILLS"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-datepicker-day-color-outside)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-datepicker-day-color-outside",
+            "component": "ui-datepicker",
+            "entryPoint": "@4sh/ui-kit/forms/ui-datepicker",
+            "descriptionSource": "scss"
+          }
+        }
+      },
       "font-size": {
         "$value": "{responsive.size.typography.text.default}",
         "$type": "dimension",
