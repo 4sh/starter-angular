@@ -115,6 +115,36 @@ Non repris : les liens `parameters.design` vers notre fichier Figma — vous ne
 pouvez pas l'ouvrir, ils sont retirés à la copie. Remettez votre `node-id` si
 vous en avez un.
 
+### Assets (polices, images, favicon)
+
+La fondation pose l'arborescence d'assets maison sous `src/assets/`, et la déclare
+au builder pour qu'elle soit servie sous `/assets/`, le préfixe que `ui-image`
+construit (`assets/img/{marque}/{type}/…`) et que la story `ui-input-group` code en
+dur pour les drapeaux de son indicatif. Le `public/` d'`ng new` continue d'être
+servi à côté.
+
+```
+src/assets/
+├── favicon.png       ← placeholder, câblé dans votre index.html
+├── assets-map.json   ← l'index des images locales que lit ui-image (posé vide)
+├── fonts/{police,icon}/
+└── img/{common,brand1,brand2,brand3}/{jpg,png,svg}/
+```
+
+Deux fichiers sont fournis, tout le reste est un emplacement vide : les
+**drapeaux** (génériques, et sans eux la story d'indicatif téléphonique répond 404) et un **favicon** placeholder, sur lequel le `<link rel="icon">` de votre
+`index.html` est pointé, uniquement s'il porte encore le `favicon.ico` d'`ng
+new`, jamais par-dessus un href que vous avez choisi. L'ancien
+`public/favicon.ico` reste sur le disque, simplement plus référencé.
+
+**Aucun fichier de police n'est livré.** Les tokens ne font que _nommer_ les
+familles (`--fontfamily-base`), chacune terminée par une pile système : un projet
+sans police embarquée tombe donc sur le sans-serif de l'OS, pas sur le serif du
+navigateur. Déclarez les vôtres dans `src/styles/vendors/_fonts.scss`, créé avec
+le mixin `variable-font`, un exemple commenté, et déjà `@use` par `main.scss` ; il
+n'émet rien tant que vous n'avez rien décommenté. Même raisonnement pour les
+fixtures de démo de `ui-image` : c'est notre démo, pas votre fondation.
+
 ### Système de grille (Gridaflex)
 
 Question posée juste après le choix des composants : le projet utilise-t-il

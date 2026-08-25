@@ -314,16 +314,50 @@ function main() {
     docFiles++;
   }
 
-  const logoImages = [
-    'storybook-projet-logo.png',
-    'storybook-projet-logo-white.png',
-  ];
+  const logoImages = ['storybook-projet-logo.png', 'storybook-projet-logo-white.png'];
   for (const name of logoImages) {
     const src = join(ROOT, 'storybook/public', name);
     if (!existsSync(src)) continue;
     mkdirSync(join(ASSETS, 'storybook/public'), { recursive: true });
     copyFileSync(src, join(ASSETS, 'storybook/public', name));
     docFiles++;
+  }
+
+  // Assets de projet (FSHSP-164) : la part de `src/assets/` qui vaut TELLE
+  // QUELLE chez le consommateur. Le SQUELETTE de l'arborescence, lui, est
+  // écrit par `ng-add` (`PROJECT_ASSET_DIRS`) — un dossier vide n'existe ni
+  // dans un `Tree` de schematic, ni dans git.
+  //
+  // Ce qui part d'ici est ce qu'un projet consommateur ne peut pas se donner
+  // lui-même sans copier nos fichiers à la main :
+  //   - les drapeaux SVG, référencés en dur par la story `ui-input-group`
+  //     (`assets/img/common/svg/flags/{code}.svg`) et réutilisables tels quels
+  //     par n'importe quel champ téléphone international ;
+  //   - le favicon, posé en PLACEHOLDER (cf. `ng new` et son favicon Angular)
+  //     pour que le slot de l'arborescence maison soit câblé, pas juste décrit.
+  //
+  // Ce qui NE part PAS d'ici, volontairement :
+  //   - les polices (2,2 Mo de `.ttf` DM Sans + Inter) : typographie de marque,
+  //     licence à porter par le projet, et `.ttf` n'est pas le format web que
+  //     notre propre doc recommande (`.woff2`). Le consommateur reçoit le
+  //     dossier et le scaffold `_fonts.scss` qui sait les déclarer, pas nos
+  //     fichiers ;
+  //   - les fixtures `test-*.{png,jpg,svg}` des stories `ui-image` (428 Ko de
+  //     camions et de dégradés) : de la démo, pas de la fondation. Elles
+  //     arriveraient chez le consommateur comme du bruit à supprimer.
+  let projectAssetFiles = 0;
+  const projectAssetsDest = join(ASSETS, 'project-assets');
+  const flagsSrc = join(ROOT, 'src/assets/img/common/svg/flags');
+  if (existsSync(flagsSrc)) {
+    projectAssetFiles += copyTree(flagsSrc, join(projectAssetsDest, 'img/common/svg/flags'), (n) =>
+      n.endsWith('.svg'),
+    );
+  }
+  const faviconSrc = join(ROOT, 'src/assets/favicon.png');
+  if (existsSync(faviconSrc)) {
+    mkdirSync(projectAssetsDest, { recursive: true });
+    copyFileSync(faviconSrc, join(projectAssetsDest, 'favicon.png'));
+    projectAssetFiles++;
   }
 
   // Serveur MCP compagnon (FSHSP-115) : bundlé (esbuild, un seul fichier ESM,
@@ -342,7 +376,8 @@ function main() {
     `[schematics-assets] ${componentCount} composant(s), ${sharedCount} base(s) partagée(s), ` +
       `${styleFiles} fichier(s) de style, ${tokenFiles} fichier(s) de pipeline de tokens, ` +
       `${docFiles} fichier(s) de chaîne de doc, ${mcpFiles} fichier(s) de serveur MCP, ` +
-      `${prettierFiles} fichier(s) Prettier → ${relative(ROOT, ASSETS)}`,
+      `${prettierFiles} fichier(s) Prettier, ${projectAssetFiles} asset(s) de projet ` +
+      `→ ${relative(ROOT, ASSETS)}`,
   );
 }
 
