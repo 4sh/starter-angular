@@ -154,11 +154,25 @@ $editor-color-steps: 900, 700, 500, 300, 100;
   // `fontFamily`/`fontSize` triggers (ui-button, host-level only — the panel
   // itself is `ui-menu`'s own scoped style).
   &-select-trigger {
+    // `<ui-button>` is inline by default: without a flex/box context of its
+    // own `min-inline-size` on a non-replaced inline element is ignored, so
+    // the trigger silently kept hugging its label instead of reaching the
+    // width below.
+    display: inline-flex;
     flex-shrink: 0;
     // Same fixed width as `&-select`, so the toolbar keeps its layout when a
     // longer value is picked instead of shifting every tool that follows.
     min-inline-size: $select-trigger-width;
-    justify-content: space-between;
+
+    // `justify-content` on the host only spaces its own (single) flex child —
+    // the label/chevron pair is laid out *inside* that child, ui-button's own
+    // `.ui-button` element, which centers them by default. Reaching into it is
+    // the only way to pin the chevron at the field's edge instead of right
+    // after the label.
+    ::ng-deep .ui-button {
+      inline-size: 100%;
+      justify-content: space-between;
+    }
   }
 
   // `textColor`/`highlightColor` triggers: a liseré under the icon shows the

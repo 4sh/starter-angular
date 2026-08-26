@@ -60,6 +60,7 @@ import {
   readFontFamily,
   readFontSize,
   readHighlightColor,
+  readInitialBlockFormat,
   readTextColor,
   removeLink,
   resolveFontLabel,
@@ -287,6 +288,11 @@ export class UiEditor extends BaseFormField<string> {
       this.fonts.set(
         EDITOR_FONTS.map((f) => ({ ...f, label: resolveFontLabel(f.cssVar, f.label) })),
       );
+      // `readBlockFormat` reads the live caret, which does not exist yet: read
+      // the initial content's own structure once instead, so `blockFormat`
+      // does not open on a blank dropdown before the first click.
+      const el = this.contentEl()?.nativeElement;
+      if (el) this.currentBlock.set(readInitialBlockFormat(el));
     });
     // Sync the DOM when the value comes from outside (form write, reset).
     effect(() => {

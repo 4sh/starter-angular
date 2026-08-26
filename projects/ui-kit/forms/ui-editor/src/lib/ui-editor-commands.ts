@@ -28,6 +28,10 @@ export type EditorTool =
   | 'fontSize'
   | 'indent'
   | 'outdent'
+  | 'alignLeft'
+  | 'alignCenter'
+  | 'alignRight'
+  | 'alignJustify'
   | 'textColor'
   | 'highlightColor'
   | 'link'
@@ -49,7 +53,16 @@ export const EDITOR_SELECT_TOOLS: readonly EditorSelectTool[] = [
 /** Commands whose active/inactive state the toolbar reflects via `aria-pressed`. */
 export type EditorToggleTool = Extract<
   EditorTool,
-  'bold' | 'italic' | 'underline' | 'bulletList' | 'orderedList' | 'codeBlock'
+  | 'bold'
+  | 'italic'
+  | 'underline'
+  | 'bulletList'
+  | 'orderedList'
+  | 'codeBlock'
+  | 'alignLeft'
+  | 'alignCenter'
+  | 'alignRight'
+  | 'alignJustify'
 >;
 
 /** Active formatting at the caret, recomputed after every interaction. */
@@ -161,6 +174,21 @@ export function readBlockFormat(): EditorBlock | null {
   }
 }
 
+/**
+ * Best-effort block level for content that has never had the caret in it.
+ *
+ * `readBlockFormat` reads the live selection via `queryCommandValue`, which is
+ * empty before the editor is ever focused — so on first render the dropdown
+ * showed nothing, even though the content already has a definite structure (or,
+ * for an empty editor, will get a plain paragraph the moment typing starts).
+ * This reads the tag of the first element child directly instead, falling back
+ * to `p` when the editor is empty or starts with plain text.
+ */
+export function readInitialBlockFormat(root: HTMLElement): EditorBlock | null {
+  const tag = root.firstElementChild?.tagName.toLowerCase() ?? 'p';
+  return BLOCK_KEYS.has(tag) ? (tag as EditorBlock) : null;
+}
+
 const FONT_CLASSES = new Set(EDITOR_FONTS.map((f) => f.className));
 
 /**
@@ -182,6 +210,11 @@ export const DEFAULT_EDITOR_TOOLS: readonly EditorTool[] = [
   'bulletList',
   'orderedList',
   'separator',
+  'alignLeft',
+  'alignCenter',
+  'alignRight',
+  'alignJustify',
+  'separator',
   'link',
   'codeBlock',
   'clearFormat',
@@ -197,6 +230,10 @@ export const EDITOR_TOOL_META: Record<EditorButtonTool, { icon: string; label: s
   codeBlock: { icon: 'code', label: 'Bloc de code' },
   indent: { icon: 'indent', label: 'Augmenter le retrait' },
   outdent: { icon: 'outdent', label: 'Diminuer le retrait' },
+  alignLeft: { icon: 'align-left', label: 'Aligner à gauche' },
+  alignCenter: { icon: 'align-center', label: 'Centrer' },
+  alignRight: { icon: 'align-right', label: 'Aligner à droite' },
+  alignJustify: { icon: 'align-justify', label: 'Justifier' },
   textColor: { icon: 'font', label: 'Couleur du texte' },
   highlightColor: { icon: 'highlighter', label: 'Couleur de surlignage' },
   link: { icon: 'link', label: 'Lien' },
@@ -215,6 +252,10 @@ const NATIVE_COMMAND: Record<
   orderedList: 'insertOrderedList',
   indent: 'indent',
   outdent: 'outdent',
+  alignLeft: 'justifyLeft',
+  alignCenter: 'justifyCenter',
+  alignRight: 'justifyRight',
+  alignJustify: 'justifyFull',
   clearFormat: 'removeFormat',
 };
 
@@ -224,6 +265,10 @@ const TOGGLE_TOOLS: readonly Exclude<EditorToggleTool, 'codeBlock'>[] = [
   'underline',
   'bulletList',
   'orderedList',
+  'alignLeft',
+  'alignCenter',
+  'alignRight',
+  'alignJustify',
 ];
 
 /** Every state off — the value used before the first render and on SSR. */
@@ -235,6 +280,10 @@ export function emptyEditorState(): EditorState {
     bulletList: false,
     orderedList: false,
     codeBlock: false,
+    alignLeft: false,
+    alignCenter: false,
+    alignRight: false,
+    alignJustify: false,
   };
 }
 

@@ -32,8 +32,8 @@ saisie multiligne **sans mise en forme** →
 
 `tools` liste les outils rendus, dans l'ordre. La valeur `separator` insère un séparateur visuel.
 Outils disponibles : `blockFormat`, `fontFamily`, `fontSize`, `bold`, `italic`, `underline`,
-`bulletList`, `orderedList`, `indent`, `outdent`, `textColor`, `highlightColor`, `link`,
-`codeBlock`, `clearFormat`.
+`bulletList`, `orderedList`, `indent`, `outdent`, `alignLeft`, `alignCenter`, `alignRight`,
+`alignJustify`, `textColor`, `highlightColor`, `link`, `codeBlock`, `clearFormat`.
 
 <Canvas of={EditorStories.MinimalToolbar} />
 <Canvas of={EditorStories.ToolbarBottom} />
@@ -115,6 +115,15 @@ classe, ni conversion à appliquer, contrairement à la police et à la taille. 
 sont **absents de la barre par défaut** et s'ajoutent explicitement via `tools`.
 
 <Canvas of={EditorStories.IndentOutdent} />
+
+### Alignement
+
+`alignLeft`/`alignCenter`/`alignRight`/`alignJustify` sont, comme gras/italique/souligné, un
+passthrough `execCommand('justify*')` dont le navigateur garantit lui-même l'exclusion mutuelle :
+appliquer l'un remet les autres à `false`. Ils suivent donc le même modèle `EditorState` /
+`aria-pressed` que les bascules, pas celui d'un menu, et sont **dans la barre par défaut**.
+
+<Canvas of={EditorStories.TextAlign} />
 
 ### Couleur du texte / de surlignage
 

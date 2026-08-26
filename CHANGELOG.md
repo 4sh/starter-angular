@@ -79,6 +79,15 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
   - `allowClear` (défaut `true`) ajoute une pastille « Aucune couleur » émettant
     `value = null` / `swatchSelect(null)`.
 
+- **`ui-editor` : outils `alignLeft`/`alignCenter`/`alignRight`/`alignJustify`** (FSHSP-160).
+  Quatre nouveaux `EditorButtonTool`, passthrough `execCommand('justifyLeft'|'justifyCenter'|
+  'justifyRight'|'justifyFull')` — contrairement à `indent`/`outdent`, ce sont des bascules
+  (`EditorToggleTool`) : le navigateur garantit lui-même leur exclusion mutuelle
+  (`queryCommandState`), donc elles suivent le même modèle `EditorState`/`aria-pressed` que
+  gras/italique/souligné plutôt que celui d'un menu. **Dans `DEFAULT_EDITOR_TOOLS`** (à la
+  différence de `fontSize`/`indent`/`outdent`/`textColor`/`highlightColor` : l'alignement est un
+  outil de mise en forme standard, pas un doublon d'un autre contrôle).
+
 ### Changed
 
 - **`ui-editor` : les listes `fontFamily`/`fontSize` passent du `<select>` natif à un menu popup**
@@ -123,6 +132,26 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
   - `ui-input` (donc tout champ construit dessus) accepte désormais un `ariaDescribedBy` externe, chaîné de la même façon sur son `aria-describedby` natif plutôt que de l'écraser — c'est le mécanisme qui rend le point ci-dessus possible sans dupliquer la logique dans `ui-datepicker`.
 - **`ui-datepicker` : `allowInput` couvre maintenant `range` et `multiple`** (FSHSP-118), en complément de la grille (le clic continue de fonctionner à l'identique). `range` se tape dans le même champ, les deux dates séparées par `" - "` (ex. `"08/07/2026 - 18/07/2026"`) ; `multiple` accepte une liste séparée par `", "`, nombre de dates non borné. `range` bénéficie du même masque auto-"/" en direct qu'en mode `single` (les deux dates, puis leur séparateur, se construisent au fil de la frappe) ; `multiple`, dont le nombre de dates n'est pas borné, reste en texte libre, parsé au blur/Entrée uniquement — dans les deux cas avec les mêmes garanties qu'en `single` : une entrée incomplète ou invalide revient à la dernière valeur affichée, une plage tapée dans le désordre est réordonnée chronologiquement (comme un second clic dans la grille), une date dupliquée en `multiple` est supprimée (comme un clic sur une case déjà sélectionnée). Un `parseDate` custom s'applique par date individuelle, symétrique de `dateFormat`. Non couvert : la combinaison avec `showTime` (les dates tapées en `range`/`multiple` sont toujours calées à minuit — seule la grille gère l'heure sur ces modes pour l'instant).
 - **Un utilitaire global `.sr-only`** dans la feuille de helpers publiée (section « Visibility ») : rend un texte visible des seuls lecteurs d'écran, pour nommer une colonne ou une action dont l'affichage ne montre rien. Ajouté pour les en-têtes de colonne vides des tableaux (`<th>` d'une colonne de sélection ou d'expansion), où `aria-label` ne suffit pas : `empty-table-header` exige du texte réellement présent. Quatre composants du kit recopient déjà ce bloc dans leur propre SCSS (`ui-datepicker`, `ui-select`, `ui-file-upload`, `ui-read-only`) — ils pourront s'appuyer dessus.
+
+### Fixed
+
+- **`ui-editor` : `blockFormat` s'ouvrait vide tant que le curseur n'avait jamais touché la
+  zone de saisie** (FSHSP-160). `readBlockFormat()` lit le niveau via
+  `document.queryCommandValue('formatBlock')`, qui reflète la **sélection courante** — inexistante
+  avant le premier focus, donc `currentBlock` restait à `null` et le `<select>` s'ouvrait blanc
+  au lieu d'annoncer « Normal », même quand le contenu initial en avait un. Nouvelle
+  `readInitialBlockFormat()`, appelée une fois après le premier rendu : lit directement la balise
+  du premier enfant du contenu (repli sur `p` si l'éditeur est vide ou commence par du texte nu),
+  sans dépendre d'une sélection.
+
+- **`ui-editor` : le chevron des déclencheurs `fontFamily`/`fontSize` restait collé au texte au
+  lieu du bord du champ** (FSHSP-160). Le `min-inline-size`/`justify-content: space-between`
+  visant cet espacement était posé sur `<ui-button>`, l'élément hôte — `inline` par défaut,
+  qui ignore `min-inline-size` (propriété sans effet sur un élément en ligne non remplacé), et
+  dont le seul enfant (le `<button>` interne, qui porte le vrai flex layout icône/libellé) ne
+  s'étirait de toute façon pas à sa largeur. Le correctif cible directement cet enfant
+  (`::ng-deep .ui-button { inline-size: 100%; justify-content: space-between }`), et l'hôte
+  passe en `display: inline-flex` pour que `min-inline-size` s'applique enfin.
 
 ### Changed
 

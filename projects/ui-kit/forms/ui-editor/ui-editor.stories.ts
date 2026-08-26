@@ -243,6 +243,22 @@ export const IndentOutdent: Story = {
 };
 
 /**
+ * `alignLeft`/`alignCenter`/`alignRight`/`alignJustify` sont dans la barre par
+ * défaut : passthrough `execCommand('justify*')`, mutuellement exclusifs par
+ * construction du navigateur (appliquer l'un désactive l'état des autres), donc
+ * ils suivent le même modèle `aria-pressed` que gras/italique/souligné plutôt
+ * que celui d'un menu.
+ */
+export const TextAlign: Story = {
+  render: story(
+    '<p style="text-align: center;">Centré.</p>' +
+      '<p style="text-align: right;">Aligné à droite.</p>' +
+      '<p style="text-align: justify;">Justifié : ce paragraphe est assez long pour que la justification s\'y voie clairement sur plusieurs lignes.</p>',
+  ),
+  args: { label: 'Contenu' },
+};
+
+/**
  * `textColor`/`highlightColor` ne sont **pas** dans la barre par défaut (même
  * logique d'opt-in que `fontSize`/`indent`/`outdent`). Chacun ouvre son propre
  * `ui-swatch-picker` (`popup`, `size="small"`) ancré au bouton `ui-button`, qui
