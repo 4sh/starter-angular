@@ -31,9 +31,10 @@ saisie multiligne **sans mise en forme** →
 ## Barre d'outils
 
 `tools` liste les outils rendus, dans l'ordre. La valeur `separator` insère un séparateur visuel.
-Outils disponibles : `blockFormat`, `fontFamily`, `fontSize`, `bold`, `italic`, `underline`,
-`bulletList`, `orderedList`, `indent`, `outdent`, `alignLeft`, `alignCenter`, `alignRight`,
-`alignJustify`, `textColor`, `highlightColor`, `link`, `codeBlock`, `clearFormat`.
+Outils disponibles : `fontFamily`, `fontSize`, `bold`, `italic`, `underline`, `bulletList`,
+`orderedList`, `indent`, `outdent`, `alignLeft`, `alignCenter`, `alignRight`, `alignJustify`,
+`textColor`, `highlightColor`, `link`, `codeBlock`, `clearFormat`. Pas de niveau de bloc : l'éditeur
+ne produit que des `<p>`, il n'y a pas de titre H1-H3 à choisir depuis la barre.
 
 <Canvas of={EditorStories.MinimalToolbar} />
 <Canvas of={EditorStories.ToolbarBottom} />
@@ -49,45 +50,25 @@ par construction.
 
 <Canvas of={EditorStories.CodeBlock} />
 
-### Les trois sélecteurs de valeur
+### Police et taille
 
-`blockFormat`, `fontFamily` et `fontSize` choisissent parmi des valeurs au lieu d'en basculer une.
-Ils ne partagent plus le même rendu : `blockFormat` reste un `<select>` natif, tandis que
-`fontFamily`/`fontSize` s'ouvrent désormais en popup — un déclencheur `ui-button` (ghost,
-`size="small"`) glué à un `ui-menu` `popup [size]="small"`, même pattern que
+`fontFamily` et `fontSize` choisissent parmi des valeurs au lieu d'en basculer une, tous deux
+**dans la barre par défaut, à égalité** — ni l'un ni l'autre n'est une option gardée derrière
+`tools`. Il n'y a pas de sélecteur de niveau de bloc : l'éditeur ne produit que des `<p>`, aucun
+titre H1-H3 n'est accessible depuis la barre.
+
+Chacun se rend en déclencheur `ui-button` (ghost, `size="small"`) glué à un `ui-menu`
+`popup [size]="small"`, même pattern que
 [`ui-button-split`](?path=/docs/components-ui-actions-ui-button-split--docs).
 
-| Sélecteur     | Rôle                                                                          | Rendu                          | Par défaut |
-| ------------- | ------------------------------------------------------------------------------ | ------------------------------- | ---------- |
-| `blockFormat` | **Ce que le bloc est** : Normal, Titre 1, Titre 2, Titre 3 (`<p>`, `<h1-h3>`)   | `<select>` natif                | oui        |
-| `fontFamily`  | **La famille de caractères** appliquée au texte sélectionné                    | `ui-button` + `ui-menu` en popup | oui        |
-| `fontSize`    | **La taille** d'une portion : Petit, Normal, Grand, Très grand                 | `ui-button` + `ui-menu` en popup | non        |
-
-Le niveau et la police sont deux choses distinctes : un titre porte la **structure** du document —
-un lecteur d'écran navigue de titre en titre — là où la police ne change que l'apparence. Mettre la
-police de titre sur un paragraphe n'en fait pas un titre.
-
-`fontSize` **n'est pas dans la barre par défaut**, et c'est délibéré : à l'écran il fait doublon
-avec `blockFormat` — les deux grossissent le texte — mais lui seul est purement décoratif. Les
-proposer côte à côte revient à inviter des titres qui n'en sont pas, et donc des documents sans
-structure. Il reste disponible pour un projet qui l'ajoute explicitement à `tools`, par exemple
-pour mettre en avant une portion de texte sans en faire un titre.
-
-Chaque sélecteur affiche **la valeur en vigueur**, jamais son propre nom : au repos on lit
+Chaque déclencheur affiche **la valeur en vigueur**, jamais son propre nom : au repos on lit
 « Normal » et « Inter », c'est-à-dire ce que le texte utilise réellement. La police est lue sur le
-rendu effectif, pas devinée — dans un titre le sélecteur affiche « DM Sans », puisque c'est la
-fonte que le titre porte. Le nom de chaque sélecteur reste disponible pour les lecteurs d'écran :
-en `aria-label` sur le `<select>` de `blockFormat`, combiné au nom du déclencheur
-(« Police : Inter ») sur les popups `fontFamily`/`fontSize` — sinon la valeur affichée à l'écran
-disparaîtrait du nom accessible, qu'un `aria-label` explicite remplace entièrement sur un
-`ui-button`.
+rendu effectif, pas devinée. Le nom de chaque sélecteur reste disponible pour les lecteurs d'écran
+via un `aria-label` combiné (« Police : Inter ») — sinon la valeur affichée à l'écran disparaîtrait
+du nom accessible, qu'un `aria-label` explicite remplace entièrement sur un `ui-button`.
 
-Seule exception, `blockFormat` n'affiche **aucune** valeur quand le curseur est dans un bloc qu'il
-ne propose pas (bloc de code, élément de liste) : il n'y a là rien d'honnête à afficher, et
-annoncer « Normal » inviterait un clic qui reformaterait le bloc.
-
-Les trois sélecteurs ont tous la **même largeur, fixe** : une largeur ajustée au contenu ferait
-sauter la barre entière à chaque changement de valeur.
+Les deux déclencheurs ont la **même largeur, fixe** : une largeur ajustée au contenu ferait sauter
+la barre entière à chaque changement de valeur.
 
 Les choix sont **fermés aux tokens** : `--fontfamily-base` / `--fontfamily-title` /
 `--fontfamily-monospace` pour la famille, l'échelle `--size-typography-text-*` pour la taille. Un
@@ -103,10 +84,8 @@ jamais en style en ligne : la valeur reste liée au token, et rebinder celui-ci 
 contenu déjà saisi avec lui. Ces classes sont les seules que la liste blanche laisse passer au
 collage.
 
-<Canvas of={EditorStories.Headings} />
 <Canvas of={EditorStories.FontFamily} />
 <Canvas of={EditorStories.FontSize} />
-<Canvas of={EditorStories.FontMenus} />
 
 ### Indentation
 

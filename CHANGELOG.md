@@ -90,14 +90,22 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ### Changed
 
-- **`ui-editor` : les listes `fontFamily`/`fontSize` passent du `<select>` natif à un menu popup**
-  (FSHSP-160). Rendu désormais en déclencheur `ui-button` (ghost, `size="small"`) glué à un
+- **`ui-editor` : les sélecteurs `fontFamily`/`fontSize` passent du `<select>` natif à un menu
+  popup** (FSHSP-160). Rendu désormais en déclencheur `ui-button` (ghost, `size="small"`) glué à un
   `ui-menu` en mode `popup [size]="small"`, même pattern que `ui-button-split` — cohérent
-  visuellement avec le reste de la barre d'outils et du kit. `blockFormat` reste un `<select>`
-  natif, hors périmètre de ce changement. Le déclencheur affiche la valeur en vigueur (comme
-  l'ancien `<select>`) et porte un nom accessible qui la reprend (`aria-label` combiné, ex.
-  « Police : Inter ») puisqu'un `ariaLabel` explicite sur `ui-button` remplace tout le contenu
-  visible dans le nom accessible.
+  visuellement avec le reste de la barre d'outils et du kit. Le déclencheur affiche la valeur en
+  vigueur (comme l'ancien `<select>`) et porte un nom accessible qui la reprend (`aria-label`
+  combiné, ex. « Police : Inter ») puisqu'un `ariaLabel` explicite sur `ui-button` remplace tout le
+  contenu visible dans le nom accessible.
+
+- **`ui-editor` : suppression de `blockFormat`, `fontSize` désormais dans la barre par défaut**
+  (FSHSP-160). Plus de sélecteur de niveau de bloc (Normal/Titre 1-3) : l'éditeur ne produit plus
+  que des `<p>`, aucun titre H1-H3 n'est accessible depuis la barre d'outils. `EditorBlock`,
+  `EDITOR_BLOCKS`, `applyBlockFormat`/`readBlockFormat` et le tool `blockFormat` sont retirés de
+  l'API publique — **breaking change** pour tout `tools` listant `'blockFormat'`. `fontSize`
+  n'était auparavant pas dans `DEFAULT_EDITOR_TOOLS` (opt-in, pour éviter le doublon visuel avec
+  `blockFormat`) ; cette raison n'existe plus, `fontSize` rejoint `fontFamily` en outil de premier
+  rang, toujours actif.
 
 - **`ui-editor` — éditeur de texte riche, sans moteur tiers** (FSHSP-160). Le kit s'arrêtait à `ui-textarea` : dès qu'un projet avait besoin de gras, de listes ou d'un lien dans un champ libre, il installait Quill ou TipTap et repartait avec un champ qui ne ressemble à aucun autre du formulaire. `ui-editor` couvre ce besoin en restant dans les règles du kit : bâti sur le shell `ui-field` en mode multiligne, il partage le libellé, la boîte, les niveaux, le helper et la validation avec les huit autres champs, et n'ajoute **aucune dépendance runtime** — les commandes de mise en forme s'appuient sur l'API d'édition native du navigateur, isolée dans `ui-editor-commands` pour qu'un futur moteur ne se substitue qu'à ce fichier.
   - **Barre d'outils configurable** : `tools` liste les outils rendus, dans l'ordre (`bold`, `italic`, `underline`, `bulletList`, `orderedList`, `link`, `clearFormat`, plus `separator`), et `toolbarPosition` la place au-dessus ou sous la zone de saisie. Elle forme **un seul arrêt de tabulation** (`role="toolbar"`, roving tabindex : ⭠ ⭢, `Home`/`End`, `Échap` rend le focus à la saisie) ; les bascules portent un `aria-pressed` recalculé à chaque déplacement du curseur, les actions ponctuelles n'en portent pas. Cliquer un outil ne déplace pas le focus et préserve la sélection. Les raccourcis `Ctrl`/`Cmd` + `B`/`I`/`U` sont pris en charge nativement, l'état de la barre suit.

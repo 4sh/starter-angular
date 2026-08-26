@@ -14,7 +14,7 @@
 >
   <div class="ui-editor" [class._small]="size() === 'small'" [style.--_rows]="minRows()">
     @if (toolbarPosition() === 'top') {
-      <ng-container [ngTemplateOutlet]="toolbarTpl" />
+      <ng-container [ngTemplateOutlet]="toolbarTpl"/>
     }
 
     <div class="ui-editor-area">
@@ -50,7 +50,7 @@
     </div>
 
     @if (toolbarPosition() === 'bottom') {
-      <ng-container [ngTemplateOutlet]="toolbarTpl" />
+      <ng-container [ngTemplateOutlet]="toolbarTpl"/>
     }
   </div>
 
@@ -75,7 +75,7 @@
   @if (hasToolbar()) {
     <!-- ARIA toolbar pattern: keyboard delegated to the role="toolbar" container,
          focus lives on the items (roving tabindex), same as ui-menu. -->
-    <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
+      <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
     <div
       #toolbarEl
       class="ui-editor-toolbar"
@@ -90,70 +90,46 @@
         @if (entry.isSeparator) {
           <span class="ui-editor-toolbar-separator" aria-hidden="true"></span>
         } @else if (entry.select; as select) {
-          @if (select === 'blockFormat') {
-            <!-- A picker, not a toggle: the dropdown takes the focus, so the
-                 command restores the caret before it runs. -->
-            <select
-              class="ui-editor-select"
-              [attr.aria-label]="selectLabel(select)"
-              [disabled]="!isEditable()"
-              [value]="selectValue(select)"
-              [attr.tabindex]="entry.index === tabStop() ? 0 : -1"
-              (mousedown)="$event.stopPropagation()"
-              (change)="onSelectChange(select, $event, entry.index)"
-            >
-              <!-- Blank entry, only reachable for the block level: when the
-                   caret sits in a code block or a list item there is no honest
-                   level to show, and claiming "Normal" would be wrong. -->
-              <option value="" disabled></option>
-              @for (block of blocks; track block.key) {
-                <option [value]="block.key" [selected]="selectValue(select) === block.key">
-                  {{ block.label }}
-                </option>
-              }
-            </select>
-          } @else {
-            <!-- Trigger + popup menu (same pattern as ui-button-split): the
-                 dropdown takes the focus, so the command restores the caret
-                 before it runs. -->
-            <ui-button
-              class="ui-editor-tool ui-editor-select-trigger"
-              variant="ghost"
-              level="low"
+          <!-- Trigger + popup menu (same pattern as ui-button-split): the
+               dropdown takes the focus, so the command restores the caret
+               before it runs. -->
+          <ui-button
+            class="ui-editor-tool ui-editor-select-trigger"
+            variant="ghost"
+            level="low"
+            size="small"
+            icon="chevron-down"
+            iconPos="right"
+            [label]="selectDisplayLabel(select)"
+            [ariaLabel]="selectTriggerAriaLabel(select)"
+            [disabled]="!isEditable()"
+            [tabindex]="entry.index === tabStop() ? 0 : -1"
+            [buttonProps]="{
+              'aria-haspopup': 'menu',
+              'aria-expanded': selectMenuOpen(select) ? 'true' : 'false',
+            }"
+            (buttonClick)="onSelectMenuTrigger(select, entry.index, $event)"
+          />
+          @if (select === 'fontFamily') {
+            <ui-menu
+              #fontFamilyMenu
+              popup
               size="small"
-              icon="chevron-down"
-              iconPos="right"
-              [label]="selectDisplayLabel(select)"
-              [ariaLabel]="selectTriggerAriaLabel(select)"
-              [disabled]="!isEditable()"
-              [tabindex]="entry.index === tabStop() ? 0 : -1"
-              [buttonProps]="{
-                'aria-haspopup': 'menu',
-                'aria-expanded': selectMenuOpen(select) ? 'true' : 'false',
-              }"
-              (buttonClick)="onSelectMenuTrigger(select, entry.index, $event)"
+              [items]="fontFamilyMenuItems()"
+              [ariaLabel]="selectLabel(select)"
+              (opened)="fontFamilyMenuOpen.set(true)"
+              (closed)="fontFamilyMenuOpen.set(false)"
             />
-            @if (select === 'fontFamily') {
-              <ui-menu
-                #fontFamilyMenu
-                popup
-                size="small"
-                [items]="fontFamilyMenuItems()"
-                [ariaLabel]="selectLabel(select)"
-                (opened)="fontFamilyMenuOpen.set(true)"
-                (closed)="fontFamilyMenuOpen.set(false)"
-              />
-            } @else {
-              <ui-menu
-                #fontSizeMenu
-                popup
-                size="small"
-                [items]="fontSizeMenuItems()"
-                [ariaLabel]="selectLabel(select)"
-                (opened)="fontSizeMenuOpen.set(true)"
-                (closed)="fontSizeMenuOpen.set(false)"
-              />
-            }
+          } @else {
+            <ui-menu
+              #fontSizeMenu
+              popup
+              size="small"
+              [items]="fontSizeMenuItems()"
+              [ariaLabel]="selectLabel(select)"
+              (opened)="fontSizeMenuOpen.set(true)"
+              (closed)="fontSizeMenuOpen.set(false)"
+            />
           }
         } @else {
           <ui-button

@@ -23,17 +23,9 @@ $toolbar-surface: var(--ui-editor-toolbar-surface, var(--global-background-muted
 $toolbar-stroke: var(--ui-editor-toolbar-stroke, var(--form-low-stroke-default));         /// Couleur du trait séparant la barre d'outils de la zone de saisie.
 $toolbar-stroke-width: var(--ui-editor-toolbar-stroke-width, #{utils.$control-stroke-width}); /// Épaisseur de ce trait.
 
-// `blockFormat` only from here on — `fontFamily`/`fontSize` render a
-// `ui-button` trigger + `ui-menu` popup instead (see `&-select-trigger`).
-$select-padding-x: var(--ui-editor-select-padding-x, var(--units-xs));                     /// Inset horizontal de la liste déroulante du niveau de texte.
-$select-font-size: var(--ui-editor-select-font-size, var(--size-typography-text-md));      /// Taille de police de la liste déroulante.
-$select-color: var(--ui-editor-select-color, var(--form-high-content-default));            /// Couleur de la liste déroulante.
-$select-radius: var(--ui-editor-select-radius, var(--radius-2xs));                         /// Rayon des coins de la liste déroulante.
-// `ch` rather than a measured px: it scales with $select-font-size instead of
-// guessing a pixel count for the longest label ("Titre 3").
-$select-width: var(--ui-editor-select-width, 13ch);                                        /// Largeur de la liste déroulante, identique à celle des menus popup.
-
-$select-trigger-width: var(--ui-editor-select-trigger-width, 13ch); /// Largeur d'un déclencheur de menu popup (police, taille), identique à celle de la liste déroulante.
+// `fontFamily`/`fontSize` render a `ui-button` trigger + `ui-menu` popup —
+// no native `<select>` left in the toolbar (see `&-select-trigger`).
+$select-trigger-width: var(--ui-editor-select-trigger-width, 13ch); /// Largeur d'un déclencheur de menu popup (police, taille).
 
 $separator-width: var(--ui-editor-separator-width, var(--stroke-sm));                      /// Épaisseur d'un séparateur d'outils.
 $separator-height: var(--ui-editor-separator-height, var(--size-typography-text-default)); /// Hauteur d'un séparateur d'outils.
@@ -126,29 +118,6 @@ $editor-color-steps: 900, 700, 500, 300, 100;
       block-size: $separator-height;
       background-color: $separator-color;
     }
-  }
-
-  // --- Dropdown (block level) ------------------------------------------
-  &-select {
-    flex-shrink: 0;
-    // Fixed, and the same for every dropdown: sized on the content it has to
-    // fit, so the toolbar keeps its layout when a longer value is picked
-    // instead of shifting every button that follows.
-    inline-size: $select-width;
-    padding-inline: $select-padding-x;
-    border: none;
-    border-radius: $select-radius;
-    background: transparent;
-    font-family: var(--fontfamily-base);
-    font-size: $select-font-size;
-    color: $select-color;
-    cursor: pointer;
-    text-overflow: ellipsis;
-    @include utils.control-transition(background-color);
-
-    &:hover:not(:disabled) { background-color: var(--form-low-surface-hover); }
-    &:focus-visible { outline: $separator-width solid var(--global-border-focus); }
-    &:disabled { cursor: not-allowed; color: var(--form-high-content-disabled); }
   }
 
   // `fontFamily`/`fontSize` triggers (ui-button, host-level only — the panel

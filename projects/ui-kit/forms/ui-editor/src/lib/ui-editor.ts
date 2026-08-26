@@ -13,16 +13,15 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { NgTemplateOutlet } from '@angular/common';
-import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { DomSanitizer } from '@angular/platform-browser';
-import { BaseFormField } from '@4sh/ui-kit/forms';
-import { UiField } from '@4sh/ui-kit/forms/ui-field';
-import { UiButton } from '@4sh/ui-kit/actions/ui-button';
-import { UiMenu, UiMenuItem } from '@4sh/ui-kit/navigation/ui-menu';
-import { UiSwatch, UiSwatchPicker } from '@4sh/ui-kit/forms/ui-swatch-picker';
+import {NgTemplateOutlet} from '@angular/common';
+import {NG_VALUE_ACCESSOR} from '@angular/forms';
+import {DomSanitizer} from '@angular/platform-browser';
+import {BaseFormField} from '@4sh/ui-kit/forms';
+import {UiField} from '@4sh/ui-kit/forms/ui-field';
+import {UiButton} from '@4sh/ui-kit/actions/ui-button';
+import {UiMenu, UiMenuItem} from '@4sh/ui-kit/navigation/ui-menu';
+import {UiSwatch, UiSwatchPicker} from '@4sh/ui-kit/forms/ui-swatch-picker';
 import {
-  applyBlockFormat,
   applyCommand,
   applyFontFamily,
   applyFontSize,
@@ -35,14 +34,12 @@ import {
   convertHighlightMarkers,
   convertSizeMarkers,
   DEFAULT_EDITOR_TOOLS,
-  EDITOR_BLOCKS,
   EDITOR_COLORS,
   EDITOR_FONTS,
   EDITOR_HIGHLIGHTS,
   EDITOR_SELECT_TOOLS,
   EDITOR_SIZES,
   EDITOR_TOOL_META,
-  EditorBlock,
   EditorButtonTool,
   EditorFont,
   EditorSelectTool,
@@ -55,12 +52,10 @@ import {
   insertText,
   isEmptyHtml,
   normalizeHtml,
-  readBlockFormat,
   readEditorState,
   readFontFamily,
   readFontSize,
   readHighlightColor,
-  readInitialBlockFormat,
   readTextColor,
   removeLink,
   resolveFontLabel,
@@ -159,8 +154,6 @@ export class UiEditor extends BaseFormField<string> {
   protected readonly currentTextColor = signal<string | null>(null);
   /** @ignore Highlight color at the caret (`null` = no highlight). */
   protected readonly currentHighlightColor = signal<string | null>(null);
-  /** @ignore Block level at the caret (`null` = neither a paragraph nor a heading). */
-  protected readonly currentBlock = signal<EditorBlock | null>(null);
   /** @ignore Index of the toolbar button reachable with Tab (roving tabindex). */
   protected readonly activeTool = signal(0);
   /** @ignore Open state of the `fontFamily` popup (drives its trigger's `aria-expanded`). */
@@ -220,8 +213,6 @@ export class UiEditor extends BaseFormField<string> {
           : EDITOR_TOOL_META[tool as EditorButtonTool],
     })),
   );
-  /** @ignore Block levels offered by the `blockFormat` dropdown. */
-  protected readonly blocks = EDITOR_BLOCKS;
   /** @ignore Text sizes offered by the `fontSize` dropdown. */
   protected readonly sizes = EDITOR_SIZES;
   /**
@@ -288,11 +279,6 @@ export class UiEditor extends BaseFormField<string> {
       this.fonts.set(
         EDITOR_FONTS.map((f) => ({ ...f, label: resolveFontLabel(f.cssVar, f.label) })),
       );
-      // `readBlockFormat` reads the live caret, which does not exist yet: read
-      // the initial content's own structure once instead, so `blockFormat`
-      // does not open on a blank dropdown before the first click.
-      const el = this.contentEl()?.nativeElement;
-      if (el) this.currentBlock.set(readInitialBlockFormat(el));
     });
     // Sync the DOM when the value comes from outside (form write, reset).
     effect(() => {
@@ -388,7 +374,6 @@ export class UiEditor extends BaseFormField<string> {
     this.currentSize.set(readFontSize(anchor));
     this.currentTextColor.set(readTextColor(anchor));
     this.currentHighlightColor.set(readHighlightColor(anchor));
-    this.currentBlock.set(readBlockFormat());
 
     const next = readEditorState();
     const prev = this.state();
@@ -490,28 +475,10 @@ export class UiEditor extends BaseFormField<string> {
   }
 
   /**
-   * @ignore Applies the block level chosen in the `blockFormat` dropdown.
-   *
-   * The dropdown took the focus, so the caret is put back first. `fontFamily`
-   * and `fontSize` no longer go through here — they run as popup-menu commands
-   * (see {@link onSelectMenuTrigger}, {@link selectFontFamily}).
-   */
-  protected onSelectChange(tool: EditorSelectTool, event: Event, index: number): void {
-    const value = (event.target as HTMLSelectElement).value;
-    this.activeTool.set(index);
-    if (!this.isEditable() || !value || tool !== 'blockFormat') return;
-
-    this.restoreSelection();
-    applyBlockFormat(value as EditorBlock);
-    this.onInput();
-  }
-
-  /**
    * @ignore Trigger click: mark the tool active, then toggle its popup menu.
    *
-   * Only reachable for `fontFamily`/`fontSize` (see the template's `@else`
-   * branch of `select === 'blockFormat'`) — `tool` still spans the whole
-   * dropdown union so the template's narrowing stays optional.
+   * `fontFamily` and `fontSize` are the only select-style tools left (there is
+   * no block-level dropdown), so `tool` narrows the same as `entry.select`.
    */
   protected onSelectMenuTrigger(tool: EditorSelectTool, index: number, event: MouseEvent): void {
     this.activeTool.set(index);
@@ -559,26 +526,8 @@ export class UiEditor extends BaseFormField<string> {
     this.onInput();
   }
 
-  /**
-   * @ignore Current value of a dropdown, so it reflects the caret.
-   *
-   * Family and size fall back to the value actually in force: text carrying no
-   * class really is rendered with `--fontfamily-base` at the default size, so
-   * naming them states a fact rather than a placeholder.
-   *
-   * The block level has no such fallback. When the caret sits in something the
-   * list does not offer — a code block, a list item — there is no honest value to
-   * show, and claiming "Normal" would invite a click that reformats the block.
-   */
-  protected selectValue(tool: EditorSelectTool): string {
-    if (tool === 'blockFormat') return this.currentBlock() ?? '';
-    if (tool === 'fontFamily') return this.currentFont() ?? 'base';
-    return this.currentSize() ?? 'default';
-  }
-
   /** @ignore Accessible name of a dropdown — spelled out, it is never truncated. */
   protected selectLabel(tool: EditorSelectTool): string {
-    if (tool === 'blockFormat') return 'Niveau de texte';
     if (tool === 'fontFamily') return 'Police';
     return 'Taille du texte';
   }
@@ -586,9 +535,9 @@ export class UiEditor extends BaseFormField<string> {
   /**
    * @ignore Label shown on the `fontFamily`/`fontSize` popup triggers.
    *
-   * Reads the value actually in force at the caret, same fallback rule as
-   * {@link selectValue}: text carrying no class really is rendered with
-   * `--fontfamily-base` at the default size.
+   * Falls back to the value actually in force when no class was applied: text
+   * carrying no class really is rendered with `--fontfamily-base` at the
+   * default size, so naming it states a fact rather than a placeholder.
    */
   protected selectDisplayLabel(tool: EditorSelectTool): string {
     if (tool === 'fontFamily') {
@@ -610,15 +559,6 @@ export class UiEditor extends BaseFormField<string> {
   protected selectTriggerAriaLabel(tool: EditorSelectTool): string {
     return `${this.selectLabel(tool)} : ${this.selectDisplayLabel(tool)}`;
   }
-
-  /**
-   * @ignore The dropdown shows no value at all.
-   *
-   * Only reachable for the block level (see {@link selectValue}). Left blank
-   * rather than labelled with the control's own name: the closed state is where
-   * the current formatting is read, not where the control introduces itself.
-   */
-  protected readonly hasNoValue = computed(() => this.currentBlock() === null);
 
   /**
    * @ignore v1 link flow: the native prompt.
@@ -676,13 +616,13 @@ export class UiEditor extends BaseFormField<string> {
   /**
    * @ignore Moves the DOM focus onto the control now holding the tab stop.
    *
-   * Queried from the live toolbar rather than from the `ui-button` children: the
-   * ring mixes buttons and the font `<select>`, and DOM order is the visual order.
+   * Queried from the live toolbar rather than from the `ui-button` children:
+   * DOM order is the visual order, and every tool (buttons and select-menu
+   * triggers alike) renders as a `<button>`.
    */
   private focusTool(index: number): void {
     const position = this.toolbar().filter((e) => !e.isSeparator && e.index <= index).length - 1;
-    const controls =
-      this.toolbarEl()?.nativeElement.querySelectorAll<HTMLElement>('button, select');
+    const controls = this.toolbarEl()?.nativeElement.querySelectorAll<HTMLElement>('button');
     controls?.[position]?.focus();
   }
 

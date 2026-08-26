@@ -36,7 +36,7 @@ const meta: Meta<UiEditor> = {
     tools: {
       control: 'object',
       description:
-        "Outils affichés dans la barre, dans l'ordre (`separator` = séparateur ; `blockFormat`, `fontFamily` et `fontSize` sont des listes déroulantes).",
+        "Outils affichés dans la barre, dans l'ordre (`separator` = séparateur ; `fontFamily` et `fontSize` sont des menus popup, pas des boutons).",
       table: {
         type: { summary: 'EditorTool[]' },
         defaultValue: { summary: 'DEFAULT_EDITOR_TOOLS' },
@@ -116,7 +116,7 @@ export default meta;
 type Story = StoryObj<UiEditor>;
 
 // --- Template-driven ([(ngModel)]) --------------------------------------
-const TEMPLATE = `<div style="width:640px"><ui-editor
+const TEMPLATE = `<div style="width:750px"><ui-editor
     [(ngModel)]="model"
     [label]="label" [helperText]="helperText" [errorText]="errorText" [placeholder]="placeholder"
     [tools]="tools" [minRows]="minRows" [maxlength]="maxlength" [showCount]="showCount"
@@ -163,12 +163,14 @@ export const CodeBlock: Story = {
 };
 
 /**
- * Le choix de police est **fermé aux trois familles du système**
+ * `fontFamily` et `fontSize` sont tous deux **dans la barre par défaut**, à
+ * égalité : ni l'un ni l'autre n'est une option gardée derrière `tools`. Le
+ * choix de police est fermé aux trois familles du système
  * (`--fontfamily-base`, `--fontfamily-title`, `--fontfamily-monospace`), et la
- * taille à l'échelle `--size-typography-text-*`. Chaque liste se rend en
- * déclencheur `ui-button` + popup `ui-menu` (`size="small"`, même pattern que
- * `ui-button-split`), et affiche le nom réel de la fonte en vigueur, lu depuis
- * le token à l'exécution.
+ * taille à l'échelle `--size-typography-text-*`. Chacun se rend en déclencheur
+ * `ui-button` + popup `ui-menu` (`size="small"`, même pattern que
+ * `ui-button-split`), et affiche la valeur en vigueur au repos — la police lit
+ * le nom réel de la fonte, résolu depuis le token à l'exécution.
  */
 export const FontFamily: Story = {
   render: story(
@@ -179,52 +181,14 @@ export const FontFamily: Story = {
   args: { label: 'Contenu' },
 };
 
-/**
- * `fontSize` n'est **pas** dans la barre par défaut : il ferait doublon avec
- * `blockFormat` à l'écran, sans porter la structure du document. Il s'ajoute
- * explicitement quand un projet en a besoin.
- */
+/** Les quatre tailles de l'échelle `--size-typography-text-*`. */
 export const FontSize: Story = {
   render: story(
     '<p><span class="ui-editor-size-xl">Très grand</span>, ' +
       '<span class="ui-editor-size-lg">grand</span>, normal, ' +
       '<span class="ui-editor-size-sm">petit</span>.</p>',
   ),
-  args: {
-    label: 'Contenu',
-    tools: ['blockFormat', 'fontFamily', 'fontSize', 'separator', 'bold', 'italic'],
-  },
-};
-
-/**
- * Les deux menus popup côte à côte : `fontFamily` et `fontSize` ouvrent chacun
- * leur propre `ui-menu` (`popup`, `size="small"`) ancré à un bouton `ui-button`
- * affichant la valeur en vigueur au repos.
- */
-export const FontMenus: Story = {
-  render: story(
-    '<p><span class="ui-editor-font-title ui-editor-size-lg">Titre en grand</span></p>' +
-      '<p>Paragraphe en police et taille par défaut.</p>' +
-      '<p><span class="ui-editor-font-monospace ui-editor-size-sm">const x = 1;</span></p>',
-  ),
-  args: {
-    label: 'Contenu',
-    tools: ['fontFamily', 'fontSize', 'separator', 'bold', 'italic', 'underline'],
-  },
-};
-
-/**
- * `blockFormat` change ce que le bloc **est**, pas seulement son apparence : un
- * titre porte la structure du document, et un lecteur d'écran navigue de titre en
- * titre.
- */
-export const Headings: Story = {
-  render: story(
-    '<h1>Titre de niveau 1</h1><p>Un paragraphe.</p>' +
-      '<h2>Titre de niveau 2</h2><p>Un autre paragraphe.</p>' +
-      '<h3>Titre de niveau 3</h3><p>Encore un.</p>',
-  ),
-  args: { label: 'Article', minRows: 8 },
+  args: { label: 'Contenu' },
 };
 
 /**

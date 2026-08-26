@@ -23,7 +23,6 @@ export type EditorTool =
   | 'bulletList'
   | 'orderedList'
   | 'codeBlock'
-  | 'blockFormat'
   | 'fontFamily'
   | 'fontSize'
   | 'indent'
@@ -39,13 +38,12 @@ export type EditorTool =
   | 'separator';
 
 /** Tools rendered as a dropdown: they pick among values instead of toggling one. */
-export type EditorSelectTool = 'blockFormat' | 'fontFamily' | 'fontSize';
+export type EditorSelectTool = 'fontFamily' | 'fontSize';
 
 /** Tools rendered as an icon button. */
 export type EditorButtonTool = Exclude<EditorTool, 'separator' | EditorSelectTool>;
 
 export const EDITOR_SELECT_TOOLS: readonly EditorSelectTool[] = [
-  'blockFormat',
   'fontFamily',
   'fontSize',
 ];
@@ -135,73 +133,18 @@ export const EDITOR_SIZES: readonly { key: EditorSize; className: string; label:
 
 const SIZE_CLASSES = new Set(EDITOR_SIZES.map((s) => s.className));
 
-/**
- * Block levels the editor can apply — the "Normal / Titre" dropdown.
- *
- * Distinct from the font family: this one sets what the block *is* (a heading
- * carries document structure, and screen readers navigate by it), while the font
- * only changes how it looks.
- */
-export type EditorBlock = 'p' | 'h1' | 'h2' | 'h3';
-
-/** Block tag → French label for the dropdown. */
-export const EDITOR_BLOCKS: readonly { key: EditorBlock; label: string }[] = [
-  { key: 'p', label: 'Normal' },
-  { key: 'h1', label: 'Titre 1' },
-  { key: 'h2', label: 'Titre 2' },
-  { key: 'h3', label: 'Titre 3' },
-];
-
-const BLOCK_KEYS = new Set<string>(EDITOR_BLOCKS.map((b) => b.key));
-
-/** Applies a block level to the block under the caret. */
-export function applyBlockFormat(tag: EditorBlock): void {
-  document.execCommand('formatBlock', false, tag);
-}
-
-/**
- * Block level under the caret, or `null` when it is something else.
- *
- * `null` covers the code block and list items, which the dropdown does not offer:
- * showing "Normal" there would misreport what the caret actually sits in.
- */
-export function readBlockFormat(): EditorBlock | null {
-  try {
-    const value = (document.queryCommandValue('formatBlock') || '').toLowerCase();
-    return BLOCK_KEYS.has(value) ? (value as EditorBlock) : null;
-  } catch {
-    return null;
-  }
-}
-
-/**
- * Best-effort block level for content that has never had the caret in it.
- *
- * `readBlockFormat` reads the live selection via `queryCommandValue`, which is
- * empty before the editor is ever focused — so on first render the dropdown
- * showed nothing, even though the content already has a definite structure (or,
- * for an empty editor, will get a plain paragraph the moment typing starts).
- * This reads the tag of the first element child directly instead, falling back
- * to `p` when the editor is empty or starts with plain text.
- */
-export function readInitialBlockFormat(root: HTMLElement): EditorBlock | null {
-  const tag = root.firstElementChild?.tagName.toLowerCase() ?? 'p';
-  return BLOCK_KEYS.has(tag) ? (tag as EditorBlock) : null;
-}
-
 const FONT_CLASSES = new Set(EDITOR_FONTS.map((f) => f.className));
 
 /**
  * The tools enabled when the consumer does not provide a `tools` list.
  *
- * `fontSize` is deliberately absent: it would duplicate `blockFormat` on screen —
- * both make text bigger — while only the latter carries document structure.
- * Leaving both in the default bar invites headings made of merely large text.
- * It stays available for a project that explicitly asks for it in `tools`.
+ * There is no block-level dropdown (no `blockFormat`, no headings): the editor
+ * only ever produces `<p>`. `fontFamily`/`fontSize` are both first-class,
+ * always-on tools rather than one gated behind the other.
  */
 export const DEFAULT_EDITOR_TOOLS: readonly EditorTool[] = [
-  'blockFormat',
   'fontFamily',
+  'fontSize',
   'separator',
   'bold',
   'italic',
