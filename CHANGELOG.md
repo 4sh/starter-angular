@@ -34,6 +34,62 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
   - Réduit volontairement par rapport à PrimeNG : 4 directions (pas 8 — les diagonales), 2 dispositions (pas 4 — sans `quarter-circle`/`semi-circle`), et un seul étalonnage de touches clavier commun aux dispositions plutôt qu'un mappage par cas. `showTooltips` (booléen) simplifie `tooltipOptions` : la position suit automatiquement le sens de déploiement.
   - 5 hooks `--ui-speed-dial-*` (empan, décalage d'apparition des actions, rayon par défaut du cercle, palier d'empilement, assombrissement du masque).
 
+- **`ui-editor` : outils `indent`/`outdent`** (FSHSP-160). Deux nouveaux `EditorButtonTool`,
+  passthrough direct sur `document.execCommand('indent'|'outdent')` — pas de marker ni de classe
+  à convertir, contrairement à `fontFamily`/`fontSize`. Absents de `DEFAULT_EDITOR_TOOLS` (même
+  logique que `fontSize` : opt-in via `tools`), icônes FontAwesome `indent`/`outdent`.
+
+- **`ui-editor` : outils `textColor`/`highlightColor`** (FSHSP-160). Deux nouveaux
+  `EditorButtonTool`, chacun ouvrant un `ui-swatch-picker` en popup (`size="small"`) ancré à son
+  bouton `ui-button`, plutôt qu'une commande directe — la sélection se fait dans le
+  `swatchSelect` du nuancier. Palette réutilisée depuis `DEFAULT_SWATCH_PALETTE`
+  (`ui-swatch-picker`) : `EDITOR_COLORS`/`EDITOR_HIGHLIGHTS` sont dérivées de la même liste pour
+  que le nuancier et les classes générées portent toujours le même jeu de tokens
+  `--primitives-*`. Écrits en **classe** (`ui-editor-color-*`/`ui-editor-highlight-*`) — jamais
+  en style en ligne — via le même mécanisme marker → conversion que `fontFamily`/`fontSize` :
+  `document.execCommand('foreColor', …)` émet un `<font color>` converti en `<span class>`,
+  tandis que `hiliteColor` n'émet **pas** de `<font>` (vérifié empiriquement, Chromium et
+  Firefox) — il pose un `style="background-color:…"` sur un `<span>`, converti via un sélecteur
+  d'attribut `style` plutôt que `font[color]`. Le bouton de chaque outil affiche un liseré sous
+  son icône dans la couleur en vigueur au curseur ; le nuancier propose une pastille
+  « Aucune couleur » (`allowClear`) qui retire la classe couleur/surlignage de la sélection sans
+  effacer le reste de la mise en forme — `foreColor`/`hiliteColor` n'ont pas de commande native
+  « retirer la couleur ». Absents de `DEFAULT_EDITOR_TOOLS` (même logique d'opt-in que
+  `fontSize`/`indent`/`outdent`).
+
+- **`ui-swatch-picker` — nuancier de couleur réutilisable** (FSHSP-160). `ui-editor` avait
+  besoin d'un nuancier couleur texte / surlignage, et rien dans le kit ne couvrait ce
+  besoin : `ui-menu` structure des commandes, pas une grille de teintes. `ui-swatch-picker`
+  reprend la mécanique overlay de `ui-menu` (`CdkConnectedOverlay`, `autoFlip`,
+  re-position au scroll) sans porter son propre bouton trigger — même contrat de
+  composition que `ui-button-split` avec `ui-menu` (`toggle(event)`/`show(event)`/
+  `hide(focusTrigger?)`, `popup`).
+  - `DEFAULT_SWATCH_PALETTE` (export nommé) : grille 7×5 dérivée des tokens `primitives.*`
+    (7 teintes `primary`/`secondary`/`green`/`orange`/`red`/`slate`/`grey` × 5 paliers
+    `900`→`100`, foncé → clair) plus `black`/`white` — chaque pastille pointe une variable
+    `--primitives-{teinte}-{palier}`, jamais un hex en dur : un rebind de marque change la
+    grille sans recompilation. `palette` accepte un `UiSwatchGroup[]` personnalisé.
+  - Navigation clavier **grille 2D** (roving tabindex) : flèches, `Début`/`Fin`,
+    `Entrée`/`Espace` sélectionnent, `Échap` ferme le popup — mêmes bases que le roving
+    focus de `ui-menu`, adaptées au calcul ligne/colonne.
+  - A11y : `role="listbox"` / `role="option"` sur de vrais `<button>`, `aria-selected` sur
+    la pastille sélectionnée (liseré `--form-high-stroke-checked`, jamais une opacité —
+    doit rester lisible sur chaque teinte), `aria-label` par pastille = son nom
+    (jamais une description de la couleur seule).
+  - `allowClear` (défaut `true`) ajoute une pastille « Aucune couleur » émettant
+    `value = null` / `swatchSelect(null)`.
+
+### Changed
+
+- **`ui-editor` : les listes `fontFamily`/`fontSize` passent du `<select>` natif à un menu popup**
+  (FSHSP-160). Rendu désormais en déclencheur `ui-button` (ghost, `size="small"`) glué à un
+  `ui-menu` en mode `popup [size]="small"`, même pattern que `ui-button-split` — cohérent
+  visuellement avec le reste de la barre d'outils et du kit. `blockFormat` reste un `<select>`
+  natif, hors périmètre de ce changement. Le déclencheur affiche la valeur en vigueur (comme
+  l'ancien `<select>`) et porte un nom accessible qui la reprend (`aria-label` combiné, ex.
+  « Police : Inter ») puisqu'un `ariaLabel` explicite sur `ui-button` remplace tout le contenu
+  visible dans le nom accessible.
+
 - **`ui-editor` — éditeur de texte riche, sans moteur tiers** (FSHSP-160). Le kit s'arrêtait à `ui-textarea` : dès qu'un projet avait besoin de gras, de listes ou d'un lien dans un champ libre, il installait Quill ou TipTap et repartait avec un champ qui ne ressemble à aucun autre du formulaire. `ui-editor` couvre ce besoin en restant dans les règles du kit : bâti sur le shell `ui-field` en mode multiligne, il partage le libellé, la boîte, les niveaux, le helper et la validation avec les huit autres champs, et n'ajoute **aucune dépendance runtime** — les commandes de mise en forme s'appuient sur l'API d'édition native du navigateur, isolée dans `ui-editor-commands` pour qu'un futur moteur ne se substitue qu'à ce fichier.
   - **Barre d'outils configurable** : `tools` liste les outils rendus, dans l'ordre (`bold`, `italic`, `underline`, `bulletList`, `orderedList`, `link`, `clearFormat`, plus `separator`), et `toolbarPosition` la place au-dessus ou sous la zone de saisie. Elle forme **un seul arrêt de tabulation** (`role="toolbar"`, roving tabindex : ⭠ ⭢, `Home`/`End`, `Échap` rend le focus à la saisie) ; les bascules portent un `aria-pressed` recalculé à chaque déplacement du curseur, les actions ponctuelles n'en portent pas. Cliquer un outil ne déplace pas le focus et préserve la sélection. Les raccourcis `Ctrl`/`Cmd` + `B`/`I`/`U` sont pris en charge nativement, l'état de la barre suit.
   - **La valeur est du HTML assaini** : elle passe par `DomSanitizer` avant tout affichage, et le collage est en plus réduit à une liste blanche de balises (`b`, `strong`, `i`, `em`, `u`, `a`, `ul`, `ol`, `li`, `p`, `br`, `div`, `span`) avec `href` limité à `http(s)`/`mailto`/`tel` — un collage depuis Word ou une page web n'injecte ni style en ligne, ni tableau, ni balise étrangère. Le DOM de la zone n'est réécrit que lorsque la valeur vient du formulaire, jamais à la frappe : le curseur ne saute pas.

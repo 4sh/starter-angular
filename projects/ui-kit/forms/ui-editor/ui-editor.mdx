@@ -32,7 +32,8 @@ saisie multiligne **sans mise en forme** →
 
 `tools` liste les outils rendus, dans l'ordre. La valeur `separator` insère un séparateur visuel.
 Outils disponibles : `blockFormat`, `fontFamily`, `fontSize`, `bold`, `italic`, `underline`,
-`bulletList`, `orderedList`, `link`, `codeBlock`, `clearFormat`.
+`bulletList`, `orderedList`, `indent`, `outdent`, `textColor`, `highlightColor`, `link`,
+`codeBlock`, `clearFormat`.
 
 <Canvas of={EditorStories.MinimalToolbar} />
 <Canvas of={EditorStories.ToolbarBottom} />
@@ -48,16 +49,19 @@ par construction.
 
 <Canvas of={EditorStories.CodeBlock} />
 
-### Les trois listes déroulantes
+### Les trois sélecteurs de valeur
 
-`blockFormat`, `fontFamily` et `fontSize` rendent une liste déroulante et non un bouton : elles
-choisissent parmi des valeurs au lieu d'en basculer une.
+`blockFormat`, `fontFamily` et `fontSize` choisissent parmi des valeurs au lieu d'en basculer une.
+Ils ne partagent plus le même rendu : `blockFormat` reste un `<select>` natif, tandis que
+`fontFamily`/`fontSize` s'ouvrent désormais en popup — un déclencheur `ui-button` (ghost,
+`size="small"`) glué à un `ui-menu` `popup [size]="small"`, même pattern que
+[`ui-button-split`](?path=/docs/components-ui-actions-ui-button-split--docs).
 
-| Liste         | Rôle                                                                          | Par défaut |
-| ------------- | ----------------------------------------------------------------------------- | ---------- |
-| `blockFormat` | **Ce que le bloc est** : Normal, Titre 1, Titre 2, Titre 3 (`<p>`, `<h1-h3>`) | oui        |
-| `fontFamily`  | **La famille de caractères** appliquée au texte sélectionné                   | oui        |
-| `fontSize`    | **La taille** d'une portion : Petit, Normal, Grand, Très grand                | non        |
+| Sélecteur     | Rôle                                                                          | Rendu                          | Par défaut |
+| ------------- | ------------------------------------------------------------------------------ | ------------------------------- | ---------- |
+| `blockFormat` | **Ce que le bloc est** : Normal, Titre 1, Titre 2, Titre 3 (`<p>`, `<h1-h3>`)   | `<select>` natif                | oui        |
+| `fontFamily`  | **La famille de caractères** appliquée au texte sélectionné                    | `ui-button` + `ui-menu` en popup | oui        |
+| `fontSize`    | **La taille** d'une portion : Petit, Normal, Grand, Très grand                 | `ui-button` + `ui-menu` en popup | non        |
 
 Le niveau et la police sont deux choses distinctes : un titre porte la **structure** du document —
 un lecteur d'écran navigue de titre en titre — là où la police ne change que l'apparence. Mettre la
@@ -69,24 +73,28 @@ proposer côte à côte revient à inviter des titres qui n'en sont pas, et donc
 structure. Il reste disponible pour un projet qui l'ajoute explicitement à `tools`, par exemple
 pour mettre en avant une portion de texte sans en faire un titre.
 
-Chaque liste affiche **la valeur en vigueur**, jamais son propre nom : au repos on lit « Normal »
-et « Inter », c'est-à-dire ce que le texte utilise réellement. La police est lue sur le rendu
-effectif, pas devinée — dans un titre la liste affiche « DM Sans », puisque c'est la fonte que le
-titre porte. Le nom de chaque liste reste disponible pour les lecteurs d'écran via `aria-label`.
+Chaque sélecteur affiche **la valeur en vigueur**, jamais son propre nom : au repos on lit
+« Normal » et « Inter », c'est-à-dire ce que le texte utilise réellement. La police est lue sur le
+rendu effectif, pas devinée — dans un titre le sélecteur affiche « DM Sans », puisque c'est la
+fonte que le titre porte. Le nom de chaque sélecteur reste disponible pour les lecteurs d'écran :
+en `aria-label` sur le `<select>` de `blockFormat`, combiné au nom du déclencheur
+(« Police : Inter ») sur les popups `fontFamily`/`fontSize` — sinon la valeur affichée à l'écran
+disparaîtrait du nom accessible, qu'un `aria-label` explicite remplace entièrement sur un
+`ui-button`.
 
 Seule exception, `blockFormat` n'affiche **aucune** valeur quand le curseur est dans un bloc qu'il
 ne propose pas (bloc de code, élément de liste) : il n'y a là rien d'honnête à afficher, et
 annoncer « Normal » inviterait un clic qui reformaterait le bloc.
 
-Les listes ont toutes la **même largeur, fixe** : une largeur ajustée au contenu ferait sauter la
-barre entière à chaque changement de valeur.
+Les trois sélecteurs ont tous la **même largeur, fixe** : une largeur ajustée au contenu ferait
+sauter la barre entière à chaque changement de valeur.
 
 Les choix sont **fermés aux tokens** : `--fontfamily-base` / `--fontfamily-title` /
-`--fontfamily-monospace` pour la famille, l'échelle `--size-typography-text-*` pour la taille. Une
-liste libre façon traitement de texte écrirait une police ou un `font-size` arbitraire dans la
+`--fontfamily-monospace` pour la famille, l'échelle `--size-typography-text-*` pour la taille. Un
+champ libre façon traitement de texte écrirait une police ou un `font-size` arbitraire dans la
 valeur, donc hors du système.
 
-La liste des polices affiche le **nom réel** de chaque fonte, lu depuis le token à l'exécution
+Le sélecteur de police affiche le **nom réel** de chaque fonte, lu depuis le token à l'exécution
 (« Inter », « DM Sans », « Roboto Mono »). Il n'est pas écrit en dur : un projet qui rebinde
 `--fontfamily-base` verrait sinon un menu nommant une police qu'il n'utilise plus.
 
@@ -98,6 +106,46 @@ collage.
 <Canvas of={EditorStories.Headings} />
 <Canvas of={EditorStories.FontFamily} />
 <Canvas of={EditorStories.FontSize} />
+<Canvas of={EditorStories.FontMenus} />
+
+### Indentation
+
+`indent`/`outdent` sont un passthrough direct sur les commandes natives correspondantes : ni
+classe, ni conversion à appliquer, contrairement à la police et à la taille. Comme `fontSize`, ils
+sont **absents de la barre par défaut** et s'ajoutent explicitement via `tools`.
+
+<Canvas of={EditorStories.IndentOutdent} />
+
+### Couleur du texte / de surlignage
+
+`textColor`/`highlightColor` ouvrent chacun un
+[`ui-swatch-picker`](?path=/docs/components-ui-forms-ui-swatch-picker--docs) en popup
+(`popup`, `size="small"`) ancré à leur bouton `ui-button` — même composition « déclencheur +
+overlay » que `fontFamily`/`fontSize`, sans `ui-menu` : le nuancier n'a pas son propre
+déclencheur, exactement comme `ui-menu` n'a pas le sien.
+
+La palette est la **palette par défaut de `ui-swatch-picker`** (`DEFAULT_SWATCH_PALETTE`),
+réutilisée telle quelle pour `EDITOR_COLORS`/`EDITOR_HIGHLIGHTS` : le nuancier et les classes
+que l'éditeur écrit dans la valeur portent toujours le même jeu de tokens `--primitives-*`.
+
+Comme la police et la taille, le choix est écrit sous forme de **classe** —
+`ui-editor-color-<clé>` / `ui-editor-highlight-<clé>` — jamais en style en ligne, et ce sont
+les seules classes couleur que la liste blanche laisse passer au collage.
+
+`document.execCommand('hiliteColor', …)` ne produit **pas** de balise `<font>` comme
+`foreColor`/`fontName`/`fontSize` : il pose directement un `style="background-color:…"` sur un
+`<span>` (Chromium et Firefox vérifiés). La conversion vers la classe pérenne s'appuie donc sur
+un sélecteur d'attribut `style` plutôt que sur `font[color]`.
+
+Le bouton de chaque outil affiche un **liseré** sous son icône dans la couleur en vigueur au
+curseur — seule exception au rendu générique des outils-bouton, les autres n'ayant pas
+d'indicateur de valeur.
+
+Le nuancier propose une entrée **« Aucune couleur »** (`allowClear`) qui retire la classe
+couleur/surlignage de la sélection plutôt que d'effacer toute la mise en forme (gras, italique…) :
+`foreColor`/`hiliteColor` n'ont pas d'équivalent natif « retirer la couleur ».
+
+<Canvas of={EditorStories.ColorPickers} />
 
 ## Niveaux & états
 
@@ -185,7 +233,9 @@ refusées mais les suppressions et la mise en forme restent disponibles.
       <td>
         Les bascules (gras, italique, souligné, listes) portent <code>aria-pressed</code>, recalculé
         à chaque déplacement du curseur. Les actions ponctuelles (lien, effacer le formatage) n'en
-        portent pas.
+        portent pas. <code>textColor</code>/<code>highlightColor</code> portent{' '}
+        <code>aria-haspopup</code>/<code>aria-expanded</code> — ce sont des déclencheurs de popup,
+        pas des bascules.
       </td>
     </tr>
     <tr>

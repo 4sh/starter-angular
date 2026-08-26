@@ -90,51 +90,75 @@
         @if (entry.isSeparator) {
           <span class="ui-editor-toolbar-separator" aria-hidden="true"></span>
         } @else if (entry.select; as select) {
-          <!-- A picker, not a toggle: the dropdown takes the focus, so the
-               command restores the caret before it runs. -->
-          <select
-            class="ui-editor-select"
-            [attr.aria-label]="selectLabel(select)"
-            [disabled]="!isEditable()"
-            [value]="selectValue(select)"
-            [attr.tabindex]="entry.index === tabStop() ? 0 : -1"
-            (mousedown)="$event.stopPropagation()"
-            (change)="onSelectChange(select, $event, entry.index)"
-          >
-            <!-- Blank entry, only reachable for the block level: when the caret
-                 sits in a code block or a list item there is no honest level to
-                 show, and claiming "Normal" would be wrong. -->
-            @if (select === 'blockFormat') {
+          @if (select === 'blockFormat') {
+            <!-- A picker, not a toggle: the dropdown takes the focus, so the
+                 command restores the caret before it runs. -->
+            <select
+              class="ui-editor-select"
+              [attr.aria-label]="selectLabel(select)"
+              [disabled]="!isEditable()"
+              [value]="selectValue(select)"
+              [attr.tabindex]="entry.index === tabStop() ? 0 : -1"
+              (mousedown)="$event.stopPropagation()"
+              (change)="onSelectChange(select, $event, entry.index)"
+            >
+              <!-- Blank entry, only reachable for the block level: when the
+                   caret sits in a code block or a list item there is no honest
+                   level to show, and claiming "Normal" would be wrong. -->
               <option value="" disabled></option>
+              @for (block of blocks; track block.key) {
+                <option [value]="block.key" [selected]="selectValue(select) === block.key">
+                  {{ block.label }}
+                </option>
+              }
+            </select>
+          } @else {
+            <!-- Trigger + popup menu (same pattern as ui-button-split): the
+                 dropdown takes the focus, so the command restores the caret
+                 before it runs. -->
+            <ui-button
+              class="ui-editor-tool ui-editor-select-trigger"
+              variant="ghost"
+              level="low"
+              size="small"
+              icon="chevron-down"
+              iconPos="right"
+              [label]="selectDisplayLabel(select)"
+              [ariaLabel]="selectTriggerAriaLabel(select)"
+              [disabled]="!isEditable()"
+              [tabindex]="entry.index === tabStop() ? 0 : -1"
+              [buttonProps]="{
+                'aria-haspopup': 'menu',
+                'aria-expanded': selectMenuOpen(select) ? 'true' : 'false',
+              }"
+              (buttonClick)="onSelectMenuTrigger(select, entry.index, $event)"
+            />
+            @if (select === 'fontFamily') {
+              <ui-menu
+                #fontFamilyMenu
+                popup
+                size="small"
+                [items]="fontFamilyMenuItems()"
+                [ariaLabel]="selectLabel(select)"
+                (opened)="fontFamilyMenuOpen.set(true)"
+                (closed)="fontFamilyMenuOpen.set(false)"
+              />
+            } @else {
+              <ui-menu
+                #fontSizeMenu
+                popup
+                size="small"
+                [items]="fontSizeMenuItems()"
+                [ariaLabel]="selectLabel(select)"
+                (opened)="fontSizeMenuOpen.set(true)"
+                (closed)="fontSizeMenuOpen.set(false)"
+              />
             }
-
-            @switch (select) {
-              @case ('blockFormat') {
-                @for (block of blocks; track block.key) {
-                  <option [value]="block.key" [selected]="selectValue(select) === block.key">
-                    {{ block.label }}
-                  </option>
-                }
-              }
-              @case ('fontFamily') {
-                @for (font of fonts(); track font.key) {
-                  <option [value]="font.key" [selected]="selectValue(select) === font.key">
-                    {{ font.label }}
-                  </option>
-                }
-              }
-              @case ('fontSize') {
-                @for (size of sizes; track size.key) {
-                  <option [value]="size.key" [selected]="selectValue(select) === size.key">
-                    {{ size.label }}
-                  </option>
-                }
-              }
-            }
-          </select>
+          }
         } @else {
           <ui-button
             class="ui-editor-tool"
+            [class._colorTool]="entry.buttonTool === 'textColor' || entry.buttonTool === 'highlightColor'"
             variant="ghost"
             level="low"
             size="small"
@@ -144,10 +168,37 @@
             [disabled]="!isEditable()"
             [tabindex]="entry.index === tabStop() ? 0 : -1"
             [buttonProps]="toolProps(entry.buttonTool!)"
-            (buttonClick)="runTool(entry.buttonTool!, entry.index)"
+            [style.--ui-editor-swatch-indicator-color]="colorIndicatorVar(entry.buttonTool)"
+            (buttonClick)="runTool(entry.buttonTool!, entry.index, $event)"
           />
         }
       }
+
+      <!-- `textColor`/`highlightColor` popups: no trigger of their own (same
+           composition contract as `ui-menu`), opened via `runTool` ->
+           `onColorToolClick` -> `toggle(event)`. -->
+      <ui-swatch-picker
+        #textColorPicker
+        popup
+        size="small"
+        [allowClear]="true"
+        [value]="currentTextColor()"
+        ariaLabel="Couleur du texte"
+        (swatchSelect)="onTextColorSelect($event)"
+        (opened)="textColorPickerOpen.set(true)"
+        (closed)="textColorPickerOpen.set(false)"
+      />
+      <ui-swatch-picker
+        #highlightColorPicker
+        popup
+        size="small"
+        [allowClear]="true"
+        [value]="currentHighlightColor()"
+        ariaLabel="Couleur de surlignage"
+        (swatchSelect)="onHighlightColorSelect($event)"
+        (opened)="highlightColorPickerOpen.set(true)"
+        (closed)="highlightColorPickerOpen.set(false)"
+      />
     </div>
   }
 </ng-template>

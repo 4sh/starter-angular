@@ -1,3 +1,5 @@
+import { DEFAULT_SWATCH_PALETTE } from '@4sh/ui-kit/forms/ui-swatch-picker';
+
 /**
  * Rich-text command layer — the only place that talks to the legacy editing API.
  *
@@ -24,6 +26,10 @@ export type EditorTool =
   | 'blockFormat'
   | 'fontFamily'
   | 'fontSize'
+  | 'indent'
+  | 'outdent'
+  | 'textColor'
+  | 'highlightColor'
   | 'link'
   | 'clearFormat'
   | 'separator';
@@ -189,17 +195,26 @@ export const EDITOR_TOOL_META: Record<EditorButtonTool, { icon: string; label: s
   bulletList: { icon: 'list-ul', label: 'Liste à puces' },
   orderedList: { icon: 'list-ol', label: 'Liste numérotée' },
   codeBlock: { icon: 'code', label: 'Bloc de code' },
+  indent: { icon: 'indent', label: 'Augmenter le retrait' },
+  outdent: { icon: 'outdent', label: 'Diminuer le retrait' },
+  textColor: { icon: 'font', label: 'Couleur du texte' },
+  highlightColor: { icon: 'highlighter', label: 'Couleur de surlignage' },
   link: { icon: 'link', label: 'Lien' },
   clearFormat: { icon: 'text-slash', label: 'Effacer le formatage' },
 };
 
 /** Tool → legacy command name. */
-const NATIVE_COMMAND: Record<Exclude<EditorButtonTool, 'link' | 'codeBlock'>, string> = {
+const NATIVE_COMMAND: Record<
+  Exclude<EditorButtonTool, 'link' | 'codeBlock' | 'textColor' | 'highlightColor'>,
+  string
+> = {
   bold: 'bold',
   italic: 'italic',
   underline: 'underline',
   bulletList: 'insertUnorderedList',
   orderedList: 'insertOrderedList',
+  indent: 'indent',
+  outdent: 'outdent',
   clearFormat: 'removeFormat',
 };
 
@@ -224,7 +239,9 @@ export function emptyEditorState(): EditorState {
 }
 
 /** Applies a formatting command to the current selection. */
-export function applyCommand(tool: Exclude<EditorButtonTool, 'link' | 'codeBlock'>): void {
+export function applyCommand(
+  tool: Exclude<EditorButtonTool, 'link' | 'codeBlock' | 'textColor' | 'highlightColor'>,
+): void {
   document.execCommand(NATIVE_COMMAND[tool], false);
 }
 
@@ -330,6 +347,126 @@ export function convertSizeMarkers(root: ParentNode, className: string): void {
 /** Text size active at the caret, or `null` when the text uses the default. */
 export function readFontSize(node: Node | null): EditorSize | null {
   return findClassKey(node, EDITOR_SIZES);
+}
+
+// --- Text color / highlight color ---------------------------------------
+
+/**
+ * Color key → class written into the value, token holding the swatch, and
+ * label, derived from `ui-swatch-picker`'s default palette rather than
+ * hand-duplicated: the editor's color tools and the nuancier it opens must
+ * always offer the same token set.
+ */
+export const EDITOR_COLORS: readonly {
+  key: string;
+  className: string;
+  cssVar: string;
+  label: string;
+}[] = DEFAULT_SWATCH_PALETTE.flatMap((group) =>
+  group.swatches.map((swatch) => ({
+    key: swatch.key,
+    className: `ui-editor-color-${swatch.key}`,
+    cssVar: swatch.cssVar,
+    label: swatch.label,
+  })),
+);
+
+/** Same key set as {@link EDITOR_COLORS}, classed separately for the highlight tool. */
+export const EDITOR_HIGHLIGHTS: readonly {
+  key: string;
+  className: string;
+  cssVar: string;
+  label: string;
+}[] = DEFAULT_SWATCH_PALETTE.flatMap((group) =>
+  group.swatches.map((swatch) => ({
+    key: swatch.key,
+    className: `ui-editor-highlight-${swatch.key}`,
+    cssVar: swatch.cssVar,
+    label: swatch.label,
+  })),
+);
+
+const COLOR_CLASSES = new Set(EDITOR_COLORS.map((c) => c.className));
+const HIGHLIGHT_CLASSES = new Set(EDITOR_HIGHLIGHTS.map((c) => c.className));
+
+/**
+ * Marker handed to `foreColor`, immediately rewritten into a class.
+ *
+ * `foreColor` is the only command that can color an arbitrary selection, but
+ * it emits `<font color="…">` — same trick as the family/size markers. Must
+ * be a value the browser accepts as a real color (unlike `fontName`'s marker,
+ * which is free text): an unparseable string is silently dropped instead of
+ * being written to the `color` attribute. A hex triplet unlikely to collide
+ * with a real token value is used, and Chromium/Firefox both echo it back
+ * verbatim on the `<font color>` attribute (verified empirically).
+ */
+const COLOR_MARKER = '#010203';
+
+/** Applies a text color to the selection (see {@link convertColorMarkers}). */
+export function applyTextColor(): void {
+  document.execCommand('foreColor', false, COLOR_MARKER);
+}
+
+/** Rewrites the `<font>` elements `foreColor` just produced into `<span class>`. */
+export function convertColorMarkers(root: ParentNode, className: string): void {
+  convertMarkers(root, `font[color="${COLOR_MARKER}"]`, className);
+}
+
+/** Text color active at the caret, or `null` when the text uses the default. */
+export function readTextColor(node: Node | null): string | null {
+  return findClassKey(node, EDITOR_COLORS);
+}
+
+/**
+ * Marker handed to `hiliteColor`, immediately rewritten into a class.
+ *
+ * Unlike `fontName`/`fontSize`/`foreColor`, `hiliteColor` does **not** emit a
+ * `<font>` element: verified empirically (Playwright, Chromium + Firefox)
+ * that it always produces `<span style="background-color: rgb(r, g, b);">`,
+ * converting whatever color is handed to it — including a hex marker — to an
+ * `rgb(...)` triplet in the `style` attribute. `HILITE_MARKER` is therefore
+ * kept as the hex value passed to the command, and `HILITE_MARKER_RGB` as the
+ * exact `rgb(...)` string both browsers echo back for it, used to build the
+ * `[style*="…"]` selector `convertHighlightMarkers` matches on.
+ */
+const HILITE_MARKER = '#040506';
+/** @internal `rgb(...)` form both Chromium and Firefox normalize `HILITE_MARKER` to. */
+const HILITE_MARKER_RGB = 'rgb(4, 5, 6)';
+
+/** Applies a highlight color to the selection (see {@link convertHighlightMarkers}). */
+export function applyHighlightColor(): void {
+  document.execCommand('hiliteColor', false, HILITE_MARKER);
+}
+
+/** Rewrites the `<span style>` elements `hiliteColor` just produced into `<span class>`. */
+export function convertHighlightMarkers(root: ParentNode, className: string): void {
+  convertMarkers(root, `[style*="background-color: ${HILITE_MARKER_RGB}"]`, className);
+}
+
+/** Highlight color active at the caret, or `null` when the text carries none. */
+export function readHighlightColor(node: Node | null): string | null {
+  return findClassKey(node, EDITOR_HIGHLIGHTS);
+}
+
+/**
+ * Strips a color/highlight class from every element carrying it inside
+ * `range`, unwrapping the element when nothing else justifies it (a plain
+ * `<span>` holding only that class).
+ *
+ * Used by the pickers' "no color" swatch: `foreColor`/`hiliteColor` can only
+ * set a color, there is no native command to remove one, so this undoes what
+ * {@link convertColorMarkers}/{@link convertHighlightMarkers} previously wrote.
+ */
+export function clearMarkerClass(root: ParentNode, range: Range, className: string): void {
+  for (const el of Array.from(root.querySelectorAll(`.${className}`))) {
+    if (!range.intersectsNode(el)) continue;
+    el.classList.remove(className);
+    if (el.classList.length > 0) continue;
+    el.removeAttribute('class');
+    if (el.tagName === 'SPAN' && el.attributes.length === 0) {
+      el.replaceWith(...Array.from(el.childNodes));
+    }
+  }
 }
 
 /** @internal Nearest ancestor carrying one of the given classes. */
@@ -455,11 +592,17 @@ function scrubNode(root: ParentNode): void {
     }
     for (const attr of Array.from(el.attributes)) {
       if (attr.name === 'class') {
-        // Only the editor's own font/size classes survive — anything else pasted
-        // in would style the value against a foreign stylesheet.
+        // Only the editor's own font/size/color classes survive — anything else
+        // pasted in would style the value against a foreign stylesheet.
         const kept = attr.value
           .split(/\s+/)
-          .filter((c) => FONT_CLASSES.has(c) || SIZE_CLASSES.has(c));
+          .filter(
+            (c) =>
+              FONT_CLASSES.has(c) ||
+              SIZE_CLASSES.has(c) ||
+              COLOR_CLASSES.has(c) ||
+              HIGHLIGHT_CLASSES.has(c),
+          );
         if (kept.length) el.setAttribute('class', kept.join(' '));
         else el.removeAttribute('class');
         continue;

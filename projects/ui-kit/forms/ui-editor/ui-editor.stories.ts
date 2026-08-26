@@ -165,8 +165,10 @@ export const CodeBlock: Story = {
 /**
  * Le choix de police est **fermé aux trois familles du système**
  * (`--fontfamily-base`, `--fontfamily-title`, `--fontfamily-monospace`), et la
- * taille à l'échelle `--size-typography-text-*`. La liste affiche le nom réel de
- * chaque fonte, lu depuis le token à l'exécution.
+ * taille à l'échelle `--size-typography-text-*`. Chaque liste se rend en
+ * déclencheur `ui-button` + popup `ui-menu` (`size="small"`, même pattern que
+ * `ui-button-split`), et affiche le nom réel de la fonte en vigueur, lu depuis
+ * le token à l'exécution.
  */
 export const FontFamily: Story = {
   render: story(
@@ -195,6 +197,23 @@ export const FontSize: Story = {
 };
 
 /**
+ * Les deux menus popup côte à côte : `fontFamily` et `fontSize` ouvrent chacun
+ * leur propre `ui-menu` (`popup`, `size="small"`) ancré à un bouton `ui-button`
+ * affichant la valeur en vigueur au repos.
+ */
+export const FontMenus: Story = {
+  render: story(
+    '<p><span class="ui-editor-font-title ui-editor-size-lg">Titre en grand</span></p>' +
+      '<p>Paragraphe en police et taille par défaut.</p>' +
+      '<p><span class="ui-editor-font-monospace ui-editor-size-sm">const x = 1;</span></p>',
+  ),
+  args: {
+    label: 'Contenu',
+    tools: ['fontFamily', 'fontSize', 'separator', 'bold', 'italic', 'underline'],
+  },
+};
+
+/**
  * `blockFormat` change ce que le bloc **est**, pas seulement son apparence : un
  * titre porte la structure du document, et un lecteur d'écran navigue de titre en
  * titre.
@@ -206,6 +225,41 @@ export const Headings: Story = {
       '<h3>Titre de niveau 3</h3><p>Encore un.</p>',
   ),
   args: { label: 'Article', minRows: 8 },
+};
+
+/**
+ * `indent`/`outdent` ne sont **pas** dans la barre par défaut (même logique
+ * que `fontSize` : opt-in via `tools`). Passthrough `execCommand` — aucune
+ * classe ni conversion, contrairement à la police/taille.
+ */
+export const IndentOutdent: Story = {
+  render: story(
+    '<ul><li>Premier point</li><li>Second point<ul><li>Sous-point</li></ul></li></ul>',
+  ),
+  args: {
+    label: 'Plan',
+    tools: ['bulletList', 'orderedList', 'separator', 'indent', 'outdent'],
+  },
+};
+
+/**
+ * `textColor`/`highlightColor` ne sont **pas** dans la barre par défaut (même
+ * logique d'opt-in que `fontSize`/`indent`/`outdent`). Chacun ouvre son propre
+ * `ui-swatch-picker` (`popup`, `size="small"`) ancré au bouton `ui-button`, qui
+ * affiche un liseré sous son icône dans la couleur active au curseur. La
+ * palette est celle par défaut de `ui-swatch-picker`, réutilisée telle quelle
+ * pour que le nuancier et les classes générées restent le même jeu de tokens.
+ */
+export const ColorPickers: Story = {
+  render: story(
+    '<p><span class="ui-editor-color-red-500">Texte en rouge</span>, ' +
+      '<span class="ui-editor-highlight-orange-100">surligné en orange clair</span> ' +
+      'et du texte normal.</p>',
+  ),
+  args: {
+    label: 'Contenu',
+    tools: ['bold', 'italic', 'separator', 'textColor', 'highlightColor'],
+  },
 };
 
 export const ToolbarBottom: Story = {
