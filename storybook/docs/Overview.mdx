@@ -17,6 +17,7 @@ import * as InputMaskStories from "../../projects/ui-kit/forms/ui-input-mask/ui-
 import * as InputOtpStories from "../../projects/ui-kit/forms/ui-input-otp/ui-input-otp.stories";
 import * as InputGroupStories from "../../projects/ui-kit/forms/ui-input-group/ui-input-group.stories";
 import * as ToggleStories from "../../projects/ui-kit/forms/ui-toggle/ui-toggle.stories";
+import * as ToggleButtonStories from "../../projects/ui-kit/forms/ui-toggle-button/ui-toggle-button.stories";
 import * as SegmentControlStories from "../../projects/ui-kit/forms/ui-segment-control/ui-segment-control.stories";
 import * as DatepickerStories from "../../projects/ui-kit/forms/ui-datepicker/ui-datepicker.stories";
 import * as RatingStories from "../../projects/ui-kit/forms/ui-rating/ui-rating.stories";
@@ -88,12 +89,13 @@ export const CATEGORIES = [
       { name: 'ui-input-otp', description: 'Code à usage unique / OTP (cellules maxlength=1, mask, integerOnly, tailles, avance auto + collage, roving Tab/←/→, template #input).', link: '?path=/docs/components-ui-forms-ui-input-otp--docs', story: InputOtpStories.Basic },
       { name: 'ui-input-group', description: "Groupe champ + compléments (add-ons texte/icône, bouton, case à cocher, liste déroulante) collés en un seul champ.", link: '?path=/docs/components-ui-forms-ui-input-group--docs', story: InputGroupStories.Basic },
       { name: 'ui-toggle', description: 'Interrupteur on/off (role=switch, CVA, tailles).', link: '?path=/docs/components-ui-forms-ui-toggle--docs', story: ToggleStories.Default },
+      { name: 'ui-toggle-button', description: 'Bouton à état pressé (aria-pressed, libellés/icônes par état, mode groupe multi-bascules, niveaux, variantes, tailles, fluid).', link: '?path=/docs/components-ui-forms-ui-toggle-button--docs', story: ToggleButtonStories.GroupVertical },
       { name: 'ui-datepicker', description: 'Sélecteur de date/heure (calendrier overlay/inline, CVA, min/max, showTime 12/24h, clavier).', link: '?path=/docs/components-ui-forms-ui-datepicker--docs', story: DatepickerStories.Default },
       { name: 'ui-rating', description: 'Notation étoiles (CVA, clavier natif via range caché).', link: '?path=/docs/components-ui-forms-ui-rating--docs', story: RatingStories.Default },
       { name: 'ui-slider', description: 'Curseur de valeur (CVA, simple/range, step, marks, écart min., drag pointeur + clavier WAI-ARIA).', link: '?path=/docs/components-ui-forms-ui-slider--docs', story: SliderStories.Basic },
       { name: 'ui-nudger', description: 'Incrémenteur numérique [−] valeur [+] (CVA, min/max/step, tailles, formatValue).', link: '?path=/docs/components-ui-forms-ui-nudger--docs', story: NudgerStories.MinMax },
       { name: 'ui-textarea', description: 'Zone de texte multiligne (CVA, rows, autoResize, poignée native, niveaux).', link: '?path=/docs/components-ui-forms-ui-textarea--docs', story: TextareaStories.WithHelper },
-      { name: 'ui-editor', description: 'Éditeur de texte riche sans moteur tiers (barre d’outils configurable, valeur HTML assainie).', link: '?path=/docs/components-ui-forms-ui-editor--docs', story: EditorStories.WithValue },
+      { name: 'ui-editor', description: 'Éditeur de texte riche sans moteur tiers (barre d’outils configurable, valeur HTML assainie).', link: '?path=/docs/components-ui-forms-ui-editor--docs', story: EditorStories.WithValue, previewScale: 0.65 },
       { name: 'ui-segment-control', description: 'Sélection segmentée (CVA, simple/multiple, indicateur glissant motion, fluid, template).', link: '?path=/docs/components-ui-forms-ui-segment-control--docs', story: SegmentControlStories.Sizes },
       { name: 'ui-select', description: 'Liste déroulante (combobox WAI-ARIA, options/groupes, multiple, filtre, editable, virtual scroll + lazy).', link: '?path=/docs/components-ui-forms-ui-select--docs', story: SelectStories.Checkmark },
       { name: 'ui-autocomplete', description: 'Champ de suggestions (combobox WAI-ARIA, completeMethod anti-rebondi, dropdown, groupes, forceSelection, virtual scroll).', link: '?path=/docs/components-ui-forms-ui-autocomplete--docs', story: AutocompleteStories.Basic },
