@@ -142,16 +142,17 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 - **`ui-datepicker` : `allowInput` couvre maintenant `range` et `multiple`** (FSHSP-118), en complément de la grille (le clic continue de fonctionner à l'identique). `range` se tape dans le même champ, les deux dates séparées par `" - "` (ex. `"08/07/2026 - 18/07/2026"`) ; `multiple` accepte une liste séparée par `", "`, nombre de dates non borné. `range` bénéficie du même masque auto-"/" en direct qu'en mode `single` (les deux dates, puis leur séparateur, se construisent au fil de la frappe) ; `multiple`, dont le nombre de dates n'est pas borné, reste en texte libre, parsé au blur/Entrée uniquement — dans les deux cas avec les mêmes garanties qu'en `single` : une entrée incomplète ou invalide revient à la dernière valeur affichée, une plage tapée dans le désordre est réordonnée chronologiquement (comme un second clic dans la grille), une date dupliquée en `multiple` est supprimée (comme un clic sur une case déjà sélectionnée). Un `parseDate` custom s'applique par date individuelle, symétrique de `dateFormat`. Non couvert : la combinaison avec `showTime` (les dates tapées en `range`/`multiple` sont toujours calées à minuit — seule la grille gère l'heure sur ces modes pour l'instant).
 - **Un utilitaire global `.sr-only`** dans la feuille de helpers publiée (section « Visibility ») : rend un texte visible des seuls lecteurs d'écran, pour nommer une colonne ou une action dont l'affichage ne montre rien. Ajouté pour les en-têtes de colonne vides des tableaux (`<th>` d'une colonne de sélection ou d'expansion), où `aria-label` ne suffit pas : `empty-table-header` exige du texte réellement présent. Quatre composants du kit recopient déjà ce bloc dans leur propre SCSS (`ui-datepicker`, `ui-select`, `ui-file-upload`, `ui-read-only`) — ils pourront s'appuyer dessus.
 
-### Fixed
-
-- **`ui-editor` : « Effacer le formatage » laissait police/taille/couleur/surlignage en place**
-  (FSHSP-160). `clearFormat` s'appuie sur `document.execCommand('removeFormat')`, qui ne connaît
-  que la mise en forme native du navigateur (gras, italique, souligné…) — jamais les
-  `<span class="ui-editor-*">` que `fontFamily`/`fontSize`/`textColor`/`highlightColor` écrivent.
-  Nouvelle `clearFormatMarkers()`, appelée en plus de la commande native : déshabille ces classes
-  sur toute la sélection courante (même mécanisme que le « Aucune couleur » des nuanciers).
-
 ### Changed
+
+- **`ui-editor` : `clearFormat` retiré de la barre par défaut, encore disponible via `tools`**
+  (FSHSP-160). `document.execCommand('removeFormat')` ne connaît que la mise en forme native du
+  navigateur (gras, italique, souligné…) — jamais les `<span class="ui-editor-*">` que
+  `fontFamily`/`fontSize`/`textColor`/`highlightColor` écrivent. Une première tentative,
+  `clearFormatMarkers()` (déshabille ces classes sur la sélection, même mécanisme que le
+  « Aucune couleur » des nuanciers), ne couvre pas encore tous les cas de façon fiable : plutôt
+  qu'un bouton qui n'effectue pas toujours ce qu'il annonce, il est retiré de
+  `DEFAULT_EDITOR_TOOLS` en attendant, sans rien retirer du kit — le tool, l'icône et
+  `clearFormatMarkers()` restent en place pour un projet qui l'ajoute explicitement.
 
 - **`ui-datepicker` : la plage sélectionnée (`range`) se lit comme une seule zone continue** (FSHSP-166). Elle était peinte sur la cellule elle-même — fond en dégradé mi-cellule sur les deux extrémités, filets haut et bas en bordure — ce qui la faisait _encadrer_ la sélection plutôt que la porter, avec deux débordements visibles : les filets couraient sur toute la largeur des cellules de début et de fin, donc au-delà de la moitié réellement remplie, et la pastille des jours de début/fin, dont la bordure transparente s'ajoutait à sa taille (`content-box`), dépassait la hauteur de la bande. La bande est désormais une couche à part, exactement de la hauteur d'une pastille et arrêtée au centre des deux extrémités : plus rien ne peut la dépasser, ni en hauteur ni sur les côtés. Les filets sont retirés, et seuls les deux bouts d'une ligne de semaine sont arrondis — sur le retrait qu'une pastille laisse dans sa colonne, pas sur le bord de la cellule, pour qu'une plage finissant sur la dernière colonne s'aligne avec la rangée du dessus au lieu de s'arrêter une demi-gouttière trop tôt. Et une date de début dont la fin n'est pas encore choisie n'affiche plus de demi-bande partant vers une extrémité qui n'existe pas : la pastille reste seule jusqu'au second clic. Deux nouveaux réglages, `--ui-datepicker-range-background` et `--ui-datepicker-range-color`, permettent de re-skinner la bande et le chiffre qu'elle porte (voir la table « Theming » de la doc).
 

@@ -141,6 +141,11 @@ const FONT_CLASSES = new Set(EDITOR_FONTS.map((f) => f.className));
  * There is no block-level dropdown (no `blockFormat`, no headings): the editor
  * only ever produces `<p>`. `fontFamily`/`fontSize` are both first-class,
  * always-on tools rather than one gated behind the other.
+ *
+ * `clearFormat` is deliberately absent for now: `clearFormatMarkers()` does not
+ * reliably clear every marker class yet. It stays available for a project that
+ * explicitly adds it to `tools`, but shipping it by default would be shipping
+ * a broken button.
  */
 export const DEFAULT_EDITOR_TOOLS: readonly EditorTool[] = [
   'fontFamily',
@@ -160,7 +165,6 @@ export const DEFAULT_EDITOR_TOOLS: readonly EditorTool[] = [
   'separator',
   'link',
   'codeBlock',
-  'clearFormat',
 ];
 
 /** Toolbar metadata per button tool: icon (FontAwesome) + French accessible name. */
