@@ -132,8 +132,23 @@ $editor-color-steps: 900, 700, 500, 300, 100;
     // has to fit, so the toolbar keeps its layout when a longer value is
     // picked instead of shifting every tool that follows.
     min-inline-size: $select-width;
+    // Public hook: removes the field box's border so the dropdown blends
+    // into the toolbar surface instead of looking like its own form field.
+    --ui-field-stroke-width: 0;
 
-    ::ng-deep .ui-select { inline-size: 100%; }
+    ::ng-deep {
+      .ui-select { inline-size: 100%; }
+
+      // No public hook for the box's fill (it is not meant to be dropped
+      // independently of `level`/state on an ordinary field) — scoped here
+      // to this toolbar usage only, every other `ui-select` in the kit is
+      // untouched.
+      .ui-field-box {
+        background: transparent;
+        @include utils.control-transition(background-color);
+      }
+      .ui-field-box:hover { background-color: var(--form-low-surface-hover); }
+    }
   }
 
   // `textColor`/`highlightColor` triggers: a liseré under the icon shows the

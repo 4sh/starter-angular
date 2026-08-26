@@ -93,7 +93,11 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 - **`ui-editor` : les sélecteurs `fontFamily`/`fontSize` passent du `<select>` natif à
   `ui-select`** (FSHSP-160). Rendu en `ui-select` `size="small"`, lié à la valeur en vigueur via
   `[ngModel]` et nommé pour les lecteurs d'écran via `ariaLabel` — cohérent avec le reste du kit,
-  qui n'a qu'un seul composant de dropdown de valeurs.
+  qui n'a qu'un seul composant de dropdown de valeurs. Bordure et fond de la boîte de champ
+  retirés (`--ui-field-stroke-width: 0` + surcharge locale du fond via `::ng-deep`, scopée à
+  `.ui-editor-select` — aucun autre `ui-select` du kit n'est concerné) pour que le sélecteur se
+  fonde dans la barre d'outils comme les autres outils, plutôt que d'apparaître comme son propre
+  champ de formulaire.
 
 - **`ui-editor` : suppression de `blockFormat`, `fontSize` désormais dans la barre par défaut**
   (FSHSP-160). Plus de sélecteur de niveau de bloc (Normal/Titre 1-3) : l'éditeur ne produit plus
