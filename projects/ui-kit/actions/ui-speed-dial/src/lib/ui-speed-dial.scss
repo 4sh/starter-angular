@@ -103,5 +103,16 @@ $rotate-angle: 45deg;
     // (`[style.--_stagger-index]`, private plumbing) so it lives in one
     // place: the shared motion custom property `ui-motion` already reads.
     --ui-motion-delay: calc(var(--_stagger-index, 0) * #{$item-delay});
+
+    // Leave runs WITHOUT the stagger: `ui-motion` applies the same
+    // `--ui-motion-delay` to both directions, but a removal only finishes
+    // once every leaving sibling's OWN animation has ended — an item with a
+    // shorter delay finishes (and its `-leave` class drops) well before its
+    // still-animating neighbours, snapping back to full opacity for the
+    // remainder of the wait and reading as a flash. Zeroing it here lets
+    // every action close together instead.
+    &[class*='-leave'] {
+      --ui-motion-delay: 0ms;
+    }
   }
 }
