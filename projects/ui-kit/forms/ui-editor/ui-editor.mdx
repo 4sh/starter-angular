@@ -1,0 +1,218 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as EditorStories from './ui-editor.stories';
+import { ConfigTable } from '../../../../storybook/blocks/config-table';
+
+<Meta of={EditorStories} />
+
+# ui-editor
+
+Éditeur de texte **riche** bâti sur le shell partagé
+[`ui-field`](?path=/docs/components-ui-forms-ui-field--docs) (label + boîte + helper) en mode
+**multiline** : une barre d'outils configurable et une zone `contenteditable`. Couleurs via tokens
+`form.*`, bordure pilotée par le `level`.
+
+**Aucun moteur d'édition tiers** : la mise en forme s'appuie sur l'API d'édition native du
+navigateur, isolée dans `ui-editor-commands`. Le kit reste sans dépendance runtime.
+
+La valeur est une **chaîne HTML**, assainie par `DomSanitizer` avant tout affichage, et réduite à
+une liste blanche de balises au collage (`b`, `strong`, `i`, `em`, `u`, `a`, `ul`, `ol`, `li`, `p`,
+`br`, `div`, `span`, `pre`, `code`).
+
+Autonome, `[(ngModel)]` ou reactive forms (`ControlValueAccessor` via `BaseFormField`). Pour une
+saisie multiligne **sans mise en forme** →
+[`ui-textarea`](?path=/docs/components-ui-forms-ui-textarea--docs).
+
+<Canvas of={EditorStories.WithValue} />
+
+## API
+
+<ArgTypes of={EditorStories} />
+
+## Barre d'outils
+
+`tools` liste les outils rendus, dans l'ordre. La valeur `separator` insère un séparateur visuel.
+Outils disponibles : `blockFormat`, `fontFamily`, `fontSize`, `bold`, `italic`, `underline`,
+`bulletList`, `orderedList`, `link`, `codeBlock`, `clearFormat`.
+
+<Canvas of={EditorStories.MinimalToolbar} />
+<Canvas of={EditorStories.ToolbarBottom} />
+
+L'outil `link` ouvre en v1 une invite native (`window.prompt`) : valider avec une adresse pose le
+lien sur la sélection, valider à vide le retire.
+
+### Bloc de code
+
+`codeBlock` bascule le bloc sous le curseur entre `<pre>` et un paragraphe. La coloration
+syntaxique n'est **pas** fournie : elle imposerait une dépendance tierce, ce que le composant évite
+par construction.
+
+<Canvas of={EditorStories.CodeBlock} />
+
+### Les trois listes déroulantes
+
+`blockFormat`, `fontFamily` et `fontSize` rendent une liste déroulante et non un bouton : elles
+choisissent parmi des valeurs au lieu d'en basculer une.
+
+| Liste         | Rôle                                                                          | Par défaut |
+| ------------- | ----------------------------------------------------------------------------- | ---------- |
+| `blockFormat` | **Ce que le bloc est** : Normal, Titre 1, Titre 2, Titre 3 (`<p>`, `<h1-h3>`) | oui        |
+| `fontFamily`  | **La famille de caractères** appliquée au texte sélectionné                   | oui        |
+| `fontSize`    | **La taille** d'une portion : Petit, Normal, Grand, Très grand                | non        |
+
+Le niveau et la police sont deux choses distinctes : un titre porte la **structure** du document —
+un lecteur d'écran navigue de titre en titre — là où la police ne change que l'apparence. Mettre la
+police de titre sur un paragraphe n'en fait pas un titre.
+
+`fontSize` **n'est pas dans la barre par défaut**, et c'est délibéré : à l'écran il fait doublon
+avec `blockFormat` — les deux grossissent le texte — mais lui seul est purement décoratif. Les
+proposer côte à côte revient à inviter des titres qui n'en sont pas, et donc des documents sans
+structure. Il reste disponible pour un projet qui l'ajoute explicitement à `tools`, par exemple
+pour mettre en avant une portion de texte sans en faire un titre.
+
+Chaque liste affiche **la valeur en vigueur**, jamais son propre nom : au repos on lit « Normal »
+et « Inter », c'est-à-dire ce que le texte utilise réellement. La police est lue sur le rendu
+effectif, pas devinée — dans un titre la liste affiche « DM Sans », puisque c'est la fonte que le
+titre porte. Le nom de chaque liste reste disponible pour les lecteurs d'écran via `aria-label`.
+
+Seule exception, `blockFormat` n'affiche **aucune** valeur quand le curseur est dans un bloc qu'il
+ne propose pas (bloc de code, élément de liste) : il n'y a là rien d'honnête à afficher, et
+annoncer « Normal » inviterait un clic qui reformaterait le bloc.
+
+Les listes ont toutes la **même largeur, fixe** : une largeur ajustée au contenu ferait sauter la
+barre entière à chaque changement de valeur.
+
+Les choix sont **fermés aux tokens** : `--fontfamily-base` / `--fontfamily-title` /
+`--fontfamily-monospace` pour la famille, l'échelle `--size-typography-text-*` pour la taille. Une
+liste libre façon traitement de texte écrirait une police ou un `font-size` arbitraire dans la
+valeur, donc hors du système.
+
+La liste des polices affiche le **nom réel** de chaque fonte, lu depuis le token à l'exécution
+(« Inter », « DM Sans », « Roboto Mono »). Il n'est pas écrit en dur : un projet qui rebinde
+`--fontfamily-base` verrait sinon un menu nommant une police qu'il n'utilise plus.
+
+Famille et taille sont écrites sous forme de **classe** (`ui-editor-font-*`, `ui-editor-size-*`),
+jamais en style en ligne : la valeur reste liée au token, et rebinder celui-ci déplace tout le
+contenu déjà saisi avec lui. Ces classes sont les seules que la liste blanche laisse passer au
+collage.
+
+<Canvas of={EditorStories.Headings} />
+<Canvas of={EditorStories.FontFamily} />
+<Canvas of={EditorStories.FontSize} />
+
+## Niveaux & états
+
+`level` (`default`/`success`/`error`) pilote la bordure. Le niveau `success` est un état **visuel
+manuel**. L'état d'**erreur** est piloté par la validation : bordure rouge et `errorText`
+apparaissent quand le contrôle est **invalide ET touché/modifié** (règle `showError`).
+
+En `readonly` la zone reste focusable et sélectionnable mais n'accepte plus d'édition, et les outils
+sont désactivés. En `disabled` elle sort du parcours de tabulation.
+
+<Canvas of={EditorStories.Success} />
+<Canvas of={EditorStories.Disabled} />
+<Canvas of={EditorStories.Readonly} />
+<Canvas of={EditorStories.Small} />
+
+## Compteur & limite
+
+`showCount` affiche un compteur, `maxlength` le borne. Les deux mesurent le **texte**, jamais le
+balisage : `<strong>ok</strong>` compte 2 caractères. Au-delà de la limite, les insertions sont
+refusées mais les suppressions et la mise en forme restent disponibles.
+
+<Canvas of={EditorStories.CharacterCount} />
+
+## Formulaires
+
+<Canvas of={EditorStories.Required} />
+<Canvas of={EditorStories.SignalForms} />
+
+```html
+<!-- Template-driven -->
+<ui-editor [(ngModel)]="description" label="Description" />
+
+<!-- Signal Forms -->
+<ui-editor [formField]="field" label="Description" />
+
+<!-- Reactive forms + message d'erreur -->
+<ui-editor formControlName="bio" label="Bio" errorText="Champ obligatoire" required />
+
+<!-- Barre réduite + compteur -->
+<ui-editor
+  [(ngModel)]="note"
+  label="Note"
+  [tools]="['bold', 'italic']"
+  [maxlength]="280"
+  showCount
+/>
+```
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Point</th>
+      <th>Comportement</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Rôle</td>
+      <td>
+        La zone porte <code>role="textbox"</code> + <code>aria-multiline="true"</code>, et relaie{' '}
+        <code>aria-required</code>, <code>aria-readonly</code>, <code>aria-disabled</code>,{' '}
+        <code>aria-invalid</code>.
+      </td>
+    </tr>
+    <tr>
+      <td>Nom accessible</td>
+      <td>
+        Un <code>contenteditable</code> n'est pas un contrôle de formulaire : il ne peut pas être
+        ciblé par un <code>&lt;label for&gt;</code>. Le libellé est donc repris en{' '}
+        <code>aria-label</code> (ou fournir <code>ariaLabelledBy</code>).
+      </td>
+    </tr>
+    <tr>
+      <td>Barre d'outils</td>
+      <td>
+        <code>role="toolbar"</code> avec <strong>un seul arrêt de tabulation</strong> : ⭠ ⭢ passent
+        d'un outil à l'autre, <kbd>Home</kbd>/<kbd>End</kbd> aux extrémités, <kbd>Échap</kbd> rend
+        le focus à la zone de saisie.
+      </td>
+    </tr>
+    <tr>
+      <td>État des outils</td>
+      <td>
+        Les bascules (gras, italique, souligné, listes) portent <code>aria-pressed</code>, recalculé
+        à chaque déplacement du curseur. Les actions ponctuelles (lien, effacer le formatage) n'en
+        portent pas.
+      </td>
+    </tr>
+    <tr>
+      <td>Raccourcis</td>
+      <td>
+        <kbd>Ctrl</kbd>/<kbd>Cmd</kbd> + <kbd>B</kbd> / <kbd>I</kbd> / <kbd>U</kbd> — pris en charge
+        nativement, l'état de la barre suit.
+      </td>
+    </tr>
+    <tr>
+      <td>Focus</td>
+      <td>
+        L'anneau de focus est porté par la boîte <code>ui-field</code> ; cliquer un outil ne
+        déplace pas le focus et préserve la sélection.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+## Theming
+
+La boîte est fournie par le shell `ui-field` en mode multiline ; les constantes partagées vivent
+dans le groupe [Forms](?path=/docs/components-configuration-forms--docs).
+
+Le contenu produit par l'éditeur (listes, liens, gras, paragraphes) est créé hors du template : il
+est stylé via `::ng-deep`, cantonné à la zone de saisie, et pilotable par les hooks ci-dessous.
+
+<ConfigTable of="ui-field" label="ui-field" />
+
+<ConfigTable of="ui-editor" label="ui-editor" />
