@@ -1,0 +1,118 @@
+@use 'utils';
+
+// =====================================================================
+// ui-speed-dial : co-located styles. All values come from design tokens.
+//
+// The host is a plain positioned wrapper (no fixed placement of its own —
+// see the MDX "Bouton flottant" recipe for pinning it to a corner). Trigger
+// and actions are `ui-button` instances; colors come from `actions.*`
+// through them, nothing here sets a color directly.
+// =====================================================================
+
+// --- Config (local) -----------------------------------------------------
+$z-index: var(--ui-speed-dial-z-index, 10);                                      /// Palier d'empilement du bouton et de ses actions au-dessus du masque.
+$item-gap: var(--ui-speed-dial-item-gap, var(--units-sm));                       /// Espace entre le déclencheur et la première action, et entre deux actions (`linear`).
+$item-delay: var(--ui-speed-dial-item-delay, var(--transition-fast));            /// Décalage d'apparition entre deux actions successives.
+$radius-default: var(--ui-speed-dial-radius, calc(2 * var(--size-components-default))); /// Rayon du cercle d'actions (`circle`) quand `radius` n'est pas renseigné.
+$mask-background: var(--ui-speed-dial-mask-background, var(--primitives-black-50)); /// Assombrissement du masque, mêmes tokens que `ui-modal`.
+// Fixed geometry (plus → X), not a themeable role: not worth its own hook.
+$rotate-angle: 45deg;
+
+.ui-speed-dial {
+  position: relative;
+  display: inline-flex;
+  z-index: $z-index;
+  // Explicit `radius` input override; the default lives on `&-list._circle` below
+  // so a theme can retune it without the component ever passing a number.
+  --_radius: #{$radius-default};
+
+  // --- Mask -------------------------------------------------------------
+  // Fixed, but painted within the host's own stacking context (`position` +
+  // `z-index` above already qualify it as one): it stays *behind* the trigger
+  // and the actions — plain siblings, later in the DOM — without a second
+  // z-index to keep in sync.
+  &-mask {
+    position: fixed;
+    inset: 0;
+    background-color: $mask-background;
+  }
+
+  // --- Trigger ------------------------------------------------------------
+  &-trigger {
+    position: relative;
+    // Rotation lives on the icon, not the button: rotating the whole control
+    // would also spin its focus ring and drop shadow.
+    ::ng-deep .ui-button-icon {
+      @include utils.control-transition(rotate);
+    }
+    &._rotate ::ng-deep .ui-button-icon {
+      rotate: $rotate-angle;
+    }
+  }
+
+  // --- Actions --------------------------------------------------------
+  &-list {
+    position: absolute;
+    display: flex;
+    gap: $item-gap;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  // `linear`: stacked along `direction`, closest action nearest the trigger.
+  &._up &-list {
+    bottom: calc(100% + #{$item-gap});
+    left: 50%;
+    flex-direction: column-reverse;
+    translate: -50% 0;
+  }
+  &._down &-list {
+    top: calc(100% + #{$item-gap});
+    left: 50%;
+    flex-direction: column;
+    translate: -50% 0;
+  }
+  &._left &-list {
+    right: calc(100% + #{$item-gap});
+    top: 50%;
+    flex-direction: row-reverse;
+    translate: 0 -50%;
+  }
+  &._right &-list {
+    left: calc(100% + #{$item-gap});
+    top: 50%;
+    flex-direction: row;
+    translate: 0 -50%;
+  }
+
+  // `circle`: the list is the trigger's own box: every item self-centres on
+  // it, then a per-item `[style.transform]` (`circleTransform`) carries it
+  // `--_radius` out at its angular slot.
+  &._circle &-list {
+    inset: 0;
+  }
+  &._circle &-item {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+  }
+
+  &-item {
+    // Enter delay staggered by position — set from `--_stagger-index`
+    // (`[style.--_stagger-index]`, private plumbing) so it lives in one
+    // place: the shared motion custom property `ui-motion` already reads.
+    --ui-motion-delay: calc(var(--_stagger-index, 0) * #{$item-delay});
+
+    // Leave runs WITHOUT the stagger: `ui-motion` applies the same
+    // `--ui-motion-delay` to both directions, but a removal only finishes
+    // once every leaving sibling's OWN animation has ended — an item with a
+    // shorter delay finishes (and its `-leave` class drops) well before its
+    // still-animating neighbours, snapping back to full opacity for the
+    // remainder of the wait and reading as a flash. Zeroing it here lets
+    // every action close together instead.
+    &[class*='-leave'] {
+      --ui-motion-delay: 0ms;
+    }
+  }
+}

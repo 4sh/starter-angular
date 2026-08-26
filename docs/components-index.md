@@ -9,6 +9,7 @@
 - ⬜ `ui-button-group` — Groupe de boutons
 - ✅ `ui-button-split` — Bouton d'action accolé à un déclencheur déroulant (composition `ui-button` × 2 + `ui-menu` popup ; modèle `UiMenuItem[]` : commandes, `routerLink`/`url`, sous-menus, séparateurs, icônes ; niveaux high/low/success/warning/error, **variants** filled/outlined/ghost/contrast (forwardés aux deux boutons), tailles default/small, désactivation indépendante `buttonDisabled`/`menuButtonDisabled`, `aria-haspopup`/`aria-expanded`, clavier hérité du menu)
 - ✅ `ui-link` — Lien textuel inline (vrai `<a>`, `href`/`routerLink`/`external`, icônes gauche/droite, tailles, icon-only, souligné a11y)
+- ✅ `ui-speed-dial` — Bouton flottant déployant ses actions autour de lui, sans panneau (composition `ui-button` × N, tokens `actions.*` ; inspiré de PrimeNG SpeedDial) ; modèle `UiSpeedDialItem[]` (sous-ensemble feuille de `UiMenuItem` : commandes, `routerLink`/`url`, icônes) ; dispositions `linear` (4 directions) et `circle` (`radius`), masque optionnel (tokens `ui-modal`), fermeture au clic extérieur/Échap ; icône du déclencheur pivotante (`rotateAnimation`) ou remplacée (`hideIcon`) ; infobulles optionnelles (`showTooltips`, via `ui-tooltip`) ; `role="menu"` + roving tabindex (une flèche sur le déclencheur fermé l'ouvre et focus la première action) ; niveaux/variants/tailles forwardés au déclencheur et à chaque action
 
 ## forms
 

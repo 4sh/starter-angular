@@ -10,10 +10,10 @@
         "Mode 1"
       ],
       "counts": {
-        "tokens": 629,
-        "alias": 504,
+        "tokens": 631,
+        "alias": 506,
         "literal": 125,
-        "skipped": 49,
+        "skipped": 52,
         "derivedDescriptions": 197
       },
       "aliasTargets": [
@@ -222,6 +222,21 @@
         {
           "cssVar": "--ui-sidebar-z-index",
           "component": "ui-sidebar",
+          "reason": "sans équivalent variable Figma (durée, easing, curseur, plan d’empilement, ratio)."
+        },
+        {
+          "cssVar": "--ui-speed-dial-item-delay",
+          "component": "ui-speed-dial",
+          "reason": "sans équivalent variable Figma (durée, easing, curseur, plan d’empilement, ratio)."
+        },
+        {
+          "cssVar": "--ui-speed-dial-radius",
+          "component": "ui-speed-dial",
+          "reason": "expression calc() : une variable Figma ne porte pas de calcul."
+        },
+        {
+          "cssVar": "--ui-speed-dial-z-index",
+          "component": "ui-speed-dial",
           "reason": "sans équivalent variable Figma (durée, easing, curseur, plan d’empilement, ratio)."
         },
         {
@@ -12967,6 +12982,57 @@
             "cssVar": "--ui-slider-track-radius",
             "component": "ui-slider",
             "entryPoint": "@4sh/ui-kit/forms/ui-slider",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    }
+  },
+  "speed-dial": {
+    "item": {
+      "gap": {
+        "$value": "{metrics.units.sm}",
+        "$type": "dimension",
+        "$description": "Espace entre le déclencheur et la première action, et entre deux actions (`linear`).",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-speed-dial-item-gap)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-speed-dial-item-gap",
+            "component": "ui-speed-dial",
+            "entryPoint": "@4sh/ui-kit/actions/ui-speed-dial",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "mask": {
+      "background": {
+        "$value": "{primitives.black.50}",
+        "$type": "color",
+        "$description": "Assombrissement du masque, mêmes tokens que `ui-modal`.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "COLOR",
+            "scopes": [
+              "FRAME_FILL",
+              "SHAPE_FILL"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-speed-dial-mask-background)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-speed-dial-mask-background",
+            "component": "ui-speed-dial",
+            "entryPoint": "@4sh/ui-kit/actions/ui-speed-dial",
             "descriptionSource": "scss"
           }
         }
