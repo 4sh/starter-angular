@@ -38,7 +38,7 @@ rather than adding them to `semantics` or `metrics`.
   variables are `remote`, hence read-only (see `CLAUDE.md`).
 - Keep the aliases as aliases: that is what preserves brand, light/dark and responsive.
 - Literal values are in `px` (converted from `rem`, base 16), like the token files.
-- `$extensions.com.4sh.ui-kit.skipped` lists 52 entries with nothing to create: `calc()`
+- `$extensions.com.4sh.ui-kit.skipped` lists 53 entries with nothing to create: `calc()`
   expressions, multi-value CSS shorthands, relative units (`em`, `ch`, `%`), duration /
   easing / cursor / z-index, and internal plumbing.
 
