@@ -1,0 +1,265 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as ToggleButtonStories from './ui-toggle-button.stories';
+import { ConfigTable } from '../../../../storybook/blocks/config-table';
+
+<Meta of={ToggleButtonStories} />
+
+# ui-toggle-button
+
+Bouton qui **retient son état pressé**. Un vrai `<button>` natif portant `aria-pressed`, dont
+l'apparence vient des jeux de tokens `actions.*` : `level` colore l'état pressé, `variant`
+dessine l'état relâché.
+
+Deux modes dans un seul composant :
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Mode</th>
+      <th>Déclencheur</th>
+      <th>Modèle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Simple</strong></td>
+      <td>défaut</td>
+      <td>Un booléen (ou la paire <code>trueValue</code> / <code>falseValue</code>).</td>
+    </tr>
+    <tr>
+      <td><strong>Groupe</strong></td>
+      <td><code>options</code> renseigné</td>
+      <td>Le tableau des valeurs pressées.</td>
+    </tr>
+  </tbody>
+</table>
+
+Le mode groupe est **toujours multi-sélection**, volontairement : un choix exclusif est le
+travail de [`ui-segment-control`](?path=/docs/components-ui-forms-ui-segment-control--docs), qui
+le dit avec une sémantique `radiogroup` plutôt qu'avec des `aria-pressed`. Voir
+[Groupe ou ui-segment-control ?](#groupe-ou-ui-segment-control-) plus bas.
+
+<Canvas of={ToggleButtonStories.Basic} />
+
+## API
+
+<ArgTypes of={ToggleButtonStories} />
+
+## Libellés et icônes par état
+
+`onLabel` / `offLabel` et `onIcon` / `offIcon` changent le contenu selon l'état ; `label` et
+`icon` servent de repli commun. Dès que le contenu bouge, renseigner un `ariaLabel` **stable** :
+sans lui, un lecteur d'écran annonce un bouton différent à chaque bascule.
+
+<Canvas of={ToggleButtonStories.States} />
+
+```html
+<ui-toggle-button
+  [(ngModel)]="subscribed"
+  onLabel="Abonné"
+  offLabel="S’abonner"
+  onIcon="bell"
+  offIcon="bell-slash"
+  ariaLabel="Abonnement à la lettre d’information"
+/>
+```
+
+## Contenu personnalisé
+
+`iconTemplate` remplace l'icône, `contentTemplate` tout le contenu du bouton. Les deux reçoivent
+le contexte `{ checked }`, donc le rendu peut réagir à l'état interne.
+
+<Canvas of={ToggleButtonStories.Customized} />
+
+```html
+<ng-template #star let-checked>
+  <ui-icon name="star" [type]="checked ? 'solid' : 'outline'" />
+</ng-template>
+
+<ui-toggle-button [(ngModel)]="favorite" label="Favori" [iconTemplate]="star" ariaLabel="Favori" />
+```
+
+## Tailles
+
+<Canvas of={ToggleButtonStories.Sizes} />
+
+## Niveaux et variantes
+
+Deux axes distincts : `level` est la couleur de l'état **pressé**, `variant` l'habillage de
+l'état **relâché** (`outlined` par défaut, `filled`, `ghost`). L'état pressé reste toujours
+plein, pour qu'il ne puisse pas être confondu avec l'état relâché.
+
+<Canvas of={ToggleButtonStories.Levels} />
+<Canvas of={ToggleButtonStories.Variants} />
+
+## Icône seule
+
+Sans libellé, le bouton devient carré (côté = hauteur de la taille). `ariaLabel` est alors
+obligatoire.
+
+<Canvas of={ToggleButtonStories.IconOnly} />
+
+## Mode groupe
+
+`options` accepte des primitives, des objets quelconques (avec `optionLabel` / `optionValue` /
+`optionDisabled` / `optionIcon`) ou la forme riche `ToggleButtonOption` (`label`, `value`,
+`icon`, `selectedIcon`, `disabled`, `ariaLabel`). L'hôte prend `role="group"`, chaque option rend
+un bouton indépendant, et le modèle est **le tableau des valeurs pressées**. `allowEmpty="false"`
+empêche de le vider entièrement.
+
+<Canvas of={ToggleButtonStories.Group} />
+<Canvas of={ToggleButtonStories.GroupIconOnly} />
+<Canvas of={ToggleButtonStories.GroupVertical} />
+
+```html
+<!-- Le modèle est un tableau -->
+<ui-toggle-button [(ngModel)]="workDays" [options]="dayOptions" ariaLabel="Jours travaillés" />
+
+<!-- Boutons carrés : chaque option porte son ariaLabel -->
+<ui-toggle-button [(ngModel)]="formats" [options]="formatOptions" ariaLabel="Mise en forme" />
+```
+
+Pour **N bascules indépendantes** (un booléen par champ du modèle), poser N `ui-toggle-button`
+simples côte à côte reste plus direct que de passer par `options` : le mode groupe existe pour le
+cas où les valeurs pressées doivent former **un seul tableau**.
+
+### Groupe ou `ui-segment-control` ?
+
+Les deux affichent une liste courte d'options, mais ne disent pas la même chose. La frontière est
+**la sémantique, pas le nombre de valeurs** : un choix exclusif ne se fait qu'avec
+`ui-segment-control`.
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th></th>
+      <th><code>ui-toggle-button</code> (groupe)</th>
+      <th><code>ui-segment-control</code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Ce que ça dit</strong></td>
+      <td>Des bascules : <code>role="group"</code> + <code>aria-pressed</code> par bouton.</td>
+      <td>Un choix : <code>radiogroup</code> (ou <code>group</code> en <code>multiple</code>).</td>
+    </tr>
+    <tr>
+      <td><strong>Modèle</strong></td>
+      <td>Toujours un tableau.</td>
+      <td>Une valeur, ou un tableau en <code>multiple</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Choix exclusif</strong></td>
+      <td>Non : c'est précisément ce qui n'y est pas, pour ne pas doubler le voisin avec une sémantique plus faible.</td>
+      <td>Oui, c'est son rôle.</td>
+    </tr>
+    <tr>
+      <td><strong>Forme</strong></td>
+      <td>Boutons autonomes, espacés, chacun avec sa bordure.</td>
+      <td>Une piste unique, indicateur glissant sous le segment actif.</td>
+    </tr>
+    <tr>
+      <td><strong>Clavier</strong></td>
+      <td><kbd>Tab</kbd> passe sur chaque bouton (comme une série de cases à cocher).</td>
+      <td>Un seul arrêt de tabulation, flèches pour naviguer.</td>
+    </tr>
+    <tr>
+      <td><strong>À utiliser pour</strong></td>
+      <td>Activer / désactiver des options (gras / italique, jours travaillés, canaux).</td>
+      <td>Basculer entre des vues ou des modes qui s'excluent.</td>
+    </tr>
+  </tbody>
+</table>
+
+## Fluid
+
+`fluid` fait occuper toute la largeur du parent. En mode groupe, les boutons se répartissent la
+largeur à parts égales.
+
+<Canvas of={ToggleButtonStories.Fluid} />
+
+## États
+
+<Canvas of={ToggleButtonStories.Disabled} />
+<Canvas of={ToggleButtonStories.Invalid} />
+<Canvas of={ToggleButtonStories.Readonly} />
+
+`invalid` force le style erreur ; il s'applique automatiquement quand le contrôle attaché est
+invalide **et** touché/modifié. `readonly` garde le bouton focusable mais ignore les clics.
+
+## Formulaires
+
+Branché au système de formulaires du starter via `ControlValueAccessor` (`BaseFieldControl`) :
+**Signal Forms** (`@angular/forms/signals`, directive `[formField]`, stables depuis Angular 22),
+`[(ngModel)]`, reactive forms (`formControlName`) ou usage autonome.
+
+<Canvas of={ToggleButtonStories.SignalForms} />
+<Canvas of={ToggleButtonStories.TemplateDriven} />
+<Canvas of={ToggleButtonStories.ReactiveForms} />
+
+```html
+<!-- Signal Forms -->
+<ui-toggle-button [formField]="terms" label="J’accepte les conditions" ariaLabel="Conditions" />
+
+<!-- Reactive forms -->
+<ui-toggle-button formControlName="channels" [options]="channelOptions" ariaLabel="Canaux" />
+
+<!-- ngModel -->
+<ui-toggle-button [(ngModel)]="notify" label="Notifications" ariaLabel="Notifications" />
+
+<!-- Valeurs personnalisées -->
+<ui-toggle-button [(ngModel)]="status" trueValue="on" falseValue="off" label="Statut" />
+```
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Point</th>
+      <th>Implémentation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Rôle</strong></td>
+      <td><code>&lt;button&gt;</code> natif portant <code>aria-pressed</code> (jamais un <code>&lt;div&gt;</code> cliquable). En groupe, l'hôte porte <code>role="group"</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Nom accessible</strong></td>
+      <td><code>ariaLabel</code> (ou <code>ariaLabelledBy</code>) doit être <strong>stable</strong> : le libellé visible change avec l'état, il serait donc réannoncé différemment à chaque prise de focus. Un avertissement en mode dev le signale quand <code>onLabel</code> et <code>offLabel</code> diffèrent, en icône seule, ou sur un groupe sans nom.</td>
+    </tr>
+    <tr>
+      <td><strong>Clavier</strong></td>
+      <td>Natif : <kbd>Tab</kbd> pour cibler, <kbd>Espace</kbd> ou <kbd>Entrée</kbd> pour basculer. En groupe, chaque bouton est un arrêt de tabulation.</td>
+    </tr>
+    <tr>
+      <td><strong>Focus</strong></td>
+      <td><code>:focus-visible</code> toujours visible et distinct du hover (anneau tiré du token <code>stroke-focused</code> du jeu actif).</td>
+    </tr>
+    <tr>
+      <td><strong>Désactivé</strong></td>
+      <td><code>disabled</code> natif (pas seulement visuel) ; couleurs via les tokens <code>--actions-*-disabled</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Erreur</strong></td>
+      <td><code>aria-invalid</code> + bordure erreur héritée du token <code>--form-error-stroke-default</code>, dans tous les états d'interaction.</td>
+    </tr>
+    <tr>
+      <td><strong>Obligatoire</strong></td>
+      <td><code>required</code> (hérité de <code>BaseFieldControl</code>) <strong>n'émet pas</strong> <code>aria-required</code> : l'attribut n'est pas autorisé sur <code>role="button"</code>, une bascule n'a pas de notion d'« obligatoire » en ARIA. L'obligation se porte dans le libellé ou dans le texte d'accompagnement du champ ; l'échec de validation, lui, passe par <code>aria-invalid</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Couleur seule</strong></td>
+      <td>L'état pressé change aussi de remplissage et, si des libellés d'état sont fournis, de texte : la couleur n'est jamais le seul porteur de sens.</td>
+    </tr>
+  </tbody>
+</table>
+
+## Theming
+
+Variables locales en tête de `ui-toggle-button.scss`. Voir le groupe partagé
+[Forms](?path=/docs/components-configuration-forms--docs) et le
+[fonctionnement de la configuration](?path=/docs/components-configuration--docs).
+
+<ConfigTable of="ui-toggle-button" />

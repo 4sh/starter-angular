@@ -10,11 +10,11 @@
         "Mode 1"
       ],
       "counts": {
-        "tokens": 631,
-        "alias": 506,
+        "tokens": 646,
+        "alias": 521,
         "literal": 125,
         "skipped": 52,
-        "derivedDescriptions": 197
+        "derivedDescriptions": 206
       },
       "aliasTargets": [
         "metrics",
@@ -14112,6 +14112,340 @@
           "cssVar": "--ui-toast-width-expanded",
           "component": "ui-toast-container",
           "entryPoint": "@4sh/ui-kit/informative/ui-toast",
+          "descriptionSource": "scss"
+        }
+      }
+    }
+  },
+  "toggle-button": {
+    "focus-ring-width": {
+      "$value": "{metrics.units.2xs}",
+      "$type": "dimension",
+      "$description": "Épaisseur de l'anneau de focus.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "STROKE_FLOAT"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-toggle-button-focus-ring-width)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-toggle-button-focus-ring-width",
+          "component": "ui-toggle-button",
+          "entryPoint": "@4sh/ui-kit/forms/ui-toggle-button",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "font-size": {
+      "$value": "{responsive.size.typography.text.default}",
+      "$type": "dimension",
+      "$description": "Taille de police de `ui-toggle-button`.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "FONT_SIZE"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-toggle-button-font-size)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-toggle-button-font-size",
+          "component": "ui-toggle-button",
+          "entryPoint": "@4sh/ui-kit/forms/ui-toggle-button",
+          "descriptionSource": "derived"
+        }
+      }
+    },
+    "font-size-large": {
+      "$value": "{responsive.size.typography.text.lg}",
+      "$type": "dimension",
+      "$description": "Taille de police de `ui-toggle-button` (variante `large`).",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "FONT_SIZE"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-toggle-button-font-size-large)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-toggle-button-font-size-large",
+          "component": "ui-toggle-button",
+          "entryPoint": "@4sh/ui-kit/forms/ui-toggle-button",
+          "descriptionSource": "derived"
+        }
+      }
+    },
+    "font-size-small": {
+      "$value": "{responsive.size.typography.text.md}",
+      "$type": "dimension",
+      "$description": "Taille de police de `ui-toggle-button` (variante `small`).",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "FONT_SIZE"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-toggle-button-font-size-small)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-toggle-button-font-size-small",
+          "component": "ui-toggle-button",
+          "entryPoint": "@4sh/ui-kit/forms/ui-toggle-button",
+          "descriptionSource": "derived"
+        }
+      }
+    },
+    "gap": {
+      "$value": "{metrics.units.sm}",
+      "$type": "dimension",
+      "$description": "Espacement icône ↔ libellé.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "GAP"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-toggle-button-gap)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-toggle-button-gap",
+          "component": "ui-toggle-button",
+          "entryPoint": "@4sh/ui-kit/forms/ui-toggle-button",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "group": {
+      "gap": {
+        "$value": "{metrics.units.sm}",
+        "$type": "dimension",
+        "$description": "Espacement entre les boutons d'un groupe.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-toggle-button-group-gap)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-toggle-button-group-gap",
+            "component": "ui-toggle-button",
+            "entryPoint": "@4sh/ui-kit/forms/ui-toggle-button",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "height": {
+      "$value": "{responsive.size.components.default}",
+      "$type": "dimension",
+      "$description": "Hauteur de `ui-toggle-button`.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "WIDTH_HEIGHT"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-toggle-button-height)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-toggle-button-height",
+          "component": "ui-toggle-button",
+          "entryPoint": "@4sh/ui-kit/forms/ui-toggle-button",
+          "descriptionSource": "derived"
+        }
+      }
+    },
+    "height-large": {
+      "$value": "{responsive.size.components.lg}",
+      "$type": "dimension",
+      "$description": "Hauteur de `ui-toggle-button` (variante `large`).",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "WIDTH_HEIGHT"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-toggle-button-height-large)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-toggle-button-height-large",
+          "component": "ui-toggle-button",
+          "entryPoint": "@4sh/ui-kit/forms/ui-toggle-button",
+          "descriptionSource": "derived"
+        }
+      }
+    },
+    "height-small": {
+      "$value": "{responsive.size.components.sm}",
+      "$type": "dimension",
+      "$description": "Hauteur de `ui-toggle-button` (variante `small`).",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "WIDTH_HEIGHT"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-toggle-button-height-small)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-toggle-button-height-small",
+          "component": "ui-toggle-button",
+          "entryPoint": "@4sh/ui-kit/forms/ui-toggle-button",
+          "descriptionSource": "derived"
+        }
+      }
+    },
+    "padding-x": {
+      "$value": "{metrics.units.default}",
+      "$type": "dimension",
+      "$description": "Inset horizontal de `ui-toggle-button`.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "GAP"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-toggle-button-padding-x)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-toggle-button-padding-x",
+          "component": "ui-toggle-button",
+          "entryPoint": "@4sh/ui-kit/forms/ui-toggle-button",
+          "descriptionSource": "derived"
+        }
+      }
+    },
+    "padding-x-large": {
+      "$value": "{metrics.units.lg}",
+      "$type": "dimension",
+      "$description": "Inset horizontal de `ui-toggle-button` (variante `large`).",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "GAP"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-toggle-button-padding-x-large)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-toggle-button-padding-x-large",
+          "component": "ui-toggle-button",
+          "entryPoint": "@4sh/ui-kit/forms/ui-toggle-button",
+          "descriptionSource": "derived"
+        }
+      }
+    },
+    "padding-x-small": {
+      "$value": "{metrics.units.md}",
+      "$type": "dimension",
+      "$description": "Inset horizontal de `ui-toggle-button` (variante `small`).",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "GAP"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-toggle-button-padding-x-small)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-toggle-button-padding-x-small",
+          "component": "ui-toggle-button",
+          "entryPoint": "@4sh/ui-kit/forms/ui-toggle-button",
+          "descriptionSource": "derived"
+        }
+      }
+    },
+    "radius": {
+      "$value": "{metrics.radius.sm}",
+      "$type": "dimension",
+      "$description": "Rayon des coins.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "CORNER_RADIUS"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-toggle-button-radius)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-toggle-button-radius",
+          "component": "ui-toggle-button",
+          "entryPoint": "@4sh/ui-kit/forms/ui-toggle-button",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "radius-rounded": {
+      "$value": "{metrics.radius.full}",
+      "$type": "dimension",
+      "$description": "Rayon des coins en présentation `rounded`.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "CORNER_RADIUS"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-toggle-button-radius-rounded)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-toggle-button-radius-rounded",
+          "component": "ui-toggle-button",
+          "entryPoint": "@4sh/ui-kit/forms/ui-toggle-button",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "stroke-width": {
+      "$value": "{metrics.stroke.default}",
+      "$type": "dimension",
+      "$description": "Épaisseur de la bordure.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "STROKE_FLOAT"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-toggle-button-stroke-width)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-toggle-button-stroke-width",
+          "component": "ui-toggle-button",
+          "entryPoint": "@4sh/ui-kit/forms/ui-toggle-button",
           "descriptionSource": "scss"
         }
       }
