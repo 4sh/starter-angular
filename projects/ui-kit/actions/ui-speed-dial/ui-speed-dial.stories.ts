@@ -37,27 +37,36 @@ const meta: Meta<UiSpeedDial> = {
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     type: {
-      control: 'inline-radio',
-      options: ['linear', 'circle'],
-      description: 'Disposition : `linear` (empilée selon `direction`) ou `circle` (anneau).',
+      control: 'select',
+      options: ['linear', 'circle', 'semi-circle', 'quarter-circle'],
+      description:
+        'Disposition : `linear` (empilée selon `direction`), `circle` (anneau complet), `semi-circle` (demi-anneau centré sur `direction`) ou `quarter-circle` (quart d’anneau dans le coin `direction`).',
       table: { type: { summary: 'SpeedDialType' }, defaultValue: { summary: "'linear'" } },
     },
     direction: {
-      control: 'inline-radio',
-      options: ['up', 'down', 'left', 'right'],
-      description: 'Axe de déploiement — `linear` uniquement.',
+      control: 'select',
+      options: ['up', 'down', 'left', 'right', 'up-left', 'up-right', 'down-left', 'down-right'],
+      description:
+        '`linear`/`semi-circle` lisent les 4 valeurs cardinales ; `quarter-circle` lit les 4 coins.',
       table: { type: { summary: 'SpeedDialDirection' }, defaultValue: { summary: "'up'" } },
     },
     radius: {
       control: 'number',
-      description: "Rayon de l'anneau (px) — `circle` uniquement. Calculé sinon.",
+      description: "Rayon de l'arc (px) — toute disposition sauf `linear`. Calculé sinon.",
       table: { type: { summary: 'number' }, defaultValue: { summary: 'undefined' } },
     },
     level: {
       control: 'select',
       options: ['high', 'low', 'success', 'warning', 'error'],
-      description: 'Niveau sémantique du déclencheur et des actions.',
+      description: 'Niveau sémantique du déclencheur.',
       table: { type: { summary: 'UiLevel' }, defaultValue: { summary: '"high"' } },
+    },
+    itemLevel: {
+      control: 'select',
+      options: ['high', 'low', 'success', 'warning', 'error'],
+      description:
+        'Niveau sémantique des actions — `low` par défaut, volontairement distinct du déclencheur.',
+      table: { type: { summary: 'UiLevel' }, defaultValue: { summary: '"low"' } },
     },
     variant: {
       control: 'select',
@@ -169,6 +178,55 @@ export const Circle: Story = {
     template: `<div style="min-height:260px; display:flex; align-items:center; justify-content:center;">
       <ui-speed-dial [items]="items" [visible]="true" type="circle" ariaLabel="Actions" />
     </div>`,
+  }),
+};
+
+/**
+ * `semi-circle` spans 180°, centred on `direction`: `up` domes above the
+ * trigger, `down` below, `left`/`right` to either side.
+ */
+export const SemiCircle: Story = {
+  render: () => ({
+    props: { items: ITEMS },
+    template: `
+      <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:64px; padding:120px 16px 16px;">
+        <ui-speed-dial [items]="items" [visible]="true" type="semi-circle" direction="up" ariaLabel="Actions haut" />
+        <ui-speed-dial [items]="items" [visible]="true" type="semi-circle" direction="down" ariaLabel="Actions bas" />
+        <ui-speed-dial [items]="items" [visible]="true" type="semi-circle" direction="left" ariaLabel="Actions gauche" />
+        <ui-speed-dial [items]="items" [visible]="true" type="semi-circle" direction="right" ariaLabel="Actions droite" />
+      </div>
+    `,
+  }),
+};
+
+/**
+ * `quarter-circle` spans 90°, filling the corner named by `direction`
+ * (`up-left`, `up-right`, `down-left`, `down-right` — not the cardinal values).
+ */
+export const QuarterCircle: Story = {
+  render: () => ({
+    props: { items: ITEMS },
+    template: `
+      <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:64px; padding:64px 16px;">
+        <ui-speed-dial [items]="items" [visible]="true" type="quarter-circle" direction="up-left" ariaLabel="Actions haut-gauche" />
+        <ui-speed-dial [items]="items" [visible]="true" type="quarter-circle" direction="up-right" ariaLabel="Actions haut-droite" />
+        <ui-speed-dial [items]="items" [visible]="true" type="quarter-circle" direction="down-left" ariaLabel="Actions bas-gauche" />
+        <ui-speed-dial [items]="items" [visible]="true" type="quarter-circle" direction="down-right" ariaLabel="Actions bas-droite" />
+      </div>
+    `,
+  }),
+};
+
+/** `itemLevel` (`low` par défaut) distingue les actions du déclencheur — comparer à `level` seul. */
+export const ItemLevel: Story = {
+  render: () => ({
+    props: { items: ITEMS },
+    template: `
+      <div style="display:flex; gap:64px; padding:80px 16px;">
+        <ui-speed-dial [items]="items" [visible]="true" ariaLabel="itemLevel=low (défaut)" />
+        <ui-speed-dial [items]="items" [visible]="true" itemLevel="high" ariaLabel="itemLevel=high" />
+      </div>
+    `,
   }),
 };
 

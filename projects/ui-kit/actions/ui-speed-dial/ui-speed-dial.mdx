@@ -27,19 +27,30 @@ sous-ensemble « feuille » (`command` / `routerLink` / `url`, `icon`, `disabled
 
 ## Disposition
 
-Deux dispositions, orthogonales aux couleurs et aux tailles :
+Quatre dispositions, orthogonales aux couleurs et aux tailles. Les trois dernières
+partagent un même calcul d'arc (`arcTransform`) — seul l'empan et l'angle de départ
+changent :
 
-- **`linear`** (défaut) empile les actions le long de `direction` (`up`/`down`/`left`/`right`),
-  l'action la plus proche du déclencheur venant en premier dans le tableau `items`.
-- **`circle`** les répartit sur un anneau autour du déclencheur ; `radius` (px) permet
-  d'en fixer le rayon, sinon il est dérivé de la taille du contrôle.
+| `type`            | Empan | `direction` lit…                          | Comportement                                          |
+| ----------------- | ----- | ------------------------------------------ | ------------------------------------------------------ |
+| `linear` (défaut) | —     | `up`/`down`/`left`/`right`                  | Empile le long de l'axe, action la plus proche en premier dans `items`. |
+| `circle`          | 360°  | _(ignoré)_                                  | Anneau complet, réparti uniformément.                   |
+| `semi-circle`     | 180°  | `up`/`down`/`left`/`right`                  | Demi-anneau **centré** sur `direction` (`up` forme un dôme au-dessus). |
+| `quarter-circle`  | 90°   | `up-left`/`up-right`/`down-left`/`down-right` | Quart d'anneau **dans** le coin `direction`.          |
+
+`radius` (px) fixe le rayon des trois dispositions en arc ; non renseigné, il est
+dérivé de la taille du contrôle.
 
 <Canvas of={SpeedDialStories.Directions} />
 <Canvas of={SpeedDialStories.Circle} />
+<Canvas of={SpeedDialStories.SemiCircle} />
+<Canvas of={SpeedDialStories.QuarterCircle} />
 
 ```html
 <ui-speed-dial [items]="actions" [(visible)]="open" direction="up" />
 <ui-speed-dial [items]="actions" type="circle" [radius]="120" />
+<ui-speed-dial [items]="actions" type="semi-circle" direction="up" />
+<ui-speed-dial [items]="actions" type="quarter-circle" direction="up-right" />
 ```
 
 ## Masque & fermeture
@@ -69,11 +80,17 @@ d'être remplacée — le classique `+` qui devient un `×`.
 
 ## Niveaux, tailles & désactivation
 
-`level`, `variant` et `size` sont transmis au déclencheur **et** à chaque action.
+`variant` et `size` sont transmis au déclencheur **et** à chaque action ; `level` ne
+pilote que le déclencheur. Les actions ont leur propre `itemLevel`, **`low` par
+défaut** et volontairement distinct : une action au même niveau que le déclencheur se
+lirait comme un second bouton principal plutôt qu'une option révélée.
+
+<Canvas of={SpeedDialStories.ItemLevel} />
+<Canvas of={SpeedDialStories.Levels} />
+
 `disabled` désactive l'ensemble ; une action individuelle se désactive via son
 `item.disabled`, et reste alors ignorée par la navigation clavier.
 
-<Canvas of={SpeedDialStories.Levels} />
 <Canvas of={SpeedDialStories.Disabled} />
 
 ## Interaction
@@ -166,17 +183,13 @@ d'action flottant classique (coin bas-droit de l'écran) :
 ## Écarts avec PrimeNG
 
 Le composant s'inspire de l'API [SpeedDial de PrimeNG](https://primeng.dev/speeddial),
-adaptée à l'idiome signals/tokens du kit et volontairement réduite sur quelques points :
+adaptée à l'idiome signals/tokens du kit. Les quatre dispositions (`linear`, `circle`,
+`semi-circle`, `quarter-circle`) et les 8 valeurs de `direction` sont couvertes ; deux
+simplifications restent volontaires :
 
-- **4 directions, pas 8** : les diagonales (`up-left`…) ajoutaient de la complexité de
-  disposition pour un usage rare — reproductibles au besoin par un `type="circle"` à
-  faible nombre d'actions.
-- **2 dispositions, pas 4** : `quarter-circle` et `semi-circle` ne sont pas fournies ;
-  `linear` et `circle` couvrent l'essentiel des usages. Une extension future n'exigerait
-  qu'un nouveau `SpeedDialType` et le calcul d'angle qui va avec.
 - **Un seul étalonnage de touches clavier** : ⭡/⭢ et ⭣/⭠ déplacent le focus dans le
   même sens quels que soient `direction`/`type`, plutôt que de re-dériver un mappage
-  différent pour chacune des huit dispositions possibles.
+  différent pour chacune des dispositions possibles.
 - **`tooltipOptions` simplifié en `showTooltips`** (booléen) : la position suit
   automatiquement le sens de déploiement plutôt que d'exposer chaque réglage du
   panneau `ui-tooltip` sous-jacent — accessible directement si besoin, `ui-tooltip`

@@ -13,7 +13,7 @@
 $z-index: var(--ui-speed-dial-z-index, 10);                                      /// Palier d'empilement du bouton et de ses actions au-dessus du masque.
 $item-gap: var(--ui-speed-dial-item-gap, var(--units-sm));                       /// Espace entre le déclencheur et la première action, et entre deux actions (`linear`).
 $item-delay: var(--ui-speed-dial-item-delay, var(--transition-fast));            /// Décalage d'apparition entre deux actions successives.
-$radius-default: var(--ui-speed-dial-radius, calc(2 * var(--size-components-default))); /// Rayon du cercle d'actions (`circle`) quand `radius` n'est pas renseigné.
+$radius-default: var(--ui-speed-dial-radius, calc(2 * var(--size-components-default))); /// Rayon de l'arc d'actions (`circle`/`semi-circle`/`quarter-circle`) quand `radius` n'est pas renseigné.
 $mask-background: var(--ui-speed-dial-mask-background, var(--primitives-black-50)); /// Assombrissement du masque, mêmes tokens que `ui-modal`.
 // Fixed geometry (plus → X), not a themeable role: not worth its own hook.
 $rotate-angle: 45deg;
@@ -58,6 +58,11 @@ $rotate-angle: 45deg;
     margin: 0;
     padding: 0;
     list-style: none;
+    // An arc type's list box exactly covers the trigger (see below): without
+    // this, that empty box — not just its (invisible) gaps between actions —
+    // sits on TOP of the trigger in paint order and swallows its clicks.
+    // Actions opt back in individually.
+    pointer-events: none;
   }
 
   // `linear`: stacked along `direction`, closest action nearest the trigger.
@@ -86,19 +91,26 @@ $rotate-angle: 45deg;
     translate: 0 -50%;
   }
 
-  // `circle`: the list is the trigger's own box: every item self-centres on
-  // it, then a per-item `[style.transform]` (`circleTransform`) carries it
-  // `--_radius` out at its angular slot.
-  &._circle &-list {
+  // `circle`/`semi-circle`/`quarter-circle`: the list is the trigger's own
+  // box: every item self-centres on it, then a per-item `[style.transform]`
+  // (`arcTransform`) carries it `--_radius` out at its angular slot.
+  &._circle &-list,
+  &._semi-circle &-list,
+  &._quarter-circle &-list {
     inset: 0;
   }
-  &._circle &-item {
+  &._circle &-item,
+  &._semi-circle &-item,
+  &._quarter-circle &-item {
     position: absolute;
     top: 50%;
     left: 50%;
   }
 
   &-item {
+    // The list opts out above; every action opts back in.
+    pointer-events: auto;
+
     // Enter delay staggered by position — set from `--_stagger-index`
     // (`[style.--_stagger-index]`, private plumbing) so it lives in one
     // place: the shared motion custom property `ui-motion` already reads.

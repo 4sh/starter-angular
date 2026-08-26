@@ -28,14 +28,23 @@ import { UiTooltip, TooltipPosition } from '@4sh/ui-kit/informative/ui-tooltip';
 import { closeOnNavigation } from '@4sh/ui-kit/overlay';
 import { UiMotion, UiMotionPreset } from '@4sh/ui-kit/motion';
 
-/** Axis the actions fan out along (linear layout only). */
-export type SpeedDialDirection = 'up' | 'down' | 'left' | 'right';
+/**
+ * Axis the actions fan out along.
+ *
+ * `linear`/`semi-circle` read the four cardinal values; `quarter-circle`
+ * reads the four corners — a cardinal value falls back to `'up-right'` there
+ * (see `arcSpan`).
+ */
+export type SpeedDialDirection =
+  'up' | 'down' | 'left' | 'right' | 'up-left' | 'up-right' | 'down-left' | 'down-right';
 
 /**
- * `linear` stacks the actions along `direction`; `circle` arranges them on a
- * ring around the trigger (see `radius`).
+ * `linear` stacks the actions along `direction`. The other three arrange them
+ * on an arc around the trigger (`radius`): `circle` the full ring,
+ * `semi-circle` a 180° half centred on `direction`, `quarter-circle` a 90°
+ * quadrant in the `direction` corner.
  */
-export type SpeedDialType = 'linear' | 'circle';
+export type SpeedDialType = 'linear' | 'circle' | 'semi-circle' | 'quarter-circle';
 
 /**
  * One action revealed by the dial — the leaf subset of {@link UiMenuItem}
@@ -64,9 +73,33 @@ interface UiSpeedDialNode {
 /** Process-wide unique id source (aria wiring). */
 let nextUid = 0;
 
-/** @ignore Rounds away floating point noise CSS `calc()` cannot parse (see `circleTransform`). */
+/** @ignore Rounds away floating point noise CSS `calc()` cannot parse (see `arcTransform`). */
 function round(value: number): number {
   return Math.round(value * 1e6) / 1e6;
+}
+
+/**
+ * @ignore Angular span an arc-type dial occupies, in degrees clockwise from
+ * top (0° = up, 90° = right, 180° = down, 270° = left — the same convention
+ * `arcTransform` reads it back with).
+ *
+ * `circle` ignores `direction`: a full ring has no "side". `semi-circle`
+ * centres its 180° half on `direction`. `quarter-circle` fills the 90°
+ * quadrant named by `direction`'s corner, defaulting to `up-right` for a
+ * cardinal value (`quarter-circle` has no "up" of its own — only corners).
+ */
+function arcSpan(
+  type: Exclude<SpeedDialType, 'linear'>,
+  direction: SpeedDialDirection,
+): { start: number; span: number } {
+  if (type === 'circle') return { start: 0, span: 360 };
+  if (type === 'semi-circle') {
+    const center = { up: 0, right: 90, down: 180, left: 270 }[direction as string] ?? 0;
+    return { start: center - 90, span: 180 };
+  }
+  const start =
+    { 'up-right': 0, 'down-right': 90, 'down-left': 180, 'up-left': 270 }[direction as string] ?? 0;
+  return { start, span: 90 };
 }
 
 /**
@@ -76,8 +109,10 @@ function round(value: number): number {
  * Driven by a declarative `items` list ({@link UiSpeedDialItem}: `command` /
  * `routerLink` / `url`, `icon`, `disabled`) — the same leaf shape as
  * {@link UiMenuItem}, so a menu's entries can feed a dial without reshaping
- * them. Two layouts: `linear` (stacks along `direction`) and `circle`
- * (arranged on a ring, `radius`).
+ * them. Four layouts ({@link SpeedDialType}): `linear` (stacks along
+ * `direction`), `circle` (full ring), `semi-circle` and `quarter-circle`
+ * (partial arcs centred/cornered on `direction`) — `radius` sizes the three
+ * arc layouts.
  *
  * Open state is the two-way `visible` model. The action list mounts only
  * while open (`@if`) — closed actions are neither rendered nor reachable by
@@ -108,15 +143,25 @@ export class UiSpeedDial {
   /** Open state (two-way). */
   visible = model(false);
 
-  /** Layout: `linear` (stacked) or `circle` (ring). */
+  /** Layout: `linear` (stacked), `circle` (ring), `semi-circle` or `quarter-circle` (arc). */
   type = input<SpeedDialType>('linear');
-  /** Axis the actions stack along — `linear` only. */
+  /**
+   * Axis the actions fan along. `linear`/`semi-circle` read the four
+   * cardinal values; `quarter-circle` reads the four corners. Unused by
+   * `circle`, which always goes full ring.
+   */
   direction = input<SpeedDialDirection>('up');
-  /** Ring radius in px — `circle` only. Falls back to a size-derived default. */
+  /** Ring/arc radius in px — every type but `linear`. Falls back to a size-derived default. */
   radius = input<number>();
 
-  /** Semantic level of the trigger and the actions. */
+  /** Semantic level of the trigger. */
   level = input<UiLevel>('high');
+  /**
+   * Semantic level of the actions. Defaults to `low`, deliberately different
+   * from the trigger's own `level`: a `high`-styled action would read as a
+   * second primary button rather than a revealed option.
+   */
+  itemLevel = input<UiLevel>('low');
   /** Apparence of the trigger and the actions. */
   variant = input<ButtonVariant>('filled');
   /** Size of the trigger and the actions. */
@@ -229,15 +274,22 @@ export class UiSpeedDial {
   });
 
   /**
-   * @ignore Per-item ring position (`circle` only): even angular steps from
-   * the top, self-centred on the trigger, `--_radius` out from there (see
-   * `radiusOverride` for the explicit/default split).
+   * @ignore Per-item position on an arc (`circle`/`semi-circle`/
+   * `quarter-circle`): self-centred on the trigger, `--_radius` out at its
+   * angular slot (see `radiusOverride` for the explicit/default split).
+   *
+   * `circle` steps evenly around the FULL span (`span / total`, wrapping);
+   * the other two divide by `total - 1` so the first and last actions land
+   * exactly on the arc's own ends, not short of them.
    */
-  protected readonly circleTransform = computed(() => {
+  protected readonly arcTransform = computed(() => {
+    const type = this.type();
     const total = this.nodes().length;
-    if (this.type() !== 'circle' || !total) return () => null;
+    if (type === 'linear' || !total) return () => null;
+    const { start, span } = arcSpan(type, this.direction());
+    const step = type === 'circle' ? span / total : span / Math.max(total - 1, 1);
     return (index: number) => {
-      const angle = (index / total) * 2 * Math.PI;
+      const angle = ((start + step * index) * Math.PI) / 180;
       // Floating point noise (e.g. sin(π) ≈ 1.2e-16) prints as exponential
       // notation, which CSS `calc()` cannot parse — round it away.
       const x = round(Math.sin(angle));
@@ -249,18 +301,25 @@ export class UiSpeedDial {
   /**
    * @ignore Enter/leave preset.
    *
-   * `circle` items already carry their own `[style.transform]` (angular
-   * position on the ring, `circleTransform`) — `zoom`/`slide-*` animate
-   * `transform` too, and a CSS animation on a property wins over an inline
-   * style for it, wiping the position out for the animation's duration.
-   * `fade` (opacity only) is the one preset that cannot collide with it.
+   * Arc items (`circle`/`semi-circle`/`quarter-circle`) already carry their
+   * own `[style.transform]` (angular position, `arcTransform`) —
+   * `zoom`/`slide-*` animate `transform` too, and a CSS animation on a
+   * property wins over an inline style for it, wiping the position out for
+   * the animation's duration. `fade` (opacity only) is the one preset that
+   * cannot collide with it.
    *
    * `linear` items carry no such transform, so they get the more expressive
    * `slide-${direction}` — "enter moving toward `direction`".
    */
-  protected readonly itemMotionPreset = computed<UiMotionPreset>(() =>
-    this.type() === 'circle' ? 'fade' : (`slide-${this.direction()}` as UiMotionPreset),
-  );
+  protected readonly itemMotionPreset = computed<UiMotionPreset>(() => {
+    if (this.type() !== 'linear') return 'fade';
+    // `linear` only means a cardinal direction; a corner value (meant for
+    // `quarter-circle`) has no matching slide preset — fall back to 'up'.
+    const d = this.direction();
+    return (
+      d === 'up' || d === 'down' || d === 'left' || d === 'right' ? `slide-${d}` : 'slide-up'
+    ) as UiMotionPreset;
+  });
 
   /** @ignore Trigger icon while open: `hideIcon`, or `showIcon` rotated in place. */
   protected readonly triggerIcon = computed(() => this.hideIcon() ?? this.showIcon());
@@ -271,8 +330,8 @@ export class UiSpeedDial {
 
   /** @ignore Tooltip side: opposite the fan-out direction, so it never overlaps an action. */
   protected readonly tooltipPosition = computed<TooltipPosition>(() => {
+    if (this.type() !== 'linear') return 'top';
     const d = this.direction();
-    if (this.type() === 'circle') return 'top';
     if (d === 'up') return 'right';
     if (d === 'down') return 'right';
     if (d === 'left') return 'top';
