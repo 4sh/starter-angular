@@ -36,7 +36,7 @@ const meta: Meta<UiEditor> = {
     tools: {
       control: 'object',
       description:
-        "Outils affichés dans la barre, dans l'ordre (`separator` = séparateur ; `fontFamily` et `fontSize` sont des menus popup, pas des boutons).",
+        "Outils affichés dans la barre, dans l'ordre (`separator` = séparateur ; `fontFamily` et `fontSize` sont des `ui-select`, pas des boutons).",
       table: {
         type: { summary: 'EditorTool[]' },
         defaultValue: { summary: 'DEFAULT_EDITOR_TOOLS' },
@@ -167,9 +167,8 @@ export const CodeBlock: Story = {
  * égalité : ni l'un ni l'autre n'est une option gardée derrière `tools`. Le
  * choix de police est fermé aux trois familles du système
  * (`--fontfamily-base`, `--fontfamily-title`, `--fontfamily-monospace`), et la
- * taille à l'échelle `--size-typography-text-*`. Chacun se rend en déclencheur
- * `ui-button` + popup `ui-menu` (`size="small"`, même pattern que
- * `ui-button-split`), et affiche la valeur en vigueur au repos — la police lit
+ * taille à l'échelle `--size-typography-text-*`. Chacun se rend en `ui-select`
+ * (`size="small"`), et affiche la valeur en vigueur au repos — la police lit
  * le nom réel de la fonte, résolu depuis le token à l'exécution.
  */
 export const FontFamily: Story = {

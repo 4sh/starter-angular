@@ -57,17 +57,11 @@ par construction.
 `tools`. Il n'y a pas de sélecteur de niveau de bloc : l'éditeur ne produit que des `<p>`, aucun
 titre H1-H3 n'est accessible depuis la barre.
 
-Chacun se rend en déclencheur `ui-button` (ghost, `size="small"`) glué à un `ui-menu`
-`popup [size]="small"`, même pattern que
-[`ui-button-split`](?path=/docs/components-ui-actions-ui-button-split--docs).
+Chacun se rend en [`ui-select`](?path=/docs/components-ui-forms-ui-select--docs) (`size="small"`),
+lié à la valeur en vigueur (`[ngModel]`) et nommé pour les lecteurs d'écran via `ariaLabel`
+(« Police », « Taille du texte »).
 
-Chaque déclencheur affiche **la valeur en vigueur**, jamais son propre nom : au repos on lit
-« Normal » et « Inter », c'est-à-dire ce que le texte utilise réellement. La police est lue sur le
-rendu effectif, pas devinée. Le nom de chaque sélecteur reste disponible pour les lecteurs d'écran
-via un `aria-label` combiné (« Police : Inter ») — sinon la valeur affichée à l'écran disparaîtrait
-du nom accessible, qu'un `aria-label` explicite remplace entièrement sur un `ui-button`.
-
-Les deux déclencheurs ont la **même largeur, fixe** : une largeur ajustée au contenu ferait sauter
+Les deux sélecteurs ont la **même largeur, fixe** : une largeur ajustée au contenu ferait sauter
 la barre entière à chaque changement de valeur.
 
 Les choix sont **fermés aux tokens** : `--fontfamily-base` / `--fontfamily-title` /
@@ -108,9 +102,8 @@ appliquer l'un remet les autres à `false`. Ils suivent donc le même modèle `E
 
 `textColor`/`highlightColor` ouvrent chacun un
 [`ui-swatch-picker`](?path=/docs/components-ui-forms-ui-swatch-picker--docs) en popup
-(`popup`, `size="small"`) ancré à leur bouton `ui-button` — même composition « déclencheur +
-overlay » que `fontFamily`/`fontSize`, sans `ui-menu` : le nuancier n'a pas son propre
-déclencheur, exactement comme `ui-menu` n'a pas le sien.
+(`popup`, `size="small"`) ancré à leur bouton `ui-button` : le nuancier n'a pas son propre
+déclencheur, c'est le bouton-outil lui-même qui ouvre le popup.
 
 La palette est la **palette par défaut de `ui-swatch-picker`** (`DEFAULT_SWATCH_PALETTE`),
 réutilisée telle quelle pour `EDITOR_COLORS`/`EDITOR_HIGHLIGHTS` : le nuancier et les classes

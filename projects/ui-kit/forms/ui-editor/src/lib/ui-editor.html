@@ -90,47 +90,20 @@
         @if (entry.isSeparator) {
           <span class="ui-editor-toolbar-separator" aria-hidden="true"></span>
         } @else if (entry.select; as select) {
-          <!-- Trigger + popup menu (same pattern as ui-button-split): the
-               dropdown takes the focus, so the command restores the caret
-               before it runs. -->
-          <ui-button
-            class="ui-editor-tool ui-editor-select-trigger"
-            variant="ghost"
-            level="low"
+          <!-- The dropdown takes the focus, so the command restores the caret
+               before it runs (see onSelectValueChange). -->
+          <ui-select
+            class="ui-editor-tool ui-editor-select"
             size="small"
-            icon="chevron-down"
-            iconPos="right"
-            [label]="selectDisplayLabel(select)"
-            [ariaLabel]="selectTriggerAriaLabel(select)"
+            [options]="selectOptions(select)"
+            optionLabel="label"
+            optionValue="value"
+            [ngModel]="selectValue(select)"
+            [ariaLabel]="selectLabel(select)"
             [disabled]="!isEditable()"
             [tabindex]="entry.index === tabStop() ? 0 : -1"
-            [buttonProps]="{
-              'aria-haspopup': 'menu',
-              'aria-expanded': selectMenuOpen(select) ? 'true' : 'false',
-            }"
-            (buttonClick)="onSelectMenuTrigger(select, entry.index, $event)"
+            (valueChange)="onSelectValueChange(select, $event, entry.index)"
           />
-          @if (select === 'fontFamily') {
-            <ui-menu
-              #fontFamilyMenu
-              popup
-              size="small"
-              [items]="fontFamilyMenuItems()"
-              [ariaLabel]="selectLabel(select)"
-              (opened)="fontFamilyMenuOpen.set(true)"
-              (closed)="fontFamilyMenuOpen.set(false)"
-            />
-          } @else {
-            <ui-menu
-              #fontSizeMenu
-              popup
-              size="small"
-              [items]="fontSizeMenuItems()"
-              [ariaLabel]="selectLabel(select)"
-              (opened)="fontSizeMenuOpen.set(true)"
-              (closed)="fontSizeMenuOpen.set(false)"
-            />
-          }
         } @else {
           <ui-button
             class="ui-editor-tool"

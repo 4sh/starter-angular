@@ -23,9 +23,8 @@ $toolbar-surface: var(--ui-editor-toolbar-surface, var(--global-background-muted
 $toolbar-stroke: var(--ui-editor-toolbar-stroke, var(--form-low-stroke-default));         /// Couleur du trait séparant la barre d'outils de la zone de saisie.
 $toolbar-stroke-width: var(--ui-editor-toolbar-stroke-width, #{utils.$control-stroke-width}); /// Épaisseur de ce trait.
 
-// `fontFamily`/`fontSize` render a `ui-button` trigger + `ui-menu` popup —
-// no native `<select>` left in the toolbar (see `&-select-trigger`).
-$select-trigger-width: var(--ui-editor-select-trigger-width, 13ch); /// Largeur d'un déclencheur de menu popup (police, taille).
+// `fontFamily`/`fontSize` render as `ui-select` (see `&-select`).
+$select-width: var(--ui-editor-select-width, 13ch); /// Largeur d'un sélecteur police/taille dans la barre.
 
 $separator-width: var(--ui-editor-separator-width, var(--stroke-sm));                      /// Épaisseur d'un séparateur d'outils.
 $separator-height: var(--ui-editor-separator-height, var(--size-typography-text-default)); /// Hauteur d'un séparateur d'outils.
@@ -120,28 +119,21 @@ $editor-color-steps: 900, 700, 500, 300, 100;
     }
   }
 
-  // `fontFamily`/`fontSize` triggers (ui-button, host-level only — the panel
-  // itself is `ui-menu`'s own scoped style).
-  &-select-trigger {
-    // `<ui-button>` is inline by default: without a flex/box context of its
-    // own `min-inline-size` on a non-replaced inline element is ignored, so
-    // the trigger silently kept hugging its label instead of reaching the
-    // width below.
+  // `fontFamily`/`fontSize` render as `ui-select` (host-level only — the
+  // field box itself is `ui-select`'s own scoped style).
+  &-select {
+    // `<ui-select>` is inline by default, and its root `.ui-select` is a
+    // block-level box that does not grow to fill a flex row on its own: give
+    // the host a flex context and stretch that single child explicitly (same
+    // fix `&-tool` needed when it used to wrap a `ui-button` trigger).
     display: inline-flex;
     flex-shrink: 0;
-    // Same fixed width as `&-select`, so the toolbar keeps its layout when a
-    // longer value is picked instead of shifting every tool that follows.
-    min-inline-size: $select-trigger-width;
+    // Fixed, and the same for every dropdown: sized on the widest label it
+    // has to fit, so the toolbar keeps its layout when a longer value is
+    // picked instead of shifting every tool that follows.
+    min-inline-size: $select-width;
 
-    // `justify-content` on the host only spaces its own (single) flex child —
-    // the label/chevron pair is laid out *inside* that child, ui-button's own
-    // `.ui-button` element, which centers them by default. Reaching into it is
-    // the only way to pin the chevron at the field's edge instead of right
-    // after the label.
-    ::ng-deep .ui-button {
-      inline-size: 100%;
-      justify-content: space-between;
-    }
+    ::ng-deep .ui-select { inline-size: 100%; }
   }
 
   // `textColor`/`highlightColor` triggers: a liseré under the icon shows the

@@ -461,6 +461,22 @@ export function clearMarkerClass(root: ParentNode, range: Range, className: stri
   }
 }
 
+/**
+ * Strips every font/size/color/highlight class the editor writes, from
+ * whatever intersects `range`.
+ *
+ * `removeFormat` (the `clearFormat` tool's native command) only knows inline
+ * formatting the browser itself applies (bold, italic, underline…) — it never
+ * touches the `<span class="ui-editor-*">` wrappers `fontFamily`/`fontSize`/
+ * `textColor`/`highlightColor` write, so "Clear formatting" needs this on top
+ * of it to actually clear everything.
+ */
+export function clearFormatMarkers(root: ParentNode, range: Range): void {
+  for (const className of [...FONT_CLASSES, ...SIZE_CLASSES, ...COLOR_CLASSES, ...HIGHLIGHT_CLASSES]) {
+    clearMarkerClass(root, range, className);
+  }
+}
+
 /** @internal Nearest ancestor carrying one of the given classes. */
 function findClassKey<T extends string>(
   node: Node | null,

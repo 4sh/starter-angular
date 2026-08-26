@@ -90,13 +90,10 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ### Changed
 
-- **`ui-editor` : les sélecteurs `fontFamily`/`fontSize` passent du `<select>` natif à un menu
-  popup** (FSHSP-160). Rendu désormais en déclencheur `ui-button` (ghost, `size="small"`) glué à un
-  `ui-menu` en mode `popup [size]="small"`, même pattern que `ui-button-split` — cohérent
-  visuellement avec le reste de la barre d'outils et du kit. Le déclencheur affiche la valeur en
-  vigueur (comme l'ancien `<select>`) et porte un nom accessible qui la reprend (`aria-label`
-  combiné, ex. « Police : Inter ») puisqu'un `ariaLabel` explicite sur `ui-button` remplace tout le
-  contenu visible dans le nom accessible.
+- **`ui-editor` : les sélecteurs `fontFamily`/`fontSize` passent du `<select>` natif à
+  `ui-select`** (FSHSP-160). Rendu en `ui-select` `size="small"`, lié à la valeur en vigueur via
+  `[ngModel]` et nommé pour les lecteurs d'écran via `ariaLabel` — cohérent avec le reste du kit,
+  qui n'a qu'un seul composant de dropdown de valeurs.
 
 - **`ui-editor` : suppression de `blockFormat`, `fontSize` désormais dans la barre par défaut**
   (FSHSP-160). Plus de sélecteur de niveau de bloc (Normal/Titre 1-3) : l'éditeur ne produit plus
@@ -143,23 +140,12 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ### Fixed
 
-- **`ui-editor` : `blockFormat` s'ouvrait vide tant que le curseur n'avait jamais touché la
-  zone de saisie** (FSHSP-160). `readBlockFormat()` lit le niveau via
-  `document.queryCommandValue('formatBlock')`, qui reflète la **sélection courante** — inexistante
-  avant le premier focus, donc `currentBlock` restait à `null` et le `<select>` s'ouvrait blanc
-  au lieu d'annoncer « Normal », même quand le contenu initial en avait un. Nouvelle
-  `readInitialBlockFormat()`, appelée une fois après le premier rendu : lit directement la balise
-  du premier enfant du contenu (repli sur `p` si l'éditeur est vide ou commence par du texte nu),
-  sans dépendre d'une sélection.
-
-- **`ui-editor` : le chevron des déclencheurs `fontFamily`/`fontSize` restait collé au texte au
-  lieu du bord du champ** (FSHSP-160). Le `min-inline-size`/`justify-content: space-between`
-  visant cet espacement était posé sur `<ui-button>`, l'élément hôte — `inline` par défaut,
-  qui ignore `min-inline-size` (propriété sans effet sur un élément en ligne non remplacé), et
-  dont le seul enfant (le `<button>` interne, qui porte le vrai flex layout icône/libellé) ne
-  s'étirait de toute façon pas à sa largeur. Le correctif cible directement cet enfant
-  (`::ng-deep .ui-button { inline-size: 100%; justify-content: space-between }`), et l'hôte
-  passe en `display: inline-flex` pour que `min-inline-size` s'applique enfin.
+- **`ui-editor` : « Effacer le formatage » laissait police/taille/couleur/surlignage en place**
+  (FSHSP-160). `clearFormat` s'appuie sur `document.execCommand('removeFormat')`, qui ne connaît
+  que la mise en forme native du navigateur (gras, italique, souligné…) — jamais les
+  `<span class="ui-editor-*">` que `fontFamily`/`fontSize`/`textColor`/`highlightColor` écrivent.
+  Nouvelle `clearFormatMarkers()`, appelée en plus de la commande native : déshabille ces classes
+  sur toute la sélection courante (même mécanisme que le « Aucune couleur » des nuanciers).
 
 ### Changed
 
