@@ -35,7 +35,13 @@ const meta: Meta<UiToggleButton> = {
       imports: [UiToggleButton, UiIcon, CommonModule, FormsModule, ReactiveFormsModule, FormField],
     }),
   ],
-  parameters: { layout: 'centered' },
+  parameters: {
+    layout: 'centered',
+    design: {
+      type: 'figma',
+      url: 'https://www.figma.com/design/GZww5hdUA49LB8XWeWP6tl/-Projet----UI-Kit?node-id=3653-33842',
+    },
+  },
   argTypes: {
     label: {
       control: 'text',
@@ -169,7 +175,8 @@ const meta: Meta<UiToggleButton> = {
     },
     required: {
       control: 'boolean',
-      description: 'Reporte `aria-required` sur le bouton.',
+      description:
+        'Hérité de `BaseFieldControl`, sans effet ARIA ici : `aria-required` n’est pas autorisé sur `role="button"`. Porter l’obligation dans le libellé.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     disabled: {

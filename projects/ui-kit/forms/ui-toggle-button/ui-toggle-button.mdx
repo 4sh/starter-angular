@@ -246,6 +246,10 @@ Branché au système de formulaires du starter via `ControlValueAccessor` (`Base
       <td><code>aria-invalid</code> + bordure erreur héritée du token <code>--form-error-stroke-default</code>, dans tous les états d'interaction.</td>
     </tr>
     <tr>
+      <td><strong>Obligatoire</strong></td>
+      <td><code>required</code> (hérité de <code>BaseFieldControl</code>) <strong>n'émet pas</strong> <code>aria-required</code> : l'attribut n'est pas autorisé sur <code>role="button"</code>, une bascule n'a pas de notion d'« obligatoire » en ARIA. L'obligation se porte dans le libellé ou dans le texte d'accompagnement du champ ; l'échec de validation, lui, passe par <code>aria-invalid</code>.</td>
+    </tr>
+    <tr>
       <td><strong>Couleur seule</strong></td>
       <td>L'état pressé change aussi de remplissage et, si des libellés d'état sont fournis, de texte : la couleur n'est jamais le seul porteur de sens.</td>
     </tr>

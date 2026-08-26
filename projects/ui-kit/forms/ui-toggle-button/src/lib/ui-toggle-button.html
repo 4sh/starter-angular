@@ -44,7 +44,6 @@
     [attr.aria-pressed]="checked()"
     [attr.aria-label]="buttonAriaLabel()"
     [attr.aria-labelledby]="ariaLabelledBy() || null"
-    [attr.aria-required]="required() ? 'true' : null"
     [attr.aria-invalid]="isInvalid() ? 'true' : null"
     (click)="toggle()"
     (focus)="toggleFocus.emit($event)"
