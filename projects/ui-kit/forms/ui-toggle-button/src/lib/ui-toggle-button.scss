@@ -1,0 +1,200 @@
+@use 'utils';
+@use 'sass:map';
+
+// =====================================================================
+// ui-toggle-button : co-located styles. All values come from design tokens.
+//
+// Two axes, two token families: `$levels` paints the PRESSED state (filled),
+// `$off-sets` draws the RELEASED one. Both honour the same 5-state contract,
+// so a new entry needs no CSS of its own.
+//
+// Extend:
+//   • Level   → add a name to $levels (tokens --actions-<name>-* must exist).
+//   • Variant → add an entry to $off-sets (+ the `ToggleButtonVariant` type).
+//   • Size    → add an entry to $sizes (+ the `ToggleButtonSize` type).
+// =====================================================================
+
+// --- Config (extension points) ---------------------------------------
+$levels: high, low, success, warning, error; /// Familles de couleur de l'état pressé.
+
+/// Jeu de tokens de l'état relâché, par variante (`outlined` = défaut, sans classe).
+$off-sets: (
+  'outlined': 'lowoutlined',
+  'filled': 'low',
+  'ghost': 'lowghost',
+);
+
+$radius: var(--ui-toggle-button-radius, var(--radius-sm));                                     /// Rayon des coins.
+$radius-rounded: var(--ui-toggle-button-radius-rounded, var(--radius-full));                   /// Rayon des coins en présentation `rounded`.
+$gap: var(--ui-toggle-button-gap, var(--units-sm));                                            /// Espacement icône ↔ libellé.
+$group-gap: var(--ui-toggle-button-group-gap, var(--units-sm));                                /// Espacement entre les boutons d'un groupe.
+$stroke-width: var(--ui-toggle-button-stroke-width, #{utils.$control-stroke-width});           /// Épaisseur de la bordure.
+$focus-ring-width: var(--ui-toggle-button-focus-ring-width, #{utils.$form-focus-ring-width});  /// Épaisseur de l'anneau de focus.
+
+/// Hauteur / inset horizontal / taille de police par taille
+$sizes: (
+  'default': (
+    height: var(--ui-toggle-button-height, var(--size-components-default)),
+    padding-x: var(--ui-toggle-button-padding-x, var(--units-default)),
+    font-size: var(--ui-toggle-button-font-size, var(--size-typography-text-default)),
+  ),
+  'small': (
+    height: var(--ui-toggle-button-height-small, var(--size-components-sm)),
+    padding-x: var(--ui-toggle-button-padding-x-small, var(--units-md)),
+    font-size: var(--ui-toggle-button-font-size-small, var(--size-typography-text-md)),
+  ),
+  'large': (
+    height: var(--ui-toggle-button-height-large, var(--size-components-lg)),
+    padding-x: var(--ui-toggle-button-padding-x-large, var(--units-lg)),
+    font-size: var(--ui-toggle-button-font-size-large, var(--size-typography-text-lg)),
+  ),
+);
+$size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default` de `$sizes`.
+
+@mixin toggle-size($size) {
+  .ui-toggle-button-item {
+    height: map.get($size, height);
+    padding: 0 map.get($size, padding-x);
+    font-size: map.get($size, font-size);
+
+    &._icon-only {
+      width: map.get($size, height);
+      padding: 0;
+    }
+  }
+}
+
+// A state only re-points the private mirrors; `border-color` and the focus ring
+// are declared ONCE on the item, so `_invalid` overrides every state at any
+// specificity by inheriting a single custom property.
+@mixin action-colors($set) {
+  --_surface: var(--actions-#{$set}-surface-default);
+  --_content: var(--actions-#{$set}-content-default);
+  --_stroke: var(--actions-#{$set}-stroke-default);
+  --_ring: var(--actions-#{$set}-stroke-focused);
+
+  &:hover:not(:disabled) {
+    --_surface: var(--actions-#{$set}-surface-hover);
+    --_content: var(--actions-#{$set}-content-hover);
+    --_stroke: var(--actions-#{$set}-stroke-hover);
+  }
+
+  &:active:not(:disabled) {
+    --_surface: var(--actions-#{$set}-surface-pressed);
+    --_content: var(--actions-#{$set}-content-pressed);
+    --_stroke: var(--actions-#{$set}-stroke-pressed);
+  }
+
+  &:disabled {
+    --_surface: var(--actions-#{$set}-surface-disabled);
+    --_content: var(--actions-#{$set}-content-disabled);
+    --_stroke: var(--actions-#{$set}-stroke-disabled);
+  }
+}
+
+:host {
+  display: inline-flex;
+  gap: $group-gap;
+  font-family: var(--fontfamily-base);
+  vertical-align: middle;
+
+  @include toggle-size($size-default);
+}
+
+@each $name, $size in $sizes {
+  @if $name != 'default' {
+    :host._#{$name} {
+      @include toggle-size($size);
+    }
+  }
+}
+
+.ui-toggle-button-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $gap;
+  box-sizing: border-box;
+  border: $stroke-width solid var(--_invalid-stroke, var(--_stroke));
+  border-radius: $radius;
+  background-color: var(--_surface);
+  color: var(--_content);
+  font-family: inherit;
+  font-weight: var(--weight-bold);
+  line-height: 1.2;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  @include utils.control-transition(background-color, color, border-color, box-shadow);
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 $focus-ring-width var(--_invalid-stroke, var(--_ring));
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  // Released state, default variant.
+  &:not(._selected) {
+    @include action-colors(map.get($off-sets, 'outlined'));
+  }
+}
+
+.ui-toggle-button-icon {
+  line-height: 0;
+}
+
+// Label reserves the same width in both states, so pressing never reflows the
+// group (the released state stays bold here, but a project may unbold it).
+.ui-toggle-button-label {
+  display: inline-block;
+}
+
+// --- Released state, other variants ----------------------------------
+@each $name, $set in $off-sets {
+  @if $name != 'outlined' {
+    :host._#{$name} .ui-toggle-button-item:not(._selected) {
+      @include action-colors($set);
+    }
+  }
+}
+
+// --- Pressed state ---------------------------------------------------
+@each $level in $levels {
+  :host._#{$level} .ui-toggle-button-item._selected {
+    @include action-colors($level);
+  }
+}
+
+// --- Shape -----------------------------------------------------------
+:host._rounded .ui-toggle-button-item {
+  border-radius: $radius-rounded;
+}
+
+// --- Fluid: fill the parent (group buttons share the width evenly) -----
+:host._fluid {
+  display: flex;
+  width: 100%;
+
+  .ui-toggle-button-item {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+}
+
+// --- Group axis ------------------------------------------------------
+:host._vertical {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+// --- Readonly / invalid ----------------------------------------------
+:host._readonly .ui-toggle-button-item {
+  cursor: default;
+}
+
+:host._invalid {
+  --_invalid-stroke: var(--form-error-stroke-default);
+}

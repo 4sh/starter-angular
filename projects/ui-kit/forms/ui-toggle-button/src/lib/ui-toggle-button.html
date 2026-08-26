@@ -1,0 +1,75 @@
+@if (isGroup()) {
+  @for (item of normalizedOptions(); track item.key) {
+    <button
+      #itemEl
+      type="button"
+      class="ui-toggle-button-item"
+      [class._selected]="item.selected"
+      [class._icon-only]="item.iconOnly"
+      [disabled]="item.disabled"
+      [attr.tabindex]="tabindex()"
+      [attr.aria-pressed]="item.selected"
+      [attr.aria-label]="item.ariaLabel"
+      [attr.aria-invalid]="isInvalid() ? 'true' : null"
+      (click)="toggleOption(item, $event)"
+      (focus)="toggleFocus.emit($event)"
+      (blur)="onBlur($event)"
+    >
+      @if (itemTemplate(); as tpl) {
+        <ng-container [ngTemplateOutlet]="tpl" [ngTemplateOutletContext]="itemContext(item)" />
+      } @else {
+        @if (iconBefore() && item.icon) {
+          <ui-icon class="ui-toggle-button-icon" [name]="item.icon" [size]="iconSize()" />
+        }
+        @if (item.label) {
+          <span class="ui-toggle-button-label">{{ item.label }}</span>
+        }
+        @if (!iconBefore() && item.icon) {
+          <ui-icon class="ui-toggle-button-icon" [name]="item.icon" [size]="iconSize()" />
+        }
+      }
+    </button>
+  }
+} @else {
+  <button
+    #itemEl
+    type="button"
+    class="ui-toggle-button-item"
+    [class._selected]="checked()"
+    [class._icon-only]="isIconOnly()"
+    [id]="resolvedId()"
+    [disabled]="isDisabled()"
+    [attr.name]="name()"
+    [attr.tabindex]="tabindex()"
+    [attr.aria-pressed]="checked()"
+    [attr.aria-label]="buttonAriaLabel()"
+    [attr.aria-labelledby]="ariaLabelledBy() || null"
+    [attr.aria-required]="required() ? 'true' : null"
+    [attr.aria-invalid]="isInvalid() ? 'true' : null"
+    (click)="toggle()"
+    (focus)="toggleFocus.emit($event)"
+    (blur)="onBlur($event)"
+  >
+    @if (contentTemplate(); as tpl) {
+      <ng-container [ngTemplateOutlet]="tpl" [ngTemplateOutletContext]="stateContext()" />
+    } @else {
+      @if (iconBefore()) {
+        <ng-container [ngTemplateOutlet]="singleIcon" />
+      }
+      @if (currentLabel()) {
+        <span class="ui-toggle-button-label">{{ currentLabel() }}</span>
+      }
+      @if (!iconBefore()) {
+        <ng-container [ngTemplateOutlet]="singleIcon" />
+      }
+    }
+  </button>
+}
+
+<ng-template #singleIcon>
+  @if (iconTemplate(); as tpl) {
+    <ng-container [ngTemplateOutlet]="tpl" [ngTemplateOutletContext]="stateContext()" />
+  } @else if (currentIcon(); as iconName) {
+    <ui-icon class="ui-toggle-button-icon" [name]="iconName" [size]="iconSize()" />
+  }
+</ng-template>

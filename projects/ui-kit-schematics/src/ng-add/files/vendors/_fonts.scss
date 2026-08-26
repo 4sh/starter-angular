@@ -1,0 +1,57 @@
+// -----------------------------------------------------------------------------
+// VENDORS · Polices du projet
+//
+// Aucune police n'est embarquée par le kit : les design tokens ne font que
+// *nommer* les familles (`--fontfamily-base`, `--fontfamily-title`), et chaque
+// famille se termine par une pile système. Sans fichier de police, le rendu
+// tombe donc sur le sans-serif de l'OS — jamais sur le serif du navigateur.
+//
+// Ce fichier est le point où vous branchez les vôtres, en trois temps :
+//   1. déposer les fichiers dans `src/assets/fonts/police/` ;
+//   2. les déclarer ci-dessous avec le mixin `variable-font` ;
+//   3. pointer `--fontfamily-*` dessus, en GARDANT la queue de pile système —
+//      sinon le serif revient sur le premier écran où la police n'a pas fini
+//      de charger.
+//
+// Un `.woff2` suffit : supporté partout, et une *variable font* couvre toute la
+// plage de graisses en une seule ressource.
+//
+// En l'état, ce fichier ne déclare rien : son `@use` dans `main.scss` n'émet
+// aucun octet de CSS tant que vous n'avez pas décommenté un `@include`.
+// -----------------------------------------------------------------------------
+
+/// Chemin des polices, relatif à CE fichier (`src/styles/vendors/`) : deux
+/// niveaux pour remonter à `src/`. Le builder Angular rebase l'`url()` sur le
+/// fichier qui la contient, puis empreinte les fichiers au build.
+$fonts-path: '../../assets/fonts/police' !default;
+
+/// Déclare un `@font-face` pour une variable font.
+/// @param {String} $family - nom de la famille CSS, celui que le token ira chercher
+/// @param {String} $file   - chemin du fichier, quoté
+/// @param {String} $format - woff2 | truetype
+/// @param {String} $style  - normal | italic
+@mixin variable-font($family, $file, $format: 'woff2', $style: normal) {
+  @font-face {
+    font-family: $family;
+    src: url($file) format($format);
+    font-weight: 100 900; // plage complète de l'axe wght
+    font-style: $style;
+    font-display: swap; // texte visible pendant le chargement
+  }
+}
+
+// ==============================
+// VOS POLICES
+// ==============================
+// Exemple, à décommenter et adapter :
+//
+// @include variable-font('Inter', '#{$fonts-path}/inter/Inter-Variable.woff2');
+// @include variable-font('Inter', '#{$fonts-path}/inter/Inter-Italic-Variable.woff2', 'woff2', italic);
+//
+// :root {
+//   // Gardez la queue de pile système : c'est elle qui tient le premier rendu.
+//   --fontfamily-base: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto,
+//     'Helvetica Neue', Arial, sans-serif;
+//   --fontfamily-title: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto,
+//     'Helvetica Neue', Arial, sans-serif;
+// }
