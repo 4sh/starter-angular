@@ -5,6 +5,7 @@ import buildInfo from "../generated/build-info.json";
 import * as ButtonStories from "../../projects/ui-kit/actions/ui-button/ui-button.stories";
 import * as ButtonSplitStories from "../../projects/ui-kit/actions/ui-button-split/ui-button-split.stories";
 import * as LinkStories from "../../projects/ui-kit/actions/ui-link/ui-link.stories";
+import * as SpeedDialStories from "../../projects/ui-kit/actions/ui-speed-dial/ui-speed-dial.stories";
 import * as IconStories from "../../projects/ui-kit/base/ui-icon/ui-icon.stories";
 import * as ImageStories from "../../projects/ui-kit/base/ui-image/ui-image.stories";
 import * as CheckboxStories from "../../projects/ui-kit/forms/ui-checkbox/ui-checkbox.stories";
@@ -71,6 +72,7 @@ export const CATEGORIES = [
       { name: 'ui-button', description: 'Bouton (niveaux, tailles, icônes, icon-only, mode lien href/routerLink) : accessible.', link: '?path=/docs/components-ui-actions-ui-button--docs', story: ButtonStories.High },
       { name: 'ui-button-split', description: "Bouton d'action accolé à un déclencheur déroulant (modèle UiMenuItem[], sous-menus, désactivation indépendante, popup accessible).", link: '?path=/docs/components-ui-actions-ui-button-split--docs', story: ButtonSplitStories.Icons },
       { name: 'ui-link', description: 'Lien textuel inline (vrai <a>, href/routerLink, icônes, externe) : accessible.', link: '?path=/docs/components-ui-actions-ui-link--docs', story: LinkStories.Default },
+      { name: 'ui-speed-dial', description: 'Bouton flottant déployant ses actions autour de lui (linéaire ou en cercle), sans panneau — modèle UiSpeedDialItem[].', link: '?path=/docs/components-ui-actions-ui-speed-dial--docs', story: SpeedDialStories.Default, previewHeight: 220 },
     ],
   },
   {

@@ -1,0 +1,76 @@
+<div [class]="hostClasses()" [style.--_radius]="radiusOverride()">
+  @if (mask() && visible()) {
+    <div
+      class="ui-speed-dial-mask"
+      [uiMotion]="'fade'"
+      [motionDisabled]="!motion()"
+      #maskMotion="uiMotion"
+      [animate.enter]="maskMotion.enter()"
+      [animate.leave]="maskMotion.leave()"
+      (click)="onMaskClick()"
+      aria-hidden="true"
+    ></div>
+  }
+
+  <ui-button
+    #trigger
+    class="ui-speed-dial-trigger"
+    [class._rotate]="triggerIconRotates()"
+    rounded
+    iconOnly
+    [level]="level()"
+    [variant]="variant()"
+    [size]="size()"
+    [icon]="triggerIcon()"
+    [ariaLabel]="ariaLabel()"
+    [disabled]="disabled()"
+    [tabindex]="tabindex()"
+    [buttonProps]="triggerProps()"
+    (buttonClick)="onTriggerClick($event)"
+    (keydown)="onTriggerKeydown($event)"
+  />
+
+  @if (visible()) {
+    <!-- ARIA menu pattern: keyboard delegated to the role="menu" container,
+         focus lives on the items (roving tabindex), same as ui-menu. -->
+    <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
+    <div
+      class="ui-speed-dial-list"
+      [id]="uid"
+      role="menu"
+      [attr.aria-label]="ariaLabel() || null"
+      (keydown)="onListKeydown($event)"
+    >
+      @for (node of nodes(); track node.key) {
+        <ui-button
+          #actionBtn
+          class="ui-speed-dial-item"
+          [style.--_stagger-index]="node.index"
+          [style.transform]="type() === 'circle' ? circleTransform()(node.index) : null"
+          [uiMotion]="itemMotionPreset()"
+          [motionDisabled]="!motion()"
+          #itemMotion="uiMotion"
+          [animate.enter]="itemMotion.enter()"
+          [animate.leave]="itemMotion.leave()"
+          rounded
+          iconOnly
+          [level]="level()"
+          [variant]="variant()"
+          size="small"
+          [icon]="node.item.icon"
+          [ariaLabel]="node.item.ariaLabel || node.item.label"
+          [disabled]="node.item.disabled"
+          [href]="node.item.url"
+          [routerLink]="node.item.routerLink"
+          [target]="node.item.target"
+          [tabindex]="node.key === tabStopKey() ? 0 : -1"
+          [buttonProps]="itemProps"
+          [uiTooltip]="showTooltips() ? node.item.ariaLabel || node.item.label : undefined"
+          [tooltipPosition]="tooltipPosition()"
+          (buttonClick)="onItemClick($event, node)"
+          (focus)="onEntryFocus(node.key)"
+        />
+      }
+    </div>
+  }
+</div>

@@ -1,0 +1,187 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as SpeedDialStories from './ui-speed-dial.stories';
+import { ConfigTable } from '../../../../storybook/blocks/config-table';
+
+<Meta of={SpeedDialStories} />
+
+# ui-speed-dial
+
+Un **bouton flottant** qui déploie un jeu d'actions autour de lui, plutôt que de les
+révéler dans un panneau (comparer à
+[`ui-button-split`](?path=/docs/components-ui-actions-ui-button-split--docs), dont le
+déclencheur ouvre un [`ui-menu`](?path=/docs/components-ui-navigation-ui-menu--docs)).
+Le déclencheur et chaque action sont des instances de
+[`ui-button`](?path=/docs/components-ui-actions-ui-button--docs) (`rounded
+iconOnly`) : les couleurs viennent entièrement des tokens `actions.*`, rien n'est
+dessiné à la main.
+
+Les actions sont pilotées par un modèle déclaratif `UiSpeedDialItem[]` — le même
+sous-ensemble « feuille » (`command` / `routerLink` / `url`, `icon`, `disabled`) que
+`UiMenuItem`, pour qu'un menu existant puisse nourrir un dial sans être remanié.
+
+<Canvas of={SpeedDialStories.Default} />
+
+## API
+
+<ArgTypes of={SpeedDialStories} />
+
+## Disposition
+
+Deux dispositions, orthogonales aux couleurs et aux tailles :
+
+- **`linear`** (défaut) empile les actions le long de `direction` (`up`/`down`/`left`/`right`),
+  l'action la plus proche du déclencheur venant en premier dans le tableau `items`.
+- **`circle`** les répartit sur un anneau autour du déclencheur ; `radius` (px) permet
+  d'en fixer le rayon, sinon il est dérivé de la taille du contrôle.
+
+<Canvas of={SpeedDialStories.Directions} />
+<Canvas of={SpeedDialStories.Circle} />
+
+```html
+<ui-speed-dial [items]="actions" [(visible)]="open" direction="up" />
+<ui-speed-dial [items]="actions" type="circle" [radius]="120" />
+```
+
+## Masque & fermeture
+
+`mask` assombrit la page derrière le dial ouvert (mêmes tokens que le voile de
+[`ui-modal`](?path=/docs/components-ui-layout-ui-modal--docs)) et se ferme au clic
+dessus. `hideOnClickOutside` (vrai par défaut) ferme au clic en dehors du dial ;
+`Échap` ferme toujours et rend le focus au déclencheur.
+
+<Canvas of={SpeedDialStories.Mask} />
+
+## Infobulles
+
+Les actions sont **icon-only** par construction (comme dans PrimeNG) : `showTooltips`
+affiche le `label` de chacune en infobulle plutôt qu'en texte visible, positionnée à
+l'opposé du sens de déploiement pour ne jamais chevaucher une action voisine.
+
+<Canvas of={SpeedDialStories.Tooltips} />
+
+## Icône du déclencheur
+
+`showIcon` (fermé) et `hideIcon` (ouvert, optionnel) pilotent l'icône du déclencheur.
+Sans `hideIcon`, `showIcon` pivote de 45° sur lui-même (`rotateAnimation`) plutôt que
+d'être remplacée — le classique `+` qui devient un `×`.
+
+<Canvas of={SpeedDialStories.CustomIcons} />
+
+## Niveaux, tailles & désactivation
+
+`level`, `variant` et `size` sont transmis au déclencheur **et** à chaque action.
+`disabled` désactive l'ensemble ; une action individuelle se désactive via son
+`item.disabled`, et reste alors ignorée par la navigation clavier.
+
+<Canvas of={SpeedDialStories.Levels} />
+<Canvas of={SpeedDialStories.Disabled} />
+
+## Interaction
+
+<Canvas of={SpeedDialStories.Closed} />
+
+Le déclencheur porte `aria-haspopup`, `aria-expanded` et `aria-controls`. Les actions
+ouvertes forment **un seul arrêt de tabulation** (`role="menu"`, roving tabindex, même
+principe que `ui-menu` et la barre d'outils de
+[`ui-editor`](?path=/docs/components-ui-forms-ui-editor--docs)) : les flèches
+déplacent le focus entre elles, `Home`/`End` sautent aux extrémités, les entrées
+désactivées sont ignorées. Une flèche pressée sur le déclencheur **fermé** l'ouvre et
+place le focus sur la première action — inutile de cliquer pour y entrer au clavier.
+
+## Positionnement
+
+Le composant ne présume d'aucune position fixe : `ui-speed-dial` reste un élément de
+flux normal, à positionner comme n'importe quel autre. Pour reproduire le bouton
+d'action flottant classique (coin bas-droit de l'écran) :
+
+```css
+.fab-corner {
+  position: fixed;
+  inset-block-end: var(--units-lg);
+  inset-inline-end: var(--units-lg);
+}
+```
+
+```html
+<div class="fab-corner">
+  <ui-speed-dial [items]="actions" mask />
+</div>
+```
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Point</th>
+      <th>Comportement</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Déclencheur</td>
+      <td>
+        <code>&lt;button&gt;</code> natif (via <code>ui-button</code>) ;{' '}
+        <code>aria-haspopup</code>, <code>aria-expanded</code>,{' '}
+        <code>aria-controls</code> pointent vers la liste d'actions.
+      </td>
+    </tr>
+    <tr>
+      <td>Nom accessible</td>
+      <td>
+        Icon-only par construction : <code>ariaLabel</code> (ou{' '}
+        <code>ariaLabelledBy</code>) est requis sur le déclencheur — averti en{' '}
+        <code>isDevMode()</code> sinon (garde-fou hérité de <code>ui-button</code>).
+        Chaque action reprend son <code>item.ariaLabel</code>, ou son{' '}
+        <code>item.label</code> à défaut.
+      </td>
+    </tr>
+    <tr>
+      <td>Actions ouvertes</td>
+      <td>
+        <code>role="menu"</code> avec <strong>un seul arrêt de tabulation</strong> :
+        les flèches passent d'une action à l'autre, <kbd>Home</kbd>/<kbd>End</kbd> aux
+        extrémités, <kbd>Échap</kbd> ferme et rend le focus au déclencheur.
+      </td>
+    </tr>
+    <tr>
+      <td>Montage</td>
+      <td>
+        Les actions ne sont **rendues qu'ouvertes** (<code>@if</code>) : fermées, elles
+        n'existent pas dans le DOM — aucune jonglerie <code>aria-hidden</code>/
+        <code>inert</code> à maintenir, et rien à exclure de la tabulation.
+      </td>
+    </tr>
+    <tr>
+      <td>Réduction de mouvement</td>
+      <td>
+        L'animation d'apparition (décalée action par action) et la rotation de
+        l'icône respectent <code>prefers-reduced-motion</code>, comme partout dans le
+        kit.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+## Écarts avec PrimeNG
+
+Le composant s'inspire de l'API [SpeedDial de PrimeNG](https://primeng.dev/speeddial),
+adaptée à l'idiome signals/tokens du kit et volontairement réduite sur quelques points :
+
+- **4 directions, pas 8** : les diagonales (`up-left`…) ajoutaient de la complexité de
+  disposition pour un usage rare — reproductibles au besoin par un `type="circle"` à
+  faible nombre d'actions.
+- **2 dispositions, pas 4** : `quarter-circle` et `semi-circle` ne sont pas fournies ;
+  `linear` et `circle` couvrent l'essentiel des usages. Une extension future n'exigerait
+  qu'un nouveau `SpeedDialType` et le calcul d'angle qui va avec.
+- **Un seul étalonnage de touches clavier** : ⭡/⭢ et ⭣/⭠ déplacent le focus dans le
+  même sens quels que soient `direction`/`type`, plutôt que de re-dériver un mappage
+  différent pour chacune des huit dispositions possibles.
+- **`tooltipOptions` simplifié en `showTooltips`** (booléen) : la position suit
+  automatiquement le sens de déploiement plutôt que d'exposer chaque réglage du
+  panneau `ui-tooltip` sous-jacent — accessible directement si besoin, `ui-tooltip`
+  restant un simple attribut composable sur chaque action.
+
+## Theming
+
+<ConfigTable of="ui-speed-dial" />
