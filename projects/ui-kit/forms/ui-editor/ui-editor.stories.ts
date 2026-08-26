@@ -116,7 +116,7 @@ export default meta;
 type Story = StoryObj<UiEditor>;
 
 // --- Template-driven ([(ngModel)]) --------------------------------------
-const TEMPLATE = `<div style="width:420px"><ui-editor
+const TEMPLATE = `<div style="width:640px"><ui-editor
     [(ngModel)]="model"
     [label]="label" [helperText]="helperText" [errorText]="errorText" [placeholder]="placeholder"
     [tools]="tools" [minRows]="minRows" [maxlength]="maxlength" [showCount]="showCount"
@@ -237,7 +237,7 @@ export const Readonly: Story = {
 export const CharacterCount: Story = {
   render: () => ({
     props: { model: '<p>Un court message.</p>' },
-    template: `<div style="width:420px"><ui-editor
+    template: `<div style="width:640px"><ui-editor
       [(ngModel)]="model" label="Commentaire" placeholder="280 caractères max"
       [maxlength]="280" [showCount]="true" /></div>`,
   }),
@@ -247,7 +247,7 @@ export const CharacterCount: Story = {
 export const Required: Story = {
   render: () => ({
     props: { control: new FormControl('', Validators.required) },
-    template: `<div style="width:420px"><ui-editor
+    template: `<div style="width:640px"><ui-editor
       [formControl]="control" label="Description" [required]="true"
       helperText="Champ obligatoire." errorText="Ce champ est requis." /></div>`,
   }),
@@ -259,7 +259,7 @@ export const Required: Story = {
   standalone: true,
   imports: [UiEditor, FormField],
   template: `
-    <div style="width:420px; display:grid; gap:12px; justify-items:start;">
+    <div style="width:640px; display:grid; gap:12px; justify-items:start;">
       <ui-editor
         [formField]="field"
         label="Description"

@@ -27,7 +27,9 @@ $select-padding-x: var(--ui-editor-select-padding-x, var(--units-xs));          
 $select-font-size: var(--ui-editor-select-font-size, var(--size-typography-text-md));      /// Taille de police des listes déroulantes.
 $select-color: var(--ui-editor-select-color, var(--form-high-content-default));            /// Couleur des listes déroulantes.
 $select-radius: var(--ui-editor-select-radius, var(--radius-2xs));                         /// Rayon des coins des listes déroulantes.
-$select-width: var(--ui-editor-select-width, utils.rem-calc(132));                         /// Largeur d'une liste déroulante de la barre, identique pour toutes.
+// `ch` rather than a measured px: it scales with $select-font-size instead of
+// guessing a pixel count for the longest label ("Roboto Mono").
+$select-width: var(--ui-editor-select-width, 13ch);                                        /// Largeur d'une liste déroulante de la barre, identique pour toutes.
 
 $separator-width: var(--ui-editor-separator-width, var(--stroke-sm));                      /// Épaisseur d'un séparateur d'outils.
 $separator-height: var(--ui-editor-separator-height, var(--size-typography-text-default)); /// Hauteur d'un séparateur d'outils.

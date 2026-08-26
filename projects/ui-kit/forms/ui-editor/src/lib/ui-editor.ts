@@ -457,7 +457,6 @@ export class UiEditor extends BaseFormField<string> {
     if (!indexes.length) return;
     const current = Math.max(0, indexes.indexOf(this.tabStop()));
 
-    // Every branch either assigns `next` or returns, so it is always read once set.
     let next: number;
     switch (event.key) {
       case 'ArrowRight':

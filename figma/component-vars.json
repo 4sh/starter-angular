@@ -10,10 +10,10 @@
         "Mode 1"
       ],
       "counts": {
-        "tokens": 630,
+        "tokens": 629,
         "alias": 504,
-        "literal": 126,
-        "skipped": 48,
+        "literal": 125,
+        "skipped": 49,
         "derivedDescriptions": 197
       },
       "aliasTargets": [
@@ -78,6 +78,11 @@
           "cssVar": "--ui-editor-min-height",
           "component": "ui-editor",
           "reason": "expression calc() : une variable Figma ne porte pas de calcul."
+        },
+        {
+          "cssVar": "--ui-editor-select-width",
+          "component": "ui-editor",
+          "reason": "unité relative `ch` : sa valeur dépend du contexte de rendu, une variable Figma ne peut pas la porter."
         },
         {
           "cssVar": "--ui-empty-state-max-width",
@@ -5159,28 +5164,6 @@
           },
           "com.4sh.ui-kit": {
             "cssVar": "--ui-editor-select-radius",
-            "component": "ui-editor",
-            "entryPoint": "@4sh/ui-kit/forms/ui-editor",
-            "descriptionSource": "scss"
-          }
-        }
-      },
-      "width": {
-        "$value": "132px",
-        "$type": "dimension",
-        "$description": "Largeur d'une liste déroulante de la barre, identique pour toutes.",
-        "$extensions": {
-          "com.figma": {
-            "resolvedType": "FLOAT",
-            "scopes": [
-              "WIDTH_HEIGHT"
-            ],
-            "codeSyntax": {
-              "WEB": "var(--ui-editor-select-width)"
-            }
-          },
-          "com.4sh.ui-kit": {
-            "cssVar": "--ui-editor-select-width",
             "component": "ui-editor",
             "entryPoint": "@4sh/ui-kit/forms/ui-editor",
             "descriptionSource": "scss"

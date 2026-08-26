@@ -73,9 +73,8 @@
 
 <ng-template #toolbarTpl>
   @if (hasToolbar()) {
-    <!-- One tab stop for the whole toolbar: arrows move between the tools.
-         Keyboard handling lives on the role="toolbar" container, focus stays
-         on its children (roving tabindex) — same ARIA pattern as ui-menu. -->
+    <!-- ARIA toolbar pattern: keyboard delegated to the role="toolbar" container,
+         focus lives on the items (roving tabindex), same as ui-menu. -->
     <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
     <div
       #toolbarEl
