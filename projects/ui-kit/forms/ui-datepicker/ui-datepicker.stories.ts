@@ -220,6 +220,11 @@ const meta: Meta<UiDatepicker> = {
   args: {
     label: 'Date',
     placeholder: 'jj/mm/aaaa',
+    // Les démos sont en français (libellés, formats, textes d'aide) : sans `locale`, la locale
+    // résolue retombe sur le `LOCALE_ID` d'Angular — `en-US` ici, faute de configuration — et le
+    // panneau affichait des noms de mois anglais sous des dates écrites en jj/mm/aaaa.
+    // `CustomFormat` est la seule story à repasser volontairement en `en-US`.
+    locale: 'fr-FR',
     size: 'default',
     level: 'default',
     hourFormat: '24',
@@ -285,9 +290,9 @@ const sample = new Date(2026, 6, 8); // 8 July 2026
 
 // Formatteur numérique partagé par la plupart des démos ci-dessous : "08/07/2026". Sans lui,
 // l'affichage par défaut (hors `allowInput`) suit `Intl` en `dateStyle: 'medium'` sur la locale
-// résolue — qui retombe sur l'anglais quand `LOCALE_ID` n'est pas configuré (le cas ici) et
-// afficherait alors "Jul 8, 2026". `CustomFormat`, plus bas, reste le seul exemple qui s'en
-// écarte volontairement pour montrer qu'un tout autre format est possible.
+// résolue (`fr-FR`, voir `meta.args`) et afficherait "8 juil. 2026". `CustomFormat`, plus bas,
+// reste le seul exemple qui s'en écarte volontairement pour montrer qu'un tout autre format est
+// possible.
 const demoDateFormat = (d: Date): string =>
   new Intl.DateTimeFormat('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(d);
 // Variante avec heure, pour les démos `showTime` : "08/07/2026 14:30".
@@ -463,7 +468,6 @@ export const EditableInput: Story = {
     label: 'Date',
     allowInput: true,
     showClear: true,
-    locale: 'fr-FR',
     placeholder: '', // vide → placeholder auto dérivé de la locale (jj/mm/aaaa)
     helperText: 'Tapez "08072026" au clavier : les "/" apparaissent seuls (jj/mm/aaaa).',
   },
@@ -478,7 +482,6 @@ export const AutoFormattedInputMonthPicker: Story = {
     view: 'month',
     allowInput: true,
     showClear: true,
-    locale: 'fr-FR',
     placeholder: '',
     helperText: 'Tapez "072026" : auto-formaté en "07/2026" (mm/aaaa).',
   },
@@ -493,7 +496,6 @@ export const EditableInputWithTime: Story = {
     allowInput: true,
     showTime: true,
     showClear: true,
-    locale: 'fr-FR',
     placeholder: '',
     helperText: 'Tapez "080720261430" pour "08/07/2026 14:30" (jj/mm/aaaa hh:mm).',
   },
@@ -508,7 +510,6 @@ export const EditableInputWithTime12h: Story = {
     showTime: true,
     hourFormat: '12',
     showClear: true,
-    locale: 'fr-FR',
     placeholder: '',
     helperText: 'Tapez "080720260200PM" pour "08/07/2026 02:00 PM" (jj/mm/aaaa hh:mm aa).',
   },
@@ -595,13 +596,16 @@ export const Range: Story = {
 // texte libre, parsé au blur/Entrée uniquement.
 export const RangeTypedInput: Story = {
   render: (args) => ({
-    props: { ...args, model: [new Date(2026, 6, 8), new Date(2026, 6, 18)], dateFormat: demoDateFormat },
+    props: {
+      ...args,
+      model: [new Date(2026, 6, 8), new Date(2026, 6, 18)],
+      dateFormat: demoDateFormat,
+    },
     template: TEMPLATE,
   }),
   args: {
     selectionMode: 'range',
     label: 'Période',
-    locale: 'fr-FR', // ordre jj/mm/aaaa — sans ça, la locale résolue retombe sur en-US (mm/dd/yyyy)
     placeholder: '', // vide → placeholder auto dérivé pour range ("jj/mm/aaaa - jj/mm/aaaa")
     helperText: 'Tapez "08/07/2026 - 18/07/2026" (jj/mm/aaaa - jj/mm/aaaa).',
   },
@@ -622,7 +626,6 @@ export const MultipleTypedInput: Story = {
   args: {
     selectionMode: 'multiple',
     label: 'Dates',
-    locale: 'fr-FR', // ordre jj/mm/aaaa — sans ça, la locale résolue retombe sur en-US (mm/dd/yyyy)
     placeholder: '', // vide → placeholder auto dérivé pour multiple ("jj/mm/aaaa, ...")
     helperText: 'Tapez "08/07/2026, 15/07/2026, 23/07/2026" (jj/mm/aaaa, ...).',
   },
@@ -643,13 +646,21 @@ export const YearPicker: Story = {
 // Plusieurs mois côte à côte (numberOfMonths).
 export const TwoMonths: Story = {
   render: () => ({
-    props: { model: new Date(2026, 6, 8), inline: true, numberOfMonths: 2, label: 'Deux mois', valueType: 'date', dateFormat: demoDateFormat },
+    props: {
+      model: new Date(2026, 6, 8),
+      inline: true,
+      numberOfMonths: 2,
+      label: 'Deux mois',
+      valueType: 'date',
+      dateFormat: demoDateFormat,
+    },
     template: `<ui-datepicker
     [(ngModel)]="model"
     [valueType]="valueType"
     [label]="label"
     [inline]="inline"
     [numberOfMonths]="numberOfMonths"
+    locale="fr-FR"
     [dateFormat]="dateFormat" />`,
   }),
   parameters: { layout: 'centered' },
@@ -659,7 +670,7 @@ export const TwoMonths: Story = {
 export const CustomButtonBar: Story = {
   render: () => ({
     props: { model: null },
-    template: `<div style="width:260px"><ui-datepicker [(ngModel)]="model" valueType="date" inline selectionMode="range" label="Période">
+    template: `<div style="width:260px"><ui-datepicker [(ngModel)]="model" valueType="date" inline selectionMode="range" label="Période" locale="fr-FR">
       <ng-template #buttonbar let-todayCallback="todayCallback" let-clearCallback="clearCallback">
         <div style="display:flex;justify-content:space-between;width:100%;gap:8px">
           <div style="display:flex;gap:8px">
@@ -684,6 +695,7 @@ export const SmartPosition: Story = {
     template: `<div style="height:520px;display:flex;align-items:flex-end;justify-content:center">
       <div style="width:260px"><ui-datepicker
         [(ngModel)]="model" valueType="date" label="Ouverture intelligente" [autoFlip]="autoFlip"
+        locale="fr-FR"
         [dateFormat]="dateFormat"
         helperText="Ancré en bas : le panneau s'ouvre vers le haut si la place manque." /></div>
     </div>`,
@@ -702,6 +714,7 @@ export const SmartPosition: Story = {
         [formField]="birth"
         valueType="date"
         label="Date de naissance"
+        locale="fr-FR"
         placeholder="jj/mm/aaaa"
       />
       <code
@@ -733,7 +746,7 @@ export const DateTemplate: Story = {
       hasEvent: (d: { day: number; otherMonth: boolean }) =>
         !d.otherMonth && [3, 8, 12, 19, 24].includes(d.day),
     },
-    template: `<div style="width:320px"><ui-datepicker [(ngModel)]="model" valueType="date" inline label="Agenda">
+    template: `<div style="width:320px"><ui-datepicker [(ngModel)]="model" valueType="date" inline label="Agenda" locale="fr-FR">
       <ng-template #date let-d let-selected="selected">
         <span style="display:flex;flex-direction:column;align-items:center;gap:2px;line-height:1">
           <span>{{ d.day }}</span>
@@ -777,12 +790,12 @@ export const IconTemplate: Story = {
   render: () => ({
     props: { a: null, b: sample, dateFormat: demoDateFormat },
     template: `<div style="display:flex;gap:20px">
-      <div style="width:280px"><ui-datepicker [(ngModel)]="a" valueType="date" label="Date" [dateFormat]="dateFormat">
+      <div style="width:280px"><ui-datepicker [(ngModel)]="a" valueType="date" label="Date" locale="fr-FR" [dateFormat]="dateFormat">
         <ng-template #icon let-name let-size="size">
           <ui-icon [name]="name" family="demo" [size]="size" />
         </ng-template>
       </ui-datepicker></div>
-      <div style="width:280px"><ui-datepicker [(ngModel)]="b" valueType="date" label="Date (sans icône calendrier)" [showIcon]="false" [dateFormat]="dateFormat">
+      <div style="width:280px"><ui-datepicker [(ngModel)]="b" valueType="date" label="Date (sans icône calendrier)" [showIcon]="false" locale="fr-FR" [dateFormat]="dateFormat">
         <ng-template #icon let-name let-size="size">
           <ui-icon [name]="name" family="demo" [size]="size" />
         </ng-template>
@@ -804,7 +817,7 @@ export const ScopedIconFamily: Story = {
   render: () => ({
     props: { model: new Date(2026, 6, 8), dateFormat: demoDateTimeFormat },
     template: `<div style="width:280px"><ui-datepicker uiIconFamily="demo"
-      [(ngModel)]="model" valueType="date" label="Rendez-vous" showTime [dateFormat]="dateFormat" /></div>`,
+      [(ngModel)]="model" valueType="date" label="Rendez-vous" showTime locale="fr-FR" [dateFormat]="dateFormat" /></div>`,
   }),
 };
 
@@ -820,9 +833,9 @@ export const FloatLabel: Story = {
     props: { a: null, b: null, c: sample, dateFormat: demoDateFormat },
     template: `
       <div style="display:grid; grid-template-columns:repeat(3, 200px); gap:28px 20px; align-items:start;">
-        <ui-datepicker floatLabel="over" label="Over label" valueType="date" [(ngModel)]="a" [dateFormat]="dateFormat" />
-        <ui-datepicker floatLabel="in" label="In label" valueType="date" [(ngModel)]="b" [dateFormat]="dateFormat" />
-        <ui-datepicker floatLabel="on" label="On label" valueType="date" [(ngModel)]="c" [dateFormat]="dateFormat" />
+        <ui-datepicker floatLabel="over" label="Over label" valueType="date" locale="fr-FR" [(ngModel)]="a" [dateFormat]="dateFormat" />
+        <ui-datepicker floatLabel="in" label="In label" valueType="date" locale="fr-FR" [(ngModel)]="b" [dateFormat]="dateFormat" />
+        <ui-datepicker floatLabel="on" label="On label" valueType="date" locale="fr-FR" [(ngModel)]="c" [dateFormat]="dateFormat" />
       </div>
     `,
   }),

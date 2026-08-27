@@ -350,10 +350,15 @@
 @if (inline()) {
   <ng-container [ngTemplateOutlet]="calendarTpl" />
 } @else {
-  <!-- Trigger: readonly composed field. Clicking the field or the icon opens the panel. -->
+  <!-- Trigger: composed field. The icon opens the panel; a click on the field itself only does
+       so when the field isn't typeable (see `onTriggerClick`). -->
   <!-- Convenience wrapper: focus and keyboard are carried by the inner ui-input. -->
   <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
-  <div class="ui-datepicker-trigger" (click)="open()" (keydown)="onTriggerKeydown($event)">
+  <div
+    class="ui-datepicker-trigger"
+    (click)="onTriggerClick()"
+    (keydown)="onTriggerKeydown($event)"
+  >
     <ui-input
       #trigger
       [label]="label()"
