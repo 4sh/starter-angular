@@ -161,6 +161,17 @@ lecteur d'écran. Le texte est parsé au **blur** et sur **Entrée** ; une saisi
 la dernière valeur affichée. `↓` ouvre le panneau et entre dans la grille. Mettez `allowInput` à
 `false` pour revenir à un champ lecture seule, calendrier uniquement.
 
+> **Un champ saisissable est d'abord un champ texte : le clic dedans n'ouvre plus le panneau**
+> (FSHSP-180). L'icône calendrier, `↓` et le clavier l'ouvrent. Le panneau est un overlay avec un
+> backdrop permanent : tant qu'il est ouvert, il avale les clics suivants sur le champ — le
+> premier clic posait le curseur, le suivant perdait le focus sans le déplacer, donc corriger un
+> seul segment à la souris était impossible. L'ouverture commite aussi le texte tapé en direct
+> (`previewTyped`), ce qui désarmait le masque auto-"/" en cours de frappe.
+>
+> Le clic continue d'ouvrir le panneau quand le champ **n'est pas saisissable** (`allowInput` à
+> `false`, `readonly`, `timeOnly` — le champ y tient le rôle du bouton) et quand
+> `showIcon="false"`, où il ne resterait sinon aucune affordance souris.
+
 `allowInput` est **sans effet** en `timeOnly` (pas de parseur/formatteur dédié à une heure
 seule) : le champ y reste toujours en lecture seule.
 
@@ -191,6 +202,12 @@ format non numérique rendrait l'auto-slash faux).
 > réactive de lui-même dès que le champ se lit vide (`null`) — y compris en le vidant à la main
 > puis en retapant aussitôt, sans passer par un blur ou par la croix : le vidage est commité dès
 > que le texte lu est vide, pas seulement au blur/Entrée.
+>
+> **Même mise en retrait dès qu'une frappe n'a pas lieu en fin de texte** (FSHSP-179), avant même
+> qu'une valeur existe : corriger le mois d'une date en cours de frappe re-découpait le flux de
+> chiffres et décalait tout ce qui suit (« 08/07/2026 » → « 08/12/026 », l'année perdant un
+> chiffre). Le masque cède la place pour le reste de la saisie — texte libre, parsé au
+> blur/Entrée.
 
 > **L'ordre des champs suit la locale résolue** (`locale` ou, à défaut, `LOCALE_ID`). En
 > `fr-FR` c'est **jj/mm/aaaa** ; en `en-US` c'est **mm/dd/yyyy** — l'auto-formatage suit le même
@@ -198,6 +215,13 @@ format non numérique rendrait l'auto-slash faux).
 > (ou configurez `LOCALE_ID`) pour saisir en JJ/MM/AAAA. Le **placeholder est dérivé
 > automatiquement** de cet ordre quand il n'est pas fourni, pour ne jamais afficher un format
 > trompeur.
+>
+> **Un `dateFormat` custom (sans `parseDate`) l'emporte sur la locale** (FSHSP-179) : l'ordre est
+> sondé sur la sortie du formatteur lui-même, pour que la saisie soit relue dans l'ordre où le
+> champ l'affiche. Sinon un formatteur `fr-FR` sous un `LOCALE_ID` `en-US` affichait
+> « 08/07/2026 » tout en le parsant mois-en-premier : jour et mois s'inversaient à la fin de la
+> saisie. Un format non numérique (« 22 novembre 2023 ») n'est pas sondable — fournissez alors le
+> `parseDate` correspondant.
 
 Le format attendu est aussi annoncé aux lecteurs d'écran via `aria-describedby` (FSHSP-118) :
 le `placeholder` seul est un support inégal selon les lecteurs d'écran, et il disparaît dès la
@@ -346,7 +370,7 @@ via l'interop CVA native, ainsi qu'aux formulaires template-driven (`[(ngModel)]
   <tbody>
     <tr>
       <td><strong>Déclencheur</strong></td>
-      <td>Champ <code>ui-input</code> lié à un <code>label</code> natif. Ouverture au clic, ou clavier <kbd>Entrée</kbd>/<kbd>Espace</kbd>/<kbd>↓</kbd> ; <code>role="combobox"</code> + <code>aria-haspopup="dialog"</code> + <code>aria-expanded</code> — le rôle est nécessaire pour qu'<code>aria-expanded</code> soit pris en compte (interdit sur le <code>textbox</code> implicite), donc pour que l'existence du calendrier et son état soient annoncés.</td>
+      <td>Champ <code>ui-input</code> lié à un <code>label</code> natif. Ouverture par l'icône calendrier, ou clavier <kbd>Entrée</kbd>/<kbd>Espace</kbd>/<kbd>↓</kbd> — le clic dans le champ n'ouvre que si celui-ci n'est pas saisissable, ou s'il n'a pas d'icône (voir <a href="#saisie-manuelle-allowinput">Saisie manuelle</a>) ; <code>role="combobox"</code> + <code>aria-haspopup="dialog"</code> + <code>aria-expanded</code> — le rôle est nécessaire pour qu'<code>aria-expanded</code> soit pris en compte (interdit sur le <code>textbox</code> implicite), donc pour que l'existence du calendrier et son état soient annoncés.</td>
     </tr>
     <tr>
       <td><strong>Navigation grille</strong></td>
