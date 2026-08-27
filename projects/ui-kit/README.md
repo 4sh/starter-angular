@@ -173,17 +173,17 @@ import { UiIcon } from '@4sh/ui-kit/base/ui-icon';
 
 ### Available entry points
 
-**54 entry points**, each named `@4sh/ui-kit/<family>/<component>` — the family
+**57 entry points**, each named `@4sh/ui-kit/<family>/<component>` — the family
 below is literally the path segment, lowercased:
 `@4sh/ui-kit/actions/ui-button`, `@4sh/ui-kit/forms/ui-select`,
 `@4sh/ui-kit/forms/ui-datepicker`…
-(55 components in total — `ui-file-upload-list` ships inside `ui-file-upload`,
+(58 components in total — `ui-file-upload-list` ships inside `ui-file-upload`,
 whose model it consumes.)
 
 | Family      | Entry points                                                                                                                                                                                                                                                                                                                                                           |
 | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Actions     | `ui-button` · `ui-button-split` · `ui-link` · `ui-speed-dial`                                                                                                                                                                                                                                                                                                          |
-| Forms       | `ui-input` · `ui-textarea` · `ui-editor` · `ui-select` · `ui-autocomplete` · `ui-datepicker` · `ui-checkbox` · `ui-radio` · `ui-toggle` · `ui-toggle-button` · `ui-slider` · `ui-nudger` · `ui-rating` · `ui-segment-control` · `ui-input-number` · `ui-input-mask` · `ui-input-otp` · `ui-input-tags` · `ui-input-group` · `ui-file-upload` · `ui-field` · `ui-label` |
+| Forms       | `ui-input` · `ui-textarea` · `ui-editor` · `ui-select` · `ui-autocomplete` · `ui-datepicker` · `ui-checkbox` · `ui-radio` · `ui-toggle` · `ui-toggle-button` · `ui-slider` · `ui-nudger` · `ui-rating` · `ui-segment-control` · `ui-input-number` · `ui-input-mask` · `ui-input-otp` · `ui-input-tags` · `ui-input-group` · `ui-file-upload` · `ui-field` · `ui-label` · `ui-swatch-picker` |
 | Informative | `ui-alert` · `ui-toast` · `ui-badge` · `ui-chip` · `ui-tag` · `ui-avatar` · `ui-avatar-group` · `ui-accordion` · `ui-tooltip` · `ui-spinner` · `ui-skeleton` · `ui-progress-bar` · `ui-empty-state` · `ui-read-only` · `ui-separator` · `ui-helper`                                                                                                                    |
 | Layout      | `ui-card` · `ui-modal` · `ui-drawer` · `ui-popover`                                                                                                                                                                                                                                                                                                                    |
 | Navigation  | `ui-menu` · `ui-context-menu` · `ui-tabs` · `ui-stepper` · `ui-sidebar` · `ui-breadcrumb`                                                                                                                                                                                                                                                                              |

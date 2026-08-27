@@ -10,11 +10,11 @@
         "Mode 1"
       ],
       "counts": {
-        "tokens": 646,
-        "alias": 521,
-        "literal": 125,
-        "skipped": 52,
-        "derivedDescriptions": 206
+        "tokens": 653,
+        "alias": 526,
+        "literal": 127,
+        "skipped": 55,
+        "derivedDescriptions": 210
       },
       "aliasTargets": [
         "metrics",
@@ -55,6 +55,11 @@
           "reason": "sans équivalent variable Figma (durée, easing, curseur, plan d’empilement, ratio)."
         },
         {
+          "cssVar": "--ui-datepicker-panel-max-height",
+          "component": "ui-datepicker",
+          "reason": "expression calc() : une variable Figma ne porte pas de calcul."
+        },
+        {
           "cssVar": "--ui-datepicker-panel-max-width",
           "component": "ui-datepicker",
           "reason": "expression calc() : une variable Figma ne porte pas de calcul."
@@ -83,6 +88,11 @@
           "cssVar": "--ui-editor-select-width",
           "component": "ui-editor",
           "reason": "unité relative `ch` : sa valeur dépend du contexte de rendu, une variable Figma ne peut pas la porter."
+        },
+        {
+          "cssVar": "--ui-editor-swatch-indicator-color",
+          "component": "ui-editor",
+          "reason": "pilotée par une entrée Angular du composant : le thème ne vaudrait que pour les exemplaires qui ne s’en servent pas."
         },
         {
           "cssVar": "--ui-empty-state-max-width",
@@ -242,6 +252,11 @@
         {
           "cssVar": "--ui-spinner-duration",
           "component": "ui-spinner",
+          "reason": "pilotée par une entrée Angular du composant : le thème ne vaudrait que pour les exemplaires qui ne s’en servent pas."
+        },
+        {
+          "cssVar": "--ui-swatch-picker-swatch-color",
+          "component": "ui-swatch-picker",
           "reason": "pilotée par une entrée Angular du composant : le thème ne vaudrait que pour les exemplaires qui ne s’en servent pas."
         },
         {
@@ -5096,96 +5111,6 @@
         }
       }
     },
-    "select": {
-      "color": {
-        "$value": "{semantics.form.high.content.default}",
-        "$type": "color",
-        "$description": "Couleur des listes déroulantes.",
-        "$extensions": {
-          "com.figma": {
-            "resolvedType": "COLOR",
-            "scopes": [
-              "ALL_FILLS"
-            ],
-            "codeSyntax": {
-              "WEB": "var(--ui-editor-select-color)"
-            }
-          },
-          "com.4sh.ui-kit": {
-            "cssVar": "--ui-editor-select-color",
-            "component": "ui-editor",
-            "entryPoint": "@4sh/ui-kit/forms/ui-editor",
-            "descriptionSource": "scss"
-          }
-        }
-      },
-      "font-size": {
-        "$value": "{responsive.size.typography.text.md}",
-        "$type": "dimension",
-        "$description": "Taille de police des listes déroulantes.",
-        "$extensions": {
-          "com.figma": {
-            "resolvedType": "FLOAT",
-            "scopes": [
-              "FONT_SIZE"
-            ],
-            "codeSyntax": {
-              "WEB": "var(--ui-editor-select-font-size)"
-            }
-          },
-          "com.4sh.ui-kit": {
-            "cssVar": "--ui-editor-select-font-size",
-            "component": "ui-editor",
-            "entryPoint": "@4sh/ui-kit/forms/ui-editor",
-            "descriptionSource": "scss"
-          }
-        }
-      },
-      "padding-x": {
-        "$value": "{metrics.units.xs}",
-        "$type": "dimension",
-        "$description": "Inset horizontal des listes déroulantes de la barre.",
-        "$extensions": {
-          "com.figma": {
-            "resolvedType": "FLOAT",
-            "scopes": [
-              "GAP"
-            ],
-            "codeSyntax": {
-              "WEB": "var(--ui-editor-select-padding-x)"
-            }
-          },
-          "com.4sh.ui-kit": {
-            "cssVar": "--ui-editor-select-padding-x",
-            "component": "ui-editor",
-            "entryPoint": "@4sh/ui-kit/forms/ui-editor",
-            "descriptionSource": "scss"
-          }
-        }
-      },
-      "radius": {
-        "$value": "{metrics.radius.2xs}",
-        "$type": "dimension",
-        "$description": "Rayon des coins des listes déroulantes.",
-        "$extensions": {
-          "com.figma": {
-            "resolvedType": "FLOAT",
-            "scopes": [
-              "CORNER_RADIUS"
-            ],
-            "codeSyntax": {
-              "WEB": "var(--ui-editor-select-radius)"
-            }
-          },
-          "com.4sh.ui-kit": {
-            "cssVar": "--ui-editor-select-radius",
-            "component": "ui-editor",
-            "entryPoint": "@4sh/ui-kit/forms/ui-editor",
-            "descriptionSource": "scss"
-          }
-        }
-      }
-    },
     "separator": {
       "color": {
         "$value": "{semantics.form.low.stroke.default}",
@@ -5343,6 +5268,52 @@
           },
           "com.4sh.ui-kit": {
             "cssVar": "--ui-editor-size-xl-font-size",
+            "component": "ui-editor",
+            "entryPoint": "@4sh/ui-kit/forms/ui-editor",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "swatch-indicator": {
+      "height": {
+        "$value": "{metrics.stroke.lg}",
+        "$type": "dimension",
+        "$description": "Épaisseur du liseré indiquant la couleur active sous les outils couleur/surlignage.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-editor-swatch-indicator-height)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-editor-swatch-indicator-height",
+            "component": "ui-editor",
+            "entryPoint": "@4sh/ui-kit/forms/ui-editor",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "offset-x": {
+        "$value": "{metrics.units.2xs}",
+        "$type": "dimension",
+        "$description": "Décalage horizontal du liseré, de part et d'autre de l'icône.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-editor-swatch-indicator-offset-x)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-editor-swatch-indicator-offset-x",
             "component": "ui-editor",
             "entryPoint": "@4sh/ui-kit/forms/ui-editor",
             "descriptionSource": "scss"
@@ -13263,6 +13234,214 @@
             "cssVar": "--ui-stepper-separator-stroke-width",
             "component": "ui-step",
             "entryPoint": "@4sh/ui-kit/navigation/ui-stepper",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    }
+  },
+  "swatch-picker": {
+    "cell": {
+      "size": {
+        "$value": "32px",
+        "$type": "dimension",
+        "$description": "Taille de `ui-swatch-picker` — cell.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-swatch-picker-cell-size)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-swatch-picker-cell-size",
+            "component": "ui-swatch-picker",
+            "entryPoint": "@4sh/ui-kit/forms/ui-swatch-picker",
+            "descriptionSource": "derived"
+          }
+        }
+      },
+      "size-small": {
+        "$value": "24px",
+        "$type": "dimension",
+        "$description": "Taille de `ui-swatch-picker` — cell (variante `small`).",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-swatch-picker-cell-size-small)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-swatch-picker-cell-size-small",
+            "component": "ui-swatch-picker",
+            "entryPoint": "@4sh/ui-kit/forms/ui-swatch-picker",
+            "descriptionSource": "derived"
+          }
+        }
+      }
+    },
+    "focus-ring-width": {
+      "$value": "{metrics.units.2xs}",
+      "$type": "dimension",
+      "$description": "Épaisseur de l'anneau de focus.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "STROKE_FLOAT"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-swatch-picker-focus-ring-width)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-swatch-picker-focus-ring-width",
+          "component": "ui-swatch-picker",
+          "entryPoint": "@4sh/ui-kit/forms/ui-swatch-picker",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "gap": {
+      "$value": "{metrics.units.xs}",
+      "$type": "dimension",
+      "$description": "Espacement de `ui-swatch-picker`.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "GAP"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-swatch-picker-gap)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-swatch-picker-gap",
+          "component": "ui-swatch-picker",
+          "entryPoint": "@4sh/ui-kit/forms/ui-swatch-picker",
+          "descriptionSource": "derived"
+        }
+      }
+    },
+    "gap-small": {
+      "$value": "{metrics.units.2xs}",
+      "$type": "dimension",
+      "$description": "Espacement de `ui-swatch-picker` (variante `small`).",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "GAP"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-swatch-picker-gap-small)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-swatch-picker-gap-small",
+          "component": "ui-swatch-picker",
+          "entryPoint": "@4sh/ui-kit/forms/ui-swatch-picker",
+          "descriptionSource": "derived"
+        }
+      }
+    },
+    "panel": {
+      "padding": {
+        "$value": "{metrics.units.sm}",
+        "$type": "dimension",
+        "$description": "Gouttière interne du panneau (**partagée** avec les autres panneaux flottants).",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-swatch-picker-panel-padding)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-swatch-picker-panel-padding",
+            "component": "ui-swatch-picker",
+            "entryPoint": "@4sh/ui-kit/forms/ui-swatch-picker",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "selected-ring": {
+      "width": {
+        "$value": "{metrics.stroke.lg}",
+        "$type": "dimension",
+        "$description": "Épaisseur du liseré de sélection.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-swatch-picker-selected-ring-width)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-swatch-picker-selected-ring-width",
+            "component": "ui-swatch-picker",
+            "entryPoint": "@4sh/ui-kit/forms/ui-swatch-picker",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "stroke-width": {
+      "$value": "{metrics.stroke.default}",
+      "$type": "dimension",
+      "$description": "Épaisseur du contour de chaque pastille.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "STROKE_FLOAT"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-swatch-picker-stroke-width)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-swatch-picker-stroke-width",
+          "component": "ui-swatch-picker",
+          "entryPoint": "@4sh/ui-kit/forms/ui-swatch-picker",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "swatch": {
+      "radius": {
+        "$value": "{metrics.radius.xs}",
+        "$type": "dimension",
+        "$description": "Rayon des coins d'une pastille.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "CORNER_RADIUS"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-swatch-picker-swatch-radius)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-swatch-picker-swatch-radius",
+            "component": "ui-swatch-picker",
+            "entryPoint": "@4sh/ui-kit/forms/ui-swatch-picker",
             "descriptionSource": "scss"
           }
         }

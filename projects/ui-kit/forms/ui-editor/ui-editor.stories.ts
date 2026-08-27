@@ -36,7 +36,7 @@ const meta: Meta<UiEditor> = {
     tools: {
       control: 'object',
       description:
-        "Outils affichés dans la barre, dans l'ordre (`separator` = séparateur ; `blockFormat`, `fontFamily` et `fontSize` sont des listes déroulantes).",
+        "Outils affichés dans la barre, dans l'ordre (`separator` = séparateur ; `fontFamily` et `fontSize` sont des `ui-select`, pas des boutons).",
       table: {
         type: { summary: 'EditorTool[]' },
         defaultValue: { summary: 'DEFAULT_EDITOR_TOOLS' },
@@ -116,7 +116,7 @@ export default meta;
 type Story = StoryObj<UiEditor>;
 
 // --- Template-driven ([(ngModel)]) --------------------------------------
-const TEMPLATE = `<div style="width:640px"><ui-editor
+const TEMPLATE = `<div style="width:750px"><ui-editor
     [(ngModel)]="model"
     [label]="label" [helperText]="helperText" [errorText]="errorText" [placeholder]="placeholder"
     [tools]="tools" [minRows]="minRows" [maxlength]="maxlength" [showCount]="showCount"
@@ -163,10 +163,13 @@ export const CodeBlock: Story = {
 };
 
 /**
- * Le choix de police est **fermé aux trois familles du système**
+ * `fontFamily` et `fontSize` sont tous deux **dans la barre par défaut**, à
+ * égalité : ni l'un ni l'autre n'est une option gardée derrière `tools`. Le
+ * choix de police est fermé aux trois familles du système
  * (`--fontfamily-base`, `--fontfamily-title`, `--fontfamily-monospace`), et la
- * taille à l'échelle `--size-typography-text-*`. La liste affiche le nom réel de
- * chaque fonte, lu depuis le token à l'exécution.
+ * taille à l'échelle `--size-typography-text-*`. Chacun se rend en `ui-select`
+ * (`size="small"`), et affiche la valeur en vigueur au repos — la police lit
+ * le nom réel de la fonte, résolu depuis le token à l'exécution.
  */
 export const FontFamily: Story = {
   render: story(
@@ -177,35 +180,66 @@ export const FontFamily: Story = {
   args: { label: 'Contenu' },
 };
 
-/**
- * `fontSize` n'est **pas** dans la barre par défaut : il ferait doublon avec
- * `blockFormat` à l'écran, sans porter la structure du document. Il s'ajoute
- * explicitement quand un projet en a besoin.
- */
+/** Les quatre tailles de l'échelle `--size-typography-text-*`. */
 export const FontSize: Story = {
   render: story(
     '<p><span class="ui-editor-size-xl">Très grand</span>, ' +
       '<span class="ui-editor-size-lg">grand</span>, normal, ' +
       '<span class="ui-editor-size-sm">petit</span>.</p>',
   ),
+  args: { label: 'Contenu' },
+};
+
+/**
+ * `indent`/`outdent` ne sont **pas** dans la barre par défaut (même logique
+ * que `fontSize` : opt-in via `tools`). Passthrough `execCommand` — aucune
+ * classe ni conversion, contrairement à la police/taille.
+ */
+export const IndentOutdent: Story = {
+  render: story(
+    '<ul><li>Premier point</li><li>Second point<ul><li>Sous-point</li></ul></li></ul>',
+  ),
   args: {
-    label: 'Contenu',
-    tools: ['blockFormat', 'fontFamily', 'fontSize', 'separator', 'bold', 'italic'],
+    label: 'Plan',
+    tools: ['bulletList', 'orderedList', 'separator', 'indent', 'outdent'],
   },
 };
 
 /**
- * `blockFormat` change ce que le bloc **est**, pas seulement son apparence : un
- * titre porte la structure du document, et un lecteur d'écran navigue de titre en
- * titre.
+ * `alignLeft`/`alignCenter`/`alignRight`/`alignJustify` sont dans la barre par
+ * défaut : passthrough `execCommand('justify*')`, mutuellement exclusifs par
+ * construction du navigateur (appliquer l'un désactive l'état des autres), donc
+ * ils suivent le même modèle `aria-pressed` que gras/italique/souligné plutôt
+ * que celui d'un menu.
  */
-export const Headings: Story = {
+export const TextAlign: Story = {
   render: story(
-    '<h1>Titre de niveau 1</h1><p>Un paragraphe.</p>' +
-      '<h2>Titre de niveau 2</h2><p>Un autre paragraphe.</p>' +
-      '<h3>Titre de niveau 3</h3><p>Encore un.</p>',
+    '<p style="text-align: center;">Centré.</p>' +
+      '<p style="text-align: right;">Aligné à droite.</p>' +
+      '<p style="text-align: justify;">Justifié : ce paragraphe est assez long pour que la justification s\'y voie clairement sur plusieurs lignes.</p>',
   ),
-  args: { label: 'Article', minRows: 8 },
+  args: { label: 'Contenu' },
+};
+
+/**
+ * `textColor`/`highlightColor` ne sont **pas** dans la barre par défaut (même
+ * logique d'opt-in que `fontSize`/`indent`/`outdent`). Chacun ouvre son propre
+ * `ui-swatch-picker` (`popup`, `size="small"`) ancré au bouton `ui-button`, qui
+ * affiche un liseré sous son icône dans la couleur active au curseur. La
+ * palette est celle par défaut de `ui-swatch-picker`, réutilisée telle quelle
+ * pour que le nuancier et les classes générées restent le même jeu de tokens.
+ */
+export const ColorPickers: Story = {
+  render: story(
+    // red-700, not red-500: the demo text must stay AA-contrasted on white (axe smoke-test).
+    '<p><span class="ui-editor-color-red-700">Texte en rouge</span>, ' +
+      '<span class="ui-editor-highlight-orange-100">surligné en orange clair</span> ' +
+      'et du texte normal.</p>',
+  ),
+  args: {
+    label: 'Contenu',
+    tools: ['bold', 'italic', 'separator', 'textColor', 'highlightColor'],
+  },
 };
 
 export const ToolbarBottom: Story = {
