@@ -5,8 +5,12 @@
  *
  * Covers: `hasValue()`-gated mask on/off (`single` and `range`), the `enforceBounds`/`dataEnd`
  * deletion fixes, re-arming the mask on a manual clear, the in-place-edit suspension and the
- * custom-`dateFormat` field order (FSHSP-179). Not covered: `multiple` (no live mask) or the
- * format-hint derivation.
+ * custom-`dateFormat` field order (FSHSP-179), and which trigger clicks open the panel
+ * (FSHSP-180). Not covered: `multiple` (no live mask) or the format-hint derivation.
+ *
+ * The panel is rendered through a `cdkConnectedOverlay`, so once opened it lives in the global
+ * overlay container under `document.body`, not in `fixture.nativeElement` — as in
+ * `ui-select.spec.ts`, assertions on it query `document` directly.
  */
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -65,6 +69,38 @@ class DatepickerCustomFormatHost {
     }).format(d);
 }
 
+/** Non-typeable trigger (`allowInput=false`): the field itself is the affordance, so it keeps
+ *  opening the panel on click. */
+@Component({
+  imports: [ReactiveFormsModule, UiDatepicker],
+  template: `<ui-datepicker
+    label="Date"
+    valueType="date"
+    locale="fr-FR"
+    [allowInput]="false"
+    [formControl]="control"
+  />`,
+})
+class DatepickerReadonlyTriggerHost {
+  readonly control = new FormControl<Date | null>(null);
+}
+
+/** Typeable but icon-less (`showIcon=false`): nothing else could open the panel with a mouse,
+ *  so the click keeps doing it. */
+@Component({
+  imports: [ReactiveFormsModule, UiDatepicker],
+  template: `<ui-datepicker
+    label="Date"
+    valueType="date"
+    locale="fr-FR"
+    [showIcon]="false"
+    [formControl]="control"
+  />`,
+})
+class DatepickerNoIconHost {
+  readonly control = new FormControl<Date | null>(null);
+}
+
 async function setup(initial: Date | null = null) {
   await TestBed.configureTestingModule({ imports: [DatepickerHost] }).compileComponents();
   const fixture: ComponentFixture<DatepickerHost> = TestBed.createComponent(DatepickerHost);
@@ -108,6 +144,32 @@ async function setupCustomFormat() {
     '.ui-datepicker-trigger input.ui-input-native',
   ) as HTMLInputElement;
   return { fixture, host: fixture.componentInstance, input };
+}
+
+/** Same as {@link setup}, for a host whose only difference is static template inputs. */
+async function setupHost<T>(host: new () => T) {
+  await TestBed.configureTestingModule({ imports: [host] }).compileComponents();
+  const fixture: ComponentFixture<T> = TestBed.createComponent(host);
+  fixture.detectChanges();
+  await fixture.whenStable();
+  const trigger = fixture.nativeElement.querySelector('.ui-datepicker-trigger') as HTMLElement;
+  return { fixture, trigger };
+}
+
+function panel(): HTMLElement | null {
+  return document.querySelector('.ui-datepicker-panel');
+}
+/** Clicks `el` and flushes CD. */
+async function click(el: HTMLElement, fixture: ComponentFixture<unknown>) {
+  el.click();
+  fixture.detectChanges();
+  await fixture.whenStable();
+}
+/** Dispatches a `keydown` on `el` and flushes CD. */
+async function keydown(el: HTMLElement, key: string, fixture: ComponentFixture<unknown>) {
+  el.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true }));
+  fixture.detectChanges();
+  await fixture.whenStable();
 }
 
 /** Mirrors a single native keystroke: sets the raw value + caret, dispatches `input`, flushes CD. */
@@ -264,6 +326,43 @@ describe('UiDatepicker — keyboard entry masking (FSHSP-118)', () => {
 
       await typeSequentially(input, '08072026', fixture);
       expect(input.value).toBe('08/07/2026');
+    });
+  });
+
+  describe('which trigger clicks open the panel (FSHSP-180)', () => {
+    it('does not open on a click in a typeable field — the icon and the keyboard do', async () => {
+      const { fixture, input } = await setup();
+      const trigger = fixture.nativeElement.querySelector('.ui-datepicker-trigger') as HTMLElement;
+      // Opening on this click made the field unusable with a mouse: the overlay's permanent
+      // backdrop then swallowed every further click, so the caret couldn't be moved — and the
+      // panel's live preview disarmed the auto-"/" mask mid-entry.
+      await click(trigger, fixture);
+      expect(panel()).toBeNull();
+
+      // The calendar toggle still opens it…
+      const icon = fixture.nativeElement.querySelector(
+        '.ui-datepicker-trigger .ui-input-action',
+      ) as HTMLButtonElement;
+      await click(icon, fixture);
+      expect(panel()).not.toBeNull();
+      await keydown(input, 'Escape', fixture);
+      expect(panel()).toBeNull();
+
+      // …and so does the keyboard.
+      await keydown(input, 'ArrowDown', fixture);
+      expect(panel()).not.toBeNull();
+    });
+
+    it('still opens on click when the field is not typeable', async () => {
+      const { fixture, trigger } = await setupHost(DatepickerReadonlyTriggerHost);
+      await click(trigger, fixture);
+      expect(panel()).not.toBeNull();
+    });
+
+    it('still opens on click when no calendar icon is shown', async () => {
+      const { fixture, trigger } = await setupHost(DatepickerNoIconHost);
+      await click(trigger, fixture);
+      expect(panel()).not.toBeNull();
     });
   });
 

@@ -161,6 +161,17 @@ lecteur d'écran. Le texte est parsé au **blur** et sur **Entrée** ; une saisi
 la dernière valeur affichée. `↓` ouvre le panneau et entre dans la grille. Mettez `allowInput` à
 `false` pour revenir à un champ lecture seule, calendrier uniquement.
 
+> **Un champ saisissable est d'abord un champ texte : le clic dedans n'ouvre plus le panneau**
+> (FSHSP-180). L'icône calendrier, `↓` et le clavier l'ouvrent. Le panneau est un overlay avec un
+> backdrop permanent : tant qu'il est ouvert, il avale les clics suivants sur le champ — le
+> premier clic posait le curseur, le suivant perdait le focus sans le déplacer, donc corriger un
+> seul segment à la souris était impossible. L'ouverture commite aussi le texte tapé en direct
+> (`previewTyped`), ce qui désarmait le masque auto-"/" en cours de frappe.
+>
+> Le clic continue d'ouvrir le panneau quand le champ **n'est pas saisissable** (`allowInput` à
+> `false`, `readonly`, `timeOnly` — le champ y tient le rôle du bouton) et quand
+> `showIcon="false"`, où il ne resterait sinon aucune affordance souris.
+
 `allowInput` est **sans effet** en `timeOnly` (pas de parseur/formatteur dédié à une heure
 seule) : le champ y reste toujours en lecture seule.
 
@@ -359,7 +370,7 @@ via l'interop CVA native, ainsi qu'aux formulaires template-driven (`[(ngModel)]
   <tbody>
     <tr>
       <td><strong>Déclencheur</strong></td>
-      <td>Champ <code>ui-input</code> lié à un <code>label</code> natif. Ouverture au clic, ou clavier <kbd>Entrée</kbd>/<kbd>Espace</kbd>/<kbd>↓</kbd> ; <code>role="combobox"</code> + <code>aria-haspopup="dialog"</code> + <code>aria-expanded</code> — le rôle est nécessaire pour qu'<code>aria-expanded</code> soit pris en compte (interdit sur le <code>textbox</code> implicite), donc pour que l'existence du calendrier et son état soient annoncés.</td>
+      <td>Champ <code>ui-input</code> lié à un <code>label</code> natif. Ouverture par l'icône calendrier, ou clavier <kbd>Entrée</kbd>/<kbd>Espace</kbd>/<kbd>↓</kbd> — le clic dans le champ n'ouvre que si celui-ci n'est pas saisissable, ou s'il n'a pas d'icône (voir <a href="#saisie-manuelle-allowinput">Saisie manuelle</a>) ; <code>role="combobox"</code> + <code>aria-haspopup="dialog"</code> + <code>aria-expanded</code> — le rôle est nécessaire pour qu'<code>aria-expanded</code> soit pris en compte (interdit sur le <code>textbox</code> implicite), donc pour que l'existence du calendrier et son état soient annoncés.</td>
     </tr>
     <tr>
       <td><strong>Navigation grille</strong></td>

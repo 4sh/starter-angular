@@ -263,6 +263,11 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
    * (any count, duplicates collapsed) — see `parseTypedMulti`. The grid keeps working exactly as
    * before either way; typing is a complement, not a replacement.
    *
+   * A typeable field is a text field first: **a click in it no longer opens the panel**
+   * (FSHSP-180) — the calendar icon, `↓` and the keyboard do. `allowInput="false"` (or
+   * `readonly`/`timeOnly`) restores the click-to-open, the field being the affordance there; so
+   * does `showIcon="false"`, which leaves no icon to click. See `onTriggerClick`.
+   *
    * Has no effect in `timeOnly` mode: the trigger stays read-only there (no parser/formatter for
    * a bare time string).
    */
@@ -944,9 +949,9 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     // Keep focus in the input whenever it's typeable; only rove into the grid when it isn't
     // (`triggerReadonly`) or when opened via the icon specifically (`viaIcon` — "I want the
     // grid"). Used to key off `selectionMode() !== 'single'` instead, which broke once `range`
-    // got its own live mask: the field's own click ALSO calls `open()` (see the template), so
-    // roving on every non-`single` mode stole focus back out of the field the moment you clicked
-    // it to type (FSHSP-118 follow-up).
+    // got its own live mask: back then the field's own click ALSO called `open()` (now gated,
+    // see `onTriggerClick`), so roving on every non-`single` mode stole focus back out of the
+    // field the moment you clicked it to type (FSHSP-118 follow-up).
     if (this.showCalendar() && (this.triggerReadonly() || viaIcon)) {
       if (this.currentView() === 'date') this.queueDayFocus();
       else if (this.currentView() === 'month') this.queueMonthFocus();
@@ -974,6 +979,30 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     event.stopPropagation();
     if (this.showClearButton()) this.clear();
     else this.toggle(true);
+  }
+
+  /**
+   * @ignore Whether a click on the trigger opens the panel. It does when the field isn't
+   * typeable (`triggerReadonly`: the field then *is* the button), and when `showIcon` is off
+   * (no calendar toggle left — without this, nothing would open the panel with a mouse).
+   *
+   * On a typeable field it does NOT (FSHSP-180). The panel is an overlay with a permanent
+   * backdrop, so an open panel swallows every further click on the field: the first click
+   * placed the caret, the next one lost focus without moving it — correcting a single segment
+   * with the mouse was impossible. Opening also live-commits the typed text through
+   * `previewTyped`, which disarms the auto-"/" mask mid-entry (see `typingSlots`). The icon,
+   * `↓` and typing are unaffected.
+   */
+  private readonly openOnTriggerClick = computed(() => this.triggerReadonly() || !this.showIcon());
+
+  /** @ignore Click anywhere on the trigger (label, field or format hint — they share the wrapper). */
+  protected onTriggerClick(): void {
+    if (!this.openOnTriggerClick()) return;
+    // The click may have landed on the label or the format hint, leaving focus outside the
+    // wrapper — `Escape`/`↓` are bound there, so they'd be dead while the panel is open. A click
+    // on the field itself is already focused by then, so this never moves the caret.
+    if (!this.triggerReadonly()) this.triggerInput()?.focus();
+    this.open();
   }
 
   /** @ignore */
