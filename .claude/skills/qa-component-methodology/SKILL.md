@@ -47,8 +47,8 @@ juste à l'œil :
 ## 3. Vérifications statiques
 
 ```bash
-npx eslint <dossier> --max-warnings 0
-npx tsc --noEmit -p tsconfig.app.json | grep <composant>
+pnpm exec eslint <dossier> --max-warnings 0
+pnpm exec tsc --noEmit -p tsconfig.app.json | grep <composant>
 ```
 
 ## 4. Vérification visuelle/interactive dans Storybook

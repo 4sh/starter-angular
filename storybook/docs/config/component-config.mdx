@@ -111,7 +111,7 @@ page liste les variables, leur rôle et leur valeur par défaut.
 
 Les variables **locales** de chaque composant (dont celles qui pointent vers `ui-config` =
 points d'ajustement per-composant) sont documentées dans la section **« Theming »** de la doc du
-composant. Cette table est **générée** depuis le `.scss` par `npm run docs:config` : le rôle de
+composant. Cette table est **générée** depuis le `.scss` par `pnpm docs:config` : le rôle de
 chaque variable vient de son commentaire `///`, le binding et la chaîne vers `ui-config` sont
 déduits, et la valeur affichée est **mesurée** dans le thème, la marque et le viewport actifs.
 Rebinder une variable dans un projet ne demande donc aucune reprise de doc.
@@ -230,7 +230,7 @@ fichier dans le projet, on le charge après `styles.css`, et on change ce qu'on 
 ne change rien : il redéclare les défauts. Il est téléchargeable depuis
 **Spécifications → Thème & Système de Tokens**.
 
-Le fichier est **généré** depuis les `.scss` (`npm run docs:config`), et ses valeurs sont lues
+Le fichier est **généré** depuis les `.scss` (`pnpm docs:config`), et ses valeurs sont lues
 dans le CSS réellement compilé — donc jamais périmées. Quelques hooks n'y figurent pas, parce
 qu'un réglage global n'a pas de sens pour eux : ceux dont le défaut dépend de la variante rendue
 (`--ui-button-radius` vaut un autre rayon en `rounded`) et ceux que le composant se pose

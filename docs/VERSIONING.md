@@ -77,9 +77,9 @@ predecessor should not exist.
      time, so refreshing first would publish a server announcing the previous
      release:
      ```
-     npm run docs:config
-     npm run mcp:assets
-     npm run mcp:bundle
+     pnpm docs:config
+     pnpm mcp:assets
+     pnpm mcp:bundle
      ```
    - Commit and push (no tag needed — see below)
 5. Run the publish workflow ([`PUBLISHING.md`](./PUBLISHING.md))
@@ -100,7 +100,7 @@ Consequence: **the `[X.Y.Z]` section must exist in `CHANGELOG.md` before you
 publish.** The `verify` job checks it (via `scripts/changelog.section.mjs`), so a
 `dry_run: true` run reports a missing section _before_ the irreversible publish.
 
-Pushing a tag yourself still works — `npm version` + `git push --follow-tags` —
+Pushing a tag yourself still works — `pnpm version` + `git push --follow-tags` —
 and the release job reuses an existing tag rather than creating one. It is simply
 no longer necessary.
 

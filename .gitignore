@@ -13,7 +13,7 @@ node_modules
 .temp-tokens
 .tokenflow
 
-# Generated Tokens (npm run tokens:build)
+# Generated Tokens (pnpm tokens:build)
 projects/ui-kit/styles/generated
 
 # Copie servie par Storybook pour le téléchargement (regénérée par docs:config)
@@ -22,13 +22,16 @@ storybook/public/component-vars.scss
 # Index de recherche plein texte de la doc (regénéré par docs:search)
 storybook/public/text-search-docs.json
 
+# Copie temporaire d'axe-core déposée par le run a11y (test-storybook:ci)
+storybook/public/_axe-tmp.js
+
 # Compodoc (generated for Storybook)
 documentation.json
 
-# Storybook doc config manifest (npm run docs:config)
+# Storybook doc config manifest (pnpm docs:config)
 storybook/generated
 
-# Manifeste doc embarqué dans @4sh/ui-kit-mcp (regénéré par npm run mcp:assets)
+# Manifeste doc embarqué dans @4sh/ui-kit-mcp (regénéré par pnpm mcp:assets)
 projects/ui-kit-mcp/data
 
 # Storybook build output
@@ -44,6 +47,7 @@ coverage
 # Logs
 *.log
 npm-debug.log*
+pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
@@ -69,5 +73,5 @@ yarn-error.log*
 Thumbs.db
 ehthumbs.db
 
-# npm pack output (local package testing)
+# pnpm pack output (local package testing)
 *.tgz

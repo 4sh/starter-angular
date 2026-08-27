@@ -29,7 +29,7 @@ jobs:
     name: Build Storybook and demo app
     runs-on: ubuntu-latest
     steps:
-      # fetch-depth 0 : `npm run build-storybook` calls `build-info.mjs`, which
+      # fetch-depth 0 : `pnpm build-storybook` calls `build-info.mjs`, which
       # runs `git describe --tags` to find the last published version. A
       # shallow checkout (the default) fetches no tags, so the "ahead of
       # X.Y.Z" part of the label would silently disappear.
@@ -42,20 +42,26 @@ jobs:
         id: nvmrc
         run: echo "NODE_VERSION=$(cat .nvmrc)" >> $GITHUB_OUTPUT
 
+      # Avant `setup-node` : c'est la présence de `pnpm` sur le PATH qui permet à
+      # setup-node de localiser le store à mettre en cache. La version installée
+      # vient du champ `packageManager` du package.json — un seul endroit à bumper.
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+
       - name: Set up Node.js
         uses: actions/setup-node@v7
         with:
           node-version: ${{ steps.nvmrc.outputs.NODE_VERSION }}
-          cache: 'npm'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Setup Pages
         uses: actions/configure-pages@v6
 
       - name: Build Storybook
-        run: npm run build-storybook
+        run: pnpm build-storybook
 
       - name: Fix base href for GitHub Pages
         run: |
@@ -63,7 +69,7 @@ jobs:
           sed -i -e 's|<head>|<head><base href="'"$PAGES_BASE"'">|' storybook-static/iframe.html
 
       - name: Build demo application
-        run: npm run build -- --configuration production --base-href "$DEMO_BASE"
+        run: pnpm build --configuration production --base-href "$DEMO_BASE"
 
       - name: Assemble the Pages artifact
         run: |

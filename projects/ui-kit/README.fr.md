@@ -14,15 +14,15 @@ natif (signals + Angular CDK), style piloté par les design tokens.
 
 À choisir **avant** d'installer : la décision conditionne toute la suite.
 
-|                                | **dépendance**                                             | **starter**                                                                                 |
-| ------------------------------ | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| Installation                   | `npm install @4sh/ui-kit`                                  | `ng add @4sh/ui-kit-schematics`                                                             |
-| Ce qui arrive dans votre dépôt | rien — les composants compilés restent dans `node_modules` | les _sources_ des composants, dans `src/app/shared/`                                        |
-| Imports                        | `@4sh/ui-kit/actions/ui-button`                            | votre propre chemin (`./shared/components/ui/actions/ui-button`)                            |
-| Styles                         | `node_modules/@4sh/ui-kit/styles.css`, chargée globalement | copiés dans `src/styles/`, avec la chaîne de génération des tokens (`npm run tokens:build`) |
-| Documentation                  | le Storybook lié ci-dessus                                 | la vôtre, sur vos copies (posée par `ng add`)                                               |
-| Personnalisation               | inputs + variables CSS                                     | modifier le code lui-même                                                                   |
-| Mise à jour                    | bump de version                                            | `ng generate @4sh/ui-kit-schematics:update` — diff par composant, appliquer ou ignorer      |
+|                                | **dépendance**                                             | **starter**                                                                            |
+| ------------------------------ | ---------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| Installation                   | `pnpm add @4sh/ui-kit`                                     | `ng add @4sh/ui-kit-schematics`                                                        |
+| Ce qui arrive dans votre dépôt | rien — les composants compilés restent dans `node_modules` | les _sources_ des composants, dans `src/app/shared/`                                   |
+| Imports                        | `@4sh/ui-kit/actions/ui-button`                            | votre propre chemin (`./shared/components/ui/actions/ui-button`)                       |
+| Styles                         | `node_modules/@4sh/ui-kit/styles.css`, chargée globalement | copiés dans `src/styles/`, avec la chaîne de génération des tokens (`tokens:build`)    |
+| Documentation                  | le Storybook lié ci-dessus                                 | la vôtre, sur vos copies (posée par `ng add`)                                          |
+| Personnalisation               | inputs + variables CSS                                     | modifier le code lui-même                                                              |
+| Mise à jour                    | bump de version                                            | `ng generate @4sh/ui-kit-schematics:update` — diff par composant, appliquer ou ignorer |
 
 **dépendance** est le mode par défaut : rien à maintenir, une seule version à
 suivre, et la garantie que tous les projets affichent le même kit. **starter** —
@@ -39,8 +39,15 @@ mode `dépendance`** ; la voie starter a son propre package et son propre README
 ## Installation
 
 ```bash
-npm install @4sh/ui-kit
+pnpm add @4sh/ui-kit
 ```
+
+N'importe quel gestionnaire fonctionne : le package est un tarball npm standard,
+avec des `peerDependencies` classiques. `pnpm` est celui que le Design System
+utilise et recommande (sa résolution stricte fait échouer un peer manquant au
+lieu de le masquer, et ses réglages de chaîne de dépendances mettent en
+quarantaine les versions fraîchement publiées) ; `npm install @4sh/ui-kit` ou
+`yarn add @4sh/ui-kit` installent exactement la même chose.
 
 Publié sur le **registre npm public**, organisation **`4sh`** :
 [npmjs.com/package/@4sh/ui-kit](https://www.npmjs.com/package/@4sh/ui-kit)
@@ -94,7 +101,7 @@ voie n'a pas de hook à l'installation — ajoutez-le vous-même, une fois, dans
 }
 ```
 
-`npm install` pose `ui-kit-mcp` dans le `node_modules/.bin/` du projet : cette forme
+L'installation pose `ui-kit-mcp` dans le `node_modules/.bin/` du projet : cette forme
 se résout donc quel que soit le dossier depuis lequel votre client MCP lance le
 serveur — un `node node_modules/@4sh/ui-kit/mcp/index.js` en dur est relatif au
 répertoire courant et casse dès que ce n'est pas la racine du projet. Gardez

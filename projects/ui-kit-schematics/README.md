@@ -41,7 +41,7 @@ against newer sources, to accept or skip.
 | --------------------------------------------------- | ------------------------------------------------------------------------- |
 | `ng add @4sh/ui-kit-schematics`                     | foundation **and** components, in one go                                  |
 | `ng add @4sh/ui-kit-schematics --skip-components`   | foundation only, pick components later                                    |
-| `ng add @4sh/ui-kit-schematics --skip-install`      | skip `npm install` (project drives its own lockfile)                      |
+| `ng add @4sh/ui-kit-schematics --skip-install`      | skip the dependency install (project drives its own lockfile)             |
 | `ng add @4sh/ui-kit-schematics --skip-storybook`    | do not set up a Storybook (see below)                                     |
 | `ng add @4sh/ui-kit-schematics --skip-mcp`          | do not declare the MCP server (see below)                                 |
 | `ng add @4sh/ui-kit-schematics --gridaflex`         | set up the Gridaflex grid without being asked (`--no-gridaflex` skips it) |
@@ -88,7 +88,7 @@ Set up by default: when `ng add` returns, you have a working Storybook of the
 components you copied:
 
 ```bash
-npm run storybook
+pnpm storybook
 ```
 
 Each component arrives with its story and its MDX page, next to its sources. The

@@ -37,6 +37,21 @@ import remarkMdx from 'remark-mdx';
 import { visit, SKIP } from 'unist-util-visit';
 import { sanitize } from 'storybook/internal/csf';
 
+/**
+ * Commande à afficher pour relancer un script du `package.json`.
+ *
+ * Ce fichier est COPIÉ chez le consommateur par `ng add @4sh/ui-kit-schematics` :
+ * son gestionnaire de paquets n'est pas connu à l'écriture. Le déduire de
+ * `npm_config_user_agent` (que npm, pnpm, yarn et bun renseignent tous quand ils
+ * lancent un script) donne à chacun une commande copiable telle quelle, au lieu
+ * d'un `npm run` qui contournerait son lockfile.
+ */
+function runCmd(script) {
+  const agent = process.env.npm_config_user_agent ?? '';
+  const pm = /^(pnpm|yarn|bun|npm)\//.exec(agent)?.[1] ?? 'npm';
+  return pm === 'npm' || pm === 'bun' ? `${pm} run ${script}` : `${pm} ${script}`;
+}
+
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 /**
@@ -441,7 +456,7 @@ if (isCli) {
     const current = existsSync(OUT_FILE) ? readFileSync(OUT_FILE, 'utf8') : null;
     if (current !== serialize(build())) {
       console.error(
-        '✗ storybook/public/text-search-docs.json est périmé — lance `npm run docs:search`.',
+        `✗ storybook/public/text-search-docs.json est périmé — lance \`${runCmd('docs:search')}\`.`,
       );
       process.exit(1);
     }

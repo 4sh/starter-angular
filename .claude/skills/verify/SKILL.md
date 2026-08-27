@@ -10,7 +10,7 @@ Project surface: **Storybook** (no meaningful app page; `ng serve` shows almost 
 ## Recipe that works
 
 ```bash
-npm run build-storybook          # AOT of all stories → storybook-static/
+pnpm build-storybook          # AOT of all stories → storybook-static/
 cd storybook-static && python3 -m http.server 6007 &
 ```
 

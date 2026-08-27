@@ -3,7 +3,7 @@
  * mcp-assets.build.mjs — copie dans `projects/ui-kit-mcp/data/` les artefacts
  * déjà générés par le pipeline doc du kit (`docs:config`, `docs:search`), pour
  * qu'ils voyagent AVEC le package publié `@4sh/ui-kit-mcp` (voir `src/data.ts`
- * pour le pourquoi). Suppose que `npm run docs:config && npm run docs:search`
+ * pour le pourquoi). Suppose que `pnpm docs:config && pnpm docs:search`
  * ont déjà tourné — c'est `mcp-package.build.mjs` qui orchestre l'ordre.
  *
  * Usage : node scripts/mcp-assets.build.mjs
@@ -25,7 +25,7 @@ mkdirSync(DEST, { recursive: true });
 for (const src of SOURCES) {
   if (!existsSync(src)) {
     throw new Error(
-      `[mcp-assets] ${src} n'existe pas — lance \`npm run docs:config && npm run docs:search\` avant ce script.`,
+      `[mcp-assets] ${src} n'existe pas : lance \`pnpm docs:config && pnpm docs:search\` avant ce script.`,
     );
   }
   copyFileSync(src, join(DEST, src.split('/').pop()));

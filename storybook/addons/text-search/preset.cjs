@@ -6,7 +6,7 @@
  *   2. garantir que `storybook/public/text-search-docs.json` existe et est à
  *      jour — au démarrage, puis à chaque `.mdx` modifié.
  *
- * Le point 2 est aussi couvert par `npm run docs:search`, chaîné avant
+ * Le point 2 est aussi couvert par le script `docs:search`, chaîné avant
  * `storybook` et `build-storybook`. Le doublon est volontaire : les cibles
  * `ng run demo:storybook` se lancent aussi directement (IDE, `.claude/launch.json`),
  * sans passer par les scripts npm.

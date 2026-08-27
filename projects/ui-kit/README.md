@@ -14,15 +14,15 @@ built in natively (signals + Angular CDK), styling driven by design tokens.
 
 Choose **before** installing: the decision shapes everything that follows.
 
-|                         | **dependency**                                         | **starter**                                                                         |
-| ----------------------- | ------------------------------------------------------ | ----------------------------------------------------------------------------------- |
-| Install                 | `npm install @4sh/ui-kit`                              | `ng add @4sh/ui-kit-schematics`                                                     |
-| What lands in your repo | nothing — compiled components stay in `node_modules`   | the component _sources_, in `src/app/shared/`                                       |
-| Imports                 | `@4sh/ui-kit/actions/ui-button`                        | your own path (`./shared/components/ui/actions/ui-button`)                          |
-| Styles                  | `node_modules/@4sh/ui-kit/styles.css`, loaded globally | copied into `src/styles/`, with the token generation chain (`npm run tokens:build`) |
-| Documentation           | the Storybook linked above                             | yours, on your own copies (set up by `ng add`)                                      |
-| Customization           | inputs + CSS variables                                 | edit the code itself                                                                |
-| Updating                | bump the version                                       | `ng generate @4sh/ui-kit-schematics:update` — per-component diff, accept or skip    |
+|                         | **dependency**                                         | **starter**                                                                      |
+| ----------------------- | ------------------------------------------------------ | -------------------------------------------------------------------------------- |
+| Install                 | `pnpm add @4sh/ui-kit`                                 | `ng add @4sh/ui-kit-schematics`                                                  |
+| What lands in your repo | nothing — compiled components stay in `node_modules`   | the component _sources_, in `src/app/shared/`                                    |
+| Imports                 | `@4sh/ui-kit/actions/ui-button`                        | your own path (`./shared/components/ui/actions/ui-button`)                       |
+| Styles                  | `node_modules/@4sh/ui-kit/styles.css`, loaded globally | copied into `src/styles/`, with the token generation chain (`tokens:build`)      |
+| Documentation           | the Storybook linked above                             | yours, on your own copies (set up by `ng add`)                                   |
+| Customization           | inputs + CSS variables                                 | edit the code itself                                                             |
+| Updating                | bump the version                                       | `ng generate @4sh/ui-kit-schematics:update` — per-component diff, accept or skip |
 
 **dependency** is the default: nothing to maintain, one version to follow, and a
 guarantee that every project renders the same kit. **starter** — the shadcn/ui or
@@ -39,8 +39,14 @@ Both modes describe the same components. **The rest of this page describes the
 ## Installation
 
 ```bash
-npm install @4sh/ui-kit
+pnpm add @4sh/ui-kit
 ```
+
+Any package manager works — the package is a plain npm tarball with standard
+`peerDependencies`. `pnpm` is what the Design System itself uses and recommends
+(strict resolution catches a missing peer instead of hiding it, and its
+supply-chain settings quarantine freshly published versions); `npm install
+@4sh/ui-kit` or `yarn add @4sh/ui-kit` install exactly the same thing.
 
 Published on the **public npm registry**, under the **`4sh`** organization:
 [npmjs.com/package/@4sh/ui-kit](https://www.npmjs.com/package/@4sh/ui-kit)
@@ -93,7 +99,7 @@ install-time hook — add it yourself, once, to your `.mcp.json`:
 }
 ```
 
-`npm install` links `ui-kit-mcp` into your project's `node_modules/.bin/`, so this
+Installing links `ui-kit-mcp` into your project's `node_modules/.bin/`, so this
 form resolves no matter which directory your MCP client starts the server from — a
 hardcoded `node node_modules/@4sh/ui-kit/mcp/index.js` is relative to the working
 directory and breaks as soon as that isn't the project root. Keep `--no-install`: it
@@ -101,7 +107,7 @@ makes npx fail loudly when the bin is missing, rather than fetching an unrelated
 package of that name from the registry.
 
 Nothing to install beyond `@4sh/ui-kit` itself, and nothing to reach on the npm
-registry at run time — the file is already on disk once `npm install` has run. Tools:
+registry at run time — the file is already on disk once the install has run. Tools:
 `list_components`, `get_component_doc`, `search_docs`, `get_shared_config` — same
 content as the Storybook doc linked above, and as its per-page **Copy as Markdown**
 button, for a chat that isn't MCP-aware.

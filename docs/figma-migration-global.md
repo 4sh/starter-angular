@@ -385,7 +385,7 @@ return { deleted, skipped };
 3. Captures avant/après en Light **et** Dark sur `Card`, `Modal`, `Drawer`,
    `Bottom Sheet`, `Spinner`, `Separator`, `Progress Bar`, `Accessibility`. Seuls les
    13 nœuds de l'écart documenté doivent bouger, et seulement en Dark.
-4. Comparer avec le rendu Storybook des mêmes composants (`npm run build-storybook`)
+4. Comparer avec le rendu Storybook des mêmes composants (`pnpm build-storybook`)
    pour confirmer l'alignement code ↔ design.
 
 ---

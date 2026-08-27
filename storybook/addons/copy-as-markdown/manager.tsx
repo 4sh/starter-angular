@@ -178,7 +178,7 @@ function CopyAsMarkdownTool() {
         : 'Copier en Markdown';
   const title =
     index.status === 'error'
-      ? 'Index introuvable — lance `npm run docs:search`.'
+      ? 'Index introuvable : lance le script `docs:search`.'
       : disabled
         ? 'Doc non indexée pour cette page.'
         : 'Copier cette page (API, theming, exemples…) en Markdown, pour la coller à un assistant IA.';

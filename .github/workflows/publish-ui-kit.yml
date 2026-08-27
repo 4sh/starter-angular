@@ -26,6 +26,26 @@ name: Publish @4sh/ui-kit to npm
 # declared on the package settings page, then issues a short-lived publish right
 # valid for this job only. The environment gate stays essential: OIDC proves
 # *where* the publish comes from, never *who* decided it.
+#
+# ⚠️ DEPENDENCIES ARE INSTALLED WITH pnpm, BUT THE PUBLISH STEPS USE THE npm CLI.
+# That is deliberate, not a migration left half-done : do not
+# "finish" it:
+#
+#   - The two concerns are orthogonal. pnpm is how this repo resolves its
+#     dependency graph; `npm publish` is how a tarball is handed to the npm
+#     registry. Nothing about the tarball depends on which client built it.
+#   - Trusted Publishing is where they stop being interchangeable. `pnpm publish`
+#     supported OIDC on pnpm 10, then regressed on 11.0.8 (the registry answers
+#     404 because the OIDC exchange never happens) : see pnpm/pnpm#11513, fixed
+#     by pnpm/pnpm#11526. Publishing is IRREVERSIBLE: a name+version can never be
+#     reused. Carrying that risk buys nothing here.
+#   - The npm CLI is also what the guardrail step below inspects (`npm --version`
+#     >= 11.5.1, and the `_authToken` check). Swapping the client would silently
+#     invalidate those checks along with the publish itself.
+#
+# If this ever has to move, the acceptance test is a real dry run against the
+# registry from this workflow : not a green local `pnpm publish --dry-run`, which
+# never performs the OIDC exchange at all.
 on:
   workflow_dispatch:
     inputs:
@@ -49,11 +69,17 @@ jobs:
         id: nvmrc
         run: echo "NODE_VERSION=$(cat .nvmrc)" >> $GITHUB_OUTPUT
 
+      # Avant `setup-node` : c'est la présence de `pnpm` sur le PATH qui permet à
+      # setup-node de localiser le store à mettre en cache. La version installée
+      # vient du champ `packageManager` du package.json.
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+
       - name: Set up Node.js
         uses: actions/setup-node@v7
         with:
           node-version: ${{ steps.nvmrc.outputs.NODE_VERSION }}
-          cache: 'npm'
+          cache: 'pnpm'
 
       # Before anything expensive, and above all before the irreversible publish:
       # the release notes are the CHANGELOG section of this version, so a missing
@@ -66,13 +92,13 @@ jobs:
           node scripts/changelog.section.mjs "$version"
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Build the package
-        run: npm run ui-kit:build
+        run: pnpm ui-kit:build
 
       # FSHSP-141: `ui-kit:build` alone never embeds the MCP server — that step
-      # only lives in `ui-kit:pack` (`ui-kit:build && mcp-embed && npm pack`),
+      # only lives in `ui-kit:pack` (`ui-kit:build && mcp-embed && pnpm pack`),
       # which this workflow never called. The 0.4.0 tarball shipped without
       # `mcp/`, silently: `ui-kit:build` succeeds either way, and the dry-run
       # pack below doesn't diff against what the README promises. Embedding
@@ -83,7 +109,7 @@ jobs:
         run: node scripts/ui-kit-mcp-embed.build.mjs
 
       - name: Build the schematics package
-        run: npm run schematics:build
+        run: pnpm schematics:build
 
       # Les deux packages partent ensemble et portent le MÊME numéro : c'est lui
       # qui identifie de quel kit vient un fichier copié (en-tête de traçabilité
@@ -139,11 +165,17 @@ jobs:
       # OIDC exchange entirely, and the registry rejects the anonymous PUT with a
       # misleading `E404 Not Found` (it masks a 403 on scoped packages).
       # registry.npmjs.org is the default registry anyway, so nothing is lost.
+      # Avant `setup-node` : c'est la présence de `pnpm` sur le PATH qui permet à
+      # setup-node de localiser le store à mettre en cache. La version installée
+      # vient du champ `packageManager` du package.json.
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+
       - name: Set up Node.js
         uses: actions/setup-node@v7
         with:
           node-version: ${{ steps.nvmrc.outputs.NODE_VERSION }}
-          cache: 'npm'
+          cache: 'pnpm'
 
       # Trusted Publishing needs npm >= 11.5.1. Node 24.15.0 (.nvmrc) ships
       # 11.12.1, so nothing to install — this only makes the version visible in
@@ -192,16 +224,16 @@ jobs:
           ENVIRONMENT_NAME: npm-publish
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       # Rebuilt here rather than carried over as an artifact, so the published
       # tarball is unambiguously produced by this job — which is also what the
       # provenance attestation ends up certifying.
       - name: Build the package
-        run: npm run ui-kit:build
+        run: pnpm ui-kit:build
 
       # FSHSP-141: `ui-kit:build` alone never embeds the MCP server — that step
-      # only lives in `ui-kit:pack` (`ui-kit:build && mcp-embed && npm pack`),
+      # only lives in `ui-kit:pack` (`ui-kit:build && mcp-embed && pnpm pack`),
       # which this workflow never called. The 0.4.0 tarball shipped without
       # `mcp/`, silently: `ui-kit:build` succeeds either way, and the dry-run
       # pack below doesn't diff against what the README promises. Embedding
@@ -212,7 +244,7 @@ jobs:
         run: node scripts/ui-kit-mcp-embed.build.mjs
 
       - name: Build the schematics package
-        run: npm run schematics:build
+        run: pnpm schematics:build
 
       # ORDER MATTERS — the companion goes FIRST.
       #

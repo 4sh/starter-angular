@@ -32,8 +32,8 @@ function run(cmd) {
 }
 
 // 1. Doc à jour, puis manifeste embarqué copié dans projects/ui-kit-mcp/data/.
-run('npm run docs:config');
-run('npm run docs:search');
+run('pnpm docs:config');
+run('pnpm docs:search');
 run('node scripts/mcp-assets.build.mjs');
 
 // 2. Bundle ESM autonome — `platform: 'node'` laisse les built-ins (node:fs,

@@ -3,6 +3,9 @@
 > Single entry point for any AI agent. Read this file first, then consult the indicated sources of truth. For the Figma side (component generation/audit), see `CLAUDE.md`.
 >
 > Release/versioning: `docs/VERSIONING.md` + `CHANGELOG.md`. Publishing the npm package: `docs/PUBLISHING.md`.
+>
+> Security rules (Angular bypass APIs are **banned by default**) and the register of
+> authorised exceptions: `docs/SECURITY-PRACTICES.md`.
 
 ---
 
@@ -99,13 +102,13 @@ Rules when working in `projects/ui-kit/`:
   for `ui-image`) — both wired in `src/app/app.config.ts` and `storybook/preview.ts`.
 - The kit's SCSS foundation lives in `projects/ui-kit/styles/` (NOT `src/styles/`,
   which is app-only): a published package cannot depend on the host app. Tokens are
-  generated there (`tokens.config.json`), and `npm run ui-kit:styles` compiles
+  generated there (`tokens.config.json`), and `pnpm ui-kit:styles` compiles
   `index.scss` → `dist/ui-kit/styles.css`, shipped alongside the SCSS sources.
 - **Never `@forward` anything that emits CSS from `utils.scss`.** Each component
   `.scss` is its own Sass compilation unit, so emitted rules get duplicated into all
   54 components. Global utility classes belong in `index.scss` (and, app-side, in
   `src/styles/main.scss`).
-- `npm run ui-kit:build` runs before the app/Storybook (chained into `serve` /
+- `pnpm ui-kit:build` runs before the app/Storybook (chained into `serve` /
   `build` / `storybook` / `build-storybook` / `postinstall`), since `@4sh/ui-kit/*`
   resolves to `dist/ui-kit/`.
 
@@ -173,6 +176,30 @@ holds what is specific to the demo app (aggregator, fonts, grid settings, layout
 ---
 
 ## Non-negotiable code rules
+
+### Never bypass Angular's protections
+
+`DomSanitizer.bypassSecurityTrust…()`, a direct `innerHTML` / `outerHTML` write,
+`insertAdjacentHTML()`, `eval()`, `new Function()` — **banned by default**, and
+enforced by `no-restricted-syntax` in `eslint.config.js` (TypeScript **and** HTML
+templates), which is blocking in CI.
+
+```typescript
+// ✅ Angular sanitises it
+this.sanitizer.sanitize(SecurityContext.HTML, value);
+
+// ❌ marks the value safe WITHOUT checking it
+this.sanitizer.bypassSecurityTrustHtml(value);
+```
+
+Angular only sanitises what goes through a **template binding**. `el.innerHTML = x`
+is not sanitised by anything.
+
+An exception is raised in three steps, never fewer: **scrub the value in code you
+can test**, justify it on the spot (`/* eslint-disable-next-line no-restricted-syntax
+-- EXCEPTION JUSTIFIÉE: … */`), and add it to the register in
+`docs/SECURITY-PRACTICES.md`. The kit holds **one** bypass in total (`ui-image`, for
+inline SVG) — read §3 of that doc before adding a second one.
 
 ### Angular Signals — always
 
@@ -268,7 +295,7 @@ pitfall, extension point). No paraphrasing of what the next line does.
 #### A `///` on a config variable = the published doc
 
 In a **component** `.scss`, a `///` on a declaration (`$var` or custom property) is the
-**public contract**: `npm run docs:config` reads it and the doc's "Theming" section displays it.
+**public contract**: `pnpm docs:config` reads it and the doc's "Theming" section displays it.
 `//` remains the internal note, invisible in the doc. (The `///` on mixins/functions in
 `projects/ui-kit/styles/utils/` is never scanned: the generator only reads components.)
 
@@ -288,7 +315,7 @@ $card-radius: var(--radius-md); /// Rayon des coins.
 - A **custom property** is only public if it carries a `///`, placed where the hook lives
   (declaration, or a fallback read `var(--ui-x, <default>)`) — never on an internal dark-mode
   override, otherwise the doc shows the wrong default value.
-- Every config variable must have its `///`: `npm run docs:config` counts the missing ones.
+- Every config variable must have its `///`: `pnpm docs:config` counts the missing ones.
 
 #### Every structural value is read through a `--ui-*` hook
 
@@ -314,7 +341,7 @@ $stroke-width: var(
 - **Naming**: `--ui-{family}[-{part}]-{property}[-{modifier}]`, modifier **last** (same rule as
   the tokens: `actions-high-surface-hover`). `{family}` is the entry-point folder minus `ui-`, so
   a sub-component uses its family (`ui-tab-list.scss` → `--ui-tabs-*`). The property vocabulary
-  and the modifier list live in `scripts/component-vars.build.mjs`; `npm run docs:config` **fails**
+  and the modifier list live in `scripts/component-vars.build.mjs`; `pnpm docs:config` **fails**
   on a hook that doesn't parse, so extend the vocabulary there rather than inventing a name.
 - **Inside a map**, every value carries its own hook (`height: var(--ui-button-height-small, …)`).
 - **What gets one**: dimensions, spacings, gaps, radii, stroke/focus-ring widths, font sizes,
@@ -335,7 +362,7 @@ $stroke-width: var(
   The `///` stays on the mirror: that is what publishes the public hook's role.
 - Never a value hardcoded inline in a rule when it is structural: promote it to a config variable
   with its hook and its `///`.
-- `npm run docs:config` regenerates `projects/ui-kit/styles/component-vars.scss` (the consumer's copy-me
+- `pnpm docs:config` regenerates `projects/ui-kit/styles/component-vars.scss` (the consumer's copy-me
   theme) and `figma/component-vars.json` from these hooks. Both are committed;
   `docs:config:check` fails when they are stale, when a hook doesn't parse, or when a hook has
   no `///`. Values in both files are read from the **compiled CSS**, not from the SCSS text — so
@@ -412,7 +439,7 @@ $focus-ring-width: utils.$form-focus-ring-width; // ← replace the value here t
 
 - **Tables**: always in HTML tags (`<table>`, `<tr>`, `<td>`) rather than native Markdown in `.mdx` files, to guarantee rendering and CSS control.
 - **"Theming" section**: never written by hand. `<ConfigTable of="ui-<name>" />`
-  (`storybook/blocks/config-table.js`), fed by `npm run docs:config` from the `.scss`'s `///`
+  (`storybook/blocks/config-table.js`), fed by `pnpm docs:config` from the `.scss`'s `///`
   comments. It is **always the last section** of the page. Optional prose before the table
   for whatever it doesn't say (architecture, pointer to a shell like `ui-field`); no
   paragraph explaining how to read the table — that's in the block's tooltip. Several
@@ -427,7 +454,7 @@ $focus-ring-width: utils.$form-focus-ring-width; // ← replace the value here t
 1. Read `projects/ui-kit/<category>/ui-<name>/ui-<name>.stories.ts` → identify `argTypes`
 2. Read `projects/ui-kit/<category>/ui-<name>/src/lib/` → check types and structure
 3. Modify `.ts`, `.html`, `.scss` (tokens only) — any added config variable carries its `///`
-4. Update the story + the `.mdx` if the API changes; `npm run docs:config` if the SCSS config moved
+4. Update the story + the `.mdx` if the API changes; `pnpm docs:config` if the SCSS config moved
 5. Verify light + dark + the 3 brands (Storybook → `Foundations / Colors` for the tokens)
 
 ### Create a ui-* component (generic)
@@ -437,7 +464,7 @@ $focus-ring-width: utils.$form-focus-ring-width; // ← replace the value here t
 3. Create the story + the `.mdx` **co-located** in `projects/ui-kit/<category>/ui-<name>/` (outside `src/`; global doc only → `storybook/docs/`) — pick `<category>` from `storybook/docs/Overview.mdx`'s sections, or ask if the component doesn't fit an existing one
 4. Check off the component in `components-index.md`, add its card to `Overview.mdx`, add it
    to the family table of **both** package READMEs (EN + FR)
-5. `npm run docs:config:check` — it is what tells you which of those you forgot
+5. `pnpm docs:config:check` — it is what tells you which of those you forgot
 
 > File **placement** does not drive the Storybook sidebar tree — the `title` does
 > (`<Meta title="…">`, or the story's `title:`). Placement only decides what ships: a
@@ -453,7 +480,7 @@ Like a `ui-*`, but: project prefix, `domain/` folder, and **composition of `ui-*
 ### Add / modify a token
 
 1. Edit `src/design-tokens/*.json` (semantics reference primitives; never a primitive directly in a component)
-2. `npm run tokens:build` (adding a collection/mode → edit `tokens.config.json`, not the script)
+2. `pnpm tokens:build` (adding a collection/mode → edit `tokens.config.json`, not the script)
 3. Verify in Storybook `Foundations / Colors`
 
 ---
@@ -469,14 +496,14 @@ Like a `ui-*`, but: project prefix, `domain/` folder, and **composition of `ui-*
 ## Commands
 
 ```bash
-npm start                  # Launch Storybook (source of truth) — alias of npm run storybook
-npm run serve              # Launch the Angular app (minimal demo)
-npm run tokens:build       # Regenerate the CSS variables from the JSON
-npm run docs:search        # Rebuild the doc full-text search index
-npm run build-storybook    # Static Storybook build
-npm run lint               # ESLint --fix
-npm test                   # Unit tests on the kit
-npm run docs:config:check  # Guardrail on the hand-written doc — see below
+pnpm start              # Launch Storybook (source of truth) — alias of pnpm storybook
+pnpm serve              # Launch the Angular app (minimal demo)
+pnpm tokens:build       # Regenerate the CSS variables from the JSON
+pnpm docs:search        # Rebuild the doc full-text search index
+pnpm build-storybook    # Static Storybook build
+pnpm lint               # ESLint --fix
+pnpm test               # Unit tests on the kit
+pnpm docs:config:check  # Guardrail on the hand-written doc — see below
 ```
 
 `docs:config:check` is what catches a doc that has drifted from the code, and **you are

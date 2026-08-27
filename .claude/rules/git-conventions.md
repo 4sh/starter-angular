@@ -1,6 +1,6 @@
 # Git conventions
 
-Full release workflow (SemVer bumps, `npm version`, tags): see `docs/VERSIONING.md`.
+Full release workflow (SemVer bumps, `pnpm version`, tags): see `docs/VERSIONING.md`.
 
 ## Commit format — Conventional Commits
 

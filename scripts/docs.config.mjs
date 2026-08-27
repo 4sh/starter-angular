@@ -39,6 +39,21 @@ import { readdirSync, readFileSync, writeFileSync, mkdirSync, existsSync } from 
 import { dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+/**
+ * Commande à afficher pour relancer un script du `package.json`.
+ *
+ * Ce fichier est COPIÉ chez le consommateur par `ng add @4sh/ui-kit-schematics` :
+ * son gestionnaire de paquets n'est pas connu à l'écriture. Le déduire de
+ * `npm_config_user_agent` (que npm, pnpm, yarn et bun renseignent tous quand ils
+ * lancent un script) donne à chacun une commande copiable telle quelle, au lieu
+ * d'un `npm run` qui contournerait son lockfile.
+ */
+function runCmd(script) {
+  const agent = process.env.npm_config_user_agent ?? '';
+  const pm = /^(pnpm|yarn|bun|npm)\//.exec(agent)?.[1] ?? 'npm';
+  return pm === 'npm' || pm === 'bun' ? `${pm} run ${script}` : `${pm} ${script}`;
+}
+
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 /**
@@ -536,7 +551,9 @@ const serialized = `${JSON.stringify(manifest, null, 2)}\n`;
 if (process.argv.includes('--check')) {
   const current = existsSync(OUT_FILE) ? readFileSync(OUT_FILE, 'utf8') : null;
   if (current !== serialized) {
-    console.error('✗ storybook/generated/ui-config.json est périmé — lance `npm run docs:config`.');
+    console.error(
+      `✗ storybook/generated/ui-config.json est périmé — lance \`${runCmd('docs:config')}\`.`,
+    );
     process.exit(1);
   }
   console.log('✓ ui-config.json à jour.');
