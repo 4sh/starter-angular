@@ -16,6 +16,8 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-08-27
+
 ### Added
 
 - **`ui-toggle-button` — bouton qui retient son état pressé**. Inspiré de l'API [ToggleButton de PrimeNG](https://primeng.dev/togglebutton), adaptée à l'idiome signals/tokens du kit : un `<button>` natif portant `aria-pressed`, branché aux formulaires via `BaseFieldControl` (Signal Forms, `[(ngModel)]`, reactive forms, autonome). Libellés et icônes peuvent différer par état (`onLabel`/`offLabel`, `onIcon`/`offIcon`, avec `label`/`icon` en repli commun), `iconPos` place l'icône, et sans libellé le bouton devient carré. `trueValue`/`falseValue` laissent le modèle porter n'importe quelle paire de valeurs, comme `ui-toggle` et `ui-checkbox`.
@@ -142,8 +144,6 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
   - `ui-input` (donc tout champ construit dessus) accepte désormais un `ariaDescribedBy` externe, chaîné de la même façon sur son `aria-describedby` natif plutôt que de l'écraser — c'est le mécanisme qui rend le point ci-dessus possible sans dupliquer la logique dans `ui-datepicker`.
 - **`ui-datepicker` : `allowInput` couvre maintenant `range` et `multiple`** (FSHSP-118), en complément de la grille (le clic continue de fonctionner à l'identique). `range` se tape dans le même champ, les deux dates séparées par `" - "` (ex. `"08/07/2026 - 18/07/2026"`) ; `multiple` accepte une liste séparée par `", "`, nombre de dates non borné. `range` bénéficie du même masque auto-"/" en direct qu'en mode `single` (les deux dates, puis leur séparateur, se construisent au fil de la frappe) ; `multiple`, dont le nombre de dates n'est pas borné, reste en texte libre, parsé au blur/Entrée uniquement — dans les deux cas avec les mêmes garanties qu'en `single` : une entrée incomplète ou invalide revient à la dernière valeur affichée, une plage tapée dans le désordre est réordonnée chronologiquement (comme un second clic dans la grille), une date dupliquée en `multiple` est supprimée (comme un clic sur une case déjà sélectionnée). Un `parseDate` custom s'applique par date individuelle, symétrique de `dateFormat`. Non couvert : la combinaison avec `showTime` (les dates tapées en `range`/`multiple` sont toujours calées à minuit — seule la grille gère l'heure sur ces modes pour l'instant).
 - **Un utilitaire global `.sr-only`** dans la feuille de helpers publiée (section « Visibility ») : rend un texte visible des seuls lecteurs d'écran, pour nommer une colonne ou une action dont l'affichage ne montre rien. Ajouté pour les en-têtes de colonne vides des tableaux (`<th>` d'une colonne de sélection ou d'expansion), où `aria-label` ne suffit pas : `empty-table-header` exige du texte réellement présent. Quatre composants du kit recopient déjà ce bloc dans leur propre SCSS (`ui-datepicker`, `ui-select`, `ui-file-upload`, `ui-read-only`) — ils pourront s'appuyer dessus.
-
-### Changed
 
 - **`ui-editor` : `clearFormat` retiré de la barre par défaut, encore disponible via `tools`**
   (FSHSP-160). `document.execCommand('removeFormat')` ne connaît que la mise en forme native du
