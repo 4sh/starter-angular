@@ -132,6 +132,26 @@ const RANGE_DISPLAY_SEPARATOR = ' – ';
 /** Typed/displayed `multiple` separator (`"jj/mm/aaaa, jj/mm/aaaa, ..."`) — one separator for both. */
 const MULTIPLE_SEPARATOR = ', ';
 
+/** @ignore One field of a numeric date, in the order the resolved format writes them. */
+type DateField = 'day' | 'month' | 'year';
+
+/** Illustrative date the auto placeholder and the field-order probe are both derived from
+ *  (22 Nov 2023): day, month and year are pairwise distinct, so each one is identifiable in a
+ *  formatter's own output. A fresh instance per call — a consumer's `dateFormat` receives it,
+ *  and a shared one could be mutated in place. */
+function probeDate(): Date {
+  return new Date(2023, 10, 22);
+}
+/** First index at which any of `tokens` occurs in `text` (`-1` if none) — probes a formatter's
+ *  output for one {@link probeDate} component, most specific token first. */
+function firstIndexOf(text: string, tokens: readonly string[]): number {
+  for (const token of tokens) {
+    const i = text.indexOf(token);
+    if (i !== -1) return i;
+  }
+  return -1;
+}
+
 /** Splits a flat cell list into rows of `size` (month/year pickers need `role="row"` wrappers). */
 function chunk<T>(items: readonly T[], size: number): T[][] {
   const rows: T[][] = [];
@@ -212,8 +232,15 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   firstDayOfWeek = input<number, unknown>(1, { transform: numberAttribute });
   /** BCP-47 locale for names and default formatting. Defaults to `LOCALE_ID`. */
   locale = input<string>();
-  /** Custom display formatter for a single date (overrides the default `Intl` format) — also
-   *  used, unchanged, as the time formatter in `timeOnly` mode. */
+  /**
+   * Custom display formatter for a single date (overrides the default `Intl` format) — also
+   * used, unchanged, as the time formatter in `timeOnly` mode.
+   *
+   * With `allowInput` and no `parseDate`, the typed text is read back in the day/month/year
+   * order **this formatter writes** (probed from its own output, whatever locale it uses
+   * internally), not the resolved locale's — so entry and display always agree. A non-numeric
+   * format (e.g. `"22 novembre 2023"`) can't be probed: pair it with a matching `parseDate`.
+   */
   dateFormat = input<(date: Date) => string>();
 
   /**
@@ -225,9 +252,10 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
    * round-trips with typing.
    *
    * `single` gets the full experience: a live auto-"/" mask while constructing a date from an
-   * empty field (see `typingSlots`), free-form text editing once a value exists (no live
-   * reformatting, parsed on blur/Enter — editing a segment in place, e.g. just the month, no
-   * longer shifts what follows, FSHSP-118).
+   * empty field (see `typingSlots`), free-form text editing otherwise — no live reformatting,
+   * parsed on blur/Enter. "Otherwise" covers both a value that already exists and an edit made
+   * inside the text being typed rather than at its tail: editing a segment in place, e.g. just
+   * the month, never shifts what follows (FSHSP-118, FSHSP-179).
    *
    * `range`/`multiple` are typeable too (FSHSP-118), but always as plain text — no live mask,
    * only parsed on blur/Enter: `"jj/mm/aaaa - jj/mm/aaaa"` for `range` (exactly two dates,
@@ -368,6 +396,10 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   protected readonly minutes = signal(0);
   /** @ignore Raw text while the user edits the trigger (`allowInput`); `null` when not editing. */
   protected readonly typedValue = signal<string | null>(null);
+  /** @ignore Live mask given up on for the rest of the current entry, because the user edited
+   *  inside the text instead of appending at its tail (see `onTriggerInput`/`typingSlots`).
+   *  Lifted by any commit, and as soon as the field reads empty. */
+  private readonly maskSuspended = signal(false);
   /** @ignore Date-based source of truth for all calendar/selection logic; `modelValue`
    *  (inherited) only ever carries the public value (`Date` or ISO string per `valueType`),
    *  written in lockstep. */
@@ -409,7 +441,7 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
    *  instead at least matches what the field really expects. */
   private readonly singleDatePlaceholder = computed(() => {
     const custom = this.dateFormat();
-    if (custom) return custom(new Date(2023, 10, 22));
+    if (custom) return custom(probeDate());
     const fr = this.resolvedLocale().toLowerCase().startsWith('fr');
     const token = { day: fr ? 'jj' : 'dd', month: 'mm', year: fr ? 'aaaa' : 'yyyy' };
     const view = this.view();
@@ -419,7 +451,7 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
         ? { month: '2-digit', year: 'numeric' }
         : { day: '2-digit', month: '2-digit', year: 'numeric' };
     return new Intl.DateTimeFormat(this.resolvedLocale(), opts)
-      .formatToParts(new Date(2023, 10, 22))
+      .formatToParts(probeDate())
       .map((p) =>
         p.type === 'day'
           ? token.day
@@ -463,20 +495,49 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   /** @ignore Stable id for the hint element `resolvedFormatHint` renders into. */
   protected readonly formatHintId = computed(() => `${this.resolvedId()}-format-hint`);
 
-  /** @ignore Order of day/month/year for the resolved locale (drives numeric parsing). */
-  private readonly dateFieldOrder = computed<('day' | 'month' | 'year')[]>(() => {
+  /**
+   * @ignore Field order a custom `dateFormat` actually writes, probed from its own output for
+   * {@link probeDate}. `null` when there is no custom formatter, or when its output isn't
+   * numeric enough to tell (e.g. `"22 novembre 2023"`) — the locale order stands then.
+   *
+   * The default parser and the live mask have to read the text back in the order the field
+   * displays it, and a `dateFormat` is free to use a locale of its own: an `fr-FR` formatter
+   * under an `en-US` `LOCALE_ID` displayed `"08/07/2026"` but parsed it month-first, so
+   * finishing the entry silently swapped day and month (FSHSP-179).
+   */
+  private readonly customFormatFieldOrder = computed<DateField[] | null>(() => {
+    const custom = this.dateFormat();
+    if (!custom) return null;
+    const out = custom(probeDate());
+    // 4-digit year probed before the 2-digit one: `"23"` also occurs inside `"2023"` ("20|23"),
+    // at an offset that isn't where the year starts.
+    const probed: [DateField, number][] = [
+      ['day', firstIndexOf(out, ['22'])],
+      ['month', firstIndexOf(out, ['11'])],
+      ['year', firstIndexOf(out, ['2023', '23'])],
+    ];
+    if (probed.some(([, i]) => i === -1)) return null;
+    if (new Set(probed.map(([, i]) => i)).size !== probed.length) return null;
+    return probed.sort((a, b) => a[1] - b[1]).map(([field]) => field);
+  });
+  /** @ignore Order of day/month/year driving numeric parsing, the live mask and the auto
+   *  placeholder: what a custom `dateFormat` writes when that can be probed
+   *  ({@link customFormatFieldOrder}), the resolved locale's own order otherwise. */
+  private readonly dateFieldOrder = computed<DateField[]>(() => {
+    const fromFormat = this.customFormatFieldOrder();
+    if (fromFormat) return fromFormat;
     const parts = new Intl.DateTimeFormat(this.resolvedLocale(), {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric',
-    }).formatToParts(new Date(2023, 10, 22));
+    }).formatToParts(probeDate());
     const order = parts
       .map((p) => p.type)
-      .filter((t): t is 'day' | 'month' | 'year' => t === 'day' || t === 'month' || t === 'year');
+      .filter((t): t is DateField => t === 'day' || t === 'month' || t === 'year');
     return order.length === 3 ? order : ['day', 'month', 'year'];
   });
   /** @ignore `dateFieldOrder`, minus `day` in month view — the fields actually typed. */
-  private readonly activeFields = computed<('day' | 'month' | 'year')[]>(() =>
+  private readonly activeFields = computed<DateField[]>(() =>
     this.dateFieldOrder().filter((f) => (this.view() === 'month' ? f !== 'day' : true)),
   );
   /**
@@ -491,6 +552,9 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
    * after any edit — see `onTriggerInput`). So it's off once a value exists — plain text instead,
    * parsed on blur/Enter — and re-arms the moment the field reads empty (`onTriggerInput` commits
    * the clear right there, not just on blur, so `hasValue()` actually flips before the next key).
+   *
+   * `maskSuspended()`: the same limitation, hit before any value exists — an edit made *inside*
+   * the text being typed rather than at its tail (see `onTriggerInput`).
    */
   private readonly typingSlots = computed<MaskSlot[] | null>(() => {
     const mode = this.selectionMode();
@@ -499,11 +563,12 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
       this.view() === 'year' ||
       this.parseDate() ||
       this.hasValue() ||
+      this.maskSuspended() ||
       (mode !== 'single' && mode !== 'range')
     )
       return null;
     const widths = { day: '99', month: '99', year: '9999' } as const;
-    const bounds: Record<'day' | 'month' | 'year', MaskBounds | null> = {
+    const bounds: Record<DateField, MaskBounds | null> = {
       day: { min: 1, max: 31 },
       month: { min: 1, max: 12 },
       year: null,
@@ -946,12 +1011,16 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     const slots = this.typingSlots();
     if (!slots) {
       this.typedValue.set(value);
-      // The mask is off because a value already exists (see `typingSlots`) — but the field was
-      // just emptied by hand, with no blur/Enter to go through `commitTyped`'s own clear. Commit
-      // it right here instead of waiting for a commit that may never come: `hasValue()` flips to
-      // `false` for real, so `typingSlots()` re-arms the mask on the very next keystroke, for
-      // whatever fresh date comes next (FSHSP-118).
-      if (!value.trim() && this.hasValue()) this.clear();
+      // The mask is off because a value already exists, or an in-place edit suspended it (see
+      // `typingSlots`) — but the field was just emptied by hand, with no blur/Enter to go through
+      // `commitTyped`'s own clear. Commit it right here instead of waiting for a commit that may
+      // never come: `hasValue()` flips to `false` for real and the suspension lifts, so
+      // `typingSlots()` re-arms the mask on the very next keystroke, for whatever fresh date
+      // comes next (FSHSP-118).
+      if (!value.trim()) {
+        this.maskSuspended.set(false);
+        if (this.hasValue()) this.clear();
+      }
       if (this.panelOpen()) this.previewTyped();
       return;
     }
@@ -960,6 +1029,20 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     // Number of data characters located BEFORE the caret (stable anchor, same trick as ui-input-mask).
     const dataBeforeCaret = extractMaskData(value.slice(0, caret)).length;
     const newData = extractMaskData(value);
+    // Editing INSIDE the text (data still sits after the caret) rather than appending at its
+    // tail: the mask can only re-derive the whole field from one flat digit stream, so re-running
+    // it here re-slices every following segment by however much this edit grew or shrank —
+    // replacing the month "07" with a single "1" turned "08/07/2026" into "08/12/026", the year
+    // silently losing a digit (FSHSP-179). Give the mask up for the rest of the entry instead —
+    // exactly what `allowInput` already promises once a value exists: plain text, parsed on
+    // blur/Enter. For the rest of the entry, not just this keystroke: the digits still to come
+    // belong to the segment being fixed, and re-arming under the caret would shift them again.
+    if (dataBeforeCaret < newData.length) {
+      this.maskSuspended.set(true);
+      this.typedValue.set(value);
+      if (this.panelOpen()) this.previewTyped();
+      return;
+    }
     // A deletion (Backspace/Delete/selection-clear) leaves only ALREADY-valid digits behind —
     // re-running the bounds check against them (meant to reject a just-typed invalid leading
     // digit, e.g. "8" can't start a 1-31 day) can instead skip a still-valid residual one and
@@ -1039,6 +1122,9 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     if (this.triggerReadonly()) return;
     const raw = this.typedValue();
     if (raw === null) return; // untouched
+    // Parsed, cleared or reverted, this commit ends the current entry: re-arm the live mask for
+    // the next one (`commit` does it too, for the paths that go through it).
+    this.maskSuspended.set(false);
     const text = raw.trim();
     if (!text) {
       this.typedValue.set(null);
@@ -1663,6 +1749,7 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
    *  `Date`/`Date[]`/`null` exactly as before — the ISO contract lives entirely in this method. */
   private commit(value: DatepickerDateValue): void {
     this.typedValue.set(null); // any committed value re-formats the trigger
+    this.maskSuspended.set(false); // …and re-arms the live mask (see `typingSlots`)
     this.internalValue.set(value ?? null);
     const external = this.toExternalValue(value ?? null);
     this.modelValue.set(external ?? undefined);

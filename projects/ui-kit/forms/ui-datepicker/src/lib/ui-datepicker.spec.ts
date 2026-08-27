@@ -4,8 +4,9 @@
  * caret, dispatch, flush CD — mirroring a real keystroke.
  *
  * Covers: `hasValue()`-gated mask on/off (`single` and `range`), the `enforceBounds`/`dataEnd`
- * deletion fixes, re-arming the mask on a manual clear. Not covered: `multiple` (no live mask)
- * or the format-hint/placeholder derivation.
+ * deletion fixes, re-arming the mask on a manual clear, the in-place-edit suspension and the
+ * custom-`dateFormat` field order (FSHSP-179). Not covered: `multiple` (no live mask) or the
+ * format-hint derivation.
  */
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -42,6 +43,28 @@ class DatepickerRangeHost {
   readonly control = new FormControl<Date[] | null>(null);
 }
 
+/** `dateFormat` in `fr-FR` (day-first) with NO `locale` and NO `parseDate` — so `LOCALE_ID`
+ *  stays whatever the environment resolves (`en-US` here, month-first). The exact shape of the
+ *  demo stories that surfaced FSHSP-179. */
+@Component({
+  imports: [ReactiveFormsModule, UiDatepicker],
+  template: `<ui-datepicker
+    label="Date"
+    valueType="date"
+    [dateFormat]="dateFormat"
+    [formControl]="control"
+  />`,
+})
+class DatepickerCustomFormatHost {
+  readonly control = new FormControl<Date | null>(null);
+  readonly dateFormat = (d: Date): string =>
+    new Intl.DateTimeFormat('fr-FR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    }).format(d);
+}
+
 async function setup(initial: Date | null = null) {
   await TestBed.configureTestingModule({ imports: [DatepickerHost] }).compileComponents();
   const fixture: ComponentFixture<DatepickerHost> = TestBed.createComponent(DatepickerHost);
@@ -59,9 +82,8 @@ async function setup(initial: Date | null = null) {
  *  static template attribute, not reactively settable on the single-mode host). */
 async function setupRange(initial: Date[] | null = null) {
   await TestBed.configureTestingModule({ imports: [DatepickerRangeHost] }).compileComponents();
-  const fixture: ComponentFixture<DatepickerRangeHost> = TestBed.createComponent(
-    DatepickerRangeHost,
-  );
+  const fixture: ComponentFixture<DatepickerRangeHost> =
+    TestBed.createComponent(DatepickerRangeHost);
   const host = fixture.componentInstance;
   if (initial) host.control.setValue(initial);
   fixture.detectChanges();
@@ -70,6 +92,22 @@ async function setupRange(initial: Date[] | null = null) {
     '.ui-datepicker-trigger input.ui-input-native',
   ) as HTMLInputElement;
   return { fixture, host, input };
+}
+
+/** Same as {@link setup}, for the custom-`dateFormat` host (own component, same reason). */
+async function setupCustomFormat() {
+  await TestBed.configureTestingModule({
+    imports: [DatepickerCustomFormatHost],
+  }).compileComponents();
+  const fixture: ComponentFixture<DatepickerCustomFormatHost> = TestBed.createComponent(
+    DatepickerCustomFormatHost,
+  );
+  fixture.detectChanges();
+  await fixture.whenStable();
+  const input = fixture.nativeElement.querySelector(
+    '.ui-datepicker-trigger input.ui-input-native',
+  ) as HTMLInputElement;
+  return { fixture, host: fixture.componentInstance, input };
 }
 
 /** Mirrors a single native keystroke: sets the raw value + caret, dispatches `input`, flushes CD. */
@@ -133,10 +171,11 @@ describe('UiDatepicker — keyboard entry masking (FSHSP-118)', () => {
       // removed it): the residual stream "8072026" used to have its bounds check reject the
       // leading '8' (no valid 1-31 day starts with it) and reassign month/year's digits to
       // the wrong segment, producing "07/02/6" — day/month/year no longer matching anything
-      // the user typed. Fixed: each segment keeps its own positional slice instead.
+      // the user typed. Then re-slicing the stream positionally still shifted them ("80/72/026",
+      // FSHSP-118). The edit isn't at the tail at all, so no re-derivation can be right: the
+      // mask steps aside and the text is left exactly as edited (FSHSP-179).
       await typeInto(input, '8/07/2026', 0, fixture);
-      expect(input.value).toBe('80/72/026');
-      expect(input.value).not.toBe('07/02/6');
+      expect(input.value).toBe('8/07/2026');
     });
 
     it('does not get stuck backspacing through a completed segment', async () => {
@@ -156,6 +195,59 @@ describe('UiDatepicker — keyboard entry masking (FSHSP-118)', () => {
         expect(input.value).toBe(expectedValue);
         caret = input.selectionStart ?? input.value.length;
       }
+    });
+  });
+
+  // FSHSP-179: two field-reported bugs, one per describe block below.
+  describe('editing a segment in place suspends the mask instead of shifting the rest', () => {
+    it('leaves the text as typed when a 2-digit month is replaced by one digit', async () => {
+      const { input, fixture } = await setup();
+      await typeSequentially(input, '08072026', fixture);
+      expect(input.value).toBe('08/07/2026');
+
+      // Select the month "07" and type "1" (the browser has already replaced the selection).
+      // The mask used to re-slice the whole digit stream positionally: "08/12/026" — the "2" of
+      // the year promoted into the month, the year down to 3 digits. Nothing the mask can derive
+      // from a flat stream is right here, so it steps aside for the rest of the entry.
+      await typeInto(input, '08/1/2026', 4, fixture);
+      expect(input.value).toBe('08/1/2026');
+
+      // Typing the month's second digit no longer re-formats either (the "2026" stays intact),
+      // and the completed date parses on blur.
+      await typeInto(input, '08/12/2026', 5, fixture);
+      expect(input.value).toBe('08/12/2026');
+    });
+
+    it('re-arms the mask once the suspended field reads empty', async () => {
+      const { input, fixture } = await setup();
+      await typeSequentially(input, '08072026', fixture);
+      await typeInto(input, '08/1/2026', 4, fixture); // suspends the mask (in-place edit)
+      expect(input.value).toBe('08/1/2026');
+
+      await typeInto(input, '', 0, fixture);
+      await typeSequentially(input, '20082020', fixture);
+      expect(input.value).toBe('20/08/2020');
+    });
+  });
+
+  describe('a custom dateFormat drives the parsed field order (FSHSP-179)', () => {
+    it("reads the typed date back in the order that formatter writes, not the locale's", async () => {
+      const { input, fixture, host } = await setupCustomFormat();
+      // The placeholder advertises the formatter's own day-first output…
+      expect(input.placeholder).toBe('22/11/2023');
+
+      await typeSequentially(input, '08072026', fixture);
+      expect(input.value).toBe('08/07/2026');
+      input.dispatchEvent(new Event('blur'));
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      // …and the parser now agrees with it. Under the resolved `LOCALE_ID` (`en-US`, month-first)
+      // this committed 7 August and redisplayed it day-first as "07/08/2026": day and month
+      // visibly swapped the moment the entry ended.
+      expect(input.value).toBe('08/07/2026');
+      expect(host.control.value?.getMonth()).toBe(6); // July
+      expect(host.control.value?.getDate()).toBe(8);
     });
   });
 

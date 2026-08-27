@@ -191,6 +191,12 @@ format non numérique rendrait l'auto-slash faux).
 > réactive de lui-même dès que le champ se lit vide (`null`) — y compris en le vidant à la main
 > puis en retapant aussitôt, sans passer par un blur ou par la croix : le vidage est commité dès
 > que le texte lu est vide, pas seulement au blur/Entrée.
+>
+> **Même mise en retrait dès qu'une frappe n'a pas lieu en fin de texte** (FSHSP-179), avant même
+> qu'une valeur existe : corriger le mois d'une date en cours de frappe re-découpait le flux de
+> chiffres et décalait tout ce qui suit (« 08/07/2026 » → « 08/12/026 », l'année perdant un
+> chiffre). Le masque cède la place pour le reste de la saisie — texte libre, parsé au
+> blur/Entrée.
 
 > **L'ordre des champs suit la locale résolue** (`locale` ou, à défaut, `LOCALE_ID`). En
 > `fr-FR` c'est **jj/mm/aaaa** ; en `en-US` c'est **mm/dd/yyyy** — l'auto-formatage suit le même
@@ -198,6 +204,13 @@ format non numérique rendrait l'auto-slash faux).
 > (ou configurez `LOCALE_ID`) pour saisir en JJ/MM/AAAA. Le **placeholder est dérivé
 > automatiquement** de cet ordre quand il n'est pas fourni, pour ne jamais afficher un format
 > trompeur.
+>
+> **Un `dateFormat` custom (sans `parseDate`) l'emporte sur la locale** (FSHSP-179) : l'ordre est
+> sondé sur la sortie du formatteur lui-même, pour que la saisie soit relue dans l'ordre où le
+> champ l'affiche. Sinon un formatteur `fr-FR` sous un `LOCALE_ID` `en-US` affichait
+> « 08/07/2026 » tout en le parsant mois-en-premier : jour et mois s'inversaient à la fin de la
+> saisie. Un format non numérique (« 22 novembre 2023 ») n'est pas sondable — fournissez alors le
+> `parseDate` correspondant.
 
 Le format attendu est aussi annoncé aux lecteurs d'écran via `aria-describedby` (FSHSP-118) :
 le `placeholder` seul est un support inégal selon les lecteurs d'écran, et il disparaît dès la
