@@ -46,7 +46,7 @@
           #actionBtn
           class="ui-speed-dial-item"
           [style.--_stagger-index]="node.index"
-          [style.transform]="type() === 'circle' ? circleTransform()(node.index) : null"
+          [style.transform]="type() !== 'linear' ? arcTransform()(node.index) : null"
           [uiMotion]="itemMotionPreset()"
           [motionDisabled]="!motion()"
           #itemMotion="uiMotion"
@@ -54,7 +54,7 @@
           [animate.leave]="itemMotion.leave()"
           rounded
           iconOnly
-          [level]="level()"
+          [level]="itemLevel()"
           [variant]="variant()"
           size="small"
           [icon]="node.item.icon"
