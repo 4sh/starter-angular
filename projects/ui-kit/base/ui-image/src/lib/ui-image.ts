@@ -16,6 +16,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ThemeService } from '@4sh/ui-kit/theming';
 import { BrandService } from '@4sh/ui-kit/theming';
 import { UiIcon } from '@4sh/ui-kit/base/ui-icon';
+import { sanitizeInlineSvg } from './ui-image-svg';
 
 interface ModeMap {
   base?: string;
@@ -30,7 +31,7 @@ export type UiImageAssetsMap = Record<string, ThemeMap>;
  * Map of the LOCAL assets available to `ui-image` (its `name` input).
  *
  * The kit cannot know a project's assets, so the map is injected rather than
- * bundled: generate it in your app (see `npm run generate:assets` in the
+ * bundled: generate it in your app (see the `generate:assets` script in the
  * starter, which writes `src/assets/assets-map.json`) and provide it with
  * `provideUiImageAssets()`. Without it, `name` resolves to nothing and the
  * component falls back to its placeholder — `src` (remote URLs) still works.
@@ -49,7 +50,13 @@ export function provideUiImageAssets(map: UiImageAssetsMap): Provider {
   return { provide: UI_IMAGE_ASSETS, useValue: map };
 }
 
-/** Cross-instance memoization: the same resolved URL is fetched once (logos repeated across the app). */
+/**
+ * Cross-instance memoization: the same resolved URL is fetched once (logos
+ * repeated across the app).
+ *
+ * Holds the **scrubbed** markup, never the raw response — nothing that skipped
+ * `sanitizeInlineSvg()` may ever be read back out of here.
+ */
 const SVG_CACHE = new Map<string, string>();
 
 /**
@@ -57,8 +64,9 @@ const SVG_CACHE = new Map<string, string>();
  *
  * Two sources: `name` (local asset key resolved through `assets-map.json`,
  * theme/brand variants) or `src` (remote/absolute URL — takes precedence).
- * Local `.svg` assets are inlined (`innerHTML`) so they can inherit CSS;
- * remote URLs always render through `<img [ngSrc]>` (never inlined).
+ * Local `.svg` assets are inlined (`innerHTML`) so they can inherit CSS — after
+ * being scrubbed by `sanitizeInlineSvg()`; remote URLs always render through
+ * `<img [ngSrc]>` (never inlined).
  * On load failure the `fallback` local asset is shown, then a token-styled
  * placeholder if the fallback also fails (or none is provided).
  */
@@ -117,13 +125,31 @@ export class UiImage {
     return !url || SVG_CACHE.has(url) ? undefined : url;
   });
 
+  /**
+   * The inlined SVG, scrubbed then trusted.
+   *
+   * FSHSP-177 — this is the kit's ONLY `bypassSecurityTrust*()`. It is not
+   * avoidable: Angular's HTML sanitizer strips `<svg>` wholesale, so passing the
+   * asset through `sanitize(SecurityContext.HTML, …)` would render nothing, and
+   * inlining is the whole point (the asset inherits `currentColor` and the
+   * theme's CSS — an `<img>` cannot). What makes the bypass defensible is that
+   * the markup went through `sanitizeInlineSvg()` first: scripts, `foreignObject`,
+   * SMIL, event handlers and non-navigational references are already gone.
+   * Justified in `docs/SECURITY-PRACTICES.md`.
+   */
   protected readonly svgContent = computed<SafeHtml | null>(() => {
     if (!this.isInlineSvg()) return null;
     const url = this.localSrc();
     if (!url) return null;
-    const raw =
-      SVG_CACHE.get(url) ?? (this.svgResource.hasValue() ? this.svgResource.value() : undefined);
-    return raw === undefined ? null : this.sanitizer.bypassSecurityTrustHtml(raw);
+    const safe =
+      SVG_CACHE.get(url) ??
+      (this.svgResource.hasValue() ? sanitizeInlineSvg(this.svgResource.value()) : undefined);
+    /* eslint-disable-next-line no-restricted-syntax -- EXCEPTION JUSTIFIÉE :
+       seul bypass du kit. Inévitable (l'assainisseur d'Angular supprime `<svg>`
+       en entier) et sûr parce que `sanitizeInlineSvg()` a déjà retiré scripts,
+       foreignObject, SMIL, gestionnaires d'événements et références non
+       navigationnelles. Registre : docs/SECURITY-PRACTICES.md. */
+    return safe === undefined ? null : this.sanitizer.bypassSecurityTrustHtml(safe);
   });
 
   protected readonly primaryFailed = computed(() =>
@@ -149,11 +175,14 @@ export class UiImage {
   );
 
   constructor() {
-    // Side effect only: populate the module-level SVG cache once a fetch resolves.
+    // Side effect only: populate the module-level SVG cache once a fetch
+    // resolves. Scrubbed on the way in — the cache is read straight into the
+    // bypass, so it must never hold a raw response.
     effect(() => {
       if (!this.isInlineSvg()) return;
       const url = this.localSrc();
-      if (url && this.svgResource.hasValue()) SVG_CACHE.set(url, this.svgResource.value());
+      if (url && this.svgResource.hasValue())
+        SVG_CACHE.set(url, sanitizeInlineSvg(this.svgResource.value()));
     });
     if (isDevMode()) {
       effect(() => {

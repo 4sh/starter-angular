@@ -7,7 +7,7 @@ import * as UiImageStories from './ui-image.stories';
 
 Composant d'image intelligent avec deux sources : `name` (asset local résolu via l'assets-map en fonction de la marque active `BrandService` et du mode clair/sombre `ThemeService`) ou `src` (URL distante/absolue, prioritaire sur `name`). Basé sur `NgOptimizedImage` pour les performances de chargement.
 
-Les `.svg` **locaux** sont injectés inline (stylisation CSS possible, fetch via `httpResource` + cache partagé) ; un `.svg` **distant** passe toujours par `<img>` (jamais inliné — pas de surface XSS). En cas d'échec de chargement, l'asset local `fallback` prend le relais, puis un placeholder stylé tokens (adapté light/dark) si le fallback échoue aussi ou n'est pas fourni ; l'output `loadFailed` émet l'URL en échec.
+Les `.svg` **locaux** sont injectés inline (stylisation CSS possible, fetch via `httpResource` + cache partagé), après **assainissement** (voir « Sécurité du SVG inliné » plus bas) ; un `.svg` **distant** passe toujours par `<img>` (jamais inliné — pas de surface XSS). En cas d'échec de chargement, l'asset local `fallback` prend le relais, puis un placeholder stylé tokens (adapté light/dark) si le fallback échoue aussi ou n'est pas fourni ; l'output `loadFailed` émet l'URL en échec.
 
 <br/>
 
@@ -136,6 +136,28 @@ Les `.svg` **locaux** sont injectés inline (stylisation CSS possible, fetch via
 <Canvas of={UiImageStories.Error_Placeholder} />
 
 <Canvas of={UiImageStories.Unknown_Name_Placeholder} />
+
+## Sécurité du SVG inliné
+
+Inliner un SVG, c'est injecter du markup dans le DOM de l'application : un SVG peut
+porter du `<script>`, un `onload`, un `<foreignObject>` qui réouvre tout l'espace de
+noms HTML. Avant d'être rendu, le markup est donc **assaini** — `script`,
+`foreignObject`, `iframe`, `object`, `embed` et les éléments SMIL (`animate`, `set`…)
+sont retirés avec leur contenu, tout attribut `on…` est supprimé, et
+`href`/`xlink:href`/`src` sont réduits à une référence intra-document (`#id`) ou à une
+URL `http(s)` — ce qui écarte `javascript:` et `data:`.
+
+Un SVG normal (formes, `viewBox`, `fill="currentColor"`, `<style>`) traverse
+l'assainissement sans être modifié. Ce qui saute, en revanche, saute **silencieusement** :
+un asset qui compte sur une animation SMIL ou sur un `<foreignObject>` doit être
+converti en CSS/SVG statique, ou servi en `src` distant (rendu via `<img>`, donc
+non inliné).
+
+En SSR, aucun SVG n'est inliné (pas de DOM pour assainir) : l'inline se fait à
+l'hydratation.
+
+> Détail du modèle de menace et registre des exceptions du dépôt :
+> [`docs/SECURITY-PRACTICES.md`](https://github.com/4sh/starter-angular/blob/main/docs/SECURITY-PRACTICES.md).
 
 ## Theming
 

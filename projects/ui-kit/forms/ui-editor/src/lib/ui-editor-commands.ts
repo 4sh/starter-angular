@@ -428,6 +428,9 @@ const ALLOWED_HREF_PROTOCOLS = ['http:', 'https:', 'mailto:', 'tel:'];
 export function normalizeHtml(html: string): string {
   if (typeof document === 'undefined') return html;
   const template = document.createElement('template');
+  /* eslint-disable-next-line no-restricted-syntax -- EXCEPTION JUSTIFIÉE :
+     `<template>` détaché, contenu inerte — étape de parsing du scrub, pas une
+     injection dans le document. Registre : docs/SECURITY-PRACTICES.md. */
   template.innerHTML = html;
   scrubNode(template.content);
   return template.innerHTML;
@@ -492,6 +495,10 @@ export function htmlToText(html: string): string {
     return html.replace(/<[^>]*>/g, '').trim();
   }
   const template = document.createElement('template');
+  /* eslint-disable-next-line no-restricted-syntax -- EXCEPTION JUSTIFIÉE :
+     `<template>` détaché, contenu inerte, jamais rendu — on n'en lit que
+     `textContent` pour compter les caractères. Registre :
+     docs/SECURITY-PRACTICES.md. */
   template.innerHTML = html;
   return (template.content.textContent ?? '').trim();
 }

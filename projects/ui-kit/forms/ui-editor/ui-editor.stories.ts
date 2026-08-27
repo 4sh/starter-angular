@@ -158,7 +158,7 @@ export const MinimalToolbar: Story = {
  * coloration syntaxique : elle imposerait une dépendance tierce.
  */
 export const CodeBlock: Story = {
-  render: story('<p>Un exemple :</p><pre>npm run ui-kit:build</pre><p>et la suite.</p>'),
+  render: story('<p>Un exemple :</p><pre>pnpm ui-kit:build</pre><p>et la suite.</p>'),
   args: { label: 'Documentation' },
 };
 

@@ -6,6 +6,7 @@
     } @else if (escape()) {
       {{ text() }}
     } @else {
+      <!-- eslint-disable-next-line no-restricted-syntax -- EXCEPTION JUSTIFIÉE : mode `escape=false` (opt-in). Ce n'est PAS un contournement — la liaison passe par l'assainisseur d'Angular, aucun bypass n'est levé. Registre : docs/SECURITY-PRACTICES.md. -->
       <span [innerHTML]="text()"></span>
     }
   </div>
