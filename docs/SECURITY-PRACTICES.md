@@ -144,28 +144,54 @@ ligne par ligne ; ce qui suit n'en donne que la logique.
 | `dangerouslyAllowAllBuilds` | `false`       | Rien en soi — renseigné pour qu'un passage à `true` soit un diff visible en revue.                                                                                               |
 | `saveExact`                 | `true`        | Les plages de versions flottantes. **Ce réglage doit être dans `pnpm-workspace.yaml`** : pnpm n'honore PAS `save-exact` depuis `.npmrc` (vérifié — voir §5).                     |
 
-### Ce que la bascule a révélé : deux dépendances fantômes
+### Ce que la bascule a révélé : trois dépendances fantômes
 
 C'est le gain le moins attendu et le plus concret. Le `node_modules` aplati de npm
-rend importable n'importe quel paquet **transitif** : un `import` d'un paquet non
-déclaré fonctionne, jusqu'au jour où la dépendance qui le tirait change de version
-et le fait disparaître. pnpm ne résout que ce qui est déclaré, donc l'install a
-échoué là où npm se taisait :
+rend utilisable n'importe quel paquet **transitif** : un `import` — ou un binaire —
+d'un paquet non déclaré fonctionne, jusqu'au jour où la dépendance qui le tirait
+change de version et le fait disparaître. pnpm ne résout que ce qui est déclaré,
+donc l'install a échoué là où npm se taisait.
+
+**Deux fantômes d'`import`**, découverts à l'install :
 
 | Paquet                | Importé par                                                            | Ce qui le tirait en transitif           |
 | --------------------- | ---------------------------------------------------------------------- | --------------------------------------- |
 | `sass`                | `scripts/component-vars.build.mjs` (et l'appel CLI de `ui-kit:styles`) | `@angular/build`, `sass-loader`, `vite` |
 | `@schematics/angular` | `projects/ui-kit-schematics/src/ng-add/index.ts`                       | `@angular/cli`                          |
 
-Les deux sont maintenant des `devDependencies` explicites. Le second cassait
-`tsc` sur le package des schematics (`TS2307` + deux `any` implicites), donc les
-schematics compilaient sur des types perdus.
+Le second cassait `tsc` sur le package des schematics (`TS2307` + deux `any`
+implicites), donc les schematics compilaient sur des types perdus.
 
-> ⚠️ Le piège de méthode : ces deux erreurs **ne sont apparues qu'après un
+**Un fantôme de _binaire_**, d'une nature différente et découvert plus tard, en CI :
+
+| Paquet       | Appelé par                                     | Ce qui le tirait en transitif              |
+| ------------ | ---------------------------------------------- | ------------------------------------------ |
+| `playwright` | l'étape « Install Playwright's Chromium » (CI) | `@storybook/test-runner`, `axe-playwright` |
+
+Celui-ci ne vient pas d'un `import` mais de `npx` : **`npx` télécharge depuis le
+registre un binaire absent de `node_modules/.bin`**, alors que `pnpm exec` ne lance
+que ce qui est là. La réécriture `npx` → `pnpm exec` a donc transformé un
+téléchargement silencieux en `ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL`.
+
+> Le réflexe « remplacer par `pnpm dlx` » est un piège ici : `dlx` rétablit bien le
+> téléchargement, mais en `latest`. Les navigateurs installés ne correspondraient
+> plus au `playwright-core` que le test-runner utilise, et les tests échoueraient
+> sur un « Executable doesn't exist ». Le bon correctif est de **déclarer
+> `playwright` à la version que le graphe résout déjà** (une seule, partagée par
+> `@storybook/test-runner` et `axe-playwright`) et de garder `pnpm exec`.
+>
+> Règle générale : `pnpm dlx` pour un outil qu'on ne veut délibérément pas installer
+> (un générateur lancé une fois) ; `pnpm exec` + dépendance déclarée dès qu'une
+> version doit rester cohérente avec le reste du graphe.
+
+Les trois sont maintenant des `devDependencies` explicites.
+
+> ⚠️ Le piège de méthode : les deux premières **ne sont apparues qu'après un
 > `rm -rf node_modules`**. Un premier `pnpm install` par-dessus une arborescence
-> créée par npm laisse assez de restes aplatis pour que tout passe. Une migration
-> validée sans table rase ne prouve rien — c'est la CI, qui part d'un cache vide,
-> qui aurait découvert le problème.
+> créée par npm laisse assez de restes aplatis pour que tout passe. Et la
+> troisième n'est apparue **qu'en CI**, parce qu'aucune porte locale ne lance
+> Playwright. Une migration validée sans table rase, et sans faire tourner les
+> jobs qui n'appartiennent pas au chemin de build, ne prouve rien.
 
 Reste un import non déclaré, **volontairement** : `react`, dans les addons
 Storybook (`storybook/addons/**/manager.tsx`, `storybook/blocks/config-table.js`).

@@ -33,6 +33,8 @@ updates:
           - '@storybook/*'
           - '@storybook-community/*'
           - 'storybook'
+          - 'playwright'
+          - 'axe-playwright'
       eslint:
         patterns:
           - 'eslint*'
@@ -48,6 +50,8 @@ updates:
           - '@storybook/*'
           - '@storybook-community/*'
           - 'storybook'
+          - 'playwright'
+          - 'axe-playwright'
           - 'eslint*'
           - '@eslint/*'
           - 'typescript-eslint'

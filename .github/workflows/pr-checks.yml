@@ -172,6 +172,18 @@ jobs:
           name: storybook-static
           path: storybook-static
 
+      # `playwright` est une devDependency DÉCLARÉE, et doit le rester (FSHSP-177).
+      # Sous npm cette étape était un `npx playwright install` : npx va chercher le
+      # paquet sur le registre s'il manque, et npm aplatissait de toute façon le
+      # binaire transitif dans node_modules/.bin. pnpm ne fait ni l'un ni l'autre —
+      # `pnpm exec` ne lance QUE ce qui est déclaré.
+      #
+      # Ne pas « simplifier » en `pnpm dlx playwright` : dlx tire `latest`, donc les
+      # navigateurs installés ne correspondraient plus au `playwright-core` que
+      # `@storybook/test-runner` et `axe-playwright` résolvent, et les tests
+      # échoueraient sur « Executable doesn't exist » — sans bruit, ce job étant
+      # `continue-on-error`. Pour la même raison, `playwright` est groupé avec
+      # `storybook` dans dependabot.yml : les trois doivent bouger ensemble.
       - name: Install Playwright's Chromium
         run: pnpm exec playwright install --with-deps chromium
 
