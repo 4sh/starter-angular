@@ -25,6 +25,7 @@ import * as SliderStories from "../../projects/ui-kit/forms/ui-slider/ui-slider.
 import * as NudgerStories from "../../projects/ui-kit/forms/ui-nudger/ui-nudger.stories";
 import * as TextareaStories from "../../projects/ui-kit/forms/ui-textarea/ui-textarea.stories";
 import * as EditorStories from "../../projects/ui-kit/forms/ui-editor/ui-editor.stories";
+import * as SwatchPickerStories from "../../projects/ui-kit/forms/ui-swatch-picker/ui-swatch-picker.stories";
 import * as SelectStories from "../../projects/ui-kit/forms/ui-select/ui-select.stories";
 import * as AutocompleteStories from "../../projects/ui-kit/forms/ui-autocomplete/ui-autocomplete.stories";
 import * as InputTagsStories from "../../projects/ui-kit/forms/ui-input-tags/ui-input-tags.stories";
@@ -96,6 +97,7 @@ export const CATEGORIES = [
       { name: 'ui-nudger', description: 'Incrémenteur numérique [−] valeur [+] (CVA, min/max/step, tailles, formatValue).', link: '?path=/docs/components-ui-forms-ui-nudger--docs', story: NudgerStories.MinMax },
       { name: 'ui-textarea', description: 'Zone de texte multiligne (CVA, rows, autoResize, poignée native, niveaux).', link: '?path=/docs/components-ui-forms-ui-textarea--docs', story: TextareaStories.WithHelper },
       { name: 'ui-editor', description: 'Éditeur de texte riche sans moteur tiers (barre d’outils configurable, valeur HTML assainie).', link: '?path=/docs/components-ui-forms-ui-editor--docs', story: EditorStories.WithValue, previewScale: 0.65 },
+      { name: 'ui-swatch-picker', description: 'Sélecteur de couleur en grille (swatches groupés, popup overlay, taille compacte, effacement).', link: '?path=/docs/components-ui-forms-ui-swatch-picker--docs', story: SwatchPickerStories.Default },
       { name: 'ui-segment-control', description: 'Sélection segmentée (CVA, simple/multiple, indicateur glissant motion, fluid, template).', link: '?path=/docs/components-ui-forms-ui-segment-control--docs', story: SegmentControlStories.Sizes },
       { name: 'ui-select', description: 'Liste déroulante (combobox WAI-ARIA, options/groupes, multiple, filtre, editable, virtual scroll + lazy).', link: '?path=/docs/components-ui-forms-ui-select--docs', story: SelectStories.Checkmark },
       { name: 'ui-autocomplete', description: 'Champ de suggestions (combobox WAI-ARIA, completeMethod anti-rebondi, dropdown, groupes, forceSelection, virtual scroll).', link: '?path=/docs/components-ui-forms-ui-autocomplete--docs', story: AutocompleteStories.Basic },

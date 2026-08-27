@@ -29,10 +29,85 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
   - 15 hooks `--ui-toggle-button-*` (rayon, rayon pilule, espacement icône ↔ libellé, espacement entre boutons du groupe, bordure, anneau de focus, hauteur / inset / taille de police par taille).
 
 - **`ui-speed-dial` — bouton flottant qui déploie ses actions autour de lui** (FSHSP-173). Inspiré de l'API [SpeedDial de PrimeNG](https://primeng.dev/speeddial), adaptée à l'idiome signals/tokens du kit. Le déclencheur et chaque action sont des instances de `ui-button` (`rounded iconOnly`) — les couleurs viennent entièrement des tokens `actions.*`. Les actions sont pilotées par un modèle déclaratif `UiSpeedDialItem[]`, le sous-ensemble feuille de `UiMenuItem` (`command`/`routerLink`/`url`, `icon`, `disabled`) : un menu existant peut nourrir un dial sans être remanié.
-  - Deux dispositions : `linear` (empilée le long de `direction`) et `circle` (anneau, `radius` optionnel — dérivé de la taille du contrôle sinon). `mask` assombrit la page derrière le dial ouvert avec les mêmes tokens que le voile de `ui-modal` ; `hideOnClickOutside` (vrai par défaut) et `Échap` le ferment.
-  - Le déclencheur porte `aria-haspopup`/`aria-expanded`/`aria-controls` ; les actions ouvertes forment **un seul arrêt de tabulation** (`role="menu"`, roving tabindex, même principe que `ui-menu` et la barre d'outils de `ui-editor`). Une flèche pressée sur le déclencheur **fermé** l'ouvre et place le focus sur la première action. Les actions ne sont **rendues qu'ouvertes** (`@if`) : fermées, elles n'existent pas dans le DOM, donc rien à exclure de la tabulation ni d'`aria-hidden` à maintenir.
-  - Réduit volontairement par rapport à PrimeNG : 4 directions (pas 8 — les diagonales), 2 dispositions (pas 4 — sans `quarter-circle`/`semi-circle`), et un seul étalonnage de touches clavier commun aux dispositions plutôt qu'un mappage par cas. `showTooltips` (booléen) simplifie `tooltipOptions` : la position suit automatiquement le sens de déploiement.
-  - 5 hooks `--ui-speed-dial-*` (empan, décalage d'apparition des actions, rayon par défaut du cercle, palier d'empilement, assombrissement du masque).
+  - Quatre dispositions, partageant un même calcul d'arc : `linear` (empilée le long de `direction`), `circle` (anneau complet), `semi-circle` (demi-anneau centré sur `direction`) et `quarter-circle` (quart d'anneau dans le coin `direction`) — `radius` (optionnel, dérivé de la taille du contrôle sinon) fixe le rayon des trois dispositions en arc. `mask` assombrit la page derrière le dial ouvert avec les mêmes tokens que le voile de `ui-modal` ; `hideOnClickOutside` (vrai par défaut) et `Échap` le ferment.
+  - Le déclencheur porte `aria-haspopup`/`aria-expanded`/`aria-controls` ; les actions ouvertes forment **un seul arrêt de tabulation** (`role="menu"`, roving tabindex, même principe que `ui-menu` et la barre d'outils de `ui-editor`). Une flèche pressée sur le déclencheur **fermé** l'ouvre et place le focus sur la première action. Les actions ne sont **rendues qu'ouvertes** (`@if`) : fermées, elles n'existent pas dans le DOM, donc rien à exclure de la tabulation ni d'`aria-hidden` à maintenir. Sur une disposition en arc, la boîte de la liste — vide entre les actions — ne capte plus le clic à la place du déclencheur qu'elle recouvre (`pointer-events` réservé aux actions elles-mêmes).
+  - `itemLevel` (`low` par défaut) distingue le niveau sémantique des actions de celui du déclencheur (`level`) : une action au même niveau que le déclencheur se lisait comme un second bouton principal plutôt qu'une option révélée.
+  - Réduit volontairement par rapport à PrimeNG : un seul étalonnage de touches clavier commun à toutes les dispositions plutôt qu'un mappage par cas, et `showTooltips` (booléen) qui simplifie `tooltipOptions` — la position suit automatiquement le sens de déploiement.
+  - 5 hooks `--ui-speed-dial-*` (empan, décalage d'apparition des actions, rayon par défaut de l'arc, palier d'empilement, assombrissement du masque).
+
+- **`ui-editor` : outils `indent`/`outdent`** (FSHSP-160). Deux nouveaux `EditorButtonTool`,
+  passthrough direct sur `document.execCommand('indent'|'outdent')` — pas de marker ni de classe
+  à convertir, contrairement à `fontFamily`/`fontSize`. Absents de `DEFAULT_EDITOR_TOOLS` (même
+  logique que `fontSize` : opt-in via `tools`), icônes FontAwesome `indent`/`outdent`.
+
+- **`ui-editor` : outils `textColor`/`highlightColor`** (FSHSP-160). Deux nouveaux
+  `EditorButtonTool`, chacun ouvrant un `ui-swatch-picker` en popup (`size="small"`) ancré à son
+  bouton `ui-button`, plutôt qu'une commande directe — la sélection se fait dans le
+  `swatchSelect` du nuancier. Palette réutilisée depuis `DEFAULT_SWATCH_PALETTE`
+  (`ui-swatch-picker`) : `EDITOR_COLORS`/`EDITOR_HIGHLIGHTS` sont dérivées de la même liste pour
+  que le nuancier et les classes générées portent toujours le même jeu de tokens
+  `--primitives-*`. Écrits en **classe** (`ui-editor-color-*`/`ui-editor-highlight-*`) — jamais
+  en style en ligne — via le même mécanisme marker → conversion que `fontFamily`/`fontSize` :
+  `document.execCommand('foreColor', …)` émet un `<font color>` converti en `<span class>`,
+  tandis que `hiliteColor` n'émet **pas** de `<font>` (vérifié empiriquement, Chromium et
+  Firefox) — il pose un `style="background-color:…"` sur un `<span>`, converti via un sélecteur
+  d'attribut `style` plutôt que `font[color]`. Le bouton de chaque outil affiche un liseré sous
+  son icône dans la couleur en vigueur au curseur ; le nuancier propose une pastille
+  « Aucune couleur » (`allowClear`) qui retire la classe couleur/surlignage de la sélection sans
+  effacer le reste de la mise en forme — `foreColor`/`hiliteColor` n'ont pas de commande native
+  « retirer la couleur ». Absents de `DEFAULT_EDITOR_TOOLS` (même logique d'opt-in que
+  `fontSize`/`indent`/`outdent`).
+
+- **`ui-swatch-picker` — nuancier de couleur réutilisable** (FSHSP-160). `ui-editor` avait
+  besoin d'un nuancier couleur texte / surlignage, et rien dans le kit ne couvrait ce
+  besoin : `ui-menu` structure des commandes, pas une grille de teintes. `ui-swatch-picker`
+  reprend la mécanique overlay de `ui-menu` (`CdkConnectedOverlay`, `autoFlip`,
+  re-position au scroll) sans porter son propre bouton trigger — même contrat de
+  composition que `ui-button-split` avec `ui-menu` (`toggle(event)`/`show(event)`/
+  `hide(focusTrigger?)`, `popup`).
+  - `DEFAULT_SWATCH_PALETTE` (export nommé) : grille 7×5 dérivée des tokens `primitives.*`
+    (7 teintes `primary`/`secondary`/`green`/`orange`/`red`/`slate`/`grey` × 5 paliers
+    `900`→`100`, foncé → clair) plus `black`/`white` — chaque pastille pointe une variable
+    `--primitives-{teinte}-{palier}`, jamais un hex en dur : un rebind de marque change la
+    grille sans recompilation. `palette` accepte un `UiSwatchGroup[]` personnalisé.
+  - Navigation clavier **grille 2D** (roving tabindex) : flèches, `Début`/`Fin`,
+    `Entrée`/`Espace` sélectionnent, `Échap` ferme le popup — mêmes bases que le roving
+    focus de `ui-menu`, adaptées au calcul ligne/colonne.
+  - A11y : `role="listbox"` / `role="option"` sur de vrais `<button>`, `aria-selected` sur
+    la pastille sélectionnée (liseré `--form-high-stroke-checked`, jamais une opacité —
+    doit rester lisible sur chaque teinte), `aria-label` par pastille = son nom
+    (jamais une description de la couleur seule).
+  - `allowClear` (défaut `true`) ajoute une pastille « Aucune couleur » émettant
+    `value = null` / `swatchSelect(null)`.
+
+- **`ui-editor` : outils `alignLeft`/`alignCenter`/`alignRight`/`alignJustify`** (FSHSP-160).
+  Quatre nouveaux `EditorButtonTool`, passthrough `execCommand('justifyLeft'|'justifyCenter'|
+  'justifyRight'|'justifyFull')` — contrairement à `indent`/`outdent`, ce sont des bascules
+  (`EditorToggleTool`) : le navigateur garantit lui-même leur exclusion mutuelle
+  (`queryCommandState`), donc elles suivent le même modèle `EditorState`/`aria-pressed` que
+  gras/italique/souligné plutôt que celui d'un menu. **Dans `DEFAULT_EDITOR_TOOLS`** (à la
+  différence de `fontSize`/`indent`/`outdent`/`textColor`/`highlightColor` : l'alignement est un
+  outil de mise en forme standard, pas un doublon d'un autre contrôle).
+
+### Changed
+
+- **`ui-editor` : les sélecteurs `fontFamily`/`fontSize` passent du `<select>` natif à
+  `ui-select`** (FSHSP-160). Rendu en `ui-select` `size="small"`, lié à la valeur en vigueur via
+  `[ngModel]` et nommé pour les lecteurs d'écran via `ariaLabel` — cohérent avec le reste du kit,
+  qui n'a qu'un seul composant de dropdown de valeurs. Bordure et fond de la boîte de champ
+  retirés (`--ui-field-stroke-width: 0` + surcharge locale du fond via `::ng-deep`, scopée à
+  `.ui-editor-select` — aucun autre `ui-select` du kit n'est concerné) pour que le sélecteur se
+  fonde dans la barre d'outils comme les autres outils, plutôt que d'apparaître comme son propre
+  champ de formulaire.
+
+- **`ui-editor` : suppression de `blockFormat`, `fontSize` désormais dans la barre par défaut**
+  (FSHSP-160). Plus de sélecteur de niveau de bloc (Normal/Titre 1-3) : l'éditeur ne produit plus
+  que des `<p>`, aucun titre H1-H3 n'est accessible depuis la barre d'outils. `EditorBlock`,
+  `EDITOR_BLOCKS`, `applyBlockFormat`/`readBlockFormat` et le tool `blockFormat` sont retirés de
+  l'API publique — **breaking change** pour tout `tools` listant `'blockFormat'`. `fontSize`
+  n'était auparavant pas dans `DEFAULT_EDITOR_TOOLS` (opt-in, pour éviter le doublon visuel avec
+  `blockFormat`) ; cette raison n'existe plus, `fontSize` rejoint `fontFamily` en outil de premier
+  rang, toujours actif.
 
 - **`ui-editor` — éditeur de texte riche, sans moteur tiers** (FSHSP-160). Le kit s'arrêtait à `ui-textarea` : dès qu'un projet avait besoin de gras, de listes ou d'un lien dans un champ libre, il installait Quill ou TipTap et repartait avec un champ qui ne ressemble à aucun autre du formulaire. `ui-editor` couvre ce besoin en restant dans les règles du kit : bâti sur le shell `ui-field` en mode multiligne, il partage le libellé, la boîte, les niveaux, le helper et la validation avec les huit autres champs, et n'ajoute **aucune dépendance runtime** — les commandes de mise en forme s'appuient sur l'API d'édition native du navigateur, isolée dans `ui-editor-commands` pour qu'un futur moteur ne se substitue qu'à ce fichier.
   - **Barre d'outils configurable** : `tools` liste les outils rendus, dans l'ordre (`bold`, `italic`, `underline`, `bulletList`, `orderedList`, `link`, `clearFormat`, plus `separator`), et `toolbarPosition` la place au-dessus ou sous la zone de saisie. Elle forme **un seul arrêt de tabulation** (`role="toolbar"`, roving tabindex : ⭠ ⭢, `Home`/`End`, `Échap` rend le focus à la saisie) ; les bascules portent un `aria-pressed` recalculé à chaque déplacement du curseur, les actions ponctuelles n'en portent pas. Cliquer un outil ne déplace pas le focus et préserve la sélection. Les raccourcis `Ctrl`/`Cmd` + `B`/`I`/`U` sont pris en charge nativement, l'état de la barre suit.
@@ -70,6 +145,15 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ### Changed
 
+- **`ui-editor` : `clearFormat` retiré de la barre par défaut, encore disponible via `tools`**
+  (FSHSP-160). `document.execCommand('removeFormat')` ne connaît que la mise en forme native du
+  navigateur (gras, italique, souligné…) — jamais les `<span class="ui-editor-*">` que
+  `fontFamily`/`fontSize`/`textColor`/`highlightColor` écrivent. Une première tentative,
+  `clearFormatMarkers()` (déshabille ces classes sur la sélection, même mécanisme que le
+  « Aucune couleur » des nuanciers), ne couvre pas encore tous les cas de façon fiable : plutôt
+  qu'un bouton qui n'effectue pas toujours ce qu'il annonce, il est retiré de
+  `DEFAULT_EDITOR_TOOLS` en attendant, sans rien retirer du kit — le tool, l'icône et
+  `clearFormatMarkers()` restent en place pour un projet qui l'ajoute explicitement.
 - **`ng add @4sh/ui-kit-schematics` écrit les commandes du gestionnaire de paquets du projet, plus `npm run` en dur** (FSHSP-177). Les scripts posés dans le `package.json` du consommateur (`storybook`, `build-storybook`, le hook `postinstall`) et la commande de démarrage affichée en fin d'installation nommaient `npm run` quel que soit le projet. Dans un projet pnpm ou yarn, ces scripts fonctionnaient — npm est toujours présent — mais contournaient le lockfile et faisaient apparaître un `package-lock.json` parasite au premier lancement. Le gestionnaire est désormais déduit du champ `packageManager` puis, à défaut, du lockfile présent, dans le même ordre de précédence que le CLI Angular (pnpm, yarn, bun, npm). L'**installation** des dépendances, elle, était déjà correcte : le CLI Angular transmet le gestionnaire qu'il détecte à `NodePackageInstallTask`.
 - **Les scripts de la chaîne de doc copiés chez le consommateur nomment son gestionnaire dans leurs messages d'erreur** (FSHSP-177). `docs.config.mjs` et `docs.search.mjs` conseillaient « lance `npm run docs:config` » ; ils lisent maintenant `npm_config_user_agent` (renseigné par npm, pnpm, yarn et bun) et affichent une commande copiable telle quelle. Les messages rendus **dans le navigateur** (table `ConfigTable`, addons de recherche), qui n'ont pas accès à cette information, nomment désormais le script seul plutôt qu'un client.
 - **`projects/ui-kit/README.md` (EN/FR) mène l'installation avec `pnpm add`** (FSHSP-177), en précisant que npm et yarn installent exactement la même chose — le package reste un tarball npm standard. C'est le fichier affiché sur npmjs.com.
@@ -86,6 +170,7 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ### Fixed
 
+- **Le panneau de `ui-datepicker` débordait de l'écran sur un viewport étroit**. Trois causes cumulées, corrigées ensemble : le panneau était plafonné à `100vw - units-lg` mais la colonne de mois gardait une largeur fixe de 360px sans pouvoir rétrécir, donc la dernière colonne de jours et le chevron « suivant » passaient sous la bordure ; l'overlay CDK n'avait ni marge de viewport ni repoussage (`push`), donc un champ ancré n'importe où ailleurs qu'à gauche sortait le panneau hors de l'écran ; et en `numberOfMonths > 1` la rangée de mois faisait deux fois 360px, dont le second mois entièrement invisible. La colonne de mois et les grilles mois / année rétrécissent maintenant avec le panneau, la pastille d'un jour suit la largeur de sa colonne quand celle-ci passe sous `size/components/default` (la bande d'une plage la suit aussi), les mois s'empilent verticalement sous 600px avec un filet horizontal en séparateur, et l'overlay garde 12px de gouttière avec les bords du viewport. Le panneau défile désormais au-delà de `100dvh - units-3xl` plutôt que de déborder en hauteur (paysage sur téléphone), et un panneau `inline` ne dépasse plus la largeur de son conteneur.
 - **`ui-image` inlinait les SVG locaux sans les assainir** (FSHSP-177). Le composant est le seul du kit à lever un `bypassSecurityTrustHtml()` — inévitable, puisque l'assainisseur d'Angular supprime `<svg>` en entier et que l'inline est ce qui permet à l'asset d'hériter du CSS (`currentColor`, tokens de thème). Mais la réponse HTTP y était passée **telle quelle** : un SVG servi depuis `assets/img/` exécutait son propre JavaScript dans l'origine de l'application. Vérifié dans un navigateur réel : un `<img onerror>` glissé dans un `<foreignObject>` s'exécutait **sans aucune interaction**, et les attributs `onload`/`onclick`/`onerror` survivaient dans le DOM. Le markup passe désormais par un scrub explicite (`sanitizeInlineSvg`) avant le bypass : `script`, `foreignObject`, `iframe`, `object`, `embed` et les éléments SMIL (`animate`, `animateTransform`, `animateMotion`, `set`, `handler`) sont retirés **avec leur contenu** ; tout attribut `on…` est supprimé ; `href`/`xlink:href`/`src` sont réduits à une référence intra-document (`#id`) ou à une URL `http(s)`, ce qui écarte `javascript:` et `data:`. Le parsing a lieu dans un `<template>` détaché, donc inerte, et l'absence de DOM (SSR) renvoie une chaîne vide plutôt que du markup brut. `SVG_CACHE` ne mémorise plus que du markup assaini.
   - Le modèle de menace n'est pas « les assets du kit » : c'est un projet qui sert `assets/img/` depuis un CDN, ou qui laisse un client déposer son logo dans un dossier de marque (white-label). Un `src` distant, lui, n'a jamais été concerné — il passe toujours par `<img [ngSrc]>`, jamais par le bypass.
   - Sans effet sur les assets légitimes : le scrub a été passé sur les 22 SVG réels de `src/assets/img/`, aucun n'est modifié (même nombre d'éléments et d'attributs, `viewBox` en casse préservée). 14 tests dans `ui-image-svg.spec.ts` verrouillent chaque vecteur.

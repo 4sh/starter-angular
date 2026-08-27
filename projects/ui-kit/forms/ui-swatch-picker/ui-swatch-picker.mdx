@@ -1,0 +1,102 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as SwatchPickerStories from './ui-swatch-picker.stories';
+import { ConfigTable } from '../../../../storybook/blocks/config-table';
+
+<Meta of={SwatchPickerStories} />
+
+# ui-swatch-picker
+
+Grille de nuances headless, statique ou **popup**, pour un choix de couleur
+unique parmi une palette déclarative (`UiSwatchGroup[]`). Sans bouton trigger
+propre — même contrat de composition que
+[`ui-menu`](?path=/docs/components-ui-navigation-ui-menu--docs) : un appelant
+câble son propre `ui-button` sur `toggle(event)` / `show(event)`, exactement
+comme [`ui-button-split`](?path=/docs/components-ui-actions-ui-button-split--docs)
+le fait avec `ui-menu`.
+
+<Canvas of={SwatchPickerStories.Default} />
+
+## API
+
+<ArgTypes of={SwatchPickerStories} />
+
+Méthodes publiques (mode `popup`) : `toggle(event)`, `show(event)`, `hide(focusTrigger?)`.
+Sorties : `opened` / `closed` (popup) et `swatchSelect` (`UiSwatch | null`).
+
+### UiSwatch / UiSwatchGroup
+
+<table className="doc-table">
+  <thead>
+    <tr><th>Type</th><th>Propriété</th><th>Rôle</th></tr>
+  </thead>
+  <tbody>
+    <tr><td rowSpan="3">`UiSwatch`</td><td>`key`</td><td>Identifiant stable, aussi porté par `value` / `swatchSelect`.</td></tr>
+    <tr><td>`cssVar`</td><td>Variable CSS rendant la pastille (ex. `--primitives-red-500`) — jamais de hex en dur.</td></tr>
+    <tr><td>`label`</td><td>Nom accessible (`aria-label` du bouton) — jamais une simple description de la teinte.</td></tr>
+    <tr><td rowSpan="2">`UiSwatchGroup`</td><td>`label`</td><td>Libellé de la section.</td></tr>
+    <tr><td>`swatches`</td><td>Pastilles de la section, en ordre de grille (gauche → droite, haut → bas).</td></tr>
+  </tbody>
+</table>
+
+## Palette par défaut
+
+`DEFAULT_SWATCH_PALETTE` (export nommé) est une grille 7×5 : 7 teintes
+(`primary`, `secondary`, `green`, `orange`, `red`, `slate`, `grey`) × 5 paliers
+(`900` → `100`, foncé → clair), plus `black`/`white` en fin de grille. Chaque
+pastille pointe vers une variable `--primitives-{teinte}-{palier}` — jamais une
+couleur figée : un rebind de marque (Brand 2 / Brand 3) change la grille sans
+recompilation du composant.
+
+```ts
+import { DEFAULT_SWATCH_PALETTE, UiSwatchGroup } from '@4sh/ui-kit/forms/ui-swatch-picker';
+```
+
+## Aucune couleur (`allowClear`)
+
+Une pastille dédiée (icône barrée) est ajoutée en tête de grille quand
+`allowClear` (défaut `true`) : elle sélectionne `value = null` et émet
+`swatchSelect(null)`.
+
+<Canvas of={SwatchPickerStories.WithClear} />
+
+## Densité (`size`)
+
+<Canvas of={SwatchPickerStories.Small} />
+
+## Popup
+
+`popup` + la méthode `toggle(event)` : le panneau s'ouvre dans un **overlay
+CDK** ancré sous l'élément déclencheur (retournement automatique au-dessus
+quand la place manque), fermeture au clic extérieur, à `Échap` (focus rendu au
+déclencheur) et après sélection d'une pastille.
+
+```html
+<ui-button label="Couleur" (buttonClick)="picker.toggle($event)"
+  [buttonProps]="{ 'aria-haspopup': 'listbox', 'aria-controls': picker.uid }" />
+<ui-swatch-picker #picker popup ariaLabel="Couleur du texte" (swatchSelect)="onSelect($event)" />
+```
+
+<Canvas of={SwatchPickerStories.Popup} />
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr><th>Point</th><th>Implémentation</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Rôles</td><td>`role="listbox"` → `role="option"` sur de **vrais** `<button>` (jamais de `div` cliquable), `aria-selected` sur la pastille sélectionnée.</td></tr>
+    <tr><td>Nom accessible</td><td>`aria-label` par pastille = son `label` (jamais une description de la couleur elle-même — parité voyant / non-voyant) ; `ariaLabel` sur la grille.</td></tr>
+    <tr><td>Clavier</td><td>Roving tabindex 2D : `←`/`→`/`↑`/`↓` déplacent le focus dans la grille, `Début`/`Fin` vont au premier/dernier, `Entrée`/`Espace` sélectionnent (activation native du `<button>`), `Échap` ferme le popup.</td></tr>
+    <tr><td>Sélection</td><td>Marquage visuel **distinct** (liseré `--form-high-stroke-checked`, jamais une opacité — doit rester lisible sur chaque teinte) + `aria-selected="true"`.</td></tr>
+    <tr><td>Focus</td><td>`:focus-visible` distinct du hover (anneau `--global-border-focus`). Ouverture popup → focus sur le tab stop courant (sélection, sinon première pastille) ; fermeture → retour au déclencheur.</td></tr>
+  </tbody>
+</table>
+
+## Theming
+
+Variables **locales** de `ui-swatch-picker.scss` (voir aussi la
+[configuration Global UI](?path=/docs/components-configuration-global-ui--docs) et le
+[fonctionnement général](?path=/docs/components-configuration--docs)) :
+
+<ConfigTable of="ui-swatch-picker" />

@@ -13,27 +13,34 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { NgTemplateOutlet } from '@angular/common';
-import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { DomSanitizer } from '@angular/platform-browser';
-import { BaseFormField } from '@4sh/ui-kit/forms';
-import { UiField } from '@4sh/ui-kit/forms/ui-field';
-import { UiButton } from '@4sh/ui-kit/actions/ui-button';
+import {NgTemplateOutlet} from '@angular/common';
+import {FormsModule, NG_VALUE_ACCESSOR} from '@angular/forms';
+import {DomSanitizer} from '@angular/platform-browser';
+import {BaseFormField} from '@4sh/ui-kit/forms';
+import {UiField} from '@4sh/ui-kit/forms/ui-field';
+import {UiButton} from '@4sh/ui-kit/actions/ui-button';
+import {UiSelect} from '@4sh/ui-kit/forms/ui-select';
+import {UiSwatch, UiSwatchPicker} from '@4sh/ui-kit/forms/ui-swatch-picker';
 import {
-  applyBlockFormat,
   applyCommand,
   applyFontFamily,
   applyFontSize,
+  applyHighlightColor,
   applyLink,
+  applyTextColor,
+  clearFormatMarkers,
+  clearMarkerClass,
+  convertColorMarkers,
   convertFontMarkers,
+  convertHighlightMarkers,
   convertSizeMarkers,
   DEFAULT_EDITOR_TOOLS,
-  EDITOR_BLOCKS,
+  EDITOR_COLORS,
   EDITOR_FONTS,
+  EDITOR_HIGHLIGHTS,
   EDITOR_SELECT_TOOLS,
   EDITOR_SIZES,
   EDITOR_TOOL_META,
-  EditorBlock,
   EditorButtonTool,
   EditorFont,
   EditorSelectTool,
@@ -46,10 +53,11 @@ import {
   insertText,
   isEmptyHtml,
   normalizeHtml,
-  readBlockFormat,
   readEditorState,
   readFontFamily,
   readFontSize,
+  readHighlightColor,
+  readTextColor,
   removeLink,
   resolveFontLabel,
   scrubInPlace,
@@ -75,7 +83,7 @@ const SHORTCUTS: Record<string, EditorTool> = { b: 'bold', i: 'italic', u: 'unde
  */
 @Component({
   selector: 'ui-editor',
-  imports: [UiField, UiButton, NgTemplateOutlet],
+  imports: [UiField, UiButton, UiSwatchPicker, UiSelect, NgTemplateOutlet, FormsModule],
   templateUrl: './ui-editor.html',
   styleUrl: './ui-editor.scss',
   providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => UiEditor), multi: true }],
@@ -118,6 +126,10 @@ export class UiEditor extends BaseFormField<string> {
   private readonly contentEl = viewChild<ElementRef<HTMLElement>>('contentEl');
   /** @ignore The rendered toolbar — holds the roving tabindex ring, in DOM order. */
   private readonly toolbarEl = viewChild<ElementRef<HTMLElement>>('toolbarEl');
+  /** @ignore Text color popup (see {@link onColorToolClick}). */
+  private readonly textColorPicker = viewChild<UiSwatchPicker>('textColorPicker');
+  /** @ignore Highlight color popup (see {@link onColorToolClick}). */
+  private readonly highlightColorPicker = viewChild<UiSwatchPicker>('highlightColorPicker');
 
   /**
    * @ignore Last HTML this component wrote out.
@@ -135,10 +147,16 @@ export class UiEditor extends BaseFormField<string> {
   protected readonly currentFont = signal<EditorFont | null>(null);
   /** @ignore Text size at the caret (`null` = the default size). */
   protected readonly currentSize = signal<EditorSize | null>(null);
-  /** @ignore Block level at the caret (`null` = neither a paragraph nor a heading). */
-  protected readonly currentBlock = signal<EditorBlock | null>(null);
+  /** @ignore Text color at the caret (`null` = the default color). */
+  protected readonly currentTextColor = signal<string | null>(null);
+  /** @ignore Highlight color at the caret (`null` = no highlight). */
+  protected readonly currentHighlightColor = signal<string | null>(null);
   /** @ignore Index of the toolbar button reachable with Tab (roving tabindex). */
   protected readonly activeTool = signal(0);
+  /** @ignore Open state of the `textColor` popup (drives its trigger's `aria-expanded`). */
+  protected readonly textColorPickerOpen = signal(false);
+  /** @ignore Open state of the `highlightColor` popup (drives its trigger's `aria-expanded`). */
+  protected readonly highlightColorPickerOpen = signal(false);
 
   /**
    * @ignore Last selection seen inside the editing area.
@@ -188,8 +206,6 @@ export class UiEditor extends BaseFormField<string> {
           : EDITOR_TOOL_META[tool as EditorButtonTool],
     })),
   );
-  /** @ignore Block levels offered by the `blockFormat` dropdown. */
-  protected readonly blocks = EDITOR_BLOCKS;
   /** @ignore Text sizes offered by the `fontSize` dropdown. */
   protected readonly sizes = EDITOR_SIZES;
   /**
@@ -199,6 +215,22 @@ export class UiEditor extends BaseFormField<string> {
    * hardcoded "Inter" would lie as soon as a project rebinds the token.
    */
   protected readonly fonts = signal(EDITOR_FONTS.map((f) => ({ ...f })));
+  /** @ignore `fontFamily` dropdown options ({@link UiSelect} `optionLabel`/`optionValue`). */
+  protected readonly fontFamilyOptions = computed(() =>
+    this.fonts().map((font) => ({ value: font.key, label: font.label })),
+  );
+  /** @ignore `fontSize` dropdown options ({@link UiSelect} `optionLabel`/`optionValue`). */
+  protected readonly fontSizeOptions = computed(() =>
+    this.sizes.map((size) => ({ value: size.key, label: size.label })),
+  );
+  /** @ignore Swatch entry backing the `textColor` button's color indicator. */
+  protected readonly currentTextColorSwatch = computed(() =>
+    EDITOR_COLORS.find((c) => c.key === this.currentTextColor()),
+  );
+  /** @ignore Swatch entry backing the `highlightColor` button's color indicator. */
+  protected readonly currentHighlightColorSwatch = computed(() =>
+    EDITOR_HIGHLIGHTS.find((c) => c.key === this.currentHighlightColor()),
+  );
   /** @ignore The toolbar has at least one actionable entry. */
   protected readonly hasToolbar = computed(() => this.tools().some((t) => t !== 'separator'));
   /**
@@ -331,7 +363,8 @@ export class UiEditor extends BaseFormField<string> {
     const anchor = document.getSelection()?.anchorNode ?? null;
     this.currentFont.set(readFontFamily(anchor));
     this.currentSize.set(readFontSize(anchor));
-    this.currentBlock.set(readBlockFormat());
+    this.currentTextColor.set(readTextColor(anchor));
+    this.currentHighlightColor.set(readHighlightColor(anchor));
 
     const next = readEditorState();
     const prev = this.state();
@@ -362,34 +395,131 @@ export class UiEditor extends BaseFormField<string> {
   // --- Toolbar ----------------------------------------------------------
 
   /** @ignore Runs a button tool against the selection the mousedown handler preserved. */
-  protected runTool(tool: EditorButtonTool, index: number): void {
+  protected runTool(tool: EditorButtonTool, index: number, event?: MouseEvent): void {
     if (!this.isEditable()) return;
     this.activeTool.set(index);
+    if (tool === 'textColor' || tool === 'highlightColor') {
+      this.onColorToolClick(tool, event!);
+      return;
+    }
     this.focus();
     if (tool === 'link') this.promptForLink();
     else if (tool === 'codeBlock') toggleCodeBlock();
+    else if (tool === 'clearFormat') this.clearFormat();
     else applyCommand(tool);
     this.onInput();
   }
 
   /**
-   * @ignore Applies a dropdown choice to the selection.
-   *
-   * The dropdown took the focus, so the caret is put back first. The family and
-   * size commands emit legacy `<font>` elements, immediately rewritten into a
-   * class; the block command writes a real tag and needs no conversion.
+   * @ignore `removeFormat` (the native command behind `clearFormat`) only
+   * strips inline formatting the browser itself applies — bold, italic,
+   * underline… — never the `<span class="ui-editor-*">` wrappers `fontFamily`/
+   * `fontSize`/`textColor`/`highlightColor` write, so those survived
+   * "Effacer le formatage" untouched. Run the native command, then unwrap
+   * those classes too, across whatever is currently selected.
    */
-  protected onSelectChange(tool: EditorSelectTool, event: Event, index: number): void {
-    const value = (event.target as HTMLSelectElement).value;
-    this.activeTool.set(index);
-    if (!this.isEditable() || !value) return;
+  private clearFormat(): void {
+    applyCommand('clearFormat');
+    const el = this.contentEl()?.nativeElement;
+    const selection = document.getSelection();
+    if (!el || !selection?.rangeCount) return;
+    const range = selection.getRangeAt(0);
+    if (!el.contains(range.commonAncestorContainer)) return;
+    clearFormatMarkers(el, range);
+  }
 
+  /**
+   * @ignore Trigger click for `textColor`/`highlightColor`: opens the matching
+   * `ui-swatch-picker` instead of applying a command directly — same
+   * "picker takes the focus, the caret is restored before the real command
+   * runs" pattern as {@link onSelectMenuTrigger}, but these two are button
+   * tools (a one-shot action button, not a value dropdown), so they run
+   * through `runTool` rather than `onSelectChange`.
+   */
+  private onColorToolClick(tool: 'textColor' | 'highlightColor', event: MouseEvent): void {
+    this.rememberSelection();
+    const picker =
+      tool === 'textColor' ? this.textColorPicker() : this.highlightColorPicker();
+    picker?.toggle(event);
+  }
+
+  /**
+   * @ignore Applies the text color chosen in the `textColor` picker.
+   *
+   * The popup took the focus, so the caret is put back first. `foreColor`
+   * emits a legacy `<font>` element, immediately rewritten into a class.
+   */
+  protected onTextColorSelect(swatch: UiSwatch | null): void {
+    if (!this.isEditable()) return;
     this.restoreSelection();
     const el = this.contentEl()?.nativeElement;
+    if (swatch) {
+      applyTextColor();
+      if (el) convertColorMarkers(el, `ui-editor-color-${swatch.key}`);
+    } else if (el && this.savedRange) {
+      for (const color of EDITOR_COLORS) clearMarkerClass(el, this.savedRange, color.className);
+    }
+    this.onInput();
+  }
 
-    if (tool === 'blockFormat') {
-      applyBlockFormat(value as EditorBlock);
-    } else if (tool === 'fontFamily') {
+  /**
+   * @ignore Applies the highlight color chosen in the `highlightColor` picker.
+   *
+   * The popup took the focus, so the caret is put back first. `hiliteColor`
+   * emits a `<span style="background-color:…">`, immediately rewritten into a
+   * class (see {@link convertHighlightMarkers}).
+   */
+  protected onHighlightColorSelect(swatch: UiSwatch | null): void {
+    if (!this.isEditable()) return;
+    this.restoreSelection();
+    const el = this.contentEl()?.nativeElement;
+    if (swatch) {
+      applyHighlightColor();
+      if (el) convertHighlightMarkers(el, `ui-editor-highlight-${swatch.key}`);
+    } else if (el && this.savedRange) {
+      for (const color of EDITOR_HIGHLIGHTS) {
+        clearMarkerClass(el, this.savedRange, color.className);
+      }
+    }
+    this.onInput();
+  }
+
+  /** @ignore Options for a `ui-select` dropdown ({@link UiSelect} `optionLabel`/`optionValue`). */
+  protected selectOptions(tool: EditorSelectTool): { value: string; label: string }[] {
+    return tool === 'fontFamily' ? this.fontFamilyOptions() : this.fontSizeOptions();
+  }
+
+  /**
+   * @ignore Current value of a `ui-select` dropdown, so it reflects the caret.
+   *
+   * Falls back to the value actually in force when no class was applied: text
+   * carrying no class really is rendered with `--fontfamily-base` at the
+   * default size, so naming it states a fact rather than a placeholder.
+   */
+  protected selectValue(tool: EditorSelectTool): string {
+    if (tool === 'fontFamily') return this.currentFont() ?? 'base';
+    return this.currentSize() ?? 'default';
+  }
+
+  /** @ignore Accessible name of a dropdown — spelled out, it is never truncated. */
+  protected selectLabel(tool: EditorSelectTool): string {
+    if (tool === 'fontFamily') return 'Police';
+    return 'Taille du texte';
+  }
+
+  /**
+   * @ignore Applies the value chosen in a `ui-select` dropdown.
+   *
+   * `ui-select` opens its own overlay and takes the focus, so the caret is put
+   * back first — same reasoning as the color pickers. `fontName`/`fontSize`
+   * each emit a legacy `<font>` element, immediately rewritten into a class.
+   */
+  protected onSelectValueChange(tool: EditorSelectTool, value: unknown, index: number): void {
+    this.activeTool.set(index);
+    if (!this.isEditable() || value == null) return;
+    this.restoreSelection();
+    const el = this.contentEl()?.nativeElement;
+    if (tool === 'fontFamily') {
       const choice = this.fonts().find((f) => f.key === value);
       if (!choice) return;
       applyFontFamily();
@@ -400,42 +530,8 @@ export class UiEditor extends BaseFormField<string> {
       applyFontSize();
       if (el) convertSizeMarkers(el, choice.className);
     }
-
     this.onInput();
   }
-
-  /**
-   * @ignore Current value of a dropdown, so it reflects the caret.
-   *
-   * Family and size fall back to the value actually in force: text carrying no
-   * class really is rendered with `--fontfamily-base` at the default size, so
-   * naming them states a fact rather than a placeholder.
-   *
-   * The block level has no such fallback. When the caret sits in something the
-   * list does not offer — a code block, a list item — there is no honest value to
-   * show, and claiming "Normal" would invite a click that reformats the block.
-   */
-  protected selectValue(tool: EditorSelectTool): string {
-    if (tool === 'blockFormat') return this.currentBlock() ?? '';
-    if (tool === 'fontFamily') return this.currentFont() ?? 'base';
-    return this.currentSize() ?? 'default';
-  }
-
-  /** @ignore Accessible name of a dropdown — spelled out, it is never truncated. */
-  protected selectLabel(tool: EditorSelectTool): string {
-    if (tool === 'blockFormat') return 'Niveau de texte';
-    if (tool === 'fontFamily') return 'Police';
-    return 'Taille du texte';
-  }
-
-  /**
-   * @ignore The dropdown shows no value at all.
-   *
-   * Only reachable for the block level (see {@link selectValue}). Left blank
-   * rather than labelled with the control's own name: the closed state is where
-   * the current formatting is read, not where the control introduces itself.
-   */
-  protected readonly hasNoValue = computed(() => this.currentBlock() === null);
 
   /**
    * @ignore v1 link flow: the native prompt.
@@ -493,14 +589,29 @@ export class UiEditor extends BaseFormField<string> {
   /**
    * @ignore Moves the DOM focus onto the control now holding the tab stop.
    *
-   * Queried from the live toolbar rather than from the `ui-button` children: the
-   * ring mixes buttons and the font `<select>`, and DOM order is the visual order.
+   * Queried from the live toolbar rather than from the `ui-button` children:
+   * DOM order is the visual order, and every tool (buttons and select-menu
+   * triggers alike) renders as a `<button>`.
    */
   private focusTool(index: number): void {
     const position = this.toolbar().filter((e) => !e.isSeparator && e.index <= index).length - 1;
-    const controls =
-      this.toolbarEl()?.nativeElement.querySelectorAll<HTMLElement>('button, select');
+    const controls = this.toolbarEl()?.nativeElement.querySelectorAll<HTMLElement>('button');
     controls?.[position]?.focus();
+  }
+
+  /**
+   * @ignore `var(--primitives-…)` for the `textColor`/`highlightColor`
+   * buttons' color indicator, or `null` for every other tool (no swatch
+   * active, or a tool the indicator does not apply to).
+   */
+  protected colorIndicatorVar(tool: EditorButtonTool | null): string | null {
+    const swatch =
+      tool === 'textColor'
+        ? this.currentTextColorSwatch()
+        : tool === 'highlightColor'
+          ? this.currentHighlightColorSwatch()
+          : null;
+    return swatch ? `var(${swatch.cssVar})` : null;
   }
 
   /**
@@ -508,8 +619,15 @@ export class UiEditor extends BaseFormField<string> {
    *
    * `aria-pressed` only on the toggles: `link` and `clearFormat` are one-shot
    * actions, and a permanently unpressed toggle would misreport them.
+   * `textColor`/`highlightColor` forward `aria-haspopup`/`aria-expanded`
+   * instead — they open a `ui-swatch-picker` popup, not a toggle.
    */
   protected toolProps(tool: EditorTool): Record<string, string> | undefined {
+    if (tool === 'textColor' || tool === 'highlightColor') {
+      const open =
+        tool === 'textColor' ? this.textColorPickerOpen() : this.highlightColorPickerOpen();
+      return { 'aria-haspopup': 'true', 'aria-expanded': open ? 'true' : 'false' };
+    }
     const state = this.state();
     if (!(tool in state)) return undefined;
     return { 'aria-pressed': state[tool as keyof EditorState] ? 'true' : 'false' };

@@ -14,6 +14,7 @@ $panel-padding: var(--ui-datepicker-panel-padding, #{utils.$overlay-panel-paddin
 $panel-gap: var(--ui-datepicker-panel-gap, var(--units-sm));                           /// Espace entre sections (header / grille / heure)
 $panel-shadow: var(--ui-datepicker-panel-shadow, #{utils.$overlay-panel-shadow});      /// Ombre du panneau en overlay (retirée en inline)
 $panel-max-width: var(--ui-datepicker-panel-max-width, calc(100vw - var(--units-lg))); /// Largeur maximale du panneau, gouttière laissée au viewport.
+$panel-max-height: var(--ui-datepicker-panel-max-height, calc(100dvh - var(--units-3xl))); /// Hauteur maximale du panneau en overlay, au-delà de laquelle il défile.
 
 $day-size: var(--ui-datepicker-day-size, var(--size-components-default));                /// Diamètre d'une cellule jour
 $day-radius: var(--ui-datepicker-day-radius, var(--radius-full));                        /// Rayon des cellules jour (cercle)
@@ -35,6 +36,8 @@ $title-font-size: var(--ui-datepicker-title-font-size, var(--size-typography-tit
 $title-padding-y: var(--ui-datepicker-title-padding-y, var(--units-2xs));                /// Inset vertical du titre cliquable.
 $title-padding-x: var(--ui-datepicker-title-padding-x, var(--units-sm));                 /// Inset horizontal du titre cliquable.
 $title-radius: var(--ui-datepicker-title-radius, var(--radius-sm));                      /// Rayon du titre cliquable.
+
+$months-stack-below: 37.5rem; // = breakpoint tabletPortrait : sous ce seuil deux mois ne tiennent plus côte à côte.
 
 $months-gap: var(--ui-datepicker-months-gap, var(--units-lg));                                 /// Espacement entre les mois affichés côte à côte.
 $month-gap: var(--ui-datepicker-month-gap, var(--units-sm));                                   /// Espacement entre les sections d'une colonne de mois.
@@ -96,7 +99,15 @@ $buttonbar-padding-top: var(--ui-datepicker-buttonbar-padding-top, var(--units-s
     box-shadow: $panel-shadow;
     font-family: var(--fontfamily-base);
 
-    &._inline { box-shadow: none; }
+    &:not(._inline) {
+      max-height: $panel-max-height;
+      overflow: auto;
+      overscroll-behavior: contain;
+    }
+    &._inline {
+      box-shadow: none;
+      max-width: min(100%, #{$panel-max-width});
+    }
   }
 
   // --- Header (month navigation) -------------------------------------
@@ -134,6 +145,7 @@ $buttonbar-padding-top: var(--ui-datepicker-buttonbar-padding-top, var(--units-s
 
   &-title {
     flex: 1 1 auto;
+    min-width: 0;
     text-align: center;
     font-size: $title-font-size;
     font-weight: var(--weight-bold);
@@ -164,12 +176,24 @@ $buttonbar-padding-top: var(--ui-datepicker-buttonbar-padding-top, var(--units-s
     display: flex;
     flex-direction: column;
     gap: $month-gap;
-    flex: 0 0 auto;
+    flex: 0 1 auto;
     width: $panel-width;
+    min-width: 0;
+    max-width: 100%;
 
     &:not(:first-child) {
       border-left: $stroke-width solid var(--form-high-stroke-default);
       padding-left: $month-divider-padding-left;
+    }
+  }
+
+  @media (width < #{$months-stack-below}) {
+    &-months { flex-direction: column; }
+    &-month:not(:first-child) {
+      border-left: none;
+      padding-left: 0;
+      border-top: $stroke-width solid var(--form-high-stroke-default);
+      padding-top: $month-divider-padding-left;
     }
   }
 
@@ -187,6 +211,7 @@ $buttonbar-padding-top: var(--ui-datepicker-buttonbar-padding-top, var(--units-s
     display: grid;
     gap: $picker-gap;
     width: $panel-width;
+    max-width: 100%;
 
     // The `role="row"` wrappers exist for ARIA only: the cells stay direct grid items.
     &-row { display: contents; }
@@ -247,7 +272,7 @@ $buttonbar-padding-top: var(--ui-datepicker-buttonbar-padding-top, var(--units-s
 
   // --- Day cell ------------------------------------------------------
   // Gutter left by a chip inside its (wider) grid column — where the range band's caps land.
-  $cap-inset: calc((100% - #{$day-size}) / 2);
+  $cap-inset: calc(max(0px, (100% - #{$day-size}) / 2));
 
   &-day {
     position: relative;
@@ -257,7 +282,8 @@ $buttonbar-padding-top: var(--ui-datepicker-buttonbar-padding-top, var(--units-s
     justify-content: center;
     box-sizing: border-box;
     width: 100%;
-    height: $day-size;
+    aspect-ratio: 1;
+    max-height: $day-size;
     padding: 0;
     border: none;
     background: transparent;
@@ -274,8 +300,8 @@ $buttonbar-padding-top: var(--ui-datepicker-buttonbar-padding-top, var(--units-s
       left: 50%;
       transform: translate(-50%, -50%);
       box-sizing: border-box;
-      width: $day-size;
-      height: $day-size;
+      width: min(100%, #{$day-size});
+      height: 100%;
       border: $stroke-width solid transparent;
       border-radius: $day-radius;
       z-index: -1;
@@ -321,7 +347,7 @@ $buttonbar-padding-top: var(--ui-datepicker-buttonbar-padding-top, var(--units-s
       position: absolute;
       top: 50%;
       inset-inline: 0;
-      height: $day-size;
+      height: 100%;
       transform: translateY(-50%);
       background-color: $range-background;
       z-index: -2;
@@ -373,6 +399,7 @@ $buttonbar-padding-top: var(--ui-datepicker-buttonbar-padding-top, var(--units-s
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-wrap: wrap;
     gap: $time-gap;
     padding-top: $time-padding-top;
     border-top: $stroke-width solid var(--form-high-stroke-default);
@@ -449,6 +476,7 @@ $buttonbar-padding-top: var(--ui-datepicker-buttonbar-padding-top, var(--units-s
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
     gap: $buttonbar-gap;
     padding-top: $buttonbar-padding-top;
     border-top: $stroke-width solid var(--form-high-stroke-default);
