@@ -231,7 +231,8 @@ export const TextAlign: Story = {
  */
 export const ColorPickers: Story = {
   render: story(
-    '<p><span class="ui-editor-color-red-500">Texte en rouge</span>, ' +
+    // red-700, not red-500: the demo text must stay AA-contrasted on white (axe smoke-test).
+    '<p><span class="ui-editor-color-red-700">Texte en rouge</span>, ' +
       '<span class="ui-editor-highlight-orange-100">surligné en orange clair</span> ' +
       'et du texte normal.</p>',
   ),
