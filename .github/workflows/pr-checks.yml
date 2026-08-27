@@ -31,25 +31,31 @@ jobs:
         id: nvmrc
         run: echo "NODE_VERSION=$(cat .nvmrc)" >> $GITHUB_OUTPUT
 
+      # Avant `setup-node` : c'est la présence de `pnpm` sur le PATH qui permet à
+      # setup-node de localiser le store à mettre en cache. La version installée
+      # vient du champ `packageManager` du package.json — un seul endroit à bumper.
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+
       - name: Set up Node.js
         uses: actions/setup-node@v7
         with:
           node-version: ${{ steps.nvmrc.outputs.NODE_VERSION }}
-          cache: 'npm'
+          cache: 'pnpm'
 
       # `postinstall` chains tokens:build → ui-kit:build → docs:config, so this
       # step already proves the 53 entry points compile. A failing package build
       # fails the install, before any check below runs.
       - name: Install dependencies (builds tokens + package)
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
-      # `npm run lint` carries --fix: it repairs instead of reporting, so in CI
+      # `pnpm lint` carries --fix: it repairs instead of reporting, so in CI
       # it would never fail. lint:check is the same target without it.
       - name: Lint
-        run: npm run lint:check
+        run: pnpm lint:check
 
       - name: Typecheck the demo app
-        run: npx tsc -p tsconfig.app.json --noEmit
+        run: pnpm exec tsc -p tsconfig.app.json --noEmit
 
       # FSHSP-93: unit tests on the kit (vitest, via the `test` architect
       # target). Covers both the pure-logic specs (mask engine, option
@@ -57,7 +63,7 @@ jobs:
       # specs (select, autocomplete, input-tags, segment-control, tabs, modal,
       # accordion, base CVA).
       - name: Unit tests
-        run: npm run test
+        run: pnpm test
 
       # `postinstall` has just regenerated everything `docs:config` produces, so
       # this step looks redundant. It is not — it enforces two things nothing
@@ -72,7 +78,7 @@ jobs:
       #  - The hand-written component lists, via the `components:check` this
       #    chains — the six places that claim to describe `projects/ui-kit/`.
       - name: Check the docs (lists, conventions, quoted counts)
-        run: npm run docs:config:check
+        run: pnpm docs:config:check
 
       # The opposite case, which the step above CANNOT catch: two of those
       # generated files are committed — `component-vars.scss` ships in the
@@ -100,17 +106,23 @@ jobs:
         id: nvmrc
         run: echo "NODE_VERSION=$(cat .nvmrc)" >> $GITHUB_OUTPUT
 
+      # Avant `setup-node` : c'est la présence de `pnpm` sur le PATH qui permet à
+      # setup-node de localiser le store à mettre en cache. La version installée
+      # vient du champ `packageManager` du package.json — un seul endroit à bumper.
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+
       - name: Set up Node.js
         uses: actions/setup-node@v7
         with:
           node-version: ${{ steps.nvmrc.outputs.NODE_VERSION }}
-          cache: 'npm'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Build Storybook
-        run: npm run build-storybook
+        run: pnpm build-storybook
 
       # Consumed by the `a11y` job below — avoids rebuilding Storybook twice.
       - name: Upload Storybook build
@@ -139,14 +151,20 @@ jobs:
         id: nvmrc
         run: echo "NODE_VERSION=$(cat .nvmrc)" >> $GITHUB_OUTPUT
 
+      # Avant `setup-node` : c'est la présence de `pnpm` sur le PATH qui permet à
+      # setup-node de localiser le store à mettre en cache. La version installée
+      # vient du champ `packageManager` du package.json — un seul endroit à bumper.
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+
       - name: Set up Node.js
         uses: actions/setup-node@v7
         with:
           node-version: ${{ steps.nvmrc.outputs.NODE_VERSION }}
-          cache: 'npm'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Download Storybook build
         uses: actions/download-artifact@v8
@@ -154,8 +172,20 @@ jobs:
           name: storybook-static
           path: storybook-static
 
+      # `playwright` est une devDependency DÉCLARÉE, et doit le rester (FSHSP-177).
+      # Sous npm cette étape était un `npx playwright install` : npx va chercher le
+      # paquet sur le registre s'il manque, et npm aplatissait de toute façon le
+      # binaire transitif dans node_modules/.bin. pnpm ne fait ni l'un ni l'autre —
+      # `pnpm exec` ne lance QUE ce qui est déclaré.
+      #
+      # Ne pas « simplifier » en `pnpm dlx playwright` : dlx tire `latest`, donc les
+      # navigateurs installés ne correspondraient plus au `playwright-core` que
+      # `@storybook/test-runner` et `axe-playwright` résolvent, et les tests
+      # échoueraient sur « Executable doesn't exist » — sans bruit, ce job étant
+      # `continue-on-error`. Pour la même raison, `playwright` est groupé avec
+      # `storybook` dans dependabot.yml : les trois doivent bouger ensemble.
       - name: Install Playwright's Chromium
-        run: npx playwright install --with-deps chromium
+        run: pnpm exec playwright install --with-deps chromium
 
       - name: Run accessibility checks (axe-core via test-runner)
-        run: npm run test-storybook:ci
+        run: pnpm test-storybook:ci

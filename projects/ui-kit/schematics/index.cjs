@@ -51,7 +51,7 @@ function ngAdd() {
         "@4sh/ui-kit vient d'être ajouté à votre package.json par la CLI avant ce",
         'contrôle — retirez-le si vous vouliez le starter. Si vous vouliez vraiment',
         'le mode librairie, gardez-le et suivez les étapes manuelles du README',
-        "(npm install suffit, `ng add` n'était pas nécessaire).",
+        "(installer la dépendance suffit, `ng add` n'était pas nécessaire).",
         '',
       ].join('\n'),
     );

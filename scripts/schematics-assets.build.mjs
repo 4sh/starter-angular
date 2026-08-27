@@ -364,7 +364,7 @@ function main() {
   // zéro dépendance) puis copié tel quel — c'est CE dossier que `ng-add`
   // recopiera chez le consommateur (`.ui-kit-mcp/`), jamais publié à part.
   // Voir `projects/ui-kit-mcp/README.md`.
-  execSync('npm run mcp:bundle', { cwd: ROOT, stdio: 'inherit' });
+  execSync('pnpm mcp:bundle', { cwd: ROOT, stdio: 'inherit' });
   const mcpServerDir = join(ROOT, 'dist/ui-kit-mcp');
   let mcpFiles = 0;
   if (existsSync(mcpServerDir)) {

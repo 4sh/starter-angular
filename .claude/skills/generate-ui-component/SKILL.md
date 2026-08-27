@@ -113,7 +113,7 @@ Rules:
 
 ### `///` comments = the theming doc (mandatory)
 
-The doc's "Theming" table is **generated** from the `.scss` by `npm run docs:config`
+The doc's "Theming" table is **generated** from the `.scss` by `pnpm docs:config`
 (`scripts/docs.config.mjs` → `storybook/generated/ui-config.json`). So the SCSS comments are
 what write the doc: nothing to copy elsewhere.
 
@@ -137,7 +137,7 @@ what write the doc: nothing to copy elsewhere.
   project rebinds the variable.
 - Describe the **role**, not the binding: the "Default (starter)" column and the chain to
   `ui-config` are inferred automatically.
-- **Every** config variable must have its `///` — `npm run docs:config` counts the missing ones
+- **Every** config variable must have its `///` — `pnpm docs:config` counts the missing ones
   (they don't appear in the table).
 - **Exposed custom properties** (override points) are documented with a `///` where the hook
   lives: on its declaration, or on the line reading it with its fallback
@@ -224,9 +224,9 @@ import { ConfigTable } from '<…>/storybook/blocks/config-table';
 
 ## Verification
 
-1. `npx tsc --noEmit -p tsconfig.json` → must pass.
+1. `pnpm exec tsc --noEmit -p tsconfig.json` → must pass.
 2. Compile the SCSS: `node_modules/.bin/sass --load-path=src/styles --no-source-map --quiet <file.scss>` and check the generated selectors/values.
-   2bis. `npm run docs:config` → the component must appear, with **0 variables missing a `///`
+   2bis. `pnpm docs:config` → the component must appear, with **0 variables missing a `///`
    comment** (the script prints the count), and every line resolved to a token, a map, a list, or
    an accepted literal value.
 3. **Live Storybook** (already running on `:6006`, HMR): via the browser tools, open `iframe.html?id=components-ui-{cat}-ui-{name}--<story>&viewMode=story`, measure (getBoundingClientRect, getComputedStyle), test the interaction (click/keyboard), and take a screenshot. Wait for transitions to settle before measuring.

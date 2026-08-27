@@ -43,7 +43,7 @@ accepter ou à sauter.
 | --------------------------------------------------- | ------------------------------------------------------------------------------------- |
 | `ng add @4sh/ui-kit-schematics`                     | fondation **et** composants, d'un coup                                                |
 | `ng add @4sh/ui-kit-schematics --skip-components`   | fondation seule, composants choisis plus tard                                         |
-| `ng add @4sh/ui-kit-schematics --skip-install`      | ne pas lancer `npm install` (projet qui pilote son lockfile)                          |
+| `ng add @4sh/ui-kit-schematics --skip-install`      | ne pas lancer l'install des dépendances (projet qui pilote son lockfile)              |
 | `ng add @4sh/ui-kit-schematics --skip-storybook`    | ne pas poser de Storybook (voir ci-dessous)                                           |
 | `ng add @4sh/ui-kit-schematics --skip-mcp`          | ne pas déclarer le serveur MCP (voir ci-dessous)                                      |
 | `ng add @4sh/ui-kit-schematics --gridaflex`         | poser la grille Gridaflex sans question (`--no-gridaflex` pour s'en passer)           |
@@ -90,7 +90,7 @@ Posé par défaut : à la fin du `ng add`, vous avez un Storybook qui tourne, su
 les composants que vous avez copiés :
 
 ```bash
-npm run storybook
+pnpm storybook
 ```
 
 Chaque composant arrive avec sa story et sa page MDX, à côté de ses sources. La

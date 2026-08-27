@@ -10,12 +10,22 @@
     <ui-icon name="image" />
   </div>
 } @else if (isInlineSvg() && !primaryFailed()) {
+  <!--
+    EXCEPTION JUSTIFIÉE (FSHSP-177) : le SVG local est inliné pour hériter du CSS
+    (currentColor, thème) — un <img> ne le permet pas. La valeur est assainie par
+    sanitizeInlineSvg() puis passée à bypassSecurityTrustHtml() dans ui-image.ts.
+    Registre : docs/SECURITY-PRACTICES.md.
+    Une paire disable/enable et non un disable-next-line : un commentaire HTML ne
+    peut pas se glisser à l'intérieur d'une balise ouvrante.
+  -->
+  <!-- eslint-disable no-restricted-syntax -->
   <div
     class="ui-image-svg"
     [style.width]="cssWidth()"
     [style.height]="cssHeight()"
     [innerHTML]="svgContent()"
   ></div>
+  <!-- eslint-enable no-restricted-syntax -->
 } @else {
   <img
     class="ui-image"

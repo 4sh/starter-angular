@@ -5,7 +5,7 @@ import { FIXTURE_SEARCH_DOCS, FIXTURE_UI_CONFIG } from './test-fixtures.js';
 // `data.ts` lit le manifeste sur disque via `readFileSync` (chemin calculé
 // depuis `import.meta.url`) : on mocke le module `node:fs` plutôt que
 // d'écrire de vrais fichiers, pour rester indépendant du manifeste embarqué
-// (généré par `npm run mcp:assets`, absent d'un checkout propre).
+// (généré par `pnpm mcp:assets`, absent d'un checkout propre).
 vi.mock('node:fs', () => ({ readFileSync: vi.fn() }));
 
 // Chaque test recharge le module : `data.ts` met en cache le manifeste au

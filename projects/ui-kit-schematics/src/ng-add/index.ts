@@ -18,7 +18,13 @@ import { updateWorkspace } from '@schematics/angular/utility/workspace';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Schema } from './schema';
-import { addDependency, addNpmScript, readPackageJson } from '../utils/package-json';
+import {
+  addDependency,
+  addNpmScript,
+  detectPackageManager,
+  readPackageJson,
+  runScript,
+} from '../utils/package-json';
 import { emptyManifest, MANIFEST_PATH, writeManifest } from '../utils/manifest';
 import {
   CONFIG_TABLE_PATH,
@@ -754,12 +760,15 @@ function addStorybookDependencies(): Rule {
     // installation fraîche, le build tomberait sinon sur un module introuvable.
     const project = firstApplicationName(tree);
     if (project) {
-      const generate = 'npm run tokens:build && npm run docs:config && npm run docs:search';
+      const pm = detectPackageManager(tree);
+      const generate = ['tokens:build', 'docs:config', 'docs:search']
+        .map((s) => runScript(pm, s))
+        .join(' && ');
       addNpmScript(tree, 'storybook', `${generate} && ng run ${project}:storybook`);
       addNpmScript(tree, 'build-storybook', `${generate} && ng run ${project}:build-storybook`);
     } else {
       context.logger.warn(
-        "Aucune application trouvée dans angular.json : scripts npm `storybook` non écrits (les cibles, elles, n'ont pas pu être ajoutées non plus).",
+        "Aucune application trouvée dans angular.json : scripts `storybook` non écrits (les cibles, elles, n'ont pas pu être ajoutées non plus).",
       );
     }
     context.logger.info('✔ Dépendances et scripts Storybook ajoutés.');
@@ -789,11 +798,10 @@ function addRuntimeDependencies(): Rule {
     const json = readPackageJson(tree);
     const existingPostinstall: string | undefined = json.scripts?.['postinstall'];
     if (!existingPostinstall?.includes('tokens:build')) {
+      const tokensBuild = runScript(detectPackageManager(tree), 'tokens:build');
       json.scripts = {
         ...json.scripts,
-        postinstall: existingPostinstall
-          ? `${existingPostinstall} && npm run tokens:build`
-          : 'npm run tokens:build',
+        postinstall: existingPostinstall ? `${existingPostinstall} && ${tokensBuild}` : tokensBuild,
       };
       tree.overwrite('/package.json', JSON.stringify(json, null, 2) + '\n');
     }
@@ -1040,8 +1048,14 @@ function createManifest(withStorybook: boolean): Rule {
 }
 
 /**
- * Programme le `npm install` des dépendances que `addRuntimeDependencies` vient
+ * Programme l'install des dépendances que `addRuntimeDependencies` vient
  * d'inscrire.
+ *
+ * Le gestionnaire n'est PAS à passer ici : le CLI Angular le découvre depuis le
+ * lockfile du consommateur et le transmet à la fabrique de tâches
+ * `node-package`. Un projet en pnpm installe donc bien avec pnpm (vérifié
+ * FSHSP-177). Ne pas forcer `packageManager` sur la tâche : ce serait imposer
+ * notre choix au consommateur.
  *
  * Sans lui, `angular.json` référence `node_modules/@angular/cdk/overlay-prebuilt.css`
  * et la feuille FontAwesome alors que ni l'un ni l'autre n'est installé : le
@@ -1059,15 +1073,13 @@ function installRuntimeDependencies(): Rule {
 /**
  * Dernière ligne de la commande : ce qu'il y a à lancer maintenant.
  *
- * Les scripts npm sont écrits sans être nommés nulle part, et le README du
- * package n'est pas relu après un `ng add` qui vient d'afficher huit `✔` : un
- * `npm run storybook` qu'il faut deviner est un Storybook que l'on croit cassé.
  */
 function logNextSteps(withStorybook: boolean, withMcp: boolean): Rule {
   return (tree: Tree, context: SchematicContext) => {
+    const start = runScript(detectPackageManager(tree), 'storybook');
     context.logger.info(
       withStorybook
-        ? '\nStorybook posé. Pour le démarrer :\n    npm run storybook\n'
+        ? `\nStorybook posé. Pour le démarrer :\n    ${start}\n`
         : '\nStorybook non posé (--skip-storybook). Pour revenir dessus :\n    ng add @4sh/ui-kit-schematics\n',
     );
     if (withMcp) {

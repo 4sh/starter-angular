@@ -544,7 +544,7 @@ function TextSearch() {
             ) : (
               <Empty>
                 {index.status === 'error'
-                  ? 'Index introuvable — lance `npm run docs:search`.'
+                  ? 'Index introuvable : lance le script `docs:search`.'
                   : index.status === 'loading'
                     ? 'Chargement de l’index…'
                     : query.trim().length < 2

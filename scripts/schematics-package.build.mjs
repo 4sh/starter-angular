@@ -32,7 +32,7 @@ run('node scripts/schematics-assets.build.mjs');
 
 // 2. Compilation TypeScript des schematics (préserve le préfixe `src/` —
 //    `collection.json` référence ses factories en `./src/...`).
-run(`npx tsc -p ${join(PKG, 'tsconfig.json')}`);
+run(`pnpm exec tsc -p ${join(PKG, 'tsconfig.json')}`);
 
 // 3. Fichiers statiques copiés tels quels à côté du JS compilé.
 mkdirSync(DEST, { recursive: true });

@@ -1,5 +1,9 @@
 # Security Policy
 
+> Development rules (banned APIs, register of authorised exceptions,
+> dependency-chain hardening): [`docs/SECURITY-PRACTICES.md`](docs/SECURITY-PRACTICES.md).
+> This file only covers **reporting** a vulnerability.
+
 ## Supported versions
 
 Only the latest published `0.x` release of

@@ -274,6 +274,12 @@ export class UiEditor extends BaseFormField<string> {
       // edit: rewriting would collapse the caret mid-keystroke. Comparing the
       // live DOM too covers the case where sanitising reshapes the markup.
       if (el.innerHTML === value || value === this.lastEmitted) return;
+      /* eslint-disable-next-line no-restricted-syntax -- EXCEPTION JUSTIFIÉE :
+         `value` vient de `safeValue()`, donc de
+         `DomSanitizer.sanitize(SecurityContext.HTML, …)`. L'écriture directe est
+         imposée par le `contenteditable` : une liaison `[innerHTML]` réécrirait
+         la zone à chaque frappe et effondrerait le caret. Registre :
+         docs/SECURITY-PRACTICES.md. */
       el.innerHTML = value;
       this.lastEmitted = value;
     });

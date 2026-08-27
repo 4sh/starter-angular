@@ -56,7 +56,7 @@ Both sites are redeployed on every push to `main`
 The kit is published on the public npm registry, in one of two modes:
 
 ```bash
-npm install @4sh/ui-kit         # dependency — compiled components, updated by version bump
+pnpm add @4sh/ui-kit            # dependency — compiled components, updated by version bump
 ng add @4sh/ui-kit-schematics   # starter — component sources copied into your project, yours to edit
 ```
 
@@ -73,16 +73,16 @@ one. Each component's API is in the
 Node `v24.15.0` ([`.nvmrc`](.nvmrc)). Four commands cover the work itself:
 
 ```bash
-npm install            # install + postinstall: tokens:build, ui-kit:build, docs:config
-npm start              # Storybook          → http://localhost:6006
-npm run serve          # demo application   → http://localhost:4200
-npm run tokens:build   # regenerate the token CSS variables
+pnpm install       # install + postinstall: tokens:build, ui-kit:build, docs:config
+pnpm start         # Storybook          → http://localhost:6006
+pnpm serve         # demo application   → http://localhost:4200
+pnpm tokens:build  # regenerate the token CSS variables
 ```
 
-> Under IntelliJ, an `npm start` run configuration ships with the repo
-> ([`.idea/runConfigurations/`](.idea/runConfigurations/npm_start.xml)).
+> Under IntelliJ, a `pnpm start` run configuration ships with the repo
+> ([`.idea/runConfigurations/`](.idea/runConfigurations/pnpm_start.xml)).
 >
-> `npm start`, `npm run serve` and the builds all run `ui-kit:build` first: the demo app
+> `pnpm start`, `pnpm serve` and the builds all run `ui-kit:build` first: the demo app
 > consumes the kit through its **built** output (`dist/ui-kit`, mapped by the
 > `@4sh/ui-kit/*` `paths` of `tsconfig.json`), exactly like an external consumer would.
 >
@@ -96,8 +96,8 @@ guardrail and a Storybook build on every pull request — **you do not have to r
 locally**. Two are worth the detour anyway, because they save a round-trip:
 
 ```bash
-npm run lint               # ESLint --fix — repairs instead of reporting
-npm run docs:config:check  # the hand-written doc vs the code
+pnpm lint               # ESLint --fix — repairs instead of reporting
+pnpm docs:config:check  # the hand-written doc vs the code
 ```
 
 `docs:config:check` is the guardrail on everything this repo states by hand: six places
@@ -146,12 +146,12 @@ Full detail: [`docs/VERSIONING.md`](docs/VERSIONING.md) (when to bump what) ·
 
 ## Going further
 
-| Topic                           | Where                                                                                         |
-| ------------------------------- | --------------------------------------------------------------------------------------------- |
-| Consuming the package           | [`projects/ui-kit/README.md`](projects/ui-kit/README.md) ([FR](projects/ui-kit/README.fr.md)) |
-| Coding conventions in this repo | [`AGENTS.md`](AGENTS.md) · [`CLAUDE.md`](CLAUDE.md)                                           |
-| Versioning & releases           | [`docs/VERSIONING.md`](docs/VERSIONING.md) · [`CHANGELOG.md`](CHANGELOG.md)                   |
-| Publishing to npm               | [`docs/PUBLISHING.md`](docs/PUBLISHING.md)                                                    |
-| Schematics companion package    | [`projects/ui-kit-schematics/README.md`](projects/ui-kit-schematics/README.md)                |
-| Figma ↔ code workflow           | [`CLAUDE.md`](CLAUDE.md) · [`docs/figma-migration-global.md`](docs/figma-migration-global.md) |
-| Security policy                 | [`SECURITY.md`](SECURITY.md)                                                                  |
+| Topic                           | Where                                                                                                         |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| Consuming the package           | [`projects/ui-kit/README.md`](projects/ui-kit/README.md) ([FR](projects/ui-kit/README.fr.md))                 |
+| Coding conventions in this repo | [`AGENTS.md`](AGENTS.md) · [`CLAUDE.md`](CLAUDE.md)                                                           |
+| Versioning & releases           | [`docs/VERSIONING.md`](docs/VERSIONING.md) · [`CHANGELOG.md`](CHANGELOG.md)                                   |
+| Publishing to npm               | [`docs/PUBLISHING.md`](docs/PUBLISHING.md)                                                                    |
+| Schematics companion package    | [`projects/ui-kit-schematics/README.md`](projects/ui-kit-schematics/README.md)                                |
+| Figma ↔ code workflow           | [`CLAUDE.md`](CLAUDE.md) · [`docs/figma-migration-global.md`](docs/figma-migration-global.md)                 |
+| Security policy                 | [`SECURITY.md`](SECURITY.md) (reporting) · [`docs/SECURITY-PRACTICES.md`](docs/SECURITY-PRACTICES.md) (rules) |

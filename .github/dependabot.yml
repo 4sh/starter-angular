@@ -1,7 +1,18 @@
 version: 2
 
 updates:
-  # npm : cadence hebdomadaire + regroupement par famille technique. Sans ça,
+  # L'écosystème s'appelle toujours `npm` chez Dependabot : c'est le nom du
+  # REGISTRE, pas du client. Il lit `pnpm-lock.yaml` (v9) sous cette clé — il n'y
+  # a pas d'écosystème `pnpm` à basculer
+  #
+  # ⚠️ Interaction avec `minimumReleaseAge: 1440` (pnpm-workspace.yaml) : une PR
+  # qui propose une version publiée depuis moins de 24 h échoue à l'install
+  # (« no version satisfies minimumReleaseAge »), puis passe d'elle-même à la
+  # relance suivante. La cadence hebdomadaire ci-dessous rend le cas peu
+  # fréquent ; pour un correctif de sécurité à prendre tout de suite, passer par
+  # `minimumReleaseAgeExclude`.
+  #
+  # Cadence hebdomadaire + regroupement par famille technique. Sans ça,
   # Angular (22.0.x → 22.1.x → ...), Storybook et l'outillage ESLint génèrent
   # chacun leur propre PR à chaque bump — sur cette stack (Angular 22,
   # Storybook 10, ng-packagr, Style Dictionary), le bruit ferait abandonner
@@ -22,6 +33,8 @@ updates:
           - '@storybook/*'
           - '@storybook-community/*'
           - 'storybook'
+          - 'playwright'
+          - 'axe-playwright'
       eslint:
         patterns:
           - 'eslint*'
@@ -37,6 +50,8 @@ updates:
           - '@storybook/*'
           - '@storybook-community/*'
           - 'storybook'
+          - 'playwright'
+          - 'axe-playwright'
           - 'eslint*'
           - '@eslint/*'
           - 'typescript-eslint'

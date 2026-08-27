@@ -1,0 +1,87 @@
+# Réglages pnpm — sécurisation de la chaîne de dépendances (FSHSP-177).
+#
+# Depuis pnpm 10.16, les réglages propres à pnpm vivent ICI et non plus dans
+# `.npmrc` — y compris certains qui portent un nom npm, comme `saveExact` (voir
+# la section « Reproductibilité » plus bas : c'est un piège vérifié).
+# Doc : https://pnpm.io/supply-chain-security
+#
+# Aucune clé `packages:` : ce dépôt n'est pas un monorepo pnpm. Les trois
+# packages publiés (`ui-kit`, `ui-kit-schematics`, `ui-kit-mcp`) sont des
+# projets `angular.json` assemblés par ng-packagr, pas des workspaces pnpm —
+# ils n'ont pas de `node_modules` propre à résoudre. Ce fichier ne sert donc
+# que de porteur de configuration.
+
+# ─── Quarantaine des versions fraîchement publiées ──────────────────────────
+#
+# Le cœur de la mesure demandée par le ticket (« delay dependency update ») :
+# une version publiée il y a moins de 24 h n'est pas installée, dépendances
+# transitives comprises. C'est la fenêtre pendant laquelle un paquet compromis
+# est repéré et dépublié — les compromissions récentes du registre npm ont
+# toutes été neutralisées en quelques heures, bien avant ce délai.
+#
+# ⚠️ Conséquence à connaître, côté Dependabot : une PR qui propose une version
+# publiée le matin même échouera en CI (« no version satisfies
+# minimumReleaseAge ») puis passera d'elle-même à la relance suivante. Ce n'est
+# pas une panne à contourner. Pour prendre immédiatement un correctif de
+# sécurité, inscrire le paquet dans `minimumReleaseAgeExclude` le temps du
+# bump — puis l'en retirer, sinon l'exception devient permanente en silence.
+minimumReleaseAge: 1440
+
+# Renseigner `minimumReleaseAge` fait aussi passer `minimumReleaseAgeStrict` à
+# `true` : pnpm ÉCHOUE quand aucune version ne satisfait le délai, au lieu de
+# retomber silencieusement sur une version trop récente. C'est voulu — un repli
+# muet annulerait la mesure sans que personne ne le voie.
+minimumReleaseAgeExclude: []
+
+# ─── Scripts de build des dépendances ───────────────────────────────────────
+#
+# pnpm 10+ n'exécute AUCUN script d'install de dépendance sans autorisation
+# explicite : c'est ce qui coupe le vecteur principal des attaques supply chain
+# (un `postinstall` malveillant dans une version compromise).
+#
+# Les six paquets autorisés ci-dessous compilent ou téléchargent un binaire
+# natif, et ne fonctionnent pas sans (audités le 2026-08-27 — ce sont les seuls
+# du graphe à porter un script d'install). Les recenser à nouveau :
+#
+#   pnpm ls --depth Infinity --json | grep -i postinstall
+#
+allowBuilds:
+  esbuild: true # binaire du bundler (Angular build, Storybook)
+  '@swc/core': true # binaire du transpileur (Storybook)
+  '@parcel/watcher': true # watcher FS natif
+  lmdb: true # node-gyp-build, cache Storybook
+  msgpackr-extract: true # node-gyp-build, dépendance de lmdb
+  unrs-resolver: true # binaire du résolveur (chaîne ESLint)
+  # Refusé explicitement : le `postinstall` de compodoc n'affiche qu'une
+  # bannière OpenCollective. Aucun besoin fonctionnel, donc aucune raison de
+  # lui ouvrir l'exécution.
+  '@compodoc/compodoc': false
+
+# Échoue si une dépendance porte un script de build non arbitré ci-dessus.
+# Sans ça, un nouveau paquet à `postinstall` arrive en n'émettant qu'un
+# avertissement — que personne ne lit dans un log de CI.
+strictDepBuilds: true
+
+# Garde-fou : interdit d'ouvrir l'exécution en bloc. Renseigné explicitement
+# pour qu'un passage à `true` soit un diff visible en revue, et non un défaut
+# qu'on croit encore actif.
+dangerouslyAllowAllBuilds: false
+
+# ─── Reproductibilité ───────────────────────────────────────────────────────
+#
+# Versions figées à l'exact dans package.json.
+#
+# ⚠️ Ce réglage DOIT être ici. pnpm n'honore PAS `save-exact` depuis `.npmrc` —
+# vérifié : `pnpm config get save-exact` renvoie `undefined` et un `pnpm add`
+# écrit `^x.y.z`. La bascule npm → pnpm aurait donc silencieusement rendu les
+# plages de versions flottantes, sur un dépôt dont le tarball est reconstruit à
+# chaque release. Ne pas remettre la clé dans `.npmrc` en croyant la déplacer.
+saveExact: true
+
+# ─── Origine des dépendances ────────────────────────────────────────────────
+#
+# Seules les dépendances DIRECTES peuvent venir d'une source exotique (dépôt
+# git, URL de tarball). Une dépendance transitive doit venir du registre :
+# un tarball transitif échappe au registre, donc aux dépublications, au
+# `minimumReleaseAge` et à toute alerte de sécurité.
+blockExoticSubdeps: true

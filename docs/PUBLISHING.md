@@ -1,7 +1,18 @@
 # Publier `@4sh/ui-kit`
 
 Le kit est publié sur le **registre npm public**, sous l'organisation **`4sh`**.
-Versionnage : voir [`VERSIONING.md`](./VERSIONING.md).
+
+> **Le dépôt gère ses dépendances avec pnpm, mais publie avec le CLI npm.**
+> Ce n'est pas une incohérence : pnpm résout le graphe de
+> dépendances, `npm publish` remet un tarball au registre — deux rôles distincts,
+> et le tarball ne dépend pas du client qui l'a construit. Là où les deux cessent
+> d'être interchangeables, c'est le **Trusted Publishing (OIDC)** : `pnpm publish`
+> l'a supporté en pnpm 10, puis régressé en 11.0.8 (le registre répond `404`,
+> l'échange OIDC n'ayant pas lieu — [pnpm#11513](https://github.com/pnpm/pnpm/issues/11513)).
+> Une publication étant **irréversible**, ce risque n'a rien à acheter ici.
+> Toutes les commandes `npm login` / `npm publish` de cette page sont donc à
+> lancer telles quelles ; seules les commandes de **build** passent par pnpm.
+> Versionnage : voir [`VERSIONING.md`](./VERSIONING.md).
 
 ---
 
@@ -21,7 +32,7 @@ Chacun sert **un mode de consommation**, et les deux ne se croisent pas
 
 | Mode                      | Commande                        | Ce que le consommateur installe       |
 | ------------------------- | ------------------------------- | ------------------------------------- |
-| Librairie                 | `npm i @4sh/ui-kit`             | le kit compilé                        |
+| Librairie                 | `pnpm add @4sh/ui-kit`          | le kit compilé                        |
 | Starter (sources copiées) | `ng add @4sh/ui-kit-schematics` | le compagnon seul — **jamais le kit** |
 
 Le kit est absent du parcours starter délibérément : hors de `node_modules`, aucun
@@ -261,8 +272,8 @@ d'abord (voir l'avertissement en haut de page).
 npm login                      # compte 4sh-package-admin, code 2FA à la saisie
 npm whoami                     # doit répondre un nom de compte, pas une erreur
 
-npm run ui-kit:build
-npm run schematics:build
+pnpm ui-kit:build
+pnpm schematics:build
 
 # parité de version : c'est le contrôle que le job `verify` fait à ta place
 node -p "require('./dist/ui-kit/package.json').version + ' / ' + require('./dist/ui-kit-schematics/package.json').version"
@@ -324,13 +335,13 @@ provenance, puisqu'il n'est produit par aucun workflow vérifiable.
 Pour tester le kit dans un autre projet sans passer par le registre :
 
 ```bash
-npm run ui-kit:pack                                  # → 4sh-ui-kit-<version>.tgz
-npm install /chemin/vers/4sh-ui-kit-<version>.tgz    # dans le projet consommateur
+pnpm ui-kit:pack                                    # → 4sh-ui-kit-<version>.tgz
+pnpm add /chemin/vers/4sh-ui-kit-<version>.tgz      # dans le projet consommateur
 ```
 
 Contenu et résolution des imports strictement identiques à une vraie
 publication. Pour du développement en parallèle :
-`npm install ../starter-angular/dist/ui-kit`.
+`pnpm add ../starter-angular/dist/ui-kit`.
 
 Côté branchement dans le projet consommateur (feuille à charger, `data-theme` /
 `data-brand`, surcharge des tokens et des variables de composant), tout est dans
@@ -341,11 +352,11 @@ Pour éprouver le **starter**, le compagnon suffit — il porte les sources _et_
 schematics, et le parcours n'installe pas le kit :
 
 ```bash
-npm run schematics:pack     # → 4sh-ui-kit-schematics-<version>.tgz
+pnpm schematics:pack        # → 4sh-ui-kit-schematics-<version>.tgz
 
 # dans le projet consommateur
-npm install -D /chemin/vers/4sh-ui-kit-schematics-<version>.tgz
-npx ng generate @4sh/ui-kit-schematics:ng-add --all
+pnpm add -D /chemin/vers/4sh-ui-kit-schematics-<version>.tgz
+pnpm exec ng generate @4sh/ui-kit-schematics:ng-add --all
 ```
 
 On passe par `ng generate …:ng-add` plutôt que `ng add` : la commande publiée
@@ -360,5 +371,5 @@ Vérifications qui valent la peine, une fois la commande passée :
 
 ```bash
 grep '@4sh' package.json     # le kit doit être ABSENT, seul le compagnon apparaît
-npm install && npx ng build  # les sources copiées doivent compiler telles quelles
+pnpm install && pnpm exec ng build  # les sources copiées doivent compiler telles quelles
 ```

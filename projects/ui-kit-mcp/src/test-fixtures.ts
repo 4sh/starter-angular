@@ -2,7 +2,7 @@
  * test-fixtures — jeux de données minimaux, au même format que les manifestes
  * réels (`storybook/public/text-search-docs.json`,
  * `storybook/generated/ui-config.json`), pour tester la logique sans dépendre
- * du manifeste embarqué (généré par `npm run mcp:assets`, absent d'un
+ * du manifeste embarqué (généré par `pnpm mcp:assets`, absent d'un
  * checkout propre — voir `.gitignore`).
  */
 import type { DocSection, SearchDocsManifest, UiConfigManifest } from './data.js';

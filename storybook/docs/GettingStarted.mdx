@@ -9,20 +9,31 @@ démarrage du projet.
 
 <br/>
 
-## Package : `npm install @4sh/ui-kit`
+## Package : `pnpm add @4sh/ui-kit`
 
 Les composants sont publiés sous forme d'**un seul package npm**, consommable
 par n'importe quelle application Angular.
 
 ```bash
-npm install @4sh/ui-kit
+pnpm add @4sh/ui-kit
 ```
+
+<div className="sb-callout">
+
+**Le gestionnaire de paquets est libre.** Le package est un tarball npm standard :
+`npm install @4sh/ui-kit` ou `yarn add @4sh/ui-kit` installent la même chose.
+`pnpm` est celui que le Design System utilise et recommande — sa résolution
+stricte fait échouer une `peerDependency` manquante au lieu de la masquer, et ses
+réglages de chaîne de dépendances mettent en quarantaine les versions publiées
+depuis moins de 24 h.
+
+</div>
 
 <div className="sb-callout">
 
 **Pas de risque d'oubli d'installation.** `@4sh/ui-kit` est un **package unique**
 avec des *secondary entry points* — pas une collection de packages séparés. Tous
-les entry points sont présents dès `npm install`, et les dépendances entre eux
+les entry points sont présents dès l'installation, et les dépendances entre eux
 se résolvent automatiquement : importer `UiDatepicker` tire tout ce dont il a
 besoin (son socle de formulaire, ses icônes…) sans que vous ayez quoi que ce
 soit à déclarer.
@@ -45,7 +56,7 @@ composant, dans la barre latérale, donne l'import exact à recopier.
 
 ### MCP (optionnel)
 
-`npm install` installe aussi le serveur MCP compagnon, sous
+L'installation pose aussi le serveur MCP compagnon, sous
 `node_modules/@4sh/ui-kit/mcp/`, mais ne le déclare nulle part — c'est la seule
 étape manuelle du mode package. Pour qu'un agent IA compatible MCP (Claude Code,
 Claude Desktop…) interroge la doc du kit sans lire les sources, ajoutez-le à la
@@ -68,7 +79,7 @@ racine du projet :
 
 ## Schematic : `ng add @4sh/ui-kit-schematics`
 
-`npm install` livre les composants **compilés**. Le second mode de consommation
+L'installation livre les composants **compilés**. Le second mode de consommation
 les installe en **sources**, dans votre dépôt, libres d'être modifiées (façon
 shadcn/spartan-ng) :
 

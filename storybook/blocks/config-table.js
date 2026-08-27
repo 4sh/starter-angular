@@ -2,7 +2,7 @@
  * <ConfigTable of="ui-card" /> — bloc de doc pour la section « Theming ».
  *
  * La table n'est PAS écrite à la main : elle est lue dans
- * `storybook/generated/ui-config.json` (produit par `npm run docs:config` depuis
+ * `storybook/generated/ui-config.json` (produit par le script `docs:config` depuis
  * les `.scss`), et la colonne « Valeur résolue » est mesurée dans le navigateur.
  *
  * Conséquence : un projet qui rebinde `$card-radius: var(--radius-xs)` ou qui
@@ -106,7 +106,7 @@ function useResolvedVars(names) {
 // au lieu d'un paragraphe recopié dans chaque section Theming.
 // Texte brut : une infobulle native ne rend ni markdown ni HTML.
 const ORIGIN_TOOLTIP =
-  'Table générée par « npm run docs:config ». Le contrat, c’est le nom de la variable et son rôle. ' +
+  'Table générée par le script « docs:config ». Le contrat, c’est le nom de la variable et son rôle. ' +
   'La colonne « Hook exposé » donne la custom property à poser pour retoucher la valeur sans forker ' +
   'le SCSS (mode package) : sur :root pour tous les exemplaires, sur un sélecteur pour une seule zone. ' +
   'La colonne « Défaut (starter) » n’est que le réglage livré par ce starter : la rebinder ne demande ' +
@@ -343,7 +343,7 @@ export function SharedConfigTable({ group, prefix, exclude }) {
       null,
       el('strong', null, `SharedConfigTable : aucune constante pour le groupe « ${group} ». `),
       'Lance ',
-      el('code', null, 'npm run docs:config'),
+      el('code', null, 'docs:config'),
       '.',
     );
   }
@@ -391,7 +391,7 @@ export function ConfigTable({ of, only, hooks = true, label }) {
       null,
       el('strong', null, `ConfigTable : « ${of} » est absent du manifeste. `),
       'Lance ',
-      el('code', null, 'npm run docs:config'),
+      el('code', null, 'docs:config'),
       ' (ou vérifie que le composant déclare bien des variables documentées par un commentaire ',
       el('code', null, '///'),
       ').',

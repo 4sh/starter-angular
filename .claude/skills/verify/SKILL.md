@@ -10,17 +10,23 @@ Project surface: **Storybook** (no meaningful app page; `ng serve` shows almost 
 ## Recipe that works
 
 ```bash
-npm run build-storybook          # AOT of all stories → storybook-static/
+pnpm build-storybook          # AOT of all stories → storybook-static/
 cd storybook-static && python3 -m http.server 6007 &
 ```
 
 Drive with Playwright + system Chrome (no browser download):
 
 ```js
-// npm i playwright in a temporary directory (e.g. /tmp/sb-verify) — not in the repo
+// `playwright` is now a repo devDependency,
+// so there is no temporary install to do any more: run the script through
+// `pnpm exec node <script.mjs>` and import it directly.
 import { chromium } from 'playwright';
 const browser = await chromium.launch({ channel: 'chrome', headless: true });
 ```
+
+`channel: 'chrome'` uses the system Chrome, so no browser download is needed. If it
+is missing, `pnpm exec playwright install chromium` fetches the bundled one — at the
+version the repo pins, which is also the one `@storybook/test-runner` uses.
 
 - URL of a single story: `http://localhost:6007/iframe.html?id=<story-id>`
 - Story IDs: `curl -s localhost:6007/index.json` (`entries`), e.g.

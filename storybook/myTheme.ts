@@ -1,5 +1,5 @@
 import { create } from 'storybook/theming';
-// Généré par `npm run build-info` (chaîné avant `storybook`/`build-storybook`),
+// Généré par `pnpm build-info` (chaîné avant `storybook`/`build-storybook`),
 // même mécanique que `generated/ui-config.json` — voir `docs.config.mjs`.
 import buildInfo from './generated/build-info.json';
 

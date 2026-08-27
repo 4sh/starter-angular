@@ -37,8 +37,8 @@ associée — sans que l'agent ait besoin de lire les fichiers sources ou de dev
 ## Développement (dans ce monorepo)
 
 ```bash
-npm run mcp:bundle   # régénère la doc, copie le manifeste, bundle → dist/ui-kit-mcp/index.js
-npm run mcp:test     # Vitest — logique testée sur fixtures, sans dépendre du manifeste généré
+pnpm mcp:bundle   # régénère la doc, copie le manifeste, bundle → dist/ui-kit-mcp/index.js
+pnpm mcp:test     # Vitest — logique testée sur fixtures, sans dépendre du manifeste généré
 ```
 
 Le serveur ne lit jamais le repo en live : il embarque une copie figée du manifeste doc
@@ -54,6 +54,6 @@ qu'il sert. Le numéro d'ici n'est qu'un repère de développement, comme celui 
 Pour tester le bundle en conditions réelles (dialogue JSON-RPC brut sur stdio) :
 
 ```bash
-npm run mcp:bundle
+pnpm mcp:bundle
 node dist/ui-kit-mcp/index.js   # puis envoyer des requêtes MCP sur stdin
 ```
