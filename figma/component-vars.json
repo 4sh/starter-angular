@@ -13,7 +13,7 @@
         "tokens": 646,
         "alias": 521,
         "literal": 125,
-        "skipped": 52,
+        "skipped": 53,
         "derivedDescriptions": 206
       },
       "aliasTargets": [
@@ -53,6 +53,11 @@
           "cssVar": "--ui-control-transition-easing",
           "component": "ui-config",
           "reason": "sans équivalent variable Figma (durée, easing, curseur, plan d’empilement, ratio)."
+        },
+        {
+          "cssVar": "--ui-datepicker-panel-max-height",
+          "component": "ui-datepicker",
+          "reason": "expression calc() : une variable Figma ne porte pas de calcul."
         },
         {
           "cssVar": "--ui-datepicker-panel-max-width",

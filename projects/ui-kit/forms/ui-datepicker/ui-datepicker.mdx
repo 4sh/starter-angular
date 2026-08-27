@@ -73,7 +73,8 @@ un mois / une année.
 
 `numberOfMonths` affiche N panneaux mois côte à côte, séparés par un filet, avec les titres de
 mois alignés en face des flèches ← → (aux extrémités). Le changement de vue à tiroir reste
-réservé au mode mono-mois.
+réservé au mode mono-mois. Sous 600px de viewport, les mois s'empilent verticalement et le
+filet passe à l'horizontale.
 
 <Canvas of={DatepickerStories.TwoMonths} />
 
@@ -81,6 +82,11 @@ réservé au mode mono-mois.
 
 Le panneau s'ouvre sous le champ et **se retourne automatiquement au-dessus** quand la place
 manque en bas (CDK Overlay). `autoFlip="false"` verrouille l'ouverture vers le bas.
+
+Sur un viewport étroit, le panneau reste entièrement à l'écran : il garde 12px de gouttière
+avec les bords (l'overlay est repoussé quand l'ancrage seul n'y suffit pas), sa largeur se
+plafonne à celle du viewport, et la grille des jours rétrécit avec lui plutôt que de déborder.
+Au-delà de `--ui-datepicker-panel-max-height`, il défile.
 
 <Canvas of={DatepickerStories.SmartPosition} />
 

@@ -375,6 +375,9 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
 
   /** @ignore Below the trigger, flipping above when `autoFlip` and space is lacking. */
   protected readonly overlayPositions = computed(() => dropdownOverlayPositions(this.autoFlip()));
+  /** @ignore Gutter kept with the viewport edges, matching the one `$panel-max-width`
+   *  reserves; with `cdkConnectedOverlayPush` it keeps the panel fully on screen. */
+  protected readonly overlayViewportMargin = 12;
 
   /** @ignore Bound (stable) callbacks exposed to the `#buttonbar` template. */
   protected readonly todayCallback = (event?: Event): void => {
