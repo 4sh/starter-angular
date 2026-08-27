@@ -13,7 +13,7 @@ const meta: Meta<UiInputNumber> = {
     layout: 'centered',
     design: {
       type: 'figma',
-      url: 'https://www.figma.com/design/GZww5hdUA49LB8XWeWP6tl/-Projet----UI-Kit?node-id=113-2996&t=0SWBsuymjEi87t6k-1',
+      url: 'https://www.figma.com/design/GZww5hdUA49LB8XWeWP6tl/-Projet----UI-Kit?node-id=3639-8216&t=IrF9ovOeZY98F5pu-1',
     },
   },
   argTypes: {
