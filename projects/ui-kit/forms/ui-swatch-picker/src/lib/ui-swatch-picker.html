@@ -1,0 +1,60 @@
+<!-- Picker panel: shared between inline render and the CDK overlay popup. -->
+<ng-template #panelTpl>
+  <div
+    #panel
+    [class]="panelClasses()"
+    [attr.id]="uid"
+    [uiMotion]="'slide-down'"
+    [motionOnInsert]="popup()"
+  >
+    <!-- ARIA listbox pattern: keyboard delegated to the container, focus lives
+         on the options (roving tabindex). -->
+    <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
+    <div
+      class="ui-swatch-picker-grid"
+      role="listbox"
+      [attr.aria-label]="ariaLabel() || null"
+      (keydown)="onGridKeydown($event)"
+    >
+      @for (swatch of flatSwatches(); track swatchKey(swatch)) {
+        <button
+          type="button"
+          class="ui-swatch-picker-swatch"
+          [class._selected]="isSelected(swatch)"
+          [class._clear]="swatch.key === null"
+          role="option"
+          [attr.data-key]="swatchKey(swatch)"
+          [attr.aria-selected]="isSelected(swatch)"
+          [attr.aria-label]="swatch.label"
+          [attr.title]="swatch.label"
+          [style.--ui-swatch-picker-swatch-color]="swatch.cssVar ? 'var(' + swatch.cssVar + ')' : null"
+          [attr.tabindex]="swatchKey(swatch) === tabStopKey() ? 0 : -1"
+          (click)="onSwatchClick(swatch)"
+          (focus)="onSwatchFocus(swatch)"
+        >
+          @if (swatch.key === null) {
+            <ui-icon class="ui-swatch-picker-clear-icon" name="slash" size="sm" />
+          }
+        </button>
+      }
+    </div>
+  </div>
+</ng-template>
+
+@if (popup()) {
+  <ng-template
+    cdkConnectedOverlay
+    [cdkConnectedOverlayOrigin]="overlayOrigin()!"
+    [cdkConnectedOverlayOpen]="popupOpen()"
+    [cdkConnectedOverlayPositions]="overlayPositions"
+    [cdkConnectedOverlayHasBackdrop]="true"
+    cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
+    (backdropClick)="hide()"
+    (overlayOutsideClick)="onPopupOutsideClick()"
+    (detach)="hide()"
+  >
+    <ng-container [ngTemplateOutlet]="panelTpl" />
+  </ng-template>
+} @else {
+  <ng-container [ngTemplateOutlet]="panelTpl" />
+}

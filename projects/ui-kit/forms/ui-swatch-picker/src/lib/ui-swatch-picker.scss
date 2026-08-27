@@ -1,0 +1,109 @@
+@use 'utils';
+@use 'sass:map';
+
+// =====================================================================
+// ui-swatch-picker : co-located styles.
+// =====================================================================
+
+// --- Config (extension points) ----------------------------------------
+$columns: 7; // internal grid columns (mirrors the TS GRID_COLUMNS constant)
+
+/// Taille de la cellule et espacement de la grille, par densité.
+$sizes: (
+  'default': (
+    cell-size: var(--ui-swatch-picker-cell-size, #{utils.rem-calc(32)}),
+    gap: var(--ui-swatch-picker-gap, var(--units-xs)),
+  ),
+  'small': (
+    cell-size: var(--ui-swatch-picker-cell-size-small, #{utils.rem-calc(24)}),
+    gap: var(--ui-swatch-picker-gap-small, var(--units-2xs)),
+  ),
+);
+$size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default` de `$sizes`.
+
+$panel-surface: var(--global-background-default);                              /// Fond opaque du panneau (cohérent avec `ui-menu`).
+$panel-padding: var(--ui-swatch-picker-panel-padding, #{utils.$overlay-panel-padding}); /// Gouttière interne du panneau (**partagée** avec les autres panneaux flottants).
+$swatch-radius: var(--ui-swatch-picker-swatch-radius, var(--radius-xs));        /// Rayon des coins d'une pastille.
+$focus-ring-width: var(--ui-swatch-picker-focus-ring-width, #{utils.$focus-ring-width}); /// Épaisseur de l'anneau de focus.
+$selected-ring-width: var(--ui-swatch-picker-selected-ring-width, var(--stroke-lg)); /// Épaisseur du liseré de sélection.
+$stroke-width: var(--ui-swatch-picker-stroke-width, #{utils.$control-stroke-width}); /// Épaisseur du contour de chaque pastille.
+
+@mixin picker-size($size) {
+  grid-template-columns: repeat($columns, map.get($size, cell-size));
+  gap: map.get($size, gap);
+
+  .ui-swatch-picker-swatch {
+    width: map.get($size, cell-size);
+    height: map.get($size, cell-size);
+  }
+}
+
+.ui-swatch-picker {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: $panel-padding;
+  @include utils.overlay-panel($panel-surface, transparent);
+  border: none;
+
+  // Floating panel (popup): cap to the viewport, like ui-menu.
+  &._popup {
+    width: max-content;
+    max-width: calc(100vw - var(--units-lg));
+    max-height: calc(100vh - var(--units-lg));
+    overflow: auto;
+  }
+
+  &-grid {
+    display: grid;
+    @include picker-size($size-default);
+  }
+
+  &._small &-grid {
+    @include picker-size(map.get($sizes, 'small'));
+  }
+
+  // --- Swatch (color cell) -----------------------------------------------
+  &-swatch {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    padding: 0;
+    border: $stroke-width solid var(--global-border-default);
+    border-radius: $swatch-radius;
+    background-color: var(--ui-swatch-picker-swatch-color, transparent);
+    cursor: pointer;
+    @include utils.control-transition(box-shadow, border-color);
+
+    &:hover:not(:disabled) {
+      border-color: var(--global-border-default-hover);
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 $focus-ring-width var(--global-border-focus);
+    }
+
+    // Selected: a distinct ring (never opacity — must survive on every hue).
+    &._selected {
+      box-shadow: inset 0 0 0 $selected-ring-width var(--form-high-stroke-checked);
+    }
+
+    &:focus-visible._selected {
+      box-shadow:
+        inset 0 0 0 $selected-ring-width var(--form-high-stroke-checked),
+        0 0 0 $focus-ring-width var(--global-border-focus);
+    }
+  }
+
+  // "No color" swatch: transparent, diagonal-strike icon.
+  &-swatch._clear {
+    background-color: transparent;
+    color: var(--global-text-muted);
+  }
+
+  &-clear-icon {
+    line-height: 0;
+  }
+}

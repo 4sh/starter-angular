@@ -34,6 +34,80 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
   - Réduit volontairement par rapport à PrimeNG : 4 directions (pas 8 — les diagonales), 2 dispositions (pas 4 — sans `quarter-circle`/`semi-circle`), et un seul étalonnage de touches clavier commun aux dispositions plutôt qu'un mappage par cas. `showTooltips` (booléen) simplifie `tooltipOptions` : la position suit automatiquement le sens de déploiement.
   - 5 hooks `--ui-speed-dial-*` (empan, décalage d'apparition des actions, rayon par défaut du cercle, palier d'empilement, assombrissement du masque).
 
+- **`ui-editor` : outils `indent`/`outdent`** (FSHSP-160). Deux nouveaux `EditorButtonTool`,
+  passthrough direct sur `document.execCommand('indent'|'outdent')` — pas de marker ni de classe
+  à convertir, contrairement à `fontFamily`/`fontSize`. Absents de `DEFAULT_EDITOR_TOOLS` (même
+  logique que `fontSize` : opt-in via `tools`), icônes FontAwesome `indent`/`outdent`.
+
+- **`ui-editor` : outils `textColor`/`highlightColor`** (FSHSP-160). Deux nouveaux
+  `EditorButtonTool`, chacun ouvrant un `ui-swatch-picker` en popup (`size="small"`) ancré à son
+  bouton `ui-button`, plutôt qu'une commande directe — la sélection se fait dans le
+  `swatchSelect` du nuancier. Palette réutilisée depuis `DEFAULT_SWATCH_PALETTE`
+  (`ui-swatch-picker`) : `EDITOR_COLORS`/`EDITOR_HIGHLIGHTS` sont dérivées de la même liste pour
+  que le nuancier et les classes générées portent toujours le même jeu de tokens
+  `--primitives-*`. Écrits en **classe** (`ui-editor-color-*`/`ui-editor-highlight-*`) — jamais
+  en style en ligne — via le même mécanisme marker → conversion que `fontFamily`/`fontSize` :
+  `document.execCommand('foreColor', …)` émet un `<font color>` converti en `<span class>`,
+  tandis que `hiliteColor` n'émet **pas** de `<font>` (vérifié empiriquement, Chromium et
+  Firefox) — il pose un `style="background-color:…"` sur un `<span>`, converti via un sélecteur
+  d'attribut `style` plutôt que `font[color]`. Le bouton de chaque outil affiche un liseré sous
+  son icône dans la couleur en vigueur au curseur ; le nuancier propose une pastille
+  « Aucune couleur » (`allowClear`) qui retire la classe couleur/surlignage de la sélection sans
+  effacer le reste de la mise en forme — `foreColor`/`hiliteColor` n'ont pas de commande native
+  « retirer la couleur ». Absents de `DEFAULT_EDITOR_TOOLS` (même logique d'opt-in que
+  `fontSize`/`indent`/`outdent`).
+
+- **`ui-swatch-picker` — nuancier de couleur réutilisable** (FSHSP-160). `ui-editor` avait
+  besoin d'un nuancier couleur texte / surlignage, et rien dans le kit ne couvrait ce
+  besoin : `ui-menu` structure des commandes, pas une grille de teintes. `ui-swatch-picker`
+  reprend la mécanique overlay de `ui-menu` (`CdkConnectedOverlay`, `autoFlip`,
+  re-position au scroll) sans porter son propre bouton trigger — même contrat de
+  composition que `ui-button-split` avec `ui-menu` (`toggle(event)`/`show(event)`/
+  `hide(focusTrigger?)`, `popup`).
+  - `DEFAULT_SWATCH_PALETTE` (export nommé) : grille 7×5 dérivée des tokens `primitives.*`
+    (7 teintes `primary`/`secondary`/`green`/`orange`/`red`/`slate`/`grey` × 5 paliers
+    `900`→`100`, foncé → clair) plus `black`/`white` — chaque pastille pointe une variable
+    `--primitives-{teinte}-{palier}`, jamais un hex en dur : un rebind de marque change la
+    grille sans recompilation. `palette` accepte un `UiSwatchGroup[]` personnalisé.
+  - Navigation clavier **grille 2D** (roving tabindex) : flèches, `Début`/`Fin`,
+    `Entrée`/`Espace` sélectionnent, `Échap` ferme le popup — mêmes bases que le roving
+    focus de `ui-menu`, adaptées au calcul ligne/colonne.
+  - A11y : `role="listbox"` / `role="option"` sur de vrais `<button>`, `aria-selected` sur
+    la pastille sélectionnée (liseré `--form-high-stroke-checked`, jamais une opacité —
+    doit rester lisible sur chaque teinte), `aria-label` par pastille = son nom
+    (jamais une description de la couleur seule).
+  - `allowClear` (défaut `true`) ajoute une pastille « Aucune couleur » émettant
+    `value = null` / `swatchSelect(null)`.
+
+- **`ui-editor` : outils `alignLeft`/`alignCenter`/`alignRight`/`alignJustify`** (FSHSP-160).
+  Quatre nouveaux `EditorButtonTool`, passthrough `execCommand('justifyLeft'|'justifyCenter'|
+  'justifyRight'|'justifyFull')` — contrairement à `indent`/`outdent`, ce sont des bascules
+  (`EditorToggleTool`) : le navigateur garantit lui-même leur exclusion mutuelle
+  (`queryCommandState`), donc elles suivent le même modèle `EditorState`/`aria-pressed` que
+  gras/italique/souligné plutôt que celui d'un menu. **Dans `DEFAULT_EDITOR_TOOLS`** (à la
+  différence de `fontSize`/`indent`/`outdent`/`textColor`/`highlightColor` : l'alignement est un
+  outil de mise en forme standard, pas un doublon d'un autre contrôle).
+
+### Changed
+
+- **`ui-editor` : les sélecteurs `fontFamily`/`fontSize` passent du `<select>` natif à
+  `ui-select`** (FSHSP-160). Rendu en `ui-select` `size="small"`, lié à la valeur en vigueur via
+  `[ngModel]` et nommé pour les lecteurs d'écran via `ariaLabel` — cohérent avec le reste du kit,
+  qui n'a qu'un seul composant de dropdown de valeurs. Bordure et fond de la boîte de champ
+  retirés (`--ui-field-stroke-width: 0` + surcharge locale du fond via `::ng-deep`, scopée à
+  `.ui-editor-select` — aucun autre `ui-select` du kit n'est concerné) pour que le sélecteur se
+  fonde dans la barre d'outils comme les autres outils, plutôt que d'apparaître comme son propre
+  champ de formulaire.
+
+- **`ui-editor` : suppression de `blockFormat`, `fontSize` désormais dans la barre par défaut**
+  (FSHSP-160). Plus de sélecteur de niveau de bloc (Normal/Titre 1-3) : l'éditeur ne produit plus
+  que des `<p>`, aucun titre H1-H3 n'est accessible depuis la barre d'outils. `EditorBlock`,
+  `EDITOR_BLOCKS`, `applyBlockFormat`/`readBlockFormat` et le tool `blockFormat` sont retirés de
+  l'API publique — **breaking change** pour tout `tools` listant `'blockFormat'`. `fontSize`
+  n'était auparavant pas dans `DEFAULT_EDITOR_TOOLS` (opt-in, pour éviter le doublon visuel avec
+  `blockFormat`) ; cette raison n'existe plus, `fontSize` rejoint `fontFamily` en outil de premier
+  rang, toujours actif.
+
 - **`ui-editor` — éditeur de texte riche, sans moteur tiers** (FSHSP-160). Le kit s'arrêtait à `ui-textarea` : dès qu'un projet avait besoin de gras, de listes ou d'un lien dans un champ libre, il installait Quill ou TipTap et repartait avec un champ qui ne ressemble à aucun autre du formulaire. `ui-editor` couvre ce besoin en restant dans les règles du kit : bâti sur le shell `ui-field` en mode multiligne, il partage le libellé, la boîte, les niveaux, le helper et la validation avec les huit autres champs, et n'ajoute **aucune dépendance runtime** — les commandes de mise en forme s'appuient sur l'API d'édition native du navigateur, isolée dans `ui-editor-commands` pour qu'un futur moteur ne se substitue qu'à ce fichier.
   - **Barre d'outils configurable** : `tools` liste les outils rendus, dans l'ordre (`bold`, `italic`, `underline`, `bulletList`, `orderedList`, `link`, `clearFormat`, plus `separator`), et `toolbarPosition` la place au-dessus ou sous la zone de saisie. Elle forme **un seul arrêt de tabulation** (`role="toolbar"`, roving tabindex : ⭠ ⭢, `Home`/`End`, `Échap` rend le focus à la saisie) ; les bascules portent un `aria-pressed` recalculé à chaque déplacement du curseur, les actions ponctuelles n'en portent pas. Cliquer un outil ne déplace pas le focus et préserve la sélection. Les raccourcis `Ctrl`/`Cmd` + `B`/`I`/`U` sont pris en charge nativement, l'état de la barre suit.
   - **La valeur est du HTML assaini** : elle passe par `DomSanitizer` avant tout affichage, et le collage est en plus réduit à une liste blanche de balises (`b`, `strong`, `i`, `em`, `u`, `a`, `ul`, `ol`, `li`, `p`, `br`, `div`, `span`) avec `href` limité à `http(s)`/`mailto`/`tel` — un collage depuis Word ou une page web n'injecte ni style en ligne, ni tableau, ni balise étrangère. Le DOM de la zone n'est réécrit que lorsque la valeur vient du formulaire, jamais à la frappe : le curseur ne saute pas.
@@ -69,6 +143,16 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 - **Un utilitaire global `.sr-only`** dans la feuille de helpers publiée (section « Visibility ») : rend un texte visible des seuls lecteurs d'écran, pour nommer une colonne ou une action dont l'affichage ne montre rien. Ajouté pour les en-têtes de colonne vides des tableaux (`<th>` d'une colonne de sélection ou d'expansion), où `aria-label` ne suffit pas : `empty-table-header` exige du texte réellement présent. Quatre composants du kit recopient déjà ce bloc dans leur propre SCSS (`ui-datepicker`, `ui-select`, `ui-file-upload`, `ui-read-only`) — ils pourront s'appuyer dessus.
 
 ### Changed
+
+- **`ui-editor` : `clearFormat` retiré de la barre par défaut, encore disponible via `tools`**
+  (FSHSP-160). `document.execCommand('removeFormat')` ne connaît que la mise en forme native du
+  navigateur (gras, italique, souligné…) — jamais les `<span class="ui-editor-*">` que
+  `fontFamily`/`fontSize`/`textColor`/`highlightColor` écrivent. Une première tentative,
+  `clearFormatMarkers()` (déshabille ces classes sur la sélection, même mécanisme que le
+  « Aucune couleur » des nuanciers), ne couvre pas encore tous les cas de façon fiable : plutôt
+  qu'un bouton qui n'effectue pas toujours ce qu'il annonce, il est retiré de
+  `DEFAULT_EDITOR_TOOLS` en attendant, sans rien retirer du kit — le tool, l'icône et
+  `clearFormatMarkers()` restent en place pour un projet qui l'ajoute explicitement.
 
 - **`ui-datepicker` : la plage sélectionnée (`range`) se lit comme une seule zone continue** (FSHSP-166). Elle était peinte sur la cellule elle-même — fond en dégradé mi-cellule sur les deux extrémités, filets haut et bas en bordure — ce qui la faisait _encadrer_ la sélection plutôt que la porter, avec deux débordements visibles : les filets couraient sur toute la largeur des cellules de début et de fin, donc au-delà de la moitié réellement remplie, et la pastille des jours de début/fin, dont la bordure transparente s'ajoutait à sa taille (`content-box`), dépassait la hauteur de la bande. La bande est désormais une couche à part, exactement de la hauteur d'une pastille et arrêtée au centre des deux extrémités : plus rien ne peut la dépasser, ni en hauteur ni sur les côtés. Les filets sont retirés, et seuls les deux bouts d'une ligne de semaine sont arrondis — sur le retrait qu'une pastille laisse dans sa colonne, pas sur le bord de la cellule, pour qu'une plage finissant sur la dernière colonne s'aligne avec la rangée du dessus au lieu de s'arrêter une demi-gouttière trop tôt. Et une date de début dont la fin n'est pas encore choisie n'affiche plus de demi-bande partant vers une extrémité qui n'existe pas : la pastille reste seule jusqu'au second clic. Deux nouveaux réglages, `--ui-datepicker-range-background` et `--ui-datepicker-range-color`, permettent de re-skinner la bande et le chiffre qu'elle porte (voir la table « Theming » de la doc).
 

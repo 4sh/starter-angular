@@ -23,13 +23,8 @@ $toolbar-surface: var(--ui-editor-toolbar-surface, var(--global-background-muted
 $toolbar-stroke: var(--ui-editor-toolbar-stroke, var(--form-low-stroke-default));         /// Couleur du trait séparant la barre d'outils de la zone de saisie.
 $toolbar-stroke-width: var(--ui-editor-toolbar-stroke-width, #{utils.$control-stroke-width}); /// Épaisseur de ce trait.
 
-$select-padding-x: var(--ui-editor-select-padding-x, var(--units-xs));                     /// Inset horizontal des listes déroulantes de la barre.
-$select-font-size: var(--ui-editor-select-font-size, var(--size-typography-text-md));      /// Taille de police des listes déroulantes.
-$select-color: var(--ui-editor-select-color, var(--form-high-content-default));            /// Couleur des listes déroulantes.
-$select-radius: var(--ui-editor-select-radius, var(--radius-2xs));                         /// Rayon des coins des listes déroulantes.
-// `ch` rather than a measured px: it scales with $select-font-size instead of
-// guessing a pixel count for the longest label ("Roboto Mono").
-$select-width: var(--ui-editor-select-width, 13ch);                                        /// Largeur d'une liste déroulante de la barre, identique pour toutes.
+// `fontFamily`/`fontSize` render as `ui-select` (see `&-select`).
+$select-width: var(--ui-editor-select-width, 13ch); /// Largeur d'un sélecteur police/taille dans la barre.
 
 $separator-width: var(--ui-editor-separator-width, var(--stroke-sm));                      /// Épaisseur d'un séparateur d'outils.
 $separator-height: var(--ui-editor-separator-height, var(--size-typography-text-default)); /// Hauteur d'un séparateur d'outils.
@@ -80,6 +75,17 @@ $size-xl: var(--ui-editor-size-xl-font-size, var(--size-typography-text-xl));   
 $count-font-size: var(--ui-editor-count-font-size, var(--size-typography-text-md));             /// Taille de police du compteur de caractères.
 $count-font-size-small: var(--ui-editor-count-font-size-small, var(--size-typography-text-sm)); /// Taille de police du compteur de caractères, variante `small`.
 
+// --- Toolbar color indicator -------------------------------------------
+$swatch-indicator-height: var(--ui-editor-swatch-indicator-height, var(--stroke-lg)); /// Épaisseur du liseré indiquant la couleur active sous les outils couleur/surlignage.
+$swatch-indicator-offset-x: var(--ui-editor-swatch-indicator-offset-x, var(--units-2xs)); /// Décalage horizontal du liseré, de part et d'autre de l'icône.
+
+// --- Text color / highlight color palette --------------------------------
+// Mirrors `DEFAULT_SWATCH_PALETTE` (ui-swatch-picker) and `EDITOR_COLORS`/
+// `EDITOR_HIGHLIGHTS` (ui-editor-commands): same hues × shades grid, so the
+// class names generated here exactly match the ones written into the value.
+$editor-color-hues: 'primary', 'secondary', 'green', 'orange', 'red', 'slate', 'grey';
+$editor-color-steps: 900, 700, 500, 300, 100;
+
 .ui-editor {
   display: flex;
   flex: 1 1 auto;
@@ -113,27 +119,57 @@ $count-font-size-small: var(--ui-editor-count-font-size-small, var(--size-typogr
     }
   }
 
-  // --- Dropdowns (block level, family, size) --------------------------
+  // `fontFamily`/`fontSize` render as `ui-select` (host-level only — the
+  // field box itself is `ui-select`'s own scoped style).
   &-select {
+    // `<ui-select>` is inline by default, and its root `.ui-select` is a
+    // block-level box that does not grow to fill a flex row on its own: give
+    // the host a flex context and stretch that single child explicitly (same
+    // fix `&-tool` needed when it used to wrap a `ui-button` trigger).
+    display: inline-flex;
     flex-shrink: 0;
-    // Fixed, and the same for every dropdown: sized on the content it has to
-    // fit, so the toolbar keeps its layout when a longer value is picked
-    // instead of shifting every button that follows.
-    inline-size: $select-width;
-    padding-inline: $select-padding-x;
-    border: none;
-    border-radius: $select-radius;
-    background: transparent;
-    font-family: var(--fontfamily-base);
-    font-size: $select-font-size;
-    color: $select-color;
-    cursor: pointer;
-    text-overflow: ellipsis;
-    @include utils.control-transition(background-color);
+    // Fixed, and the same for every dropdown: sized on the widest label it
+    // has to fit, so the toolbar keeps its layout when a longer value is
+    // picked instead of shifting every tool that follows.
+    min-inline-size: $select-width;
+    // Public hook: removes the field box's border so the dropdown blends
+    // into the toolbar surface instead of looking like its own form field.
+    --ui-field-stroke-width: 0;
 
-    &:hover:not(:disabled) { background-color: var(--form-low-surface-hover); }
-    &:focus-visible { outline: $separator-width solid var(--global-border-focus); }
-    &:disabled { cursor: not-allowed; color: var(--form-high-content-disabled); }
+    ::ng-deep {
+      .ui-select { inline-size: 100%; }
+
+      // No public hook for the box's fill (it is not meant to be dropped
+      // independently of `level`/state on an ordinary field) — scoped here
+      // to this toolbar usage only, every other `ui-select` in the kit is
+      // untouched.
+      .ui-field-box {
+        background: transparent;
+        @include utils.control-transition(background-color);
+      }
+      .ui-field-box:hover { background-color: var(--form-low-surface-hover); }
+    }
+  }
+
+  // `textColor`/`highlightColor` triggers: a liseré under the icon shows the
+  // color active at the caret. `--ui-editor-swatch-indicator-color` is set
+  // inline from the component (`null` -> unset custom property -> transparent
+  // bar, same footprint whether a color is active or not).
+  &-tool._colorTool {
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset-inline: $swatch-indicator-offset-x;
+      inset-block-end: 0;
+      block-size: $swatch-indicator-height;
+      border-radius: $swatch-indicator-height;
+      // No `///`: purely internal plumbing set by the component itself
+      // (`[style.--ui-editor-swatch-indicator-color]`), not a public hook a
+      // theme is meant to override directly.
+      background-color: var(--ui-editor-swatch-indicator-color, transparent);
+    }
   }
 
   // --- Editing area ---------------------------------------------------
@@ -251,6 +287,21 @@ $count-font-size-small: var(--ui-editor-count-font-size-small, var(--size-typogr
     .ui-editor-size-default { font-size: $size-default; }
     .ui-editor-size-lg { font-size: $size-lg; }
     .ui-editor-size-xl { font-size: $size-xl; }
+
+    // Text color / highlight color, one class pair per swatch of the default
+    // palette (see `$editor-color-hues`/`$editor-color-steps` above).
+    @each $hue in $editor-color-hues {
+      @each $step in $editor-color-steps {
+        .ui-editor-color-#{$hue}-#{$step} { color: var(--primitives-#{$hue}-#{$step}); }
+        .ui-editor-highlight-#{$hue}-#{$step} {
+          background-color: var(--primitives-#{$hue}-#{$step});
+        }
+      }
+    }
+    .ui-editor-color-black { color: var(--primitives-black-base); }
+    .ui-editor-color-white { color: var(--primitives-white-base); }
+    .ui-editor-highlight-black { background-color: var(--primitives-black-base); }
+    .ui-editor-highlight-white { background-color: var(--primitives-white-base); }
   }
 }
 

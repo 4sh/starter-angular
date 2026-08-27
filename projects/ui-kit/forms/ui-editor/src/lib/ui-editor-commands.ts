@@ -1,3 +1,5 @@
+import { DEFAULT_SWATCH_PALETTE } from '@4sh/ui-kit/forms/ui-swatch-picker';
+
 /**
  * Rich-text command layer — the only place that talks to the legacy editing API.
  *
@@ -21,21 +23,27 @@ export type EditorTool =
   | 'bulletList'
   | 'orderedList'
   | 'codeBlock'
-  | 'blockFormat'
   | 'fontFamily'
   | 'fontSize'
+  | 'indent'
+  | 'outdent'
+  | 'alignLeft'
+  | 'alignCenter'
+  | 'alignRight'
+  | 'alignJustify'
+  | 'textColor'
+  | 'highlightColor'
   | 'link'
   | 'clearFormat'
   | 'separator';
 
 /** Tools rendered as a dropdown: they pick among values instead of toggling one. */
-export type EditorSelectTool = 'blockFormat' | 'fontFamily' | 'fontSize';
+export type EditorSelectTool = 'fontFamily' | 'fontSize';
 
 /** Tools rendered as an icon button. */
 export type EditorButtonTool = Exclude<EditorTool, 'separator' | EditorSelectTool>;
 
 export const EDITOR_SELECT_TOOLS: readonly EditorSelectTool[] = [
-  'blockFormat',
   'fontFamily',
   'fontSize',
 ];
@@ -43,7 +51,16 @@ export const EDITOR_SELECT_TOOLS: readonly EditorSelectTool[] = [
 /** Commands whose active/inactive state the toolbar reflects via `aria-pressed`. */
 export type EditorToggleTool = Extract<
   EditorTool,
-  'bold' | 'italic' | 'underline' | 'bulletList' | 'orderedList' | 'codeBlock'
+  | 'bold'
+  | 'italic'
+  | 'underline'
+  | 'bulletList'
+  | 'orderedList'
+  | 'codeBlock'
+  | 'alignLeft'
+  | 'alignCenter'
+  | 'alignRight'
+  | 'alignJustify'
 >;
 
 /** Active formatting at the caret, recomputed after every interaction. */
@@ -116,58 +133,23 @@ export const EDITOR_SIZES: readonly { key: EditorSize; className: string; label:
 
 const SIZE_CLASSES = new Set(EDITOR_SIZES.map((s) => s.className));
 
-/**
- * Block levels the editor can apply — the "Normal / Titre" dropdown.
- *
- * Distinct from the font family: this one sets what the block *is* (a heading
- * carries document structure, and screen readers navigate by it), while the font
- * only changes how it looks.
- */
-export type EditorBlock = 'p' | 'h1' | 'h2' | 'h3';
-
-/** Block tag → French label for the dropdown. */
-export const EDITOR_BLOCKS: readonly { key: EditorBlock; label: string }[] = [
-  { key: 'p', label: 'Normal' },
-  { key: 'h1', label: 'Titre 1' },
-  { key: 'h2', label: 'Titre 2' },
-  { key: 'h3', label: 'Titre 3' },
-];
-
-const BLOCK_KEYS = new Set<string>(EDITOR_BLOCKS.map((b) => b.key));
-
-/** Applies a block level to the block under the caret. */
-export function applyBlockFormat(tag: EditorBlock): void {
-  document.execCommand('formatBlock', false, tag);
-}
-
-/**
- * Block level under the caret, or `null` when it is something else.
- *
- * `null` covers the code block and list items, which the dropdown does not offer:
- * showing "Normal" there would misreport what the caret actually sits in.
- */
-export function readBlockFormat(): EditorBlock | null {
-  try {
-    const value = (document.queryCommandValue('formatBlock') || '').toLowerCase();
-    return BLOCK_KEYS.has(value) ? (value as EditorBlock) : null;
-  } catch {
-    return null;
-  }
-}
-
 const FONT_CLASSES = new Set(EDITOR_FONTS.map((f) => f.className));
 
 /**
  * The tools enabled when the consumer does not provide a `tools` list.
  *
- * `fontSize` is deliberately absent: it would duplicate `blockFormat` on screen —
- * both make text bigger — while only the latter carries document structure.
- * Leaving both in the default bar invites headings made of merely large text.
- * It stays available for a project that explicitly asks for it in `tools`.
+ * There is no block-level dropdown (no `blockFormat`, no headings): the editor
+ * only ever produces `<p>`. `fontFamily`/`fontSize` are both first-class,
+ * always-on tools rather than one gated behind the other.
+ *
+ * `clearFormat` is deliberately absent for now: `clearFormatMarkers()` does not
+ * reliably clear every marker class yet. It stays available for a project that
+ * explicitly adds it to `tools`, but shipping it by default would be shipping
+ * a broken button.
  */
 export const DEFAULT_EDITOR_TOOLS: readonly EditorTool[] = [
-  'blockFormat',
   'fontFamily',
+  'fontSize',
   'separator',
   'bold',
   'italic',
@@ -176,9 +158,13 @@ export const DEFAULT_EDITOR_TOOLS: readonly EditorTool[] = [
   'bulletList',
   'orderedList',
   'separator',
+  'alignLeft',
+  'alignCenter',
+  'alignRight',
+  'alignJustify',
+  'separator',
   'link',
   'codeBlock',
-  'clearFormat',
 ];
 
 /** Toolbar metadata per button tool: icon (FontAwesome) + French accessible name. */
@@ -189,17 +175,34 @@ export const EDITOR_TOOL_META: Record<EditorButtonTool, { icon: string; label: s
   bulletList: { icon: 'list-ul', label: 'Liste à puces' },
   orderedList: { icon: 'list-ol', label: 'Liste numérotée' },
   codeBlock: { icon: 'code', label: 'Bloc de code' },
+  indent: { icon: 'indent', label: 'Augmenter le retrait' },
+  outdent: { icon: 'outdent', label: 'Diminuer le retrait' },
+  alignLeft: { icon: 'align-left', label: 'Aligner à gauche' },
+  alignCenter: { icon: 'align-center', label: 'Centrer' },
+  alignRight: { icon: 'align-right', label: 'Aligner à droite' },
+  alignJustify: { icon: 'align-justify', label: 'Justifier' },
+  textColor: { icon: 'font', label: 'Couleur du texte' },
+  highlightColor: { icon: 'highlighter', label: 'Couleur de surlignage' },
   link: { icon: 'link', label: 'Lien' },
   clearFormat: { icon: 'text-slash', label: 'Effacer le formatage' },
 };
 
 /** Tool → legacy command name. */
-const NATIVE_COMMAND: Record<Exclude<EditorButtonTool, 'link' | 'codeBlock'>, string> = {
+const NATIVE_COMMAND: Record<
+  Exclude<EditorButtonTool, 'link' | 'codeBlock' | 'textColor' | 'highlightColor'>,
+  string
+> = {
   bold: 'bold',
   italic: 'italic',
   underline: 'underline',
   bulletList: 'insertUnorderedList',
   orderedList: 'insertOrderedList',
+  indent: 'indent',
+  outdent: 'outdent',
+  alignLeft: 'justifyLeft',
+  alignCenter: 'justifyCenter',
+  alignRight: 'justifyRight',
+  alignJustify: 'justifyFull',
   clearFormat: 'removeFormat',
 };
 
@@ -209,6 +212,10 @@ const TOGGLE_TOOLS: readonly Exclude<EditorToggleTool, 'codeBlock'>[] = [
   'underline',
   'bulletList',
   'orderedList',
+  'alignLeft',
+  'alignCenter',
+  'alignRight',
+  'alignJustify',
 ];
 
 /** Every state off — the value used before the first render and on SSR. */
@@ -220,11 +227,17 @@ export function emptyEditorState(): EditorState {
     bulletList: false,
     orderedList: false,
     codeBlock: false,
+    alignLeft: false,
+    alignCenter: false,
+    alignRight: false,
+    alignJustify: false,
   };
 }
 
 /** Applies a formatting command to the current selection. */
-export function applyCommand(tool: Exclude<EditorButtonTool, 'link' | 'codeBlock'>): void {
+export function applyCommand(
+  tool: Exclude<EditorButtonTool, 'link' | 'codeBlock' | 'textColor' | 'highlightColor'>,
+): void {
   document.execCommand(NATIVE_COMMAND[tool], false);
 }
 
@@ -330,6 +343,142 @@ export function convertSizeMarkers(root: ParentNode, className: string): void {
 /** Text size active at the caret, or `null` when the text uses the default. */
 export function readFontSize(node: Node | null): EditorSize | null {
   return findClassKey(node, EDITOR_SIZES);
+}
+
+// --- Text color / highlight color ---------------------------------------
+
+/**
+ * Color key → class written into the value, token holding the swatch, and
+ * label, derived from `ui-swatch-picker`'s default palette rather than
+ * hand-duplicated: the editor's color tools and the nuancier it opens must
+ * always offer the same token set.
+ */
+export const EDITOR_COLORS: readonly {
+  key: string;
+  className: string;
+  cssVar: string;
+  label: string;
+}[] = DEFAULT_SWATCH_PALETTE.flatMap((group) =>
+  group.swatches.map((swatch) => ({
+    key: swatch.key,
+    className: `ui-editor-color-${swatch.key}`,
+    cssVar: swatch.cssVar,
+    label: swatch.label,
+  })),
+);
+
+/** Same key set as {@link EDITOR_COLORS}, classed separately for the highlight tool. */
+export const EDITOR_HIGHLIGHTS: readonly {
+  key: string;
+  className: string;
+  cssVar: string;
+  label: string;
+}[] = DEFAULT_SWATCH_PALETTE.flatMap((group) =>
+  group.swatches.map((swatch) => ({
+    key: swatch.key,
+    className: `ui-editor-highlight-${swatch.key}`,
+    cssVar: swatch.cssVar,
+    label: swatch.label,
+  })),
+);
+
+const COLOR_CLASSES = new Set(EDITOR_COLORS.map((c) => c.className));
+const HIGHLIGHT_CLASSES = new Set(EDITOR_HIGHLIGHTS.map((c) => c.className));
+
+/**
+ * Marker handed to `foreColor`, immediately rewritten into a class.
+ *
+ * `foreColor` is the only command that can color an arbitrary selection, but
+ * it emits `<font color="…">` — same trick as the family/size markers. Must
+ * be a value the browser accepts as a real color (unlike `fontName`'s marker,
+ * which is free text): an unparseable string is silently dropped instead of
+ * being written to the `color` attribute. A hex triplet unlikely to collide
+ * with a real token value is used, and Chromium/Firefox both echo it back
+ * verbatim on the `<font color>` attribute (verified empirically).
+ */
+const COLOR_MARKER = '#010203';
+
+/** Applies a text color to the selection (see {@link convertColorMarkers}). */
+export function applyTextColor(): void {
+  document.execCommand('foreColor', false, COLOR_MARKER);
+}
+
+/** Rewrites the `<font>` elements `foreColor` just produced into `<span class>`. */
+export function convertColorMarkers(root: ParentNode, className: string): void {
+  convertMarkers(root, `font[color="${COLOR_MARKER}"]`, className);
+}
+
+/** Text color active at the caret, or `null` when the text uses the default. */
+export function readTextColor(node: Node | null): string | null {
+  return findClassKey(node, EDITOR_COLORS);
+}
+
+/**
+ * Marker handed to `hiliteColor`, immediately rewritten into a class.
+ *
+ * Unlike `fontName`/`fontSize`/`foreColor`, `hiliteColor` does **not** emit a
+ * `<font>` element: verified empirically (Playwright, Chromium + Firefox)
+ * that it always produces `<span style="background-color: rgb(r, g, b);">`,
+ * converting whatever color is handed to it — including a hex marker — to an
+ * `rgb(...)` triplet in the `style` attribute. `HILITE_MARKER` is therefore
+ * kept as the hex value passed to the command, and `HILITE_MARKER_RGB` as the
+ * exact `rgb(...)` string both browsers echo back for it, used to build the
+ * `[style*="…"]` selector `convertHighlightMarkers` matches on.
+ */
+const HILITE_MARKER = '#040506';
+/** @internal `rgb(...)` form both Chromium and Firefox normalize `HILITE_MARKER` to. */
+const HILITE_MARKER_RGB = 'rgb(4, 5, 6)';
+
+/** Applies a highlight color to the selection (see {@link convertHighlightMarkers}). */
+export function applyHighlightColor(): void {
+  document.execCommand('hiliteColor', false, HILITE_MARKER);
+}
+
+/** Rewrites the `<span style>` elements `hiliteColor` just produced into `<span class>`. */
+export function convertHighlightMarkers(root: ParentNode, className: string): void {
+  convertMarkers(root, `[style*="background-color: ${HILITE_MARKER_RGB}"]`, className);
+}
+
+/** Highlight color active at the caret, or `null` when the text carries none. */
+export function readHighlightColor(node: Node | null): string | null {
+  return findClassKey(node, EDITOR_HIGHLIGHTS);
+}
+
+/**
+ * Strips a color/highlight class from every element carrying it inside
+ * `range`, unwrapping the element when nothing else justifies it (a plain
+ * `<span>` holding only that class).
+ *
+ * Used by the pickers' "no color" swatch: `foreColor`/`hiliteColor` can only
+ * set a color, there is no native command to remove one, so this undoes what
+ * {@link convertColorMarkers}/{@link convertHighlightMarkers} previously wrote.
+ */
+export function clearMarkerClass(root: ParentNode, range: Range, className: string): void {
+  for (const el of Array.from(root.querySelectorAll(`.${className}`))) {
+    if (!range.intersectsNode(el)) continue;
+    el.classList.remove(className);
+    if (el.classList.length > 0) continue;
+    el.removeAttribute('class');
+    if (el.tagName === 'SPAN' && el.attributes.length === 0) {
+      el.replaceWith(...Array.from(el.childNodes));
+    }
+  }
+}
+
+/**
+ * Strips every font/size/color/highlight class the editor writes, from
+ * whatever intersects `range`.
+ *
+ * `removeFormat` (the `clearFormat` tool's native command) only knows inline
+ * formatting the browser itself applies (bold, italic, underline…) — it never
+ * touches the `<span class="ui-editor-*">` wrappers `fontFamily`/`fontSize`/
+ * `textColor`/`highlightColor` write, so "Clear formatting" needs this on top
+ * of it to actually clear everything.
+ */
+export function clearFormatMarkers(root: ParentNode, range: Range): void {
+  for (const className of [...FONT_CLASSES, ...SIZE_CLASSES, ...COLOR_CLASSES, ...HIGHLIGHT_CLASSES]) {
+    clearMarkerClass(root, range, className);
+  }
 }
 
 /** @internal Nearest ancestor carrying one of the given classes. */
@@ -455,11 +604,17 @@ function scrubNode(root: ParentNode): void {
     }
     for (const attr of Array.from(el.attributes)) {
       if (attr.name === 'class') {
-        // Only the editor's own font/size classes survive — anything else pasted
-        // in would style the value against a foreign stylesheet.
+        // Only the editor's own font/size/color classes survive — anything else
+        // pasted in would style the value against a foreign stylesheet.
         const kept = attr.value
           .split(/\s+/)
-          .filter((c) => FONT_CLASSES.has(c) || SIZE_CLASSES.has(c));
+          .filter(
+            (c) =>
+              FONT_CLASSES.has(c) ||
+              SIZE_CLASSES.has(c) ||
+              COLOR_CLASSES.has(c) ||
+              HIGHLIGHT_CLASSES.has(c),
+          );
         if (kept.length) el.setAttribute('class', kept.join(' '));
         else el.removeAttribute('class');
         continue;
