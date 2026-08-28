@@ -33,6 +33,31 @@ champ est en erreur (`invalid` explicite, ou automatique : contrôle invalide + 
 <Canvas of={InputStories.Readonly} />
 <Canvas of={InputStories.Small} />
 
+### Icône du message
+
+Le message sous le champ est rendu par
+[`ui-helper`](?path=/docs/components-ui-informative-ui-helper--docs), dont l'icône est
+**éteinte par défaut** : la bordure et le texte disent déjà l'état, une icône de plus sur
+chaque champ d'un formulaire long ne fait qu'ajouter du bruit. `showMessageIcon` l'allume,
+et l'icône suit alors le `level` — elle passe d'elle-même au `times-circle` d'erreur quand
+`errorText` prend la place de l'aide.
+
+<Canvas of={InputStories.MessageIcon} />
+
+`messageIcon` choisit un autre glyphe (nom FontAwesome), pour une aide qui n'est pas un
+état — un conseil de saisie, par exemple. Il ne fait que **remplacer** le glyphe : sans
+`showMessageIcon`, rien ne s'affiche. Fixé, il ne suit plus le `level`.
+
+<Canvas of={InputStories.MessageIconCustom} />
+
+```html
+<ui-input label="Email" helperText="Nous ne le partagerons jamais." showMessageIcon />
+<ui-input label="Mot de passe" helperText="12 caractères minimum." showMessageIcon messageIcon="lightbulb" />
+```
+
+Les deux entrées sont portées par `BaseFormField` : elles valent pour **tous** les champs
+bâtis sur `ui-field` (`ui-textarea`, `ui-select`, `ui-input-number`, `ui-datepicker`…).
+
 ## Libellé flottant
 
 `floatLabel` fait descendre le libellé **dans** le champ, où il tient le rôle du placeholder,

@@ -58,6 +58,18 @@ export class UiField {
   message = input<string>();
   /** id of the message (for `aria-describedby`, set by the component on the input). */
   messageId = input<string>();
+  /**
+   * Prefixes the message with an icon (rendered by `ui-helper`, decorative).
+   *
+   * Off by default: a field states its status through the border and the text.
+   * `messageIcon` only picks *which* glyph — it never turns the icon on.
+   */
+  showMessageIcon = input(false, { transform: booleanAttribute });
+  /**
+   * Overrides the glyph shown by `showMessageIcon`. Unset = the icon
+   * `ui-helper` derives from the level (question / check / times).
+   */
+  messageIcon = input<string>();
   /** Renders the footer row even without a message (e.g. to host a `[uiFieldFooter]` counter). */
   hasFooter = input(false, { transform: booleanAttribute });
   /**

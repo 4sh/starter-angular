@@ -91,6 +91,10 @@ export abstract class BaseFormField<T> extends BaseFieldControl<T> {
   helperText = input<string>();
   /** Error message shown in place of the helper when the field is in error. */
   errorText = input<string>();
+  /** Prefixes the message under the field (helper or error) with a decorative icon. */
+  showMessageIcon = input(false, { transform: booleanAttribute });
+  /** Overrides the glyph shown by `showMessageIcon`. */
+  messageIcon = input<string>();
   /** Size. */
   size = input<FieldSize>('default');
   /** Explicit validation status (`error` is forced when the control is invalid + touched). */

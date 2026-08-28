@@ -42,7 +42,8 @@
           [attr.id]="messageId()"
           [message]="message()!"
           [level]="level()"
-          [showIcon]="false"
+          [showIcon]="showMessageIcon()"
+          [icon]="messageIcon()"
           size="small"
         />
       }

@@ -10,11 +10,13 @@
   [readonly]="readonly()"
   [message]="displayMessage()"
   [messageId]="messageId()"
+  [showMessageIcon]="showMessageIcon()"
+  [messageIcon]="messageIcon()"
   [hasFooter]="showCount()"
 >
   <div class="ui-editor" [class._small]="size() === 'small'" [style.--_rows]="minRows()">
     @if (toolbarPosition() === 'top') {
-      <ng-container [ngTemplateOutlet]="toolbarTpl"/>
+      <ng-container [ngTemplateOutlet]="toolbarTpl" />
     }
 
     <div class="ui-editor-area">
@@ -50,7 +52,7 @@
     </div>
 
     @if (toolbarPosition() === 'bottom') {
-      <ng-container [ngTemplateOutlet]="toolbarTpl"/>
+      <ng-container [ngTemplateOutlet]="toolbarTpl" />
     }
   </div>
 
@@ -75,7 +77,7 @@
   @if (hasToolbar()) {
     <!-- ARIA toolbar pattern: keyboard delegated to the role="toolbar" container,
          focus lives on the items (roving tabindex), same as ui-menu. -->
-      <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
+    <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
     <div
       #toolbarEl
       class="ui-editor-toolbar"
@@ -107,7 +109,9 @@
         } @else {
           <ui-button
             class="ui-editor-tool"
-            [class._colorTool]="entry.buttonTool === 'textColor' || entry.buttonTool === 'highlightColor'"
+            [class._colorTool]="
+              entry.buttonTool === 'textColor' || entry.buttonTool === 'highlightColor'
+            "
             variant="ghost"
             level="low"
             size="small"

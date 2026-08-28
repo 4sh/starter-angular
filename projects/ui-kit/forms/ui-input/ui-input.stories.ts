@@ -29,6 +29,18 @@ const meta: Meta<UiInput> = {
       description: "Message affiché à la place de l'aide quand en erreur.",
       table: { type: { summary: 'string' } },
     },
+    showMessageIcon: {
+      control: 'boolean',
+      description:
+        "Préfixe le message (aide ou erreur) d'une icône décorative. Éteinte par défaut.",
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    messageIcon: {
+      control: 'text',
+      description:
+        "Glyphe du message. Vide = l'icône déduite du `level` (`question-circle` / `check-circle` / `times-circle`). N'allume pas l'icône à lui seul.",
+      table: { type: { summary: 'string' } },
+    },
     placeholder: { control: 'text', table: { type: { summary: 'string' } } },
     type: {
       control: 'select',
@@ -99,6 +111,7 @@ const meta: Meta<UiInput> = {
     type: 'text',
     size: 'default',
     level: 'default',
+    showMessageIcon: false,
   },
 };
 
@@ -110,6 +123,7 @@ const TEMPLATE = `<div style="width:260px"><ui-input
     [label]="label" [helperText]="helperText" [errorText]="errorText" [placeholder]="placeholder"
     [type]="type" [size]="size" [level]="level" [unit]="unit" [floatLabel]="floatLabel"
     [iconLeft]="iconLeft" [iconRight]="iconRight"
+    [showMessageIcon]="showMessageIcon" [messageIcon]="messageIcon"
     [required]="required" [disabled]="disabled" [readonly]="readonly" [invalid]="invalid"
     (valueChange)="valueChange($event)" /></div>`;
 
@@ -125,6 +139,25 @@ export const WithHelper: Story = {
     label: 'Email',
     placeholder: 'nom@exemple.fr',
     helperText: 'Nous ne partagerons jamais votre email.',
+  },
+};
+export const MessageIcon: Story = {
+  render: story(),
+  args: {
+    label: 'Email',
+    placeholder: 'nom@exemple.fr',
+    helperText: 'Nous ne le partagerons jamais.',
+    showMessageIcon: true,
+  },
+};
+export const MessageIconCustom: Story = {
+  render: story(),
+  args: {
+    label: 'Mot de passe',
+    type: 'password',
+    helperText: '12 caractères minimum.',
+    showMessageIcon: true,
+    messageIcon: 'lightbulb',
   },
 };
 export const Required: Story = { render: story(), args: { label: 'Nom', required: true } };
