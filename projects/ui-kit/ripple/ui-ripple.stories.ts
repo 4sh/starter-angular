@@ -6,7 +6,13 @@ const meta: Meta<UiRippleDemo> = {
   title: 'Foundations/Ripple',
   component: UiRippleDemo,
   decorators: [moduleMetadata({ imports: [UiRippleDemo] })],
-  parameters: { layout: 'padded' },
+  parameters: {
+    layout: 'padded',
+    // Ces stories portent leur propre activation (`[uiRippleScope]`, `[uiRipple]`) :
+    // elles ignorent l'interrupteur de la barre d'outils, qui poserait sinon
+    // `data-ripple="off"` sur <html> et les muselerait.
+    ripple: 'always',
+  },
   argTypes: {
     custom: {
       control: { type: 'boolean' },

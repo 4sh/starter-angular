@@ -7,10 +7,11 @@
  * is a `MouseEvent` carrying `isPrimary` rather than a `PointerEvent` (absent
  * from jsdom).
  */
-import { Component, signal } from '@angular/core';
+import { Component, createEnvironmentInjector, EnvironmentInjector, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { provideUiRipple, UiRipple, UiRippleScope } from './ui-ripple';
+import { UiRippleEngine } from './ui-ripple.engine';
 
 @Component({
   imports: [UiRipple, UiRippleScope],
@@ -193,5 +194,36 @@ describe('Ripple, global activation', () => {
     press(button);
 
     expect(inks(button)).toBeNull();
+  });
+});
+
+describe('Ripple, several applications in one document', () => {
+  /**
+   * A Storybook docs page mounts one Angular application per story, and a
+   * micro-frontend host does the same: each gets its own root engine, and each
+   * engine listens on the same `body`. They must answer a press ONCE between
+   * them, or the waves stack into an opaque disc.
+   */
+  it('answers a press with a single wave, whatever the number of engines', async () => {
+    TestBed.configureTestingModule({ imports: [Plain], providers: [provideUiRipple()] });
+    await TestBed.compileComponents();
+    const fixture = TestBed.createComponent(Plain);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    // Three more applications on the same document, each with its own engine.
+    const parent = TestBed.inject(EnvironmentInjector);
+    const others = [0, 1, 2].map(() => createEnvironmentInjector([UiRippleEngine], parent));
+    for (const injector of others) injector.get(UiRippleEngine).installGlobal();
+
+    const button = (fixture.nativeElement as HTMLElement).querySelector<HTMLElement>('.anywhere');
+    if (!button) throw new Error('missing button');
+    box(button);
+    press(button);
+
+    expect(button.querySelectorAll('.ui-ripple-layer').length).toBe(1);
+    expect(inks(button)).toBe(1);
+
+    for (const injector of others) injector.destroy();
   });
 });

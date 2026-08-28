@@ -37,10 +37,21 @@ export interface UiRippleSettings {
   selector: string;
 }
 
+const CLAIMED = Symbol.for('@4sh/ui-kit/ripple:claimed');
+type Claimable = Record<symbol, true | undefined>;
 const LAYER_CLASS = 'ui-ripple-layer';
 const INK_CLASS = 'ui-ripple-ink';
 /** Waves alive at once on one host, so a fast clicker cannot pile up nodes. */
 const MAX_INK = 4;
+
+/** One press, one wave: the innermost binding claims it, every other root stands down. */
+function isClaimed(event: Event): boolean {
+  return (event as unknown as Claimable)[CLAIMED] === true;
+}
+
+function claim(event: Event): void {
+  (event as unknown as Claimable)[CLAIMED] = true;
+}
 
 /**
  * Engine behind `[uiRipple]`, `[uiRippleScope]` and `provideUiRipple()`.
@@ -60,8 +71,6 @@ export class UiRippleEngine {
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   private readonly options = inject(UI_RIPPLE_OPTIONS, { optional: true }) ?? {};
 
-  /** One press, one wave: the innermost binding claims the event, outer roots stand down. */
-  private readonly claimed = new WeakSet<Event>();
   private readonly layers = new WeakMap<Element, HTMLElement>();
   private reducedMotion: MediaQueryList | undefined;
   private uninstallGlobal: (() => void) | undefined;
@@ -87,7 +96,7 @@ export class UiRippleEngine {
   bind(host: HTMLElement, settings: () => UiRippleSettings): () => void {
     const stop = this.listen(host, (event) => {
       // Claimed even when off: an explicit directive always wins over an outer root.
-      this.claimed.add(event);
+      claim(event);
       const { enabled, centered } = settings();
       if (enabled) this.launch(host, event, centered);
     });
@@ -109,7 +118,7 @@ export class UiRippleEngine {
       // `closest` can climb past the root: that match belongs to an outer binding.
       if (!(target instanceof HTMLElement) || !root.contains(target)) return;
 
-      this.claimed.add(event);
+      claim(event);
       this.launch(target, event, centered);
     });
   }
@@ -146,7 +155,7 @@ export class UiRippleEngine {
     if (!this.isBrowser) return () => undefined;
 
     const onPointerDown = (event: PointerEvent) => {
-      if (event.button > 0 || !event.isPrimary || this.claimed.has(event)) return;
+      if (event.button > 0 || !event.isPrimary || isClaimed(event)) return;
       handle(event);
     };
 
@@ -160,6 +169,14 @@ export class UiRippleEngine {
   private layerFor(host: HTMLElement): HTMLElement {
     const cached = this.layers.get(host);
     if (cached?.parentElement === host) return cached;
+
+    // Une autre instance du moteur a pu équiper cet hôte avant nous : sa couche
+    // vaut la nôtre, et en créer une seconde les empilerait sur l'élément.
+    const existing = host.querySelector<HTMLElement>(`:scope > .${LAYER_CLASS}`);
+    if (existing) {
+      this.layers.set(host, existing);
+      return existing;
+    }
 
     // The layer anchors on the host, which must therefore establish the
     // containing block. A host already positioned is left untouched.

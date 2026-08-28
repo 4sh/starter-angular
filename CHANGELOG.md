@@ -41,19 +41,21 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
   - Décorative, donc invisible à l'assistance : `aria-hidden="true"`, aucune cible de
     tabulation ajoutée. Supprimée sous `prefers-reduced-motion: reduce` et sous le
     coupe-circuit `data-motion="off"` du kit (la vague n'est alors jamais créée).
-  - **Neuf composants sont équipés d'office** : `ui-button` (donc aussi `ui-button-split`,
-    `ui-speed-dial`, `ui-file-upload` et tout composant qui instancie un bouton),
-    `ui-menu`, `ui-context-menu`, `ui-sidebar-menu`, `ui-tabs`, `ui-paginator`, `ui-select`,
-    `ui-autocomplete` et `ui-datepicker`. Activer l'effet ne demande donc aucune retouche des
-    templates du projet. Le périmètre suit celui de PrimeNG (actions, navigation, choix dans
-    une liste) et laisse de côté les contrôles dont le changement d'état est déjà le retour
-    visuel, les surfaces de révélation, les ✕ de fermeture et les liens en ligne.
+  - **Douze composants sont équipés d'office** : `ui-button` (donc aussi `ui-button-split`,
+    `ui-speed-dial` et tout composant qui instancie un bouton), `ui-menu`, `ui-context-menu`,
+    `ui-sidebar-menu`, `ui-tabs`, `ui-paginator`, `ui-select`, `ui-autocomplete`,
+    `ui-datepicker`, `ui-toggle-button`, `ui-segment-control` et `ui-file-upload` (zone de
+    dépôt). Activer l'effet ne demande donc aucune retouche des templates du projet. Le
+    périmètre part de celui de PrimeNG (actions, navigation, choix dans une liste) et
+    l'élargit aux contrôles à surface franche ; il laisse de côté les contrôles dont le
+    changement d'état est le retour visuel sur une cible trop petite, les surfaces de
+    révélation, les ✕ de fermeture et les liens en ligne.
   - **Ils se déclarent par un attribut, pas par une directive.** Chacun porte
     `data-ripple="on"` sur le contrôle natif qu'il rend, et le sélecteur délégué par défaut
     est précisément `[data-ripple="on"]`. Aucun de ces neuf entry points ne dépend de
     `@4sh/ui-kit/ripple` : un projet qui n'active jamais l'effet n'en embarque pas une ligne,
     et une portée globale reste à un seul écouteur au lieu d'un par contrôle.
-  - **Entrée `ripple`** (`true` par défaut) sur ces neuf composants pour couper l'effet sur
+  - **Entrée `ripple`** (`true` par défaut) sur ces douze composants pour couper l'effet sur
     une instance, activation globale comprise. Elle est nécessaire et pas seulement pratique :
     `ui-select`, `ui-autocomplete`, `ui-datepicker`, `ui-menu` et `ui-context-menu` rendent
     leurs cibles dans un overlay CDK, donc hors du DOM du composant, où un `data-ripple="off"`

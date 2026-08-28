@@ -19,10 +19,18 @@ export const RIPPLE_ON = 'on';
 /** Off by default: a project that never calls `provideUiRipple()` sees no wave. */
 export const DEFAULT_RIPPLE = 'off';
 
-/** Mutes or unmutes the effect for every story, exactly as an application would. */
+/**
+ * Mutes or unmutes the effect for every story, exactly as an application would.
+ *
+ * A story that demonstrates the effect itself declares its own activation
+ * (`[uiRippleScope]`, `[uiRipple]`), which the kill switch would override since
+ * `data-ripple="off"` on an ancestor always wins. Such a story opts out of the
+ * switch with `parameters: { ripple: 'always' }`.
+ */
 export const withRipple: Decorator = (Story, context) => {
   if (typeof document !== 'undefined') {
-    const on = (context.globals[RIPPLE_GLOBAL] ?? DEFAULT_RIPPLE) === RIPPLE_ON;
+    const alwaysOn = context.parameters[RIPPLE_GLOBAL] === 'always';
+    const on = alwaysOn || (context.globals[RIPPLE_GLOBAL] ?? DEFAULT_RIPPLE) === RIPPLE_ON;
     const root = document.documentElement;
     if (on) root.removeAttribute('data-ripple');
     else root.setAttribute('data-ripple', 'off');

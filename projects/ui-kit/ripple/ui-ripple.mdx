@@ -13,7 +13,7 @@ L'effet est **activable à trois portées** (application, sous-arbre, élément)
 personnalise **uniquement par des custom properties CSS**, héritées comme les autres
 tokens : rien à recompiler, rien à passer en TypeScript pour changer son apparence.
 
-Neuf composants du kit sont **équipés d'office** (voir plus bas) : les activer ne demande
+Douze composants du kit sont **équipés d'office** (voir plus bas) : les activer ne demande
 aucune retouche de vos templates, et chacun se coupe individuellement par `[ripple]="false"`.
 
 ## Activation
@@ -155,7 +155,7 @@ poserait l'onde sur la boîte carrée du custom element.
   </tbody>
 </table>
 
-Les neuf composants équipés d'office exposent en plus une entrée `ripple` (`boolean`,
+Les douze composants équipés d'office exposent en plus une entrée `ripple` (`boolean`,
 `true` par défaut) qui coupe l'effet sur cette instance, activation globale comprise.
 
 Besoin de déclencher une onde sans pression (raccourci clavier applicatif, événement
@@ -163,7 +163,7 @@ distant) ? Le service `UiRippleEngine` expose `launch(element, event?, centered?
 
 ## Composants équipés par défaut
 
-Ces neuf entry points portent `data-ripple="on"` sur leur cible interactive. Ils n'ondulent
+Ces douze entry points portent `data-ripple="on"` sur leur cible interactive. Ils n'ondulent
 que si l'effet est activé (globalement ou par un scope) : sans activation, l'attribut ne
 produit rien et ne coûte rien.
 
@@ -211,17 +211,33 @@ produit rien et ne coûte rien.
       <td>`ui-datepicker`</td>
       <td>Les cellules jour / mois / année et les boutons de navigation. Pas les incréments d'heure, qui sont des compteurs.</td>
     </tr>
+    <tr>
+      <td>`ui-toggle-button`</td>
+      <td>La bascule, et chaque bouton en mode groupe.</td>
+    </tr>
+    <tr>
+      <td>`ui-segment-control`</td>
+      <td>Les options de la piste.</td>
+    </tr>
+    <tr>
+      <td>`ui-file-upload`</td>
+      <td>La zone de dépôt (les deux modes ouvrent le sélecteur au clic) et les actions de la barre, qui suivent l'entrée du composant hôte.</td>
+    </tr>
   </tbody>
 </table>
 
-Le périmètre suit celui de PrimeNG : **actions, navigation et choix dans une liste**. En sont
-volontairement absents les contrôles dont le changement d'état **est déjà** le retour visuel
-(`ui-checkbox`, `ui-radio`, `ui-toggle`, `ui-toggle-button`, `ui-segment-control`, `ui-slider`,
+Le périmètre part de celui de PrimeNG (**actions, navigation et choix dans une liste**) et
+l'élargit aux contrôles à surface franche : la bascule, la piste segmentée et la zone de dépôt
+sont assez grandes pour que l'onde s'y lise, et confirment un clic dont le résultat n'est pas
+toujours immédiat.
+
+En sont absents les contrôles dont le changement d'état **est** le retour visuel, sur une cible
+trop petite pour porter une onde (`ui-checkbox`, `ui-radio`, `ui-toggle`, `ui-slider`,
 `ui-rating`, `ui-nudger`, `ui-input-number`), les surfaces de révélation (`ui-accordion`,
 `ui-stepper`), les ✕ de fermeture et de suppression (`ui-modal`, `ui-drawer`, `ui-toast`,
-`ui-chip`, `ui-tag`), trop petits pour que l'onde soit autre chose que du bruit, les liens en
-ligne (`ui-link`, `ui-breadcrumb`), dont la boîte se casse à chaque retour à la ligne, et les
-lignes de `ui-table`, où une onde pleine largeur est envahissante.
+`ui-chip`, `ui-tag`, la ligne de `ui-file-upload`), les liens en ligne (`ui-link`,
+`ui-breadcrumb`), dont la boîte se casse à chaque retour à la ligne, et les lignes de
+`ui-table`, où une onde pleine largeur est envahissante.
 
 ### Couper l'effet sur un composant
 
@@ -278,8 +294,8 @@ barre d'outils) ou sur l'élément lui-même.
     </tr>
     <tr>
       <td>`--ui-ripple-opacity`</td>
-      <td>`0.22`</td>
-      <td>Opacité au départ de l'onde (elle décroît jusqu'à 0).</td>
+      <td>`0.12`</td>
+      <td>Opacité au départ de l'onde, qui décroît jusqu'à 0. Réglée pour rester un signal discret par-dessus l'état `pressed` du contrôle, qui teinte déjà la surface.</td>
     </tr>
     <tr>
       <td>`--ui-ripple-duration`</td>
@@ -320,7 +336,7 @@ entrée de directive : `[style.--ui-ripple-color]="brandColor()"`.
 ## Ce qui reçoit l'onde
 
 Le sélecteur par défaut d'une portée déléguée (globale ou `[uiRippleScope]`) est
-`[data-ripple="on"]` : seul ondule ce qui **se déclare**, soit les neuf composants curés du
+`[data-ripple="on"]` : seul ondule ce qui **se déclare**, soit les douze composants curés du
 kit, soit ce que vous marquez vous-même. Volontairement restreint, pour qu'activer l'effet
 globalement ne fasse pas onduler les ✕ de fermeture, les compteurs et les liens d'un
 paragraphe.
