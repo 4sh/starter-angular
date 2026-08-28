@@ -101,6 +101,8 @@
     [autoHeight]="true"
     [message]="displayMessage()"
     [messageId]="messageId()"
+    [showMessageIcon]="showMessageIcon()"
+    [messageIcon]="messageIcon()"
   >
     <div class="ui-input-tags-control" (mousedown)="onBoxMousedown($event)">
       <!-- The listbox wraps ONLY the option tags (a listbox may not contain a textbox);

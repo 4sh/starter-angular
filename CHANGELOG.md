@@ -62,6 +62,15 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
     posé sur un conteneur ne les atteindrait pas.
   - `UI_RIPPLE_INTERACTIVE_SELECTOR` fait onduler en plus tous les contrôles cliquables de
     l'application : `provideUiRipple({ selector: UI_RIPPLE_INTERACTIVE_SELECTOR })`.
+- **Entrées `showMessageIcon` et `messageIcon` sur tous les champs bâtis sur `ui-field`**
+  (`BaseFormField`, donc `ui-input`, `ui-textarea`, `ui-select`, `ui-input-number`,
+  `ui-input-mask`, `ui-input-tags`, `ui-autocomplete`, `ui-editor`, `ui-datepicker`, et
+  `ui-field` lui-même). `ui-field` figeait le `showIcon` de son `ui-helper` à `false` :
+  l'icône du message était inatteignable, quelle que soit l'API du champ.
+  `showMessageIcon` l'allume — l'icône suit alors le `level` et bascule d'elle-même sur
+  celle d'erreur quand `errorText` prend la place de l'aide — et `messageIcon` en choisit
+  une autre (nom FontAwesome), pour une aide qui n'est pas un état. Rendu inchangé par
+  défaut : `showMessageIcon` vaut `false`, et `messageIcon` seul n'allume rien.
 
 ## [0.7.0] - 2026-08-27
 

@@ -150,12 +150,11 @@
     [readonly]="readonly()"
     [message]="displayMessage()"
     [messageId]="messageId()"
+    [showMessageIcon]="showMessageIcon()"
+    [messageIcon]="messageIcon()"
     [autoHeight]="multiple()"
   >
-    <div
-      class="ui-autocomplete-control"
-      (mousedown)="onBoxMousedown($event)"
-    >
+    <div class="ui-autocomplete-control" (mousedown)="onBoxMousedown($event)">
       @if (multiple()) {
         @if (selectedItemTemplate(); as tpl) {
           @for (ctx of selectedItemContexts(); track $index) {
@@ -172,28 +171,28 @@
             [attr.aria-label]="ariaLabelledBy() ? null : ariaLabel() || label() || null"
             [attr.aria-labelledby]="ariaLabelledBy() || null"
           >
-          @for (tag of visibleTagRows(); track $index) {
-            <ui-chip
-              #tagEl
-              class="ui-autocomplete-tag"
-              [attr.data-ripple]="ripple() ? 'on' : 'off'"
-              role="option"
-              aria-selected="true"
-              [attr.aria-label]="tag.label"
-              [label]="tag.label"
-              size="small"
-              [disabled]="isDisabled()"
-              [removable]="canRemove()"
-              [removeTabindex]="-1"
-              [removeAriaLabel]="tag.removeAriaLabel"
-              [attr.aria-setsize]="tagRows().length"
-              [attr.aria-posinset]="tag.index + 1"
-              [attr.tabindex]="isDisabled() ? null : focusedTag() === tag.index ? 0 : -1"
-              (keydown)="onTagKeydown($event, tag.index)"
-              (focus)="focusedTag.set(tag.index)"
-              (remove)="removeAt(tag.index)"
-            />
-          }
+            @for (tag of visibleTagRows(); track $index) {
+              <ui-chip
+                #tagEl
+                class="ui-autocomplete-tag"
+                [attr.data-ripple]="ripple() ? 'on' : 'off'"
+                role="option"
+                aria-selected="true"
+                [attr.aria-label]="tag.label"
+                [label]="tag.label"
+                size="small"
+                [disabled]="isDisabled()"
+                [removable]="canRemove()"
+                [removeTabindex]="-1"
+                [removeAriaLabel]="tag.removeAriaLabel"
+                [attr.aria-setsize]="tagRows().length"
+                [attr.aria-posinset]="tag.index + 1"
+                [attr.tabindex]="isDisabled() ? null : focusedTag() === tag.index ? 0 : -1"
+                (keydown)="onTagKeydown($event, tag.index)"
+                (focus)="focusedTag.set(tag.index)"
+                (remove)="removeAt(tag.index)"
+              />
+            }
           </div>
         }
         @if (overflowCount() > 0) {
