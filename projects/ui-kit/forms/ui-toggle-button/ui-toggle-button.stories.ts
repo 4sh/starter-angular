@@ -208,6 +208,12 @@ const meta: Meta<UiToggleButton> = {
       description: 'Émis au clic sur un bouton du groupe (même sans changement de valeur).',
       table: { disable: true },
     },
+    ripple: {
+      control: false,
+      description:
+        "Onde de pression sur la bascule quand l'effet ripple est activé (`provideUiRipple()` ou `[uiRippleScope]`). `false` la coupe sur ce composant, même en activation globale.",
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
+    },
   },
   args: {
     label: 'Notifications',

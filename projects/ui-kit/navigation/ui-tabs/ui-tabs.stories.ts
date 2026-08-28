@@ -76,6 +76,12 @@ const meta: Meta<TabsArgs> = {
         defaultValue: { summary: "'Défiler vers les onglets suivants'" },
       },
     },
+    ripple: {
+      control: false,
+      description:
+        "Onde de pression sur les en-têtes d'onglet quand l'effet ripple est activé (`provideUiRipple()` ou `[uiRippleScope]`). `false` la coupe sur ce composant, même en activation globale.",
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
+    },
   },
   args: {
     orientation: 'horizontal',

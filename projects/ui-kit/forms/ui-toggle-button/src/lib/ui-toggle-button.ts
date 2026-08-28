@@ -190,6 +190,8 @@ export class UiToggleButton<T = boolean> extends BaseFieldControl<ToggleButtonVa
   size = input<ToggleButtonSize>('default');
   /** Span the full width of the parent (group buttons share the width evenly). */
   fluid = input(false, { transform: booleanAttribute });
+  /** Ripple Effect */
+  ripple = input(true, { transform: booleanAttribute });
   /** Pill shape. */
   rounded = input(false, { transform: booleanAttribute });
   /** Whether the last pressed button can be released (single), or the group emptied. */

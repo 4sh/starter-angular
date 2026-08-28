@@ -16,6 +16,53 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+### Added
+
+- **`@4sh/ui-kit/ripple` : onde de pression, activable à trois portées.** Inspiré de
+  l'option [Ripple de PrimeNG](https://primeng.dev/ripple), avec une activation qui ne se
+  limite pas au couple « global / une directive par élément » : `provideUiRipple()` équipe
+  toute l'application, `[uiRippleScope]` un sous-arbre, `[uiRipple]` un élément précis.
+  `data-ripple="on"` fait onduler un élément non interactif, `data-ripple="off"` exclut un
+  élément et son sous-arbre, et les portées ne se cumulent jamais : une pression produit
+  une seule onde, celle de la déclaration la plus interne.
+  - **Une portée déléguée coûte un écouteur, pas un par contrôle** : `pointerdown` passif,
+    posé hors zone Angular (une pression ne déclenche aucune détection de changement).
+    Rien n'est créé ni mesuré avant la première pression ; la couche de rognage est ensuite
+    conservée sur l'élément, chaque vague est un `<span>` retiré à la fin de son animation,
+    et quatre vagues au plus coexistent sur un même élément.
+  - **Aucune option d'apparence en TypeScript** : couleur, opacité, durée, courbe et échelle
+    passent par les custom properties `--ui-ripple-*`, qui héritent. Le défaut
+    `currentColor` reste lisible sur n'importe quel fond, marque et mode, sans un seul token
+    de couleur en dur ; les autres défauts pointent sur `--transition-*`.
+  - **L'onde est rognée par la boîte de l'hôte et suit son `border-radius`** : la couche est
+    un enfant en position absolue, donc ni l'`overflow` de l'hôte ni son anneau de focus ne
+    sont touchés. `<ui-button uiRippleScope />` équipe le `<button>` interne d'un composant
+    du kit, là où la directive ciblée peindrait la boîte carrée du custom element.
+  - Décorative, donc invisible à l'assistance : `aria-hidden="true"`, aucune cible de
+    tabulation ajoutée. Supprimée sous `prefers-reduced-motion: reduce` et sous le
+    coupe-circuit `data-motion="off"` du kit (la vague n'est alors jamais créée).
+  - **Douze composants sont équipés d'office** : `ui-button` (donc aussi `ui-button-split`,
+    `ui-speed-dial` et tout composant qui instancie un bouton), `ui-menu`, `ui-context-menu`,
+    `ui-sidebar-menu`, `ui-tabs`, `ui-paginator`, `ui-select`, `ui-autocomplete`,
+    `ui-datepicker`, `ui-toggle-button`, `ui-segment-control` et `ui-file-upload` (zone de
+    dépôt). Activer l'effet ne demande donc aucune retouche des templates du projet. Le
+    périmètre part de celui de PrimeNG (actions, navigation, choix dans une liste) et
+    l'élargit aux contrôles à surface franche ; il laisse de côté les contrôles dont le
+    changement d'état est le retour visuel sur une cible trop petite, les surfaces de
+    révélation, les ✕ de fermeture et les liens en ligne.
+  - **Ils se déclarent par un attribut, pas par une directive.** Chacun porte
+    `data-ripple="on"` sur le contrôle natif qu'il rend, et le sélecteur délégué par défaut
+    est précisément `[data-ripple="on"]`. Aucun de ces neuf entry points ne dépend de
+    `@4sh/ui-kit/ripple` : un projet qui n'active jamais l'effet n'en embarque pas une ligne,
+    et une portée globale reste à un seul écouteur au lieu d'un par contrôle.
+  - **Entrée `ripple`** (`true` par défaut) sur ces douze composants pour couper l'effet sur
+    une instance, activation globale comprise. Elle est nécessaire et pas seulement pratique :
+    `ui-select`, `ui-autocomplete`, `ui-datepicker`, `ui-menu` et `ui-context-menu` rendent
+    leurs cibles dans un overlay CDK, donc hors du DOM du composant, où un `data-ripple="off"`
+    posé sur un conteneur ne les atteindrait pas.
+  - `UI_RIPPLE_INTERACTIVE_SELECTOR` fait onduler en plus tous les contrôles cliquables de
+    l'application : `provideUiRipple({ selector: UI_RIPPLE_INTERACTIVE_SELECTOR })`.
+
 ## [0.7.0] - 2026-08-27
 
 ### Added

@@ -19,6 +19,7 @@
         <div class="ui-datepicker-header">
           <button
             type="button"
+            [attr.data-ripple]="ripple() ? 'on' : 'off'"
             class="ui-datepicker-nav"
             [attr.aria-label]="prevAriaLabel()"
             (click)="onPrev()"
@@ -36,6 +37,7 @@
           </button>
           <button
             type="button"
+            [attr.data-ripple]="ripple() ? 'on' : 'off'"
             class="ui-datepicker-nav"
             [attr.aria-label]="nextAriaLabel()"
             (click)="onNext()"
@@ -55,6 +57,7 @@
                 <button
                   type="button"
                   role="gridcell"
+                  [attr.data-ripple]="ripple() ? 'on' : 'off'"
                   class="ui-datepicker-cell"
                   [class._selected]="y.selected"
                   [class._focusable]="isFocusableYear(y)"
@@ -81,6 +84,7 @@
                 <button
                   type="button"
                   role="gridcell"
+                  [attr.data-ripple]="ripple() ? 'on' : 'off'"
                   class="ui-datepicker-cell"
                   [class._selected]="m.selected"
                   [class._focusable]="isFocusableMonth(m)"
@@ -111,6 +115,7 @@
                   @if (mp.showPrev) {
                     <button
                       type="button"
+                      [attr.data-ripple]="ripple() ? 'on' : 'off'"
                       class="ui-datepicker-nav"
                       [attr.aria-label]="prevAriaLabel()"
                       (click)="onPrev()"
@@ -124,6 +129,7 @@
                   @if (mp.showNext) {
                     <button
                       type="button"
+                      [attr.data-ripple]="ripple() ? 'on' : 'off'"
                       class="ui-datepicker-nav"
                       [attr.aria-label]="nextAriaLabel()"
                       (click)="onNext()"
@@ -153,6 +159,7 @@
                       <button
                         type="button"
                         role="gridcell"
+                        [attr.data-ripple]="ripple() ? 'on' : 'off'"
                         class="ui-datepicker-day"
                         [class._selected]="cell.selected"
                         [class._today]="cell.today && !cell.selected"

@@ -139,6 +139,12 @@ const meta: Meta<UiSegmentControl> = {
       description: 'Émis au clic sur un segment (même sans changement de valeur).',
       table: { disable: true },
     },
+    ripple: {
+      control: false,
+      description:
+        "Onde de pression sur les options de la piste quand l'effet ripple est activé (`provideUiRipple()` ou `[uiRippleScope]`). `false` la coupe sur ce composant, même en activation globale.",
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
+    },
   },
   args: {
     options: VIEW_OPTIONS,

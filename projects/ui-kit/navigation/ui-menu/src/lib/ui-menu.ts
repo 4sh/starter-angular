@@ -168,6 +168,8 @@ export class UiMenu {
   submenus = input<MenuSubmenuMode>('inline');
   /** Animate the popup entrance and the submenu collapse (reduced-motion always wins). */
   motion = input(true, { transform: booleanAttribute });
+  /** Ripple Effect */
+  ripple = input(true, { transform: booleanAttribute });
   /** Auto-flip the popup above the trigger when space is lacking below. */
   autoFlip = input(true, { transform: booleanAttribute });
   /** Tabindex of the menu's roving tab stop. */

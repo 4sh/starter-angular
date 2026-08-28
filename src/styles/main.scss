@@ -41,6 +41,7 @@
 @use "base/base";
 @use "base/typography";
 @use "base/motion";
+@use "base/ripple";
 // Global utility classes (.text-center, .no-margin…). Explicit since the kit's
 // `utils` build surface is API-only — see projects/ui-kit/styles/utils.scss.
 @use "utils/helpers";

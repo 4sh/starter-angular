@@ -69,6 +69,7 @@ let nextUid = 0;
       type="button"
       role="tab"
       class="ui-tab-button"
+      [attr.data-ripple]="tabs.ripple() ? 'on' : 'off'"
       [id]="tabs.tabId(value())"
       [attr.aria-controls]="tabs.panelId(value())"
       [attr.aria-selected]="active()"
@@ -488,6 +489,8 @@ export class UiTabs {
   showNavigators = input(true, { transform: booleanAttribute });
   /** Animate the active indicator and panel transitions (reduced-motion always wins). */
   motion = input(true, { transform: booleanAttribute });
+  /** Ripple Effect */
+  ripple = input(true, { transform: booleanAttribute });
   /** Tabindex applied to the active tab (the group's single tab stop). */
   tabindex = input(0, { transform: numberAttribute });
 

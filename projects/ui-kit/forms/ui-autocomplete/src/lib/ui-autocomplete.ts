@@ -194,6 +194,8 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
    * none, the input is cleared so the model always holds a real suggestion.
    */
   forceSelection = input(false, { transform: booleanAttribute });
+  /** Ripple Effect */
+  ripple = input(true, { transform: booleanAttribute });
 
   /** Multi-selection: the model is an array, each pick renders as a removable chip in the field. */
   multiple = input(false, { transform: booleanAttribute });

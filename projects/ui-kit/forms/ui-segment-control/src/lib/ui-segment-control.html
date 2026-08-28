@@ -12,6 +12,7 @@
   <button
     #optionBtn
     type="button"
+    [attr.data-ripple]="ripple() ? 'on' : 'off'"
     class="ui-segment-control-option"
     [class._selected]="option.selected"
     [disabled]="option.disabled"

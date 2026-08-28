@@ -153,6 +153,8 @@ export class UiSegmentControl<T = unknown> extends BaseFieldControl<SegmentContr
   dataKey = input<string>();
   /** Allow selecting several values at once (the model becomes an array). */
   multiple = input(false, { transform: booleanAttribute });
+  /** Ripple Effect */
+  ripple = input(true, { transform: booleanAttribute });
   /** Whether the selection can be fully cleared (single) / emptied (multiple). */
   allowEmpty = input(true, { transform: booleanAttribute });
   /** Size. */

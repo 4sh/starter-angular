@@ -59,6 +59,8 @@ export class UiButton {
   expanded = input(false, { transform: booleanAttribute });
   rounded = input(false, { transform: booleanAttribute });
   disabled = input(false, { transform: booleanAttribute });
+  /** Ripple Effect */
+  ripple = input(true, { transform: booleanAttribute });
   tabindex = input<number>();
   buttonProps = input<ButtonNativeProps>();
   iconTemplate = input<TemplateRef<unknown>>();

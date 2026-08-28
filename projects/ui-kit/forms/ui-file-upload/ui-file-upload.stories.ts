@@ -78,6 +78,12 @@ const meta: Meta<UiFileUpload> = {
       description: 'Petit texte indicatif sous la zone (types acceptés, taille max).',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
+    ripple: {
+      control: false,
+      description:
+        "Onde de pression sur la zone de dépôt et les actions quand l'effet ripple est activé (`provideUiRipple()` ou `[uiRippleScope]`). `false` la coupe sur ce composant, même en activation globale.",
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
+    },
   },
   args: {
     mode: 'field',

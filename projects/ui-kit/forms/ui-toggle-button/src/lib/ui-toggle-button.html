@@ -3,6 +3,7 @@
     <button
       #itemEl
       type="button"
+      [attr.data-ripple]="ripple() ? 'on' : 'off'"
       class="ui-toggle-button-item"
       [class._selected]="item.selected"
       [class._icon-only]="item.iconOnly"
@@ -34,6 +35,7 @@
   <button
     #itemEl
     type="button"
+    [attr.data-ripple]="ripple() ? 'on' : 'off'"
     class="ui-toggle-button-item"
     [class._selected]="checked()"
     [class._icon-only]="isIconOnly()"

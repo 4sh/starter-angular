@@ -52,6 +52,7 @@
           <button
             type="button"
             class="ui-sidebar-menu-action _toggle"
+            [attr.data-ripple]="ripple() ? 'on' : 'off'"
             [attr.aria-expanded]="isExpanded(node)"
             [attr.aria-controls]="node.key + '-g'"
             [attr.aria-label]="railTitle(node)"
@@ -128,6 +129,7 @@
 
           @if (node.item.routerLink !== undefined && !node.item.disabled) {
             <a
+              [attr.data-ripple]="ripple() ? 'on' : 'off'"
               class="ui-sidebar-menu-action"
               [routerLink]="node.item.routerLink"
               [queryParams]="node.item.queryParams ?? null"
@@ -146,6 +148,7 @@
             </a>
           } @else if (node.item.url && !node.item.disabled) {
             <a
+              [attr.data-ripple]="ripple() ? 'on' : 'off'"
               class="ui-sidebar-menu-action"
               [class._active]="node.item.active"
               [attr.href]="node.item.url"
@@ -164,6 +167,7 @@
           } @else {
             <button
               type="button"
+              [attr.data-ripple]="ripple() ? 'on' : 'off'"
               class="ui-sidebar-menu-action"
               [class._active]="node.item.active"
               [attr.aria-current]="node.item.active ? 'true' : null"

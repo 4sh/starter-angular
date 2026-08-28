@@ -99,6 +99,8 @@ export class UiPaginator {
   currentPageReportTemplate = input<string>('{first} - {last} sur {totalRecords}');
   /** Disables every control. */
   disabled = input(false, { transform: booleanAttribute });
+  /** Ripple Effect */
+  ripple = input(true, { transform: booleanAttribute });
   /** Accessible name of the navigation landmark. */
   ariaLabel = input<string>('Pagination');
   /** Accessible name pattern of a page button (`{page}` is replaced). */

@@ -1,0 +1,53 @@
+// =====================================================================
+// Ripple : global styles of the wave (`UiRipple` / `UiRippleScope`).
+//
+// The directives append a clipping layer, then one ink span per press. Both
+// are created outside any component, so their rules live here rather than in
+// a scoped `.scss`. Every value resolves from the `--ui-ripple-*` custom
+// properties, which INHERIT : set them on `:root`, on a container or on the
+// element itself to retune one wave, one screen or the whole application.
+//
+// Class contract :
+//   .ui-ripple-layer  → clip box, follows the host's border-radius
+//   .ui-ripple-ink    → one wave, removed on `animationend`
+// =====================================================================
+
+@use 'utils';
+
+$_color: var(--ui-ripple-color, currentColor);
+$_opacity: var(--ui-ripple-opacity, #{utils.$ripple-opacity});
+$_duration: var(--ui-ripple-duration, #{utils.$ripple-duration});
+$_easing: var(--ui-ripple-easing, #{utils.$ripple-easing});
+$_scale: var(--ui-ripple-scale, #{utils.$ripple-scale});
+
+.ui-ripple-layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  contain: layout paint;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.ui-ripple-ink {
+  position: absolute;
+  border-radius: 50%;
+  background-color: $_color;
+  opacity: 0;
+  transform: scale(0);
+  animation: ui-ripple-wave $_duration $_easing;
+  // Compositor-only animation: no layout, no repaint of the host.
+  will-change: transform, opacity;
+}
+
+@keyframes ui-ripple-wave {
+  from {
+    opacity: $_opacity;
+    transform: scale(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale($_scale);
+  }
+}

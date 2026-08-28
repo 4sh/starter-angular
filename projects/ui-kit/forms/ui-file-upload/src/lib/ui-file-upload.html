@@ -20,7 +20,7 @@
 
   @if (mode() === 'field') {
     <!-- Field mode: compact summary + Browse trigger (whole label opens picker) -->
-    <label class="ui-file-upload-field" [attr.for]="inputId">
+    <label class="ui-file-upload-field" [attr.for]="inputId" [attr.data-ripple]="ripple() ? 'on' : 'off'">
       <span class="ui-file-upload-field-text" [class._placeholder]="!hasFiles()">{{
         fieldSummary()
       }}</span>
@@ -28,7 +28,7 @@
     </label>
   } @else {
     <!-- Drag mode: full drop zone -->
-    <label class="ui-file-upload-zone" [attr.for]="inputId">
+    <label class="ui-file-upload-zone" [attr.for]="inputId" [attr.data-ripple]="ripple() ? 'on' : 'off'">
       <ui-icon class="ui-file-upload-zone-icon" name="cloud-arrow-up" size="lg" />
       <span class="ui-file-upload-zone-content">
         <span class="ui-file-upload-zone-title">
@@ -58,6 +58,7 @@
       <div class="ui-file-upload-toolbar">
         @if (!auto()) {
           <ui-button
+            [ripple]="ripple()"
             [label]="uploadLabel()"
             [size]="size() === 'small' ? 'small' : 'default'"
             icon="cloud-arrow-up"
@@ -66,6 +67,7 @@
           />
         }
         <ui-button
+          [ripple]="ripple()"
           [label]="cancelLabel()"
           level="low"
           [size]="size() === 'small' ? 'small' : 'default'"

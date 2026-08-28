@@ -72,6 +72,8 @@ export class UiContextMenu {
   submenus = input<MenuSubmenuMode>('flyout');
   /** Animate the menu entrance (reduced-motion always wins). */
   motion = input(true, { transform: booleanAttribute });
+  /** Ripple Effect */
+  ripple = input(true, { transform: booleanAttribute });
 
   /** Emitted when the menu opens. */
   opened = output<void>();

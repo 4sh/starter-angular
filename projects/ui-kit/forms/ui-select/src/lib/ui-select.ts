@@ -185,6 +185,8 @@ export class UiSelect<T = unknown> extends BaseFormField<SelectValue<T>> {
   autofocusFilter = input(true, { transform: booleanAttribute });
   /** Reset the filter text when the panel closes. */
   resetFilterOnHide = input(false, { transform: booleanAttribute });
+  /** Ripple Effect */
+  ripple = input(true, { transform: booleanAttribute });
 
   /** Message shown when there is no option. */
   emptyMessage = input<string>('Aucune option disponible');

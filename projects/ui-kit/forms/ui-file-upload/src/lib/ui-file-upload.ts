@@ -64,6 +64,8 @@ export class UiFileUpload {
   name = input<string>();
   /** Allow selecting more than one file. */
   multiple = input(false, { transform: booleanAttribute });
+  /** Ripple Effect */
+  ripple = input(true, { transform: booleanAttribute });
   /** Native `accept` filter, e.g. "image/*,.pdf". Also enforced on drop. */
   accept = input<string>();
   /** Max size per file, in bytes. */

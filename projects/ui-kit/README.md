@@ -203,6 +203,7 @@ Plus the cross-cutting entry points:
 | `@4sh/ui-kit/forms`   | Form field foundation — see below                                                                     |
 | `@4sh/ui-kit/theming` | `ThemeService` (light/dark, `[data-theme]`) · `BrandService` (`[data-brand]`) · `provideUiKitBrand()` |
 | `@4sh/ui-kit/motion`  | `UiMotion` directive + animation presets                                                              |
+| `@4sh/ui-kit/ripple`  | `UiRipple` / `UiRippleScope` directives + `provideUiRipple()` (press wave)                            |
 | `@4sh/ui-kit/overlay` | Helpers for CDK overlay components (`closeOnNavigation`)                                              |
 | `@4sh/ui-kit/types`   | Cross-cutting types (`UiLevel`, `UiSubLevel`, `UiFeedbackLevel`)                                      |
 

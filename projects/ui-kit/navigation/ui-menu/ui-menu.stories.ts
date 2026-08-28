@@ -79,6 +79,12 @@ const meta: Meta<UiMenu> = {
       description: 'Tabindex du tab stop roving du menu.',
       table: { type: { summary: 'number' }, defaultValue: { summary: '0' } },
     },
+    ripple: {
+      control: false,
+      description:
+        "Onde de pression sur les entrées du menu quand l'effet ripple est activé (`provideUiRipple()` ou `[uiRippleScope]`). `false` la coupe sur ce composant, même en activation globale.",
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
+    },
   },
   args: {
     level: 'high',

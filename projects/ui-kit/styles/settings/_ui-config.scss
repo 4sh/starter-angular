@@ -32,6 +32,15 @@ $motion-easing-leave: var(--transition-easein);       /// Courbe accélérée (d
 $motion-distance: 0.5rem;                             /// Distance du glissement des presets `slide`.
 $motion-scale: 0.96;                                  /// Échelle de départ / d’arrivée des presets `zoom`.
 
+// --- Global : ripple ---------------------------------------------------
+// Appearance of the press wave (base/_ripple.scss). Not hooked here: the
+// `--ui-ripple-*` custom properties already expose colour, opacity, duration,
+// easing and scale per instance, and they inherit down the cascade.
+$ripple-opacity: 0.34;                      /// Opacité de départ de l'onde.
+$ripple-duration: var(--transition-slow);   /// Durée d'expansion de l'onde.
+$ripple-easing: var(--transition-easeout);  /// Courbe de l'onde (décélérée).
+$ripple-scale: 1;                           /// Échelle finale de l'onde (1 = couvre l'élément).
+
 // --- Global : overlay panels ------------------------------------------
 // `--ui-overlay-*` (utils/_overlay.scss) retunes ONE panel; these set the default
 // for all of them.
