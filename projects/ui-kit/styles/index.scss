@@ -25,4 +25,5 @@
 @use 'base/base';
 @use 'base/typography';
 @use 'base/motion';
+@use 'base/ripple';
 @use 'utils/helpers'; // global utility classes (.text-center, .no-margin…)

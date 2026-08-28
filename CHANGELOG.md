@@ -16,6 +16,32 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+### Added
+
+- **`@4sh/ui-kit/ripple` : onde de pression, activable à trois portées.** Inspiré de
+  l'option [Ripple de PrimeNG](https://primeng.dev/ripple), avec une activation qui ne se
+  limite pas au couple « global / une directive par élément » : `provideUiRipple()` équipe
+  toute l'application, `[uiRippleScope]` un sous-arbre, `[uiRipple]` un élément précis.
+  `data-ripple="on"` fait onduler un élément non interactif, `data-ripple="off"` exclut un
+  élément et son sous-arbre, et les portées ne se cumulent jamais : une pression produit
+  une seule onde, celle de la déclaration la plus interne.
+  - **Une portée déléguée coûte un écouteur, pas un par contrôle** : `pointerdown` passif,
+    posé hors zone Angular (une pression ne déclenche aucune détection de changement).
+    Rien n'est créé ni mesuré avant la première pression ; la couche de rognage est ensuite
+    conservée sur l'élément, chaque vague est un `<span>` retiré à la fin de son animation,
+    et quatre vagues au plus coexistent sur un même élément.
+  - **Aucune option d'apparence en TypeScript** : couleur, opacité, durée, courbe et échelle
+    passent par les custom properties `--ui-ripple-*`, qui héritent. Le défaut
+    `currentColor` reste lisible sur n'importe quel fond, marque et mode, sans un seul token
+    de couleur en dur ; les autres défauts pointent sur `--transition-*`.
+  - **L'onde est rognée par la boîte de l'hôte et suit son `border-radius`** : la couche est
+    un enfant en position absolue, donc ni l'`overflow` de l'hôte ni son anneau de focus ne
+    sont touchés. `<ui-button uiRippleScope />` équipe le `<button>` interne d'un composant
+    du kit, là où la directive ciblée peindrait la boîte carrée du custom element.
+  - Décorative, donc invisible à l'assistance : `aria-hidden="true"`, aucune cible de
+    tabulation ajoutée. Supprimée sous `prefers-reduced-motion: reduce` et sous le
+    coupe-circuit `data-motion="off"` du kit (la vague n'est alors jamais créée).
+
 ## [0.7.0] - 2026-08-27
 
 ### Added

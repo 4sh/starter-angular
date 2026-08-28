@@ -1,0 +1,280 @@
+import { Meta, Canvas } from '@storybook/addon-docs/blocks';
+import * as RippleStories from './ui-ripple.stories';
+
+<Meta of={RippleStories} />
+
+# Ripple
+
+Onde de pression sur les éléments interactifs : au `pointerdown`, une vague part du
+point de contact et couvre l'élément. Purement décorative, elle confirme que le clic
+a été reçu, y compris avant que l'action n'aboutisse.
+
+L'effet est **activable à trois portées** (application, sous-arbre, élément) et se
+personnalise **uniquement par des custom properties CSS**, héritées comme les autres
+tokens : rien à recompiler, rien à passer en TypeScript pour changer son apparence.
+
+## Activation
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Portée</th>
+      <th>Écriture</th>
+      <th>Ce qui reçoit l'onde</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Globale</td>
+      <td>`provideUiRipple()`</td>
+      <td>Toute l'application (délégation sur `body`).</td>
+    </tr>
+    <tr>
+      <td>Locale</td>
+      <td>`[uiRippleScope]`</td>
+      <td>Les descendants interactifs du conteneur.</td>
+    </tr>
+    <tr>
+      <td>Ciblée</td>
+      <td>`[uiRipple]`</td>
+      <td>L'élément porteur, et lui seul.</td>
+    </tr>
+  </tbody>
+</table>
+
+### 1. Globale
+
+```ts
+// app.config.ts
+import { provideUiRipple } from '@4sh/ui-kit/ripple';
+
+providers: [provideUiRipple()];
+```
+
+Un seul écouteur `pointerdown` sur `body`, aucune directive à poser : chaque `<button>`,
+chaque `[role="button"]` et chaque élément marqué `data-ripple="on"` répond à la pression,
+composants du kit compris (l'onde se pose sur le contrôle natif qu'ils rendent, donc elle
+suit leur rayon).
+
+### 2. Locale
+
+```html
+<div class="toolbar" uiRippleScope>
+  <ui-button label="Enregistrer" />
+  <button>Annuler</button>
+</div>
+
+<nav uiRippleScope rippleSelector="a, button">…</nav>
+```
+
+Même mécanique, bornée à un sous-arbre : un écouteur sur le conteneur, aucune directive
+sur les contrôles. C'est aussi la façon d'équiper **un seul composant du kit** :
+`<ui-button uiRippleScope />` atteint le `<button>` interne, là où `<ui-button uiRipple />`
+poserait l'onde sur la boîte carrée du custom element.
+
+### 3. Ciblée
+
+```html
+<button uiRipple>Valider</button>
+<button uiRipple rippleCentered aria-label="Fermer">…</button>
+```
+
+<Canvas of={RippleStories.Default} />
+
+## API
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Surface</th>
+      <th>Entrée / option</th>
+      <th>Type</th>
+      <th>Défaut</th>
+      <th>Rôle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td rowSpan="2">`[uiRipple]`</td>
+      <td>`uiRipple`</td>
+      <td>`boolean`</td>
+      <td>`true`</td>
+      <td>Onde sur cet élément. `false` l'exclut, lui et son sous-arbre.</td>
+    </tr>
+    <tr>
+      <td>`rippleCentered`</td>
+      <td>`boolean`</td>
+      <td>`false`</td>
+      <td>Départ au centre plutôt qu'au point de contact (contrôles en icône seule).</td>
+    </tr>
+    <tr>
+      <td rowSpan="3">`[uiRippleScope]`</td>
+      <td>`uiRippleScope`</td>
+      <td>`boolean`</td>
+      <td>`true`</td>
+      <td>Onde à l'intérieur. `false` exclut tout le sous-arbre.</td>
+    </tr>
+    <tr>
+      <td>`rippleCentered`</td>
+      <td>`boolean`</td>
+      <td>`false`</td>
+      <td>Départ au centre plutôt qu'au point de contact.</td>
+    </tr>
+    <tr>
+      <td>`rippleSelector`</td>
+      <td>`string`</td>
+      <td>sélecteur du kit</td>
+      <td>Restreint ou élargit ce qui ondule dans ce sous-arbre.</td>
+    </tr>
+    <tr>
+      <td rowSpan="2">`provideUiRipple()`</td>
+      <td>`global`</td>
+      <td>`boolean`</td>
+      <td>`true`</td>
+      <td>`false` enregistre les options sans activer l'effet partout.</td>
+    </tr>
+    <tr>
+      <td>`selector`</td>
+      <td>`string`</td>
+      <td>`button, [role="button"], [data-ripple="on"]`</td>
+      <td>Ce qu'une portée déléguée fait onduler, pour tout le kit.</td>
+    </tr>
+  </tbody>
+</table>
+
+Besoin de déclencher une onde sans pression (raccourci clavier applicatif, événement
+distant) ? Le service `UiRippleEngine` expose `launch(element, event?, centered?)`.
+
+## Personnalisation
+
+Aucune option d'apparence n'existe côté TypeScript : tout passe par les custom properties,
+posées sur `:root` (toute l'application), sur un conteneur (un écran, un thème sombre, une
+barre d'outils) ou sur l'élément lui-même.
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Custom property</th>
+      <th>Défaut</th>
+      <th>Rôle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>`--ui-ripple-color`</td>
+      <td>`currentColor`</td>
+      <td>Couleur de l'onde. Le défaut suit la couleur de texte, donc reste lisible sur n'importe quel fond, marque et mode.</td>
+    </tr>
+    <tr>
+      <td>`--ui-ripple-opacity`</td>
+      <td>`0.22`</td>
+      <td>Opacité au départ de l'onde (elle décroît jusqu'à 0).</td>
+    </tr>
+    <tr>
+      <td>`--ui-ripple-duration`</td>
+      <td>`--transition-slow` (280ms)</td>
+      <td>Durée d'expansion.</td>
+    </tr>
+    <tr>
+      <td>`--ui-ripple-easing`</td>
+      <td>`--transition-easeout`</td>
+      <td>Courbe (décélérée).</td>
+    </tr>
+    <tr>
+      <td>`--ui-ripple-scale`</td>
+      <td>`1`</td>
+      <td>Échelle finale. `1` couvre exactement l'élément, au delà l'onde déborde puis est rognée.</td>
+    </tr>
+  </tbody>
+</table>
+
+```scss
+// Une onde de marque sur toute l'application.
+:root {
+  --ui-ripple-color: var(--actions-high-surface-default);
+  --ui-ripple-opacity: 0.3;
+}
+
+// Une onde plus lente, réservée aux tuiles du tableau de bord.
+.dashboard-tile {
+  --ui-ripple-duration: 620ms;
+}
+```
+
+Pour une valeur calculée à l'exécution, la liaison de style suffit, sans passer par une
+entrée de directive : `[style.--ui-ripple-color]="brandColor()"`.
+
+<Canvas of={RippleStories.Custom} />
+
+## Ce qui reçoit l'onde
+
+Le sélecteur par défaut d'une portée déléguée (globale ou `[uiRippleScope]`) est
+`button, [role="button"], [data-ripple="on"]` : volontairement restreint, pour qu'activer
+l'effet globalement ne fasse pas onduler les liens d'un paragraphe.
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Besoin</th>
+      <th>Écriture</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Faire onduler un élément non interactif</td>
+      <td>`data-ripple="on"` sur cet élément</td>
+    </tr>
+    <tr>
+      <td>Exclure un élément et son sous-arbre</td>
+      <td>`data-ripple="off"`, ou `[uiRipple]="false"` / `[uiRippleScope]="false"`</td>
+    </tr>
+    <tr>
+      <td>Élargir la cible pour toute l'application</td>
+      <td>`provideUiRipple({ selector: 'button, [role="button"], a[href]' })`</td>
+    </tr>
+    <tr>
+      <td>Élargir la cible pour un sous-arbre</td>
+      <td>`rippleSelector` sur `[uiRippleScope]`</td>
+    </tr>
+  </tbody>
+</table>
+
+Les portées ne se cumulent pas : une pression ne produit **qu'une onde**, celle de la
+déclaration la plus interne. Un contrôle `disabled` ou `aria-disabled="true"` n'en produit
+aucune.
+
+## Performance
+
+- Un seul écouteur `pointerdown`, **passif**, par activation : une portée globale ou locale
+  ne coûte pas un écouteur par bouton.
+- Enregistré **hors zone Angular** : une pression ne déclenche aucune détection de changement.
+- Rien n'est créé ni mesuré avant la première pression. La couche de rognage est ensuite
+  conservée sur l'élément, chaque vague est un `<span>` retiré à la fin de son animation, et
+  quatre vagues au plus coexistent sur un même élément.
+- L'animation ne porte que sur `transform` et `opacity`, donc reste sur le compositeur :
+  ni recalcul de mise en page, ni repeinture de l'hôte.
+
+## Désactivation et accessibilité
+
+- **Par élément ou sous-arbre** : `[uiRipple]="false"`, `[uiRippleScope]="false"` ou
+  `data-ripple="off"`.
+- **Global** : `data-motion="off"` sur `<html>` coupe l'onde comme le reste des animations
+  du kit (voir [Motion](?path=/docs/foundations-motion--docs)).
+- **Préférence système** : `prefers-reduced-motion: reduce` supprime l'onde, qui n'est
+  jamais créée dans ce cas.
+
+### Lecteur d'écran
+
+L'élément d'onde porte `aria-hidden="true"` : il est ignoré des lecteurs d'écran.
+
+### Clavier
+
+Le composant ne contient aucun élément interactif. Il n'ajoute ni cible de tabulation, ni
+raccourci, et ne modifie pas le nom accessible de l'élément qui le porte. Le retour visuel
+au clavier reste celui de l'anneau de focus (`:focus-visible`), distinct du survol.
+
+### Bonnes pratiques
+
+- Poser l'effet sur un contrôle **natif** (`<button>`, `<a>`) ou sur un élément déjà doté
+  d'un rôle et d'un focus : l'onde est décorative, elle ne rend rien cliquable.
+- Ne pas la substituer aux états `hover` / `focus` / `pressed` des tokens : elle les complète.

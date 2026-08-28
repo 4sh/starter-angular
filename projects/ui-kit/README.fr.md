@@ -208,6 +208,7 @@ Plus les entry points transverses :
 | `@4sh/ui-kit/forms`   | Socle des champs de formulaire — voir ci-dessous                                                        |
 | `@4sh/ui-kit/theming` | `ThemeService` (clair/sombre, `[data-theme]`) · `BrandService` (`[data-brand]`) · `provideUiKitBrand()` |
 | `@4sh/ui-kit/motion`  | Directive `UiMotion` + presets d'animation                                                              |
+| `@4sh/ui-kit/ripple`  | Directives `UiRipple` / `UiRippleScope` + `provideUiRipple()` (onde de pression)                        |
 | `@4sh/ui-kit/overlay` | Utilitaires des composants à overlay CDK (`closeOnNavigation`)                                          |
 | `@4sh/ui-kit/types`   | Types transverses (`UiLevel`, `UiSubLevel`, `UiFeedbackLevel`)                                          |
 
