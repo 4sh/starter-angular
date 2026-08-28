@@ -119,6 +119,8 @@ export class UiSidebarMenu {
   ariaLabelledBy = input<string>();
   /** Play the collapse animation on nested groups. */
   motion = input(true, { transform: booleanAttribute });
+  /** Ripple Effect */
+  ripple = input(true, { transform: booleanAttribute });
   /**
    * In the collapsed icon rail, reveal each item's label as a tooltip on hover /
    * focus (via the `[uiTooltip]` directive). No effect when expanded.

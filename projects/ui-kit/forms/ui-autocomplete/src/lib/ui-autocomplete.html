@@ -17,6 +17,7 @@
     <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -->
     <li
       class="ui-autocomplete-option"
+      [attr.data-ripple]="ripple() ? 'on' : 'off'"
       role="option"
       [attr.id]="row.id"
       [class._small]="size() === 'small'"
@@ -175,6 +176,7 @@
             <ui-chip
               #tagEl
               class="ui-autocomplete-tag"
+              [attr.data-ripple]="ripple() ? 'on' : 'off'"
               role="option"
               aria-selected="true"
               [attr.aria-label]="tag.label"

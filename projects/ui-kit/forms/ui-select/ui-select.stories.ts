@@ -291,6 +291,12 @@ const meta: Meta<UiSelect> = {
     cleared: { action: 'cleared', table: { disable: true } },
     filterChange: { action: 'filterChange', table: { disable: true } },
     lazyLoad: { action: 'lazyLoad', table: { disable: true } },
+    ripple: {
+      control: false,
+      description:
+        "Onde de pression sur les options de la liste quand l'effet ripple est activé (`provideUiRipple()` ou `[uiRippleScope]`). `false` la coupe sur ce composant, même en activation globale.",
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
+    },
   },
   args: {
     label: 'Ville',

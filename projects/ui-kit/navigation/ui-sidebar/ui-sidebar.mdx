@@ -100,6 +100,9 @@ un `<nav>` enveloppant des conteneurs `role="list"` / `role="listitem"`. Il gèr
 - un **badge** de fin rendu via `ui-badge` (`badge` + `badgeLevel`) et une icône « ouvre
   ailleurs » automatique pour les liens externes (`external` ou `target="_blank"`).
 
+Ses entrées de navigation ondulent quand l'effet [Ripple](?path=/docs/foundations-ripple--docs)
+est activé ; `[ripple]="false"` le coupe sur ce menu, activation globale comprise.
+
 Déposé dans un `ui-sidebar`, il lit l'état replié résolu par DI et se replie en **rail
 d'icônes** (libellés masqués, boutons parfaitement carrés). En usage autonome, pilotez le rail
 avec l'entrée `collapsed`. En rail, activez **`tooltips`** pour révéler le libellé de chaque

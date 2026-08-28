@@ -13,6 +13,9 @@ L'effet est **activable à trois portées** (application, sous-arbre, élément)
 personnalise **uniquement par des custom properties CSS**, héritées comme les autres
 tokens : rien à recompiler, rien à passer en TypeScript pour changer son apparence.
 
+Neuf composants du kit sont **équipés d'office** (voir plus bas) : les activer ne demande
+aucune retouche de vos templates, et chacun se coupe individuellement par `[ripple]="false"`.
+
 ## Activation
 
 <table className="doc-table">
@@ -51,10 +54,20 @@ import { provideUiRipple } from '@4sh/ui-kit/ripple';
 providers: [provideUiRipple()];
 ```
 
-Un seul écouteur `pointerdown` sur `body`, aucune directive à poser : chaque `<button>`,
-chaque `[role="button"]` et chaque élément marqué `data-ripple="on"` répond à la pression,
-composants du kit compris (l'onde se pose sur le contrôle natif qu'ils rendent, donc elle
-suit leur rayon).
+Un seul écouteur `pointerdown` sur `body`, aucune directive à poser. Ondulent alors les
+**contrôles curés du kit** (ils se déclarent eux-mêmes avec `data-ripple="on"`, sur le
+contrôle natif qu'ils rendent, donc l'onde suit leur rayon) et tout élément que vous marquez
+de la même façon.
+
+Vos propres boutons ne sont **pas** concernés par défaut : un design system ne peint pas une
+onde sur du markup qu'il ne possède pas. Pour les inclure, un sélecteur plus large suffit :
+
+```ts
+import { provideUiRipple, UI_RIPPLE_INTERACTIVE_SELECTOR } from '@4sh/ui-kit/ripple';
+
+providers: [provideUiRipple({ selector: UI_RIPPLE_INTERACTIVE_SELECTOR })];
+// button, [role="button"], a[href], [data-ripple="on"]
+```
 
 ### 2. Locale
 
@@ -136,14 +149,112 @@ poserait l'onde sur la boîte carrée du custom element.
     <tr>
       <td>`selector`</td>
       <td>`string`</td>
-      <td>`button, [role="button"], [data-ripple="on"]`</td>
-      <td>Ce qu'une portée déléguée fait onduler, pour tout le kit.</td>
+      <td>`[data-ripple="on"]`</td>
+      <td>Ce qu'une portée déléguée fait onduler. `UI_RIPPLE_INTERACTIVE_SELECTOR` y ajoute tout ce qui est cliquable.</td>
     </tr>
   </tbody>
 </table>
 
+Les neuf composants équipés d'office exposent en plus une entrée `ripple` (`boolean`,
+`true` par défaut) qui coupe l'effet sur cette instance, activation globale comprise.
+
 Besoin de déclencher une onde sans pression (raccourci clavier applicatif, événement
 distant) ? Le service `UiRippleEngine` expose `launch(element, event?, centered?)`.
+
+## Composants équipés par défaut
+
+Ces neuf entry points portent `data-ripple="on"` sur leur cible interactive. Ils n'ondulent
+que si l'effet est activé (globalement ou par un scope) : sans activation, l'attribut ne
+produit rien et ne coûte rien.
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Composant</th>
+      <th>Cible marquée</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>`ui-button`</td>
+      <td>Le `<button>` / `<a>` rendu. Par composition, équipe aussi `ui-button-split`, `ui-speed-dial`, `ui-file-upload` et tout composant qui instancie un bouton.</td>
+    </tr>
+    <tr>
+      <td>`ui-menu`</td>
+      <td>Les entrées (`role="menuitem"`), sous-menus et bascules compris.</td>
+    </tr>
+    <tr>
+      <td>`ui-context-menu`</td>
+      <td>Les entrées du menu embarqué.</td>
+    </tr>
+    <tr>
+      <td>`ui-sidebar-menu`</td>
+      <td>Les entrées de navigation (lien, bouton, bascule de section).</td>
+    </tr>
+    <tr>
+      <td>`ui-tabs`</td>
+      <td>Les en-têtes d'onglet. Pas les chevrons de défilement : ils font glisser la piste, ils ne mènent nulle part.</td>
+    </tr>
+    <tr>
+      <td>`ui-paginator`</td>
+      <td>Les numéros de page et les boutons première / précédente / suivante / dernière.</td>
+    </tr>
+    <tr>
+      <td>`ui-select`</td>
+      <td>Les options de la liste.</td>
+    </tr>
+    <tr>
+      <td>`ui-autocomplete`</td>
+      <td>Les suggestions de la liste.</td>
+    </tr>
+    <tr>
+      <td>`ui-datepicker`</td>
+      <td>Les cellules jour / mois / année et les boutons de navigation. Pas les incréments d'heure, qui sont des compteurs.</td>
+    </tr>
+  </tbody>
+</table>
+
+Le périmètre suit celui de PrimeNG : **actions, navigation et choix dans une liste**. En sont
+volontairement absents les contrôles dont le changement d'état **est déjà** le retour visuel
+(`ui-checkbox`, `ui-radio`, `ui-toggle`, `ui-toggle-button`, `ui-segment-control`, `ui-slider`,
+`ui-rating`, `ui-nudger`, `ui-input-number`), les surfaces de révélation (`ui-accordion`,
+`ui-stepper`), les ✕ de fermeture et de suppression (`ui-modal`, `ui-drawer`, `ui-toast`,
+`ui-chip`, `ui-tag`), trop petits pour que l'onde soit autre chose que du bruit, les liens en
+ligne (`ui-link`, `ui-breadcrumb`), dont la boîte se casse à chaque retour à la ligne, et les
+lignes de `ui-table`, où une onde pleine largeur est envahissante.
+
+### Couper l'effet sur un composant
+
+```html
+<ui-select [ripple]="false" [options]="options" />
+```
+
+L'entrée `ripple` (`true` par défaut) existe sur les neuf composants ci-dessus et l'emporte
+sur l'activation globale. Elle passe `data-ripple` à `"off"`, ce qui coupe aussi le sous-arbre.
+
+Pour éteindre une **zone entière**, l'attribut se pose directement, sans entrée :
+
+```html
+<section data-ripple="off">…</section>
+<aside [uiRippleScope]="false">…</aside>
+```
+
+⚠️ `ui-select`, `ui-autocomplete`, `ui-datepicker`, `ui-menu` et `ui-context-menu` rendent leurs
+cibles dans un **overlay CDK**, donc hors du DOM du composant : un `data-ripple="off"` posé sur
+un conteneur ne les atteint pas. Pour ceux-là, passez par `[ripple]="false"`.
+
+### Équiper un composant qui ne l'est pas
+
+Un scope sur le tag, avec le sélecteur qui va bien, suffit : aucun accès à l'intérieur du
+composant n'est nécessaire.
+
+```html
+<!-- la barre d'outils de l'éditeur -->
+<ui-editor uiRippleScope rippleSelector="button" />
+
+<!-- les en-têtes d'un accordéon -->
+<ui-accordion uiRippleScope rippleSelector=".ui-accordion-header">…</ui-accordion>
+```
 
 ## Personnalisation
 
@@ -209,8 +320,10 @@ entrée de directive : `[style.--ui-ripple-color]="brandColor()"`.
 ## Ce qui reçoit l'onde
 
 Le sélecteur par défaut d'une portée déléguée (globale ou `[uiRippleScope]`) est
-`button, [role="button"], [data-ripple="on"]` : volontairement restreint, pour qu'activer
-l'effet globalement ne fasse pas onduler les liens d'un paragraphe.
+`[data-ripple="on"]` : seul ondule ce qui **se déclare**, soit les neuf composants curés du
+kit, soit ce que vous marquez vous-même. Volontairement restreint, pour qu'activer l'effet
+globalement ne fasse pas onduler les ✕ de fermeture, les compteurs et les liens d'un
+paragraphe.
 
 <table className="doc-table">
   <thead>
@@ -221,16 +334,16 @@ l'effet globalement ne fasse pas onduler les liens d'un paragraphe.
   </thead>
   <tbody>
     <tr>
-      <td>Faire onduler un élément non interactif</td>
-      <td>`data-ripple="on"` sur cet élément</td>
+      <td>Faire onduler un élément de votre application</td>
+      <td>`data-ripple="on"` sur cet élément, ou la directive `uiRipple`</td>
     </tr>
     <tr>
       <td>Exclure un élément et son sous-arbre</td>
-      <td>`data-ripple="off"`, ou `[uiRipple]="false"` / `[uiRippleScope]="false"`</td>
+      <td>`data-ripple="off"`, `[ripple]="false"` (composant du kit), `[uiRipple]="false"` / `[uiRippleScope]="false"`</td>
     </tr>
     <tr>
-      <td>Élargir la cible pour toute l'application</td>
-      <td>`provideUiRipple({ selector: 'button, [role="button"], a[href]' })`</td>
+      <td>Faire onduler TOUS vos contrôles cliquables</td>
+      <td>`provideUiRipple({ selector: UI_RIPPLE_INTERACTIVE_SELECTOR })`</td>
     </tr>
     <tr>
       <td>Élargir la cible pour un sous-arbre</td>

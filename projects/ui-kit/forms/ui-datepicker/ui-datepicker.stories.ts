@@ -216,6 +216,12 @@ const meta: Meta<UiDatepicker> = {
     cleared: { action: 'cleared', table: { disable: true } },
     inputFocus: { action: 'inputFocus', table: { disable: true } },
     inputBlur: { action: 'inputBlur', table: { disable: true } },
+    ripple: {
+      control: false,
+      description:
+        "Onde de pression sur les cellules du calendrier et sa navigation quand l'effet ripple est activé (`provideUiRipple()` ou `[uiRippleScope]`). `false` la coupe sur ce composant, même en activation globale.",
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
+    },
   },
   args: {
     label: 'Date',

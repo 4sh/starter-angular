@@ -157,6 +157,12 @@ const meta: Meta<UiButton> = {
       description: 'Émis quand le bouton perd le focus.',
       table: { type: { summary: 'EventEmitter<FocusEvent>' }, defaultValue: { summary: '—' } },
     },
+    ripple: {
+      control: false,
+      description:
+        "Onde de pression sur le bouton quand l'effet ripple est activé (`provideUiRipple()` ou `[uiRippleScope]`). `false` la coupe sur ce composant, même en activation globale.",
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
+    },
   },
 };
 
@@ -220,7 +226,10 @@ const onColorBanner = (polarity: 'dark' | 'light', surface: string): Story => ({
 });
 
 export const OnColorDark: Story = onColorBanner('dark', '--actions-high-surface-default');
-export const OnColorLight: Story = onColorBanner('light', '--informative-warninglow-surface-default');
+export const OnColorLight: Story = onColorBanner(
+  'light',
+  '--informative-warninglow-surface-default',
+);
 
 // Sans `onColor`, le même bandeau met le bouton en échec : c'est le problème
 // que l'axe résout, et la comparaison vaut mieux qu'un paragraphe.

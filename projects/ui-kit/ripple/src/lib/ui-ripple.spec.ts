@@ -18,11 +18,11 @@ import { provideUiRipple, UiRipple, UiRippleScope } from './ui-ripple';
     <button class="targeted" [uiRipple]="targetedOn()">Ciblé</button>
 
     <div class="scope" [uiRippleScope]="scopeOn()">
-      <button class="inside">Délégué</button>
-      <button class="inside-disabled" disabled>Désactivé</button>
+      <button class="inside" data-ripple="on">Délégué</button>
+      <button class="inside-disabled" data-ripple="on" disabled>Désactivé</button>
       <button class="inside-own" uiRipple>Directive interne</button>
       <div class="opted-out" data-ripple="off">
-        <button class="inside-opted-out">Exclu</button>
+        <button class="inside-opted-out" data-ripple="on">Exclu</button>
       </div>
       <span class="plain">Non interactif</span>
     </div>
@@ -92,7 +92,7 @@ describe('Ripple activation', () => {
     expect(inks(scope)).toBeNull();
   });
 
-  it('leaves a non-interactive descendant alone until it is marked', () => {
+  it('leaves an undeclared descendant alone until it is marked', () => {
     const plain = at('.plain');
     press(plain);
     expect(inks(plain)).toBeNull();
@@ -149,8 +149,8 @@ describe('Ripple activation', () => {
 
 @Component({
   template: `
-    <button class="anywhere">Sans directive</button>
-    <div data-ripple="off"><button class="excluded">Exclu</button></div>
+    <button class="anywhere" data-ripple="on">Sans directive</button>
+    <div data-ripple="off"><button class="excluded" data-ripple="on">Exclu</button></div>
   `,
 })
 class Plain {}

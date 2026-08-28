@@ -299,6 +299,12 @@ const meta: Meta<UiAutocomplete> = {
     optionUnselect: { action: 'optionUnselect', table: { category: 'Outputs' } },
     valueChange: { action: 'valueChange', table: { category: 'Outputs' } },
     cleared: { action: 'cleared', table: { category: 'Outputs' } },
+    ripple: {
+      control: false,
+      description:
+        "Onde de pression sur les suggestions quand l'effet ripple est activé (`provideUiRipple()` ou `[uiRippleScope]`). `false` la coupe sur ce composant, même en activation globale.",
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
+    },
   },
 };
 

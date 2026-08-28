@@ -74,6 +74,12 @@ const meta: Meta<UiContextMenu> = {
       description: 'Nom accessible de la liste (`aria-label` sur `role="menu"`).',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
+    ripple: {
+      control: false,
+      description:
+        "Onde de pression sur les entrées du menu quand l'effet ripple est activé (`provideUiRipple()` ou `[uiRippleScope]`). `false` la coupe sur ce composant, même en activation globale.",
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
+    },
   },
   args: {
     level: 'high',

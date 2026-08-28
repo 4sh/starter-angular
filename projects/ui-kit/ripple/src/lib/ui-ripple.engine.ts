@@ -2,11 +2,20 @@ import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { DestroyRef, inject, Injectable, InjectionToken, NgZone, PLATFORM_ID } from '@angular/core';
 
 /**
- * What a delegated root (global scope or `[uiRippleScope]`) makes rippling:
- * the natively interactive elements, plus anything opted in with
- * `data-ripple="on"`. Widen it through `provideUiRipple({ selector })`.
+ * What a delegated root (global scope or `[uiRippleScope]`) makes rippling by
+ * default: only what declares itself, i.e. the kit's curated controls (which
+ * carry `data-ripple="on"`) and whatever the application marks the same way.
+ * A design system paints no wave on markup it does not own.
  */
-export const UI_RIPPLE_DEFAULT_SELECTOR = 'button, [role="button"], [data-ripple="on"]';
+export const UI_RIPPLE_DEFAULT_SELECTOR = '[data-ripple="on"]';
+
+/**
+ * Everything clickable, curated set included. Pass it to
+ * `provideUiRipple({ selector: UI_RIPPLE_INTERACTIVE_SELECTOR })` to ripple the
+ * application's own controls too, without listing them one by one.
+ */
+export const UI_RIPPLE_INTERACTIVE_SELECTOR =
+  'button, [role="button"], a[href], [data-ripple="on"]';
 
 /** Kit-wide ripple options, set once through `provideUiRipple()`. */
 export interface UiRippleOptions {

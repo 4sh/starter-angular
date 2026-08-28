@@ -19,6 +19,7 @@
     @if (showFirstLastIcon()) {
       <button
         type="button"
+        [attr.data-ripple]="ripple() ? 'on' : 'off'"
         class="ui-paginator-control"
         [disabled]="disabled() || isFirstPage()"
         [attr.aria-label]="firstPageAriaLabel()"
@@ -33,6 +34,7 @@
     }
     <button
       type="button"
+      [attr.data-ripple]="ripple() ? 'on' : 'off'"
       class="ui-paginator-control"
       [disabled]="disabled() || isFirstPage()"
       [attr.aria-label]="prevPageAriaLabel()"
@@ -53,6 +55,7 @@
           } @else {
             <button
               type="button"
+              [attr.data-ripple]="ripple() ? 'on' : 'off'"
               class="ui-paginator-page"
               [class._current]="item === currentPage()"
               [disabled]="disabled()"
@@ -76,6 +79,7 @@
 
     <button
       type="button"
+      [attr.data-ripple]="ripple() ? 'on' : 'off'"
       class="ui-paginator-control"
       [disabled]="disabled() || isLastPage()"
       [attr.aria-label]="nextPageAriaLabel()"
@@ -90,6 +94,7 @@
     @if (showFirstLastIcon()) {
       <button
         type="button"
+        [attr.data-ripple]="ripple() ? 'on' : 'off'"
         class="ui-paginator-control"
         [disabled]="disabled() || isLastPage()"
         [attr.aria-label]="lastPageAriaLabel()"

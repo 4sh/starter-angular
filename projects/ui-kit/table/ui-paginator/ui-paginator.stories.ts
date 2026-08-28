@@ -92,6 +92,12 @@ const meta: Meta<UiPaginator> = {
       description: 'Émis à chaque changement de pagination (navigation ou lignes par page).',
       table: { category: 'outputs' },
     },
+    ripple: {
+      control: false,
+      description:
+        "Onde de pression sur les boutons de pagination quand l'effet ripple est activé (`provideUiRipple()` ou `[uiRippleScope]`). `false` la coupe sur ce composant, même en activation globale.",
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
+    },
   },
   args: {
     totalRecords: 120,

@@ -78,6 +78,7 @@
           <button
             type="button"
             class="ui-menu-action _toggle"
+            [attr.data-ripple]="ripple() ? 'on' : 'off'"
             role="menuitem"
             [attr.data-key]="node.key"
             [attr.aria-expanded]="node.expanded"
@@ -139,6 +140,7 @@
             type="button"
             class="ui-menu-action _has-sub"
             [class._sub-open]="openFlyoutKey() === node.key"
+            [attr.data-ripple]="ripple() ? 'on' : 'off'"
             role="menuitem"
             aria-haspopup="menu"
             [attr.data-key]="node.key"
@@ -219,6 +221,7 @@
           @if (node.item.routerLink !== undefined && !node.item.disabled) {
             <a
               class="ui-menu-action"
+              [attr.data-ripple]="ripple() ? 'on' : 'off'"
               role="menuitem"
               [attr.data-key]="node.key"
               [routerLink]="node.item.routerLink"
@@ -239,6 +242,7 @@
           } @else if (node.item.url && !node.item.disabled) {
             <a
               class="ui-menu-action"
+              [attr.data-ripple]="ripple() ? 'on' : 'off'"
               role="menuitem"
               [attr.data-key]="node.key"
               [attr.href]="node.item.url"
@@ -257,6 +261,7 @@
             <button
               type="button"
               class="ui-menu-action"
+              [attr.data-ripple]="ripple() ? 'on' : 'off'"
               role="menuitem"
               [attr.data-key]="node.key"
               [disabled]="node.item.disabled ?? false"

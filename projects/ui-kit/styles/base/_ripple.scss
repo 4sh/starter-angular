@@ -27,6 +27,7 @@ $_scale: var(--ui-ripple-scale, #{utils.$ripple-scale});
   border-radius: inherit;
   contain: layout paint;
   pointer-events: none;
+  z-index: 1;
 }
 
 .ui-ripple-ink {
