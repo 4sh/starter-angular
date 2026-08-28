@@ -6,9 +6,11 @@ import { lightTheme, darkTheme } from './myTheme';
 import { addons } from 'storybook/preview-api';
 import docJson from '../documentation.json';
 import { brandGlobalTypes, withBrand, DEFAULT_BRAND } from './brand-toolbar';
+import { DEFAULT_RIPPLE, RIPPLE_GLOBAL, withRipple } from './ripple-toolbar';
 import { DOCS_SCROLL_TO_ANCHOR, type DocsScrollToAnchorPayload } from './addons/text-search/events';
 import { withComponentMetadata } from './restore-component-metadata';
 import { provideUiImageAssets, UiImageAssetsMap } from '@4sh/ui-kit/base/ui-image';
+import { provideUiRipple } from '@4sh/ui-kit/ripple';
 import assetsMap from '../src/assets/assets-map.json';
 
 setCompodocJson(docJson);
@@ -54,13 +56,14 @@ channel.on(DOCS_SCROLL_TO_ANCHOR, ({ anchor }: DocsScrollToAnchorPayload) =>
 );
 
 const preview: Preview = {
-  initialGlobals: { brand: DEFAULT_BRAND },
+  initialGlobals: { brand: DEFAULT_BRAND, [RIPPLE_GLOBAL]: DEFAULT_RIPPLE },
   globalTypes: brandGlobalTypes,
   decorators: [
     // Must stay first: it repairs `context.component` before Storybook derives the
     // implicit template from it.
     withComponentMetadata,
     withBrand,
+    withRipple,
     (Story, context) => {
       syncTheme(context.globals['darkMode']);
       return Story();
@@ -72,6 +75,9 @@ const preview: Preview = {
         // `ui-image` reads its local assets from an injected map (the kit can't know a
         // project's assets) — same wiring as the demo app's `app.config.ts`.
         provideUiImageAssets(assetsMap as UiImageAssetsMap),
+        // Branché en permanence : l'interrupteur de la barre d'outils ne coupe pas le
+        // moteur, il pose `data-ripple="off"` sur <html> (voir `ripple-toolbar.ts`).
+        provideUiRipple(),
       ],
     }),
   ],

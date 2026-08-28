@@ -14,11 +14,9 @@ module.exports = {
     '@storybook/addon-docs',
     '@storybook/addon-designs',
     '@storybook/addon-a11y',
-    // L'ordre de ce tableau est l'ordre des outils dans la barre du manager :
-    // recherche plein texte puis copie Markdown se placent donc juste avant
-    // le toggle dark mode.
     './addons/text-search/preset.cjs',
     './addons/copy-as-markdown/preset.cjs',
+    './addons/ripple-toggle/preset.cjs',
     '@storybook-community/storybook-dark-mode',
   ],
   framework: {
