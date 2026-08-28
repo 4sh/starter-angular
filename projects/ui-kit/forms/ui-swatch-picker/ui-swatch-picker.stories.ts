@@ -15,6 +15,10 @@ const meta: Meta<UiSwatchPicker> = {
   ],
   parameters: {
     layout: 'padded',
+    design: {
+      type: 'figma',
+      url: 'https://www.figma.com/design/GZww5hdUA49LB8XWeWP6tl/-Projet----UI-Kit?node-id=3727-36720',
+    },
   },
   argTypes: {
     palette: {
