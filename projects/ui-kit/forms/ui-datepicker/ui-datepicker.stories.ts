@@ -184,7 +184,7 @@ const meta: Meta<UiDatepicker> = {
     showOnFocus: {
       control: 'boolean',
       description:
-        'Ouvre le panneau dès que le champ prend le focus (pointeur ou clavier, jamais un focus programmatique). Ouvert ainsi, le panneau est non modal : le focus reste dans le champ, sans backdrop ni piège de focus.',
+        "Ouvre le panneau dès que le champ prend le focus (pointeur ou clavier, jamais un focus programmatique). L'option rend le panneau non modal : le focus reste dans le champ, sans backdrop ni piège de focus.",
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     formatHintLabel: {
@@ -489,9 +489,9 @@ export const EditableInput: Story = {
 // Ouverture au focus (showOnFocus) : cliquer ou tabuler dans le champ ouvre le calendrier, sans
 // attendre l'icône ni la flèche du bas. Le focus RESTE dans le champ (une ouverture qui le
 // déplacerait serait un changement de contexte au sens WCAG 3.2.1) : on continue de taper la date,
-// `↓` entre dans la grille, `Échap` ferme, `Tab` ferme et passe au champ suivant. Ouvert par ce
-// chemin le panneau est non modal — sans backdrop, donc le champ reste cliquable dessous pour
-// corriger un segment à la souris, ce que l'ouverture au clic « classique » interdisait.
+// `↓` entre dans la grille, `Échap` ferme, `Tab` ferme et passe au champ suivant. Le panneau est
+// non modal : sans backdrop, le champ reste cliquable dessous pour corriger un segment à la
+// souris, ce que l'ouverture au clic « classique » interdisait.
 export const ShowOnFocus: Story = {
   render: story(),
   args: {

@@ -445,6 +445,26 @@ describe('UiDatepicker — keyboard entry masking (FSHSP-118)', () => {
       expect(panel()).toBeNull();
     });
 
+    it('consumes Escape only when it actually closes the panel', async () => {
+      const { fixture, input } = await setupHost(DatepickerHost);
+      let seenByDocument = 0;
+      const spy = () => seenByDocument++;
+      document.addEventListener('keydown', spy);
+      try {
+        // Closed: the key belongs to whatever wraps the field (a modal closes on it too).
+        await keydown(input, 'Escape', fixture);
+        expect(seenByDocument).toBe(1);
+        // Open: the panel takes it, so one Escape does not also dismiss that parent.
+        await keydown(input, 'ArrowDown', fixture);
+        expect(panel()).not.toBeNull();
+        await keydown(input, 'Escape', fixture);
+        expect(panel()).toBeNull();
+        expect(seenByDocument).toBe(2); // the ArrowDown is not counted
+      } finally {
+        document.removeEventListener('keydown', spy);
+      }
+    });
+
     it('closes on Alt+ArrowUp, the APG counterpart of the opening ArrowDown', async () => {
       const { fixture, input } = await setupHost(DatepickerHost);
       await keydown(input, 'ArrowDown', fixture, { altKey: true });
@@ -473,6 +493,14 @@ describe('UiDatepicker — keyboard entry masking (FSHSP-118)', () => {
       await focusVia(input, 'mouse', fixture);
       // `aria-modal` would hide the very field being typed in from a screen reader's virtual
       // buffer; the backdrop would swallow the next click on it.
+      expect(panel()!.getAttribute('aria-modal')).toBeNull();
+      expect(document.querySelector('.cdk-overlay-backdrop')).toBeNull();
+    });
+
+    it('keeps the panel non-modal whichever way it was opened', async () => {
+      const { fixture, icon } = await setupHost(DatepickerShowOnFocusHost);
+      await click(icon!, fixture);
+      expect(panel()).not.toBeNull();
       expect(panel()!.getAttribute('aria-modal')).toBeNull();
       expect(document.querySelector('.cdk-overlay-backdrop')).toBeNull();
     });

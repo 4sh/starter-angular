@@ -55,15 +55,8 @@ export type DatepickerHourFormat = '12' | '24';
 export type DatepickerView = 'date' | 'month' | 'year';
 /** Selection quantity. */
 export type DatepickerSelectionMode = 'single' | 'multiple' | 'range';
-/**
- * @ignore How the panel got opened. Drives two things at once (see `openFrom`): whether focus
- * roves into the grid, and whether the panel is a modal dialog or a plain popup.
- *
- * - `'icon'` — the trigger's calendar toggle: "I want the grid", focus roves into it.
- * - `'field'` — the field itself or a keyboard shortcut; roves only when the field isn't typeable.
- * - `'focus'` — `showOnFocus`: focus must stay in the field (WCAG 3.2.1), so the panel opens as a
- *   NON-modal popup — no focus trap, no `aria-modal`, no backdrop.
- */
+/** @ignore Whether the focus roves into the grid on open: always from the calendar toggle,
+ *  only on a non-typeable field otherwise, never when the focus itself did the opening. */
 type DatepickerOpenOrigin = 'icon' | 'field' | 'focus';
 /**
  * Shape of the value crossing the CVA boundary — see {@link DatepickerValue}. Mandatory
@@ -1004,7 +997,9 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     this.focusedYear.set(base.getFullYear());
     this.overlayOrigin.set(this.resolveOverlayOrigin());
     // Before `panelOpen`: the overlay reads `hasBackdrop` when it attaches, not after.
-    this.nonModal.set(origin === 'focus');
+    // `showOnFocus` makes the panel a popup whichever way it was opened, so the field never
+    // gets two different behaviours depending on how it got there.
+    this.nonModal.set(origin === 'focus' || this.showOnFocus());
     this.panelOpen.set(true);
     this.opened.emit();
     // Keep focus in the input whenever it's typeable; only rove into the grid when it isn't
@@ -1079,20 +1074,14 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     if (!this.triggerReadonly()) this.triggerInput()?.focus();
     // Same origin as the focus that (usually) just opened it, so a click never upgrades a
     // non-modal panel into a modal one mid-interaction.
-    this.openFrom(this.showOnFocus() ? 'focus' : 'field');
+    this.openFrom('field');
   }
 
-  /**
-   * @ignore Keys typed anywhere in the trigger wrapper.
-   *
-   */
+  /** @ignore Keys typed anywhere in the trigger wrapper. */
   protected onTriggerKeydown(event: KeyboardEvent): void {
-    // `Tab` off the trigger dismisses a non-modal panel, and has to do it before the browser
-    // picks the next stop: the overlay sits after the trigger in the DOM, so an open panel
-    // would otherwise capture the tabulation and make leaving a date field cost a walk through
-    // the whole calendar. Closing it late is worse still, focus lands in a panel that detaches
-    // out from under it. Hence the synchronous refresh, the one thing that empties the DOM in
-    // time. (`↓` remains how the grid is entered, the ARIA APG combobox contract.)
+    // The overlay sits after the trigger in the DOM, so an open panel would capture the
+    // tabulation. Closing it late is worse: the focus lands in a panel that detaches under it,
+    // hence the synchronous refresh. The grid is entered with `↓`, per the APG combobox pattern.
     if (
       event.key === 'Tab' &&
       this.nonModal() &&
@@ -1103,14 +1092,11 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
       this.cdr.detectChanges();
       return;
     }
-    // The wrapper also catches keys pressed on the trigger's own action button (calendar /
-    // clear). It's a native `<button>`: `Enter` and `Space` must reach it, and intercepting
-    // `Enter` here used to `preventDefault()` away its activation click, leaving the icon
-    // openable by `Space` only. `Escape` stays ours — the panel it closes is not
-    // the button's business.
+    // The wrapper also catches keys pressed on the trigger's own action button. It is a native
+    // `<button>`: `Enter` and `Space` must reach it. Only `Escape` stays ours.
     const inputEl = this.triggerInput()?.nativeInputElement();
     if (inputEl && event.target !== inputEl) {
-      if (event.key === 'Escape') this.close();
+      this.handleEscape(event);
       return;
     }
     // `Alt+↑` closes from either flavour of trigger.
@@ -1129,17 +1115,26 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
         event.preventDefault();
         this.commitTyped();
         if (this.panelOpen() && this.closeOnSelect() && !this.showTime()) this.close(false);
-      } else if (event.key === 'Escape') {
-        this.close();
+      } else {
+        this.handleEscape(event);
       }
       return;
     }
     if (event.key === 'ArrowDown' || event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
       this.open();
-    } else if (event.key === 'Escape') {
-      this.close();
+    } else {
+      this.handleEscape(event);
     }
+  }
+
+  /** @ignore `Escape` is consumed only when it really closes the panel. A closed one lets it
+   *  bubble, so a parent dialog stays reachable by the same key. */
+  private handleEscape(event: KeyboardEvent): void {
+    if (event.key !== 'Escape' || !this.panelOpen()) return;
+    event.preventDefault();
+    event.stopPropagation();
+    this.close();
   }
 
   /**
@@ -1800,7 +1795,7 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
         this.selectDay(this.buildDay(startOfDay(current), this.viewDate()));
         return;
       case 'Escape':
-        if (!this.inline()) this.close();
+        this.handleEscape(event);
         return;
       default:
         return;
@@ -1861,7 +1856,7 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
       return;
     }
     if (event.key === 'Escape') {
-      if (!this.inline()) this.close();
+      this.handleEscape(event);
       return;
     }
     if (event.key === 'PageUp' || event.key === 'PageDown') {
@@ -1891,7 +1886,7 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
       return;
     }
     if (event.key === 'Escape') {
-      if (!this.inline()) this.close();
+      this.handleEscape(event);
       return;
     }
     if (event.key === 'PageUp' || event.key === 'PageDown') {

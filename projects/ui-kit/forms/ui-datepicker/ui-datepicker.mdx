@@ -285,8 +285,9 @@ sert surtout à choisir une date plutôt qu'à la taper.
 
 <Canvas of={DatepickerStories.ShowOnFocus} />
 
-Ouvert par ce chemin, le panneau est un **popup non modal**, et cette différence porte tout le
-reste :
+Tant que `showOnFocus` est actif, le panneau est un **popup non modal**, quel que soit le chemin
+qui l'a ouvert (focus, icône, `↓`) : le champ n'a jamais deux comportements selon la façon dont on
+y est arrivé. Cette différence porte tout le reste :
 
 - **Le focus reste dans le champ.** Le déplacer *en conséquence* d'un focus serait un changement de
   contexte au sens de [WCAG 3.2.1 (_On Focus_, niveau A)](https://www.w3.org/WAI/WCAG22/Understanding/on-focus.html).
@@ -297,12 +298,11 @@ reste :
   le clic-pour-ouvrir avait été retiré. Le champ reste donc cliquable sous le panneau ouvert, pour
   corriger un segment à la souris, et un clic dedans le rouvre après un `Échap`.
 - **`Tab` ferme** et poursuit la tabulation vers l'élément suivant de la page, sans traverser le
-  calendrier — c'est le contrat APG du combobox, et l'overlay suivant le champ dans l'ordre du DOM,
+  calendrier : c'est le contrat APG du combobox, et l'overlay suivant le champ dans l'ordre du DOM,
   quitter un champ date coûterait sinon une tabulation à travers toute la grille. La grille
   s'atteint par `↓`.
 
-Les autres chemins d'ouverture (icône calendrier, `↓`, clic sur un champ non saisissable)
-conservent le dialogue modal habituel.
+Sans `showOnFocus`, le panneau reste le dialogue modal habituel.
 
 ## Templates
 
@@ -407,7 +407,7 @@ via l'interop CVA native, ainsi qu'aux formulaires template-driven (`[(ngModel)]
     </tr>
     <tr>
       <td><strong>Fermeture</strong></td>
-      <td><kbd>Échap</kbd>, <kbd>Alt</kbd>+<kbd>↑</kbd>, clic extérieur ou sélection (hors <code>showTime</code>) ferme et rend le focus au déclencheur. Un panneau ouvert au focus (<a href="#ouverture-au-focus-showonfocus"><code>showOnFocus</code></a>), n'ayant ni backdrop ni piège de focus, se ferme aussi sur <kbd>Tab</kbd> sortant.</td>
+      <td><kbd>Échap</kbd>, <kbd>Alt</kbd>+<kbd>↑</kbd>, clic extérieur ou sélection (hors <code>showTime</code>) ferme et rend le focus au déclencheur. <kbd>Échap</kbd> n'est consommé que s'il ferme vraiment le panneau : panneau déjà fermé, la touche remonte, et un <a href="?path=/docs/components-ui-layout-ui-modal--docs"><code>ui-modal</code></a> parent reste fermable du même geste (contrat partagé avec <code>ui-select</code> et <code>ui-autocomplete</code>). Un panneau ouvert au focus (<a href="#ouverture-au-focus-showonfocus"><code>showOnFocus</code></a>), n'ayant ni backdrop ni piège de focus, se ferme aussi sur <kbd>Tab</kbd> sortant.</td>
     </tr>
     <tr>
       <td><strong>Sémantique</strong></td>
