@@ -181,6 +181,12 @@ const meta: Meta<UiDatepicker> = {
         'Autorise la saisie clavier de la date dans le champ (mode single, hors timeOnly). Parsée au blur / Entrée.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
+    showOnFocus: {
+      control: 'boolean',
+      description:
+        'Ouvre le panneau dès que le champ prend le focus (pointeur ou clavier, jamais un focus programmatique). Ouvert ainsi, le panneau est non modal : le focus reste dans le champ, sans backdrop ni piège de focus.',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
     formatHintLabel: {
       control: 'text',
       description:
@@ -256,6 +262,7 @@ const meta: Meta<UiDatepicker> = {
     autoFlip: true,
     closeOnSelect: true,
     allowInput: true,
+    showOnFocus: false,
     required: false,
     disabled: false,
     readonly: false,
@@ -276,7 +283,7 @@ const TEMPLATE = `<div style="width:260px"><ui-datepicker
     [selectionMode]="selectionMode" [view]="view" [numberOfMonths]="numberOfMonths"
     [showTime]="showTime" [timeOnly]="timeOnly" [hourFormat]="hourFormat" [stepMinute]="stepMinute" [editableTime]="editableTime"
     [showButtonBar]="showButtonBar" [todayLabel]="todayLabel" [clearLabel]="clearLabel"
-    [inline]="inline" [showClear]="showClear" [autoFlip]="autoFlip" [closeOnSelect]="closeOnSelect" [allowInput]="allowInput"
+    [inline]="inline" [showClear]="showClear" [autoFlip]="autoFlip" [closeOnSelect]="closeOnSelect" [allowInput]="allowInput" [showOnFocus]="showOnFocus"
     [minDate]="minDate" [maxDate]="maxDate" [disabledDays]="disabledDays" [disabledDates]="disabledDates"
     [dateFormat]="dateFormat" [parseDate]="parseDate" [panelStyleClass]="panelStyleClass"
     [required]="required" [disabled]="disabled" [readonly]="readonly" [invalid]="invalid"
@@ -476,6 +483,22 @@ export const EditableInput: Story = {
     showClear: true,
     placeholder: '', // vide → placeholder auto dérivé de la locale (jj/mm/aaaa)
     helperText: 'Tapez "08072026" au clavier : les "/" apparaissent seuls (jj/mm/aaaa).',
+  },
+};
+
+// Ouverture au focus (showOnFocus) : cliquer ou tabuler dans le champ ouvre le calendrier, sans
+// attendre l'icône ni la flèche du bas. Le focus RESTE dans le champ (une ouverture qui le
+// déplacerait serait un changement de contexte au sens WCAG 3.2.1) : on continue de taper la date,
+// `↓` entre dans la grille, `Échap` ferme, `Tab` ferme et passe au champ suivant. Ouvert par ce
+// chemin le panneau est non modal — sans backdrop, donc le champ reste cliquable dessous pour
+// corriger un segment à la souris, ce que l'ouverture au clic « classique » interdisait.
+export const ShowOnFocus: Story = {
+  render: story(),
+  args: {
+    label: 'Date',
+    showOnFocus: true,
+    placeholder: '',
+    helperText: "Cliquez ou tabulez dans le champ : le calendrier s'ouvre, le curseur y reste.",
   },
 };
 

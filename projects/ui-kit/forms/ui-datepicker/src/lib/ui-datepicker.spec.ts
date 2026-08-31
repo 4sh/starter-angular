@@ -5,14 +5,16 @@
  *
  * Covers: `hasValue()`-gated mask on/off (`single` and `range`), the `enforceBounds`/`dataEnd`
  * deletion fixes, re-arming the mask on a manual clear, the in-place-edit suspension and the
- * custom-`dateFormat` field order (FSHSP-179), and which trigger clicks open the panel
- * (FSHSP-180). Not covered: `multiple` (no live mask) or the format-hint derivation.
+ * custom-`dateFormat` field order, which trigger clicks open the panel
+ * , and the opening keys / `showOnFocus`. Not covered: `multiple` (no
+ * live mask) or the format-hint derivation.
  *
  * The panel is rendered through a `cdkConnectedOverlay`, so once opened it lives in the global
  * overlay container under `document.body`, not in `fixture.nativeElement` — as in
  * `ui-select.spec.ts`, assertions on it query `document` directly.
  */
 import { Component } from '@angular/core';
+import { FocusMonitor } from '@angular/cdk/a11y';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { describe, expect, it } from 'vitest';
@@ -101,6 +103,21 @@ class DatepickerNoIconHost {
   readonly control = new FormControl<Date | null>(null);
 }
 
+/** `showOnFocus` on an otherwise default (typeable, icon-bearing) field. */
+@Component({
+  imports: [ReactiveFormsModule, UiDatepicker],
+  template: `<ui-datepicker
+    label="Date"
+    valueType="date"
+    locale="fr-FR"
+    [showOnFocus]="true"
+    [formControl]="control"
+  />`,
+})
+class DatepickerShowOnFocusHost {
+  readonly control = new FormControl<Date | null>(null);
+}
+
 async function setup(initial: Date | null = null) {
   await TestBed.configureTestingModule({ imports: [DatepickerHost] }).compileComponents();
   const fixture: ComponentFixture<DatepickerHost> = TestBed.createComponent(DatepickerHost);
@@ -153,7 +170,20 @@ async function setupHost<T>(host: new () => T) {
   fixture.detectChanges();
   await fixture.whenStable();
   const trigger = fixture.nativeElement.querySelector('.ui-datepicker-trigger') as HTMLElement;
-  return { fixture, trigger };
+  const input = trigger.querySelector('input.ui-input-native') as HTMLInputElement;
+  const icon = trigger.querySelector('.ui-input-action') as HTMLButtonElement | null;
+  return { fixture, trigger, input, icon };
+}
+
+/** Focuses `el` the way a user would (the origin is what `showOnFocus` gates on), flushes CD. */
+async function focusVia(
+  el: HTMLElement,
+  origin: 'keyboard' | 'mouse' | 'program',
+  fixture: ComponentFixture<unknown>,
+) {
+  TestBed.inject(FocusMonitor).focusVia(el, origin);
+  fixture.detectChanges();
+  await fixture.whenStable();
 }
 
 function panel(): HTMLElement | null {
@@ -165,11 +195,20 @@ async function click(el: HTMLElement, fixture: ComponentFixture<unknown>) {
   fixture.detectChanges();
   await fixture.whenStable();
 }
-/** Dispatches a `keydown` on `el` and flushes CD. */
-async function keydown(el: HTMLElement, key: string, fixture: ComponentFixture<unknown>) {
-  el.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true }));
+/** Dispatches a `keydown` on `el`, flushes CD, and hands the event back, whether it was
+ *  `preventDefault()`-ed is the only thing that says if a native `<button>` activation survived
+ *  the trigger's own handler (jsdom never synthesises the click itself). */
+async function keydown(
+  el: HTMLElement,
+  key: string,
+  fixture: ComponentFixture<unknown>,
+  init: KeyboardEventInit = {},
+) {
+  const event = new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true, ...init });
+  el.dispatchEvent(event);
   fixture.detectChanges();
   await fixture.whenStable();
+  return event;
 }
 
 /** Mirrors a single native keystroke: sets the raw value + caret, dispatches `input`, flushes CD. */
@@ -382,6 +421,127 @@ describe('UiDatepicker — keyboard entry masking (FSHSP-118)', () => {
       // still on, would get reformatted instead of echoed back verbatim.
       await typeInto(input, '0101199901012000', 16, fixture);
       expect(input.value).toBe('0101199901012000');
+    });
+  });
+
+  describe('opening keys', () => {
+    it('leaves Enter to the calendar toggle instead of consuming it', async () => {
+      const { fixture, icon, input } = await setupHost(DatepickerHost);
+      // The toggle sits inside the wrapper that carries the trigger's keydown handler, so its
+      // own keys bubble through it. Consuming Enter there `preventDefault()`-ed the native
+      // button activation away, leaving the icon openable by Space (and `↓`) only.
+      expect((await keydown(icon!, 'Enter', fixture)).defaultPrevented).toBe(false);
+      // On the field itself Enter stays the commit key: it is spoken for (and submits a form),
+      // so it is deliberately NOT an opening key there — `↓` / `Alt+↓` are.
+      expect((await keydown(input, 'Enter', fixture)).defaultPrevented).toBe(true);
+      expect(panel()).toBeNull();
+    });
+
+    it('still closes on Escape pressed on the toggle', async () => {
+      const { fixture, icon } = await setupHost(DatepickerHost);
+      await click(icon!, fixture);
+      expect(panel()).not.toBeNull();
+      await keydown(icon!, 'Escape', fixture);
+      expect(panel()).toBeNull();
+    });
+
+    it('closes on Alt+ArrowUp, the APG counterpart of the opening ArrowDown', async () => {
+      const { fixture, input } = await setupHost(DatepickerHost);
+      await keydown(input, 'ArrowDown', fixture, { altKey: true });
+      expect(panel()).not.toBeNull();
+      await keydown(input, 'ArrowUp', fixture, { altKey: true });
+      expect(panel()).toBeNull();
+    });
+  });
+
+  describe('showOnFocus', () => {
+    it('stays closed on focus by default', async () => {
+      const { fixture, input } = await setupHost(DatepickerHost);
+      await focusVia(input, 'keyboard', fixture);
+      expect(panel()).toBeNull();
+    });
+
+    it('opens on a user focus without moving it out of the field (WCAG 3.2.1)', async () => {
+      const { fixture, input } = await setupHost(DatepickerShowOnFocusHost);
+      await focusVia(input, 'keyboard', fixture);
+      expect(panel()).not.toBeNull();
+      expect(document.activeElement).toBe(input);
+    });
+
+    it('opens as a non-modal popup — no aria-modal, no backdrop', async () => {
+      const { fixture, input } = await setupHost(DatepickerShowOnFocusHost);
+      await focusVia(input, 'mouse', fixture);
+      // `aria-modal` would hide the very field being typed in from a screen reader's virtual
+      // buffer; the backdrop would swallow the next click on it.
+      expect(panel()!.getAttribute('aria-modal')).toBeNull();
+      expect(document.querySelector('.cdk-overlay-backdrop')).toBeNull();
+    });
+
+    it('ignores a programmatic focus', async () => {
+      const { fixture, input } = await setupHost(DatepickerShowOnFocusHost);
+      await focusVia(input, 'program', fixture);
+      expect(panel()).toBeNull();
+    });
+
+    it('does not re-open when closing hands the focus back to the field', async () => {
+      const { fixture, input } = await setupHost(DatepickerShowOnFocusHost);
+      await focusVia(input, 'keyboard', fixture);
+      expect(panel()).not.toBeNull();
+      // The focus has to genuinely leave the field first: `close()` re-focuses the trigger, and
+      // re-focusing an already-focused element fires nothing. Rove into the grid, as `↓` does.
+      const cell = panel()!.querySelector('.ui-datepicker-day[tabindex="0"]') as HTMLElement;
+      cell.focus();
+      fixture.detectChanges();
+      await fixture.whenStable();
+      expect(panel()).not.toBeNull(); // the roving focus is not a dismissal
+      // Escaping out of the grid gives the focus back to the field, a focus the monitor still
+      // attributes to that very keystroke, so only the explicit guard stops the panel from
+      // re-opening the instant it closed.
+      await keydown(cell, 'Escape', fixture);
+      expect(panel()).toBeNull();
+    });
+
+    it('closes when the focus leaves the trigger for good, not on the way to its toggle', async () => {
+      const { fixture, input, icon } = await setupHost(DatepickerShowOnFocusHost);
+      await focusVia(input, 'keyboard', fixture);
+      expect(panel()).not.toBeNull();
+      // `Tab` from the field lands on the calendar toggle, still the trigger, still its popup.
+      icon!.focus();
+      fixture.detectChanges();
+      await fixture.whenStable();
+      expect(panel()).not.toBeNull();
+      // The next one leaves for real. Nothing else would dismiss a panel with no backdrop and
+      // no focus trap.
+      const outside = document.createElement('button');
+      document.body.appendChild(outside);
+      outside.focus();
+      fixture.detectChanges();
+      await fixture.whenStable();
+      expect(panel()).toBeNull();
+      outside.remove();
+    });
+
+    it('closes on the Tab that leaves the trigger, not on the one reaching its toggle', async () => {
+      const { fixture, input, icon } = await setupHost(DatepickerShowOnFocusHost);
+      await focusVia(input, 'keyboard', fixture);
+      // Field → toggle: still the trigger, the panel is still its popup.
+      await keydown(input, 'Tab', fixture);
+      expect(panel()).not.toBeNull();
+      // Toggle → out. The overlay follows the trigger in the DOM, so leaving it open would send
+      // the tabulation through the whole calendar instead of on to the next field.
+      await keydown(icon!, 'Tab', fixture);
+      expect(panel()).toBeNull();
+    });
+
+    it('re-opens on a click, the dismissed field still holding the focus', async () => {
+      const { fixture, input } = await setupHost(DatepickerShowOnFocusHost);
+      await focusVia(input, 'keyboard', fixture);
+      await keydown(input, 'Escape', fixture);
+      expect(panel()).toBeNull();
+      // No second focus event is coming, without click-to-open the field would be a dead end
+      // for a mouse user from here on.
+      await click(input, fixture);
+      expect(panel()).not.toBeNull();
     });
   });
 });

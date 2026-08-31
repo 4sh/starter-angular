@@ -1,5 +1,6 @@
 import {
   booleanAttribute,
+  ChangeDetectorRef,
   Component,
   computed,
   contentChild,
@@ -21,7 +22,7 @@ import { NgTemplateOutlet } from '@angular/common';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { dropdownOverlayPositions } from '@4sh/ui-kit/forms';
-import { CdkTrapFocus } from '@angular/cdk/a11y';
+import { CdkTrapFocus, FocusMonitor } from '@angular/cdk/a11y';
 import { BaseFormField } from '@4sh/ui-kit/forms';
 import {
   autoFormatSegments,
@@ -54,6 +55,16 @@ export type DatepickerHourFormat = '12' | '24';
 export type DatepickerView = 'date' | 'month' | 'year';
 /** Selection quantity. */
 export type DatepickerSelectionMode = 'single' | 'multiple' | 'range';
+/**
+ * @ignore How the panel got opened. Drives two things at once (see `openFrom`): whether focus
+ * roves into the grid, and whether the panel is a modal dialog or a plain popup.
+ *
+ * - `'icon'` — the trigger's calendar toggle: "I want the grid", focus roves into it.
+ * - `'field'` — the field itself or a keyboard shortcut; roves only when the field isn't typeable.
+ * - `'focus'` — `showOnFocus`: focus must stay in the field (WCAG 3.2.1), so the panel opens as a
+ *   NON-modal popup — no focus trap, no `aria-modal`, no backdrop.
+ */
+type DatepickerOpenOrigin = 'icon' | 'field' | 'focus';
 /**
  * Shape of the value crossing the CVA boundary — see {@link DatepickerValue}. Mandatory
  * (`input.required`, no default): the consumer must pick one explicitly rather than accidentally
@@ -336,6 +347,11 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   /** Render the panel inline (no trigger, no overlay). */
   inline = input(false, { transform: booleanAttribute });
   /**
+   * Open the panel as soon as the trigger takes focus, pointer *or* keyboard, never a
+   * programmatic focus.
+   */
+  showOnFocus = input(false, { transform: booleanAttribute });
+  /**
    * Auto-flip the panel above the trigger when there isn't enough room below
    * (default). Set `false` to lock it below the trigger regardless of space.
    */
@@ -373,6 +389,12 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
 
   /** @ignore */
   private readonly localeId = inject(LOCALE_ID);
+  /** @ignore Focus origin of the trigger, for `showOnFocus`. The CDK is the only thing that can
+   *  tell a user-initiated focus from a programmatic one (`autofocus`, a host app calling
+   *  `focus()`), which must not pop a calendar the user never asked for. */
+  private readonly focusMonitor = inject(FocusMonitor);
+  /** @ignore Only used to detach the overlay *synchronously* on `Tab`, see `onTriggerKeydown`. */
+  private readonly cdr = inject(ChangeDetectorRef);
   /** @ignore */
   private readonly triggerInput = viewChild<UiInput>('trigger');
   /** @ignore Trigger host (to anchor the overlay on the input box, not the helper). */
@@ -381,11 +403,21 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   });
   /** @ignore Panel root element (overlay or inline) — used for roving day focus. */
   private readonly panelEl = viewChild<ElementRef<HTMLElement>>('panel');
+  /** @ignore Trigger wrapper (field + label + format hint). A non-modal panel has no backdrop,
+   *  so outside-click dismissal has to know what "inside the trigger" means. */
+  private readonly triggerWrapperEl = viewChild<ElementRef<HTMLElement>>('triggerWrapper');
 
   /** @ignore */
   protected readonly panelId = `ui-datepicker-panel-${nextPanelUid++}`;
   /** @ignore */
   protected readonly panelOpen = signal(false);
+  /** @ignore Panel opened without taking the focus (`showOnFocus`): plain popup instead of the
+   *  usual modal dialog — see {@link DatepickerOpenOrigin}. */
+  protected readonly nonModal = signal(false);
+  /** @ignore Set while we hand the focus back to the trigger ourselves (`close`), so the
+   *  returning focus never re-opens the panel that just closed. `focus()` dispatches
+   *  synchronously, so a plain flag is enough, no timer to leak. */
+  private suppressFocusOpen = false;
   /** @ignore Element the overlay is anchored to (the input box). */
   protected readonly overlayOrigin = signal<Element | null>(null);
   /** @ignore Month currently displayed. */
@@ -903,6 +935,25 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     // an app shell that survives the navigation).
     closeOnNavigation(() => this.close(false));
 
+    // `showOnFocus`: open on a user-initiated focus of the trigger. Driven straight off the
+    // FocusMonitor stream rather than the field's own `(focus)`, the origin has to be known
+    // before deciding, and this way there is no listener-ordering question to get wrong.
+    effect((onCleanup) => {
+      const el = this.triggerInput()?.nativeInputElement();
+      if (!el) return;
+      const sub = this.focusMonitor.monitor(el).subscribe((origin) => {
+        // `null` = blur. `'program'` = not a user gesture. And `suppressFocusOpen` covers the
+        // focus WE give back on close, which the monitor still attributes to whatever gesture
+        // triggered that close ('keyboard' for Escape, 'mouse' for a day click).
+        if (!origin || origin === 'program' || this.suppressFocusOpen) return;
+        if (this.showOnFocus()) this.openFrom('focus');
+      });
+      onCleanup(() => {
+        sub.unsubscribe();
+        this.focusMonitor.stopMonitoring(el);
+      });
+    });
+
     // Keep time signals in sync with the (first) value.
     effect(() => {
       const first = this.firstSelectedFrom(this.internalValue() ?? null);
@@ -938,6 +989,12 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
    *   clicking the field itself, or a keyboard shortcut) — see the rove-into-grid comment below.
    */
   open(viaIcon = false): void {
+    this.openFrom(viaIcon ? 'icon' : 'field');
+  }
+
+  /** @ignore Real implementation of {@link open}, keyed on the full {@link DatepickerOpenOrigin}
+   *  (the public `open()` only ever expresses two of the three). */
+  private openFrom(origin: DatepickerOpenOrigin): void {
     if (this.inline() || this.isDisabled() || this.readonly() || this.panelOpen()) return;
     const base = this.firstSelectedFrom(this.internalValue() ?? null) ?? startOfDay(new Date());
     this.viewDate.set(firstOfMonth(base));
@@ -946,6 +1003,8 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     this.focusedMonthIndex.set(base.getMonth());
     this.focusedYear.set(base.getFullYear());
     this.overlayOrigin.set(this.resolveOverlayOrigin());
+    // Before `panelOpen`: the overlay reads `hasBackdrop` when it attaches, not after.
+    this.nonModal.set(origin === 'focus');
     this.panelOpen.set(true);
     this.opened.emit();
     // Keep focus in the input whenever it's typeable; only rove into the grid when it isn't
@@ -953,8 +1012,14 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     // grid"). Used to key off `selectionMode() !== 'single'` instead, which broke once `range`
     // got its own live mask: back then the field's own click ALSO called `open()` (now gated,
     // see `onTriggerClick`), so roving on every non-`single` mode stole focus back out of the
-    // field the moment you clicked it to type (FSHSP-118 follow-up).
-    if (this.showCalendar() && (this.triggerReadonly() || viaIcon)) {
+    // field the moment you clicked it to type.
+    // Never on `'focus'`: moving the focus as a *consequence* of focusing the field is a WCAG
+    // 3.2.1 change of context. `↓` is how the user asks for the grid there.
+    if (
+      origin !== 'focus' &&
+      this.showCalendar() &&
+      (this.triggerReadonly() || origin === 'icon')
+    ) {
       if (this.currentView() === 'date') this.queueDayFocus();
       else if (this.currentView() === 'month') this.queueMonthFocus();
       else this.queueYearFocus();
@@ -966,7 +1031,13 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     this.panelOpen.set(false);
     this.emitTouch();
     this.closed.emit();
-    if (focusTrigger) this.triggerInput()?.focus();
+    if (focusTrigger) {
+      // Guard the whole (synchronous) focus dispatch: with `showOnFocus` the returning focus
+      // would otherwise re-open the panel we are closing, on Escape and on every selection.
+      this.suppressFocusOpen = true;
+      this.triggerInput()?.focus();
+      this.suppressFocusOpen = false;
+    }
   }
 
   /** @ignore */
@@ -995,7 +1066,9 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
    * `previewTyped`, which disarms the auto-"/" mask mid-entry (see `typingSlots`). The icon,
    * `↓` and typing are unaffected.
    */
-  private readonly openOnTriggerClick = computed(() => this.triggerReadonly() || !this.showIcon());
+  private readonly openOnTriggerClick = computed(
+    () => this.triggerReadonly() || !this.showIcon() || this.showOnFocus(),
+  );
 
   /** @ignore Click anywhere on the trigger (label, field or format hint — they share the wrapper). */
   protected onTriggerClick(): void {
@@ -1004,11 +1077,48 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     // wrapper — `Escape`/`↓` are bound there, so they'd be dead while the panel is open. A click
     // on the field itself is already focused by then, so this never moves the caret.
     if (!this.triggerReadonly()) this.triggerInput()?.focus();
-    this.open();
+    // Same origin as the focus that (usually) just opened it, so a click never upgrades a
+    // non-modal panel into a modal one mid-interaction.
+    this.openFrom(this.showOnFocus() ? 'focus' : 'field');
   }
 
-  /** @ignore */
+  /**
+   * @ignore Keys typed anywhere in the trigger wrapper.
+   *
+   */
   protected onTriggerKeydown(event: KeyboardEvent): void {
+    // `Tab` off the trigger dismisses a non-modal panel, and has to do it before the browser
+    // picks the next stop: the overlay sits after the trigger in the DOM, so an open panel
+    // would otherwise capture the tabulation and make leaving a date field cost a walk through
+    // the whole calendar. Closing it late is worse still, focus lands in a panel that detaches
+    // out from under it. Hence the synchronous refresh, the one thing that empties the DOM in
+    // time. (`↓` remains how the grid is entered, the ARIA APG combobox contract.)
+    if (
+      event.key === 'Tab' &&
+      this.nonModal() &&
+      this.panelOpen() &&
+      this.tabLeavesTrigger(event)
+    ) {
+      this.close(false);
+      this.cdr.detectChanges();
+      return;
+    }
+    // The wrapper also catches keys pressed on the trigger's own action button (calendar /
+    // clear). It's a native `<button>`: `Enter` and `Space` must reach it, and intercepting
+    // `Enter` here used to `preventDefault()` away its activation click, leaving the icon
+    // openable by `Space` only. `Escape` stays ours — the panel it closes is not
+    // the button's business.
+    const inputEl = this.triggerInput()?.nativeInputElement();
+    if (inputEl && event.target !== inputEl) {
+      if (event.key === 'Escape') this.close();
+      return;
+    }
+    // `Alt+↑` closes from either flavour of trigger.
+    if (event.key === 'ArrowUp' && event.altKey) {
+      event.preventDefault();
+      this.close();
+      return;
+    }
     // Typeable trigger: let printable keys through, only intercept nav/commit.
     if (!this.triggerReadonly()) {
       if (event.key === 'ArrowDown') {
@@ -1143,8 +1253,57 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   protected onTriggerBlur(event: FocusEvent): void {
     this.commitTyped();
     const next = event.relatedTarget as Node | null;
-    if (!next || !this.panelEl()?.nativeElement.contains(next)) this.emitTouch();
+    const inPanel = !!next && !!this.panelEl()?.nativeElement.contains(next);
+    if (!inPanel) this.emitTouch();
     this.inputBlur.emit(event);
+  }
+
+  /**
+   * @ignore Focus leaving the trigger altogether. A non-modal panel has neither backdrop nor
+   * focus trap, so tabbing on to the next field is a dismissal that nothing else would perform
+   */
+  protected onTriggerFocusOut(event: FocusEvent): void {
+    if (!this.nonModal() || !this.panelOpen()) return;
+    const next = event.relatedTarget as Node | null;
+    if (next && this.panelEl()?.nativeElement.contains(next)) return;
+    if (this.triggerContains(next)) return;
+    this.close(false);
+  }
+
+  /** @ignore Focus leaving a non-modal panel altogether (`Tab` out of the grid) — same
+   *  dismissal as {@link onTriggerBlur}, from the other side. */
+  protected onPanelFocusOut(event: FocusEvent): void {
+    if (this.inline() || !this.nonModal() || !this.panelOpen()) return;
+    const next = event.relatedTarget as Node | null;
+    if (next && this.panelEl()?.nativeElement.contains(next)) return;
+    if (this.triggerContains(next)) return;
+    this.close(false);
+  }
+
+  /** @ignore Pointer landing outside the overlay. A non-modal panel leaves the trigger live
+   *  underneath, and a click there must place the caret, not dismiss the panel it would then
+   *  immediately re-open. */
+  protected onOutsideClick(event: MouseEvent): void {
+    if (this.nonModal() && this.triggerContains(event.target as Node | null)) return;
+    this.close(false);
+  }
+
+  /** @ignore Whether this `Tab` walks out of the trigger, rather than between the field and its
+   *  own action button (at most two stops, so an exact list beats any heuristic). */
+  private tabLeavesTrigger(event: KeyboardEvent): boolean {
+    const wrapper = this.triggerWrapperEl()?.nativeElement;
+    if (!wrapper) return true;
+    const stops = Array.from(
+      wrapper.querySelectorAll<HTMLElement>('input:not([disabled]), button:not([disabled])'),
+    ).filter((el) => el.tabIndex >= 0);
+    const index = stops.indexOf(event.target as HTMLElement);
+    if (index === -1) return true;
+    return event.shiftKey ? index === 0 : index === stops.length - 1;
+  }
+
+  /** @ignore */
+  private triggerContains(node: Node | null): boolean {
+    return !!node && !!this.triggerWrapperEl()?.nativeElement.contains(node);
   }
 
   /** @ignore Parse and apply the typed text (single date, or `range`/`multiple` set — see

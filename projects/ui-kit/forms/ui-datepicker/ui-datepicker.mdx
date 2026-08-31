@@ -169,8 +169,9 @@ la dernière valeur affichée. `↓` ouvre le panneau et entre dans la grille. M
 > (`previewTyped`), ce qui désarmait le masque auto-"/" en cours de frappe.
 >
 > Le clic continue d'ouvrir le panneau quand le champ **n'est pas saisissable** (`allowInput` à
-> `false`, `readonly`, `timeOnly` — le champ y tient le rôle du bouton) et quand
-> `showIcon="false"`, où il ne resterait sinon aucune affordance souris.
+> `false`, `readonly`, `timeOnly` — le champ y tient le rôle du bouton), quand
+> `showIcon="false"`, où il ne resterait sinon aucune affordance souris, et avec
+> [`showOnFocus`](#ouverture-au-focus-showonfocus), dont le panneau n'a justement pas de backdrop.
 
 `allowInput` est **sans effet** en `timeOnly` (pas de parseur/formatteur dédié à une heure
 seule) : le champ y reste toujours en lecture seule.
@@ -275,6 +276,34 @@ grille gère ce cas-là pour l'instant.
 <Canvas of={DatepickerStories.RangeTypedInput} />
 <Canvas of={DatepickerStories.MultipleTypedInput} />
 
+## Ouverture au focus (`showOnFocus`)
+
+`showOnFocus` ouvre le panneau **dès que le champ prend le focus**, au pointeur comme au clavier,
+jamais sur un focus programmatique (`autofocus`, un `focus()` appelé par l'application : le
+calendrier ne surgit pas sans geste de l'utilisateur). C'est l'affordance attendue là où le champ
+sert surtout à choisir une date plutôt qu'à la taper.
+
+<Canvas of={DatepickerStories.ShowOnFocus} />
+
+Ouvert par ce chemin, le panneau est un **popup non modal**, et cette différence porte tout le
+reste :
+
+- **Le focus reste dans le champ.** Le déplacer *en conséquence* d'un focus serait un changement de
+  contexte au sens de [WCAG 3.2.1 (_On Focus_, niveau A)](https://www.w3.org/WAI/WCAG22/Understanding/on-focus.html).
+  `↓` reste la façon d'entrer dans la grille quand l'utilisateur la demande.
+- **Pas d'`aria-modal`, pas de piège de focus.** Le champ étant hors du panneau, le déclarer modal
+  masquerait du buffer virtuel d'un lecteur d'écran le champ même dans lequel on tape.
+- **Pas de backdrop.** Il avalerait le clic suivant sur le champ, exactement le défaut pour lequel
+  le clic-pour-ouvrir avait été retiré. Le champ reste donc cliquable sous le panneau ouvert, pour
+  corriger un segment à la souris, et un clic dedans le rouvre après un `Échap`.
+- **`Tab` ferme** et poursuit la tabulation vers l'élément suivant de la page, sans traverser le
+  calendrier — c'est le contrat APG du combobox, et l'overlay suivant le champ dans l'ordre du DOM,
+  quitter un champ date coûterait sinon une tabulation à travers toute la grille. La grille
+  s'atteint par `↓`.
+
+Les autres chemins d'ouverture (icône calendrier, `↓`, clic sur un champ non saisissable)
+conservent le dialogue modal habituel.
+
 ## Templates
 
 Trois points d'extension via `<ng-template>` projetés, résolus par `contentChild` :
@@ -370,7 +399,7 @@ via l'interop CVA native, ainsi qu'aux formulaires template-driven (`[(ngModel)]
   <tbody>
     <tr>
       <td><strong>Déclencheur</strong></td>
-      <td>Champ <code>ui-input</code> lié à un <code>label</code> natif. Ouverture par l'icône calendrier, ou clavier <kbd>Entrée</kbd>/<kbd>Espace</kbd>/<kbd>↓</kbd> — le clic dans le champ n'ouvre que si celui-ci n'est pas saisissable, ou s'il n'a pas d'icône (voir <a href="#saisie-manuelle-allowinput">Saisie manuelle</a>) ; <code>role="combobox"</code> + <code>aria-haspopup="dialog"</code> + <code>aria-expanded</code> — le rôle est nécessaire pour qu'<code>aria-expanded</code> soit pris en compte (interdit sur le <code>textbox</code> implicite), donc pour que l'existence du calendrier et son état soient annoncés.</td>
+      <td>Champ <code>ui-input</code> lié à un <code>label</code> natif. Ouverture par l'icône calendrier (<code>&lt;button&gt;</code> natif : <kbd>Entrée</kbd> et <kbd>Espace</kbd>), par <kbd>↓</kbd>/<kbd>Alt</kbd>+<kbd>↓</kbd> depuis le champ, et par <kbd>Entrée</kbd>/<kbd>Espace</kbd> quand le champ n'est pas saisissable — sur un champ saisissable <kbd>Entrée</kbd> valide la saisie (et soumet le formulaire), elle n'y est donc pas une touche d'ouverture. Le clic dans le champ n'ouvre que si celui-ci n'est pas saisissable, s'il n'a pas d'icône, ou avec <a href="#ouverture-au-focus-showonfocus"><code>showOnFocus</code></a> (voir <a href="#saisie-manuelle-allowinput">Saisie manuelle</a>) ; <code>role="combobox"</code> + <code>aria-haspopup="dialog"</code> + <code>aria-expanded</code> — le rôle est nécessaire pour qu'<code>aria-expanded</code> soit pris en compte (interdit sur le <code>textbox</code> implicite), donc pour que l'existence du calendrier et son état soient annoncés.</td>
     </tr>
     <tr>
       <td><strong>Navigation grille</strong></td>
@@ -378,7 +407,7 @@ via l'interop CVA native, ainsi qu'aux formulaires template-driven (`[(ngModel)]
     </tr>
     <tr>
       <td><strong>Fermeture</strong></td>
-      <td><kbd>Échap</kbd>, clic extérieur ou sélection (hors <code>showTime</code>) ferme et rend le focus au déclencheur.</td>
+      <td><kbd>Échap</kbd>, <kbd>Alt</kbd>+<kbd>↑</kbd>, clic extérieur ou sélection (hors <code>showTime</code>) ferme et rend le focus au déclencheur. Un panneau ouvert au focus (<a href="#ouverture-au-focus-showonfocus"><code>showOnFocus</code></a>), n'ayant ni backdrop ni piège de focus, se ferme aussi sur <kbd>Tab</kbd> sortant.</td>
     </tr>
     <tr>
       <td><strong>Sémantique</strong></td>

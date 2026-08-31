@@ -18,6 +18,22 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ### Added
 
+- **`ui-datepicker` : `showOnFocus`, ouverture du panneau dès la prise de focus** (FSHSP-185).
+  Au pointeur comme au clavier, jamais sur un focus programmatique (`autofocus`, un `focus()`
+  applicatif) : le calendrier ne surgit pas sans geste de l'utilisateur. **Défaut `false`** —
+  c'est l'opt-in qui revient au cas par cas sur le clic-pour-ouvrir retiré aux champs
+  saisissables (FSHSP-180), pas un changement imposé aux champs existants.
+  - Ouvert par ce chemin, le panneau est un **popup non modal** : le focus reste dans le champ
+    (le déplacer serait un changement de contexte au sens WCAG 3.2.1), donc pas d'`aria-modal`
+    (qui masquerait le champ en cours de saisie du buffer virtuel d'un lecteur d'écran), pas de
+    piège de focus, et pas de backdrop (qui avalerait le clic suivant sur le champ). `↓` entre
+    dans la grille, `Échap` ferme, et `Tab` ferme en poursuivant la tabulation vers l'élément
+    suivant de la page plutôt qu'à travers le calendrier (contrat APG du combobox).
+  - Le clic dans le champ rouvre le panneau, sans quoi un `Échap` en ferait un cul-de-sac à la
+    souris : le champ garde le focus, aucun second évènement de focus n'arrive.
+  - Les autres chemins d'ouverture (icône, `↓`, champ non saisissable) gardent le dialogue modal.
+- **`ui-datepicker` : `Alt`+`↑` ferme le panneau**, pendant APG du `↓`/`Alt`+`↓` qui l'ouvre.
+
 - **`@4sh/ui-kit/ripple` : onde de pression, activable à trois portées.** Inspiré de
   l'option [Ripple de PrimeNG](https://primeng.dev/ripple), avec une activation qui ne se
   limite pas au couple « global / une directive par élément » : `provideUiRipple()` équipe
@@ -71,6 +87,16 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
   celle d'erreur quand `errorText` prend la place de l'aide — et `messageIcon` en choisit
   une autre (nom FontAwesome), pour une aide qui n'est pas un état. Rendu inchangé par
   défaut : `showMessageIcon` vaut `false`, et `messageIcon` seul n'allume rien.
+
+### Fixed
+
+- **`ui-datepicker` : `Entrée` sur le bouton icône calendrier n'ouvrait pas le panneau**
+  (FSHSP-185). Le gestionnaire clavier du déclencheur, posé sur le conteneur, interceptait
+  l'`Entrée` remontée du bouton et annulait par `preventDefault()` son activation native : l'icône
+  ne s'ouvrait qu'à l'`Espace` (ou `↓`). Les touches d'un `<button>` natif lui reviennent
+  désormais — `Entrée` **et** `Espace`, jamais l'une au détriment de l'autre ; seul `Échap` reste
+  traité par le déclencheur. Sur le champ saisissable, `Entrée` continue de valider la saisie (et
+  de soumettre le formulaire) : `↓`/`Alt`+`↓` y restent les touches d'ouverture.
 
 ## [0.7.0] - 2026-08-27
 
