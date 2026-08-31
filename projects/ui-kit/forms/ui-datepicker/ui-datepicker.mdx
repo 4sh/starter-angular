@@ -312,7 +312,9 @@ Trois points d'extension via `<ng-template>` projetés, résolus par `contentChi
   (`{ day, month, year, otherMonth, today, selected, disabled, rangeStart, rangeEnd, inRange }`)
   et `selected` (booléen). Idéal pour des pastilles d'évènements, week-ends colorés, etc.
 - **`#buttonbar`** — barre de boutons personnalisée. Contexte : `todayCallback` et `clearCallback`
-  (fonctions à câbler sur `(click)`).
+  (fonctions à câbler sur `(click)`). Le panneau se dimensionne sur son contenu le plus large, mais
+  reste plafonné à la largeur de son conteneur en mode `inline` : une barre qui demande plus que ça
+  fait défiler le panneau horizontalement. Prévoyez la place, ou laissez la barre passer à la ligne.
 - **`#icon`** — icône du **déclencheur** (forwardée au `ui-input` sous-jacent). Contexte :
   `$implicit` = le nom résolu par le composant (`calendar`, `clock` en `timeOnly`, ou `xmark` —
   seulement quand `showIcon` est à `false` et qu'une valeur est présente, voir la doc de

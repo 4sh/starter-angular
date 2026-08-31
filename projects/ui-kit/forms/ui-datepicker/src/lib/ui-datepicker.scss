@@ -98,10 +98,13 @@ $buttonbar-padding-top: var(--ui-datepicker-buttonbar-padding-top, var(--units-s
     background-color: var(--form-high-surface-default);
     box-shadow: $panel-shadow;
     font-family: var(--fontfamily-base);
+    // Content wider than the panel scrolls instead of painting outside the rounded box: an
+    // inline picker is capped at its container's width, and a `#buttonbar` template can ask
+    // for more than that.
+    overflow: auto;
 
     &:not(._inline) {
       max-height: $panel-max-height;
-      overflow: auto;
       overscroll-behavior: contain;
     }
     &._inline {

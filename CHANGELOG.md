@@ -90,6 +90,12 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ### Fixed
 
+- **`ui-datepicker` : un template `#buttonbar` large débordait hors du panneau** (FSHSP-188). Le
+  panneau se dimensionne sur son contenu le plus large, plafonné à la largeur de son conteneur ;
+  au-delà, le contenu projeté se dessinait en dehors de la carte arrondie, `overflow: auto`
+  n'étant posé que sur la variante overlay. Il l'est maintenant sur le panneau lui-même : un
+  contenu trop large défile au lieu de peindre dehors.
+
 - **`ui-datepicker` : avec `showOnFocus`, la dropdown se refermait au relâchement du clic**
   (FSHSP-187). Le panneau s'ouvre au `focus`, donc entre le `mousedown` et le `mouseup` ; faute
   de place sous le champ il est poussé par-dessus le curseur, le relâchement se fait alors sur le

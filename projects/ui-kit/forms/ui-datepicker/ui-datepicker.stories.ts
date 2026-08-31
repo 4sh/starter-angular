@@ -699,7 +699,7 @@ export const TwoMonths: Story = {
 export const CustomButtonBar: Story = {
   render: () => ({
     props: { model: null },
-    template: `<div style="width:260px"><ui-datepicker [(ngModel)]="model" valueType="date" inline selectionMode="range" label="Période" locale="fr-FR">
+    template: `<div style="width:360px"><ui-datepicker [(ngModel)]="model" valueType="date" inline selectionMode="range" label="Période" locale="fr-FR">
       <ng-template #buttonbar let-todayCallback="todayCallback" let-clearCallback="clearCallback">
         <div style="display:flex;justify-content:space-between;width:100%;gap:8px">
           <div style="display:flex;gap:8px">
