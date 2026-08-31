@@ -12,6 +12,7 @@
     [cdkTrapFocus]="!inline() && !nonModal()"
     [attr.aria-label]="label() || ariaLabel() || panelAriaLabel()"
     (focusout)="onPanelFocusOut($event)"
+    (mousedown)="onPanelMousedown($event)"
   >
     @if (showCalendar()) {
       <!-- Shared header (single-month): prev / title (drill-up) / next.

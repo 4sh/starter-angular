@@ -505,6 +505,45 @@ describe('UiDatepicker — keyboard entry masking (FSHSP-118)', () => {
       expect(document.querySelector('.cdk-overlay-backdrop')).toBeNull();
     });
 
+    it('is not dismissed by a press that started in the field', async () => {
+      const { fixture, input } = await setupHost(DatepickerShowOnFocusHost);
+      await focusVia(input, 'mouse', fixture);
+      expect(panel()).not.toBeNull();
+      // Panel opened under the cursor: the release lands on it, so the browser dispatches the
+      // click on the common ancestor of both, which the overlay reports as "outside".
+      input.dispatchEvent(new Event('pointerdown', { bubbles: true }));
+      document.body.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      fixture.detectChanges();
+      await fixture.whenStable();
+      expect(panel()).not.toBeNull();
+    });
+
+    it('is dismissed by a press that started outside', async () => {
+      const { fixture, input } = await setupHost(DatepickerShowOnFocusHost);
+      await focusVia(input, 'mouse', fixture);
+      expect(panel()).not.toBeNull();
+      document.body.dispatchEvent(new Event('pointerdown', { bubbles: true }));
+      document.body.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      fixture.detectChanges();
+      await fixture.whenStable();
+      expect(panel()).toBeNull();
+    });
+
+    it('keeps the focus in the field when the panel chrome is pressed', async () => {
+      const { fixture, input } = await setupHost(DatepickerShowOnFocusHost);
+      await focusVia(input, 'mouse', fixture);
+      const press = (el: Element) => {
+        const event = new MouseEvent('mousedown', { bubbles: true, cancelable: true });
+        el.dispatchEvent(event);
+        return event;
+      };
+      // Losing the focus to <body> would make the panel dismiss itself through its own focusout.
+      expect(press(panel()!).defaultPrevented).toBe(true);
+      // Its own controls keep the native behaviour.
+      const day = panel()!.querySelector('.ui-datepicker-day')!;
+      expect(press(day).defaultPrevented).toBe(false);
+    });
+
     it('ignores a programmatic focus', async () => {
       const { fixture, input } = await setupHost(DatepickerShowOnFocusHost);
       await focusVia(input, 'program', fixture);

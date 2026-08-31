@@ -18,7 +18,7 @@ import {
   untracked,
   viewChild,
 } from '@angular/core';
-import { NgTemplateOutlet } from '@angular/common';
+import { DOCUMENT, NgTemplateOutlet } from '@angular/common';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { dropdownOverlayPositions } from '@4sh/ui-kit/forms';
@@ -388,6 +388,10 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   private readonly focusMonitor = inject(FocusMonitor);
   /** @ignore Only used to detach the overlay *synchronously* on `Tab`, see `onTriggerKeydown`. */
   private readonly cdr = inject(ChangeDetectorRef);
+  /** @ignore */
+  private readonly doc = inject(DOCUMENT);
+  /** @ignore Element the current press started on, see `onOutsideClick`. */
+  private pressOrigin: Node | null = null;
   /** @ignore */
   private readonly triggerInput = viewChild<UiInput>('trigger');
   /** @ignore Trigger host (to anchor the overlay on the input box, not the helper). */
@@ -947,6 +951,21 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
       });
     });
 
+    // A press is dismissive only from where it STARTED. Released elsewhere, the browser
+    // dispatches the click on the common ancestor of both targets, which the overlay reports as
+    // an outside click: pressing in the field, with the panel opening under the cursor, would
+    // close it again on release. Listening for the whole lifetime and not just while open is
+    // what makes that very press catchable, since it precedes the opening.
+    effect((onCleanup) => {
+      if (this.inline()) return;
+      const record = (event: Event) => (this.pressOrigin = event.target as Node | null);
+      this.doc.addEventListener('pointerdown', record, true);
+      onCleanup(() => {
+        this.doc.removeEventListener('pointerdown', record, true);
+        this.pressOrigin = null;
+      });
+    });
+
     // Keep time signals in sync with the (first) value.
     effect(() => {
       const first = this.firstSelectedFrom(this.internalValue() ?? null);
@@ -1248,8 +1267,7 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   protected onTriggerBlur(event: FocusEvent): void {
     this.commitTyped();
     const next = event.relatedTarget as Node | null;
-    const inPanel = !!next && !!this.panelEl()?.nativeElement.contains(next);
-    if (!inPanel) this.emitTouch();
+    if (!this.panelContains(next)) this.emitTouch();
     this.inputBlur.emit(event);
   }
 
@@ -1260,8 +1278,7 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   protected onTriggerFocusOut(event: FocusEvent): void {
     if (!this.nonModal() || !this.panelOpen()) return;
     const next = event.relatedTarget as Node | null;
-    if (next && this.panelEl()?.nativeElement.contains(next)) return;
-    if (this.triggerContains(next)) return;
+    if (this.panelContains(next) || this.triggerContains(next)) return;
     this.close(false);
   }
 
@@ -1270,16 +1287,16 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   protected onPanelFocusOut(event: FocusEvent): void {
     if (this.inline() || !this.nonModal() || !this.panelOpen()) return;
     const next = event.relatedTarget as Node | null;
-    if (next && this.panelEl()?.nativeElement.contains(next)) return;
-    if (this.triggerContains(next)) return;
+    if (this.panelContains(next) || this.triggerContains(next)) return;
     this.close(false);
   }
 
   /** @ignore Pointer landing outside the overlay. A non-modal panel leaves the trigger live
-   *  underneath, and a click there must place the caret, not dismiss the panel it would then
+   *  underneath, and a press there must place the caret, not dismiss the panel it would then
    *  immediately re-open. */
   protected onOutsideClick(event: MouseEvent): void {
-    if (this.nonModal() && this.triggerContains(event.target as Node | null)) return;
+    const origin = this.pressOrigin ?? (event.target as Node | null);
+    if (this.triggerContains(origin) || this.panelContains(origin)) return;
     this.close(false);
   }
 
@@ -1294,6 +1311,19 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     const index = stops.indexOf(event.target as HTMLElement);
     if (index === -1) return true;
     return event.shiftKey ? index === 0 : index === stops.length - 1;
+  }
+
+  /** @ignore Pressing the panel's own chrome must not pull the focus out of the field: a
+   *  non-modal panel would be dismissed by its own focusout. Its controls keep the default. */
+  protected onPanelMousedown(event: MouseEvent): void {
+    if (!this.nonModal()) return;
+    if ((event.target as HTMLElement | null)?.closest('button, input')) return;
+    event.preventDefault();
+  }
+
+  /** @ignore */
+  private panelContains(node: Node | null): boolean {
+    return !!node && !!this.panelEl()?.nativeElement.contains(node);
   }
 
   /** @ignore */

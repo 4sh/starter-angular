@@ -90,6 +90,15 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ### Fixed
 
+- **`ui-datepicker` : avec `showOnFocus`, la dropdown se refermait au relâchement du clic**
+  (FSHSP-187). Le panneau s'ouvre au `focus`, donc entre le `mousedown` et le `mouseup` ; faute
+  de place sous le champ il est poussé par-dessus le curseur, le relâchement se fait alors sur le
+  calendrier et le navigateur dispatche le `click` sur l'ancêtre commun des deux cibles, que
+  l'overlay rapporte comme un clic extérieur. La cible du `pointerdown` fait désormais foi : une
+  pression démarrée dans le champ ou dans le panneau n'est jamais une fermeture. Même classe de
+  bug corrigée au passage, presser une zone vide du panneau lui faisait perdre le focus vers
+  `<body>`, ce que son propre `focusout` interprétait en fermeture.
+
 - **`ui-datepicker` : `Échap` fermait aussi le dialogue parent** (FSHSP-186). La touche remontait
   jusqu'au `ui-modal` (ou `ui-drawer`) contenant le champ : un seul `Échap` fermait le calendrier
   **et** la boîte de dialogue. Elle n'est désormais consommée que lorsqu'elle ferme vraiment le
