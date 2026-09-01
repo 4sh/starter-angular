@@ -444,6 +444,14 @@ $focus-ring-width: utils.$form-focus-ring-width; // ← replace the value here t
   for whatever it doesn't say (architecture, pointer to a shell like `ui-field`); no
   paragraph explaining how to read the table — that's in the block's tooltip. Several
   components on one page → one `label` per table.
+- **Anchor sidebar **: built automatically from the page's `##`/`###`
+  headings (`parameters.docs.toc` in `storybook/preview.ts`, `tocbot` shipped with
+  `@storybook/addon-docs` — no third-party addon). Only **markdown** headings are listed:
+  the selector is `h2[id], h3[id]`, and a raw `<h2>`/`<h3>` written inside JSX (the cards
+  of `Introduction.mdx` / `Overview.mdx`) carries no `id`, so it stays out — deliberately,
+  since `tocbot` would otherwise emit a dead link. A section that must be reachable from
+  the sidebar is therefore a markdown `##`, not a styled `<h2>`. To drop the sidebar on one
+  page: `docs: { toc: { disable: true } }` in its meta's `parameters`.
 
 ---
 
