@@ -1,0 +1,88 @@
+@use 'utils';
+
+// =====================================================================
+// ui-bottom-tab-action : co-located styles for the raised circular action.
+//
+// A command, not a destination: it reads from the `actions.*` families like any
+// button, never from `navigation.*`. It is lifted with a transform rather than a
+// negative margin, so the bar's own height stays exactly what its items ask for
+// however far the action is raised.
+// =====================================================================
+
+// --- Config ---------------------------------------------------
+$levels: high, low, success, warning, error; /// Familles de couleur générées (tokens `--actions-<name>-*`).
+
+$action-size: var(--ui-bottom-tab-bar-action-size, #{utils.rem-calc(64)});                 /// Diamètre du bouton.
+$action-offset-y: var(--ui-bottom-tab-bar-action-offset-y, #{utils.rem-calc(20)});         /// Débordement au-dessus de la barre.
+$action-gap: var(--ui-bottom-tab-bar-action-gap, var(--units-2xs));                        /// Dégagement latéral autour du bouton.
+$action-radius: var(--ui-bottom-tab-bar-action-radius, var(--radius-full));                /// Rayon des coins du bouton.
+$action-shadow: var(--ui-bottom-tab-bar-action-shadow, var(--shadow-default-md));          /// Ombre portée du bouton.
+$action-icon-size: var(--ui-bottom-tab-bar-action-icon-size, var(--size-typography-icon-xl)); /// Taille du glyphe de l'icône.
+
+$focus-ring-width: var(--ui-bottom-tab-bar-action-focus-ring-width, #{utils.$action-focus-ring-width}); /// Épaisseur de l'anneau de focus.
+
+:host {
+  display: contents;
+}
+
+.ui-bottom-tab-action {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  box-sizing: border-box;
+  width: $action-size;
+  height: $action-size;
+  margin: 0 $action-gap;
+  padding: 0;
+  border: 0;
+  border-radius: $action-radius;
+  transform: translateY(calc(-1 * #{$action-offset-y}));
+  box-shadow: $action-shadow;
+  cursor: pointer;
+  @include utils.control-transition(color, background-color, box-shadow);
+
+  &:focus-visible {
+    outline: none;
+    box-shadow:
+      $action-shadow,
+      0 0 0 $focus-ring-width var(--global-border-focus);
+  }
+
+  &:disabled {
+    box-shadow: none;
+    cursor: not-allowed;
+  }
+
+  @each $lvl in $levels {
+    &._#{$lvl} {
+      background-color: var(--actions-#{$lvl}-surface-default);
+      color: var(--actions-#{$lvl}-content-default);
+
+      &:hover:not(:disabled) {
+        background-color: var(--actions-#{$lvl}-surface-hover);
+        color: var(--actions-#{$lvl}-content-hover);
+      }
+
+      &:focus-visible {
+        background-color: var(--actions-#{$lvl}-surface-focused);
+        color: var(--actions-#{$lvl}-content-focused);
+      }
+
+      &:active:not(:disabled) {
+        background-color: var(--actions-#{$lvl}-surface-pressed);
+        color: var(--actions-#{$lvl}-content-pressed);
+      }
+
+      &:disabled {
+        background-color: var(--actions-#{$lvl}-surface-disabled);
+        color: var(--actions-#{$lvl}-content-disabled);
+      }
+    }
+  }
+}
+
+.ui-bottom-tab-action-icon {
+  --ui-icon-size: #{$action-icon-size};
+}

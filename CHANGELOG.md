@@ -18,6 +18,35 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ### Added
 
+- **`ui-bottom-tab-bar` : barre de navigation basse tactile.** Sans équivalent PrimeNG.
+  API de composition : un conteneur `ui-bottom-tab-bar` qui pilote la destination active
+  (`value` two-way, sortie `tabChange`), des items `ui-bottom-tab`, et une action circulaire
+  surélevée optionnelle `ui-bottom-tab-action` qui se glisse à l'endroit voulu dans la rangée.
+  - **Un landmark de navigation, pas des onglets** : `<nav>` + `aria-label`, `<button>` natif
+    (ou `<a>` dès qu'un `href` / `routerLink` est fourni, Cmd/Ctrl+clic préservé), destination
+    courante annoncée par `aria-current="page"`. Volontairement différent de `ui-tabs` :
+    `role="tab"` impose un panneau associé et un unique tab stop roving, là où une barre basse
+    navigue entre des écrans et doit garder chaque destination atteignable au `Tab`.
+  - **Bascule d'icône sur l'item actif** : `iconType` habille l'état au repos (`outline` par
+    défaut), `activeIconType` l'état sélectionné (`solid`), et `activeIcon` change carrément de
+    glyphe. `showLabels` rend une barre en icônes seules, où le `label` de chaque item devient
+    son nom accessible.
+  - **Contenu projeté en couche d'ornement** sur l'icône (badge de notification, point) :
+    positionné hors de la boîte du glyphe et jamais hit-testé, la cible tactile reste l'item
+    entier.
+  - **Terrain mobile** : `safeArea` réserve `env(safe-area-inset-bottom)` (indicateur d'accueil
+    iOS, barre de gestes Android) sans rétrécir les cibles, items ≥ 56px (au-delà du plancher
+    WCAG 2.5.5), `touch-action: manipulation` (pas d'attente du double-tap), flash de tap natif
+    et sélection à l'appui long coupés, `position: fixed` ancrée au viewport visuel ou
+    `contained` dans un ancêtre positionné, barre masquée à l'impression.
+  - **Clavier** : `Tab` traverse toutes les destinations, `←` / `→` / `Début` / `Fin` déplacent
+    le focus en plus — pas à la place. `:focus-visible` distinct du `hover`, `disabled` natif
+    (ou `aria-disabled` + `tabindex="-1"` en mode lien), avertissement `isDevMode()` sur un item
+    ou une action sans nom accessible.
+  - Onde de pression active par défaut sur les items et l'action (`ripple`, coupable par
+    instance), tokens `navigation.high.*` / `actions.*` / `global.*`, et 27 hooks
+    `--ui-bottom-tab-bar-*` pour retuner surface, filet, métriques, libellé, ornement et action.
+
 - **`@4sh/ui-kit/ripple` : onde de pression, activable à trois portées.** Inspiré de
   l'option [Ripple de PrimeNG](https://primeng.dev/ripple), avec une activation qui ne se
   limite pas au couple « global / une directive par élément » : `provideUiRipple()` équipe
