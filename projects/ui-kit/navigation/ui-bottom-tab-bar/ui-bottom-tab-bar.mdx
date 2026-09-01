@@ -1,0 +1,195 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as BottomTabBarStories from './ui-bottom-tab-bar.stories';
+import { ConfigTable } from '../../../../storybook/blocks/config-table';
+
+<Meta of={BottomTabBarStories} />
+
+# ui-bottom-tab-bar
+
+Barre de navigation, pensée pour le tactile : trois à cinq
+destinations de premier niveau, toujours atteignables au pouce. API de
+**composition** , un conteneur `ui-bottom-tab-bar` qui pilote la destination
+active, des items `ui-bottom-tab`, et une action circulaire optionnelle
+`ui-bottom-tab-action` qui se glisse où l'on veut dans la rangée.
+
+<Canvas of={BottomTabBarStories.Basic} />
+
+## API
+
+### ui-bottom-tab-bar (conteneur)
+
+<ArgTypes of={BottomTabBarStories} />
+
+Sortie : `tabChange` , `{ value, originalEvent }`, émis au changement de
+destination (jamais si l'item cliqué est déjà actif). L'entrée `value` est
+**two-way** (`[(value)]`).
+
+### ui-bottom-tab
+
+<table className="doc-table">
+  <thead>
+    <tr><th>Entrée</th><th>Type</th><th>Défaut</th><th>Rôle</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>`value` *(requis)*</td><td>`string \| number`</td><td>,</td><td>Identifiant de la destination (comparé au `value` de la barre).</td></tr>
+    <tr><td>`label`</td><td>`string`</td><td>`undefined`</td><td>Libellé sous l'icône. Absent = item en icône seule (`ariaLabel` devient obligatoire).</td></tr>
+    <tr><td>`icon`</td><td>`string`</td><td>`undefined`</td><td>Nom de l'icône au repos.</td></tr>
+    <tr><td>`activeIcon`</td><td>`string`</td><td>`icon`</td><td>Icône de l'état actif , pour changer carrément de glyphe.</td></tr>
+    <tr><td>`iconType`</td><td>`'solid' \| 'outline'`</td><td>`'solid'`</td><td>Habillage de l'icône au repos. `outline` suffit à obtenir la bascule outline → solid à l'activation , vérifiez d'abord que le glyphe existe dans le jeu outline de la famille (FontAwesome Free n'en couvre qu'une poignée).</td></tr>
+    <tr><td>`activeIconType`</td><td>`'solid' \| 'outline'`</td><td>`'solid'`</td><td>Habillage de l'icône une fois l'item actif.</td></tr>
+    <tr><td>`disabled`</td><td>`boolean`</td><td>`false`</td><td>Item non activable, ignoré par les flèches.</td></tr>
+    <tr><td>`ariaLabel`</td><td>`string`</td><td>`undefined`</td><td>Nom accessible (sinon le libellé visible).</td></tr>
+    <tr><td>`ripple`</td><td>`boolean`</td><td>`true`</td><td>Onde de pression sur cet item.</td></tr>
+    <tr><td>`href`</td><td>`string`</td><td>`undefined`</td><td>URL externe : bascule l'item sur un `<a>`.</td></tr>
+    <tr><td>`routerLink`</td><td>`string \| unknown[]`</td><td>`undefined`</td><td>Cible de navigation interne : bascule l'item sur un `<a>` (RouterLink).</td></tr>
+    <tr><td>`target`</td><td>`string`</td><td>`undefined`</td><td>Cible du lien (ex. `_blank`), en mode lien.</td></tr>
+    <tr><td>`rel`</td><td>`string`</td><td>`'noopener noreferrer'` si `target="_blank"`</td><td>Attribut `rel`, en mode lien.</td></tr>
+  </tbody>
+</table>
+
+Sortie : `tabClick` , `MouseEvent`, émis à chaque activation, y compris sur l'item
+déjà actif (utile pour remonter en haut de la liste, vider une pile de
+navigation…). Méthode publique : `focus(options?)`.
+
+Le contenu projeté dans un `ui-bottom-tab` se pose en **couche d'ornement** sur son
+icône, jamais dans le flux du libellé, et n'intercepte pas le tap
+(`pointer-events: none`) : la cible tactile reste l'item entier.
+
+### ui-bottom-tab-action
+
+<table className="doc-table">
+  <thead>
+    <tr><th>Entrée</th><th>Type</th><th>Défaut</th><th>Rôle</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>`icon`</td><td>`string`</td><td>`'plus'`</td><td>Nom de l'icône.</td></tr>
+    <tr><td>`iconType`</td><td>`'solid' \| 'outline'`</td><td>`'solid'`</td><td>Habillage de l'icône.</td></tr>
+    <tr><td>`level`</td><td>`UiLevel`</td><td>`'high'`</td><td>Famille de couleur (`actions.{level}`).</td></tr>
+    <tr><td>`ariaLabel`</td><td>`string`</td><td>`undefined`</td><td>Nom accessible , **obligatoire**, le bouton ne porte aucun texte visible.</td></tr>
+    <tr><td>`disabled`</td><td>`boolean`</td><td>`false`</td><td>Désactive l'action (attribut natif).</td></tr>
+    <tr><td>`ripple`</td><td>`boolean`</td><td>`true`</td><td>Onde de pression sur l'action.</td></tr>
+  </tbody>
+</table>
+
+Sortie : `actionClick` , `MouseEvent`. Méthode publique : `focus(options?)`.
+
+## États
+
+Les états interactifs sont **purement CSS**, jamais des entrées Angular : ils
+lisent les tokens `navigation.high.{surface,content}.{default,hover,focused,pressed,disabled}`.
+L'état actif, lui, est dérivé de la comparaison entre le `value` de l'item et
+celui de la barre.
+
+<table className="doc-table">
+  <thead>
+    <tr><th>État</th><th>Déclencheur</th><th>Rendu</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>default</td><td>,</td><td>Surface transparente, contenu `navigation.high.content.default`.</td></tr>
+    <tr><td>hover</td><td>`:hover`</td><td>Tokens `…hover` (pointeur uniquement).</td></tr>
+    <tr><td>focused</td><td>`:focus-visible`</td><td>Tokens `…focused` + anneau de focus interne `global.border.focus`.</td></tr>
+    <tr><td>pressed</td><td>`:active`</td><td>Tokens `…pressed`, doublés de l'onde de pression.</td></tr>
+    <tr><td>active</td><td>`value` = celui de la barre</td><td>Surface `navigation.high.surface.active` pleine + contenu `…content.active`, icône basculée en `activeIcon` / `activeIconType`.</td></tr>
+    <tr><td>disabled</td><td>`disabled`</td><td>Tokens `…disabled`, `disabled` natif (ou `aria-disabled` en mode lien), hors navigation par flèches.</td></tr>
+  </tbody>
+</table>
+
+L'état actif est déclaré **après** hover et pressed : la destination courante garde
+sa surface pleine sous le doigt, ce qui est précisément ce qui indique à
+l'utilisateur où il se trouve.
+
+## Terrain mobile
+
+La barre vit sur un appareil dont l'OS et le navigateur occupent déjà le bas de
+l'écran. Ce qu'elle en tire :
+
+<table className="doc-table">
+  <thead>
+    <tr><th>Contrainte</th><th>Traitement</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Indicateur d'accueil iOS, barre de gestes Android</td><td>`safeArea` (défaut) ajoute `env(safe-area-inset-bottom)` sous les items , la barre grandit d'autant, les cibles tactiles ne rétrécissent pas. Nécessite `viewport-fit=cover` dans le `<meta name="viewport">` de l'application.</td></tr>
+    <tr><td>Cible tactile</td><td>Hauteur minimale de 56px par item, au-delà du plancher WCAG 2.5.5 (44px). Retunable par `--ui-bottom-tab-bar-item-min-height`.</td></tr>
+    <tr><td>Délai du double-tap</td><td>`touch-action: manipulation` : l'item répond au premier tap au lieu d'attendre ~300ms un éventuel zoom.</td></tr>
+    <tr><td>Flash gris natif</td><td>`-webkit-tap-highlight-color: transparent` , l'onde de pression du kit rend déjà le retour tactile.</td></tr>
+    <tr><td>Sélection au appui long</td><td>`user-select: none` sur la barre : un appui maintenu ne sélectionne pas les libellés.</td></tr>
+    <tr><td>Barre d'URL qui apparaît / disparaît</td><td>`position: fixed` + `bottom: 0` , la barre suit le viewport visuel, sans dépendre de `100vh`.</td></tr>
+    <tr><td>Impression</td><td>`@media print` masque la barre : un chrome de navigation n'a pas de sens sur papier.</td></tr>
+  </tbody>
+</table>
+
+**Réserver la place sous le contenu.** La barre est hors du flux : le bas de la
+page passe dessous. Côté application, il faut lui rendre sa hauteur , et
+l'incrustation système avec :
+
+```scss
+.app-content {
+  padding-bottom: calc(3.5rem + env(safe-area-inset-bottom, 0px));
+}
+```
+
+Pour intégrer la barre dans un cadre plutôt que dans le viewport (maquette de
+téléphone, coque embarquée, une story de cette page), `contained` la positionne en
+`absolute` dans son ancêtre positionné le plus proche.
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr><th>Point</th><th>Traitement</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Landmark</td><td>`<nav>` + `aria-label` (`ariaLabel`, défaut `'Navigation principale'`). Une seule barre basse par écran ; s'il y a plusieurs `<nav>`, leurs noms doivent différer.</td></tr>
+    <tr><td>Éléments natifs</td><td>`<button>`, ou `<a href>` en mode lien , jamais de `<div>` cliquable. Cmd/Ctrl+clic et « ouvrir dans un nouvel onglet » restent fonctionnels sur les liens.</td></tr>
+    <tr><td>Destination courante</td><td>`aria-current="page"` sur l'item actif. La couleur n'est jamais seule porteuse de l'information.</td></tr>
+    <tr><td>Nom accessible</td><td>Le libellé visible nomme l'item. Sans libellé (`showLabels=false`, ou pas de `label`), le nom vient de `ariaLabel` sinon de `label` , et un avertissement est émis en `isDevMode()` s'il n'y en a aucun.</td></tr>
+    <tr><td>Clavier</td><td>`Tab` traverse **toutes** les destinations, dans l'ordre du DOM. `←` / `→` déplacent le focus d'un item à l'autre, `Début` / `Fin` aux extrémités , un plus, pas un remplacement du `Tab`.</td></tr>
+    <tr><td>Focus visible</td><td>`:focus-visible` : anneau interne `global.border.focus`, distinct du `hover`. L'action flottante porte le sien en anneau externe, par-dessus son ombre.</td></tr>
+    <tr><td>Désactivé</td><td>`disabled` natif sur un `<button>` ; `aria-disabled` + `tabindex="-1"` sur un `<a>`, qui n'a pas d'équivalent natif.</td></tr>
+    <tr><td>Icône seule</td><td>Les icônes sont décoratives (`aria-hidden`) : elles ne portent jamais le nom. L'action flottante est toujours en icône seule, d'où un `ariaLabel` obligatoire.</td></tr>
+    <tr><td>Compteur de notification</td><td>Un badge projeté est un ornement visuel. Reprenez l'information dans l'`ariaLabel` de l'item (`'Messages, 3 non lus'`) , voir la story `BadgeTemplate`.</td></tr>
+    <tr><td>Reduced motion</td><td>Les transitions d'état passent par le système de motion du kit : `prefers-reduced-motion` et le commutateur global `data-motion="off"` les coupent.</td></tr>
+  </tbody>
+</table>
+
+## Exemples
+
+```html
+<!-- Barre applicative, navigation par router -->
+<ui-bottom-tab-bar [value]="url()" ariaLabel="Navigation principale">
+  <ui-bottom-tab value="/home" routerLink="/home" icon="house" label="Accueil" />
+  <ui-bottom-tab value="/search" routerLink="/search" icon="magnifying-glass" label="Recherche" />
+  <ui-bottom-tab value="/profile" routerLink="/profile" icon="user" label="Profil" />
+</ui-bottom-tab-bar>
+
+<!-- Action flottante centrée entre deux paires de destinations -->
+<ui-bottom-tab-bar [(value)]="active">
+  <ui-bottom-tab value="home" icon="house" label="Accueil" />
+  <ui-bottom-tab value="search" icon="magnifying-glass" label="Recherche" />
+  <ui-bottom-tab-action ariaLabel="Créer une publication" (actionClick)="compose()" />
+  <ui-bottom-tab value="inbox" icon="envelope" label="Messages" />
+  <ui-bottom-tab value="profile" icon="user" label="Profil" />
+</ui-bottom-tab-bar>
+
+<!-- Icônes seules + badge de notification projeté -->
+<ui-bottom-tab-bar [(value)]="active" [showLabels]="false">
+  <ui-bottom-tab value="home" icon="house" label="Accueil" />
+  <ui-bottom-tab value="inbox" icon="envelope" [ariaLabel]="'Messages, ' + unread() + ' non lus'">
+    <ui-badge [value]="unread()" level="error" size="small" />
+  </ui-bottom-tab>
+</ui-bottom-tab-bar>
+```
+
+## Theming
+
+Variables **locales** aux trois composants (co-localisées) :
+
+<ConfigTable of="ui-bottom-tab-bar" label="ui-bottom-tab-bar" />
+
+<ConfigTable of="ui-bottom-tab" label="ui-bottom-tab" />
+
+<ConfigTable of="ui-bottom-tab-action" label="ui-bottom-tab-action" />
+
+Le timing des transitions d'état provient du groupe partagé `$control-transition-*`
+(`ui-config`, catégorie **global**) , voir
+[Components / Configuration](?path=/docs/components-configuration--docs).

@@ -56,6 +56,7 @@ import * as MenuStories from "../../projects/ui-kit/navigation/ui-menu/ui-menu.s
 import * as SidebarStories from "../../projects/ui-kit/navigation/ui-sidebar/ui-sidebar.stories";
 import * as BreadcrumbStories from "../../projects/ui-kit/navigation/ui-breadcrumb/ui-breadcrumb.stories";
 import * as ContextMenuStories from "../../projects/ui-kit/navigation/ui-context-menu/ui-context-menu.stories";
+import * as BottomTabBarStories from "../../projects/ui-kit/navigation/ui-bottom-tab-bar/ui-bottom-tab-bar.stories";
 import * as TableStories from "../../projects/ui-kit/table/ui-table/ui-table.stories";
 import * as PaginatorStories from "../../projects/ui-kit/table/ui-paginator/ui-paginator.stories";
 
@@ -147,6 +148,7 @@ export const CATEGORIES = [
       { name: 'ui-sidebar', description: 'Barre latérale applicative.', link: '?path=/docs/components-ui-navigation-ui-sidebar--docs', story: SidebarStories.WithMenu, previewHeight: 340, previewScale: 0.6 },
       { name: 'ui-context-menu', description: 'Menu contextuel (clic droit sur target ou global, positionné au pointeur, ui-menu embarqué : sous-menus, command, routerLink/url, clavier, densité small).', link: '?path=/docs/components-ui-navigation-ui-context-menu--docs', story: ContextMenuStories.Basic, previewHeight: 200 },
       { name: 'ui-breadcrumb', description: "Fil d'Ariane (items url/routerLink/command rendus en ui-link, aria-current=page, séparateur custom, repli maxItems via bouton ellipsis, template #item).", link: '?path=/docs/components-ui-navigation-ui-breadcrumb--docs', story: BreadcrumbStories.Basic, previewHeight: 120 },
+      { name: 'ui-bottom-tab-bar', description: "Barre de navigation basse tactile (composition, landmark nav + aria-current=page, two-way value, button ou a natif, bascule d'icône outline/solid sur l'item actif, icônes seules, badge projeté, action circulaire surélevée ; safe-area iOS/Android, cibles \u2265 56px, touch-action, fixed ou contained).", link: '?path=/docs/components-ui-navigation-ui-bottom-tab-bar--docs', story: BottomTabBarStories.FloatAction, previewHeight: 300, previewScale: 0.85 },
     ],
   },
   {

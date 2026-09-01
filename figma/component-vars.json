@@ -10,10 +10,10 @@
         "Mode 1"
       ],
       "counts": {
-        "tokens": 653,
-        "alias": 526,
-        "literal": 127,
-        "skipped": 55,
+        "tokens": 677,
+        "alias": 540,
+        "literal": 137,
+        "skipped": 57,
         "derivedDescriptions": 210
       },
       "aliasTargets": [
@@ -42,6 +42,16 @@
         {
           "cssVar": "--ui-avatar-badge-z-index",
           "component": "ui-avatar",
+          "reason": "sans équivalent variable Figma (durée, easing, curseur, plan d’empilement, ratio)."
+        },
+        {
+          "cssVar": "--ui-bottom-tab-bar-action-shadow",
+          "component": "ui-bottom-tab-action",
+          "reason": "`--shadow-default-md` n'est pas un token du pipeline : rien à aliaser."
+        },
+        {
+          "cssVar": "--ui-bottom-tab-bar-z-index",
+          "component": "ui-bottom-tab-bar",
           "reason": "sans équivalent variable Figma (durée, easing, curseur, plan d’empilement, ratio)."
         },
         {
@@ -1929,6 +1939,552 @@
           "cssVar": "--ui-badge-stroke-width",
           "component": "ui-badge",
           "entryPoint": "@4sh/ui-kit/informative/ui-badge",
+          "descriptionSource": "scss"
+        }
+      }
+    }
+  },
+  "bottom-tab-bar": {
+    "action": {
+      "focus-ring-width": {
+        "$value": "{metrics.units.2xs}",
+        "$type": "dimension",
+        "$description": "Épaisseur de l'anneau de focus.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "STROKE_FLOAT"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-bottom-tab-bar-action-focus-ring-width)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-bottom-tab-bar-action-focus-ring-width",
+            "component": "ui-bottom-tab-action",
+            "entryPoint": "@4sh/ui-kit/navigation/ui-bottom-tab-bar",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "gap": {
+        "$value": "{metrics.units.2xs}",
+        "$type": "dimension",
+        "$description": "Dégagement latéral autour du bouton.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-bottom-tab-bar-action-gap)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-bottom-tab-bar-action-gap",
+            "component": "ui-bottom-tab-action",
+            "entryPoint": "@4sh/ui-kit/navigation/ui-bottom-tab-bar",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "offset-y": {
+        "$value": "20px",
+        "$type": "dimension",
+        "$description": "Débordement au-dessus de la barre.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-bottom-tab-bar-action-offset-y)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-bottom-tab-bar-action-offset-y",
+            "component": "ui-bottom-tab-action",
+            "entryPoint": "@4sh/ui-kit/navigation/ui-bottom-tab-bar",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "radius": {
+        "$value": "{metrics.radius.full}",
+        "$type": "dimension",
+        "$description": "Rayon des coins du bouton.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "CORNER_RADIUS"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-bottom-tab-bar-action-radius)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-bottom-tab-bar-action-radius",
+            "component": "ui-bottom-tab-action",
+            "entryPoint": "@4sh/ui-kit/navigation/ui-bottom-tab-bar",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "size": {
+        "$value": "64px",
+        "$type": "dimension",
+        "$description": "Diamètre du bouton.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-bottom-tab-bar-action-size)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-bottom-tab-bar-action-size",
+            "component": "ui-bottom-tab-action",
+            "entryPoint": "@4sh/ui-kit/navigation/ui-bottom-tab-bar",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "action-icon": {
+      "size": {
+        "$value": "{responsive.size.typography.icon.xl}",
+        "$type": "dimension",
+        "$description": "Taille du glyphe de l'icône.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-bottom-tab-bar-action-icon-size)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-bottom-tab-bar-action-icon-size",
+            "component": "ui-bottom-tab-action",
+            "entryPoint": "@4sh/ui-kit/navigation/ui-bottom-tab-bar",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "adornment": {
+      "offset": {
+        "$value": "-6px",
+        "$type": "dimension",
+        "$description": "Décalage de la couche d'ornement (badge) par rapport à l'icône.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-bottom-tab-bar-adornment-offset)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-bottom-tab-bar-adornment-offset",
+            "component": "ui-bottom-tab",
+            "entryPoint": "@4sh/ui-kit/navigation/ui-bottom-tab-bar",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "gap": {
+      "$value": "0",
+      "$type": "number",
+      "$description": "Espace entre les items.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "GAP"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-bottom-tab-bar-gap)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-bottom-tab-bar-gap",
+          "component": "ui-bottom-tab-bar",
+          "entryPoint": "@4sh/ui-kit/navigation/ui-bottom-tab-bar",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "icon": {
+      "size": {
+        "$value": "{responsive.size.typography.icon.default}",
+        "$type": "dimension",
+        "$description": "Taille du glyphe de l'icône.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-bottom-tab-bar-icon-size)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-bottom-tab-bar-icon-size",
+            "component": "ui-bottom-tab",
+            "entryPoint": "@4sh/ui-kit/navigation/ui-bottom-tab-bar",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "item": {
+      "focus-ring-width": {
+        "$value": "{metrics.units.2xs}",
+        "$type": "dimension",
+        "$description": "Épaisseur de l'anneau de focus.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "STROKE_FLOAT"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-bottom-tab-bar-item-focus-ring-width)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-bottom-tab-bar-item-focus-ring-width",
+            "component": "ui-bottom-tab",
+            "entryPoint": "@4sh/ui-kit/navigation/ui-bottom-tab-bar",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "gap": {
+        "$value": "{metrics.units.sm}",
+        "$type": "dimension",
+        "$description": "Espace entre l'icône et le libellé.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-bottom-tab-bar-item-gap)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-bottom-tab-bar-item-gap",
+            "component": "ui-bottom-tab",
+            "entryPoint": "@4sh/ui-kit/navigation/ui-bottom-tab-bar",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "min-height": {
+        "$value": "56px",
+        "$type": "dimension",
+        "$description": "Hauteur minimale d'un item (cible tactile).",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-bottom-tab-bar-item-min-height)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-bottom-tab-bar-item-min-height",
+            "component": "ui-bottom-tab",
+            "entryPoint": "@4sh/ui-kit/navigation/ui-bottom-tab-bar",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "padding-x": {
+        "$value": "{metrics.units.xs}",
+        "$type": "dimension",
+        "$description": "Inset horizontal d'un item.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-bottom-tab-bar-item-padding-x)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-bottom-tab-bar-item-padding-x",
+            "component": "ui-bottom-tab",
+            "entryPoint": "@4sh/ui-kit/navigation/ui-bottom-tab-bar",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "padding-y": {
+        "$value": "{metrics.units.md}",
+        "$type": "dimension",
+        "$description": "Inset vertical d'un item.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-bottom-tab-bar-item-padding-y)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-bottom-tab-bar-item-padding-y",
+            "component": "ui-bottom-tab",
+            "entryPoint": "@4sh/ui-kit/navigation/ui-bottom-tab-bar",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "radius": {
+        "$value": "0",
+        "$type": "number",
+        "$description": "Rayon des coins d'un item.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "CORNER_RADIUS"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-bottom-tab-bar-item-radius)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-bottom-tab-bar-item-radius",
+            "component": "ui-bottom-tab",
+            "entryPoint": "@4sh/ui-kit/navigation/ui-bottom-tab-bar",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "label": {
+      "font-size": {
+        "$value": "{responsive.size.typography.text.sm}",
+        "$type": "dimension",
+        "$description": "Taille du libellé.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "FONT_SIZE"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-bottom-tab-bar-label-font-size)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-bottom-tab-bar-label-font-size",
+            "component": "ui-bottom-tab",
+            "entryPoint": "@4sh/ui-kit/navigation/ui-bottom-tab-bar",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "weight": {
+        "$value": "{typography.weight.regular}",
+        "$type": "string",
+        "$description": "Graisse du libellé.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "STRING",
+            "scopes": [
+              "FONT_WEIGHT",
+              "FONT_STYLE"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-bottom-tab-bar-label-weight)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-bottom-tab-bar-label-weight",
+            "component": "ui-bottom-tab",
+            "entryPoint": "@4sh/ui-kit/navigation/ui-bottom-tab-bar",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "min-height": {
+      "$value": "56px",
+      "$type": "dimension",
+      "$description": "Hauteur minimale de la barre.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "WIDTH_HEIGHT"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-bottom-tab-bar-min-height)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-bottom-tab-bar-min-height",
+          "component": "ui-bottom-tab-bar",
+          "entryPoint": "@4sh/ui-kit/navigation/ui-bottom-tab-bar",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "padding-x": {
+      "$value": "0",
+      "$type": "number",
+      "$description": "Inset horizontal de la barre.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "GAP"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-bottom-tab-bar-padding-x)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-bottom-tab-bar-padding-x",
+          "component": "ui-bottom-tab-bar",
+          "entryPoint": "@4sh/ui-kit/navigation/ui-bottom-tab-bar",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "safe-area": {
+      "offset": {
+        "$value": "env(safe-area-inset-bottom, 0px)",
+        "$type": "string",
+        "$description": "Réserve sous la barre pour l'incrustation système.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-bottom-tab-bar-safe-area-offset)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-bottom-tab-bar-safe-area-offset",
+            "component": "ui-bottom-tab-bar",
+            "entryPoint": "@4sh/ui-kit/navigation/ui-bottom-tab-bar",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "shadow": {
+      "$value": "none",
+      "$type": "string",
+      "$description": "Ombre portée de la barre.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "EFFECT_FLOAT"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-bottom-tab-bar-shadow)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-bottom-tab-bar-shadow",
+          "component": "ui-bottom-tab-bar",
+          "entryPoint": "@4sh/ui-kit/navigation/ui-bottom-tab-bar",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "stroke": {
+      "$value": "{semantics.global.border.default}",
+      "$type": "color",
+      "$description": "Couleur du filet supérieur.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "COLOR",
+          "scopes": [
+            "STROKE_COLOR"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-bottom-tab-bar-stroke)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-bottom-tab-bar-stroke",
+          "component": "ui-bottom-tab-bar",
+          "entryPoint": "@4sh/ui-kit/navigation/ui-bottom-tab-bar",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "stroke-width": {
+      "$value": "{metrics.stroke.sm}",
+      "$type": "dimension",
+      "$description": "Épaisseur du filet supérieur.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "STROKE_FLOAT"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-bottom-tab-bar-stroke-width)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-bottom-tab-bar-stroke-width",
+          "component": "ui-bottom-tab-bar",
+          "entryPoint": "@4sh/ui-kit/navigation/ui-bottom-tab-bar",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "surface": {
+      "$value": "{semantics.global.background.default}",
+      "$type": "color",
+      "$description": "Fond de la barre.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "COLOR",
+          "scopes": [
+            "FRAME_FILL",
+            "SHAPE_FILL"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-bottom-tab-bar-surface)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-bottom-tab-bar-surface",
+          "component": "ui-bottom-tab-bar",
+          "entryPoint": "@4sh/ui-kit/navigation/ui-bottom-tab-bar",
           "descriptionSource": "scss"
         }
       }
