@@ -1,6 +1,6 @@
 {
   "name": "@4sh/ui-kit",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "Headless Angular components from the 4SH Design System: signals + Angular CDK, styled exclusively through design tokens. Ships a companion MCP server exposing the kit catalog and doc to AI coding agents.",
   "homepage": "https://4sh.github.io/starter-angular/?path=/docs/introduction--docs",
   "repository": {
