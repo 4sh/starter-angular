@@ -544,6 +544,25 @@ describe('UiDatepicker — keyboard entry masking (FSHSP-118)', () => {
       expect(press(day).defaultPrevented).toBe(false);
     });
 
+    it('drills up to the year picker without dismissing itself', async () => {
+      const { fixture, input } = await setupHost(DatepickerShowOnFocusHost);
+      await focusVia(input, 'mouse', fixture);
+      const title = () =>
+        panel()!.querySelector('.ui-datepicker-title._button') as HTMLButtonElement;
+      await click(title(), fixture); // date -> month
+      expect(panel()!.querySelector('.ui-datepicker-picker._month')).not.toBeNull();
+
+      const button = title();
+      await click(button, fixture);
+      expect(panel()!.querySelector('.ui-datepicker-picker._year')).not.toBeNull();
+      expect(button.disabled).toBe(true);
+      button.dispatchEvent(new FocusEvent('focusout', { bubbles: true, relatedTarget: null }));
+      fixture.detectChanges();
+      await fixture.whenStable();
+      expect(panel()).not.toBeNull();
+      expect(panel()!.querySelector('.ui-datepicker-picker._year')).not.toBeNull();
+    });
+
     it('ignores a programmatic focus', async () => {
       const { fixture, input } = await setupHost(DatepickerShowOnFocusHost);
       await focusVia(input, 'program', fixture);
