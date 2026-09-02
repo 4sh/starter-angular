@@ -293,4 +293,52 @@
   html.dark-mode .ai-instruction-block li:last-child {
     margin-bottom: 0 !important;
   }
+
+  /* ═══════════════════════════════════════════════════════
+       SOMMAIRE D'ANCRES
+    ════════════════════════════════════════════════════════ */
+  aside.sbdocs-toc--custom:has(> nav > .toc-wrapper:empty) {
+    display: none;
+  }
+
+  aside.sbdocs-toc--custom,
+  aside.sbdocs-toc--custom > nav {
+    width: 15rem;
+  }
+
+  aside.sbdocs-toc--custom > nav > h2 {
+    margin: 0 0 12px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--sb-text-subtle);
+  }
+
+  aside.sbdocs-toc--custom .toc-list {
+    border-color: var(--sb-border) !important;
+  }
+
+  aside.sbdocs-toc--custom .toc-list-item > a {
+    display: block;
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--sb-text-subtle);
+    transition:
+      color 0.15s ease,
+      border-color 0.15s ease;
+  }
+
+  aside.sbdocs-toc--custom .toc-list-item > a:hover {
+    color: var(--sb-text);
+  }
+
+  aside.sbdocs-toc--custom .toc-list-item.is-active-li > a {
+    font-weight: 600;
+    color: var(--sb-text);
+  }
+
+  aside.sbdocs-toc--custom .toc-list-item.is-active-li::before {
+    border-color: var(--sb-accent);
+  }
 </style>

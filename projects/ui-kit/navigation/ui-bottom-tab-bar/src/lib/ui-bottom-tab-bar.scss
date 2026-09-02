@@ -1,0 +1,66 @@
+@use 'utils';
+
+// =====================================================================
+// ui-bottom-tab-bar : co-located styles for the <nav> shell.
+//
+// Out of the flow (fixed to the viewport, or absolute inside a positioned
+// ancestor with `contained`), so the host is `display: contents` and the bar
+// never disturbs the page layout. The touch rules live here rather than on the
+// items: they must hold for the gaps and the raised action too.
+// =====================================================================
+
+// --- Config ---------------------------------------------------
+$bar-surface: var(--ui-bottom-tab-bar-surface, var(--global-background-default)); /// Fond de la barre.
+$bar-min-height: var(--ui-bottom-tab-bar-min-height, #{utils.rem-calc(56)});      /// Hauteur minimale de la barre.
+$bar-gap: var(--ui-bottom-tab-bar-gap, 0);                          /// Espace entre les items.
+$bar-padding-x: var(--ui-bottom-tab-bar-padding-x, 0);             /// Inset horizontal de la barre.
+$bar-z-index: var(--ui-bottom-tab-bar-z-index, 100);                              /// Plan d'empilement de la barre.
+$bar-shadow: var(--ui-bottom-tab-bar-shadow, none);                               /// Ombre portée de la barre.
+
+$bar-stroke-width: var(--ui-bottom-tab-bar-stroke-width, var(--stroke-sm));       /// Épaisseur du filet supérieur.
+$bar-stroke: var(--ui-bottom-tab-bar-stroke, var(--global-border-default));       /// Couleur du filet supérieur.
+
+// Inset reserved by the OS at the bottom of the screen: the iOS home indicator,
+// the Android gesture bar. Resolves to 0 anywhere else, browser chrome included.
+$bar-safe-area: var(--ui-bottom-tab-bar-safe-area-offset, env(safe-area-inset-bottom, 0px)); /// Réserve sous la barre pour l'incrustation système.
+
+:host {
+  display: contents;
+}
+
+.ui-bottom-tab-bar {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: $bar-z-index;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  gap: $bar-gap;
+  min-height: calc(#{$bar-min-height} + #{$bar-safe-area});
+  padding: 0 $bar-padding-x $bar-safe-area;
+  border-top: $bar-stroke-width solid $bar-stroke;
+  background-color: $bar-surface;
+  box-shadow: $bar-shadow;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  overflow: visible;
+
+  &._contained {
+    position: absolute;
+  }
+
+  &._no-safe-area {
+    min-height: $bar-min-height;
+    padding-bottom: 0;
+  }
+}
+
+// A navigation chrome carries no information on paper.
+@media print {
+  .ui-bottom-tab-bar {
+    display: none;
+  }
+}

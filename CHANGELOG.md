@@ -18,21 +18,34 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ### Added
 
-- **`ui-datepicker` : `showOnFocus`, ouverture du panneau dès la prise de focus** (FSHSP-185).
-  Au pointeur comme au clavier, jamais sur un focus programmatique (`autofocus`, un `focus()`
-  applicatif) : le calendrier ne surgit pas sans geste de l'utilisateur. **Défaut `false`** :
-  c'est l'opt-in qui revient au cas par cas sur le clic-pour-ouvrir retiré aux champs
-  saisissables (FSHSP-180), pas un changement imposé aux champs existants.
-  - Tant que l'option est active, le panneau est un **popup non modal** quel que soit le chemin
-    qui l'a ouvert : le focus reste dans le champ (le déplacer serait un changement de contexte
-    au sens WCAG 3.2.1), donc pas d'`aria-modal` (qui masquerait le champ en cours de saisie du
-    buffer virtuel d'un lecteur d'écran), pas de piège de focus, et pas de backdrop (qui
-    avalerait le clic suivant sur le champ). `↓` entre dans la grille, `Échap` ferme, et `Tab`
-    ferme en poursuivant la tabulation vers l'élément suivant de la page plutôt qu'à travers le
-    calendrier (contrat APG du combobox).
-  - Le clic dans le champ rouvre le panneau, sans quoi un `Échap` en ferait un cul-de-sac à la
-    souris : le champ garde le focus, aucun second évènement de focus n'arrive.
-- **`ui-datepicker` : `Alt`+`↑` ferme le panneau**, pendant APG du `↓`/`Alt`+`↓` qui l'ouvre.
+- **`ui-bottom-tab-bar` : barre de navigation basse tactile.** Sans équivalent PrimeNG.
+  API de composition : un conteneur `ui-bottom-tab-bar` qui pilote la destination active
+  (`value` two-way, sortie `tabChange`), des items `ui-bottom-tab`, et une action circulaire
+  surélevée optionnelle `ui-bottom-tab-action` qui se glisse à l'endroit voulu dans la rangée.
+  - **Un landmark de navigation, pas des onglets** : `<nav>` + `aria-label`, `<button>` natif
+    (ou `<a>` dès qu'un `href` / `routerLink` est fourni, Cmd/Ctrl+clic préservé), destination
+    courante annoncée par `aria-current="page"`. Volontairement différent de `ui-tabs` :
+    `role="tab"` impose un panneau associé et un unique tab stop roving, là où une barre basse
+    navigue entre des écrans et doit garder chaque destination atteignable au `Tab`.
+  - **Bascule d'icône sur l'item actif** : `iconType` habille l'état au repos (`outline` par
+    défaut), `activeIconType` l'état sélectionné (`solid`), et `activeIcon` change carrément de
+    glyphe. `showLabels` rend une barre en icônes seules, où le `label` de chaque item devient
+    son nom accessible.
+  - **Contenu projeté en couche d'ornement** sur l'icône (badge de notification, point) :
+    positionné hors de la boîte du glyphe et jamais hit-testé, la cible tactile reste l'item
+    entier.
+  - **Terrain mobile** : `safeArea` réserve `env(safe-area-inset-bottom)` (indicateur d'accueil
+    iOS, barre de gestes Android) sans rétrécir les cibles, items ≥ 56px (au-delà du plancher
+    WCAG 2.5.5), `touch-action: manipulation` (pas d'attente du double-tap), flash de tap natif
+    et sélection à l'appui long coupés, `position: fixed` ancrée au viewport visuel ou
+    `contained` dans un ancêtre positionné, barre masquée à l'impression.
+  - **Clavier** : `Tab` traverse toutes les destinations, `←` / `→` / `Début` / `Fin` déplacent
+    le focus en plus — pas à la place. `:focus-visible` distinct du `hover`, `disabled` natif
+    (ou `aria-disabled` + `tabindex="-1"` en mode lien), avertissement `isDevMode()` sur un item
+    ou une action sans nom accessible.
+  - Onde de pression active par défaut sur les items et l'action (`ripple`, coupable par
+    instance), tokens `navigation.high.*` / `actions.*` / `global.*`, et 27 hooks
+    `--ui-bottom-tab-bar-*` pour retuner surface, filet, métriques, libellé, ornement et action.
 
 - **`@4sh/ui-kit/ripple` : onde de pression, activable à trois portées.** Inspiré de
   l'option [Ripple de PrimeNG](https://primeng.dev/ripple), avec une activation qui ne se
@@ -78,6 +91,21 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
     posé sur un conteneur ne les atteindrait pas.
   - `UI_RIPPLE_INTERACTIVE_SELECTOR` fait onduler en plus tous les contrôles cliquables de
     l'application : `provideUiRipple({ selector: UI_RIPPLE_INTERACTIVE_SELECTOR })`.
+- **`ui-datepicker` : `showOnFocus`, ouverture du panneau dès la prise de focus** (FSHSP-185).
+  Au pointeur comme au clavier, jamais sur un focus programmatique (`autofocus`, un `focus()`
+  applicatif) : le calendrier ne surgit pas sans geste de l'utilisateur. **Défaut `false`** :
+  c'est l'opt-in qui revient au cas par cas sur le clic-pour-ouvrir retiré aux champs
+  saisissables (FSHSP-180), pas un changement imposé aux champs existants.
+  - Tant que l'option est active, le panneau est un **popup non modal** quel que soit le chemin
+    qui l'a ouvert : le focus reste dans le champ (le déplacer serait un changement de contexte
+    au sens WCAG 3.2.1), donc pas d'`aria-modal` (qui masquerait le champ en cours de saisie du
+    buffer virtuel d'un lecteur d'écran), pas de piège de focus, et pas de backdrop (qui
+    avalerait le clic suivant sur le champ). `↓` entre dans la grille, `Échap` ferme, et `Tab`
+    ferme en poursuivant la tabulation vers l'élément suivant de la page plutôt qu'à travers le
+    calendrier (contrat APG du combobox).
+  - Le clic dans le champ rouvre le panneau, sans quoi un `Échap` en ferait un cul-de-sac à la
+    souris : le champ garde le focus, aucun second évènement de focus n'arrive.
+- **`ui-datepicker` : `Alt`+`↑` ferme le panneau**, pendant APG du `↓`/`Alt`+`↓` qui l'ouvre.
 - **Entrées `showMessageIcon` et `messageIcon` sur tous les champs bâtis sur `ui-field`**
   (`BaseFormField`, donc `ui-input`, `ui-textarea`, `ui-select`, `ui-input-number`,
   `ui-input-mask`, `ui-input-tags`, `ui-autocomplete`, `ui-editor`, `ui-datepicker`, et

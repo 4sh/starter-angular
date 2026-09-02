@@ -85,6 +85,10 @@ const preview: Preview = {
     layout: 'centered',
     docs: {
       story: { inline: true },
+      toc: {
+        title: 'Sur cette page',
+        headingSelector: 'h2[id], h3[id]',
+      },
     },
     darkMode: {
       dark: darkTheme,

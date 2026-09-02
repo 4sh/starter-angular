@@ -1,0 +1,67 @@
+@if (isLink()) {
+  @if (useRouterLink()) {
+    <a
+      #control
+      [class]="classes()"
+      [routerLink]="disabled() ? null : routerLink()"
+      [attr.target]="target()"
+      [attr.rel]="computedRel()"
+      [attr.tabindex]="linkTabindex()"
+      [attr.aria-label]="accessibleLabel()"
+      [attr.aria-current]="active() ? 'page' : null"
+      [attr.aria-disabled]="disabled() ? 'true' : null"
+      [attr.data-ripple]="rippleOn() ? 'on' : 'off'"
+      (click)="onClick($event)"
+    >
+      <ng-container [ngTemplateOutlet]="inner" />
+    </a>
+  } @else {
+    <a
+      #control
+      [class]="classes()"
+      [attr.href]="disabled() ? null : href()"
+      [attr.target]="target()"
+      [attr.rel]="computedRel()"
+      [attr.tabindex]="linkTabindex()"
+      [attr.aria-label]="accessibleLabel()"
+      [attr.aria-current]="active() ? 'page' : null"
+      [attr.aria-disabled]="disabled() ? 'true' : null"
+      [attr.data-ripple]="rippleOn() ? 'on' : 'off'"
+      (click)="onClick($event)"
+    >
+      <ng-container [ngTemplateOutlet]="inner" />
+    </a>
+  }
+} @else {
+  <button
+    #control
+    type="button"
+    [class]="classes()"
+    [disabled]="disabled()"
+    [attr.aria-label]="accessibleLabel()"
+    [attr.aria-current]="active() ? 'page' : null"
+    [attr.data-ripple]="rippleOn() ? 'on' : 'off'"
+    (click)="onClick($event)"
+  >
+    <ng-container [ngTemplateOutlet]="inner" />
+  </button>
+}
+
+<ng-template #inner>
+  <span class="ui-bottom-tab-icon-box">
+    @if (resolvedIcon(); as name) {
+      <ui-icon
+        class="ui-bottom-tab-icon"
+        [name]="name"
+        [type]="resolvedIconType()"
+        size="default"
+      />
+    }
+    <!-- Adornment layer over the icon (notification badge, dot…): projected content,
+         never hit-tested, so a tap always reaches the control. -->
+    <span class="ui-bottom-tab-adornment"><ng-content /></span>
+  </span>
+  @if (labelVisible()) {
+    <span class="ui-bottom-tab-label">{{ label() }}</span>
+  }
+</ng-template>
