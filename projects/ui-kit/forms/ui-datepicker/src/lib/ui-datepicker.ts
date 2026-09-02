@@ -1287,6 +1287,7 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   protected onPanelFocusOut(event: FocusEvent): void {
     if (this.inline() || !this.nonModal() || !this.panelOpen()) return;
     const next = event.relatedTarget as Node | null;
+    if (!next) return;
     if (this.panelContains(next) || this.triggerContains(next)) return;
     this.close(false);
   }
@@ -1502,6 +1503,10 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     } else if (v === 'month') {
       this.focusedYear.set(this.viewDate().getFullYear());
       this.currentView.set('year');
+      // Last level up: the title turns `disabled` here, so the focus it was holding is about to
+      // be dropped on `<body>` and the grid that just appeared would answer no arrow key. Hand
+      // it to the roving year cell, as the drill-down transitions do.
+      this.queueYearFocus();
     }
   }
 

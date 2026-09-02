@@ -133,6 +133,17 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
   bug corrigée au passage, presser une zone vide du panneau lui faisait perdre le focus vers
   `<body>`, ce que son propre `focusout` interprétait en fermeture.
 
+- **`ui-datepicker` : avec `showOnFocus`, ouvrir le sélecteur d'année refermait la dropdown**
+  (FSHSP-185). Le titre de l'en-tête est `disabled` une fois le niveau année atteint — dernier
+  cran du drill-up — et un navigateur retire le focus d'un contrôle à l'instant où il devient
+  `disabled` : le `focusout` qui en résultait, sans `relatedTarget`, était lu par le panneau non
+  modal comme « le focus m'a quitté ». Le clic ouvrait donc la vue année et la refermait dans la
+  foulée, là où le passage au sélecteur de mois, qui laisse le titre actif, ne posait rien. Un
+  `focusout` sans destination n'est plus une fermeture : un `Tab` sortant en nomme toujours une,
+  et une pression à l'extérieur reste traitée par le clic extérieur. Le focus abandonné est en
+  outre confié à la cellule année survolable, comme le font déjà les transitions descendantes —
+  sans quoi la grille qui vient d'apparaître ne répondait à aucune flèche.
+
 - **`ui-datepicker` : `Échap` fermait aussi le dialogue parent** (FSHSP-186). La touche remontait
   jusqu'au `ui-modal` (ou `ui-drawer`) contenant le champ : un seul `Échap` fermait le calendrier
   **et** la boîte de dialogue. Elle n'est désormais consommée que lorsqu'elle ferme vraiment le
