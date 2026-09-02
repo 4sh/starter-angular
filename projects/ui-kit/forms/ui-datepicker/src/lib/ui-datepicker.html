@@ -8,9 +8,11 @@
     [class._range-complete]="rangeComplete()"
     [attr.id]="panelId"
     role="dialog"
-    [attr.aria-modal]="inline() ? null : 'true'"
-    [cdkTrapFocus]="!inline()"
+    [attr.aria-modal]="inline() || nonModal() ? null : 'true'"
+    [cdkTrapFocus]="!inline() && !nonModal()"
     [attr.aria-label]="label() || ariaLabel() || panelAriaLabel()"
+    (focusout)="onPanelFocusOut($event)"
+    (mousedown)="onPanelMousedown($event)"
   >
     @if (showCalendar()) {
       <!-- Shared header (single-month): prev / title (drill-up) / next.
@@ -362,9 +364,11 @@
   <!-- Convenience wrapper: focus and keyboard are carried by the inner ui-input. -->
   <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
   <div
+    #triggerWrapper
     class="ui-datepicker-trigger"
     (click)="onTriggerClick()"
     (keydown)="onTriggerKeydown($event)"
+    (focusout)="onTriggerFocusOut($event)"
   >
     <ui-input
       #trigger
@@ -411,10 +415,10 @@
     [cdkConnectedOverlayPositions]="overlayPositions()"
     [cdkConnectedOverlayViewportMargin]="overlayViewportMargin"
     [cdkConnectedOverlayPush]="true"
-    [cdkConnectedOverlayHasBackdrop]="true"
+    [cdkConnectedOverlayHasBackdrop]="!nonModal()"
     cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
     (backdropClick)="close(false)"
-    (overlayOutsideClick)="close(false)"
+    (overlayOutsideClick)="onOutsideClick($event)"
     (detach)="close(false)"
   >
     <ng-container [ngTemplateOutlet]="calendarTpl" />
