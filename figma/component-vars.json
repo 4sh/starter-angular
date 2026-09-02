@@ -10,10 +10,10 @@
         "Mode 1"
       ],
       "counts": {
-        "tokens": 677,
-        "alias": 540,
-        "literal": 137,
-        "skipped": 57,
+        "tokens": 685,
+        "alias": 545,
+        "literal": 140,
+        "skipped": 60,
         "derivedDescriptions": 210
       },
       "aliasTargets": [
@@ -168,6 +168,21 @@
           "cssVar": "--ui-input-tags-panel-max-width",
           "component": "ui-input-tags",
           "reason": "expression calc() : une variable Figma ne porte pas de calcul."
+        },
+        {
+          "cssVar": "--ui-knob-range-color",
+          "component": "ui-knob",
+          "reason": "pilotée par une entrée Angular du composant : le thème ne vaudrait que pour les exemplaires qui ne s’en servent pas."
+        },
+        {
+          "cssVar": "--ui-knob-text-color",
+          "component": "ui-knob",
+          "reason": "pilotée par une entrée Angular du composant : le thème ne vaudrait que pour les exemplaires qui ne s’en servent pas."
+        },
+        {
+          "cssVar": "--ui-knob-value-color",
+          "component": "ui-knob",
+          "reason": "pilotée par une entrée Angular du composant : le thème ne vaudrait que pour les exemplaires qui ne s’en servent pas."
         },
         {
           "cssVar": "--ui-link-underline-offset",
@@ -9419,6 +9434,184 @@
             "entryPoint": "@4sh/ui-kit/forms/ui-input-tags",
             "descriptionSource": "scss"
           }
+        }
+      }
+    }
+  },
+  "knob": {
+    "focus-ring-width": {
+      "$value": "{metrics.units.2xs}",
+      "$type": "dimension",
+      "$description": "Épaisseur de l'anneau de focus.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "STROKE_FLOAT"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-knob-focus-ring-width)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-knob-focus-ring-width",
+          "component": "ui-knob",
+          "entryPoint": "@4sh/ui-kit/forms/ui-knob",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "font-size": {
+      "$value": "{responsive.size.typography.title.md}",
+      "$type": "dimension",
+      "$description": "Taille de la valeur centrale.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "FONT_SIZE"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-knob-font-size)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-knob-font-size",
+          "component": "ui-knob",
+          "entryPoint": "@4sh/ui-kit/forms/ui-knob",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "font-size-large": {
+      "$value": "{responsive.size.typography.title.default}",
+      "$type": "dimension",
+      "$description": "Taille de la valeur centrale, taille `large`.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "FONT_SIZE"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-knob-font-size-large)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-knob-font-size-large",
+          "component": "ui-knob",
+          "entryPoint": "@4sh/ui-kit/forms/ui-knob",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "font-size-small": {
+      "$value": "{responsive.size.typography.text.lg}",
+      "$type": "dimension",
+      "$description": "Taille de la valeur centrale, taille `small`.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "FONT_SIZE"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-knob-font-size-small)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-knob-font-size-small",
+          "component": "ui-knob",
+          "entryPoint": "@4sh/ui-kit/forms/ui-knob",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "radius": {
+      "$value": "{metrics.radius.full}",
+      "$type": "dimension",
+      "$description": "Rayon de la zone focalisable.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "CORNER_RADIUS"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-knob-radius)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-knob-radius",
+          "component": "ui-knob",
+          "entryPoint": "@4sh/ui-kit/forms/ui-knob",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "size": {
+      "$value": "100px",
+      "$type": "dimension",
+      "$description": "Diamètre du cadran.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "WIDTH_HEIGHT"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-knob-size)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-knob-size",
+          "component": "ui-knob",
+          "entryPoint": "@4sh/ui-kit/forms/ui-knob",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "size-large": {
+      "$value": "140px",
+      "$type": "dimension",
+      "$description": "Diamètre du cadran, taille `large`.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "WIDTH_HEIGHT"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-knob-size-large)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-knob-size-large",
+          "component": "ui-knob",
+          "entryPoint": "@4sh/ui-kit/forms/ui-knob",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "size-small": {
+      "$value": "70px",
+      "$type": "dimension",
+      "$description": "Diamètre du cadran, taille `small`.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "WIDTH_HEIGHT"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-knob-size-small)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-knob-size-small",
+          "component": "ui-knob",
+          "entryPoint": "@4sh/ui-kit/forms/ui-knob",
+          "descriptionSource": "scss"
         }
       }
     }

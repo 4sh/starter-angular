@@ -1,0 +1,202 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as KnobStories from './ui-knob.stories';
+import { ConfigTable } from '../../../../storybook/blocks/config-table';
+
+<Meta of={KnobStories} />
+
+# ui-knob
+
+Le composant `ui-knob` choisit une valeur numérique sur un cadran circulaire : un
+arc de 300°, ouvert en bas, que l'on tourne au pointeur ou pilote au clavier. Il
+implémente le motif WAI-ARIA « slider » (`role="slider"` + `aria-valuemin` /
+`aria-valuemax` / `aria-valuenow`) sur un unique arrêt de tabulation.
+
+Le tracé est un SVG dans un repère `100 × 100` : toutes les longueurs internes
+suivent le diamètre rendu, donc le cadran reste net à n'importe quelle taille.
+Couleurs, diamètre et épaisseur viennent des tokens et se surchargent par instance.
+
+<Canvas of={KnobStories.Basic} />
+
+## API
+
+<ArgTypes of={KnobStories} />
+
+## Min / Max
+
+Les bornes sont définies par `min` et `max` (par défaut `0` et `100`). Quand `0`
+est compris entre les deux, l'arc rempli part de la position du zéro plutôt que
+du minimum.
+
+<Canvas of={KnobStories.MinMax} />
+
+## Step
+
+`step` définit la granularité de chaque déplacement, à la rotation comme au clavier.
+
+<Canvas of={KnobStories.Step} />
+
+## Template
+
+`valueTemplate` habille la valeur centrale, `{value}` servant d'emplacement. Dès
+que le libellé diffère de la valeur brute, il est aussi annoncé via
+`aria-valuetext`.
+
+<Canvas of={KnobStories.Template} />
+
+## Stroke
+
+`strokeWidth` règle l'épaisseur de l'arc. La valeur s'exprime dans le repère du
+tracé (`100` = le diamètre), elle reste donc proportionnelle quelle que soit la
+taille du cadran. Le rayon se déduit de cette épaisseur : l'arc, extrémités
+comprises, tient toujours dans sa boîte, sans jamais déborder sur l'anneau de focus.
+
+<Canvas of={KnobStories.Stroke} />
+
+## Taille
+
+`size` propose trois diamètres alignés sur le design system (`small`, `default`,
+`large`). Pour un diamètre arbitraire, le hook `--ui-knob-size` prend le relais
+sans surcharge SCSS.
+
+```html
+<ui-knob [(ngModel)]="value" size="large" />
+<ui-knob [(ngModel)]="value" style="--ui-knob-size: 180px; --ui-knob-font-size: 32px;" />
+```
+
+<Canvas of={KnobStories.Size} />
+
+## Couleurs
+
+`valueColor`, `rangeColor` et `textColor` repeignent une instance sans toucher au
+thème : chaque input alimente le hook CSS correspondant
+(`--ui-knob-value-color`, `--ui-knob-range-color`, `--ui-knob-text-color`), que
+l'on peut aussi poser directement. Préférez une variable de token à une couleur
+littérale, pour rester juste en thème clair comme en thème sombre, et visez les
+tokens `surface` : les tokens `content` sont faits pour être posés **sur** la
+surface correspondante (souvent du blanc), pas sur le fond de page.
+
+<Canvas of={KnobStories.Color} />
+
+## Contrôles personnalisés
+
+Le cadran étant un `ControlValueAccessor`, il partage son modèle avec n'importe
+quel autre contrôle. En `readonly`, il devient un afficheur piloté depuis
+l'extérieur.
+
+<Canvas of={KnobStories.CustomControls} />
+
+## États
+
+`readonly` garde le cadran focusable mais fige sa valeur ; `disabled` le sort du
+parcours de tabulation et applique les tokens d'état désactivé.
+
+<Canvas of={KnobStories.ReadOnly} />
+<Canvas of={KnobStories.Disabled} />
+<Canvas of={KnobStories.States} />
+
+## Formulaires
+
+Le composant est un `ControlValueAccessor`, donc il se branche à toutes les APIs de
+formulaire sans code additionnel. Les Signal Forms (`@angular/forms/signals`,
+directive `[formField]`), stables depuis Angular 22, fonctionnent via la couche
+d'interop CVA native, sans réécriture du composant.
+
+<Canvas of={KnobStories.SignalForms} />
+<Canvas of={KnobStories.TemplateDriven} />
+<Canvas of={KnobStories.ReactiveForms} />
+
+```html
+<!-- Signal Forms -->
+<ui-knob [formField]="level" ariaLabel="Niveau" />
+
+<!-- Template-driven -->
+<ui-knob [(ngModel)]="level" name="level" required ariaLabel="Niveau" />
+
+<!-- Reactive -->
+<ui-knob [formControl]="levelCtrl" ariaLabel="Niveau" />
+```
+
+- Le style **erreur s'applique automatiquement** quand le contrôle attaché est invalide
+  **et** touché/modifié ; `invalid` permet de le forcer.
+- `disabled` désactive le contrôle (par input ou via `control.disable()`).
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Règle</th>
+      <th>Détail</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Sémantique</strong></td>
+      <td>Le cadran porte <code>role="slider"</code> avec <code>aria-valuemin</code> / <code>aria-valuemax</code> / <code>aria-valuenow</code>, et <code>aria-valuetext</code> dès que <code>valueTemplate</code> habille la valeur. Le tracé SVG et le libellé central sont <code>aria-hidden</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Nom accessible</strong></td>
+      <td><code>ariaLabel</code> (ou <code>ariaLabelledBy</code>) est requis : le cadran n'a pas de libellé visible. Un avertissement est émis en développement s'il manque.</td>
+    </tr>
+    <tr>
+      <td><strong>Clavier</strong></td>
+      <td>Voir la table ci-dessous. Un seul arrêt de tabulation, y compris en <code>readonly</code> ; <code>disabled</code> le retire du parcours.</td>
+    </tr>
+    <tr>
+      <td><strong>États</strong></td>
+      <td><code>:focus-visible</code> = anneau distinct du survol. <code>aria-disabled</code> / <code>aria-readonly</code> / <code>aria-required</code> reflètent l'état.</td>
+    </tr>
+  </tbody>
+</table>
+
+### Clavier
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Touche</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Tab</code></td>
+      <td>Place le focus sur le cadran.</td>
+    </tr>
+    <tr>
+      <td><code>←</code> / <code>↓</code></td>
+      <td>Décrémente d'un <code>step</code>.</td>
+    </tr>
+    <tr>
+      <td><code>→</code> / <code>↑</code></td>
+      <td>Incrémente d'un <code>step</code>.</td>
+    </tr>
+    <tr>
+      <td><code>Début</code></td>
+      <td>Applique la valeur minimale.</td>
+    </tr>
+    <tr>
+      <td><code>Fin</code></td>
+      <td>Applique la valeur maximale.</td>
+    </tr>
+    <tr>
+      <td><code>Page haut</code></td>
+      <td>Incrémente de 10 <code>step</code>.</td>
+    </tr>
+    <tr>
+      <td><code>Page bas</code></td>
+      <td>Décrémente de 10 <code>step</code>.</td>
+    </tr>
+  </tbody>
+</table>
+
+## Theming
+
+Variables locales en tête de `ui-knob.scss`. Celles qui pointent vers `utils.*`
+sont le **point d'ajustement per-composant** ; voir le groupe partagé
+[Forms](?path=/docs/components-configuration-forms--docs) et le
+[fonctionnement de la configuration](?path=/docs/components-configuration--docs). Les
+hooks `--ui-knob-*` se surchargent par instance (voir [Taille](#taille) et
+[Couleurs](#couleurs)).
+
+<ConfigTable of="ui-knob" />
