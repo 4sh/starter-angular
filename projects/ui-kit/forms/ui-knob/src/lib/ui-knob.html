@@ -1,0 +1,35 @@
+<div
+  #root
+  [class]="classes()"
+  role="slider"
+  [attr.id]="resolvedId()"
+  [attr.tabindex]="isDisabled() ? -1 : (tabindex() ?? 0)"
+  [attr.aria-valuemin]="min()"
+  [attr.aria-valuemax]="max()"
+  [attr.aria-valuenow]="currentValue()"
+  [attr.aria-valuetext]="ariaValueText()"
+  [attr.aria-label]="ariaLabel() || null"
+  [attr.aria-labelledby]="ariaLabelledBy() || null"
+  [attr.aria-disabled]="isDisabled() ? true : null"
+  [attr.aria-readonly]="readonly() ? true : null"
+  [attr.aria-required]="required() ? true : null"
+  [style.--ui-knob-value-color]="valueColor() ?? null"
+  [style.--ui-knob-range-color]="rangeColor() ?? null"
+  [style.--ui-knob-text-color]="textColor() ?? null"
+  (pointerdown)="onPointerDown($event)"
+  (pointermove)="onPointerMove($event)"
+  (pointerup)="onPointerUp($event)"
+  (pointercancel)="onPointerUp($event)"
+  (keydown)="onKeyDown($event)"
+  (blur)="onBlur()"
+>
+  <!-- The value is carried by role="slider" above: the drawing is decorative. -->
+  <svg class="ui-knob-dial" viewBox="0 0 100 100" focusable="false" aria-hidden="true">
+    <path class="ui-knob-range" [attr.d]="rangePath()" [attr.stroke-width]="strokeWidth()"></path>
+    <path class="ui-knob-value" [attr.d]="valuePath()" [attr.stroke-width]="strokeWidth()"></path>
+  </svg>
+
+  @if (showValue()) {
+    <span class="ui-knob-text" aria-hidden="true">{{ displayValue() }}</span>
+  }
+</div>

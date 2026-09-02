@@ -18,6 +18,25 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ### Added
 
+- **`ui-knob` : cadran circulaire de saisie numérique.** Inspiré de PrimeNG Knob, réécrit
+  sur le socle du kit (`BaseFieldControl`, tokens, hooks CSS).
+  - **Tracé proportionnel** : un arc de 300° ouvert en bas, dessiné en SVG dans un repère
+    `100 × 100`. Toutes les longueurs internes (rayon, épaisseur) sont en unités du tracé, donc
+    le cadran reste net à n'importe quel diamètre, sans recalcul JavaScript.
+  - **Un seul arrêt de tabulation** portant `role="slider"` + `aria-valuemin`/`aria-valuemax`/
+    `aria-valuenow`, et `aria-valuetext` dès que `valueTemplate` habille la valeur. Rotation au
+    pointeur (souris, tactile, stylet, un seul chemin de code avec pointer capture) ; clavier
+    flèches, `Page haut`/`Page bas` (10 pas), `Début`/`Fin`. Le secteur mort du bas ne produit
+    aucune valeur plutôt qu'un saut min↔max.
+  - **`min`/`max`/`step`**, avec l'arc rempli partant de la position du **zéro** quand il tombe
+    dans les bornes (et du minimum sinon) : un intervalle signé se lit sans convention à retenir.
+  - **Taille conforme au design system** : `size` `small`/`default`/`large`. Le diamètre libre
+    reste accessible par le hook `--ui-knob-size`, sans en faire un input en pixels.
+  - **Recoloration par instance** `valueColor`/`rangeColor`/`textColor`, chacun alimentant son
+    hook (`--ui-knob-value-color`…) : les inputs et la CSS visent la même surface.
+  - `readonly` (focusable, figé) et `disabled` distincts, erreur automatique via le contrôle
+    attaché ; Signal Forms / Reactive / Template-driven sans code additionnel.
+
 - **`ui-bottom-tab-bar` : barre de navigation basse tactile.** Sans équivalent PrimeNG.
   API de composition : un conteneur `ui-bottom-tab-bar` qui pilote la destination active
   (`value` two-way, sortie `tabChange`), des items `ui-bottom-tab`, et une action circulaire
