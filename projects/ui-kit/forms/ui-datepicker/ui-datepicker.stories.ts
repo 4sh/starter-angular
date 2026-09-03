@@ -198,6 +198,11 @@ const meta: Meta<UiDatepicker> = {
       description: 'Classe(s) supplémentaire(s) appliquée(s) au panneau (personnalisation scoped).',
       table: { type: { summary: 'string' } },
     },
+    autocomplete: {
+      control: 'text',
+      description: 'Autocomplete natif, forwardé au déclencheur (`ui-input`).',
+      table: { type: { summary: 'string' } },
+    },
     required: {
       control: 'boolean',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
@@ -286,6 +291,7 @@ const TEMPLATE = `<div style="width:260px"><ui-datepicker
     [inline]="inline" [showClear]="showClear" [autoFlip]="autoFlip" [closeOnSelect]="closeOnSelect" [allowInput]="allowInput" [showOnFocus]="showOnFocus"
     [minDate]="minDate" [maxDate]="maxDate" [disabledDays]="disabledDays" [disabledDates]="disabledDates"
     [dateFormat]="dateFormat" [parseDate]="parseDate" [panelStyleClass]="panelStyleClass"
+    [autocomplete]="autocomplete"
     [required]="required" [disabled]="disabled" [readonly]="readonly" [invalid]="invalid"
     (valueChange)="valueChange($event)" (dateSelect)="dateSelect($event)" (monthChange)="monthChange($event)"
     (opened)="opened()" (closed)="closed()" (cleared)="cleared()"
@@ -332,6 +338,18 @@ export const Error: Story = {
     level: 'error',
     invalid: true,
     errorText: 'Date invalide.',
+    dateFormat: demoDateFormat,
+  },
+};
+
+// Formulaire où la saisie ne doit pas être mémorisée par le navigateur (ex. date de naissance
+// dans un flux sensible) : `autocomplete="off"` est forwardé au champ `ui-input` sous-jacent.
+export const AutocompleteOff: Story = {
+  render: story(),
+  args: {
+    label: 'Date de naissance',
+    autocomplete: 'off',
+    helperText: 'Non mémorisée par le navigateur (autocomplete="off").',
     dateFormat: demoDateFormat,
   },
 };
