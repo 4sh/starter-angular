@@ -125,6 +125,11 @@ dégrade silencieusement en « pas de contrainte » plutôt que de lever une err
 <Canvas of={DatepickerStories.Small} />
 <Canvas of={DatepickerStories.Disabled} />
 
+`autocomplete` est forwardé tel quel au champ `ui-input` du déclencheur (ex. `"off"` pour un
+formulaire dont la saisie ne doit pas être mémorisée par le navigateur).
+
+<Canvas of={DatepickerStories.AutocompleteOff} />
+
 `showClear` (vrai par défaut) ajoute une croix dans le champ pour réinitialiser la sélection —
 mais seulement quand `showIcon` est à `false` : sinon le calendrier garde l'icône, pour rester
 cliquable et rouvrir le panneau même une fois une date choisie (le point de vue retenu, FSHSP-118 :

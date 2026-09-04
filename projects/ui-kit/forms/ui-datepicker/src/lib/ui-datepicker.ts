@@ -353,6 +353,8 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   closeOnSelect = input(true, { transform: booleanAttribute });
   /** Extra class(es) applied to the panel (scoped custom styling). */
   panelStyleClass = input<string>();
+  /** Native autocomplete, forwarded to the trigger. */
+  autocomplete = input<string>();
 
   /** Emitted whenever the value changes (selection, time, clear). */
   valueChange = output<DatepickerValue>();
