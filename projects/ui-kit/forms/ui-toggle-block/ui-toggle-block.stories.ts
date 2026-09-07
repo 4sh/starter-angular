@@ -13,6 +13,10 @@ const meta: Meta<UiToggleBlock> = {
   decorators: [moduleMetadata({ imports: [UiToggleBlock, UiIcon, UiTag, FormsModule] })],
   parameters: {
     layout: 'centered',
+    design: {
+      type: 'figma',
+      url: 'https://www.figma.com/design/GZww5hdUA49LB8XWeWP6tl/-Projet----UI-Kit?node-id=3807-43820',
+    },
   },
   argTypes: {
     indicator: {
