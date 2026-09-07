@@ -1,0 +1,214 @@
+@use 'utils';
+@use 'sass:map';
+
+// =====================================================================
+// ui-toggle-block : co-located styles. All values come from design tokens.
+//
+// The indicator is an instance of ui-checkbox / ui-radio / ui-toggle, so
+// nothing here paints it: the block only draws its own surface. The layering
+// (body in flow < hit label stretched + ripple layer < indicator + interactive
+// content) is what makes the whole surface clickable while keeping links usable
+// and the indicator crisp above the wave.
+//
+// Extend:
+//   • Size → add an entry to $sizes (+ the `ToggleBlockSize` type).
+// =====================================================================
+
+$radius: var(--ui-toggle-block-radius, var(--radius-md));                                    /// Rayon des coins du bloc.
+$stroke-width: var(--ui-toggle-block-stroke-width, #{utils.$control-stroke-width});           /// Épaisseur de la bordure du bloc.
+$focus-ring-width: var(--ui-toggle-block-focus-ring-width, #{utils.$form-focus-ring-width});  /// Épaisseur de l'anneau de focus.
+
+$body-gap: var(--ui-toggle-block-body-gap, var(--units-2xs));   /// Espacement libellé ↔ description.
+$label-gap: var(--ui-toggle-block-label-gap, var(--units-2xs)); /// Espacement libellé ↔ marqueur requis.
+
+/// Inset, écart indicateur ↔ contenu et échelle typographique par taille
+$sizes: (
+  'default': (
+    padding: var(--ui-toggle-block-padding, var(--units-default)),
+    gap: var(--ui-toggle-block-gap, var(--units-md)),
+    label: var(--ui-toggle-block-label-font-size, var(--size-typography-text-default)),
+    description: var(--ui-toggle-block-description-font-size, var(--size-typography-text-md)),
+  ),
+  'small': (
+    padding: var(--ui-toggle-block-padding-small, var(--units-md)),
+    gap: var(--ui-toggle-block-gap-small, var(--units-sm)),
+    label: var(--ui-toggle-block-label-font-size-small, var(--size-typography-text-md)),
+    description: var(--ui-toggle-block-description-font-size-small, var(--size-typography-text-sm)),
+  ),
+  'large': (
+    padding: var(--ui-toggle-block-padding-large, var(--units-lg)),
+    gap: var(--ui-toggle-block-gap-large, var(--units-default)),
+    label: var(--ui-toggle-block-label-font-size-large, var(--size-typography-text-lg)),
+    description: var(--ui-toggle-block-description-font-size-large, var(--size-typography-text-default)),
+  ),
+);
+
+@mixin block-size($size) {
+  padding: map.get($size, padding);
+  gap: map.get($size, gap);
+
+  .ui-toggle-block-label { font-size: map.get($size, label); }
+  .ui-toggle-block-description { font-size: map.get($size, description); }
+}
+
+// No intrinsic width: a block parent already gives 100%, a flex/grid parent
+// sizes to content unless `fluid` asks otherwise.
+:host {
+  display: block;
+}
+
+:host._fluid {
+  width: 100%;
+}
+
+.ui-toggle-block {
+  position: relative;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  background-color: var(--form-high-surface-default);
+  border: $stroke-width solid var(--form-high-stroke-default);
+  border-radius: $radius;
+  color: var(--form-high-content-default);
+  font-family: var(--fontfamily-base);
+  cursor: pointer;
+  user-select: none;
+  @include utils.control-transition(background-color, border-color, box-shadow);
+
+  // --- Sizes ------------------------------------------------------------
+  @include block-size(map.get($sizes, 'default'));
+  &._small { @include block-size(map.get($sizes, 'small')); }
+  &._large { @include block-size(map.get($sizes, 'large')); }
+
+  // --- Hit area ---------------------------------------------------------
+  // Above the body (so text clicks select the block), below the indicator and
+  // any interactive content (so those keep their own behaviour).
+  &-hit {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+    cursor: inherit;
+  }
+
+  // --- Indicator --------------------------------------------------------
+  &-control {
+    position: relative;
+    z-index: 2;
+    display: inline-flex;
+    flex-shrink: 0;
+    // The block draws the focus ring; a second one around the small control
+    // would nest two outlines inside the same hit area.
+    --ui-checkbox-focus-ring-width: 0;
+    --ui-radio-focus-ring-width: 0;
+    --ui-toggle-focus-ring-width: 0;
+  }
+
+  // --- Body -------------------------------------------------------------
+  &-body {
+    display: flex;
+    flex-direction: column;
+    gap: $body-gap;
+    flex: 1 1 auto;
+    min-width: 0;
+
+    // Projected content stays operable: raised above the hit area so a link or
+    // a button keeps its own click, instead of selecting the block.
+    ::ng-deep :where(a, button, select, textarea, summary, [role='button'], [tabindex]) {
+      position: relative;
+      z-index: 2;
+    }
+  }
+
+  &-label {
+    display: inline-flex;
+    align-items: center;
+    gap: $label-gap;
+    font-weight: var(--weight-bold);
+    line-height: 1.3;
+    color: var(--ui-label-color, var(--form-high-content-default));
+  }
+
+  &-required {
+    color: var(--informative-errorlow-content-default);
+  }
+
+  &-description {
+    line-height: 1.4;
+    color: var(--form-low-content-default);
+  }
+
+  // --- Layout modifiers -------------------------------------------------
+  &._indicator-end {
+    flex-direction: row-reverse;
+  }
+
+  &._align-start {
+    align-items: flex-start;
+  }
+
+  // Kept operable (focusable, label-activated), just out of sight.
+  &._hide-indicator &-control {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  // --- States -----------------------------------------------------------
+  &:hover:not(._disabled):not(._readonly) {
+    background-color: var(--form-high-surface-hover);
+    border-color: var(--form-high-stroke-hover);
+  }
+
+  &._checked {
+    background-color: var(--form-high-surface-checked);
+    border-color: var(--form-high-stroke-checked);
+  }
+
+  // Focus: the border always answers, the ring only on keyboard focus.
+  &:focus-within {
+    border-color: var(--form-high-stroke-focused);
+  }
+
+  &._focus-visible {
+    box-shadow: 0 0 0 $focus-ring-width rgb(from var(--form-high-stroke-focused) r g b / 50%);
+  }
+
+  &._invalid {
+    border-color: var(--form-error-stroke-default);
+
+    &._checked {
+      background-color: var(--form-error-surface-checked);
+      border-color: var(--form-error-stroke-checked);
+    }
+    &:focus-within {
+      border-color: var(--form-error-stroke-focused);
+    }
+    &._focus-visible {
+      box-shadow: 0 0 0 $focus-ring-width rgb(from var(--form-error-stroke-focused) r g b / 50%);
+    }
+  }
+
+  &._disabled {
+    background-color: var(--form-high-surface-disabled);
+    border-color: var(--form-high-stroke-disabled);
+    cursor: not-allowed;
+
+    .ui-toggle-block-label,
+    .ui-toggle-block-description {
+      color: var(--form-high-content-disabled);
+    }
+  }
+
+  &._readonly {
+    cursor: default;
+
+    // Pointer activation is cut here; the keyboard is guarded in the component.
+    .ui-toggle-block-control {
+      pointer-events: none;
+    }
+  }
+}

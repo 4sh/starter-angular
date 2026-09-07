@@ -18,6 +18,30 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ### Added
 
+- **`ui-toggle-block` : bloc de sélection.** Une surface cliquable qui embarque un
+  contrôle de sélection et laisse le contenu libre : formule tarifaire, région de
+  déploiement, canal de notification.
+  - **Indicateur composé, jamais recopié** : `indicator` instancie `ui-checkbox`,
+    `ui-radio` ou `ui-toggle`. Le bloc ne peint que sa propre surface, la pastille
+    garde l'apparence et le comportement qu'elle a seule. `indicatorPosition`
+    start/end, `align` center/start, `hideIndicator` (carte de sélection : le contrôle
+    reste focusable et annoncé, seule la pastille disparaît).
+  - **Contenu libre** : `label` / `description` pour le cas courant, `<ng-content>`
+    pour tout le reste (icône, tag, image, lien). Les éléments interactifs projetés
+    sont remontés au-dessus de la zone de clic et gardent leur propre action.
+  - **Activation native** : la zone cliquable est un `<label for>` étiré sur le bloc,
+    sans gestionnaire de clic ; la zone de contenu nomme le contrôle
+    (`aria-labelledby`), remplaçable par `ariaLabel` / `ariaLabelledBy`. Anneau de
+    focus porté par le bloc entier, au `:focus-visible` seulement ; `readonly` bloqué
+    au pointeur **et** au clavier.
+  - **Groupes natifs** : même `name` + même modèle, un `value` par bloc ; la
+    navigation aux flèches vient du groupe de radios natif.
+  - **Ripple** : le bloc rejoint les composants équipés d'office (`data-ripple="on"`,
+    entrée `ripple`). L'onde couvre le bloc entier, passe sous l'indicateur, et ne part
+    ni en `disabled` ni en `readonly`.
+  - Tailles `small` / `default` / `large`, `fluid`, `trueValue`/`falseValue`, erreur
+    auto ; CVA (Signal Forms, reactive, `ngModel`), tokens `form.*`, hooks
+    `--ui-toggle-block-*`.
 - **`ui-datepicker`** : nouvel input `autocomplete`, forwardé au champ `ui-input` du
   déclencheur (même contrat que `UiInput.autocomplete`).
 
