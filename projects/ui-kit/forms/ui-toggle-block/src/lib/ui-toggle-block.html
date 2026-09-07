@@ -1,0 +1,77 @@
+<div [class]="classes()" [attr.data-ripple]="rippleEnabled() ? 'on' : 'off'">
+  <label class="ui-toggle-block-hit" [attr.for]="readonly() ? null : resolvedId()"></label>
+
+  <span class="ui-toggle-block-control">
+    @switch (indicator()) {
+      @case ('radio') {
+        <ui-radio
+          [value]="selectedValue()"
+          [inputId]="resolvedId()"
+          [name]="name()"
+          [disabled]="isDisabled()"
+          [readonly]="readonly()"
+          [required]="required()"
+          [invalid]="isInvalid()"
+          [tabindex]="tabindex()"
+          [ariaLabel]="ariaLabel()"
+          [ariaLabelledBy]="controlLabelledBy()"
+          (radioChange)="onControlChange($event)"
+          (radioFocus)="onControlFocus($event)"
+          (radioBlur)="onControlBlur($event)"
+        />
+      }
+      @case ('toggle') {
+        <ui-toggle
+          [trueValue]="trueValue()"
+          [falseValue]="falseValue()"
+          [size]="toggleSize()"
+          [inputId]="resolvedId()"
+          [name]="name()"
+          [disabled]="isDisabled()"
+          [readonly]="readonly()"
+          [required]="required()"
+          [invalid]="isInvalid()"
+          [tabindex]="tabindex()"
+          [ariaLabel]="ariaLabel()"
+          [ariaLabelledBy]="controlLabelledBy()"
+          (toggleChange)="onControlChange($event)"
+          (toggleFocus)="onControlFocus($event)"
+          (toggleBlur)="onControlBlur($event)"
+        />
+      }
+      @default {
+        <ui-checkbox
+          [trueValue]="trueValue()"
+          [falseValue]="falseValue()"
+          [inputId]="resolvedId()"
+          [name]="name()"
+          [disabled]="isDisabled()"
+          [readonly]="readonly()"
+          [required]="required()"
+          [invalid]="isInvalid()"
+          [tabindex]="tabindex()"
+          [ariaLabel]="ariaLabel()"
+          [ariaLabelledBy]="controlLabelledBy()"
+          (checkboxChange)="onControlChange($event)"
+          (checkboxFocus)="onControlFocus($event)"
+          (checkboxBlur)="onControlBlur($event)"
+        />
+      }
+    }
+  </span>
+
+  <div #bodyEl class="ui-toggle-block-body" [id]="bodyId()">
+    @if (label()) {
+      <span class="ui-toggle-block-label">
+        {{ label() }}
+        @if (required()) {
+          <span class="ui-toggle-block-required" aria-hidden="true">*</span>
+        }
+      </span>
+    }
+    @if (description()) {
+      <span class="ui-toggle-block-description">{{ description() }}</span>
+    }
+    <ng-content />
+  </div>
+</div>

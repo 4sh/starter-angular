@@ -1,0 +1,209 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as ToggleBlockStories from './ui-toggle-block.stories';
+import { ConfigTable } from '../../../../storybook/blocks/config-table';
+
+<Meta of={ToggleBlockStories} />
+
+# ui-toggle-block
+
+Bloc de sélection : une surface cliquable qui embarque une **case à cocher**, un **bouton radio**
+ou un **interrupteur**, et qui laisse le contenu entièrement libre. Utile dès qu'un choix mérite
+plus qu'un libellé sur une ligne : une formule tarifaire, une région de déploiement, un canal de
+notification.
+
+L'indicateur n'est pas redessiné : c'est une instance de `ui-checkbox`, `ui-radio` ou `ui-toggle`.
+Le bloc ne peint que sa propre surface (tokens `form.*`), l'indicateur garde donc exactement
+l'apparence et le comportement qu'il a seul.
+
+<Canvas of={ToggleBlockStories.Default} />
+
+## API
+
+<ArgTypes of={ToggleBlockStories} />
+
+## Indicateur
+
+`indicator` choisit le contrôle embarqué, `indicatorPosition` le côté où il se pose et `align`
+son alignement vertical face au contenu (`center` par défaut, `start` quand le contenu fait
+plusieurs lignes).
+
+<Canvas of={ToggleBlockStories.Switch} />
+
+`hideIndicator` le retire de la vue **sans le retirer du DOM** : le bloc reste focusable,
+cochable au clavier et annoncé normalement, seule la pastille disparaît. C'est le mode « carte
+de sélection ».
+
+<Canvas of={ToggleBlockStories.HiddenIndicator} />
+
+## Sizes
+
+Trois densités : l'inset, l'écart indicateur ↔ contenu et l'échelle typographique suivent.
+La taille de la case / du cercle, elle, ne bouge pas : c'est une constante partagée par tous les
+champs du kit (`--ui-form-control-size`).
+
+<Canvas of={ToggleBlockStories.Sizes} />
+
+## Groups
+
+Le regroupement est **natif**, comme pour `ui-radio` : les blocs d'un même choix exclusif
+partagent le même `name` et le même modèle, et chacun porte son `value`. La navigation aux
+flèches vient du groupe de radios natif, sans code.
+
+Le conteneur porte la sémantique du groupe (`role="radiogroup"` pour un choix exclusif,
+`role="group"` pour un choix multiple) et son nom accessible : c'est la responsabilité de la
+page, pas du bloc.
+
+<Canvas of={ToggleBlockStories.Groups} />
+
+```html
+<!-- Choix exclusif -->
+<div role="radiogroup" aria-labelledby="plan-legend">
+  <span id="plan-legend">Formule</span>
+  @for (plan of plans; track plan.id) {
+    <ui-toggle-block
+      fluid
+      indicator="radio"
+      name="plan"
+      [value]="plan.id"
+      [ngModel]="selected()"
+      [label]="plan.name"
+      [description]="plan.description"
+      (blockChange)="selected.set($event)"
+    />
+  }
+</div>
+
+<!-- Choix multiple : un modèle booléen par bloc -->
+<ui-toggle-block [(ngModel)]="alerts.deploy" label="Déploiements" />
+```
+
+## Custom Template
+
+`label` et `description` couvrent le cas courant. Au-delà, tout ce qui est projeté dans
+`<ng-content>` s'ajoute dans la colonne de contenu : icône, tag, image, mise en page libre.
+
+La zone cliquable est un `<label>` étiré au-dessus du contenu : un clic n'importe où dans le
+bloc coche le contrôle. Les éléments **interactifs** projetés (`a`, `button`, `select`,
+`textarea`, `[tabindex]`…) sont automatiquement remontés au-dessus de cette zone et gardent leur
+propre clic.
+
+<Canvas of={ToggleBlockStories.CustomTemplate} />
+
+```html
+<ui-toggle-block indicator="radio" name="plan" value="team" align="start" indicatorPosition="end">
+  <span class="plan-title">
+    <ui-icon name="users" size="md" />
+    Team
+    <ui-tag label="Populaire" level="success" />
+  </span>
+  <span class="plan-detail">Projets illimités, 10 utilisateurs.</span>
+  <a href="/tarifs">Comparer les formules</a>
+</ui-toggle-block>
+```
+
+## Ripple
+
+Le bloc fait partie des composants [équipés d'office](?path=/docs/foundations-ripple--docs) : il
+porte `data-ripple="on"` sur sa surface et ondule dès que l'effet est activé (sans activation,
+l'attribut ne coûte rien).
+
+L'onde est portée par le **bloc entier**, pas par la pastille : elle part du point de pression,
+suit le rayon des coins et passe sous l'indicateur, qui reste net. Un bloc `disabled` ou
+`readonly` n'en produit aucune ; `[ripple]="false"` la coupe sur cette instance. Comme la
+surface est marquée d'un seul tenant, une pression sur un élément interactif projeté déclenche
+elle aussi l'onde du bloc.
+
+```html
+<ui-toggle-block [ripple]="false" label="Sans onde" />
+```
+
+## États
+
+<Canvas of={ToggleBlockStories.Checked} />
+<Canvas of={ToggleBlockStories.Required} />
+<Canvas of={ToggleBlockStories.Disabled} />
+<Canvas of={ToggleBlockStories.Readonly} />
+<Canvas of={ToggleBlockStories.Invalid} />
+
+## Formulaires
+
+Branché au système de formulaires du starter via `ControlValueAccessor`
+(`BaseControlValueAccessor`) : fonctionne avec les **Signal Forms** (`@angular/forms/signals`,
+directive `[formField]`, stables depuis Angular 22) via l'interop CVA native, avec
+`[(ngModel)]`, les reactive forms (`formControlName`) ou en autonome. L'état d'erreur se peint
+automatiquement quand le contrôle attaché est invalide **et** touché/modifié.
+
+> Sous `[formField]`, `required`, `disabled`, `readonly` et `name` sont **écrits par le
+> schéma** du champ : les poser en dur sur la balise n'a aucun effet, c'est
+> `required(path)` (et ses voisins) qui les allume.
+
+<Canvas of={ToggleBlockStories.SignalForms} />
+
+```html
+<!-- Signal Forms -->
+<ui-toggle-block [formField]="terms" label="Conditions générales" />
+
+<!-- Reactive forms -->
+<ui-toggle-block formControlName="terms" label="Conditions générales" />
+
+<!-- ngModel -->
+<ui-toggle-block [(ngModel)]="terms" label="Conditions générales" />
+
+<!-- Valeurs personnalisées -->
+<ui-toggle-block [(ngModel)]="status" trueValue="on" falseValue="off" label="Statut" />
+```
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Point</th>
+      <th>Implémentation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Rôle</strong></td>
+      <td>Celui du contrôle embarqué : <code>checkbox</code>, <code>radio</code> ou <code>switch</code> natif. Le bloc n'ajoute aucun rôle, il n'est qu'une surface.</td>
+    </tr>
+    <tr>
+      <td><strong>Nom accessible</strong></td>
+      <td>La zone de contenu nomme le contrôle (<code>aria-labelledby</code>) : libellé, description et contenu projeté compris. <code>ariaLabel</code> / <code>ariaLabelledBy</code> le remplacent. Un bloc sans aucun nom déclenche un avertissement en mode dev.</td>
+    </tr>
+    <tr>
+      <td><strong>Clavier</strong></td>
+      <td>Natif : <kbd>Tab</kbd> pour cibler, <kbd>Espace</kbd> pour cocher, <kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd> entre les blocs d'un même groupe radio.</td>
+    </tr>
+    <tr>
+      <td><strong>Focus</strong></td>
+      <td>L'anneau est porté par le <strong>bloc entier</strong>, pas par la pastille, et n'apparaît qu'au focus clavier (<code>:focus-visible</code>) ; la bordure, elle, répond à tout focus.</td>
+    </tr>
+    <tr>
+      <td><strong>Zone cliquable</strong></td>
+      <td><code>&lt;label for&gt;</code> étiré sur le bloc : activation native, sans gestionnaire de clic. Les éléments interactifs projetés restent au-dessus et gardent leur propre action.</td>
+    </tr>
+    <tr>
+      <td><strong>Désactivé / lecture seule</strong></td>
+      <td><code>disabled</code> natif (pas seulement visuel). En <code>readonly</code> le bloc reste focusable mais ni le pointeur ni le clavier ne changent la valeur.</td>
+    </tr>
+    <tr>
+      <td><strong>Erreur</strong></td>
+      <td><code>aria-invalid</code> + bordure erreur ; automatique quand le contrôle est invalide et touché/modifié.</td>
+    </tr>
+    <tr>
+      <td><strong>Groupe</strong></td>
+      <td>Le conteneur porte <code>role="radiogroup"</code> / <code>role="group"</code> et son nom accessible : un ensemble de blocs n'est pas un composant, c'est un groupe natif.</td>
+    </tr>
+  </tbody>
+</table>
+
+## Theming
+
+Variables locales en tête de `ui-toggle-block.scss`. La pastille, elle, se règle par les hooks de
+son propre composant (`--ui-checkbox-box-size`, `--ui-radio-box-size`, `--ui-toggle-track-width`…)
+posés sur le bloc. Voir le groupe partagé
+[Forms](?path=/docs/components-configuration-forms--docs) et le
+[fonctionnement de la configuration](?path=/docs/components-configuration--docs).
+
+<ConfigTable of="ui-toggle-block" />

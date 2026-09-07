@@ -155,7 +155,7 @@ poserait l'onde sur la boîte carrée du custom element.
   </tbody>
 </table>
 
-Les douze composants équipés d'office exposent en plus une entrée `ripple` (`boolean`,
+Les quatorze composants équipés d'office exposent en plus une entrée `ripple` (`boolean`,
 `true` par défaut) qui coupe l'effet sur cette instance, activation globale comprise.
 
 Besoin de déclencher une onde sans pression (raccourci clavier applicatif, événement
@@ -163,7 +163,7 @@ distant) ? Le service `UiRippleEngine` expose `launch(element, event?, centered?
 
 ## Composants équipés par défaut
 
-Ces douze entry points portent `data-ripple="on"` sur leur cible interactive. Ils n'ondulent
+Ces quatorze entry points portent `data-ripple="on"` sur leur cible interactive. Ils n'ondulent
 que si l'effet est activé (globalement ou par un scope) : sans activation, l'attribut ne
 produit rien et ne coûte rien.
 
@@ -196,6 +196,10 @@ produit rien et ne coûte rien.
       <td>Les en-têtes d'onglet. Pas les chevrons de défilement : ils font glisser la piste, ils ne mènent nulle part.</td>
     </tr>
     <tr>
+      <td>`ui-bottom-tab-bar`</td>
+      <td>Les onglets et l'action circulaire surélevée.</td>
+    </tr>
+    <tr>
       <td>`ui-paginator`</td>
       <td>Les numéros de page et les boutons première / précédente / suivante / dernière.</td>
     </tr>
@@ -220,6 +224,10 @@ produit rien et ne coûte rien.
       <td>Les options de la piste.</td>
     </tr>
     <tr>
+      <td>`ui-toggle-block`</td>
+      <td>Le bloc entier. L'indicateur reste net au-dessus de l'onde, et un bloc `disabled` ou `readonly` n'en produit aucune.</td>
+    </tr>
+    <tr>
       <td>`ui-file-upload`</td>
       <td>La zone de dépôt (les deux modes ouvrent le sélecteur au clic) et les actions de la barre, qui suivent l'entrée du composant hôte.</td>
     </tr>
@@ -227,9 +235,9 @@ produit rien et ne coûte rien.
 </table>
 
 Le périmètre part de celui de PrimeNG (**actions, navigation et choix dans une liste**) et
-l'élargit aux contrôles à surface franche : la bascule, la piste segmentée et la zone de dépôt
-sont assez grandes pour que l'onde s'y lise, et confirment un clic dont le résultat n'est pas
-toujours immédiat.
+l'élargit aux contrôles à surface franche : la bascule, la piste segmentée, le bloc de sélection
+et la zone de dépôt sont assez grandes pour que l'onde s'y lise, et confirment un clic dont le
+résultat n'est pas toujours immédiat.
 
 En sont absents les contrôles dont le changement d'état **est** le retour visuel, sur une cible
 trop petite pour porter une onde (`ui-checkbox`, `ui-radio`, `ui-toggle`, `ui-slider`,
@@ -239,13 +247,16 @@ trop petite pour porter une onde (`ui-checkbox`, `ui-radio`, `ui-toggle`, `ui-sl
 `ui-breadcrumb`), dont la boîte se casse à chaque retour à la ligne, et les lignes de
 `ui-table`, où une onde pleine largeur est envahissante.
 
+Une case à cocher, un radio ou un interrupteur **posés dans un `ui-toggle-block`** ondulent
+malgré tout : c'est le bloc qui porte l'onde, et lui a la surface pour ça.
+
 ### Couper l'effet sur un composant
 
 ```html
 <ui-select [ripple]="false" [options]="options" />
 ```
 
-L'entrée `ripple` (`true` par défaut) existe sur les neuf composants ci-dessus et l'emporte
+L'entrée `ripple` (`true` par défaut) existe sur les quatorze composants ci-dessus et l'emporte
 sur l'activation globale. Elle passe `data-ripple` à `"off"`, ce qui coupe aussi le sous-arbre.
 
 Pour éteindre une **zone entière**, l'attribut se pose directement, sans entrée :
@@ -336,7 +347,7 @@ entrée de directive : `[style.--ui-ripple-color]="brandColor()"`.
 ## Ce qui reçoit l'onde
 
 Le sélecteur par défaut d'une portée déléguée (globale ou `[uiRippleScope]`) est
-`[data-ripple="on"]` : seul ondule ce qui **se déclare**, soit les douze composants curés du
+`[data-ripple="on"]` : seul ondule ce qui **se déclare**, soit les quatorze composants curés du
 kit, soit ce que vous marquez vous-même. Volontairement restreint, pour qu'activer l'effet
 globalement ne fasse pas onduler les ✕ de fermeture, les compteurs et les liens d'un
 paragraphe.
