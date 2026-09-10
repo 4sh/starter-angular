@@ -1,0 +1,107 @@
+@if (mounted()) {
+  <!-- Backdrop and positioner are siblings so the sheet can slide over a static
+       scrim, and a click beside the sheet lands on the scrim (dismiss). -->
+  @if (hasBackdrop()) {
+    <div
+      class="ui-bottom-sheet-scrim"
+      [class._open]="atRest()"
+      [class._contained]="contained()"
+      [class._no-motion]="motionDisabled()"
+      [style.z-index]="zIndex()"
+      (pointerdown)="onScrimPointerDown($event)"
+    ></div>
+  }
+
+  <!-- Dialog: Escape/Tab handled on the container, focus lives inside
+       (CDK focus-trap). The positioner carries the slide transform. -->
+  <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
+  <div
+    #positioner
+    class="ui-bottom-sheet-positioner"
+    [class._contained]="contained()"
+    [class._dragging]="dragging()"
+    [class._no-motion]="motionDisabled()"
+    [style.z-index]="zIndex()"
+    [style.transform]="panelTransform()"
+    (transitionend)="onTransitionEnd($event)"
+    (keydown)="onKeydown($event)"
+  >
+    <div
+      #panel
+      [class]="panelClasses()"
+      [attr.role]="role()"
+      [attr.aria-modal]="hasBackdrop() ? 'true' : null"
+      [attr.aria-label]="resolvedAriaLabel()"
+      [attr.aria-labelledby]="labelledBy()"
+      [style.height]="inlineHeight()"
+      tabindex="-1"
+      [cdkTrapFocus]="trapFocus()"
+      [cdkTrapFocusAutoCapture]="focusOnShow()"
+    >
+      <!-- Grab zone: handle + header. The body is left out so it keeps its
+           native scroll. -->
+      @if (showHandle() || hasHeaderRegion()) {
+        <div
+          class="ui-bottom-sheet-grab"
+          [class._draggable]="dragEnabled()"
+          (pointerdown)="onDragPointerDown($event)"
+          (pointermove)="onDragPointerMove($event)"
+          (pointerup)="onDragPointerUp($event)"
+          (pointercancel)="onDragPointerUp($event)"
+        >
+          @if (showHandle()) {
+            @if (canSnap()) {
+              <button
+                type="button"
+                class="ui-bottom-sheet-handle _operable"
+                [attr.aria-label]="handleAriaLabel()"
+                [attr.aria-expanded]="snapped()"
+                (keydown)="onHandleKeydown($event)"
+              ></button>
+            } @else {
+              <div class="ui-bottom-sheet-handle" aria-hidden="true"></div>
+            }
+          }
+
+          @if (hasHeaderRegion()) {
+            <div class="ui-bottom-sheet-header">
+              @if (hasTitle()) {
+                <div [attr.id]="titleId" class="ui-bottom-sheet-title">
+                  @if (showHeaderString()) {
+                    {{ header() }}
+                  }
+                  <ng-content select="[uiBottomSheetHeader], [ui-bottom-sheet-header]" />
+                </div>
+              }
+
+              @if (closable()) {
+                <button
+                  type="button"
+                  class="ui-bottom-sheet-action"
+                  [attr.aria-label]="closeAriaLabel()"
+                  (click)="close()"
+                >
+                  <ui-icon [name]="closeIcon()" size="sm" />
+                </button>
+              }
+            </div>
+          }
+        </div>
+      }
+
+      <!-- Body: scrolls natively, scroll chaining kept inside the sheet.
+           `tabindex` is what makes that scroll reachable at the keyboard when the
+           body holds no focusable element of its own (WCAG 2.1.1). -->
+      <div class="ui-bottom-sheet-content" tabindex="0">
+        <ng-content select="[uiBottomSheetContent], [ui-bottom-sheet-content]" />
+        <ng-content />
+      </div>
+
+      @if (footerSlot()) {
+        <div class="ui-bottom-sheet-footer">
+          <ng-content select="[uiBottomSheetFooter], [ui-bottom-sheet-footer]" />
+        </div>
+      }
+    </div>
+  </div>
+}

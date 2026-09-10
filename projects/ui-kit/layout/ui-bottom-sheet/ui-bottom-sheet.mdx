@@ -1,0 +1,283 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as BottomSheetStories from './ui-bottom-sheet.stories';
+import { ConfigTable } from '../../../../storybook/blocks/config-table';
+
+<Meta of={BottomSheetStories} />
+
+# ui-bottom-sheet
+
+Panneau **glissant depuis le bas** de l'écran, headless et pensé mobile-first : une surface
+stylée par tokens, posée sur un fond sombre optionnel et pilotée par le modèle two-way
+`visible`. Pour du contenu contextuel, un formulaire prêt à taper ou une feuille d'actions.
+
+L'entrée et la sortie sont des **transitions CSS sur `transform`** : c'est ce qui permet au
+geste de **glisser-pour-fermer** d'enchaîner directement sur l'animation de fermeture, au lieu
+de revenir en place avant de repartir. Le contenu se projette dans **trois zones** disposées en
+colonne flex, si bien que l'en-tête et le pied restent en place pendant que le corps défile.
+
+Pensé pour l'accessibilité et pour le tactile : **piège de focus** avec restauration
+(`@angular/cdk/a11y`), `role="dialog"` + `aria-modal`, **blocage du scroll de fond**, `Échap`,
+focus dirigé par sélecteur (`autoFocusElement`) et **réserve pour l'incrustation système** en
+bas d'écran (indicateur d'accueil iOS, barre de gestes Android).
+
+<Canvas of={BottomSheetStories.Basic} />
+
+## API
+
+<ArgTypes of={BottomSheetStories} />
+
+## Zones projetées
+
+Trois marqueurs routent le contenu vers sa zone. Ils s'écrivent en attribut kebab (la forme du
+ticket) ou en camelCase (`uiBottomSheetHeader`, la convention du kit) : les deux sont
+équivalents. Du contenu **sans marqueur** tombe dans le corps, ce qui suffit au cas simple.
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Marqueur</th>
+      <th>Zone</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>[ui-bottom-sheet-header]</code></td>
+      <td>Optionnel. Titre du panneau, rendu à côté du bouton de fermeture (<code>closable</code>, désactivé par défaut) et <strong>fixe</strong> au-dessus du corps. Nomme le dialogue (<code>aria-labelledby</code>). Raccourci chaîne : l'input <code>header</code>.</td>
+    </tr>
+    <tr>
+      <td><code>[ui-bottom-sheet-content]</code></td>
+      <td>Zone principale. <strong>Défilement natif</strong> quand le contenu dépasse, avec <code>overscroll-behavior: contain</code> pour que le défilement (et le pull-to-refresh) reste dans le panneau.</td>
+    </tr>
+    <tr>
+      <td><code>[ui-bottom-sheet-footer]</code></td>
+      <td>Optionnel. Zone d'actions <strong>fixe</strong> en bas, séparée par un filet et alignée sur l'incrustation système.</td>
+    </tr>
+  </tbody>
+</table>
+
+<Canvas of={BottomSheetStories.ScrollingContent} />
+
+## Anatomie
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Élément</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Masque</strong></td>
+      <td><code>.ui-bottom-sheet-scrim</code> : couche <code>fixed</code> plein viewport, en fondu. Assombrit et capture les clics quand <code>hasBackdrop</code> ; ferme au clic si <code>closeOnOverlayClick</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Positionneur</strong></td>
+      <td><code>.ui-bottom-sheet-positioner</code> : enveloppe ancrée au bord bas ; porte le <code>transform</code> (ouverture, fermeture, glissement).</td>
+    </tr>
+    <tr>
+      <td><strong>Panneau</strong></td>
+      <td><code>.ui-bottom-sheet</code> : surface (<code>role="dialog"</code>), colonne flex : préhension / en-tête / corps / pied. Coins hauts arrondis, filet supérieur et élévation. Centré et plafonné en largeur sur grand écran.</td>
+    </tr>
+    <tr>
+      <td><strong>Zone de préhension</strong></td>
+      <td><code>.ui-bottom-sheet-grab</code> : enveloppe la barre de préhension <em>et</em> l'en-tête : c'est la surface du geste. <code>touch-action: none</code> y confie l'axe vertical au glissement ; le corps garde son défilement.</td>
+    </tr>
+  </tbody>
+</table>
+
+## Hauteurs
+
+`height` accepte trois paliers nommés ou n'importe quelle longueur CSS.
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Valeur</th>
+      <th>Effet</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>'auto'</code> (défaut)</td>
+      <td>S'adapte au contenu, plafonné pour laisser voir la page derrière.</td>
+    </tr>
+    <tr>
+      <td><code>'half'</code></td>
+      <td>Moitié de l'écran.</td>
+    </tr>
+    <tr>
+      <td><code>'full'</code></td>
+      <td>Plein écran.</td>
+    </tr>
+    <tr>
+      <td><em>longueur CSS</em></td>
+      <td><code>'70vh'</code>, <code>'400px'</code>… posée en style inline sur le panneau.</td>
+    </tr>
+  </tbody>
+</table>
+
+Les paliers sont exprimés en **`dvh`** (viewport dynamique), pas en `vh` : sur un navigateur
+mobile, la barre d'adresse ne rogne donc pas le panneau. Les valeurs restent pilotables par les
+hooks (`--ui-bottom-sheet-half-height`, `--ui-bottom-sheet-full-height`,
+`--ui-bottom-sheet-max-height`).
+
+<Canvas of={BottomSheetStories.Heights} />
+
+## Gestes tactiles
+
+- **Glisser pour fermer** (`enableDragToClose`, actif par défaut) : le panneau suit le doigt
+  vers le bas ; au relâchement, un déplacement supérieur à `dragThreshold` ferme, sinon le
+  panneau revient en place.
+- **Paliers** (`enableSnapping`, opt-in) : sur un panneau `half`, glisser vers le haut le fait
+  grandir jusqu'au plein écran, glisser vers le bas le ramène au demi-écran avant de fermer.
+- Le geste se prend sur la **zone de préhension** (barre + en-tête), jamais sur le corps, qui
+  garde son défilement natif. Un contrôle posé dans l'en-tête (bouton de fermeture, lien)
+  conserve son propre comportement.
+
+> Le glissement vers le bas anime `transform`. Le changement de palier, lui, anime `height` :
+> c'est la seule façon de faire grandir le panneau sans décoller son pied du bas de l'écran ni
+> laisser de vide sous lui. C'est aussi pourquoi `enableSnapping` reste optionnel.
+
+<Canvas of={BottomSheetStories.Snapping} />
+
+## Focus dirigé
+
+`autoFocusElement` prend un sélecteur CSS cherché **dans le panneau** et le focalise à
+l'ouverture : le cas typique est un champ de recherche prêt à taper. Le piège de focus du CDK
+capture d'abord (c'est lui qui restaure le focus au déclencheur à la fermeture), puis ce focus
+dirigé prend le relais. Une cible qui n'existe pas déclenche un avertissement en mode dev.
+
+<Canvas of={BottomSheetStories.Search} />
+
+## Feuille d'actions
+
+Sans en-tête ni pied, le panneau devient une feuille d'actions : `closable="false"`,
+`ariaLabel` pour le nom accessible, et une colonne de boutons pleine largeur.
+
+<Canvas of={BottomSheetStories.Actions} />
+
+## Sans fond sombre
+
+`hasBackdrop="false"` retire le masque : le panneau n'est plus modal (`aria-modal` n'est pas
+posé) et la page derrière reste visible et cliquable. Associez-lui `blockScroll="false"` pour
+laisser aussi le défilement de fond.
+
+<Canvas of={BottomSheetStories.NoBackdrop} />
+
+## Embarqué (`contained`)
+
+`contained` scope le panneau à l'ancêtre positionné le plus proche (`position: absolute` au
+lieu de `fixed`) et **n'affecte pas** le scroll du body ; les paliers deviennent des fractions
+de ce conteneur. Le parent doit être positionné (`position: relative`).
+
+<Canvas of={BottomSheetStories.Contained} />
+
+## Terrain mobile
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Contrainte</th>
+      <th>Traitement</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Barre d'adresse / d'outils</strong></td>
+      <td>Paliers en <code>dvh</code> : la hauteur suit le viewport <em>dynamique</em>, le panneau n'est jamais coupé quand la barre se replie.</td>
+    </tr>
+    <tr>
+      <td><strong>Indicateur d'accueil, barre de gestes</strong></td>
+      <td><code>safeArea</code> (défaut) réserve <code>env(safe-area-inset-bottom)</code> sous le panneau : la dernière ligne d'actions reste atteignable.</td>
+    </tr>
+    <tr>
+      <td><strong>Défilement de la page</strong></td>
+      <td><code>blockScroll</code> gèle le <code>body</code> avec compensation de la gouttière de scrollbar (pas de saut de mise en page).</td>
+    </tr>
+    <tr>
+      <td><strong>Pull-to-refresh, chaînage</strong></td>
+      <td><code>overscroll-behavior: contain</code> sur le corps ; <code>touch-action: none</code> sur la zone de geste, pour que le navigateur ne réclame pas l'axe vertical.</td>
+    </tr>
+    <tr>
+      <td><strong>Réactions au tap</strong></td>
+      <td><code>touch-action: manipulation</code> (pas de délai de double-tap) et flash de tap natif désactivé.</td>
+    </tr>
+  </tbody>
+</table>
+
+## Accessibilité
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Règle</th>
+      <th>Détail</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Rôle & nom</strong></td>
+      <td><code>role="dialog"</code> + <code>aria-modal="true"</code> dès qu'il y a un fond sombre. Nom accessible via <code>aria-labelledby</code> (le titre de l'en-tête), sinon <code>ariaLabel</code> / <code>ariaLabelledBy</code>. Un warning dev signale un panneau sans nom accessible.</td>
+    </tr>
+    <tr>
+      <td><strong>Focus</strong></td>
+      <td>Piège de focus (<code>cdkTrapFocus</code>) tant que le panneau est ouvert, focus capturé à l'ouverture (<code>focusOnShow</code>) et <strong>restauré</strong> sur le déclencheur à la fermeture. <code>autoFocusElement</code> dirige la cible, toujours avec <code>preventScroll</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Clavier</strong></td>
+      <td><code>Échap</code> ferme (<code>closeOnEscape</code>), et la touche n'est consommée que si elle ferme effectivement, sinon un overlay parent la voit. Bouton de fermeture <code>&lt;button&gt;</code> natif avec <code>aria-label</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Corps défilant</strong></td>
+      <td>La zone de contenu porte <code>tabindex="0"</code> : sans lui, un corps qui défile mais ne contient aucun élément focalisable serait inatteignable au clavier (WCAG 2.1.1). Elle devient un arrêt de tabulation, où les flèches font défiler.</td>
+    </tr>
+    <tr>
+      <td><strong>Poignée</strong></td>
+      <td>Décorative (<code>aria-hidden</code>) par défaut : glisser-pour-fermer a son équivalent clavier avec <code>Échap</code>. Avec <code>enableSnapping</code>, elle devient un vrai <code>&lt;button&gt;</code> avec <code>aria-expanded</code> et <kbd>↑</kbd>/<kbd>↓</kbd>/<kbd>Entrée</kbd>, car le changement de palier n'aurait sinon aucun accès clavier.</td>
+    </tr>
+    <tr>
+      <td><strong>Motion</strong></td>
+      <td>Respecte <code>prefers-reduced-motion</code> ; désactivable par panneau via <code>motionDisabled</code>. Les événements <code>opened</code> / <code>closed</code> sont émis dans tous les cas, y compris sans animation.</td>
+    </tr>
+  </tbody>
+</table>
+
+## Alignement Figma
+
+Le composant du UI Kit est la source des valeurs : rayon des coins hauts, barre de préhension
+(54 × 4, rayon plein, `global.text.default`), insets de la zone de préhension, du corps et du
+pied, écart entre actions, largeur maximale et défaut de `closable`. Tout passe par les hooks
+`--ui-bottom-sheet-*`, donc un projet rebranche sans recompiler.
+
+Trois écarts assumés, notés ici pour qu'ils ne passent pas pour des oublis :
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Point</th>
+      <th>Écart</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Bouton de fermeture</strong></td>
+      <td>La maquette le place au bout de la rangée de préhension ; le code le met dans la zone d'en-tête, comme le demande le contrat à trois zones du ticket. Le passer dans la rangée est une modification contenue, si vous préférez la maquette.</td>
+    </tr>
+    <tr>
+      <td><strong>Titre</strong></td>
+      <td>La maquette le pose dans le slot de contenu ; le code lui donne sa propre zone, ce qui le garde <strong>fixe</strong> pendant que le corps défile et lui permet de nommer le dialogue.</td>
+    </tr>
+    <tr>
+      <td><strong>Poignée centrée</strong></td>
+      <td>La rangée de préhension aligne ses enfants en fin d'axe dans la maquette ; la barre est centrée ici, comme dans toutes les implémentations de référence.</td>
+    </tr>
+  </tbody>
+</table>
+
+## Theming
+
+Variables locales en tête de `ui-bottom-sheet.scss`. Voir le
+[fonctionnement de la configuration](?path=/docs/components-configuration--docs).
+
+<ConfigTable of="ui-bottom-sheet" />

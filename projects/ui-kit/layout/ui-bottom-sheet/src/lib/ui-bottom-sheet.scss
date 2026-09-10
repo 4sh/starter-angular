@@ -1,0 +1,306 @@
+@use 'utils';
+
+// =====================================================================
+// ui-bottom-sheet : co-located styles. All values come from design tokens.
+//
+// Structure:
+//   .ui-bottom-sheet-scrim       → viewport backdrop (fades; captures outside clicks)
+//   .ui-bottom-sheet-positioner  → bottom-docked wrapper (carries the slide transform)
+//   .ui-bottom-sheet             → the surface (rounded top + elevation, flex column)
+//
+// Two properties move, and only two: `transform` on the positioner (open, close,
+// drag down) and `height` on the panel, which is confined to the optional snap
+// detent. Everything else is static.
+// =====================================================================
+
+// --- Config (local) ---------------------------------------------------
+$sheet-z-index: var(--ui-bottom-sheet-z-index, 1100);                             /// Palier d'empilement de base (au-dessus des overlays CDK à 1000).
+$surface: var(--ui-bottom-sheet-surface, var(--global-background-default));        /// Fond du panneau.
+$radius: var(--ui-bottom-sheet-radius, var(--radius-default));                     /// Rayon des deux coins hauts.
+$shadow: var(--ui-bottom-sheet-shadow, var(--shadow-default-lg));                  /// Élévation du panneau.
+$max-width: var(--ui-bottom-sheet-max-width, #{utils.rem-calc(1440)});             /// Largeur maximale, au-delà de laquelle le panneau se centre.
+$mask-background: var(--ui-bottom-sheet-mask-background, var(--primitives-black-50)); /// Assombrissement du masque.
+
+$half-height: var(--ui-bottom-sheet-half-height, 50dvh);  /// Hauteur du palier « moitié d'écran ».
+$full-height: var(--ui-bottom-sheet-full-height, 100dvh); /// Hauteur du palier « plein écran ».
+$max-height: var(--ui-bottom-sheet-max-height, 92dvh);    /// Plafond de hauteur en mode `auto`, qui laisse voir la page derrière.
+
+// Inset reserved by the OS at the bottom of the screen: the iOS home indicator,
+// the Android gesture bar. Resolves to 0 anywhere else, browser chrome included.
+$safe-area: var(--ui-bottom-sheet-safe-area-offset, env(safe-area-inset-bottom, 0px)); /// Réserve sous le panneau pour l'incrustation système.
+
+$panel-padding: var(--ui-bottom-sheet-padding, var(--units-default));       /// Inset horizontal du panneau et inset haut du corps.
+$panel-padding-bottom: var(--ui-bottom-sheet-padding-bottom, var(--units-lg)); /// Inset bas de la dernière zone du panneau.
+$header-gap: var(--ui-bottom-sheet-header-gap, var(--units-sm));            /// Espacement entre le titre et le bouton de fermeture.
+$footer-gap: var(--ui-bottom-sheet-footer-gap, var(--units-default));       /// Espacement entre les actions du pied.
+$footer-padding-top: var(--ui-bottom-sheet-footer-padding-top, var(--units-sm)); /// Inset haut du pied.
+$action-size: var(--ui-bottom-sheet-action-size, #{utils.rem-calc(32)});    /// Taille de la cible tactile du bouton de fermeture.
+
+// The footer rule is off in the reference design; a project turns it back on by
+// giving the colour hook a value.
+$footer-stroke: var(--ui-bottom-sheet-footer-stroke, transparent);                    /// Couleur du filet de séparation du pied (absent par défaut).
+$footer-stroke-width: var(--ui-bottom-sheet-footer-stroke-width, var(--stroke-sm));   /// Épaisseur du filet de séparation du pied.
+
+$grab-padding-y: var(--ui-bottom-sheet-grab-padding-y, var(--units-sm)); /// Inset vertical de la zone de préhension.
+$grab-padding-x: var(--ui-bottom-sheet-grab-padding-x, var(--units-md)); /// Inset horizontal de la zone de préhension.
+
+$handle-width: var(--ui-bottom-sheet-handle-width, #{utils.rem-calc(54)});   /// Largeur de la barre de préhension.
+$handle-height: var(--ui-bottom-sheet-handle-height, #{utils.rem-calc(4)});  /// Épaisseur de la barre de préhension.
+$handle-radius: var(--ui-bottom-sheet-handle-radius, var(--radius-full));    /// Rayon de la barre de préhension.
+$handle-color: var(--ui-bottom-sheet-handle-color, var(--global-text-default)); /// Couleur de la barre de préhension.
+// Only the snapping mode turns the handle into a button; it then needs a target
+// large enough to be operable (WCAG 2.5.8), which the plain bar is not.
+$handle-target-width: var(--ui-bottom-sheet-handle-target-width, #{utils.rem-calc(64)});   /// Largeur de la cible tactile de la poignée opérable.
+$handle-target-height: var(--ui-bottom-sheet-handle-target-height, #{utils.rem-calc(24)}); /// Hauteur de la cible tactile de la poignée opérable.
+
+$focus-ring-width: var(--ui-bottom-sheet-focus-ring-width, #{utils.$focus-ring-width}); /// Épaisseur de l'anneau de focus des contrôles du panneau.
+
+// --- Backdrop --------------------------------------------------------
+.ui-bottom-sheet-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: $sheet-z-index;
+  background-color: $mask-background;
+  opacity: 0;
+  @include utils.motion-transition(opacity);
+
+  &._open {
+    opacity: 1;
+  }
+
+  &._contained {
+    position: absolute;
+  }
+
+  &._no-motion {
+    transition: none;
+  }
+
+  @include utils.motion-reduce {
+    transition-duration: 0.01ms;
+  }
+}
+
+// Bottom-docked wrapper. Hugs the panel so a click beside it falls through to
+// the scrim (dismiss), and carries the slide transform.
+.ui-bottom-sheet-positioner {
+  position: fixed;
+  inset-inline: 0;
+  inset-block-end: 0;
+  z-index: $sheet-z-index;
+  display: flex;
+  justify-content: center;
+  @include utils.motion-transition(transform);
+
+  &._contained {
+    position: absolute;
+  }
+
+  &._dragging,
+  &._no-motion {
+    transition: none;
+  }
+
+  @include utils.motion-reduce {
+    transition-duration: 0.01ms;
+  }
+}
+
+.ui-bottom-sheet {
+  // --- Base ----------------------------------------------------------
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: $max-width;
+  max-height: $max-height;
+  border-radius: $radius $radius 0 0;
+  background-color: $surface;
+  box-shadow: $shadow;
+  color: var(--global-text-default);
+  font-family: var(--fontfamily-base);
+  overflow: hidden;
+  outline: none;
+  // A sheet is a touch surface: no double-tap zoom delay, no tap flash.
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  @include utils.motion-transition(height);
+
+  // --- Detents -------------------------------------------------------
+  &._half {
+    height: $half-height;
+  }
+
+  &._full {
+    height: $full-height;
+    max-height: $full-height;
+  }
+
+  // Dragging up towards `full` must not be clipped by the `auto` ceiling.
+  &._dragging {
+    max-height: $full-height;
+  }
+
+  &._dragging,
+  &._no-motion {
+    transition: none;
+  }
+
+  // Embedded in a positioned ancestor: the detents follow the container.
+  &._contained {
+    max-height: 92%;
+
+    &._half {
+      height: 50%;
+    }
+    &._full {
+      height: 100%;
+      max-height: 100%;
+    }
+    &._dragging {
+      max-height: 100%;
+    }
+  }
+
+  // Keeps the last row clear of the home indicator / gesture bar.
+  &._safe-area {
+    padding-bottom: $safe-area;
+  }
+
+  // --- Grab zone (handle + header) -----------------------------------
+  &-grab {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    padding: $grab-padding-y $grab-padding-x;
+
+    // The gesture owns the vertical axis here, so the browser must not also
+    // scroll or pull-to-refresh from this zone.
+    &._draggable {
+      touch-action: none;
+      user-select: none;
+      cursor: grab;
+
+      &:active {
+        cursor: grabbing;
+      }
+    }
+  }
+
+  &-handle {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: $handle-width;
+    height: $handle-height;
+    margin-inline: auto;
+    padding: 0;
+    border: none;
+    border-radius: $handle-radius;
+    background: none;
+
+    &::after {
+      content: '';
+      display: block;
+      width: $handle-width;
+      height: $handle-height;
+      border-radius: $handle-radius;
+      background-color: $handle-color;
+    }
+
+    &._operable {
+      width: $handle-target-width;
+      height: $handle-target-height;
+
+      &:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 $focus-ring-width var(--global-border-focus);
+      }
+    }
+  }
+
+  // --- Header --------------------------------------------------------
+  &-header {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: flex-start;
+    gap: $header-gap;
+    padding-top: $grab-padding-y;
+  }
+
+  // No handle above: the header is the first row, its own inset is enough.
+  &-grab > &-header:first-child {
+    padding-top: 0;
+  }
+
+  &-title {
+    flex: 1 1 auto;
+    min-width: 0;
+    margin: 0;
+    font-family: var(--fontfamily-title);
+    font-size: var(--size-typography-title-sm);
+    font-weight: var(--weight-bold);
+    line-height: 1.3;
+    overflow-wrap: break-word;
+  }
+
+  // Native close icon button, not ui-button: kept lightweight.
+  &-action {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: $action-size;
+    height: $action-size;
+    padding: 0;
+    border: none;
+    border-radius: var(--radius-xs);
+    background: transparent;
+    color: inherit;
+    line-height: 0;
+    cursor: pointer;
+    @include utils.control-transition(background-color, color);
+
+    &:hover {
+      background-color: var(--global-background-muted-hover);
+      color: var(--global-text-muted-hover);
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 $focus-ring-width var(--global-border-focus);
+    }
+
+    @include utils.motion-reduce {
+      transition-duration: 0.01ms;
+    }
+  }
+
+  // --- Content -------------------------------------------------------
+  &-content {
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: $panel-padding $panel-padding $panel-padding-bottom;
+    overflow-y: auto;
+    // Keeps the scroll (and the pull-to-refresh) inside the sheet.
+    overscroll-behavior: contain;
+    font-size: var(--size-typography-text-md);
+    line-height: 1.5;
+  }
+
+  // --- Footer --------------------------------------------------------
+  &-footer {
+    flex: 0 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: $footer-gap;
+    padding: $footer-padding-top $panel-padding $panel-padding-bottom;
+    border-top: $footer-stroke-width solid $footer-stroke;
+  }
+
+}

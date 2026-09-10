@@ -18,6 +18,41 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ### Added
 
+- **`ui-bottom-sheet` : panneau glissant depuis le bas.** Une surface mobile-first pour du
+  contenu contextuel, un formulaire prêt à taper ou une feuille d'actions, pilotée par le
+  modèle two-way `visible`.
+  - **Trois zones projetées** : `[ui-bottom-sheet-header]`, `[ui-bottom-sheet-content]`,
+    `[ui-bottom-sheet-footer]` (alias camelCase acceptés). Disposées en colonne flex, donc
+    l'en-tête et le pied restent en place et seul le corps défile, avec
+    `overscroll-behavior: contain` pour garder le défilement et le pull-to-refresh dans le
+    panneau. Un contenu sans marqueur tombe dans le corps.
+  - **Mouvement sur `transform`, pas sur le système de motion** : l'entrée et la sortie sont
+    une transition CSS du `translateY` du positionneur. C'est ce qui permet au geste de
+    glisser-pour-fermer d'enchaîner sur l'animation de fermeture au lieu de revenir en place
+    d'abord ; `opened` / `closed` sont émis en fin de transition, y compris quand il n'y en a
+    pas (`motionDisabled`, mouvement réduit, onglet masqué).
+  - **Paliers** : `height` accepte `'auto'` (plafonné), `'half'`, `'full'` ou toute longueur
+    CSS. Les paliers nommés sont exprimés en `dvh`, pas en `vh` : la barre d'adresse d'un
+    navigateur mobile ne rogne donc pas le panneau. `enableSnapping` (opt-in) laisse glisser
+    un panneau `half` vers le haut jusqu'au plein écran.
+  - **Gestes** : `enableDragToClose` + `dragThreshold` sur la zone de préhension (barre +
+    en-tête), jamais sur le corps ; un contrôle posé dans l'en-tête garde son propre
+    comportement.
+  - **Terrain mobile** : `safeArea` réserve `env(safe-area-inset-bottom)` (indicateur
+    d'accueil iOS, barre de gestes Android), `touch-action: none` sur la zone de geste et
+    `manipulation` sur le panneau, flash de tap natif désactivé.
+  - **A11y** : `role="dialog"` + `aria-modal` dès qu'il y a un masque, piège et restauration
+    de focus CDK, `autoFocusElement` (sélecteur focalisé en `preventScroll`), `Échap`
+    consommé seulement s'il ferme, poignée décorative sauf en mode paliers où elle devient un
+    `<button aria-expanded>` opérable au clavier.
+  - **Aligné sur le composant du UI Kit Figma** (`node-id=269-2273`) : rayon des coins hauts,
+    barre de préhension 54 × 4 en `global.text.default`, insets de la préhension, du corps et
+    du pied, écart entre actions, largeur maximale, absence de filet, et `closable` désactivé
+    par défaut. Le lien est posé dans la story.
+  - Masque `hasBackdrop` + `closeOnOverlayClick`, blocage du scroll de fond `blockScroll`,
+    mode embarqué `contained`, empilement `autoZIndex` / `baseZIndex`, hooks
+    `--ui-bottom-sheet-*`.
+
 - **`ui-toggle-block` : bloc de sélection.** Une surface cliquable qui embarque un
   contrôle de sélection et laisse le contenu libre : formule tarifaire, région de
   déploiement, canal de notification.
