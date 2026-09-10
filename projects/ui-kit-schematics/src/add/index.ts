@@ -45,7 +45,10 @@ export function add(options: Schema): Rule {
     }
 
     if (!selected.length) {
-      context.logger.warn('Aucun composant sélectionné.');
+      context.logger.warn(
+        'Aucun composant sélectionné, la fondation reste en place. ' +
+          'Pour en copier plus tard : `ng generate @4sh/ui-kit-schematics:add`.',
+      );
       return tree;
     }
 
