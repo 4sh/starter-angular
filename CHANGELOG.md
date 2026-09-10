@@ -16,6 +16,20 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+### Fixed
+
+- **`ui-tooltip` : `autoHide=false` ne gardait pas l'infobulle ouverte.** L'option posait bien
+  `pointer-events: auto` sur le panneau, mais `mouseleave` sur le déclencheur démontait
+  l'overlay immédiatement, `hideDelay` valant 0 par défaut. Le pointeur n'avait donc jamais le
+  temps de franchir l'écart de la flèche : le panneau disparaissait avant d'être atteint, et son
+  `mouseenter` ne tirait jamais. Un plancher est maintenant appliqué à `hideDelay` quand le
+  panneau est interactif, et un `hideDelay` plus grand continue de primer.
+  - Le focus qui entre dans le panneau ne le ferme plus : le `focusout` du déclencheur ignore
+    une cible située à l'intérieur, ce qui rend le contenu réellement cliquable à la souris.
+  - Les écouteurs du panneau et celui d'`Échap` étaient reposés à **chaque** affichage alors
+    qu'ils n'étaient libérés qu'à la destruction : ils sont désormais attachés une seule fois.
+  - `Échap` masque maintenant sans attendre `hideDelay`.
+
 ### Added
 
 - **`ui-bottom-sheet` : panneau glissant depuis le bas.** Une surface mobile-first pour du

@@ -34,6 +34,9 @@ export type TooltipEvent = 'hover' | 'focus' | 'both';
 /** Gap (px) left between the trigger and the tooltip for the arrow — mirrors `$tooltip-arrow-size` in the SCSS. */
 const ARROW_GAP = 8;
 
+/** Floor applied to `hideDelay` when the panel is interactive. */
+const INTERACTIVE_HIDE_DELAY = 120;
+
 /** Process-wide counter for unique tooltip ids (aria-describedby wiring). */
 let nextId = 0;
 
@@ -190,9 +193,18 @@ export class UiTooltip {
       // focusin/focusout bubble → also works when the host wraps the focusable element.
       this.disposers.push(
         this.renderer.listen(host, 'focusin', () => this.activate()),
-        this.renderer.listen(host, 'focusout', () => this.deactivate()),
+        this.renderer.listen(host, 'focusout', (event: FocusEvent) => {
+          if (this.movedIntoPanel(event.relatedTarget)) return;
+          this.deactivate();
+        }),
       );
     }
+
+    this.disposers.push(
+      this.renderer.listen('document', 'keydown.escape', () => {
+        if (this.hideOnEscape() && this.overlayRef?.hasAttached()) this.remove();
+      }),
+    );
   }
 
   // --- Activation lifecycle -------------------------------------------
@@ -217,9 +229,11 @@ export class UiTooltip {
   /** @ignore */
   private deactivate(): void {
     this.clearShowTimer();
-    const delay = this.hideDelay();
+    this.clearHideTimer();
+    const delay = this.autoHide()
+      ? this.hideDelay()
+      : Math.max(this.hideDelay(), INTERACTIVE_HIDE_DELAY);
     if (delay > 0) {
-      this.clearHideTimer();
       this.hideTimer = setTimeout(() => this.remove(), delay);
     } else {
       this.remove();
@@ -242,14 +256,12 @@ export class UiTooltip {
       this.renderer.setAttribute(this.el.nativeElement, 'aria-describedby', this.tooltipId);
       // Let hover pass through unless the tooltip is interactive (autoHide=false).
       overlayRef.overlayElement.style.pointerEvents = this.autoHide() ? 'none' : 'auto';
-      if (!this.autoHide()) this.bindPanelHover(overlayRef);
     }
 
     // Trigger the fade-in on the next frame so the transition runs.
     requestAnimationFrame(() => this.panelRef?.setInput('visible', true));
 
     this.armLifeTimer();
-    if (this.hideOnEscape()) this.bindEscape();
     this.tooltipShow.emit();
   }
 
@@ -289,6 +301,7 @@ export class UiTooltip {
       panelClass: 'ui-tooltip-overlay',
       hasBackdrop: false,
     });
+    this.bindPanelEvents(this.overlayRef);
     return this.overlayRef;
   }
 
@@ -382,21 +395,31 @@ export class UiTooltip {
 
   // --- Interactive / dismiss listeners --------------------------------
 
-  /** @ignore Keep the tooltip open while the pointer is over it (autoHide=false). */
-  private bindPanelHover(overlayRef: OverlayRef): void {
+  /** @ignore Keep the tooltip open while the pointer or the focus is over it (autoHide=false). */
+  private bindPanelEvents(overlayRef: OverlayRef): void {
     const panel = overlayRef.overlayElement;
-    const enter = this.renderer.listen(panel, 'mouseenter', () => this.clearHideTimer());
-    const leave = this.renderer.listen(panel, 'mouseleave', () => this.deactivate());
-    this.disposers.push(enter, leave);
+    this.disposers.push(
+      this.renderer.listen(panel, 'mouseenter', () => {
+        if (!this.autoHide()) this.clearHideTimer();
+      }),
+      this.renderer.listen(panel, 'mouseleave', () => {
+        if (!this.autoHide()) this.deactivate();
+      }),
+      this.renderer.listen(panel, 'focusin', () => {
+        if (!this.autoHide()) this.clearHideTimer();
+      }),
+      this.renderer.listen(panel, 'focusout', (event: FocusEvent) => {
+        if (this.autoHide() || panel.contains(event.relatedTarget as Node | null)) return;
+        this.deactivate();
+      }),
+    );
   }
 
-  /** @ignore */
-  private bindEscape(): void {
-    const off = this.renderer.listen('document', 'keydown.escape', () => {
-      this.deactivate();
-      off();
-    });
-    this.disposers.push(off);
+  /** @ignore The focus moved into an interactive panel rather than away from it. */
+  private movedIntoPanel(target: EventTarget | null): boolean {
+    if (this.autoHide() || !target) return false;
+    const panel = this.overlayRef?.overlayElement;
+    return !!panel && panel.contains(target as Node);
   }
 
   // --- Timers ----------------------------------------------------------
