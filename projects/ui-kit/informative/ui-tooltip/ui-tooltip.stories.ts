@@ -212,14 +212,27 @@ export const CustomStyle: Story = {
   }),
 };
 
-/** Infobulle interactive (`autoHide=false`) : reste ouverte au survol du panneau. */
+/**
+ * Infobulle interactive (`autoHide=false`) : elle reste ouverte le temps d'aller la survoler,
+ * ce qui rend son contenu sélectionnable et cliquable.
+ */
 export const Interactive: Story = {
   parameters: { controls: { include: ['tooltipPosition'] } },
   render: (args) => ({
     props: args,
     template: `
-      <ui-button label="Interactive" uiTooltip="Vous pouvez survoler cette infobulle"
-        autoHide="false" [tooltipPosition]="tooltipPosition" />
+      <ui-button label="Interactive" [uiTooltip]="tip" autoHide="false"
+        [tooltipPosition]="tooltipPosition" />
+      <ng-template #tip>
+        Réf. <strong>FSHSP-200</strong>, copiable au curseur.<br />
+        <a
+          href="https://angular.dev"
+          target="_blank"
+          rel="noopener"
+          style="color: inherit; text-underline-offset: 2px"
+          >Ouvrir la fiche</a
+        >
+      </ng-template>
     `,
   }),
 };

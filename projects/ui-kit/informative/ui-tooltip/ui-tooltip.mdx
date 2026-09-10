@@ -55,9 +55,17 @@ ciblez cette classe depuis une feuille de style globale.
 - **Déclencheur natif / focusable** : posez la directive sur un `<button>`, un `ui-button`,
   un lien ou un champ. `tooltipEvent="both"` (défaut) affiche aussi au **focus clavier**.
 - **Concision** : une infobulle porte une aide brève, jamais une information essentielle ni
-  un contenu interactif indispensable (utilisez un popover/dialog pour cela).
-- **Délais** : `showDelay` (150 ms) évite le clignotement au survol de passage ; `hideDelay`
-  laisse le temps d'atteindre une infobulle interactive.
+  un contenu interactif indispensable. `autoHide=false` rend le panneau survolable, donc son
+  contenu sélectionnable et cliquable **à la souris** ; le clavier, lui, n'y entre pas, car
+  `role="tooltip"` n'est pas un conteneur navigable. Dès qu'une action doit être atteignable
+  au clavier, c'est `ui-popover` qu'il faut.
+- **Lien projeté** : le panneau peint une surface **inversée**. Un `<a>` laissé à la couleur
+  par défaut du navigateur y devient illisible : donnez-lui `color: inherit` et gardez le
+  soulignement pour le distinguer.
+- **Délais** : `showDelay` (150 ms) évite le clignotement au survol de passage. `hideDelay`
+  retarde le masquage ; avec `autoHide=false` un plancher est appliqué d'office, le temps de
+  franchir l'écart entre le déclencheur et le panneau, donc il n'y a rien à régler pour que
+  l'infobulle soit atteignable.
 
 ## Accessibilité
 
@@ -79,7 +87,7 @@ ciblez cette classe depuis une feuille de style globale.
     </tr>
     <tr>
       <td>Survolable</td>
-      <td>`autoHide=false` permet de survoler l'infobulle sans qu'elle disparaisse (WCAG « hoverable »).</td>
+      <td>`autoHide=false` permet de survoler l'infobulle sans qu'elle disparaisse (WCAG 1.4.13 « hoverable ») : le masquage attend que le pointeur ait quitté **et** le déclencheur **et** le panneau.</td>
     </tr>
     <tr>
       <td>Flèche décorative</td>
