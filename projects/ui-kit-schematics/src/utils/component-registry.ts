@@ -20,7 +20,14 @@ export interface AssetUnit {
 }
 
 const ASSETS_ROOT = join(__dirname, '..', '..', 'assets');
-const COMPONENTS_ROOT = 'src/app/shared/components/ui';
+/** Racine des composants chez le consommateur : les copies du kit sous `ui/`,
+ * les siens à côté. Exportée parce que `ng-add` la pose dès la fondation —
+ * c'est elle que balaient les globs de `storybook/main.js`, et deux littéraux
+ * qui dérivent l'un de l'autre casseraient l'indexation en silence. */
+export const COMPONENTS_ROOT = 'src/app/shared/components';
+/** Sous-dossier réservé aux copies : ce qui est à nous ne se mélange pas à ce
+ * qui est au consommateur. */
+const KIT_COMPONENTS_ROOT = `${COMPONENTS_ROOT}/ui`;
 /** Directives de base, services, utilitaires et types transverses : hors de
  * `components/`, qui ne doit contenir que des composants (FSHSP-121). */
 const CORE_ROOT = 'src/app/shared/ui-core';
@@ -48,7 +55,7 @@ export function listComponents(): AssetUnit[] {
         category,
         kind: 'component',
         dir: join(componentsRoot, category, name),
-        targetDir: join(COMPONENTS_ROOT, category, name),
+        targetDir: join(KIT_COMPONENTS_ROOT, category, name),
       });
     }
   }

@@ -13,14 +13,47 @@
  * recherche plein texte puis copie Markdown se placent donc juste avant le
  * toggle dark mode (même ordre que le Storybook du monorepo).
  */
+const { existsSync } = require('node:fs');
+const { join } = require('node:path');
+
+/**
+ * Motifs de stories, avant filtrage.
+ *
+ * Aucun de ces dossiers n'est garanti : `components/` n'existe que si vous
+ * avez copié au moins un composant, et `ui-core/` que si l'un d'eux tire une
+ * base partagée (`ui-icon` seul, par exemple, n'en tire aucune). Poser la
+ * fondation sans composant laissait donc les deux absents.
+ */
+const storyGlobs = [
+  './docs/**/*.mdx',
+  '../src/app/shared/components/**/*.mdx',
+  '../src/app/shared/components/**/*.stories.@(js|jsx|mjs|ts|tsx)',
+  '../src/app/shared/ui-core/**/*.mdx',
+  '../src/app/shared/ui-core/**/*.stories.@(js|jsx|mjs|ts|tsx)',
+];
+
+/**
+ * Un motif dont la racine n'existe pas est écarté.
+ *
+ * Webpack ne traite pas un glob comme une recherche : il le réduit à un
+ * `require.context(<racine du motif>)`. Une racine absente n'est donc pas un
+ * motif qui ne ramasse rien, c'est un module introuvable, et le build entier
+ * s'arrête dessus, en désignant un chemin que le projet n'a jamais eu de
+ * raison de créer.
+ *
+ * Le filtre est réévalué à chaque démarrage : le dossier créé plus tard par
+ * `ng generate @4sh/ui-kit-schematics:add` remet son motif en service, sans
+ * rien à modifier ici. Un motif dont la racine porte elle-même un joker est
+ * gardé tel quel, impossible d'en vérifier l'existence, et c'est à webpack
+ * de trancher.
+ */
+function rootExists(glob) {
+  const root = glob.split('/*')[0];
+  return root.includes('*') || existsSync(join(__dirname, root));
+}
+
 module.exports = {
-  stories: [
-    './docs/**/*.mdx',
-    '../src/app/shared/components/**/*.mdx',
-    '../src/app/shared/components/**/*.stories.@(js|jsx|mjs|ts|tsx)',
-    '../src/app/shared/ui-core/**/*.mdx',
-    '../src/app/shared/ui-core/**/*.stories.@(js|jsx|mjs|ts|tsx)',
-  ],
+  stories: storyGlobs.filter(rootExists),
   staticDirs: ['./public'],
   addons: [
     '@storybook/addon-docs',

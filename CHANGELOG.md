@@ -30,6 +30,25 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
     qu'ils n'étaient libérés qu'à la destruction : ils sont désormais attachés une seule fois.
   - `Échap` masque maintenant sans attendre `hideDelay`.
 
+- **Le Storybook posé par `ng add @4sh/ui-kit-schematics` ne compilait pas tant que tous les
+  composants n'étaient pas copiés** (FSHSP-201). `storybook/main.js` listait
+  `src/app/shared/components/` et `src/app/shared/ui-core/` en dur, alors qu'aucun des deux
+  n'existe tant qu'une copie ne l'a créé : webpack ne cherche pas un glob, il le réduit à un
+  `require.context(<racine du motif>)` et s'arrête sur un module introuvable. Une installation
+  sans composant échouait donc sur quatre `Can't resolve`, et une installation partielle aussi
+  dès que les composants choisis ne tiraient aucune base partagée (`ui-icon` seul, par exemple).
+  Les motifs sont maintenant filtrés sur l'existence de leur racine, réévaluée à chaque
+  démarrage : un dossier créé plus tard par `ng generate …:add` remet son motif en service sans
+  rien à modifier.
+  - `storybook/tsconfig.json` n'exige plus `"types": ["node"]`. La preview est du code
+    navigateur et rien de ce qui y est compilé ne touche une API Node ; l'exigence obligeait le
+    projet à installer `@types/node`, faute de quoi le build s'arrêtait en plus sur un `TS2688`
+    sans rapport avec son code.
+  - `ng add` pose `src/app/shared/components/` et son README dès la fondation : la racine que
+    `main.js` annonce balayer existe désormais même sans un seul composant copié.
+  - Sélection vide : le message dit maintenant que la fondation reste en place et rappelle la
+    commande pour copier des composants plus tard, au lieu d'un avertissement nu.
+
 ### Added
 
 - **`ui-bottom-sheet` : panneau glissant depuis le bas.** Une surface mobile-first pour du

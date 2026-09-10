@@ -1,10 +1,16 @@
 /* tsconfig de la configuration Storybook (posé par `ng add
    @4sh/ui-kit-schematics`). Il étend celui de l'application
-   pour compiler stories et preview avec les mêmes règles que votre code. */
+   pour compiler stories et preview avec les mêmes règles que votre code.
+
+   Pas de `"types": ["node"]` : la preview est du code navigateur, rien de ce
+   qui est compilé ici ne touche une API Node (les composants du kit typent
+   leurs timers en `ReturnType<typeof setTimeout>`, justement pour ne pas en
+   dépendre). L'exiger obligeait le projet à installer `@types/node`, faute de
+   quoi le build s'arrêtait sur un TS2688 sans rapport avec son code.
+   Ajoutez-le si VOS fichiers en ont besoin. */
 {
   "extends": "../tsconfig.app.json",
   "compilerOptions": {
-    "types": ["node"],
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true
   },
