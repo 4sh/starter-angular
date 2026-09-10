@@ -10,10 +10,10 @@
         "Mode 1"
       ],
       "counts": {
-        "tokens": 702,
-        "alias": 562,
-        "literal": 140,
-        "skipped": 60,
+        "tokens": 727,
+        "alias": 576,
+        "literal": 151,
+        "skipped": 62,
         "derivedDescriptions": 222
       },
       "aliasTargets": [
@@ -42,6 +42,16 @@
         {
           "cssVar": "--ui-avatar-badge-z-index",
           "component": "ui-avatar",
+          "reason": "sans équivalent variable Figma (durée, easing, curseur, plan d’empilement, ratio)."
+        },
+        {
+          "cssVar": "--ui-bottom-sheet-shadow",
+          "component": "ui-bottom-sheet",
+          "reason": "`--shadow-default-lg` n'est pas un token du pipeline : rien à aliaser."
+        },
+        {
+          "cssVar": "--ui-bottom-sheet-z-index",
+          "component": "ui-bottom-sheet",
           "reason": "sans équivalent variable Figma (durée, easing, curseur, plan d’empilement, ratio)."
         },
         {
@@ -1954,6 +1964,580 @@
           "cssVar": "--ui-badge-stroke-width",
           "component": "ui-badge",
           "entryPoint": "@4sh/ui-kit/informative/ui-badge",
+          "descriptionSource": "scss"
+        }
+      }
+    }
+  },
+  "bottom-sheet": {
+    "action": {
+      "size": {
+        "$value": "32px",
+        "$type": "dimension",
+        "$description": "Taille de la cible tactile du bouton de fermeture.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-bottom-sheet-action-size)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-bottom-sheet-action-size",
+            "component": "ui-bottom-sheet",
+            "entryPoint": "@4sh/ui-kit/layout/ui-bottom-sheet",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "focus-ring-width": {
+      "$value": "{metrics.units.2xs}",
+      "$type": "dimension",
+      "$description": "Épaisseur de l'anneau de focus des contrôles du panneau.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "STROKE_FLOAT"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-bottom-sheet-focus-ring-width)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-bottom-sheet-focus-ring-width",
+          "component": "ui-bottom-sheet",
+          "entryPoint": "@4sh/ui-kit/layout/ui-bottom-sheet",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "footer": {
+      "gap": {
+        "$value": "{metrics.units.default}",
+        "$type": "dimension",
+        "$description": "Espacement entre les actions du pied.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-bottom-sheet-footer-gap)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-bottom-sheet-footer-gap",
+            "component": "ui-bottom-sheet",
+            "entryPoint": "@4sh/ui-kit/layout/ui-bottom-sheet",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "padding-top": {
+        "$value": "{metrics.units.sm}",
+        "$type": "dimension",
+        "$description": "Inset haut du pied.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-bottom-sheet-footer-padding-top)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-bottom-sheet-footer-padding-top",
+            "component": "ui-bottom-sheet",
+            "entryPoint": "@4sh/ui-kit/layout/ui-bottom-sheet",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "stroke": {
+        "$value": "transparent",
+        "$type": "color",
+        "$description": "Couleur du filet de séparation du pied (absent par défaut).",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "COLOR",
+            "scopes": [
+              "STROKE_COLOR"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-bottom-sheet-footer-stroke)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-bottom-sheet-footer-stroke",
+            "component": "ui-bottom-sheet",
+            "entryPoint": "@4sh/ui-kit/layout/ui-bottom-sheet",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "stroke-width": {
+        "$value": "{metrics.stroke.sm}",
+        "$type": "dimension",
+        "$description": "Épaisseur du filet de séparation du pied.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "STROKE_FLOAT"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-bottom-sheet-footer-stroke-width)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-bottom-sheet-footer-stroke-width",
+            "component": "ui-bottom-sheet",
+            "entryPoint": "@4sh/ui-kit/layout/ui-bottom-sheet",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "full": {
+      "height": {
+        "$value": "100dvh",
+        "$type": "string",
+        "$description": "Hauteur du palier « plein écran ».",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-bottom-sheet-full-height)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-bottom-sheet-full-height",
+            "component": "ui-bottom-sheet",
+            "entryPoint": "@4sh/ui-kit/layout/ui-bottom-sheet",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "grab": {
+      "padding-x": {
+        "$value": "{metrics.units.md}",
+        "$type": "dimension",
+        "$description": "Inset horizontal de la zone de préhension.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-bottom-sheet-grab-padding-x)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-bottom-sheet-grab-padding-x",
+            "component": "ui-bottom-sheet",
+            "entryPoint": "@4sh/ui-kit/layout/ui-bottom-sheet",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "padding-y": {
+        "$value": "{metrics.units.sm}",
+        "$type": "dimension",
+        "$description": "Inset vertical de la zone de préhension.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-bottom-sheet-grab-padding-y)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-bottom-sheet-grab-padding-y",
+            "component": "ui-bottom-sheet",
+            "entryPoint": "@4sh/ui-kit/layout/ui-bottom-sheet",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "half": {
+      "height": {
+        "$value": "50dvh",
+        "$type": "string",
+        "$description": "Hauteur du palier « moitié d'écran ».",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-bottom-sheet-half-height)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-bottom-sheet-half-height",
+            "component": "ui-bottom-sheet",
+            "entryPoint": "@4sh/ui-kit/layout/ui-bottom-sheet",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "handle": {
+      "color": {
+        "$value": "{semantics.global.text.default}",
+        "$type": "color",
+        "$description": "Couleur de la barre de préhension.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "COLOR",
+            "scopes": [
+              "ALL_FILLS"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-bottom-sheet-handle-color)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-bottom-sheet-handle-color",
+            "component": "ui-bottom-sheet",
+            "entryPoint": "@4sh/ui-kit/layout/ui-bottom-sheet",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "height": {
+        "$value": "4px",
+        "$type": "dimension",
+        "$description": "Épaisseur de la barre de préhension.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-bottom-sheet-handle-height)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-bottom-sheet-handle-height",
+            "component": "ui-bottom-sheet",
+            "entryPoint": "@4sh/ui-kit/layout/ui-bottom-sheet",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "radius": {
+        "$value": "{metrics.radius.full}",
+        "$type": "dimension",
+        "$description": "Rayon de la barre de préhension.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "CORNER_RADIUS"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-bottom-sheet-handle-radius)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-bottom-sheet-handle-radius",
+            "component": "ui-bottom-sheet",
+            "entryPoint": "@4sh/ui-kit/layout/ui-bottom-sheet",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "width": {
+        "$value": "54px",
+        "$type": "dimension",
+        "$description": "Largeur de la barre de préhension.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-bottom-sheet-handle-width)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-bottom-sheet-handle-width",
+            "component": "ui-bottom-sheet",
+            "entryPoint": "@4sh/ui-kit/layout/ui-bottom-sheet",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "handle-target": {
+      "height": {
+        "$value": "24px",
+        "$type": "dimension",
+        "$description": "Hauteur de la cible tactile de la poignée opérable.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-bottom-sheet-handle-target-height)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-bottom-sheet-handle-target-height",
+            "component": "ui-bottom-sheet",
+            "entryPoint": "@4sh/ui-kit/layout/ui-bottom-sheet",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "width": {
+        "$value": "64px",
+        "$type": "dimension",
+        "$description": "Largeur de la cible tactile de la poignée opérable.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-bottom-sheet-handle-target-width)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-bottom-sheet-handle-target-width",
+            "component": "ui-bottom-sheet",
+            "entryPoint": "@4sh/ui-kit/layout/ui-bottom-sheet",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "header": {
+      "gap": {
+        "$value": "{metrics.units.sm}",
+        "$type": "dimension",
+        "$description": "Espacement entre le titre et le bouton de fermeture.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-bottom-sheet-header-gap)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-bottom-sheet-header-gap",
+            "component": "ui-bottom-sheet",
+            "entryPoint": "@4sh/ui-kit/layout/ui-bottom-sheet",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "mask": {
+      "background": {
+        "$value": "{primitives.black.50}",
+        "$type": "color",
+        "$description": "Assombrissement du masque.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "COLOR",
+            "scopes": [
+              "FRAME_FILL",
+              "SHAPE_FILL"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-bottom-sheet-mask-background)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-bottom-sheet-mask-background",
+            "component": "ui-bottom-sheet",
+            "entryPoint": "@4sh/ui-kit/layout/ui-bottom-sheet",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "max-height": {
+      "$value": "92dvh",
+      "$type": "string",
+      "$description": "Plafond de hauteur en mode `auto`, qui laisse voir la page derrière.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "WIDTH_HEIGHT"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-bottom-sheet-max-height)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-bottom-sheet-max-height",
+          "component": "ui-bottom-sheet",
+          "entryPoint": "@4sh/ui-kit/layout/ui-bottom-sheet",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "max-width": {
+      "$value": "1440px",
+      "$type": "dimension",
+      "$description": "Largeur maximale, au-delà de laquelle le panneau se centre.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "WIDTH_HEIGHT"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-bottom-sheet-max-width)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-bottom-sheet-max-width",
+          "component": "ui-bottom-sheet",
+          "entryPoint": "@4sh/ui-kit/layout/ui-bottom-sheet",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "padding": {
+      "$value": "{metrics.units.default}",
+      "$type": "dimension",
+      "$description": "Inset horizontal du panneau et inset haut du corps.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "GAP"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-bottom-sheet-padding)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-bottom-sheet-padding",
+          "component": "ui-bottom-sheet",
+          "entryPoint": "@4sh/ui-kit/layout/ui-bottom-sheet",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "padding-bottom": {
+      "$value": "{metrics.units.lg}",
+      "$type": "dimension",
+      "$description": "Inset bas de la dernière zone du panneau.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "GAP"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-bottom-sheet-padding-bottom)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-bottom-sheet-padding-bottom",
+          "component": "ui-bottom-sheet",
+          "entryPoint": "@4sh/ui-kit/layout/ui-bottom-sheet",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "radius": {
+      "$value": "{metrics.radius.default}",
+      "$type": "dimension",
+      "$description": "Rayon des deux coins hauts.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "CORNER_RADIUS"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-bottom-sheet-radius)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-bottom-sheet-radius",
+          "component": "ui-bottom-sheet",
+          "entryPoint": "@4sh/ui-kit/layout/ui-bottom-sheet",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "safe-area": {
+      "offset": {
+        "$value": "env(safe-area-inset-bottom, 0px)",
+        "$type": "string",
+        "$description": "Réserve sous le panneau pour l'incrustation système.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-bottom-sheet-safe-area-offset)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-bottom-sheet-safe-area-offset",
+            "component": "ui-bottom-sheet",
+            "entryPoint": "@4sh/ui-kit/layout/ui-bottom-sheet",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "surface": {
+      "$value": "{semantics.global.background.default}",
+      "$type": "color",
+      "$description": "Fond du panneau.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "COLOR",
+          "scopes": [
+            "FRAME_FILL",
+            "SHAPE_FILL"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-bottom-sheet-surface)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-bottom-sheet-surface",
+          "component": "ui-bottom-sheet",
+          "entryPoint": "@4sh/ui-kit/layout/ui-bottom-sheet",
           "descriptionSource": "scss"
         }
       }
