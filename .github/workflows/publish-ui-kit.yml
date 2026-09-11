@@ -69,17 +69,21 @@ jobs:
         id: nvmrc
         run: echo "NODE_VERSION=$(cat .nvmrc)" >> $GITHUB_OUTPUT
 
-      # Avant `setup-node` : c'est la présence de `pnpm` sur le PATH qui permet à
-      # setup-node de localiser le store à mettre en cache. La version installée
-      # vient du champ `packageManager` du package.json.
-      - name: Install pnpm
-        uses: pnpm/action-setup@v6
-
+      # Shared 4sh action — see the header of `pr-checks.yml` for what delegating
+      # the Node/pnpm setup upstream changes (setup-node v6, corepack, telemetry).
+      #
+      # SETUP ONLY here (`install_command: ''`): the check just below has to stay
+      # ahead of the expensive install. The second run-node call further down
+      # re-enters the same action, whose `FSH_NODE` guard turns the setup steps
+      # into no-ops — so only the install actually runs there.
       - name: Set up Node.js
-        uses: actions/setup-node@v7
+        uses: 4sh/4sh-github-actions/run-node@rnd-v1
         with:
-          node-version: ${{ steps.nvmrc.outputs.NODE_VERSION }}
-          cache: 'pnpm'
+          node_version: ${{ steps.nvmrc.outputs.NODE_VERSION }}
+          package_manager: pnpm
+          lockfile_path: pnpm-lock.yaml
+          install_command: ''
+          build_command: ''
 
       # Before anything expensive, and above all before the irreversible publish:
       # the release notes are the CHANGELOG section of this version, so a missing
@@ -91,11 +95,14 @@ jobs:
           echo "Release notes for $version:"
           node scripts/changelog.section.mjs "$version"
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Build the package
-        run: pnpm ui-kit:build
+      - name: Install dependencies and build the package
+        uses: 4sh/4sh-github-actions/run-node@rnd-v1
+        with:
+          node_version: ${{ steps.nvmrc.outputs.NODE_VERSION }}
+          package_manager: pnpm
+          lockfile_path: pnpm-lock.yaml
+          install_command: 'install --frozen-lockfile'
+          build_command: 'ui-kit:build'
 
       # FSHSP-141: `ui-kit:build` alone never embeds the MCP server — that step
       # only lives in `ui-kit:pack` (`ui-kit:build && mcp-embed && pnpm pack`),
@@ -165,17 +172,24 @@ jobs:
       # OIDC exchange entirely, and the registry rejects the anonymous PUT with a
       # misleading `E404 Not Found` (it masks a 403 on scoped packages).
       # registry.npmjs.org is the default registry anyway, so nothing is lost.
-      # Avant `setup-node` : c'est la présence de `pnpm` sur le PATH qui permet à
-      # setup-node de localiser le store à mettre en cache. La version installée
-      # vient du champ `packageManager` du package.json.
-      - name: Install pnpm
-        uses: pnpm/action-setup@v6
-
+      # run-node's setup-node call passes no `registry-url` either, so the rule
+      # survives the delegation — the guardrail below re-checks it regardless.
+      #
+      # Shared 4sh action — see the header of `pr-checks.yml` for what delegating
+      # the Node/pnpm setup upstream changes (setup-node v6, corepack, telemetry).
+      #
+      # SETUP ONLY here (`install_command: ''`): the check just below has to stay
+      # ahead of the expensive install. The second run-node call further down
+      # re-enters the same action, whose `FSH_NODE` guard turns the setup steps
+      # into no-ops — so only the install actually runs there.
       - name: Set up Node.js
-        uses: actions/setup-node@v7
+        uses: 4sh/4sh-github-actions/run-node@rnd-v1
         with:
-          node-version: ${{ steps.nvmrc.outputs.NODE_VERSION }}
-          cache: 'pnpm'
+          node_version: ${{ steps.nvmrc.outputs.NODE_VERSION }}
+          package_manager: pnpm
+          lockfile_path: pnpm-lock.yaml
+          install_command: ''
+          build_command: ''
 
       # Trusted Publishing needs npm >= 11.5.1. Node 24.15.0 (.nvmrc) ships
       # 11.12.1, so nothing to install — this only makes the version visible in
@@ -223,14 +237,17 @@ jobs:
         env:
           ENVIRONMENT_NAME: npm-publish
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
       # Rebuilt here rather than carried over as an artifact, so the published
       # tarball is unambiguously produced by this job — which is also what the
       # provenance attestation ends up certifying.
-      - name: Build the package
-        run: pnpm ui-kit:build
+      - name: Install dependencies and build the package
+        uses: 4sh/4sh-github-actions/run-node@rnd-v1
+        with:
+          node_version: ${{ steps.nvmrc.outputs.NODE_VERSION }}
+          package_manager: pnpm
+          lockfile_path: pnpm-lock.yaml
+          install_command: 'install --frozen-lockfile'
+          build_command: 'ui-kit:build'
 
       # FSHSP-141: `ui-kit:build` alone never embeds the MCP server — that step
       # only lives in `ui-kit:pack` (`ui-kit:build && mcp-embed && pnpm pack`),
@@ -330,11 +347,21 @@ jobs:
       # did (needs: publish is skipped whenever publish's own `if` is false, and
       # a job depending on a skipped job is skipped too): belt and suspenders
       # against ever pinging Slack for a run that didn't actually publish.
+      #
+      # The shared action posts the standard 4sh envelope (repo / branch /
+      # workflow / actor / commit) and appends `custom_message` as a last
+      # section: the release ping is now that trailing line, not the whole
+      # message. `job_status` is forced rather than derived — this step is
+      # already gated on success() above, and the action's auto-detection reads
+      # `needs`, which a step cannot.
+      #
+      # ⚠️ `custom_message` is interpolated into a JSON payload by the action,
+      # unescaped. No double quote may ever enter this string.
       - name: Notify Slack
         if: ${{ success() && inputs.dry_run == false }}
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          VERSION: ${{ needs.publish.outputs.version }}
-        run: |
-          curl -sf -X POST --data-urlencode "payload={\"username\": \"incoming-webhook\", \"text\": \":package: @4sh/ui-kit v${VERSION} publié — <https://github.com/${GITHUB_REPOSITORY}/releases/tag/v${VERSION}|release notes>\", \"icon_emoji\": \":rocket:\"}" \
-            "$SLACK_WEBHOOK_URL"
+        uses: 4sh/4sh-github-actions/slack-notification@sln-v1
+        with:
+          slack_webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          job_status: success
+          notify_on: success
+          custom_message: ':package: `@4sh/ui-kit` v${{ needs.publish.outputs.version }} publié — <${{ github.server_url }}/${{ github.repository }}/releases/tag/v${{ needs.publish.outputs.version }}|release notes>'

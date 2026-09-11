@@ -56,9 +56,18 @@ updates:
           - '@eslint/*'
           - 'typescript-eslint'
 
-  # GitHub Actions : peu de dépendances (checkout, setup-node, deploy-pages…),
+  # GitHub Actions : peu de dépendances (checkout, upload-artifact, deploy-pages…),
   # pas besoin de regroupement.
+  #
+  # `4sh/4sh-github-actions` est EXCLU : le dépôt est privé, Dependabot n'a pas
+  # d'identifiants pour le lire et échouerait chaque semaine sur ce seul
+  # composant. Ses tags ne sont de toute façon pas du SemVer (`rnd-v1`,
+  # `sln-v1`) — Dependabot n'en tirerait aucune mise à jour exploitable. Le
+  # suivi de version de ces actions se fait côté 4sh-github-actions, via son
+  # workflow `check-github-actions-version`.
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
       interval: 'weekly'
+    ignore:
+      - dependency-name: '4sh/4sh-github-actions/*'
