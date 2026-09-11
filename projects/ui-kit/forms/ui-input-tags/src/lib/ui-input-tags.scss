@@ -90,7 +90,7 @@ $input-min-width: var(--ui-input-tags-input-min-width, #{utils.rem-calc(80)});  
       gap: $tag-gap-custom;
       min-height: map.get($size-default, tag-height);
       color: var(--form-high-content-default);
-      font-family: var(--fontfamily-base);
+      font-family: var(--ui-input-tags-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
       font-size: map.get($size-default, tag-font-size);
     }
   }
@@ -140,7 +140,7 @@ $input-min-width: var(--ui-input-tags-input-min-width, #{utils.rem-calc(80)});  
     flex-shrink: 0;
     padding: 0 map.get($size-default, option-padding-x);
     border-radius: $option-radius;
-    font-family: var(--fontfamily-base);
+    font-family: var(--ui-input-tags-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
     font-size: map.get($size-default, font-size);
     color: var(--form-high-content-default);
     cursor: pointer;
@@ -186,9 +186,9 @@ $input-min-width: var(--ui-input-tags-input-min-width, #{utils.rem-calc(80)});  
     height: $group-height;
     flex-shrink: 0;
     padding: 0 map.get($size-default, option-padding-x);
-    font-family: var(--fontfamily-base);
+    font-family: var(--ui-input-tags-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
     font-size: $group-font-size;
-    font-weight: var(--weight-bold);
+    font-weight: var(--ui-input-tags-weight, var(--weight-bold)); /// Graisse du texte.
     color: var(--form-low-content-default);
 
     &._small { padding: 0 map.get($size-small, option-padding-x); }
@@ -201,7 +201,7 @@ $input-min-width: var(--ui-input-tags-input-min-width, #{utils.rem-calc(80)});  
     box-sizing: border-box;
     min-height: map.get($size-default, option-height);
     padding: 0 map.get($size-default, option-padding-x);
-    font-family: var(--fontfamily-base);
+    font-family: var(--ui-input-tags-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
     font-size: map.get($size-default, font-size);
     color: var(--form-low-content-default);
   }

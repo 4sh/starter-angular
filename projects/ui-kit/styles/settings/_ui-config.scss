@@ -49,6 +49,7 @@ $overlay-panel-padding: var(--ui-overlay-panel-padding, var(--units-sm));       
 $overlay-panel-shadow: var(--ui-overlay-panel-shadow, var(--shadow-default-md));   /// Ombre des panneaux flottants.
 $overlay-panel-stroke-width: $control-stroke-width;                                /// Épaisseur de bordure des panneaux flottants (suit `--ui-control-stroke-width`).
 $overlay-panel-offset: var(--ui-overlay-panel-offset, 8px);                        /// Décalage d'un panneau par rapport à son ancre.
+$overlay-panel-font-family: var(--ui-overlay-panel-font-family, var(--fontfamily-base));/// Famille typographique du contenu des panneaux flottants.
 
 // --- Category : forms -------------------------------------------------
 $form-control-size: var(--ui-form-control-size, var(--size-components-2xs));           /// Côté d'un contrôle carré (case à cocher, radio).
@@ -61,6 +62,7 @@ $form-field-height-small: var(--ui-form-field-height-small, var(--size-component
 $form-field-radius: var(--ui-form-field-radius, var(--radius-sm));                                   /// Rayon des coins de la boîte de champ.
 $form-field-padding-x: var(--ui-form-field-padding-x, var(--units-md));                              /// Inset horizontal de la boîte de champ.
 $form-field-gap: var(--ui-form-field-gap, var(--units-sm));                                          /// Espace entre le contrôle et ses affixes.
+$form-field-font-family: var(--ui-form-field-font-family, var(--fontfamily-base));                   /// Famille typographique du texte saisi dans un champ.
 $form-field-stroke-width: $control-stroke-width;                                              /// Bordure de la boîte de champ (suit `--ui-control-stroke-width`).
 $form-field-focus-ring-width: $form-focus-ring-width;                                       /// Anneau de focus de la boîte de champ (suit `--ui-focus-ring-width`).
 

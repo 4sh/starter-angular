@@ -107,7 +107,7 @@ $focus-ring-width: var(--ui-menu-focus-ring-width, #{utils.$focus-ring-width}); 
     display: flex;
     align-items: center;
     gap: var(--units-sm);
-    font-weight: var(--weight-bold);
+    font-weight: var(--ui-menu-header-weight, var(--weight-bold)); /// Graisse de l'en-tête.
     user-select: none;
   }
 
@@ -121,9 +121,9 @@ $focus-ring-width: var(--ui-menu-focus-ring-width, #{utils.$focus-ring-width}); 
     border: none;
     border-radius: $item-radius;
     background: none;
-    font-family: var(--fontfamily-base);
+    font-family: var(--ui-menu-font-family, var(--fontfamily-base)); /// Famille typographique de l'action.
     font-size: var(--size-typography-text-default);
-    font-weight: var(--weight-regular);
+    font-weight: var(--ui-menu-action-weight, var(--weight-regular)); /// Graisse de l'action.
     line-height: 1.2;
     text-align: left;
     text-decoration: none;

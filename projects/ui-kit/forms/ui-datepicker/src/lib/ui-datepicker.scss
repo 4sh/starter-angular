@@ -97,7 +97,7 @@ $buttonbar-padding-top: var(--ui-datepicker-buttonbar-padding-top, var(--units-s
     border-radius: $panel-radius;
     background-color: var(--form-high-surface-default);
     box-shadow: $panel-shadow;
-    font-family: var(--fontfamily-base);
+    font-family: var(--ui-datepicker-font-family, var(--fontfamily-base)); /// Famille typographique du panneau.
     // Content wider than the panel scrolls instead of painting outside the rounded box: an
     // inline picker is capped at its container's width, and a `#buttonbar` template can ask
     // for more than that.
@@ -151,7 +151,7 @@ $buttonbar-padding-top: var(--ui-datepicker-buttonbar-padding-top, var(--units-s
     min-width: 0;
     text-align: center;
     font-size: $title-font-size;
-    font-weight: var(--weight-bold);
+    font-weight: var(--ui-datepicker-weight, var(--weight-bold)); /// Graisse du titre.
     color: var(--form-high-content-default);
 
     // Clickable variant (drill-up: date → month → year).
@@ -160,7 +160,7 @@ $buttonbar-padding-top: var(--ui-datepicker-buttonbar-padding-top, var(--units-s
       border: none;
       border-radius: $title-radius;
       background: none;
-      font-family: var(--fontfamily-base);
+      font-family: var(--ui-datepicker-font-family, var(--fontfamily-base)); /// Famille typographique du titre.
       cursor: pointer;
       @include utils.control-transition(background-color, color);
 
@@ -233,7 +233,7 @@ $buttonbar-padding-top: var(--ui-datepicker-buttonbar-padding-top, var(--units-s
     border: $stroke-width solid transparent;
     border-radius: $cell-radius;
     background-color: var(--actions-low-surface-default);
-    font-family: var(--fontfamily-base);
+    font-family: var(--ui-datepicker-font-family, var(--fontfamily-base)); /// Famille typographique des cellules.
     font-size: $cell-font-size;
     color: var(--form-high-content-default);
     cursor: pointer;
@@ -266,7 +266,7 @@ $buttonbar-padding-top: var(--ui-datepicker-buttonbar-padding-top, var(--units-s
   &-weekday {
     padding: $weekday-padding-y 0;
     font-size: $weekday-font-size;
-    font-weight: var(--weight-bold);
+    font-weight: var(--ui-datepicker-weight, var(--weight-bold)); /// Graisse des jours de la semaine.
     color: var(--form-low-content-default);
     user-select: none;
   }
@@ -290,7 +290,7 @@ $buttonbar-padding-top: var(--ui-datepicker-buttonbar-padding-top, var(--units-s
     padding: 0;
     border: none;
     background: transparent;
-    font-family: var(--fontfamily-base);
+    font-family: var(--ui-datepicker-font-family, var(--fontfamily-base)); /// Famille typographique des jours.
     font-size: $day-font-size;
     color: var(--form-high-content-default);
     cursor: pointer;
@@ -425,9 +425,9 @@ $buttonbar-padding-top: var(--ui-datepicker-buttonbar-padding-top, var(--units-s
     border: none;
     border-radius: $time-value-radius;
     background: none;
-    font-family: var(--fontfamily-base);
+    font-family: var(--ui-datepicker-font-family, var(--fontfamily-base)); /// Famille typographique de la valeur horaire.
     font-size: $time-font-size;
-    font-weight: var(--weight-bold);
+    font-weight: var(--ui-datepicker-weight, var(--weight-bold)); /// Graisse de la valeur horaire.
     font-variant-numeric: tabular-nums;
     color: var(--form-high-content-default);
     text-align: center;
@@ -470,7 +470,7 @@ $buttonbar-padding-top: var(--ui-datepicker-buttonbar-padding-top, var(--units-s
 
   &-time-colon {
     font-size: $time-font-size;
-    font-weight: var(--weight-bold);
+    font-weight: var(--ui-datepicker-weight, var(--weight-bold)); /// Graisse du séparateur horaire.
     color: var(--form-high-content-default);
   }
 

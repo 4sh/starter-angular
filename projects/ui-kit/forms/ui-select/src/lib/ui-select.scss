@@ -75,7 +75,7 @@ $focus-ring-width: var(--ui-select-focus-ring-width, #{utils.$form-focus-ring-wi
     background: transparent;
     outline: none;
     text-align: left;
-    font-family: var(--fontfamily-base);
+    font-family: var(--ui-select-font-family, var(--fontfamily-base)); /// Famille typographique du déclencheur.
     font-size: map.get($size-default, font-size);
     color: var(--form-high-content-default);
     cursor: pointer;
@@ -116,7 +116,7 @@ $focus-ring-width: var(--ui-select-focus-ring-width, #{utils.$form-focus-ring-wi
   // Collapsed-count indicator (`maxSelectedLabels`).
   &-overflow {
     flex-shrink: 0;
-    font-family: var(--fontfamily-base);
+    font-family: var(--ui-select-font-family, var(--fontfamily-base)); /// Famille typographique de l'indicateur de débordement.
     font-size: map.get($size-default, group-font-size);
     color: var(--form-low-content-default);
     white-space: nowrap;
@@ -198,7 +198,7 @@ $focus-ring-width: var(--ui-select-focus-ring-width, #{utils.$form-focus-ring-wi
   .ui-select-header,
   .ui-select-footer {
     padding: $header-padding-y $header-padding-x;
-    font-family: var(--fontfamily-base);
+    font-family: var(--ui-select-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
     font-size: map.get($size-default, group-font-size);
     color: var(--form-high-content-default);
   }
@@ -265,7 +265,7 @@ $focus-ring-width: var(--ui-select-focus-ring-width, #{utils.$form-focus-ring-wi
     flex-shrink: 0;
     padding: 0 map.get($size-default, option-padding-x);
     border-radius: $option-radius;
-    font-family: var(--fontfamily-base);
+    font-family: var(--ui-select-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
     font-size: map.get($size-default, font-size);
     color: var(--form-high-content-default);
     cursor: pointer;
@@ -353,9 +353,9 @@ $focus-ring-width: var(--ui-select-focus-ring-width, #{utils.$form-focus-ring-wi
     height: map.get($size-default, group-height);
     flex-shrink: 0;
     padding: 0 map.get($size-default, option-padding-x);
-    font-family: var(--fontfamily-base);
+    font-family: var(--ui-select-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
     font-size: map.get($size-default, group-font-size);
-    font-weight: var(--weight-bold);
+    font-weight: var(--ui-select-weight, var(--weight-bold)); /// Graisse du texte.
     color: var(--form-low-content-default);
 
     &._small {
@@ -372,7 +372,7 @@ $focus-ring-width: var(--ui-select-focus-ring-width, #{utils.$form-focus-ring-wi
     box-sizing: border-box;
     min-height: map.get($size-default, option-height);
     padding: 0 map.get($size-default, option-padding-x);
-    font-family: var(--fontfamily-base);
+    font-family: var(--ui-select-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
     font-size: map.get($size-default, font-size);
     color: var(--form-low-content-default);
   }

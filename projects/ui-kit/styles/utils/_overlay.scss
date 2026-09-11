@@ -22,5 +22,5 @@
   border-radius: var(--ui-overlay-radius, #{ui-config.$overlay-panel-radius});
   background-color: var(--ui-overlay-surface, #{$surface});
   box-shadow: var(--ui-overlay-shadow, #{ui-config.$overlay-panel-shadow});
-  font-family: var(--fontfamily-base);
+  font-family: ui-config.$overlay-panel-font-family;
 }

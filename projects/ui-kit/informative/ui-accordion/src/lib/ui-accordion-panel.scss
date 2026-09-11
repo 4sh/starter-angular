@@ -32,7 +32,7 @@ $focus-ring-width: var(--ui-accordion-focus-ring-width, #{utils.$action-focus-ri
     border-radius: var(--radius-sm);
     background: none;
     color: var(--informative-defaultlow-content-default);
-    font-family: var(--fontfamily-base);
+    font-family: var(--ui-accordion-font-family, var(--fontfamily-base)); /// Famille typographique de l'en-tête.
     text-align: left;
     cursor: pointer;
     @include utils.control-transition(color, box-shadow);
@@ -47,7 +47,7 @@ $focus-ring-width: var(--ui-accordion-focus-ring-width, #{utils.$action-focus-ri
   &-header-slot {
     flex: 1 1 auto;
     min-width: 0;
-    font-weight: var(--weight-bold);
+    font-weight: var(--ui-accordion-weight, var(--weight-bold)); /// Graisse de l'en-tête projeté.
     font-size: var(--size-typography-text-xl);
     line-height: 1.2;
   }
@@ -113,7 +113,7 @@ $focus-ring-width: var(--ui-accordion-focus-ring-width, #{utils.$action-focus-ri
   &-content-body {
     padding-block: var(--units-default);
     color: var(--informative-defaultlow-content-default);
-    font-family: var(--fontfamily-base);
+    font-family: var(--ui-accordion-font-family, var(--fontfamily-base)); /// Famille typographique du corps.
     font-size: var(--size-typography-text-default);
     line-height: 1.5;
   }

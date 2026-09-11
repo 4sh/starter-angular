@@ -61,8 +61,8 @@ $badge-z-index: var(--ui-avatar-badge-z-index, 1);      /// Plan d'empilement du
   border-radius: var(--_radius);
   background-color: var(--informative-defaultlow-surface-default);
   color: var(--informative-defaultlow-content-default);
-  font-family: var(--fontfamily-title);
-  font-weight: var(--weight-bold);
+  font-family: var(--ui-avatar-font-family, var(--fontfamily-title)); /// Famille typographique du composant.
+  font-weight: var(--ui-avatar-weight, var(--weight-bold)); /// Graisse du texte.
   line-height: 1;
   user-select: none;
 

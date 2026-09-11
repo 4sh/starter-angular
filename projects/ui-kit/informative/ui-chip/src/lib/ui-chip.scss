@@ -69,8 +69,8 @@ $focus-ring-width: var(--ui-chip-focus-ring-width, #{utils.$focus-ring-width}); 
   max-width: 100%;
   border: $stroke-width solid transparent;
   border-radius: $radius;
-  font-family: var(--fontfamily-base);
-  font-weight: var(--weight-regular);
+  font-family: var(--ui-chip-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
+  font-weight: var(--ui-chip-weight, var(--weight-regular)); /// Graisse du texte.
   line-height: 1;
   white-space: nowrap;
 

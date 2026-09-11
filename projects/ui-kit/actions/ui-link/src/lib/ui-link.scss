@@ -31,8 +31,8 @@ $underline-offset: var(--ui-link-underline-offset, 0.15em);          /// Décala
   display: inline-flex;
   align-items: center;
   gap: $gap;
-  font-family: var(--fontfamily-base);
-  font-weight: var(--weight-bold);
+  font-family: var(--ui-link-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
+  font-weight: var(--ui-link-weight, var(--weight-bold)); /// Graisse du texte.
   font-size: map.get($size-default, font-size);
   line-height: 1.4;
   color: var(--actions-low-content-default);

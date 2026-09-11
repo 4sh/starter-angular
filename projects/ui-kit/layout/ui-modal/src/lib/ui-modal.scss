@@ -65,7 +65,7 @@ $mask-background: var(--ui-modal-mask-background, var(--primitives-black-50));  
   background-color: var(--global-background-default);
   color: var(--global-text-default);
   box-shadow: var(--shadow-default-lg); // floats above the page → strong elevation
-  font-family: var(--fontfamily-base);
+  font-family: var(--ui-modal-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
   outline: none;
 
   &._contained {
@@ -107,9 +107,9 @@ $mask-background: var(--ui-modal-mask-background, var(--primitives-black-50));  
   &-title {
     flex: 1 1 auto;
     min-width: 0;
-    font-family: var(--fontfamily-title);
+    font-family: var(--ui-modal-title-font-family, var(--fontfamily-title)); /// Famille typographique du titre.
     font-size: var(--size-typography-title-default);
-    font-weight: var(--weight-bold);
+    font-weight: var(--ui-modal-weight, var(--weight-bold)); /// Graisse du titre.
     line-height: 1.3;
     overflow-wrap: break-word;
   }

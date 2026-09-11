@@ -90,7 +90,7 @@ $rail-width-default: utils.rem-calc(72);                                        
   overflow: hidden; // collapsed rail clips over-wide header/footer content
   background-color: var(--global-background-default);
   color: var(--global-text-default);
-  font-family: var(--fontfamily-base);
+  font-family: var(--ui-sidebar-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
   outline: none;
   @include utils.motion-transition(inline-size, box-shadow);
 

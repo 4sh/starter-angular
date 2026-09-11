@@ -60,7 +60,7 @@ $message-font-size: var(--ui-file-upload-message-font-size, var(--size-typograph
   flex-direction: column;
   gap: $gap;
   width: 100%;
-  font-family: var(--fontfamily-base);
+  font-family: var(--ui-file-upload-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
 
   // --- Native input: visually hidden but focusable -------------------
   &-input {
@@ -108,7 +108,7 @@ $message-font-size: var(--ui-file-upload-message-font-size, var(--size-typograph
     text-overflow: ellipsis;
     white-space: nowrap;
     font-size: $field-font-size;
-    font-weight: var(--weight-regular);
+    font-weight: var(--ui-file-upload-field-text-weight, var(--weight-regular)); /// Graisse du texte du champ.
 
     &._placeholder { color: var(--form-high-content-default); opacity: $placeholder-opacity; }
   }
@@ -124,7 +124,7 @@ $message-font-size: var(--ui-file-upload-message-font-size, var(--size-typograph
     background-color: var(--actions-high-surface-default);
     color: var(--actions-high-content-default);
     font-size: $browse-font-size;
-    font-weight: var(--weight-bold);
+    font-weight: var(--ui-file-upload-browse-weight, var(--weight-bold)); /// Graisse du lien de parcours.
   }
   &._small &-browse { padding: 0 $browse-padding-x-small; font-size: $browse-font-size-small; }
   &-field:hover &-browse { background-color: var(--actions-high-surface-hover); }
@@ -178,14 +178,14 @@ $message-font-size: var(--ui-file-upload-message-font-size, var(--size-typograph
     justify-content: center;
     gap: $zone-title-gap;
     font-size: $zone-title-font-size;
-    font-weight: var(--weight-regular);
+    font-weight: var(--ui-file-upload-zone-title-weight, var(--weight-regular)); /// Graisse du titre de la zone.
   }
   &._small &-zone-title { font-size: $zone-title-font-size-small; }
 
   // "Click to upload" styled as a link (the whole zone is the trigger).
   &-zone-link {
     color: var(--actions-low-content-default);
-    font-weight: var(--weight-bold);
+    font-weight: var(--ui-file-upload-zone-link-weight, var(--weight-bold)); /// Graisse du lien de la zone.
     text-decoration: underline;
   }
   &-zone-prompt { color: var(--form-high-content-default); }

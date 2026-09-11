@@ -29,8 +29,8 @@ $focus-ring-width: var(--ui-tabs-focus-ring-width, #{utils.$action-focus-ring-wi
   border: 0;
   background-color: var(--navigation-highoutlined-surface-default);
   color: var(--navigation-highoutlined-content-default);
-  font-family: var(--fontfamily-base);
-  font-weight: var(--weight-bold);
+  font-family: var(--ui-tabs-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
+  font-weight: var(--ui-tabs-weight, var(--weight-bold)); /// Graisse du texte.
   font-size: var(--size-typography-text-default);
   line-height: 1.2;
   white-space: nowrap;

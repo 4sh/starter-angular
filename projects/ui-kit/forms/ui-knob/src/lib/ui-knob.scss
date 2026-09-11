@@ -73,7 +73,7 @@ $text-color: var(--ui-knob-text-color, var(--global-text-default));            /
   &-text {
     position: absolute;
     font-size: $font-size;
-    font-weight: var(--weight-bold);
+    font-weight: var(--ui-knob-weight, var(--weight-bold)); /// Graisse du texte.
     color: $text-color;
     // Digits keep the same advance width: the label stops jittering on drag.
     font-variant-numeric: tabular-nums;

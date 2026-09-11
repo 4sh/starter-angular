@@ -22,9 +22,9 @@ $numbers-gap: var(--ui-paginator-numbers-gap, var(--units-sm));                 
   border-radius: $button-radius;
   background-color: var(--navigation-high-surface-default);
   color: var(--navigation-high-content-default);
-  font-family: var(--fontfamily-base);
+  font-family: var(--ui-paginator-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
   font-size: var(--size-typography-text-md);
-  font-weight: var(--weight-bold);
+  font-weight: var(--ui-paginator-weight, var(--weight-bold)); /// Graisse du texte.
   line-height: 1;
   cursor: pointer;
   user-select: none;
@@ -133,7 +133,7 @@ $numbers-gap: var(--ui-paginator-numbers-gap, var(--units-sm));                 
     min-width: $button-size;
     color: var(--navigation-high-content-default);
     font-size: var(--size-typography-text-md);
-    font-weight: var(--weight-bold);
+    font-weight: var(--ui-paginator-weight, var(--weight-bold)); /// Graisse des points de suspension.
     user-select: none;
   }
 }

@@ -95,7 +95,7 @@ $size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default
 :host {
   display: inline-flex;
   gap: $group-gap;
-  font-family: var(--fontfamily-base);
+  font-family: var(--ui-toggle-button-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
   vertical-align: middle;
 
   @include toggle-size($size-default);
@@ -120,7 +120,7 @@ $size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default
   background-color: var(--_surface);
   color: var(--_content);
   font-family: inherit;
-  font-weight: var(--weight-bold);
+  font-weight: var(--ui-toggle-button-weight, var(--weight-bold)); /// Graisse du texte.
   line-height: 1.2;
   white-space: nowrap;
   cursor: pointer;

@@ -29,7 +29,7 @@ $focus-ring-width: var(--ui-breadcrumb-focus-ring-width, #{utils.$action-focus-r
 .ui-breadcrumb {
   // --- Base (nav landmark) --------------------------------------------
   display: block;
-  font-family: var(--fontfamily-base);
+  font-family: var(--ui-breadcrumb-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
 
   &-list {
     display: flex;

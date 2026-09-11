@@ -51,6 +51,28 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ### Added
 
+- **Toute la typographie du kit est maintenant reformable** (FSHSP-205). FSHSP-204 avait ouvert
+  `ui-button` ; les 46 autres composants lisaient encore leur famille et leur graisse en dur.
+  **140 déclarations** passent derrière un hook, soit **110 nouveaux** `--ui-*`
+  (766 → 876). Aucune valeur par défaut ne change : rien ne se voit tant qu'un projet ne pose
+  rien.
+  - **Granularité choisie sur mesure, pas uniforme.** Quand toutes les déclarations d'un
+    composant lisent le même jeton, un seul hook les couvre (`--ui-card-font-family`). Quand
+    elles divergent — un titre en `fontfamily-title` et un corps en `fontfamily-base` — chaque
+    partie a le sien (`--ui-alert-title-font-family` vs `--ui-alert-font-family`), sans quoi la
+    distinction serait perdue. 65 couples (composant, propriété) étaient uniformes, 17 ne
+    l'étaient pas.
+  - **Deux réglages partagés** rejoignent `_ui-config.scss` plutôt que d'être dupliqués :
+    `--ui-form-field-font-family` (le texte saisi dans TOUS les champs, via le mixin
+    `field-native-input`) et `--ui-overlay-panel-font-family` (le contenu de tous les panneaux
+    flottants).
+  - **Une exception assumée** : les trois classes `.ui-editor-font-*` du sélecteur de police de
+    `ui-editor` ne sont pas exposées. La classe EST le choix de l'utilisateur ; la rendre
+    surchargeable rendrait le sélecteur menteur. Le code le dit en commentaire.
+  - `--ui-segment-control-weight-selected` est lu à deux endroits : l'option sélectionnée et le
+    gabarit invisible (`::after`) qui réserve sa largeur. Un hook par endroit les aurait laissés
+    diverger, et l'option aurait changé de largeur en se sélectionnant.
+
 - **`ui-button` : la typographie du libellé est maintenant reformable** (FSHSP-204). La famille
   et la graisse étaient les deux seules propriétés du composant à lire leur token en dur, sans
   passer par un hook — impossible de donner à un bouton une autre police que

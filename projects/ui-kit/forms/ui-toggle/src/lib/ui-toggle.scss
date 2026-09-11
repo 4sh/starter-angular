@@ -136,7 +136,7 @@ $sizes: (
     display: inline-flex;
     align-items: center;
     gap: $label-gap;
-    font-family: var(--fontfamily-base);
+    font-family: var(--ui-toggle-font-family, var(--fontfamily-base)); /// Famille typographique du libellé.
     font-size: $font-size;
     color: var(--ui-label-color, var(--form-high-content-default));
     cursor: inherit;

@@ -41,7 +41,7 @@ $count-font-size-small: var(--ui-textarea-count-font-size-small, var(--size-typo
   &-count {
     margin-left: auto;
     flex-shrink: 0;
-    font-family: var(--fontfamily-base);
+    font-family: var(--ui-textarea-font-family, var(--fontfamily-base)); /// Famille typographique du compteur.
     font-size: $count-font-size;
     color: var(--form-low-content-default);
     user-select: none;

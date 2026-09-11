@@ -210,7 +210,7 @@ $editor-color-steps: 900, 700, 500, 300, 100;
     inset-block-start: $padding-y;
     inset-inline-start: $padding-x;
     line-height: $line-height;
-    font-family: var(--fontfamily-base);
+    font-family: var(--ui-editor-placeholder-font-family, var(--fontfamily-base)); /// Famille typographique du texte indicatif.
     font-size: $font-size;
     color: $placeholder-color;
     pointer-events: none;
@@ -251,21 +251,21 @@ $editor-color-steps: 900, 700, 500, 300, 100;
       border-radius: $code-radius;
       background-color: $code-surface;
       color: $code-color;
-      font-family: var(--fontfamily-monospace);
+      font-family: var(--ui-editor-code-font-family, var(--fontfamily-monospace)); /// Famille typographique des blocs de code.
       font-size: $code-font-size;
       white-space: pre-wrap;
       overflow-wrap: break-word;
     }
     pre:last-child { margin-block-end: 0; }
 
-    code { font-family: var(--fontfamily-monospace); }
+    code { font-family: var(--ui-editor-code-font-family, var(--fontfamily-monospace)); }
 
     // Headings carry document structure, so they keep the title face and scale.
     h1,
     h2,
     h3 {
       margin-block: 0 $block-gap;
-      font-family: var(--fontfamily-title);
+      font-family: var(--ui-editor-heading-font-family, var(--fontfamily-title)); /// Famille typographique des titres.
       font-weight: $heading-weight;
       line-height: $heading-line-height;
     }
@@ -278,6 +278,9 @@ $editor-color-steps: 900, 700, 500, 300, 100;
     h3 { font-size: $heading-3-font-size; }
 
     // Type families the font picker applies, bound to the typography tokens.
+    // Pas de hook sur ces trois-là : la classe EST le choix de police fait par
+    // l'utilisateur dans la barre d'outils. Les rendre surchargeables rendrait
+    // le sélecteur de police menteur.
     .ui-editor-font-base { font-family: var(--fontfamily-base); }
     .ui-editor-font-title { font-family: var(--fontfamily-title); }
     .ui-editor-font-monospace { font-family: var(--fontfamily-monospace); }
@@ -309,7 +312,7 @@ $editor-color-steps: 900, 700, 500, 300, 100;
 .ui-editor-count {
   margin-left: auto;
   flex-shrink: 0;
-  font-family: var(--fontfamily-base);
+  font-family: var(--ui-editor-count-font-family, var(--fontfamily-base)); /// Famille typographique du compteur.
   font-size: $count-font-size;
   color: var(--form-low-content-default);
   user-select: none;

@@ -31,7 +31,7 @@ $font-size-small: var(--ui-input-group-addon-font-size-small, var(--size-typogra
   border-radius: var(--ui-input-group-item-radius, #{$radius}); /// Rayon des coins, piloté par le groupe.
   background-color: var(--global-background-muted);
   color: var(--global-text-muted);
-  font-family: var(--fontfamily-base);
+  font-family: var(--ui-input-group-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
   font-size: $font-size;
   line-height: 1.2;
   white-space: nowrap;

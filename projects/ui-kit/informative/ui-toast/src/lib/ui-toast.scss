@@ -32,7 +32,7 @@ $focus-ring-width: var(--ui-toast-focus-ring-width, #{utils.$focus-ring-width});
   background-color: var(--informative-defaulthigh-surface-default);
   color: var(--informative-defaulthigh-content-default);
   box-shadow: var(--shadow-default-md); // toasts float above the page → elevation
-  font-family: var(--fontfamily-base);
+  font-family: var(--ui-toast-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
 
   // Banner mode: fill the available region width instead of hugging content.
   &._expanded {
@@ -61,15 +61,15 @@ $focus-ring-width: var(--ui-toast-focus-ring-width, #{utils.$focus-ring-width});
   }
 
   &-title {
-    font-family: var(--fontfamily-title);
-    font-weight: var(--weight-bold);
+    font-family: var(--ui-toast-title-font-family, var(--fontfamily-title)); /// Famille typographique du titre.
+    font-weight: var(--ui-toast-title-weight, var(--weight-bold)); /// Graisse du titre.
     font-size: var(--size-typography-title-sm);
     line-height: 1.3;
     overflow-wrap: break-word;
   }
 
   &-text {
-    font-weight: var(--weight-light);
+    font-weight: var(--ui-toast-text-weight, var(--weight-light)); /// Graisse du texte.
     font-size: var(--size-typography-text-md);
     line-height: 1.3;
     overflow-wrap: break-word;

@@ -118,7 +118,7 @@ $focus-ring-width: var(--ui-bottom-sheet-focus-ring-width, #{utils.$focus-ring-w
   background-color: $surface;
   box-shadow: $shadow;
   color: var(--global-text-default);
-  font-family: var(--fontfamily-base);
+  font-family: var(--ui-bottom-sheet-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
   overflow: hidden;
   outline: none;
   // A sheet is a touch surface: no double-tap zoom delay, no tap flash.
@@ -239,9 +239,9 @@ $focus-ring-width: var(--ui-bottom-sheet-focus-ring-width, #{utils.$focus-ring-w
     flex: 1 1 auto;
     min-width: 0;
     margin: 0;
-    font-family: var(--fontfamily-title);
+    font-family: var(--ui-bottom-sheet-title-font-family, var(--fontfamily-title)); /// Famille typographique du titre.
     font-size: var(--size-typography-title-sm);
-    font-weight: var(--weight-bold);
+    font-weight: var(--ui-bottom-sheet-weight, var(--weight-bold)); /// Graisse du titre.
     line-height: 1.3;
     overflow-wrap: break-word;
   }
