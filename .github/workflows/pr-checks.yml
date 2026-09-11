@@ -7,27 +7,6 @@ name: PR checks
 #
 # ⚠️ A green workflow blocks nothing on its own. Turn these checks into merge
 # requirements: *Settings → Branches → main → Require status checks to pass*.
-#
-# ⚠️ Node + pnpm setup goes through `4sh/4sh-github-actions/run-node@rnd-v1`
-# (company-wide policy: every 4sh repo builds on the shared actions). It stands
-# in for the pnpm/action-setup + setup-node + install block, and carries four
-# consequences worth knowing before debugging a CI failure here:
-#
-#   - It pins `actions/setup-node@v6`, not @v7. Bumping setup-node in this repo
-#     no longer affects these jobs at all — that version lives upstream, inside
-#     the `rnd-v1` tag.
-#   - pnpm comes from `corepack enable`, not `pnpm/action-setup`. The version is
-#     still the `packageManager` field of package.json, so that stays the single
-#     place to bump — but corepack is what resolves it. A `pnpm: command not
-#     found` here is a corepack problem, never a lockfile one.
-#   - `build_command` defaults to `run build` upstream, so it MUST be set
-#     explicitly — to '' on a job that only installs, or the job silently builds
-#     the demo app instead.
-#   - It injects `catchpoint/workflow-telemetry-action` into every job that calls
-#     it. Not ours, and not disableable from here.
-#
-# `.nvmrc` is still read by a local step: run-node takes a literal version
-# string and knows nothing about the file.
 on:
   pull_request:
   workflow_dispatch:
@@ -52,17 +31,23 @@ jobs:
         id: nvmrc
         run: echo "NODE_VERSION=$(cat .nvmrc)" >> $GITHUB_OUTPUT
 
+      # Avant `setup-node` : c'est la présence de `pnpm` sur le PATH qui permet à
+      # setup-node de localiser le store à mettre en cache. La version installée
+      # vient du champ `packageManager` du package.json — un seul endroit à bumper.
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ steps.nvmrc.outputs.NODE_VERSION }}
+          cache: 'pnpm'
+
       # `postinstall` chains tokens:build → ui-kit:build → docs:config, so this
       # step already proves the 53 entry points compile. A failing package build
       # fails the install, before any check below runs.
-      - name: Set up Node.js and install (builds tokens + package)
-        uses: 4sh/4sh-github-actions/run-node@rnd-v1
-        with:
-          node_version: ${{ steps.nvmrc.outputs.NODE_VERSION }}
-          package_manager: pnpm
-          lockfile_path: pnpm-lock.yaml
-          install_command: 'install --frozen-lockfile'
-          build_command: ''
+      - name: Install dependencies (builds tokens + package)
+        run: pnpm install --frozen-lockfile
 
       # `pnpm lint` carries --fix: it repairs instead of reporting, so in CI
       # it would never fail. lint:check is the same target without it.
@@ -121,14 +106,23 @@ jobs:
         id: nvmrc
         run: echo "NODE_VERSION=$(cat .nvmrc)" >> $GITHUB_OUTPUT
 
-      - name: Set up Node.js, install and build Storybook
-        uses: 4sh/4sh-github-actions/run-node@rnd-v1
+      # Avant `setup-node` : c'est la présence de `pnpm` sur le PATH qui permet à
+      # setup-node de localiser le store à mettre en cache. La version installée
+      # vient du champ `packageManager` du package.json — un seul endroit à bumper.
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
         with:
-          node_version: ${{ steps.nvmrc.outputs.NODE_VERSION }}
-          package_manager: pnpm
-          lockfile_path: pnpm-lock.yaml
-          install_command: 'install --frozen-lockfile'
-          build_command: 'build-storybook'
+          node-version: ${{ steps.nvmrc.outputs.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Storybook
+        run: pnpm build-storybook
 
       # Consumed by the `a11y` job below — avoids rebuilding Storybook twice.
       - name: Upload Storybook build
@@ -157,14 +151,20 @@ jobs:
         id: nvmrc
         run: echo "NODE_VERSION=$(cat .nvmrc)" >> $GITHUB_OUTPUT
 
-      - name: Set up Node.js and install dependencies
-        uses: 4sh/4sh-github-actions/run-node@rnd-v1
+      # Avant `setup-node` : c'est la présence de `pnpm` sur le PATH qui permet à
+      # setup-node de localiser le store à mettre en cache. La version installée
+      # vient du champ `packageManager` du package.json — un seul endroit à bumper.
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
         with:
-          node_version: ${{ steps.nvmrc.outputs.NODE_VERSION }}
-          package_manager: pnpm
-          lockfile_path: pnpm-lock.yaml
-          install_command: 'install --frozen-lockfile'
-          build_command: ''
+          node-version: ${{ steps.nvmrc.outputs.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Download Storybook build
         uses: actions/download-artifact@v8
