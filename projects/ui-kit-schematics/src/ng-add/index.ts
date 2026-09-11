@@ -27,6 +27,7 @@ import {
 } from '../utils/package-json';
 import { emptyManifest, MANIFEST_PATH, writeManifest } from '../utils/manifest';
 import {
+  COMPONENTS_ROOT,
   CONFIG_TABLE_PATH,
   docsPipelineDir,
   mcpServerDir,
@@ -98,6 +99,19 @@ function createStyleScaffolds(): Rule {
     context.logger.info(
       `✔ Scaffolds ${MAIN_SCSS_PATH}, src/styles/variables.scss et ${FONTS_PATH} créés.`,
     );
+    return tree;
+  };
+}
+
+/**
+ * Pose `src/app/shared/components/` et son README.
+ */
+function scaffoldComponentsTree(): Rule {
+  return (tree: Tree, context: SchematicContext) => {
+    const path = `${COMPONENTS_ROOT}/README.md`;
+    if (tree.exists(path)) return tree;
+    tree.create(path, readFileSync(join(__dirname, 'files', 'components', 'README.md'), 'utf8'));
+    context.logger.info(`✔ Racine des composants posée (${COMPONENTS_ROOT}/ — voir son README).`);
     return tree;
   };
 }
@@ -1110,6 +1124,7 @@ export function ngAdd(options: Schema): Rule {
     // règle qui pose l'arborescence et celle qui la fait servir se lisent
     // ainsi dans l'ordre où elles prennent effet.
     copyProjectAssetsRule(),
+    scaffoldComponentsTree(),
     retargetFaviconRule(),
     copyPrettierConfigRule(),
     copyTokensPipeline(),

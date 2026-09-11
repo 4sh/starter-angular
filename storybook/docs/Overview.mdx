@@ -51,6 +51,7 @@ import * as ProgressBarStories from "../../projects/ui-kit/informative/ui-progre
 import * as CardStories from "../../projects/ui-kit/layout/ui-card/ui-card.stories";
 import * as ModalStories from "../../projects/ui-kit/layout/ui-modal/ui-modal.stories";
 import * as DrawerStories from "../../projects/ui-kit/layout/ui-drawer/ui-drawer.stories";
+import * as BottomSheetStories from "../../projects/ui-kit/layout/ui-bottom-sheet/ui-bottom-sheet.stories";
 import * as PopoverStories from "../../projects/ui-kit/layout/ui-popover/ui-popover.stories";
 import * as TabsStories from "../../projects/ui-kit/navigation/ui-tabs/ui-tabs.stories";
 import * as StepperStories from "../../projects/ui-kit/navigation/ui-stepper/ui-stepper.stories";
@@ -139,6 +140,7 @@ export const CATEGORIES = [
       { name: 'ui-card', description: 'Conteneur flexible (slots média/titre/sous-titre/contenu/pied, variantes outlined/elevated/flat).', link: '?path=/docs/components-ui-layout-ui-card--docs', story: CardStories.Complete, previewHeight: 300, previewScale: 0.65 },
       { name: 'ui-modal', description: 'Fenêtre modale (two-way visible, masque modal/non-modal, dismissableMask, blocage du scroll, piège de focus, déplaçable, agrandissable, redimensionnable, 9 positions, breakpoints, motion).', link: '?path=/docs/components-ui-layout-ui-modal--docs', story: ModalStories.Contained, previewHeight: 300, previewScale: 1 },
       { name: 'ui-drawer', description: 'Panneau glissant (two-way visible, 4 bords + fullScreen, glissement directionnel motion, masque modal/non-modal, dismissableMask, piège de focus, contained, templates +).', link: '?path=/docs/components-ui-layout-ui-drawer--docs', story: DrawerStories.Contained, previewHeight: 300, previewScale: 1 },
+      { name: 'ui-bottom-sheet', description: "Panneau glissant depuis le bas, mobile-first (two-way visible, zones projetées en-tête/corps/pied, paliers auto/half/full en dvh, glisser-pour-fermer, paliers dragables, autoFocusElement, safe-area, piège de focus, contained).", link: '?path=/docs/components-ui-layout-ui-bottom-sheet--docs', story: BottomSheetStories.Contained, previewHeight: 300, previewScale: 1 },
       { name: 'ui-popover', description: 'Panneau flottant ancré à un déclencheur (overlay CDK, show/hide/toggle, contenu projeté, 4 côtés + flèche, role=dialog + aria-modal, piège de focus, Échap, dismissable).', link: '?path=/docs/components-ui-layout-ui-popover--docs', story: PopoverStories.Basic },
     ],
   },
