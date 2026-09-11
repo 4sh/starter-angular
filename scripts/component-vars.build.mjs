@@ -199,6 +199,12 @@ const PROPERTIES = {
   },
 
   // Typography
+  'font-family': {
+    fr: 'Famille typographique',
+    group: 'typography',
+    type: 'STRING',
+    scopes: ['FONT_FAMILY'],
+  },
   'font-size': {
     fr: 'Taille de police',
     group: 'typography',

@@ -30,6 +30,8 @@ $radius-rounded: var(--ui-button-radius, var(--ui-button-radius-rounded, var(--r
 $gap: var(--ui-button-gap, var(--units-sm));                                             /// Espacement icône ↔ libellé.
 $stroke-width: var(--ui-button-stroke-width, #{utils.$control-stroke-width});            /// Épaisseur de la bordure.
 $focus-ring-width: var(--ui-button-focus-ring-width, #{utils.$action-focus-ring-width}); /// Épaisseur de l'anneau de focus.
+$font-family: var(--ui-button-font-family, var(--fontfamily-base));                      /// Famille typographique du libellé.
+$weight: var(--ui-button-weight, var(--weight-bold));                                    /// Graisse du libellé.
 
 $icon-stacked-gap: var(--ui-button-icon-stacked-gap, var(--units-xs));                   /// Espacement icône ↔ libellé quand l'icône est empilée (`iconPos` top / bottom).
 $icon-stacked-padding-y: var(--ui-button-icon-stacked-padding-y, var(--units-md));       /// Inset vertical en icône empilée (la hauteur passe en `auto`).
@@ -112,8 +114,8 @@ $size-default: map.get($sizes, 'default');         /// Raccourci vers l'entrée 
   gap: $gap;
   border: $stroke-width solid transparent;
   border-radius: $radius;
-  font-family: var(--fontfamily-base);
-  font-weight: var(--weight-bold);
+  font-family: $font-family;
+  font-weight: $weight;
   line-height: 1.2;
   white-space: nowrap;
   cursor: pointer;
