@@ -65,6 +65,15 @@ jobs:
       - name: Unit tests
         run: pnpm test
 
+      # The token pipeline had no test at all, which is how an alias
+      # between two tokens of the same collection could be unresolvable since the
+      # beginning — the starter's own `semantics.json` only ever references
+      # `primitives`, so the case was never exercised. These specs run
+      # `tokens.build.mjs` on throwaway token sets, so they cover the real
+      # execution path without touching the generated files.
+      - name: Token pipeline tests
+        run: pnpm tokens:test
+
       # `postinstall` has just regenerated everything `docs:config` produces, so
       # this step looks redundant. It is not — it enforces two things nothing
       # else does:
