@@ -48,7 +48,7 @@ $tab-adornment-offset: var(--ui-bottom-tab-bar-adornment-offset, #{utils.rem-cal
   gap: $tab-gap;
   background-color: var(--navigation-high-surface-default);
   color: var(--navigation-high-content-default);
-  font-family: var(--fontfamily-base);
+  font-family: var(--ui-bottom-tab-bar-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
   font-weight: $tab-label-weight;
   font-size: $tab-label-size;
   line-height: 1.2;

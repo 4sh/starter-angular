@@ -70,7 +70,7 @@ $sizes: (
   border: $stroke-width solid var(--form-high-stroke-default);
   border-radius: $radius;
   color: var(--form-high-content-default);
-  font-family: var(--fontfamily-base);
+  font-family: var(--ui-toggle-block-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
   cursor: pointer;
   user-select: none;
   @include utils.control-transition(background-color, border-color, box-shadow);
@@ -124,7 +124,7 @@ $sizes: (
     display: inline-flex;
     align-items: center;
     gap: $label-gap;
-    font-weight: var(--weight-bold);
+    font-weight: var(--ui-toggle-block-weight, var(--weight-bold)); /// Graisse du libellé.
     line-height: 1.3;
     color: var(--ui-label-color, var(--form-high-content-default));
   }

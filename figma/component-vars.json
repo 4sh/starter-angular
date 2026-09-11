@@ -10,8 +10,8 @@
         "Mode 1"
       ],
       "counts": {
-        "tokens": 729,
-        "alias": 578,
+        "tokens": 839,
+        "alias": 688,
         "literal": 151,
         "skipped": 62,
         "derivedDescriptions": 222
@@ -383,6 +383,51 @@
           "descriptionSource": "scss"
         }
       }
+    },
+    "font-family": {
+      "$value": "{typography.fontFamily.base}",
+      "$type": "string",
+      "$description": "Famille typographique de l'en-tête.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-accordion-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-accordion-font-family",
+          "component": "ui-accordion-panel",
+          "entryPoint": "@4sh/ui-kit/informative/ui-accordion",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "weight": {
+      "$value": "{typography.weight.bold}",
+      "$type": "string",
+      "$description": "Graisse de l'en-tête projeté.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_WEIGHT",
+            "FONT_STYLE"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-accordion-weight)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-accordion-weight",
+          "component": "ui-accordion-panel",
+          "entryPoint": "@4sh/ui-kit/informative/ui-accordion",
+          "descriptionSource": "scss"
+        }
+      }
     }
   },
   "alert": {
@@ -518,6 +563,28 @@
         },
         "com.4sh.ui-kit": {
           "cssVar": "--ui-alert-focus-ring-width",
+          "component": "ui-alert",
+          "entryPoint": "@4sh/ui-kit/informative/ui-alert",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "font-family": {
+      "$value": "{typography.fontFamily.base}",
+      "$type": "string",
+      "$description": "Famille typographique du composant.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-alert-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-alert-font-family",
           "component": "ui-alert",
           "entryPoint": "@4sh/ui-kit/informative/ui-alert",
           "descriptionSource": "scss"
@@ -746,9 +813,54 @@
             "descriptionSource": "derived"
           }
         }
+      },
+      "weight": {
+        "$value": "{typography.weight.light}",
+        "$type": "string",
+        "$description": "Graisse du texte.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "STRING",
+            "scopes": [
+              "FONT_WEIGHT",
+              "FONT_STYLE"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-alert-text-weight)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-alert-text-weight",
+            "component": "ui-alert",
+            "entryPoint": "@4sh/ui-kit/informative/ui-alert",
+            "descriptionSource": "scss"
+          }
+        }
       }
     },
     "title": {
+      "font-family": {
+        "$value": "{typography.fontFamily.title}",
+        "$type": "string",
+        "$description": "Famille typographique du titre.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "STRING",
+            "scopes": [
+              "FONT_FAMILY"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-alert-title-font-family)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-alert-title-font-family",
+            "component": "ui-alert",
+            "entryPoint": "@4sh/ui-kit/informative/ui-alert",
+            "descriptionSource": "scss"
+          }
+        }
+      },
       "font-size": {
         "$value": "{responsive.size.typography.title.sm}",
         "$type": "dimension",
@@ -790,6 +902,29 @@
             "component": "ui-alert",
             "entryPoint": "@4sh/ui-kit/informative/ui-alert",
             "descriptionSource": "derived"
+          }
+        }
+      },
+      "weight": {
+        "$value": "{typography.weight.bold}",
+        "$type": "string",
+        "$description": "Graisse du titre.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "STRING",
+            "scopes": [
+              "FONT_WEIGHT",
+              "FONT_STYLE"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-alert-title-weight)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-alert-title-weight",
+            "component": "ui-alert",
+            "entryPoint": "@4sh/ui-kit/informative/ui-alert",
+            "descriptionSource": "scss"
           }
         }
       }
@@ -858,6 +993,28 @@
         },
         "com.4sh.ui-kit": {
           "cssVar": "--ui-autocomplete-focus-ring-width",
+          "component": "ui-autocomplete",
+          "entryPoint": "@4sh/ui-kit/forms/ui-autocomplete",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "font-family": {
+      "$value": "{typography.fontFamily.base}",
+      "$type": "string",
+      "$description": "Famille typographique du composant.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-autocomplete-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-autocomplete-font-family",
           "component": "ui-autocomplete",
           "entryPoint": "@4sh/ui-kit/forms/ui-autocomplete",
           "descriptionSource": "scss"
@@ -1339,9 +1496,54 @@
           }
         }
       }
+    },
+    "weight": {
+      "$value": "{typography.weight.bold}",
+      "$type": "string",
+      "$description": "Graisse du texte.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_WEIGHT",
+            "FONT_STYLE"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-autocomplete-weight)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-autocomplete-weight",
+          "component": "ui-autocomplete",
+          "entryPoint": "@4sh/ui-kit/forms/ui-autocomplete",
+          "descriptionSource": "scss"
+        }
+      }
     }
   },
   "avatar": {
+    "font-family": {
+      "$value": "{typography.fontFamily.title}",
+      "$type": "string",
+      "$description": "Famille typographique du composant.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-avatar-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-avatar-font-family",
+          "component": "ui-avatar",
+          "entryPoint": "@4sh/ui-kit/informative/ui-avatar",
+          "descriptionSource": "scss"
+        }
+      }
+    },
     "font-size": {
       "$value": "{responsive.size.typography.title.default}",
       "$type": "dimension",
@@ -1583,6 +1785,29 @@
           "descriptionSource": "scss"
         }
       }
+    },
+    "weight": {
+      "$value": "{typography.weight.bold}",
+      "$type": "string",
+      "$description": "Graisse du texte.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_WEIGHT",
+            "FONT_STYLE"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-avatar-weight)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-avatar-weight",
+          "component": "ui-avatar",
+          "entryPoint": "@4sh/ui-kit/informative/ui-avatar",
+          "descriptionSource": "scss"
+        }
+      }
     }
   },
   "avatar-group": {
@@ -1701,6 +1926,28 @@
             "entryPoint": "@4sh/ui-kit/informative/ui-badge",
             "descriptionSource": "derived"
           }
+        }
+      }
+    },
+    "font-family": {
+      "$value": "{typography.fontFamily.base}",
+      "$type": "string",
+      "$description": "Famille typographique du composant.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-badge-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-badge-font-family",
+          "component": "ui-badge",
+          "entryPoint": "@4sh/ui-kit/informative/ui-badge",
+          "descriptionSource": "scss"
         }
       }
     },
@@ -1967,6 +2214,29 @@
           "descriptionSource": "scss"
         }
       }
+    },
+    "weight": {
+      "$value": "{typography.weight.bold}",
+      "$type": "string",
+      "$description": "Graisse du texte.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_WEIGHT",
+            "FONT_STYLE"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-badge-weight)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-badge-weight",
+          "component": "ui-badge",
+          "entryPoint": "@4sh/ui-kit/informative/ui-badge",
+          "descriptionSource": "scss"
+        }
+      }
     }
   },
   "bottom-sheet": {
@@ -2010,6 +2280,28 @@
         },
         "com.4sh.ui-kit": {
           "cssVar": "--ui-bottom-sheet-focus-ring-width",
+          "component": "ui-bottom-sheet",
+          "entryPoint": "@4sh/ui-kit/layout/ui-bottom-sheet",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "font-family": {
+      "$value": "{typography.fontFamily.base}",
+      "$type": "string",
+      "$description": "Famille typographique du composant.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-bottom-sheet-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-bottom-sheet-font-family",
           "component": "ui-bottom-sheet",
           "entryPoint": "@4sh/ui-kit/layout/ui-bottom-sheet",
           "descriptionSource": "scss"
@@ -2541,6 +2833,53 @@
           "descriptionSource": "scss"
         }
       }
+    },
+    "title": {
+      "font-family": {
+        "$value": "{typography.fontFamily.title}",
+        "$type": "string",
+        "$description": "Famille typographique du titre.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "STRING",
+            "scopes": [
+              "FONT_FAMILY"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-bottom-sheet-title-font-family)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-bottom-sheet-title-font-family",
+            "component": "ui-bottom-sheet",
+            "entryPoint": "@4sh/ui-kit/layout/ui-bottom-sheet",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "weight": {
+      "$value": "{typography.weight.bold}",
+      "$type": "string",
+      "$description": "Graisse du titre.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_WEIGHT",
+            "FONT_STYLE"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-bottom-sheet-weight)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-bottom-sheet-weight",
+          "component": "ui-bottom-sheet",
+          "entryPoint": "@4sh/ui-kit/layout/ui-bottom-sheet",
+          "descriptionSource": "scss"
+        }
+      }
     }
   },
   "bottom-tab-bar": {
@@ -2701,6 +3040,28 @@
             "entryPoint": "@4sh/ui-kit/navigation/ui-bottom-tab-bar",
             "descriptionSource": "scss"
           }
+        }
+      }
+    },
+    "font-family": {
+      "$value": "{typography.fontFamily.base}",
+      "$type": "string",
+      "$description": "Famille typographique du composant.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-bottom-tab-bar-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-bottom-tab-bar-font-family",
+          "component": "ui-bottom-tab",
+          "entryPoint": "@4sh/ui-kit/navigation/ui-bottom-tab-bar",
+          "descriptionSource": "scss"
         }
       }
     },
@@ -3130,6 +3491,28 @@
         },
         "com.4sh.ui-kit": {
           "cssVar": "--ui-breadcrumb-focus-ring-width",
+          "component": "ui-breadcrumb",
+          "entryPoint": "@4sh/ui-kit/navigation/ui-breadcrumb",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "font-family": {
+      "$value": "{typography.fontFamily.base}",
+      "$type": "string",
+      "$description": "Famille typographique du composant.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-breadcrumb-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-breadcrumb-font-family",
           "component": "ui-breadcrumb",
           "entryPoint": "@4sh/ui-kit/navigation/ui-breadcrumb",
           "descriptionSource": "scss"
@@ -3656,6 +4039,28 @@
     }
   },
   "card": {
+    "font-family": {
+      "$value": "{typography.fontFamily.base}",
+      "$type": "string",
+      "$description": "Famille typographique du composant.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-card-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-card-font-family",
+          "component": "ui-card",
+          "entryPoint": "@4sh/ui-kit/layout/ui-card",
+          "descriptionSource": "scss"
+        }
+      }
+    },
     "footer": {
       "gap": {
         "$value": "{metrics.units.sm}",
@@ -3791,6 +4196,53 @@
           "descriptionSource": "scss"
         }
       }
+    },
+    "title": {
+      "font-family": {
+        "$value": "{typography.fontFamily.title}",
+        "$type": "string",
+        "$description": "Famille typographique du titre.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "STRING",
+            "scopes": [
+              "FONT_FAMILY"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-card-title-font-family)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-card-title-font-family",
+            "component": "ui-card",
+            "entryPoint": "@4sh/ui-kit/layout/ui-card",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "weight": {
+      "$value": "{typography.weight.bold}",
+      "$type": "string",
+      "$description": "Graisse du titre.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_WEIGHT",
+            "FONT_STYLE"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-card-weight)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-card-weight",
+          "component": "ui-card",
+          "entryPoint": "@4sh/ui-kit/layout/ui-card",
+          "descriptionSource": "scss"
+        }
+      }
     }
   },
   "checkbox": {
@@ -3856,6 +4308,28 @@
         },
         "com.4sh.ui-kit": {
           "cssVar": "--ui-checkbox-focus-ring-width",
+          "component": "ui-checkbox",
+          "entryPoint": "@4sh/ui-kit/forms/ui-checkbox",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "font-family": {
+      "$value": "{typography.fontFamily.base}",
+      "$type": "string",
+      "$description": "Famille typographique du libellé.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-checkbox-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-checkbox-font-family",
           "component": "ui-checkbox",
           "entryPoint": "@4sh/ui-kit/forms/ui-checkbox",
           "descriptionSource": "scss"
@@ -3994,6 +4468,28 @@
         },
         "com.4sh.ui-kit": {
           "cssVar": "--ui-chip-focus-ring-width",
+          "component": "ui-chip",
+          "entryPoint": "@4sh/ui-kit/informative/ui-chip",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "font-family": {
+      "$value": "{typography.fontFamily.base}",
+      "$type": "string",
+      "$description": "Famille typographique du composant.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-chip-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-chip-font-family",
           "component": "ui-chip",
           "entryPoint": "@4sh/ui-kit/informative/ui-chip",
           "descriptionSource": "scss"
@@ -4421,6 +4917,29 @@
           "descriptionSource": "scss"
         }
       }
+    },
+    "weight": {
+      "$value": "{typography.weight.regular}",
+      "$type": "string",
+      "$description": "Graisse du texte.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_WEIGHT",
+            "FONT_STYLE"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-chip-weight)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-chip-weight",
+          "component": "ui-chip",
+          "entryPoint": "@4sh/ui-kit/informative/ui-chip",
+          "descriptionSource": "scss"
+        }
+      }
     }
   },
   "control": {
@@ -4756,6 +5275,28 @@
         },
         "com.4sh.ui-kit": {
           "cssVar": "--ui-datepicker-focus-ring-width",
+          "component": "ui-datepicker",
+          "entryPoint": "@4sh/ui-kit/forms/ui-datepicker",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "font-family": {
+      "$value": "{typography.fontFamily.base}",
+      "$type": "string",
+      "$description": "Famille typographique du panneau.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-datepicker-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-datepicker-font-family",
           "component": "ui-datepicker",
           "entryPoint": "@4sh/ui-kit/forms/ui-datepicker",
           "descriptionSource": "scss"
@@ -5500,6 +6041,29 @@
           }
         }
       }
+    },
+    "weight": {
+      "$value": "{typography.weight.bold}",
+      "$type": "string",
+      "$description": "Graisse du titre.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_WEIGHT",
+            "FONT_STYLE"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-datepicker-weight)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-datepicker-weight",
+          "component": "ui-datepicker",
+          "entryPoint": "@4sh/ui-kit/forms/ui-datepicker",
+          "descriptionSource": "scss"
+        }
+      }
     }
   },
   "drawer": {
@@ -5543,6 +6107,28 @@
         },
         "com.4sh.ui-kit": {
           "cssVar": "--ui-drawer-focus-ring-width",
+          "component": "ui-drawer",
+          "entryPoint": "@4sh/ui-kit/layout/ui-drawer",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "font-family": {
+      "$value": "{typography.fontFamily.base}",
+      "$type": "string",
+      "$description": "Famille typographique du composant.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-drawer-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-drawer-font-family",
           "component": "ui-drawer",
           "entryPoint": "@4sh/ui-kit/layout/ui-drawer",
           "descriptionSource": "scss"
@@ -5687,6 +6273,53 @@
           "descriptionSource": "scss"
         }
       }
+    },
+    "title": {
+      "font-family": {
+        "$value": "{typography.fontFamily.title}",
+        "$type": "string",
+        "$description": "Famille typographique du titre.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "STRING",
+            "scopes": [
+              "FONT_FAMILY"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-drawer-title-font-family)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-drawer-title-font-family",
+            "component": "ui-drawer",
+            "entryPoint": "@4sh/ui-kit/layout/ui-drawer",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "weight": {
+      "$value": "{typography.weight.bold}",
+      "$type": "string",
+      "$description": "Graisse du titre.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_WEIGHT",
+            "FONT_STYLE"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-drawer-weight)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-drawer-weight",
+          "component": "ui-drawer",
+          "entryPoint": "@4sh/ui-kit/layout/ui-drawer",
+          "descriptionSource": "scss"
+        }
+      }
     }
   },
   "editor": {
@@ -5756,6 +6389,28 @@
           },
           "com.4sh.ui-kit": {
             "cssVar": "--ui-editor-code-color",
+            "component": "ui-editor",
+            "entryPoint": "@4sh/ui-kit/forms/ui-editor",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "font-family": {
+        "$value": "{typography.fontFamily.monospace}",
+        "$type": "string",
+        "$description": "Famille typographique des blocs de code.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "STRING",
+            "scopes": [
+              "FONT_FAMILY"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-editor-code-font-family)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-editor-code-font-family",
             "component": "ui-editor",
             "entryPoint": "@4sh/ui-kit/forms/ui-editor",
             "descriptionSource": "scss"
@@ -5875,6 +6530,28 @@
       }
     },
     "count": {
+      "font-family": {
+        "$value": "{typography.fontFamily.base}",
+        "$type": "string",
+        "$description": "Famille typographique du compteur.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "STRING",
+            "scopes": [
+              "FONT_FAMILY"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-editor-count-font-family)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-editor-count-font-family",
+            "component": "ui-editor",
+            "entryPoint": "@4sh/ui-kit/forms/ui-editor",
+            "descriptionSource": "scss"
+          }
+        }
+      },
       "font-size": {
         "$value": "{responsive.size.typography.text.md}",
         "$type": "dimension",
@@ -6037,6 +6714,28 @@
       }
     },
     "heading": {
+      "font-family": {
+        "$value": "{typography.fontFamily.title}",
+        "$type": "string",
+        "$description": "Famille typographique des titres.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "STRING",
+            "scopes": [
+              "FONT_FAMILY"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-editor-heading-font-family)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-editor-heading-font-family",
+            "component": "ui-editor",
+            "entryPoint": "@4sh/ui-kit/forms/ui-editor",
+            "descriptionSource": "scss"
+          }
+        }
+      },
       "line-height": {
         "$value": "1.25",
         "$type": "number",
@@ -6282,6 +6981,28 @@
           },
           "com.4sh.ui-kit": {
             "cssVar": "--ui-editor-placeholder-color",
+            "component": "ui-editor",
+            "entryPoint": "@4sh/ui-kit/forms/ui-editor",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "font-family": {
+        "$value": "{typography.fontFamily.base}",
+        "$type": "string",
+        "$description": "Famille typographique du texte indicatif.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "STRING",
+            "scopes": [
+              "FONT_FAMILY"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-editor-placeholder-font-family)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-editor-placeholder-font-family",
             "component": "ui-editor",
             "entryPoint": "@4sh/ui-kit/forms/ui-editor",
             "descriptionSource": "scss"
@@ -6728,6 +7449,53 @@
         }
       }
     },
+    "description": {
+      "weight": {
+        "$value": "{typography.weight.regular}",
+        "$type": "string",
+        "$description": "Graisse de la description.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "STRING",
+            "scopes": [
+              "FONT_WEIGHT",
+              "FONT_STYLE"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-empty-state-description-weight)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-empty-state-description-weight",
+            "component": "ui-empty-state",
+            "entryPoint": "@4sh/ui-kit/informative/ui-empty-state",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "font-family": {
+      "$value": "{typography.fontFamily.base}",
+      "$type": "string",
+      "$description": "Famille typographique du composant.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-empty-state-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-empty-state-font-family",
+          "component": "ui-empty-state",
+          "entryPoint": "@4sh/ui-kit/informative/ui-empty-state",
+          "descriptionSource": "scss"
+        }
+      }
+    },
     "gap": {
       "$value": "{metrics.units.lg}",
       "$type": "dimension",
@@ -6865,6 +7633,28 @@
       }
     },
     "title": {
+      "font-family": {
+        "$value": "{typography.fontFamily.title}",
+        "$type": "string",
+        "$description": "Famille typographique du titre.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "STRING",
+            "scopes": [
+              "FONT_FAMILY"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-empty-state-title-font-family)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-empty-state-title-font-family",
+            "component": "ui-empty-state",
+            "entryPoint": "@4sh/ui-kit/informative/ui-empty-state",
+            "descriptionSource": "scss"
+          }
+        }
+      },
       "font-size": {
         "$value": "{responsive.size.typography.title.default}",
         "$type": "dimension",
@@ -6906,6 +7696,29 @@
             "component": "ui-empty-state",
             "entryPoint": "@4sh/ui-kit/informative/ui-empty-state",
             "descriptionSource": "derived"
+          }
+        }
+      },
+      "weight": {
+        "$value": "{typography.weight.bold}",
+        "$type": "string",
+        "$description": "Graisse du titre.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "STRING",
+            "scopes": [
+              "FONT_WEIGHT",
+              "FONT_STYLE"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-empty-state-title-weight)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-empty-state-title-weight",
+            "component": "ui-empty-state",
+            "entryPoint": "@4sh/ui-kit/informative/ui-empty-state",
+            "descriptionSource": "scss"
           }
         }
       }
@@ -7384,6 +8197,29 @@
             "descriptionSource": "scss"
           }
         }
+      },
+      "weight": {
+        "$value": "{typography.weight.bold}",
+        "$type": "string",
+        "$description": "Graisse du lien de parcours.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "STRING",
+            "scopes": [
+              "FONT_WEIGHT",
+              "FONT_STYLE"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-file-upload-browse-weight)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-file-upload-browse-weight",
+            "component": "ui-file-upload",
+            "entryPoint": "@4sh/ui-kit/forms/ui-file-upload",
+            "descriptionSource": "scss"
+          }
+        }
       }
     },
     "content": {
@@ -7544,6 +8380,31 @@
         }
       }
     },
+    "field-text": {
+      "weight": {
+        "$value": "{typography.weight.regular}",
+        "$type": "string",
+        "$description": "Graisse du texte du champ.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "STRING",
+            "scopes": [
+              "FONT_WEIGHT",
+              "FONT_STYLE"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-file-upload-field-text-weight)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-file-upload-field-text-weight",
+            "component": "ui-file-upload",
+            "entryPoint": "@4sh/ui-kit/forms/ui-file-upload",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
     "focus-ring-width": {
       "$value": "{metrics.units.2xs}",
       "$type": "dimension",
@@ -7561,6 +8422,28 @@
         "com.4sh.ui-kit": {
           "cssVar": "--ui-file-upload-focus-ring-width",
           "component": "ui-file-upload",
+          "entryPoint": "@4sh/ui-kit/forms/ui-file-upload",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "font-family": {
+      "$value": "{typography.fontFamily.base}",
+      "$type": "string",
+      "$description": "Famille typographique du nom.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-file-upload-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-file-upload-font-family",
+          "component": "ui-file-upload-list",
           "entryPoint": "@4sh/ui-kit/forms/ui-file-upload",
           "descriptionSource": "scss"
         }
@@ -8158,6 +9041,56 @@
         }
       }
     },
+    "meta": {
+      "weight": {
+        "$value": "{typography.weight.light}",
+        "$type": "string",
+        "$description": "Graisse des métadonnées.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "STRING",
+            "scopes": [
+              "FONT_WEIGHT",
+              "FONT_STYLE"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-file-upload-meta-weight)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-file-upload-meta-weight",
+            "component": "ui-file-upload-list",
+            "entryPoint": "@4sh/ui-kit/forms/ui-file-upload",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "name": {
+      "weight": {
+        "$value": "{typography.weight.bold}",
+        "$type": "string",
+        "$description": "Graisse du nom.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "STRING",
+            "scopes": [
+              "FONT_WEIGHT",
+              "FONT_STYLE"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-file-upload-name-weight)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-file-upload-name-weight",
+            "component": "ui-file-upload-list",
+            "entryPoint": "@4sh/ui-kit/forms/ui-file-upload",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
     "placeholder": {
       "opacity": {
         "$value": "0.75",
@@ -8432,6 +9365,31 @@
         }
       }
     },
+    "zone-link": {
+      "weight": {
+        "$value": "{typography.weight.bold}",
+        "$type": "string",
+        "$description": "Graisse du lien de la zone.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "STRING",
+            "scopes": [
+              "FONT_WEIGHT",
+              "FONT_STYLE"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-file-upload-zone-link-weight)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-file-upload-zone-link-weight",
+            "component": "ui-file-upload",
+            "entryPoint": "@4sh/ui-kit/forms/ui-file-upload",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
     "zone-title": {
       "font-size": {
         "$value": "{responsive.size.typography.text.default}",
@@ -8493,6 +9451,29 @@
           },
           "com.4sh.ui-kit": {
             "cssVar": "--ui-file-upload-zone-title-gap",
+            "component": "ui-file-upload",
+            "entryPoint": "@4sh/ui-kit/forms/ui-file-upload",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "weight": {
+        "$value": "{typography.weight.regular}",
+        "$type": "string",
+        "$description": "Graisse du titre de la zone.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "STRING",
+            "scopes": [
+              "FONT_WEIGHT",
+              "FONT_STYLE"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-file-upload-zone-title-weight)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-file-upload-zone-title-weight",
             "component": "ui-file-upload",
             "entryPoint": "@4sh/ui-kit/forms/ui-file-upload",
             "descriptionSource": "scss"
@@ -8570,6 +9551,28 @@
     }
   },
   "form-field": {
+    "font-family": {
+      "$value": "{typography.fontFamily.base}",
+      "$type": "string",
+      "$description": "Famille typographique du texte saisi dans un champ.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-form-field-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-form-field-font-family",
+          "component": "ui-config",
+          "entryPoint": "@4sh/ui-kit/styles",
+          "descriptionSource": "scss"
+        }
+      }
+    },
     "gap": {
       "$value": "{metrics.units.sm}",
       "$type": "dimension",
@@ -8772,6 +9775,28 @@
     }
   },
   "helper": {
+    "font-family": {
+      "$value": "{typography.fontFamily.base}",
+      "$type": "string",
+      "$description": "Famille typographique du composant.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-helper-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-helper-font-family",
+          "component": "ui-helper",
+          "entryPoint": "@4sh/ui-kit/informative/ui-helper",
+          "descriptionSource": "scss"
+        }
+      }
+    },
     "font-size": {
       "$value": "{responsive.size.typography.text.default}",
       "$type": "dimension",
@@ -8832,6 +9857,29 @@
         },
         "com.4sh.ui-kit": {
           "cssVar": "--ui-helper-gap",
+          "component": "ui-helper",
+          "entryPoint": "@4sh/ui-kit/informative/ui-helper",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "weight": {
+      "$value": "{typography.weight.regular}",
+      "$type": "string",
+      "$description": "Graisse du texte.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_WEIGHT",
+            "FONT_STYLE"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-helper-weight)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-helper-weight",
           "component": "ui-helper",
           "entryPoint": "@4sh/ui-kit/informative/ui-helper",
           "descriptionSource": "scss"
@@ -9022,6 +10070,28 @@
     }
   },
   "input": {
+    "font-family": {
+      "$value": "{typography.fontFamily.base}",
+      "$type": "string",
+      "$description": "Famille typographique de l'unité.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-input-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-input-font-family",
+          "component": "ui-input",
+          "entryPoint": "@4sh/ui-kit/forms/ui-input",
+          "descriptionSource": "scss"
+        }
+      }
+    },
     "font-size-small": {
       "$value": "{responsive.size.typography.text.md}",
       "$type": "dimension",
@@ -9226,6 +10296,28 @@
         }
       }
     },
+    "font-family": {
+      "$value": "{typography.fontFamily.base}",
+      "$type": "string",
+      "$description": "Famille typographique du composant.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-input-group-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-input-group-font-family",
+          "component": "ui-input-group-addon",
+          "entryPoint": "@4sh/ui-kit/forms/ui-input-group",
+          "descriptionSource": "scss"
+        }
+      }
+    },
     "overlap": {
       "$value": "{metrics.stroke.default}",
       "$type": "dimension",
@@ -9296,6 +10388,28 @@
     }
   },
   "input-number": {
+    "font-family": {
+      "$value": "{typography.fontFamily.base}",
+      "$type": "string",
+      "$description": "Famille typographique de l'unité.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-input-number-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-input-number-font-family",
+          "component": "ui-input-number",
+          "entryPoint": "@4sh/ui-kit/forms/ui-input-number",
+          "descriptionSource": "scss"
+        }
+      }
+    },
     "font-size-small": {
       "$value": "{responsive.size.typography.text.md}",
       "$type": "dimension",
@@ -9458,6 +10572,28 @@
         }
       }
     },
+    "font-family": {
+      "$value": "{typography.fontFamily.base}",
+      "$type": "string",
+      "$description": "Famille typographique du composant.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-input-otp-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-input-otp-font-family",
+          "component": "ui-input-otp",
+          "entryPoint": "@4sh/ui-kit/forms/ui-input-otp",
+          "descriptionSource": "scss"
+        }
+      }
+    },
     "font-size": {
       "$value": "{responsive.size.typography.text.default}",
       "$type": "dimension",
@@ -9589,6 +10725,29 @@
           "descriptionSource": "scss"
         }
       }
+    },
+    "weight": {
+      "$value": "{typography.weight.bold}",
+      "$type": "string",
+      "$description": "Graisse du texte.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_WEIGHT",
+            "FONT_STYLE"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-input-otp-weight)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-input-otp-weight",
+          "component": "ui-input-otp",
+          "entryPoint": "@4sh/ui-kit/forms/ui-input-otp",
+          "descriptionSource": "scss"
+        }
+      }
     }
   },
   "input-tags": {
@@ -9608,6 +10767,28 @@
         },
         "com.4sh.ui-kit": {
           "cssVar": "--ui-input-tags-focus-ring-width",
+          "component": "ui-input-tags",
+          "entryPoint": "@4sh/ui-kit/forms/ui-input-tags",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "font-family": {
+      "$value": "{typography.fontFamily.base}",
+      "$type": "string",
+      "$description": "Famille typographique du composant.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-input-tags-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-input-tags-font-family",
           "component": "ui-input-tags",
           "entryPoint": "@4sh/ui-kit/forms/ui-input-tags",
           "descriptionSource": "scss"
@@ -10065,6 +11246,29 @@
           }
         }
       }
+    },
+    "weight": {
+      "$value": "{typography.weight.bold}",
+      "$type": "string",
+      "$description": "Graisse du texte.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_WEIGHT",
+            "FONT_STYLE"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-input-tags-weight)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-input-tags-weight",
+          "component": "ui-input-tags",
+          "entryPoint": "@4sh/ui-kit/forms/ui-input-tags",
+          "descriptionSource": "scss"
+        }
+      }
     }
   },
   "knob": {
@@ -10243,6 +11447,29 @@
           "descriptionSource": "scss"
         }
       }
+    },
+    "weight": {
+      "$value": "{typography.weight.bold}",
+      "$type": "string",
+      "$description": "Graisse du texte.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_WEIGHT",
+            "FONT_STYLE"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-knob-weight)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-knob-weight",
+          "component": "ui-knob",
+          "entryPoint": "@4sh/ui-kit/forms/ui-knob",
+          "descriptionSource": "scss"
+        }
+      }
     }
   },
   "label": {
@@ -10267,6 +11494,28 @@
           "descriptionSource": "scss",
           "perInstance": true,
           "note": "2 défauts selon la variante rendue : en déclarer un seul écraserait les autres."
+        }
+      }
+    },
+    "font-family": {
+      "$value": "{typography.fontFamily.base}",
+      "$type": "string",
+      "$description": "Famille typographique du composant.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-label-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-label-font-family",
+          "component": "ui-label",
+          "entryPoint": "@4sh/ui-kit/forms/ui-label",
+          "descriptionSource": "scss"
         }
       }
     },
@@ -10335,6 +11584,29 @@
           "descriptionSource": "scss"
         }
       }
+    },
+    "weight": {
+      "$value": "{typography.weight.regular}",
+      "$type": "string",
+      "$description": "Graisse du texte.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_WEIGHT",
+            "FONT_STYLE"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-label-weight)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-label-weight",
+          "component": "ui-label",
+          "entryPoint": "@4sh/ui-kit/forms/ui-label",
+          "descriptionSource": "scss"
+        }
+      }
     }
   },
   "link": {
@@ -10354,6 +11626,28 @@
         },
         "com.4sh.ui-kit": {
           "cssVar": "--ui-link-focus-ring-width",
+          "component": "ui-link",
+          "entryPoint": "@4sh/ui-kit/actions/ui-link",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "font-family": {
+      "$value": "{typography.fontFamily.base}",
+      "$type": "string",
+      "$description": "Famille typographique du composant.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-link-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-link-font-family",
           "component": "ui-link",
           "entryPoint": "@4sh/ui-kit/actions/ui-link",
           "descriptionSource": "scss"
@@ -10471,9 +11765,57 @@
           }
         }
       }
+    },
+    "weight": {
+      "$value": "{typography.weight.bold}",
+      "$type": "string",
+      "$description": "Graisse du texte.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_WEIGHT",
+            "FONT_STYLE"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-link-weight)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-link-weight",
+          "component": "ui-link",
+          "entryPoint": "@4sh/ui-kit/actions/ui-link",
+          "descriptionSource": "scss"
+        }
+      }
     }
   },
   "menu": {
+    "action": {
+      "weight": {
+        "$value": "{typography.weight.regular}",
+        "$type": "string",
+        "$description": "Graisse de l'action.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "STRING",
+            "scopes": [
+              "FONT_WEIGHT",
+              "FONT_STYLE"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-menu-action-weight)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-menu-action-weight",
+            "component": "ui-menu",
+            "entryPoint": "@4sh/ui-kit/navigation/ui-menu",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
     "focus-ring-width": {
       "$value": "{metrics.units.2xs}",
       "$type": "dimension",
@@ -10490,6 +11832,28 @@
         },
         "com.4sh.ui-kit": {
           "cssVar": "--ui-menu-focus-ring-width",
+          "component": "ui-menu",
+          "entryPoint": "@4sh/ui-kit/navigation/ui-menu",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "font-family": {
+      "$value": "{typography.fontFamily.base}",
+      "$type": "string",
+      "$description": "Famille typographique de l'action.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-menu-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-menu-font-family",
           "component": "ui-menu",
           "entryPoint": "@4sh/ui-kit/navigation/ui-menu",
           "descriptionSource": "scss"
@@ -10650,6 +12014,29 @@
             "component": "ui-menu",
             "entryPoint": "@4sh/ui-kit/navigation/ui-menu",
             "descriptionSource": "derived"
+          }
+        }
+      },
+      "weight": {
+        "$value": "{typography.weight.bold}",
+        "$type": "string",
+        "$description": "Graisse de l'en-tête.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "STRING",
+            "scopes": [
+              "FONT_WEIGHT",
+              "FONT_STYLE"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-menu-header-weight)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-menu-header-weight",
+            "component": "ui-menu",
+            "entryPoint": "@4sh/ui-kit/navigation/ui-menu",
+            "descriptionSource": "scss"
           }
         }
       }
@@ -10928,6 +12315,28 @@
         }
       }
     },
+    "font-family": {
+      "$value": "{typography.fontFamily.base}",
+      "$type": "string",
+      "$description": "Famille typographique du composant.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-modal-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-modal-font-family",
+          "component": "ui-modal",
+          "entryPoint": "@4sh/ui-kit/layout/ui-modal",
+          "descriptionSource": "scss"
+        }
+      }
+    },
     "header": {
       "gap": {
         "$value": "{metrics.units.sm}",
@@ -11044,9 +12453,78 @@
           "descriptionSource": "scss"
         }
       }
+    },
+    "title": {
+      "font-family": {
+        "$value": "{typography.fontFamily.title}",
+        "$type": "string",
+        "$description": "Famille typographique du titre.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "STRING",
+            "scopes": [
+              "FONT_FAMILY"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-modal-title-font-family)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-modal-title-font-family",
+            "component": "ui-modal",
+            "entryPoint": "@4sh/ui-kit/layout/ui-modal",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "weight": {
+      "$value": "{typography.weight.bold}",
+      "$type": "string",
+      "$description": "Graisse du titre.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_WEIGHT",
+            "FONT_STYLE"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-modal-weight)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-modal-weight",
+          "component": "ui-modal",
+          "entryPoint": "@4sh/ui-kit/layout/ui-modal",
+          "descriptionSource": "scss"
+        }
+      }
     }
   },
   "nudger": {
+    "font-family": {
+      "$value": "{typography.fontFamily.title}",
+      "$type": "string",
+      "$description": "Famille typographique de la valeur.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-nudger-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-nudger-font-family",
+          "component": "ui-nudger",
+          "entryPoint": "@4sh/ui-kit/forms/ui-nudger",
+          "descriptionSource": "scss"
+        }
+      }
+    },
     "gap": {
       "$value": "{metrics.units.default}",
       "$type": "dimension",
@@ -11158,9 +12636,54 @@
           }
         }
       }
+    },
+    "weight": {
+      "$value": "{typography.weight.bold}",
+      "$type": "string",
+      "$description": "Graisse de la valeur.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_WEIGHT",
+            "FONT_STYLE"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-nudger-weight)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-nudger-weight",
+          "component": "ui-nudger",
+          "entryPoint": "@4sh/ui-kit/forms/ui-nudger",
+          "descriptionSource": "scss"
+        }
+      }
     }
   },
   "overlay-panel": {
+    "font-family": {
+      "$value": "{typography.fontFamily.base}",
+      "$type": "string",
+      "$description": "Famille typographique du contenu des panneaux flottants.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-overlay-panel-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-overlay-panel-font-family",
+          "component": "ui-config",
+          "entryPoint": "@4sh/ui-kit/styles",
+          "descriptionSource": "scss"
+        }
+      }
+    },
     "padding": {
       "$value": "{metrics.units.sm}",
       "$type": "dimension",
@@ -11398,6 +12921,28 @@
         }
       }
     },
+    "font-family": {
+      "$value": "{typography.fontFamily.base}",
+      "$type": "string",
+      "$description": "Famille typographique du composant.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-paginator-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-paginator-font-family",
+          "component": "ui-paginator",
+          "entryPoint": "@4sh/ui-kit/table/ui-paginator",
+          "descriptionSource": "scss"
+        }
+      }
+    },
     "numbers": {
       "gap": {
         "$value": "{metrics.units.sm}",
@@ -11419,6 +12964,29 @@
             "entryPoint": "@4sh/ui-kit/table/ui-paginator",
             "descriptionSource": "scss"
           }
+        }
+      }
+    },
+    "weight": {
+      "$value": "{typography.weight.bold}",
+      "$type": "string",
+      "$description": "Graisse du texte.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_WEIGHT",
+            "FONT_STYLE"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-paginator-weight)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-paginator-weight",
+          "component": "ui-paginator",
+          "entryPoint": "@4sh/ui-kit/table/ui-paginator",
+          "descriptionSource": "scss"
         }
       }
     }
@@ -11494,6 +13062,53 @@
     }
   },
   "progress-bar": {
+    "font-family": {
+      "$value": "{typography.fontFamily.base}",
+      "$type": "string",
+      "$description": "Famille typographique du libellé.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-progress-bar-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-progress-bar-font-family",
+          "component": "ui-progress-bar",
+          "entryPoint": "@4sh/ui-kit/informative/ui-progress-bar",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "label": {
+      "weight": {
+        "$value": "{typography.weight.regular}",
+        "$type": "string",
+        "$description": "Graisse du libellé.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "STRING",
+            "scopes": [
+              "FONT_WEIGHT",
+              "FONT_STYLE"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-progress-bar-label-weight)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-progress-bar-label-weight",
+            "component": "ui-progress-bar",
+            "entryPoint": "@4sh/ui-kit/informative/ui-progress-bar",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
     "track": {
       "height": {
         "$value": "8px",
@@ -11580,6 +13195,31 @@
             "component": "ui-progress-bar",
             "entryPoint": "@4sh/ui-kit/informative/ui-progress-bar",
             "descriptionSource": "derived"
+          }
+        }
+      }
+    },
+    "value-label": {
+      "weight": {
+        "$value": "{typography.weight.bold}",
+        "$type": "string",
+        "$description": "Graisse du libellé de valeur.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "STRING",
+            "scopes": [
+              "FONT_WEIGHT",
+              "FONT_STYLE"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-progress-bar-value-label-weight)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-progress-bar-value-label-weight",
+            "component": "ui-progress-bar",
+            "entryPoint": "@4sh/ui-kit/informative/ui-progress-bar",
+            "descriptionSource": "scss"
           }
         }
       }
@@ -11694,6 +13334,28 @@
         },
         "com.4sh.ui-kit": {
           "cssVar": "--ui-radio-focus-ring-width",
+          "component": "ui-radio",
+          "entryPoint": "@4sh/ui-kit/forms/ui-radio",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "font-family": {
+      "$value": "{typography.fontFamily.base}",
+      "$type": "string",
+      "$description": "Famille typographique du libellé.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-radio-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-radio-font-family",
           "component": "ui-radio",
           "entryPoint": "@4sh/ui-kit/forms/ui-radio",
           "descriptionSource": "scss"
@@ -12042,6 +13704,28 @@
         }
       }
     },
+    "font-family": {
+      "$value": "{typography.fontFamily.base}",
+      "$type": "string",
+      "$description": "Famille typographique du composant.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-read-only-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-read-only-font-family",
+          "component": "ui-read-only",
+          "entryPoint": "@4sh/ui-kit/informative/ui-read-only",
+          "descriptionSource": "scss"
+        }
+      }
+    },
     "font-size": {
       "$value": "{responsive.size.typography.text.default}",
       "$type": "dimension",
@@ -12109,6 +13793,29 @@
           }
         }
       }
+    },
+    "weight": {
+      "$value": "{typography.weight.regular}",
+      "$type": "string",
+      "$description": "Graisse de la valeur.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_WEIGHT",
+            "FONT_STYLE"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-read-only-weight)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-read-only-weight",
+          "component": "ui-read-only",
+          "entryPoint": "@4sh/ui-kit/informative/ui-read-only",
+          "descriptionSource": "scss"
+        }
+      }
     }
   },
   "segment-control": {
@@ -12128,6 +13835,28 @@
         },
         "com.4sh.ui-kit": {
           "cssVar": "--ui-segment-control-focus-ring-width",
+          "component": "ui-segment-control",
+          "entryPoint": "@4sh/ui-kit/forms/ui-segment-control",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "font-family": {
+      "$value": "{typography.fontFamily.base}",
+      "$type": "string",
+      "$description": "Famille typographique du composant.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-segment-control-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-segment-control-font-family",
           "component": "ui-segment-control",
           "entryPoint": "@4sh/ui-kit/forms/ui-segment-control",
           "descriptionSource": "scss"
@@ -12511,6 +14240,52 @@
           }
         }
       }
+    },
+    "weight": {
+      "$value": "{typography.weight.regular}",
+      "$type": "string",
+      "$description": "Graisse du texte.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_WEIGHT",
+            "FONT_STYLE"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-segment-control-weight)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-segment-control-weight",
+          "component": "ui-segment-control",
+          "entryPoint": "@4sh/ui-kit/forms/ui-segment-control",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "weight-selected": {
+      "$value": "{typography.weight.bold}",
+      "$type": "string",
+      "$description": "Graisse du texte.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_WEIGHT",
+            "FONT_STYLE"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-segment-control-weight-selected)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-segment-control-weight-selected",
+          "component": "ui-segment-control",
+          "entryPoint": "@4sh/ui-kit/forms/ui-segment-control",
+          "descriptionSource": "scss"
+        }
+      }
     }
   },
   "select": {
@@ -12758,6 +14533,28 @@
         },
         "com.4sh.ui-kit": {
           "cssVar": "--ui-select-focus-ring-width",
+          "component": "ui-select",
+          "entryPoint": "@4sh/ui-kit/forms/ui-select",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "font-family": {
+      "$value": "{typography.fontFamily.base}",
+      "$type": "string",
+      "$description": "Famille typographique du déclencheur.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-select-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-select-font-family",
           "component": "ui-select",
           "entryPoint": "@4sh/ui-kit/forms/ui-select",
           "descriptionSource": "scss"
@@ -13215,9 +15012,54 @@
           }
         }
       }
+    },
+    "weight": {
+      "$value": "{typography.weight.bold}",
+      "$type": "string",
+      "$description": "Graisse du texte.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_WEIGHT",
+            "FONT_STYLE"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-select-weight)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-select-weight",
+          "component": "ui-select",
+          "entryPoint": "@4sh/ui-kit/forms/ui-select",
+          "descriptionSource": "scss"
+        }
+      }
     }
   },
   "separator": {
+    "font-family": {
+      "$value": "{typography.fontFamily.base}",
+      "$type": "string",
+      "$description": "Famille typographique du libellé.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-separator-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-separator-font-family",
+          "component": "ui-separator",
+          "entryPoint": "@4sh/ui-kit/informative/ui-separator",
+          "descriptionSource": "scss"
+        }
+      }
+    },
     "font-size": {
       "$value": "{responsive.size.typography.text.default}",
       "$type": "dimension",
@@ -13330,6 +15172,31 @@
     }
   },
   "sidebar": {
+    "action": {
+      "weight": {
+        "$value": "{typography.weight.regular}",
+        "$type": "string",
+        "$description": "Graisse de l'action.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "STRING",
+            "scopes": [
+              "FONT_WEIGHT",
+              "FONT_STYLE"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-sidebar-action-weight)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-sidebar-action-weight",
+            "component": "ui-sidebar-menu",
+            "entryPoint": "@4sh/ui-kit/navigation/ui-sidebar",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
     "backdrop": {
       "background": {
         "$value": "{primitives.black.50}",
@@ -13395,6 +15262,28 @@
         },
         "com.4sh.ui-kit": {
           "cssVar": "--ui-sidebar-focus-ring-width",
+          "component": "ui-sidebar-menu",
+          "entryPoint": "@4sh/ui-kit/navigation/ui-sidebar",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "font-family": {
+      "$value": "{typography.fontFamily.base}",
+      "$type": "string",
+      "$description": "Famille typographique du composant.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-sidebar-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-sidebar-font-family",
           "component": "ui-sidebar-menu",
           "entryPoint": "@4sh/ui-kit/navigation/ui-sidebar",
           "descriptionSource": "scss"
@@ -13699,6 +15588,31 @@
         }
       }
     },
+    "section-header": {
+      "weight": {
+        "$value": "{typography.weight.bold}",
+        "$type": "string",
+        "$description": "Graisse de l'en-tête de section.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "STRING",
+            "scopes": [
+              "FONT_WEIGHT",
+              "FONT_STYLE"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-sidebar-section-header-weight)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-sidebar-section-header-weight",
+            "component": "ui-sidebar-menu",
+            "entryPoint": "@4sh/ui-kit/navigation/ui-sidebar",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
     "separator": {
       "width": {
         "$value": "{metrics.stroke.sm}",
@@ -13740,6 +15654,29 @@
         "com.4sh.ui-kit": {
           "cssVar": "--ui-sidebar-stroke-width",
           "component": "ui-sidebar",
+          "entryPoint": "@4sh/ui-kit/navigation/ui-sidebar",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "weight": {
+      "$value": "{typography.weight.bold}",
+      "$type": "string",
+      "$description": "Graisse du texte.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_WEIGHT",
+            "FONT_STYLE"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-sidebar-weight)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-sidebar-weight",
+          "component": "ui-sidebar-menu",
           "entryPoint": "@4sh/ui-kit/navigation/ui-sidebar",
           "descriptionSource": "scss"
         }
@@ -14411,6 +16348,28 @@
         }
       }
     },
+    "font-family": {
+      "$value": "{typography.fontFamily.base}",
+      "$type": "string",
+      "$description": "Famille typographique du libellé.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-spinner-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-spinner-font-family",
+          "component": "ui-spinner",
+          "entryPoint": "@4sh/ui-kit/informative/ui-spinner",
+          "descriptionSource": "scss"
+        }
+      }
+    },
     "font-size": {
       "$value": "{responsive.size.typography.text.md}",
       "$type": "dimension",
@@ -14498,6 +16457,29 @@
           "descriptionSource": "derived"
         }
       }
+    },
+    "weight": {
+      "$value": "{typography.weight.bold}",
+      "$type": "string",
+      "$description": "Graisse du libellé.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_WEIGHT",
+            "FONT_STYLE"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-spinner-weight)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-spinner-weight",
+          "component": "ui-spinner",
+          "entryPoint": "@4sh/ui-kit/informative/ui-spinner",
+          "descriptionSource": "scss"
+        }
+      }
     }
   },
   "stepper": {
@@ -14524,6 +16506,28 @@
       }
     },
     "marker": {
+      "font-family": {
+        "$value": "{typography.fontFamily.base}",
+        "$type": "string",
+        "$description": "Famille typographique du marqueur.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "STRING",
+            "scopes": [
+              "FONT_FAMILY"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-stepper-marker-font-family)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-stepper-marker-font-family",
+            "component": "ui-step",
+            "entryPoint": "@4sh/ui-kit/navigation/ui-stepper",
+            "descriptionSource": "scss"
+          }
+        }
+      },
       "size": {
         "$value": "44px",
         "$type": "dimension",
@@ -14563,6 +16567,53 @@
           "com.4sh.ui-kit": {
             "cssVar": "--ui-stepper-marker-stroke-width",
             "component": "ui-step",
+            "entryPoint": "@4sh/ui-kit/navigation/ui-stepper",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "weight": {
+        "$value": "{typography.weight.bold}",
+        "$type": "string",
+        "$description": "Graisse du marqueur.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "STRING",
+            "scopes": [
+              "FONT_WEIGHT",
+              "FONT_STYLE"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-stepper-marker-weight)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-stepper-marker-weight",
+            "component": "ui-step",
+            "entryPoint": "@4sh/ui-kit/navigation/ui-stepper",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "panel": {
+      "font-family": {
+        "$value": "{typography.fontFamily.base}",
+        "$type": "string",
+        "$description": "Famille typographique du panneau.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "STRING",
+            "scopes": [
+              "FONT_FAMILY"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-stepper-panel-font-family)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-stepper-panel-font-family",
+            "component": "ui-step-panel",
             "entryPoint": "@4sh/ui-kit/navigation/ui-stepper",
             "descriptionSource": "scss"
           }
@@ -14610,6 +16661,53 @@
           },
           "com.4sh.ui-kit": {
             "cssVar": "--ui-stepper-separator-stroke-width",
+            "component": "ui-step",
+            "entryPoint": "@4sh/ui-kit/navigation/ui-stepper",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "title": {
+      "font-family": {
+        "$value": "{typography.fontFamily.title}",
+        "$type": "string",
+        "$description": "Famille typographique du titre.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "STRING",
+            "scopes": [
+              "FONT_FAMILY"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-stepper-title-font-family)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-stepper-title-font-family",
+            "component": "ui-step",
+            "entryPoint": "@4sh/ui-kit/navigation/ui-stepper",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "weight": {
+        "$value": "{typography.weight.bold}",
+        "$type": "string",
+        "$description": "Graisse du titre.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "STRING",
+            "scopes": [
+              "FONT_WEIGHT",
+              "FONT_STYLE"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-stepper-title-weight)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-stepper-title-weight",
             "component": "ui-step",
             "entryPoint": "@4sh/ui-kit/navigation/ui-stepper",
             "descriptionSource": "scss"
@@ -14897,6 +16995,28 @@
         }
       }
     },
+    "font-family": {
+      "$value": "{typography.fontFamily.base}",
+      "$type": "string",
+      "$description": "Famille typographique du composant.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-table-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-table-font-family",
+          "component": "ui-table",
+          "entryPoint": "@4sh/ui-kit/table/ui-table",
+          "descriptionSource": "scss"
+        }
+      }
+    },
     "head": {
       "padding-large": {
         "$value": "{metrics.units.default}",
@@ -14990,6 +17110,29 @@
           "descriptionSource": "scss"
         }
       }
+    },
+    "weight": {
+      "$value": "{typography.weight.bold}",
+      "$type": "string",
+      "$description": "Graisse de la légende.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_WEIGHT",
+            "FONT_STYLE"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-table-weight)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-table-weight",
+          "component": "ui-table",
+          "entryPoint": "@4sh/ui-kit/table/ui-table",
+          "descriptionSource": "scss"
+        }
+      }
     }
   },
   "tabs": {
@@ -15056,6 +17199,28 @@
         "com.4sh.ui-kit": {
           "cssVar": "--ui-tabs-focus-ring-width",
           "component": "ui-tab-list",
+          "entryPoint": "@4sh/ui-kit/navigation/ui-tabs",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "font-family": {
+      "$value": "{typography.fontFamily.base}",
+      "$type": "string",
+      "$description": "Famille typographique du composant.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-tabs-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-tabs-font-family",
+          "component": "ui-tab-panel",
           "entryPoint": "@4sh/ui-kit/navigation/ui-tabs",
           "descriptionSource": "scss"
         }
@@ -15176,9 +17341,54 @@
           }
         }
       }
+    },
+    "weight": {
+      "$value": "{typography.weight.bold}",
+      "$type": "string",
+      "$description": "Graisse du texte.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_WEIGHT",
+            "FONT_STYLE"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-tabs-weight)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-tabs-weight",
+          "component": "ui-tab",
+          "entryPoint": "@4sh/ui-kit/navigation/ui-tabs",
+          "descriptionSource": "scss"
+        }
+      }
     }
   },
   "tag": {
+    "font-family": {
+      "$value": "{typography.fontFamily.base}",
+      "$type": "string",
+      "$description": "Famille typographique du composant.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-tag-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-tag-font-family",
+          "component": "ui-tag",
+          "entryPoint": "@4sh/ui-kit/informative/ui-tag",
+          "descriptionSource": "scss"
+        }
+      }
+    },
     "font-size": {
       "$value": "{responsive.size.typography.text.default}",
       "$type": "dimension",
@@ -15398,6 +17608,29 @@
           "descriptionSource": "scss"
         }
       }
+    },
+    "weight": {
+      "$value": "{typography.weight.regular}",
+      "$type": "string",
+      "$description": "Graisse du texte.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_WEIGHT",
+            "FONT_STYLE"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-tag-weight)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-tag-weight",
+          "component": "ui-tag",
+          "entryPoint": "@4sh/ui-kit/informative/ui-tag",
+          "descriptionSource": "scss"
+        }
+      }
     }
   },
   "textarea": {
@@ -15444,6 +17677,28 @@
             "entryPoint": "@4sh/ui-kit/forms/ui-textarea",
             "descriptionSource": "scss"
           }
+        }
+      }
+    },
+    "font-family": {
+      "$value": "{typography.fontFamily.base}",
+      "$type": "string",
+      "$description": "Famille typographique du compteur.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-textarea-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-textarea-font-family",
+          "component": "ui-textarea",
+          "entryPoint": "@4sh/ui-kit/forms/ui-textarea",
+          "descriptionSource": "scss"
         }
       }
     },
@@ -15605,6 +17860,28 @@
         }
       }
     },
+    "font-family": {
+      "$value": "{typography.fontFamily.base}",
+      "$type": "string",
+      "$description": "Famille typographique du composant.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-toast-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-toast-font-family",
+          "component": "ui-toast",
+          "entryPoint": "@4sh/ui-kit/informative/ui-toast",
+          "descriptionSource": "scss"
+        }
+      }
+    },
     "stack": {
       "gap": {
         "$value": "{metrics.units.sm}",
@@ -15623,6 +17900,78 @@
           "com.4sh.ui-kit": {
             "cssVar": "--ui-toast-stack-gap",
             "component": "ui-toast-container",
+            "entryPoint": "@4sh/ui-kit/informative/ui-toast",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "text": {
+      "weight": {
+        "$value": "{typography.weight.light}",
+        "$type": "string",
+        "$description": "Graisse du texte.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "STRING",
+            "scopes": [
+              "FONT_WEIGHT",
+              "FONT_STYLE"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-toast-text-weight)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-toast-text-weight",
+            "component": "ui-toast",
+            "entryPoint": "@4sh/ui-kit/informative/ui-toast",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "title": {
+      "font-family": {
+        "$value": "{typography.fontFamily.title}",
+        "$type": "string",
+        "$description": "Famille typographique du titre.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "STRING",
+            "scopes": [
+              "FONT_FAMILY"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-toast-title-font-family)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-toast-title-font-family",
+            "component": "ui-toast",
+            "entryPoint": "@4sh/ui-kit/informative/ui-toast",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "weight": {
+        "$value": "{typography.weight.bold}",
+        "$type": "string",
+        "$description": "Graisse du titre.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "STRING",
+            "scopes": [
+              "FONT_WEIGHT",
+              "FONT_STYLE"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-toast-title-weight)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-toast-title-weight",
+            "component": "ui-toast",
             "entryPoint": "@4sh/ui-kit/informative/ui-toast",
             "descriptionSource": "scss"
           }
@@ -15783,6 +18132,28 @@
         },
         "com.4sh.ui-kit": {
           "cssVar": "--ui-toggle-block-focus-ring-width",
+          "component": "ui-toggle-block",
+          "entryPoint": "@4sh/ui-kit/forms/ui-toggle-block",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "font-family": {
+      "$value": "{typography.fontFamily.base}",
+      "$type": "string",
+      "$description": "Famille typographique du composant.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-toggle-block-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-toggle-block-font-family",
           "component": "ui-toggle-block",
           "entryPoint": "@4sh/ui-kit/forms/ui-toggle-block",
           "descriptionSource": "scss"
@@ -16054,6 +18425,29 @@
           "descriptionSource": "scss"
         }
       }
+    },
+    "weight": {
+      "$value": "{typography.weight.bold}",
+      "$type": "string",
+      "$description": "Graisse du libellé.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_WEIGHT",
+            "FONT_STYLE"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-toggle-block-weight)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-toggle-block-weight",
+          "component": "ui-toggle-block",
+          "entryPoint": "@4sh/ui-kit/forms/ui-toggle-block",
+          "descriptionSource": "scss"
+        }
+      }
     }
   },
   "toggle-button": {
@@ -16073,6 +18467,28 @@
         },
         "com.4sh.ui-kit": {
           "cssVar": "--ui-toggle-button-focus-ring-width",
+          "component": "ui-toggle-button",
+          "entryPoint": "@4sh/ui-kit/forms/ui-toggle-button",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "font-family": {
+      "$value": "{typography.fontFamily.base}",
+      "$type": "string",
+      "$description": "Famille typographique du composant.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-toggle-button-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-toggle-button-font-family",
           "component": "ui-toggle-button",
           "entryPoint": "@4sh/ui-kit/forms/ui-toggle-button",
           "descriptionSource": "scss"
@@ -16388,6 +18804,29 @@
           "descriptionSource": "scss"
         }
       }
+    },
+    "weight": {
+      "$value": "{typography.weight.bold}",
+      "$type": "string",
+      "$description": "Graisse du texte.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_WEIGHT",
+            "FONT_STYLE"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-toggle-button-weight)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-toggle-button-weight",
+          "component": "ui-toggle-button",
+          "entryPoint": "@4sh/ui-kit/forms/ui-toggle-button",
+          "descriptionSource": "scss"
+        }
+      }
     }
   },
   "toggle": {
@@ -16407,6 +18846,28 @@
         },
         "com.4sh.ui-kit": {
           "cssVar": "--ui-toggle-focus-ring-width",
+          "component": "ui-toggle",
+          "entryPoint": "@4sh/ui-kit/forms/ui-toggle",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "font-family": {
+      "$value": "{typography.fontFamily.base}",
+      "$type": "string",
+      "$description": "Famille typographique du libellé.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-toggle-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-toggle-font-family",
           "component": "ui-toggle",
           "entryPoint": "@4sh/ui-kit/forms/ui-toggle",
           "descriptionSource": "scss"
@@ -16819,6 +19280,28 @@
         }
       }
     },
+    "font-family": {
+      "$value": "{typography.fontFamily.base}",
+      "$type": "string",
+      "$description": "Famille typographique du composant.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-tooltip-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-tooltip-font-family",
+          "component": "ui-tooltip",
+          "entryPoint": "@4sh/ui-kit/informative/ui-tooltip",
+          "descriptionSource": "scss"
+        }
+      }
+    },
     "font-size": {
       "$value": "{responsive.size.typography.text.md}",
       "$type": "dimension",
@@ -16945,6 +19428,29 @@
         },
         "com.4sh.ui-kit": {
           "cssVar": "--ui-tooltip-stroke-width",
+          "component": "ui-tooltip",
+          "entryPoint": "@4sh/ui-kit/informative/ui-tooltip",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "weight": {
+      "$value": "{typography.weight.regular}",
+      "$type": "string",
+      "$description": "Graisse du texte.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_WEIGHT",
+            "FONT_STYLE"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-tooltip-weight)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-tooltip-weight",
           "component": "ui-tooltip",
           "entryPoint": "@4sh/ui-kit/informative/ui-tooltip",
           "descriptionSource": "scss"

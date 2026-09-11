@@ -58,8 +58,8 @@ $size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default
   box-sizing: border-box;
   border: $stroke-width solid transparent;
   border-radius: $radius;
-  font-family: var(--fontfamily-base);
-  font-weight: var(--weight-bold);
+  font-family: var(--ui-badge-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
+  font-weight: var(--ui-badge-weight, var(--weight-bold)); /// Graisse du texte.
   line-height: 1;
   white-space: nowrap;
 

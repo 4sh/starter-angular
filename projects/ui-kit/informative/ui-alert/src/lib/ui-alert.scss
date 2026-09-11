@@ -71,7 +71,7 @@ $focus-ring-offset: var(--ui-alert-focus-ring-offset, #{utils.rem-calc(2)});    
   border-radius: $radius;
   background-color: var(--informative-defaulthigh-surface-default);
   color: var(--informative-defaulthigh-content-default);
-  font-family: var(--fontfamily-base);
+  font-family: var(--ui-alert-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
 
   @include alert-size($size-default);
 
@@ -95,14 +95,14 @@ $focus-ring-offset: var(--ui-alert-focus-ring-offset, #{utils.rem-calc(2)});    
   }
 
   &-title {
-    font-family: var(--fontfamily-title);
-    font-weight: var(--weight-bold);
+    font-family: var(--ui-alert-title-font-family, var(--fontfamily-title)); /// Famille typographique du titre.
+    font-weight: var(--ui-alert-title-weight, var(--weight-bold)); /// Graisse du titre.
     line-height: 1.3;
     overflow-wrap: break-word;
   }
 
   &-text {
-    font-weight: var(--weight-light);
+    font-weight: var(--ui-alert-text-weight, var(--weight-light)); /// Graisse du texte.
     line-height: 1.3;
     overflow-wrap: break-word;
   }

@@ -43,7 +43,7 @@ $gap: var(--ui-input-otp-gap, var(--units-sm));                                 
   display: inline-flex;
   align-items: center;
   gap: $gap;
-  font-family: var(--fontfamily-base);
+  font-family: var(--ui-input-otp-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
 
   @include otp-size($size-default);
 }
@@ -72,7 +72,7 @@ $gap: var(--ui-input-otp-gap, var(--units-sm));                                 
   background-color: var(--form-high-surface-default);
   color: var(--form-high-content-default);
   font-family: inherit;
-  font-weight: var(--weight-bold);
+  font-weight: var(--ui-input-otp-weight, var(--weight-bold)); /// Graisse du texte.
   text-align: center;
   caret-color: var(--form-high-content-default);
   @include utils.control-transition(background-color, border-color, box-shadow);

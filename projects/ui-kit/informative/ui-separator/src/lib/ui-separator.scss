@@ -35,7 +35,7 @@ $font-size-small: var(--ui-separator-font-size-small, var(--size-typography-text
   &-label {
     flex: 0 0 auto;
     color: var(--global-text-default);
-    font-family: var(--fontfamily-base);
+    font-family: var(--ui-separator-font-family, var(--fontfamily-base)); /// Famille typographique du libellé.
     font-size: $font-size;
     line-height: 1;
     white-space: nowrap;

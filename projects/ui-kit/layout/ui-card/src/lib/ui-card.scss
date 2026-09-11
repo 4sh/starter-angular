@@ -47,7 +47,7 @@ $card-stroke-width: var(--ui-card-stroke-width, var(--stroke-sm)); /// Épaisseu
   border: $card-stroke-width solid transparent;
   border-radius: $card-radius;
   color: var(--global-text-default);
-  font-family: var(--fontfamily-base);
+  font-family: var(--ui-card-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
 
   // --- Sub-elements --------------------------------------------------
   // Full-bleed media: no padding, spans the full width, clipped by the root.
@@ -90,9 +90,9 @@ $card-stroke-width: var(--ui-card-stroke-width, var(--stroke-sm)); /// Épaisseu
     align-items: center;
     flex-wrap: wrap;
     gap: var(--units-sm);
-    font-family: var(--fontfamily-title);
+    font-family: var(--ui-card-title-font-family, var(--fontfamily-title)); /// Famille typographique du titre.
     font-size: var(--size-typography-title-default);
-    font-weight: var(--weight-bold);
+    font-weight: var(--ui-card-weight, var(--weight-bold)); /// Graisse du titre.
     line-height: 1.2;
     color: var(--global-text-default);
   }

@@ -29,8 +29,8 @@ $tooltip-font-size: var(--ui-tooltip-font-size, var(--size-typography-text-md));
   background-color: var(--informative-defaulthigh-surface-default);
   color: var(--informative-defaulthigh-content-default);
   box-shadow: var(--shadow-default-md);
-  font-family: var(--fontfamily-base);
-  font-weight: var(--weight-regular);
+  font-family: var(--ui-tooltip-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
+  font-weight: var(--ui-tooltip-weight, var(--weight-regular)); /// Graisse du texte.
   font-size: $tooltip-font-size;
   line-height: 1.4;
   overflow-wrap: break-word;

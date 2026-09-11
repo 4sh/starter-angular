@@ -64,7 +64,7 @@ $option-gap: var(--ui-segment-control-option-gap, var(--units-sm));        /// E
   // Border as an inset shadow → no layout box, so the thumb offset math
   // (offsetLeft/offsetTop) stays exact regardless of border width.
   box-shadow: inset 0 0 0 $stroke-width var(--global-border-default);
-  font-family: var(--fontfamily-base);
+  font-family: var(--ui-segment-control-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
   user-select: none;
   vertical-align: middle;
 
@@ -117,7 +117,7 @@ $option-gap: var(--ui-segment-control-option-gap, var(--units-sm));        /// E
     content: attr(data-label);
     height: 0;
     overflow: hidden;
-    font-weight: var(--weight-bold);
+    font-weight: var(--ui-segment-control-weight-selected, var(--weight-bold)); /// Graisse du texte.
     visibility: hidden;
     pointer-events: none;
     user-select: none;
@@ -138,7 +138,7 @@ $option-gap: var(--ui-segment-control-option-gap, var(--units-sm));        /// E
   background-color: transparent;
   color: var(--actions-low-content-default);
   font-family: inherit;
-  font-weight: var(--weight-regular);
+  font-weight: var(--ui-segment-control-weight, var(--weight-regular)); /// Graisse du texte.
   line-height: 1.2;
   white-space: nowrap;
   cursor: pointer;
@@ -160,7 +160,7 @@ $option-gap: var(--ui-segment-control-option-gap, var(--units-sm));        /// E
 
   &._selected {
     color: var(--actions-high-content-default);
-    font-weight: var(--weight-bold);
+    font-weight: var(--ui-segment-control-weight-selected, var(--weight-bold)); /// Graisse du texte.
 
     &:focus-visible {
       box-shadow: 0 0 0 $focus-ring-width var(--actions-high-stroke-focused);

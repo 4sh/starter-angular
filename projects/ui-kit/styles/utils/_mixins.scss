@@ -102,7 +102,7 @@
   border-radius: inherit;
   background: transparent;
   outline: none;
-  font-family: var(--fontfamily-base);
+  font-family: ui-config.$form-field-font-family;
   font-size: var(--size-typography-text-default);
   color: var(--form-high-content-default);
 

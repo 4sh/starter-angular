@@ -74,7 +74,7 @@ $size-edge: var(--ui-drawer-size-edge, #{utils.rem-calc(160)});                 
   background-color: var(--global-background-default);
   color: var(--global-text-default);
   box-shadow: var(--shadow-default-lg); // floats above the page → strong elevation
-  font-family: var(--fontfamily-base);
+  font-family: var(--ui-drawer-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
   outline: none;
 
   // --- Size & border side (from the parent anchor) ------------------
@@ -124,9 +124,9 @@ $size-edge: var(--ui-drawer-size-edge, #{utils.rem-calc(160)});                 
   &-title {
     flex: 1 1 auto;
     min-width: 0;
-    font-family: var(--fontfamily-title);
+    font-family: var(--ui-drawer-title-font-family, var(--fontfamily-title)); /// Famille typographique du titre.
     font-size: var(--size-typography-title-default);
-    font-weight: var(--weight-bold);
+    font-weight: var(--ui-drawer-weight, var(--weight-bold)); /// Graisse du titre.
     line-height: 1.3;
     overflow-wrap: break-word;
   }

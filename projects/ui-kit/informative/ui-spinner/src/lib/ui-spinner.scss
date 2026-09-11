@@ -88,8 +88,8 @@ $size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default
   // --- Label ---------------------------------------------------------
   &-label {
     color: var(--global-text-default);
-    font-family: var(--fontfamily-base);
-    font-weight: var(--weight-bold);
+    font-family: var(--ui-spinner-font-family, var(--fontfamily-base)); /// Famille typographique du libellé.
+    font-weight: var(--ui-spinner-weight, var(--weight-bold)); /// Graisse du libellé.
     font-size: map.get($size-default, font-size);
     line-height: 1.2;
     white-space: nowrap;

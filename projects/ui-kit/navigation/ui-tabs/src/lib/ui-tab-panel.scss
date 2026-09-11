@@ -12,7 +12,7 @@
   display: block;
   padding: var(--units-default) 0;
   color: var(--global-text-default);
-  font-family: var(--fontfamily-base);
+  font-family: var(--ui-tabs-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
   font-size: var(--size-typography-text-default);
   line-height: 1.5;
   outline: none;

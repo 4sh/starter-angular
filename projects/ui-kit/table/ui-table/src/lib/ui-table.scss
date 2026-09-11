@@ -46,7 +46,7 @@ ui-table {
 
 .ui-table {
   // --- Base ----------------------------------------------------------
-  font-family: var(--fontfamily-base);
+  font-family: var(--ui-table-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
   font-size: var(--size-typography-text-default);
   color: var(--table-body-content-odd);
 
@@ -83,7 +83,7 @@ ui-table {
 
   &-caption {
     padding: var(--units-md) var(--units-default);
-    font-weight: var(--weight-bold);
+    font-weight: var(--ui-table-weight, var(--weight-bold)); /// Graisse de la légende.
   }
 
   // --- Head ------------------------------------------------------------
@@ -93,7 +93,7 @@ ui-table {
     color: var(--table-head-content-default);
     border-bottom: $stroke-width solid var(--table-head-stroke-default);
     font-size: var(--size-typography-text-md);
-    font-weight: var(--weight-bold);
+    font-weight: var(--ui-table-weight, var(--weight-bold)); /// Graisse de l'en-tête de tableau.
     text-align: left;
     white-space: nowrap;
   }
@@ -178,7 +178,7 @@ ui-table {
     background-color: var(--table-footer-surface-default);
     color: var(--table-footer-content-default);
     border-top: $stroke-width solid var(--table-footer-stroke-default);
-    font-weight: var(--weight-bold);
+    font-weight: var(--ui-table-weight, var(--weight-bold)); /// Graisse du pied de tableau.
     text-align: left;
   }
 
@@ -265,7 +265,7 @@ ui-table {
       position: sticky;
       top: var(--ui-table-frozen-top, 0);
       z-index: 1;
-      font-weight: var(--weight-bold);
+      font-weight: var(--ui-table-weight, var(--weight-bold)); /// Graisse du texte.
     }
   }
 

@@ -34,8 +34,8 @@ $gap: var(--ui-nudger-gap, var(--units-default)); /// Espacement entre les bouto
   // --- Value display -------------------------------------------------
   &-value {
     min-width: map.get($size-default, min-width);
-    font-family: var(--fontfamily-title);
-    font-weight: var(--weight-bold);
+    font-family: var(--ui-nudger-font-family, var(--fontfamily-title)); /// Famille typographique de la valeur.
+    font-weight: var(--ui-nudger-weight, var(--weight-bold)); /// Graisse de la valeur.
     font-size: map.get($size-default, font-size);
     font-variant-numeric: tabular-nums;
     line-height: 1.2;

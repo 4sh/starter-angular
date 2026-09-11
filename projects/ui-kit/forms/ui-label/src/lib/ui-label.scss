@@ -15,8 +15,8 @@ $font-size-small: var(--ui-label-font-size-small, var(--size-typography-text-sm)
   gap: $gap;
   max-width: 100%;
   min-width: 0;
-  font-family: var(--fontfamily-base);
-  font-weight: var(--weight-regular);
+  font-family: var(--ui-label-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
+  font-weight: var(--ui-label-weight, var(--weight-regular)); /// Graisse du texte.
   font-size: $font-size;
   color: var(--ui-label-color, var(--form-high-content-default)); /// Couleur du texte, pilotable par un composant de formulaire parent (hover, disabled…).
   cursor: inherit;

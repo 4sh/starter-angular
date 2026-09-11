@@ -75,8 +75,8 @@ $indeterminate-duration: var(--ui-progress-bar-indeterminate-duration, 1.6s); //
   &-label {
     flex: 0 0 auto;
     color: var(--global-text-default);
-    font-family: var(--fontfamily-base);
-    font-weight: var(--weight-regular);
+    font-family: var(--ui-progress-bar-font-family, var(--fontfamily-base)); /// Famille typographique du libellé.
+    font-weight: var(--ui-progress-bar-label-weight, var(--weight-regular)); /// Graisse du libellé.
     font-size: var(--size-typography-text-default);
     line-height: 1.2;
     white-space: nowrap;
@@ -107,8 +107,8 @@ $indeterminate-duration: var(--ui-progress-bar-indeterminate-duration, 1.6s); //
   &-value-label {
     padding-inline: var(--units-sm);
     color: var(--informative-highlighthigh-content-default);
-    font-family: var(--fontfamily-base);
-    font-weight: var(--weight-bold);
+    font-family: var(--ui-progress-bar-font-family, var(--fontfamily-base)); /// Famille typographique du libellé de valeur.
+    font-weight: var(--ui-progress-bar-value-label-weight, var(--weight-bold)); /// Graisse du libellé de valeur.
     font-size: var(--size-typography-text-md);
     line-height: 1.2;
     white-space: nowrap;

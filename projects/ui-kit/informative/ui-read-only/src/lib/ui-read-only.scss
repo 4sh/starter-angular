@@ -29,7 +29,7 @@ $field-height-small: var(--ui-read-only-field-height-small, #{utils.$form-field-
 
 .ui-read-only {
   margin: 0; // reset native <dl> margin
-  font-family: var(--fontfamily-base);
+  font-family: var(--ui-read-only-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
 
   &:not(._grid) { display: flex; }
 
@@ -58,7 +58,7 @@ $field-height-small: var(--ui-read-only-field-height-small, #{utils.$form-field-
 
   &-value {
     font-size: map.get($sizes, 'default');
-    font-weight: var(--weight-regular);
+    font-weight: var(--ui-read-only-weight, var(--weight-regular)); /// Graisse de la valeur.
     line-height: 1.3;
 
     &._fallback { color: var(--global-text-muted); }

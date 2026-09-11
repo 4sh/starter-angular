@@ -52,7 +52,7 @@ $icon-slot: var(--ui-sidebar-icon-slot-size, #{utils.rem-calc(20)});            
 .ui-sidebar-menu {
   display: block;
   box-sizing: border-box;
-  font-family: var(--fontfamily-base);
+  font-family: var(--ui-sidebar-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
 
   @include menu-size($size-default);
 
@@ -101,7 +101,7 @@ $icon-slot: var(--ui-sidebar-icon-slot-size, #{utils.rem-calc(20)});            
     align-items: center;
     gap: var(--units-sm);
     min-height: utils.rem-calc(28);
-    font-weight: var(--weight-bold);
+    font-weight: var(--ui-sidebar-section-header-weight, var(--weight-bold)); /// Graisse de l'en-tête de section.
     text-transform: uppercase;
     letter-spacing: 0.04em;
     user-select: none;
@@ -118,7 +118,7 @@ $icon-slot: var(--ui-sidebar-icon-slot-size, #{utils.rem-calc(20)});            
     border-radius: $item-radius;
     background: none;
     font-family: inherit;
-    font-weight: var(--weight-regular);
+    font-weight: var(--ui-sidebar-action-weight, var(--weight-regular)); /// Graisse de l'action.
     line-height: 1.2;
     text-align: left;
     text-decoration: none;
@@ -276,7 +276,7 @@ $icon-slot: var(--ui-sidebar-icon-slot-size, #{utils.rem-calc(20)});            
         &._active {
           background-color: var(--navigation-#{$lvl}-surface-active);
           color: var(--navigation-#{$lvl}-content-active);
-          font-weight: var(--weight-bold);
+          font-weight: var(--ui-sidebar-weight, var(--weight-bold)); /// Graisse du texte.
         }
 
         &:disabled {

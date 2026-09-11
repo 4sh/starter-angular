@@ -154,7 +154,7 @@ $focus-ring-width: var(--ui-autocomplete-focus-ring-width, #{utils.$form-focus-r
   .ui-autocomplete-header,
   .ui-autocomplete-footer {
     padding: $header-padding-y $header-padding-x;
-    font-family: var(--fontfamily-base);
+    font-family: var(--ui-autocomplete-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
     font-size: map.get($size-default, group-font-size);
     color: var(--form-high-content-default);
   }
@@ -191,7 +191,7 @@ $focus-ring-width: var(--ui-autocomplete-focus-ring-width, #{utils.$form-focus-r
     flex-shrink: 0;
     padding: 0 map.get($size-default, option-padding-x);
     border-radius: $option-radius;
-    font-family: var(--fontfamily-base);
+    font-family: var(--ui-autocomplete-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
     font-size: map.get($size-default, font-size);
     color: var(--form-high-content-default);
     cursor: pointer;
@@ -235,9 +235,9 @@ $focus-ring-width: var(--ui-autocomplete-focus-ring-width, #{utils.$form-focus-r
     height: map.get($size-default, group-height);
     flex-shrink: 0;
     padding: 0 map.get($size-default, option-padding-x);
-    font-family: var(--fontfamily-base);
+    font-family: var(--ui-autocomplete-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
     font-size: map.get($size-default, group-font-size);
-    font-weight: var(--weight-bold);
+    font-weight: var(--ui-autocomplete-weight, var(--weight-bold)); /// Graisse du texte.
     color: var(--form-low-content-default);
 
     &._small {
@@ -254,7 +254,7 @@ $focus-ring-width: var(--ui-autocomplete-focus-ring-width, #{utils.$form-focus-r
     box-sizing: border-box;
     min-height: map.get($size-default, option-height);
     padding: 0 map.get($size-default, option-padding-x);
-    font-family: var(--fontfamily-base);
+    font-family: var(--ui-autocomplete-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
     font-size: map.get($size-default, font-size);
     color: var(--form-low-content-default);
   }

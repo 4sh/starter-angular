@@ -110,8 +110,8 @@ $progress-color: var(--ui-file-upload-item-progress-color, var(--global-text-def
   }
 
   &-name {
-    font-family: var(--fontfamily-base);
-    font-weight: var(--weight-bold);
+    font-family: var(--ui-file-upload-font-family, var(--fontfamily-base)); /// Famille typographique du nom.
+    font-weight: var(--ui-file-upload-name-weight, var(--weight-bold)); /// Graisse du nom.
     line-height: 1.3;
     // Truncate long names on a single line.
     overflow: hidden;
@@ -120,8 +120,8 @@ $progress-color: var(--ui-file-upload-item-progress-color, var(--global-text-def
   }
 
   &-meta {
-    font-family: var(--fontfamily-base);
-    font-weight: var(--weight-light);
+    font-family: var(--ui-file-upload-font-family, var(--fontfamily-base)); /// Famille typographique des métadonnées.
+    font-weight: var(--ui-file-upload-meta-weight, var(--weight-light)); /// Graisse des métadonnées.
     line-height: 1.2;
     color: var(--form-high-content-default);
   }
