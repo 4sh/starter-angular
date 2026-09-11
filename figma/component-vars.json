@@ -10,8 +10,8 @@
         "Mode 1"
       ],
       "counts": {
-        "tokens": 727,
-        "alias": 576,
+        "tokens": 729,
+        "alias": 578,
         "literal": 151,
         "skipped": 62,
         "derivedDescriptions": 222
@@ -3295,6 +3295,28 @@
         }
       }
     },
+    "font-family": {
+      "$value": "{typography.fontFamily.base}",
+      "$type": "string",
+      "$description": "Famille typographique du libellé.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_FAMILY"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-button-font-family)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-button-font-family",
+          "component": "ui-button",
+          "entryPoint": "@4sh/ui-kit/actions/ui-button",
+          "descriptionSource": "scss"
+        }
+      }
+    },
     "font-size": {
       "$value": "{responsive.size.typography.text.default}",
       "$type": "dimension",
@@ -3579,6 +3601,29 @@
         },
         "com.4sh.ui-kit": {
           "cssVar": "--ui-button-stroke-width",
+          "component": "ui-button",
+          "entryPoint": "@4sh/ui-kit/actions/ui-button",
+          "descriptionSource": "scss"
+        }
+      }
+    },
+    "weight": {
+      "$value": "{typography.weight.bold}",
+      "$type": "string",
+      "$description": "Graisse du libellé.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "STRING",
+          "scopes": [
+            "FONT_WEIGHT",
+            "FONT_STYLE"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-button-weight)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-button-weight",
           "component": "ui-button",
           "entryPoint": "@4sh/ui-kit/actions/ui-button",
           "descriptionSource": "scss"

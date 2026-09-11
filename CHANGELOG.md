@@ -51,6 +51,17 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ### Added
 
+- **`ui-button` : la typographie du libellé est maintenant reformable** (FSHSP-204). La famille
+  et la graisse étaient les deux seules propriétés du composant à lire leur token en dur, sans
+  passer par un hook — impossible de donner à un bouton une autre police que
+  `--fontfamily-base` sans surcharger la règle. Deux hooks s'ajoutent aux autres :
+  `--ui-button-font-family` et `--ui-button-weight`, avec les mêmes valeurs par défaut qu'avant.
+  Aucun rendu ne change tant qu'ils ne sont pas posés.
+  - `font-family` entre dans la table des propriétés de hook reconnues
+    (`scripts/component-vars.build.mjs`), avec le scope Figma `FONT_FAMILY` — sans quoi le nom
+    aurait été rejeté par la validation, et les autres hooks du composant auraient été signalés
+    en fausse collision Figma.
+
 - **`ui-bottom-sheet` : panneau glissant depuis le bas.** Une surface mobile-first pour du
   contenu contextuel, un formulaire prêt à taper ou une feuille d'actions, pilotée par le
   modèle two-way `visible`.
