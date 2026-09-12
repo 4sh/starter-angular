@@ -99,9 +99,9 @@ $size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default
   @each $lvl in $levels {
     @each $sub in $sublevels {
       &._#{$lvl}._#{$sub} {
-        background-color: var(--informative-#{$lvl}#{$sub}-surface-default);
-        color: var(--informative-#{$lvl}#{$sub}-content-default);
-        border-color: var(--informative-#{$lvl}#{$sub}-stroke-default);
+        background-color: var(--ui-badge-surface, var(--informative-#{$lvl}#{$sub}-surface-default)); /// Fond du composant : un seul nom pour les 10 jeux (niveau × sous-niveau), la portée se choisit avec les classes de modificateur.
+        color: var(--ui-badge-color, var(--informative-#{$lvl}#{$sub}-content-default));              /// Couleur du texte et des icônes.
+        border-color: var(--ui-badge-stroke, var(--informative-#{$lvl}#{$sub}-stroke-default));       /// Couleur de bordure.
       }
     }
   }

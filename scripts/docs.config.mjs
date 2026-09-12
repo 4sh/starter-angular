@@ -275,6 +275,7 @@ function configRegion(text) {
 // --- Résolution des bindings ------------------------------------------
 
 const VAR_RE = /^var\(\s*(--[\w-]+)\s*(?:,([\s\S]*))?\)$/;
+const INTERP_VAR_RE = /^var\(\s*(--[\w-]*#\{[^}]+\}[\w-]*(?:[\w-]*#\{[^}]+\}[\w-]*)*)\s*\)$/;
 const UTILS_REF_RE = /^utils\.(\$[\w-]+)$/;
 const LOCAL_REF_RE = /^(\$[\w-]+)$/;
 const LITERAL_RE = /^-?(\d+\.?\d*|\.\d+)(px|rem|em|ch|%|vh|vw|s|ms|deg)?$/;
@@ -332,6 +333,18 @@ function resolveBinding(rawValue, { shared, local }) {
   let inShared = local === shared;
 
   for (let guard = 0; guard < 10; guard++) {
+    const interp = value.match(INTERP_VAR_RE);
+    if (interp) {
+      return {
+        steps,
+        cssVar: null,
+        // `#{$set}` → `<set>` : lisible, et sans syntaxe de build dans une page publiée.
+        literal: interp[1].replace(/#\{\s*\$?([\w-]+)\s*\}/g, '<$1>'),
+        kind: 'interpolated',
+        raw: rawValue,
+      };
+    }
+
     const varMatch = value.match(VAR_RE);
     if (varMatch) {
       // `var(--hook, défaut)` : la custom property est souvent non définie (point

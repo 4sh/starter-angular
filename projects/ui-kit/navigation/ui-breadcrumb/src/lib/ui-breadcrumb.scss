@@ -70,7 +70,7 @@ $focus-ring-width: var(--ui-breadcrumb-focus-ring-width, #{utils.$action-focus-r
     font: inherit; // <button> does not inherit the list typography
     font-weight: $weight;
     line-height: $line-height;
-    color: var(--global-text-muted);
+    color: var(--ui-breadcrumb-link-color, var(--global-text-muted)); /// Couleur d'un maillon navigable.
     text-align: inherit;
     text-decoration: none;
     text-decoration-thickness: from-font;
@@ -80,18 +80,18 @@ $focus-ring-width: var(--ui-breadcrumb-focus-ring-width, #{utils.$action-focus-r
     @include utils.control-transition(color, text-decoration-color, box-shadow);
 
     &:hover {
-      color: var(--actions-low-content-hover);
+      color: var(--ui-breadcrumb-link-color-hover, var(--actions-low-content-hover)); /// Couleur d'un maillon au survol.
       text-decoration: underline;
     }
 
     &:focus-visible {
       outline: none;
-      color: var(--actions-low-content-focused);
+      color: var(--ui-breadcrumb-link-color-focus, var(--actions-low-content-focused)); /// Couleur d'un maillon au focus clavier ; elle teinte aussi l'anneau.
       text-decoration: underline;
-      box-shadow: 0 0 0 $focus-ring-width var(--actions-low-content-focused);
+      box-shadow: 0 0 0 $focus-ring-width var(--ui-breadcrumb-link-color-focus, var(--actions-low-content-focused));
     }
 
-    &:active { color: var(--actions-low-content-pressed); }
+    &:active { color: var(--ui-breadcrumb-link-color-pressed, var(--actions-low-content-pressed)); } /// Couleur d'un maillon enfoncé.
   }
 
   // Non-navigable crumb: current page (`._current`) or disabled item.
@@ -102,10 +102,10 @@ $focus-ring-width: var(--ui-breadcrumb-focus-ring-width, #{utils.$action-focus-r
     min-width: 0;
     font-weight: $weight;
     line-height: $line-height;
-    color: var(--global-text-default);
+    color: var(--ui-breadcrumb-text-color, var(--global-text-default)); /// Couleur d'un maillon non navigable (page courante).
 
     &._disabled {
-      color: var(--actions-low-content-disabled);
+      color: var(--ui-breadcrumb-text-color-disabled, var(--actions-low-content-disabled)); /// Couleur d'un maillon désactivé.
       cursor: not-allowed;
     }
   }
@@ -115,7 +115,7 @@ $focus-ring-width: var(--ui-breadcrumb-focus-ring-width, #{utils.$action-focus-r
   &-separator {
     display: inline-flex;
     align-items: center;
-    color: var(--global-text-default);
+    color: var(--ui-breadcrumb-separator-color, var(--global-text-default)); /// Couleur du séparateur entre maillons.
     user-select: none;
   }
 
@@ -128,19 +128,19 @@ $focus-ring-width: var(--ui-breadcrumb-focus-ring-width, #{utils.$action-focus-r
     border: none;
     background: none;
     line-height: 0;
-    color: var(--global-text-default);
+    color: var(--ui-breadcrumb-ellipsis-color, var(--global-text-default)); /// Couleur du bouton « … » de débordement.
     border-radius: $radius;
     cursor: pointer;
     @include utils.control-transition(color, box-shadow);
 
-    &:hover { color: var(--actions-low-content-hover); }
+    &:hover { color: var(--ui-breadcrumb-ellipsis-color-hover, var(--actions-low-content-hover)); } /// Couleur du bouton « … » au survol.
 
     &:focus-visible {
       outline: none;
-      color: var(--actions-low-content-focused);
-      box-shadow: 0 0 0 $focus-ring-width var(--actions-low-content-focused);
+      color: var(--ui-breadcrumb-ellipsis-color-focus, var(--actions-low-content-focused)); /// Couleur du bouton « … » au focus clavier ; elle teinte aussi l'anneau.
+      box-shadow: 0 0 0 $focus-ring-width var(--ui-breadcrumb-ellipsis-color-focus, var(--actions-low-content-focused));
     }
 
-    &:active { color: var(--actions-low-content-pressed); }
+    &:active { color: var(--ui-breadcrumb-ellipsis-color-pressed, var(--actions-low-content-pressed)); } /// Couleur du bouton « … » enfoncé.
   }
 }

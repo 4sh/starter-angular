@@ -61,7 +61,7 @@ $float-label-band-in: calc(#{$float-label-height} + #{$float-label-offset-y});  
 $float-label-band-over: calc(#{$float-label-height} + #{$gap});                     /// Bande réservée au libellé au-dessus de la boîte, variante `over`.
 
 .ui-field {
-  --_surface: var(--form-high-surface-default);
+  --_surface: var(--ui-field-surface, var(--form-high-surface-default)); /// Fond de la boîte de champ.
 
   display: flex;
   flex-direction: column;
@@ -76,9 +76,9 @@ $float-label-band-over: calc(#{$float-label-height} + #{$gap});                 
 
   // Border colour routed through local vars, overridden per level below.
   &-box {
-    --_stroke: var(--form-high-stroke-default);
-    --_stroke-hover: var(--form-high-stroke-hover);
-    --_stroke-focus: var(--form-high-stroke-focused);
+    --_stroke: var(--ui-field-stroke, var(--form-high-stroke-default));      /// Couleur de bordure de la boîte.
+    --_stroke-hover: var(--ui-field-stroke-hover, var(--form-high-stroke-hover));  /// Couleur de bordure au survol.
+    --_stroke-focus: var(--ui-field-stroke-focus, var(--form-high-stroke-focused)); /// Couleur de bordure au focus (elle teinte aussi l'anneau).
 
     display: flex;
     align-items: center;
@@ -104,20 +104,20 @@ $float-label-band-over: calc(#{$float-label-height} + #{$gap});                 
 
   // --- Levels (border palette) ---------------------------------------
   &._success &-box {
-    --_stroke: var(--form-success-stroke-default);
-    --_stroke-hover: var(--form-success-stroke-hover);
-    --_stroke-focus: var(--form-success-stroke-focused);
+    --_stroke: var(--ui-field-stroke, var(--form-success-stroke-default));
+    --_stroke-hover: var(--ui-field-stroke-hover, var(--form-success-stroke-hover));
+    --_stroke-focus: var(--ui-field-stroke-focus, var(--form-success-stroke-focused));
   }
   &._error &-box {
-    --_stroke: var(--form-error-stroke-default);
-    --_stroke-hover: var(--form-error-stroke-hover);
-    --_stroke-focus: var(--form-error-stroke-focused);
+    --_stroke: var(--ui-field-stroke, var(--form-error-stroke-default));
+    --_stroke-hover: var(--ui-field-stroke-hover, var(--form-error-stroke-hover));
+    --_stroke-focus: var(--ui-field-stroke-focus, var(--form-error-stroke-focused));
   }
 
   // --- States --------------------------------------------------------
-  &._disabled { --_surface: var(--form-high-surface-disabled); }
+  &._disabled { --_surface: var(--ui-field-surface-disabled, var(--form-high-surface-disabled)); } /// Fond de la boîte désactivée.
   &._disabled &-box {
-    --_stroke: var(--form-high-stroke-disabled);
+    --_stroke: var(--ui-field-stroke-disabled, var(--form-high-stroke-disabled)); /// Couleur de bordure de la boîte désactivée.
     cursor: not-allowed;
   }
   &._readonly &-box { cursor: default; }
@@ -146,9 +146,9 @@ $float-label-band-over: calc(#{$float-label-height} + #{$gap});                 
     --_row-center: calc(#{$height} / 2);
     --_float-scale: #{$float-label-scale};
     --_float-rest: var(--_row-center);
-    --_float-content: var(--form-high-content-default);
-    --_float-content-rest: var(--form-low-content-default);
-    --_float-content-focus: var(--form-high-content-focused);
+    --_float-content: var(--ui-field-float-label-color-raised, var(--form-high-content-default));   /// Couleur du libellé flottant en position haute.
+    --_float-content-rest: var(--ui-field-float-label-color, var(--form-low-content-default));      /// Couleur du libellé flottant au repos, où il tient le rôle du placeholder.
+    --_float-content-focus: var(--ui-field-float-label-color-focus, var(--form-high-content-focused)); /// Couleur du libellé flottant quand le champ a le focus.
 
     &._small {
       --_row-center: calc(#{$height-small} / 2);
@@ -157,17 +157,17 @@ $float-label-band-over: calc(#{$float-label-height} + #{$gap});                 
   }
 
   &._float._success {
-    --_float-content: var(--form-success-content-default);
-    --_float-content-focus: var(--form-success-content-focused);
+    --_float-content: var(--ui-field-float-label-color-raised, var(--form-success-content-default));
+    --_float-content-focus: var(--ui-field-float-label-color-focus, var(--form-success-content-focused));
   }
   &._float._error {
-    --_float-content: var(--form-error-content-default);
-    --_float-content-focus: var(--form-error-content-focused);
+    --_float-content: var(--ui-field-float-label-color-raised, var(--form-error-content-default));
+    --_float-content-focus: var(--ui-field-float-label-color-focus, var(--form-error-content-focused));
   }
   &._float._disabled {
-    --_float-content: var(--form-high-content-disabled);
-    --_float-content-rest: var(--form-high-content-disabled);
-    --_float-content-focus: var(--form-high-content-disabled);
+    --_float-content: var(--ui-field-float-label-color-disabled, var(--form-high-content-disabled));      /// Couleur du libellé flottant désactivé, dans les trois positions.
+    --_float-content-rest: var(--ui-field-float-label-color-disabled, var(--form-high-content-disabled));
+    --_float-content-focus: var(--ui-field-float-label-color-disabled, var(--form-high-content-disabled));
   }
 
   &-float-label {

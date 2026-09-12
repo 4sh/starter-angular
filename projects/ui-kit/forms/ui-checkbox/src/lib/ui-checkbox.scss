@@ -99,7 +99,7 @@ $label-gap: var(--ui-checkbox-label-gap, var(--units-2xs));                    /
   }
 
   &-required {
-    color: var(--informative-errorlow-content-default);
+    color: var(--ui-checkbox-required-color, var(--informative-errorlow-content-default)); /// Couleur du marqueur « requis ».
   }
 
   // --- States ---------------------------------------------------------
@@ -107,7 +107,7 @@ $label-gap: var(--ui-checkbox-label-gap, var(--units-2xs));                    /
     cursor: not-allowed;
 
     .ui-checkbox-label {
-      color: var(--form-high-content-disabled);
+      color: var(--ui-label-color-disabled, var(--form-high-content-disabled));
     }
   }
 

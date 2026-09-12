@@ -16,6 +16,48 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+### Added
+
+- **Toutes les couleurs des composants sont maintenant reformables** (FSHSP-206). FSHSP-204 puis
+  FSHSP-205 avaient ouvert la géométrie et la typographie ; la couleur restait dehors, avec
+  **9 lectures de jeton sur 531** derrière un hook (1,7 %). Les **453 hooks** ajoutés portent le
+  total de 876 à **1329** dans le fichier de thème à recopier, et de 25 à 128 hooks « hors réglage
+  global » (valeur dépendante de la variante, listés dans la section _Theming_ de chaque
+  composant). Strictement additif : chaque hook retombe sur le jeton actuel, aucun rendu ne bouge
+  tant qu'un projet ne pose rien.
+  - **Le jeu de jetons n'est jamais dans le nom du hook.** Un seul nom par (partie, rôle, état),
+    et c'est le consommateur qui choisit la portée avec les classes de modificateur, qui sont
+    déjà de l'API publique : `:root { --ui-button-surface: … }` repeint tous les boutons,
+    `.ui-button._success._outlined { … }` cette seule combinaison. `ui-button` produit 29 jeux de
+    jetons (`high`, `highoutlined`, `ondark-filled-high`…) pour 377 lectures : un hook par jeu en
+    aurait demandé 377 pour ce seul composant, le design scopé en demande 13, et atteint en plus
+    les combinaisons.
+  - **Chaque état retombe sur SON jeton**, jamais sur le hook de base :
+    `var(--ui-field-surface-disabled, var(--form-high-surface-disabled))`. Un projet qui ne pose
+    que la base garde donc un champ désactivé qui a l'air désactivé. Même règle pour les états de
+    validité (`_invalid`, `_error`) : ils ont leur propre suffixe, pour qu'une couleur de thème
+    posée sur `:root` n'efface pas silencieusement le signal d'erreur. Les **niveaux**
+    (`level="success"`, `_high`/`_low`…), eux, partagent le nom du rôle : ce sont des apparences
+    choisies exemplaire par exemplaire, et un projet qui veut une bordure d'erreur différente
+    change `form.error.stroke`.
+  - **Nommage** `--ui-<composant>[-<partie>]-<propriété>[-<état>]` : `surface`, `stroke`, `color`,
+    `shadow`, une seule propriété par hook. C'est `focus`, jamais `focused`, alors que le jeton
+    s'appelle `--form-high-stroke-focused` : l'asymétrie est voulue, un nom hors convention est
+    rejeté par `docs:config` et fait en plus remonter les hooks voisins en fausse collision Figma.
+  - **Hooks partagés** dans `_ui-config.scss` pour les mixins que plusieurs composants incluent :
+    `--ui-form-control-*` (11 noms, palette des cases à cocher et radios via `form-control-palette`)
+    et `--ui-form-field-*` (15 noms : texte saisi, placeholder, affixes, boutons d'action et
+    compteur de TOUS les champs, via `field-native-input` / `field-affix` / `field-action` /
+    `field-spinner`).
+  - **`--ui-label-color-disabled` ferme une fuite** : `._disabled` lisait `--ui-label-color`, le
+    canal que le composant parent pilote au survol, si bien qu'une valeur de thème posée sur
+    `:root` survivait à l'état désactivé. `--ui-label-marker-color` (marqueur « requis »), absent,
+    est ajouté. Le canal lui-même n'est pas renommé : ce serait une rupture.
+  - **Une exception assumée** : les 72 classes de palette de `ui-editor`
+    (`.ui-editor-color-red-500`, `.ui-editor-highlight-*`) continuent de lire les primitives
+    directement. La classe EST le choix de l'utilisateur dans le document, pas un rôle du
+    composant ; un projet qui veut une autre palette retouche les primitives.
+
 ### Fixed
 
 - **`ui-tooltip` : `autoHide=false` ne gardait pas l'infobulle ouverte.** L'option posait bien

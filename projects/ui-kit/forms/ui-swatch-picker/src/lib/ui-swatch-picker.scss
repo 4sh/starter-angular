@@ -21,7 +21,7 @@ $sizes: (
 );
 $size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default` de `$sizes`.
 
-$panel-surface: var(--global-background-default);                              /// Fond opaque du panneau (cohérent avec `ui-menu`).
+$panel-surface: var(--ui-swatch-picker-panel-surface, var(--global-background-default)); /// Fond opaque du panneau (cohérent avec `ui-menu`).
 $panel-padding: var(--ui-swatch-picker-panel-padding, #{utils.$overlay-panel-padding}); /// Gouttière interne du panneau (**partagée** avec les autres panneaux flottants).
 $swatch-radius: var(--ui-swatch-picker-swatch-radius, var(--radius-xs));        /// Rayon des coins d'une pastille.
 $focus-ring-width: var(--ui-swatch-picker-focus-ring-width, #{utils.$focus-ring-width}); /// Épaisseur de l'anneau de focus.
@@ -70,37 +70,37 @@ $stroke-width: var(--ui-swatch-picker-stroke-width, #{utils.$control-stroke-widt
     justify-content: center;
     box-sizing: border-box;
     padding: 0;
-    border: $stroke-width solid var(--global-border-default);
+    border: $stroke-width solid var(--ui-swatch-picker-swatch-stroke, var(--global-border-default)); /// Couleur du contour d'une pastille.
     border-radius: $swatch-radius;
     background-color: var(--ui-swatch-picker-swatch-color, transparent);
     cursor: pointer;
     @include utils.control-transition(box-shadow, border-color);
 
     &:hover:not(:disabled) {
-      border-color: var(--global-border-default-hover);
+      border-color: var(--ui-swatch-picker-swatch-stroke-hover, var(--global-border-default-hover)); /// Couleur du contour d'une pastille au survol.
     }
 
     &:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 $focus-ring-width var(--global-border-focus);
+      box-shadow: 0 0 0 $focus-ring-width var(--ui-swatch-picker-focus-ring-color, var(--global-border-focus)); /// Couleur de l'anneau de focus.
     }
 
     // Selected: a distinct ring (never opacity — must survive on every hue).
     &._selected {
-      box-shadow: inset 0 0 0 $selected-ring-width var(--form-high-stroke-checked);
+      box-shadow: inset 0 0 0 $selected-ring-width var(--ui-swatch-picker-selected-ring-color, var(--form-high-stroke-checked)); /// Couleur du liseré de sélection.
     }
 
     &:focus-visible._selected {
       box-shadow:
-        inset 0 0 0 $selected-ring-width var(--form-high-stroke-checked),
-        0 0 0 $focus-ring-width var(--global-border-focus);
+        inset 0 0 0 $selected-ring-width var(--ui-swatch-picker-selected-ring-color, var(--form-high-stroke-checked)),
+        0 0 0 $focus-ring-width var(--ui-swatch-picker-focus-ring-color, var(--global-border-focus));
     }
   }
 
   // "No color" swatch: transparent, diagonal-strike icon.
   &-swatch._clear {
     background-color: transparent;
-    color: var(--global-text-muted);
+    color: var(--ui-swatch-picker-clear-color, var(--global-text-muted)); /// Couleur de la pastille « aucune couleur ».
   }
 
   &-clear-icon {

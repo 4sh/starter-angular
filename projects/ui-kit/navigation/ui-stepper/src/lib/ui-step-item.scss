@@ -25,9 +25,9 @@ $rail-stroke: var(--ui-stepper-rail-stroke-width, var(--stroke-default)); /// É
   top: calc(#{$marker-size} + var(--units-xs));
   bottom: 0;
   width: $rail-stroke;
-  background-color: var(--global-border-default);
+  background-color: var(--ui-stepper-rail-surface, var(--global-border-default)); /// Couleur du rail vertical entre deux étapes.
 }
 
 :host._completed:not(._last)::before {
-  background-color: var(--navigation-high-stroke-default);
+  background-color: var(--ui-stepper-rail-surface-completed, var(--navigation-high-stroke-default)); /// Couleur du rail vertical d'une étape franchie.
 }

@@ -59,9 +59,9 @@ $gap: var(--ui-input-otp-gap, var(--units-sm));                                 
 
 // --- Cell -------------------------------------------------------------
 .ui-input-otp-cell {
-  --_stroke: var(--form-high-stroke-default);
-  --_stroke-hover: var(--form-high-stroke-hover);
-  --_stroke-focus: var(--form-high-stroke-focused);
+  --_stroke: var(--ui-input-otp-cell-stroke, var(--form-high-stroke-default));            /// Couleur de bordure d'une case.
+  --_stroke-hover: var(--ui-input-otp-cell-stroke-hover, var(--form-high-stroke-hover));  /// Couleur de bordure au survol.
+  --_stroke-focus: var(--ui-input-otp-cell-stroke-focus, var(--form-high-stroke-focused)); /// Couleur de bordure au focus ; elle teinte aussi l'anneau.
 
   box-sizing: border-box;
   min-inline-size: 0;
@@ -69,12 +69,12 @@ $gap: var(--ui-input-otp-gap, var(--units-sm));                                 
   padding: 0;
   border: $stroke-width solid var(--_stroke);
   border-radius: $radius;
-  background-color: var(--form-high-surface-default);
-  color: var(--form-high-content-default);
+  background-color: var(--ui-input-otp-cell-surface, var(--form-high-surface-default)); /// Fond d'une case.
+  color: var(--ui-input-otp-cell-color, var(--form-high-content-default));              /// Couleur du chiffre saisi.
   font-family: inherit;
   font-weight: var(--ui-input-otp-weight, var(--weight-bold)); /// Graisse du texte.
   text-align: center;
-  caret-color: var(--form-high-content-default);
+  caret-color: var(--ui-input-otp-cell-color, var(--form-high-content-default));
   @include utils.control-transition(background-color, border-color, box-shadow);
 
   &:hover:not(:disabled):not(:focus) {
@@ -89,9 +89,9 @@ $gap: var(--ui-input-otp-gap, var(--units-sm));                                 
   }
 
   &:disabled {
-    border-color: var(--form-high-stroke-disabled);
-    background-color: var(--form-high-surface-disabled);
-    color: var(--form-high-content-disabled);
+    border-color: var(--ui-input-otp-cell-stroke-disabled, var(--form-high-stroke-disabled)); /// Couleur de bordure d'une case désactivée.
+    background-color: var(--ui-input-otp-cell-surface-disabled, var(--form-high-surface-disabled)); /// Fond d'une case désactivée.
+    color: var(--ui-input-otp-cell-color-disabled, var(--form-high-content-disabled));        /// Couleur du chiffre d'une case désactivée.
     cursor: not-allowed;
   }
 }
@@ -103,7 +103,7 @@ $gap: var(--ui-input-otp-gap, var(--units-sm));                                 
 
 // --- Invalid ------------------------------------------
 :host._invalid .ui-input-otp-cell {
-  --_stroke: var(--form-error-stroke-default);
-  --_stroke-hover: var(--form-error-stroke-hover);
-  --_stroke-focus: var(--form-error-stroke-focused);
+  --_stroke: var(--ui-input-otp-cell-stroke-invalid, var(--form-error-stroke-default));             /// Couleur de bordure d'une case en erreur.
+  --_stroke-hover: var(--ui-input-otp-cell-stroke-hover-invalid, var(--form-error-stroke-hover));   /// Couleur de bordure d'une case en erreur, au survol.
+  --_stroke-focus: var(--ui-input-otp-cell-stroke-focus-invalid, var(--form-error-stroke-focused)); /// Couleur de bordure d'une case en erreur, au focus.
 }

@@ -23,31 +23,33 @@
 /// consumed by selection controls: --_surface, --_stroke, --_content, --_focus-ring
 /// (+ --ui-label-color). State selectors live here; re-include to swap palette.
 @mixin form-control-palette($palette, $control: '.ui-form-control-input') {
-  --_surface: var(--form-#{$palette}-surface-default);
-  --_stroke: var(--form-#{$palette}-stroke-default);
-  --_content: var(--form-#{$palette}-content-checked);
+  --_surface: var(--ui-form-control-surface, var(--form-#{$palette}-surface-default));
+  --_stroke: var(--ui-form-control-stroke, var(--form-#{$palette}-stroke-default));
+  --_content: var(--ui-form-control-marker-color, var(--form-#{$palette}-content-checked));
 
   &:hover:not(._disabled):not(._readonly) {
-    --_surface: var(--form-#{$palette}-surface-hover);
-    --_stroke: var(--form-#{$palette}-stroke-hover);
+    --_surface: var(--ui-form-control-surface-hover, var(--form-#{$palette}-surface-hover));
+    --_stroke: var(--ui-form-control-stroke-hover, var(--form-#{$palette}-stroke-hover));
     --ui-label-color: var(--form-#{$palette}-content-hover);
   }
 
   &._checked:not(._disabled),
   &._indeterminate:not(._disabled) {
-    --_surface: var(--form-#{$palette}-surface-checked);
-    --_stroke: var(--form-#{$palette}-stroke-checked);
+    --_surface: var(--ui-form-control-surface-checked, var(--form-#{$palette}-surface-checked));
+    --_stroke: var(--ui-form-control-stroke-checked, var(--form-#{$palette}-stroke-checked));
   }
 
   &:has(#{$control}:focus-visible) {
-    --_stroke: var(--form-#{$palette}-stroke-focused);
-    --_focus-ring: rgb(from var(--form-#{$palette}-stroke-focused) r g b / 50%);
+    --_stroke: var(--ui-form-control-stroke-focus, var(--form-#{$palette}-stroke-focused));
+    // Derived from the focus border, like `ui-field`'s ring: retuning the stroke
+    // carries the halo with it instead of letting the two drift apart.
+    --_focus-ring: rgb(from var(--ui-form-control-stroke-focus, var(--form-#{$palette}-stroke-focused)) r g b / 50%);
   }
 
   &._disabled {
-    --_surface: var(--form-#{$palette}-surface-disabled);
-    --_stroke: var(--form-#{$palette}-stroke-disabled);
-    --_content: var(--form-#{$palette}-content-disabled);
+    --_surface: var(--ui-form-control-surface-disabled, var(--form-#{$palette}-surface-disabled));
+    --_stroke: var(--ui-form-control-stroke-disabled, var(--form-#{$palette}-stroke-disabled));
+    --_content: var(--ui-form-control-marker-color-disabled, var(--form-#{$palette}-content-disabled));
   }
 }
 
@@ -104,7 +106,7 @@
   outline: none;
   font-family: ui-config.$form-field-font-family;
   font-size: var(--size-typography-text-default);
-  color: var(--form-high-content-default);
+  color: ui-config.$form-field-color;
 
   // `$inset: false` = nested in a wrapper that already carries both insets.
   @if $inset {
@@ -113,20 +115,20 @@
   }
 
   &::placeholder {
-    color: var(--form-low-content-default);
+    color: ui-config.$form-field-placeholder-color;
     opacity: 1;
   }
-  &:disabled { cursor: not-allowed; color: var(--form-high-content-disabled); }
+  &:disabled { cursor: not-allowed; color: ui-config.$form-field-color-disabled; }
 }
 
 /// Low-emphasis affix (decorative icon, unit text) sitting inside the box.
 /// Toggle `._disabled` on the element to dim it with the field.
 @mixin field-affix {
   flex-shrink: 0;
-  color: var(--form-low-content-default);
+  color: ui-config.$form-field-affix-color;
   @include field-inset-edges('margin');
 
-  &._disabled { color: var(--form-high-content-disabled); }
+  &._disabled { color: ui-config.$form-field-affix-color-disabled; }
 }
 
 /// Square, full-height, flush-right action button (password reveal, clear…).
@@ -142,25 +144,25 @@
   background: none;
   border-radius:  0 calc(#{ui-config.$form-field-radius} - #{ui-config.$form-field-stroke-width})
   calc(#{ui-config.$form-field-radius} - #{ui-config.$form-field-stroke-width}) 0;
-  color: var(--form-low-content-default);
+  color: ui-config.$form-field-action-color;
   cursor: pointer;
   @include control-transition(color, background-color);
 
   // Flush by design: no inset, the box has no padding to cancel.
 
   &:hover:not(:disabled) {
-    color: var(--form-high-content-hover);
-    background-color: var(--form-high-surface-hover);
+    color: ui-config.$form-field-action-color-hover;
+    background-color: ui-config.$form-field-action-surface-hover;
   }
   // Focus is a surface, never a border: the box already draws the field ring on
   // `:focus-within`, so an inset stroke here would nest a second outline inside
   // the field. The fill + `content-focused` say which control holds the focus.
   &:focus-visible {
     outline: none;
-    color: var(--form-high-content-focused);
-    background-color: var(--form-high-surface-focused);
+    color: ui-config.$form-field-action-color-focus;
+    background-color: ui-config.$form-field-action-surface-focus;
   }
-  &:disabled { cursor: not-allowed; color: var(--form-high-content-disabled); }
+  &:disabled { cursor: not-allowed; color: ui-config.$form-field-action-color-disabled; }
 }
 
 /// Vertical up/down spinner (number stepper), flush right + full height, split
@@ -171,7 +173,7 @@
   flex-shrink: 0;
   width: $width;
   // Flush by design: no inset, the box has no padding to cancel.
-  border-left: ui-config.$form-field-stroke-width solid var(--form-high-stroke-default);
+  border-left: ui-config.$form-field-stroke-width solid ui-config.$form-field-spinner-stroke;
   border-radius: 0 ui-config.$form-field-radius ui-config.$form-field-radius 0;
   overflow: hidden;
 
@@ -185,18 +187,18 @@
     border: none;
     background: none;
     line-height: 0;
-    color: var(--form-low-content-default);
+    color: ui-config.$form-field-spinner-color;
     cursor: pointer;
     @include control-transition(color, background-color);
 
     &:hover:not(:disabled) {
-      color: var(--form-high-content-hover);
-      background-color: var(--form-high-surface-hover);
+      color: ui-config.$form-field-spinner-color-hover;
+      background-color: ui-config.$form-field-spinner-surface-hover;
     }
-    &:disabled { cursor: not-allowed; color: var(--form-high-content-disabled); }
+    &:disabled { cursor: not-allowed; color: ui-config.$form-field-spinner-color-disabled; }
   }
 
   #{$btn} + #{$btn} {
-    border-top: ui-config.$form-field-stroke-width solid var(--form-high-stroke-default);
+    border-top: ui-config.$form-field-stroke-width solid ui-config.$form-field-spinner-stroke;
   }
 }

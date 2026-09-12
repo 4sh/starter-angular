@@ -42,7 +42,7 @@ $text-color: var(--ui-knob-text-color, var(--global-text-default));            /
 
   &:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 $focus-ring-width var(--actions-high-stroke-focused);
+    box-shadow: 0 0 0 $focus-ring-width var(--ui-knob-focus-ring-color, var(--actions-high-stroke-focused)); /// Couleur de l'anneau de focus.
   }
 
   // --- Dial ----------------------------------------------------------
@@ -101,11 +101,11 @@ $text-color: var(--ui-knob-text-color, var(--global-text-default));            /
 
   // --- Interaction ---------------------------------------------------
   &:hover .ui-knob-value {
-    stroke: var(--actions-high-surface-hover);
+    stroke: var(--ui-knob-value-color-hover, var(--actions-high-surface-hover)); /// Couleur de l'arc rempli au survol.
   }
 
   &:active .ui-knob-value {
-    stroke: var(--actions-high-surface-pressed);
+    stroke: var(--ui-knob-value-color-pressed, var(--actions-high-surface-pressed)); /// Couleur de l'arc rempli pendant le glissement.
   }
 
   // --- Read-only -----------------------------------------------------
@@ -124,11 +124,11 @@ $text-color: var(--ui-knob-text-color, var(--global-text-default));            /
 
     .ui-knob-value,
     &:hover .ui-knob-value {
-      stroke: var(--actions-high-surface-disabled);
+      stroke: var(--ui-knob-value-color-disabled, var(--actions-high-surface-disabled)); /// Couleur de l'arc rempli, composant désactivé.
     }
 
     .ui-knob-text {
-      color: var(--global-text-muted);
+      color: var(--ui-knob-text-color-disabled, var(--global-text-muted)); /// Couleur de la valeur centrale, composant désactivé.
     }
   }
 
@@ -137,15 +137,15 @@ $text-color: var(--ui-knob-text-color, var(--global-text-default));            /
   // token is the pale field background — see ui-rating / ui-slider).
   &._invalid {
     .ui-knob-value {
-      stroke: var(--form-error-content-default);
+      stroke: var(--ui-knob-value-color-invalid, var(--form-error-content-default)); /// Couleur de l'arc rempli en erreur.
     }
 
     &:hover .ui-knob-value {
-      stroke: var(--form-error-content-hover);
+      stroke: var(--ui-knob-value-color-hover-invalid, var(--form-error-content-hover)); /// Couleur de l'arc rempli en erreur, au survol.
     }
 
     &:focus-visible {
-      box-shadow: 0 0 0 $focus-ring-width var(--form-error-stroke-focused);
+      box-shadow: 0 0 0 $focus-ring-width var(--ui-knob-focus-ring-color-invalid, var(--form-error-stroke-focused)); /// Couleur de l'anneau de focus en erreur.
     }
   }
 }

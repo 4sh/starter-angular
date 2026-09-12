@@ -43,11 +43,11 @@ $count-font-size-small: var(--ui-textarea-count-font-size-small, var(--size-typo
     flex-shrink: 0;
     font-family: var(--ui-textarea-font-family, var(--fontfamily-base)); /// Famille typographique du compteur.
     font-size: $count-font-size;
-    color: var(--form-low-content-default);
+    color: var(--ui-textarea-count-color, var(--form-low-content-default)); /// Couleur du compteur de caractères.
     user-select: none;
 
     &._small { font-size: $count-font-size-small; }
-    &._over { color: var(--form-error-content-default); }
-    &._disabled { color: var(--form-high-content-disabled); }
+    &._over { color: var(--ui-textarea-count-color-over, var(--form-error-content-default)); }      /// Couleur du compteur une fois la limite dépassée.
+    &._disabled { color: var(--ui-textarea-count-color-disabled, var(--form-high-content-disabled)); } /// Couleur du compteur, champ désactivé.
   }
 }

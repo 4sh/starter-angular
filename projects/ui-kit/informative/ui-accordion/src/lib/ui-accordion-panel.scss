@@ -31,7 +31,7 @@ $focus-ring-width: var(--ui-accordion-focus-ring-width, #{utils.$action-focus-ri
     border: 0;
     border-radius: var(--radius-sm);
     background: none;
-    color: var(--informative-defaultlow-content-default);
+    color: var(--ui-accordion-header-color, var(--informative-defaultlow-content-default)); /// Couleur du libellé d'en-tête.
     font-family: var(--ui-accordion-font-family, var(--fontfamily-base)); /// Famille typographique de l'en-tête.
     text-align: left;
     cursor: pointer;
@@ -39,7 +39,7 @@ $focus-ring-width: var(--ui-accordion-focus-ring-width, #{utils.$action-focus-ri
 
     &:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 $focus-ring-width var(--navigation-high-stroke-focused);
+      box-shadow: 0 0 0 $focus-ring-width var(--ui-accordion-header-focus-ring-color, var(--navigation-high-stroke-focused)); /// Couleur de l'anneau de focus de l'en-tête.
     }
     &:disabled { cursor: not-allowed; }
   }
@@ -61,24 +61,24 @@ $focus-ring-width: var(--ui-accordion-focus-ring-width, #{utils.$action-focus-ri
     width: $control-size;
     height: $control-size;
     border-radius: var(--radius-default);
-    background-color: var(--navigation-high-surface-default);
-    color: var(--navigation-high-content-default);
+    background-color: var(--ui-accordion-control-surface, var(--navigation-high-surface-default)); /// Fond du bouton chevron.
+    color: var(--ui-accordion-control-color, var(--navigation-high-content-default));              /// Couleur du bouton chevron.
     @include utils.control-transition(background-color, color, box-shadow);
   }
 
   // Header states drive the control surface (single hit target = the header).
   &-header:hover:not(:disabled) &-header-control {
-    background-color: var(--navigation-high-surface-hover);
-    color: var(--navigation-high-content-hover);
+    background-color: var(--ui-accordion-control-surface-hover, var(--navigation-high-surface-hover)); /// Fond du chevron au survol de l'en-tête.
+    color: var(--ui-accordion-control-color-hover, var(--navigation-high-content-hover));              /// Couleur du chevron au survol de l'en-tête.
   }
   &-header:active:not(:disabled) &-header-control {
-    background-color: var(--navigation-high-surface-pressed);
-    color: var(--navigation-high-content-pressed);
+    background-color: var(--ui-accordion-control-surface-pressed, var(--navigation-high-surface-pressed)); /// Fond du chevron, en-tête enfoncé.
+    color: var(--ui-accordion-control-color-pressed, var(--navigation-high-content-pressed));              /// Couleur du chevron, en-tête enfoncé.
   }
   &-header:focus-visible &-header-control {
-    background-color: var(--navigation-high-surface-focused);
-    color: var(--navigation-high-content-focused);
-    box-shadow: inset 0 0 0 var(--stroke-default) var(--navigation-high-stroke-focused);
+    background-color: var(--ui-accordion-control-surface-focus, var(--navigation-high-surface-focused)); /// Fond du chevron au focus clavier.
+    color: var(--ui-accordion-control-color-focus, var(--navigation-high-content-focused));              /// Couleur du chevron au focus clavier.
+    box-shadow: inset 0 0 0 var(--stroke-default) var(--ui-accordion-control-stroke-focus, var(--navigation-high-stroke-focused)); /// Couleur du liseré intérieur du chevron au focus clavier.
   }
 
   // --- Divider -------------------------------------------------------
@@ -112,7 +112,7 @@ $focus-ring-width: var(--ui-accordion-focus-ring-width, #{utils.$action-focus-ri
 
   &-content-body {
     padding-block: var(--units-default);
-    color: var(--informative-defaultlow-content-default);
+    color: var(--ui-accordion-content-color, var(--informative-defaultlow-content-default)); /// Couleur du corps du panneau.
     font-family: var(--ui-accordion-font-family, var(--fontfamily-base)); /// Famille typographique du corps.
     font-size: var(--size-typography-text-default);
     line-height: 1.5;
@@ -121,9 +121,9 @@ $focus-ring-width: var(--ui-accordion-focus-ring-width, #{utils.$action-focus-ri
 
 // --- Disabled panel ---------------------------------------------------
 :host._disabled {
-  .ui-accordion-header { color: var(--navigation-high-content-disabled); }
+  .ui-accordion-header { color: var(--ui-accordion-header-color-disabled, var(--navigation-high-content-disabled)); } /// Couleur du libellé d'en-tête désactivé.
   .ui-accordion-header-control {
-    background-color: var(--navigation-high-surface-disabled);
-    color: var(--navigation-high-content-disabled);
+    background-color: var(--ui-accordion-control-surface-disabled, var(--navigation-high-surface-disabled)); /// Fond du chevron désactivé.
+    color: var(--ui-accordion-control-color-disabled, var(--navigation-high-content-disabled));              /// Couleur du chevron désactivé.
   }
 }

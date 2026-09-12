@@ -27,8 +27,8 @@ $focus-ring-width: var(--ui-tabs-focus-ring-width, #{utils.$action-focus-ring-wi
   margin: 0;
   padding: 0 var(--units-default);
   border: 0;
-  background-color: var(--navigation-highoutlined-surface-default);
-  color: var(--navigation-highoutlined-content-default);
+  background-color: var(--ui-tabs-tab-surface, var(--navigation-highoutlined-surface-default)); /// Fond d'un onglet.
+  color: var(--ui-tabs-tab-color, var(--navigation-highoutlined-content-default));              /// Couleur du libellé d'un onglet.
   font-family: var(--ui-tabs-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
   font-weight: var(--ui-tabs-weight, var(--weight-bold)); /// Graisse du texte.
   font-size: var(--size-typography-text-default);
@@ -38,18 +38,18 @@ $focus-ring-width: var(--ui-tabs-focus-ring-width, #{utils.$action-focus-ring-wi
   @include utils.control-transition(color, background-color, box-shadow);
 
   &:hover:not(:disabled) {
-    background-color: var(--navigation-highoutlined-surface-hover);
-    color: var(--navigation-highoutlined-content-hover);
+    background-color: var(--ui-tabs-tab-surface-hover, var(--navigation-highoutlined-surface-hover)); /// Fond d'un onglet au survol.
+    color: var(--ui-tabs-tab-color-hover, var(--navigation-highoutlined-content-hover));              /// Couleur du libellé au survol.
   }
 
   &:focus-visible {
     outline: none;
-    box-shadow: inset 0 0 0 $focus-ring-width var(--global-border-focus);
+    box-shadow: inset 0 0 0 $focus-ring-width var(--ui-tabs-tab-focus-ring-color, var(--global-border-focus)); /// Couleur de l'anneau de focus d'un onglet.
   }
 
   &:disabled {
-    background-color: var(--navigation-highoutlined-surface-disabled);
-    color: var(--navigation-highoutlined-content-disabled);
+    background-color: var(--ui-tabs-tab-surface-disabled, var(--navigation-highoutlined-surface-disabled)); /// Fond d'un onglet désactivé.
+    color: var(--ui-tabs-tab-color-disabled, var(--navigation-highoutlined-content-disabled));              /// Couleur du libellé d'un onglet désactivé.
     cursor: not-allowed;
   }
 }
@@ -61,8 +61,8 @@ $focus-ring-width: var(--ui-tabs-focus-ring-width, #{utils.$action-focus-ring-wi
 
 // Active tab
 :host._active .ui-tab-button {
-  background-color: var(--navigation-highoutlined-surface-active);
-  color: var(--navigation-highoutlined-content-active);
+  background-color: var(--ui-tabs-tab-surface-active, var(--navigation-highoutlined-surface-active)); /// Fond de l'onglet actif.
+  color: var(--ui-tabs-tab-color-active, var(--navigation-highoutlined-content-active));              /// Couleur du libellé de l'onglet actif : elle n'est lisible que sur le fond `surface-active` qui l'accompagne.
 }
 
 // Vertical axis: tabs stack and fill the list width, left-aligned.

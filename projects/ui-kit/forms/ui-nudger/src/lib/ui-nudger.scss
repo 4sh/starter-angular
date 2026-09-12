@@ -40,7 +40,7 @@ $gap: var(--ui-nudger-gap, var(--units-default)); /// Espacement entre les bouto
     font-variant-numeric: tabular-nums;
     line-height: 1.2;
     text-align: center;
-    color: var(--form-high-content-default);
+    color: var(--ui-nudger-value-color, var(--form-high-content-default)); /// Couleur de la valeur.
     user-select: none;
     @include utils.control-transition(color);
   }
@@ -56,6 +56,6 @@ $gap: var(--ui-nudger-gap, var(--units-default)); /// Espacement entre les bouto
   }
 
   // --- States ---------------
-  &._invalid &-value { color: var(--form-error-content-default); }
-  &._disabled &-value { color: var(--form-high-content-disabled); }
+  &._invalid &-value { color: var(--ui-nudger-value-color-invalid, var(--form-error-content-default)); } /// Couleur de la valeur en erreur.
+  &._disabled &-value { color: var(--ui-nudger-value-color-disabled, var(--form-high-content-disabled)); } /// Couleur de la valeur désactivée.
 }
