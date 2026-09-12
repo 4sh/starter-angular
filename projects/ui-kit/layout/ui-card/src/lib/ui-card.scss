@@ -43,10 +43,10 @@ $card-stroke-width: var(--ui-card-stroke-width, var(--stroke-sm)); /// Épaisseu
   flex-direction: column;
   flex: 1 1 auto; // fills the host height, whatever sets it (grid cell, flex row, explicit height)
   overflow: hidden; // clips full-bleed media to the rounded corners
-  background-color: var(--global-background-default);
+  background-color: var(--ui-card-surface, var(--global-background-default)); /// Fond de la carte.
   border: $card-stroke-width solid transparent;
   border-radius: $card-radius;
-  color: var(--global-text-default);
+  color: var(--ui-card-color, var(--global-text-default));                    /// Couleur du texte de la carte.
   font-family: var(--ui-card-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
 
   // --- Sub-elements --------------------------------------------------
@@ -94,20 +94,20 @@ $card-stroke-width: var(--ui-card-stroke-width, var(--stroke-sm)); /// Épaisseu
     font-size: var(--size-typography-title-default);
     font-weight: var(--ui-card-weight, var(--weight-bold)); /// Graisse du titre.
     line-height: 1.2;
-    color: var(--global-text-default);
+    color: var(--ui-card-title-color, var(--global-text-default)); /// Couleur du titre.
   }
 
   &-subtitle {
     font-size: var(--size-typography-text-md);
     line-height: 1.4;
-    color: var(--global-text-muted);
+    color: var(--ui-card-subtitle-color, var(--global-text-muted)); /// Couleur du sous-titre.
   }
 
   &-content {
     padding-inline: $card-padding;
     font-size: var(--size-typography-text-md);
     line-height: 1.5;
-    color: var(--global-text-default);
+    color: var(--ui-card-content-color, var(--global-text-default)); /// Couleur du corps de la carte.
 
     // Full-bleed content: consumer owns the inner gutters.
     &._flush {
@@ -134,7 +134,7 @@ $card-stroke-width: var(--ui-card-stroke-width, var(--stroke-sm)); /// Épaisseu
 
   // --- Variants (surface treatment) ----------------------------------
   &._outlined {
-    border-color: var(--global-border-subtle);
+    border-color: var(--ui-card-stroke, var(--global-border-subtle)); /// Couleur de bordure de la carte, variante `outlined`.
   }
 
   &._elevated {

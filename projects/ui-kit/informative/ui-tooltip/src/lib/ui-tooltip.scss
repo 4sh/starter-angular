@@ -24,10 +24,10 @@ $tooltip-font-size: var(--ui-tooltip-font-size, var(--size-typography-text-md));
   box-sizing: border-box;
   max-width: $tooltip-max-width;
   padding: $tooltip-padding-y $tooltip-padding-x;
-  border: $tooltip-stroke-width solid var(--informative-defaulthigh-stroke-default);
+  border: $tooltip-stroke-width solid var(--ui-tooltip-stroke, var(--informative-defaulthigh-stroke-default)); /// Couleur de bordure de la bulle (flèche comprise).
   border-radius: $tooltip-radius;
-  background-color: var(--informative-defaulthigh-surface-default);
-  color: var(--informative-defaulthigh-content-default);
+  background-color: var(--ui-tooltip-surface, var(--informative-defaulthigh-surface-default)); /// Fond de la bulle (flèche comprise).
+  color: var(--ui-tooltip-color, var(--informative-defaulthigh-content-default));              /// Couleur du texte de la bulle.
   box-shadow: var(--shadow-default-md);
   font-family: var(--ui-tooltip-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
   font-weight: var(--ui-tooltip-weight, var(--weight-regular)); /// Graisse du texte.
@@ -75,8 +75,8 @@ $tooltip-font-size: var(--ui-tooltip-font-size, var(--size-typography-text-md));
     position: absolute;
     width: $tooltip-arrow-size;
     height: $tooltip-arrow-size;
-    background-color: var(--informative-defaulthigh-surface-default);
-    border: $tooltip-stroke-width solid var(--informative-defaulthigh-stroke-default);
+    background-color: var(--ui-tooltip-surface, var(--informative-defaulthigh-surface-default));
+    border: $tooltip-stroke-width solid var(--ui-tooltip-stroke, var(--informative-defaulthigh-stroke-default));
     rotate: 45deg;
   }
 

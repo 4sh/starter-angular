@@ -66,10 +66,10 @@ $sizes: (
   display: flex;
   align-items: center;
   box-sizing: border-box;
-  background-color: var(--form-high-surface-default);
-  border: $stroke-width solid var(--form-high-stroke-default);
+  background-color: var(--ui-toggle-block-surface, var(--form-high-surface-default));  /// Fond du bloc.
+  border: $stroke-width solid var(--ui-toggle-block-stroke, var(--form-high-stroke-default)); /// Couleur de bordure du bloc.
   border-radius: $radius;
-  color: var(--form-high-content-default);
+  color: var(--ui-toggle-block-color, var(--form-high-content-default));               /// Couleur du texte du bloc.
   font-family: var(--ui-toggle-block-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
   cursor: pointer;
   user-select: none;
@@ -130,12 +130,12 @@ $sizes: (
   }
 
   &-required {
-    color: var(--informative-errorlow-content-default);
+    color: var(--ui-toggle-block-required-color, var(--informative-errorlow-content-default)); /// Couleur du marqueur « requis ».
   }
 
   &-description {
     line-height: 1.4;
-    color: var(--form-low-content-default);
+    color: var(--ui-toggle-block-description-color, var(--form-low-content-default)); /// Couleur de la description.
   }
 
   // --- Layout modifiers -------------------------------------------------
@@ -159,47 +159,47 @@ $sizes: (
 
   // --- States -----------------------------------------------------------
   &:hover:not(._disabled):not(._readonly) {
-    background-color: var(--form-high-surface-hover);
-    border-color: var(--form-high-stroke-hover);
+    background-color: var(--ui-toggle-block-surface-hover, var(--form-high-surface-hover)); /// Fond du bloc au survol.
+    border-color: var(--ui-toggle-block-stroke-hover, var(--form-high-stroke-hover));       /// Couleur de bordure au survol.
   }
 
   &._checked {
-    background-color: var(--form-high-surface-checked);
-    border-color: var(--form-high-stroke-checked);
+    background-color: var(--ui-toggle-block-surface-checked, var(--form-high-surface-checked)); /// Fond du bloc sélectionné.
+    border-color: var(--ui-toggle-block-stroke-checked, var(--form-high-stroke-checked));       /// Couleur de bordure du bloc sélectionné.
   }
 
   // Focus: the border always answers, the ring only on keyboard focus.
   &:focus-within {
-    border-color: var(--form-high-stroke-focused);
+    border-color: var(--ui-toggle-block-stroke-focus, var(--form-high-stroke-focused)); /// Couleur de bordure au focus ; elle teinte aussi l'anneau.
   }
 
   &._focus-visible {
-    box-shadow: 0 0 0 $focus-ring-width rgb(from var(--form-high-stroke-focused) r g b / 50%);
+    box-shadow: 0 0 0 $focus-ring-width rgb(from var(--ui-toggle-block-stroke-focus, var(--form-high-stroke-focused)) r g b / 50%);
   }
 
   &._invalid {
-    border-color: var(--form-error-stroke-default);
+    border-color: var(--ui-toggle-block-stroke-invalid, var(--form-error-stroke-default)); /// Couleur de bordure du bloc en erreur.
 
     &._checked {
-      background-color: var(--form-error-surface-checked);
-      border-color: var(--form-error-stroke-checked);
+      background-color: var(--ui-toggle-block-surface-checked-invalid, var(--form-error-surface-checked)); /// Fond du bloc sélectionné en erreur.
+      border-color: var(--ui-toggle-block-stroke-checked-invalid, var(--form-error-stroke-checked));       /// Couleur de bordure du bloc sélectionné en erreur.
     }
     &:focus-within {
-      border-color: var(--form-error-stroke-focused);
+      border-color: var(--ui-toggle-block-stroke-focus-invalid, var(--form-error-stroke-focused)); /// Couleur de bordure au focus en erreur ; elle teinte aussi l'anneau.
     }
     &._focus-visible {
-      box-shadow: 0 0 0 $focus-ring-width rgb(from var(--form-error-stroke-focused) r g b / 50%);
+      box-shadow: 0 0 0 $focus-ring-width rgb(from var(--ui-toggle-block-stroke-focus-invalid, var(--form-error-stroke-focused)) r g b / 50%);
     }
   }
 
   &._disabled {
-    background-color: var(--form-high-surface-disabled);
-    border-color: var(--form-high-stroke-disabled);
+    background-color: var(--ui-toggle-block-surface-disabled, var(--form-high-surface-disabled)); /// Fond du bloc désactivé.
+    border-color: var(--ui-toggle-block-stroke-disabled, var(--form-high-stroke-disabled));       /// Couleur de bordure du bloc désactivé.
     cursor: not-allowed;
 
     .ui-toggle-block-label,
     .ui-toggle-block-description {
-      color: var(--form-high-content-disabled);
+      color: var(--ui-label-color-disabled, var(--form-high-content-disabled));
     }
   }
 

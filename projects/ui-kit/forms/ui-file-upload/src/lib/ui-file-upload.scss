@@ -86,16 +86,16 @@ $message-font-size: var(--ui-file-upload-message-font-size, var(--size-typograph
     height: map.get($field-height, 'default');
     padding-left: $field-padding-x;
     overflow: hidden;
-    background-color: var(--form-high-surface-default);
-    border: $stroke-width solid var(--form-high-stroke-default);
+    background-color: var(--ui-file-upload-surface, var(--form-high-surface-default));           /// Fond du déclencheur (champ compact comme zone de dépôt).
+    border: $stroke-width solid var(--ui-file-upload-stroke, var(--form-high-stroke-default));   /// Couleur de bordure du déclencheur.
     border-radius: $radius;
-    color: var(--form-high-content-default);
+    color: var(--ui-file-upload-color, var(--form-high-content-default));                        /// Couleur du texte du déclencheur.
     cursor: pointer;
     @include utils.control-transition(background-color, border-color, color, box-shadow);
 
     &:hover {
-      background-color: var(--form-high-surface-hover);
-      border-color: var(--form-high-stroke-hover);
+      background-color: var(--ui-file-upload-surface-hover, var(--form-high-surface-hover));     /// Fond du déclencheur au survol.
+      border-color: var(--ui-file-upload-stroke-hover, var(--form-high-stroke-hover));           /// Couleur de bordure du déclencheur au survol.
     }
   }
 
@@ -110,7 +110,7 @@ $message-font-size: var(--ui-file-upload-message-font-size, var(--size-typograph
     font-size: $field-font-size;
     font-weight: var(--ui-file-upload-field-text-weight, var(--weight-regular)); /// Graisse du texte du champ.
 
-    &._placeholder { color: var(--form-high-content-default); opacity: $placeholder-opacity; }
+    &._placeholder { color: var(--ui-file-upload-color, var(--form-high-content-default)); opacity: $placeholder-opacity; }
   }
   &._small &-field-text { font-size: $field-font-size-small; }
 
@@ -121,13 +121,13 @@ $message-font-size: var(--ui-file-upload-message-font-size, var(--size-typograph
     align-self: stretch;
     flex: none;
     padding: 0 $browse-padding-x;
-    background-color: var(--actions-high-surface-default);
-    color: var(--actions-high-content-default);
+    background-color: var(--ui-file-upload-browse-surface, var(--actions-high-surface-default)); /// Fond du lien de parcours.
+    color: var(--ui-file-upload-browse-color, var(--actions-high-content-default));              /// Couleur du lien de parcours.
     font-size: $browse-font-size;
     font-weight: var(--ui-file-upload-browse-weight, var(--weight-bold)); /// Graisse du lien de parcours.
   }
   &._small &-browse { padding: 0 $browse-padding-x-small; font-size: $browse-font-size-small; }
-  &-field:hover &-browse { background-color: var(--actions-high-surface-hover); }
+  &-field:hover &-browse { background-color: var(--ui-file-upload-browse-surface-hover, var(--actions-high-surface-hover)); } /// Fond du lien de parcours au survol.
 
   // =================================================================
   // Drag mode
@@ -140,29 +140,29 @@ $message-font-size: var(--ui-file-upload-message-font-size, var(--size-typograph
     gap: $zone-gap;
     min-height: map.get($zone-min, 'default');
     padding: $zone-padding;
-    background-color: var(--form-high-surface-default);
-    border: $stroke-width dashed var(--form-high-stroke-default);
+    background-color: var(--ui-file-upload-surface, var(--form-high-surface-default));
+    border: $stroke-width dashed var(--ui-file-upload-stroke, var(--form-high-stroke-default));
     border-radius: $radius;
-    color: var(--form-high-content-default);
+    color: var(--ui-file-upload-color, var(--form-high-content-default));
     text-align: center;
     cursor: pointer;
     @include utils.control-transition(background-color, border-color, box-shadow);
 
     &:hover {
-      background-color: var(--form-high-surface-hover);
-      border-color: var(--form-high-stroke-hover);
+      background-color: var(--ui-file-upload-surface-hover, var(--form-high-surface-hover));
+      border-color: var(--ui-file-upload-stroke-hover, var(--form-high-stroke-hover));
     }
   }
   &._small &-zone { gap: $zone-gap-small; min-height: map.get($zone-min, 'small'); }
 
   // Active drag-over highlight (solid border + focused surface).
   &._dragging &-zone {
-    background-color: var(--form-high-surface-focused);
+    background-color: var(--ui-file-upload-surface-dragging, var(--form-high-surface-focused)); /// Fond de la zone pendant un survol de dépôt.
     border-style: solid;
-    border-color: var(--form-high-stroke-focused);
+    border-color: var(--ui-file-upload-stroke-dragging, var(--form-high-stroke-focused));       /// Couleur de bordure de la zone pendant un survol de dépôt.
   }
 
-  &-zone-icon { color: var(--form-high-content-default); line-height: 0; }
+  &-zone-icon { color: var(--ui-file-upload-color, var(--form-high-content-default)); line-height: 0; }
 
   &-zone-content {
     display: flex;
@@ -184,14 +184,14 @@ $message-font-size: var(--ui-file-upload-message-font-size, var(--size-typograph
 
   // "Click to upload" styled as a link (the whole zone is the trigger).
   &-zone-link {
-    color: var(--actions-low-content-default);
+    color: var(--ui-file-upload-zone-link-color, var(--actions-low-content-default)); /// Couleur du lien de la zone.
     font-weight: var(--ui-file-upload-zone-link-weight, var(--weight-bold)); /// Graisse du lien de la zone.
     text-decoration: underline;
   }
-  &-zone-prompt { color: var(--form-high-content-default); }
+  &-zone-prompt { color: var(--ui-file-upload-color, var(--form-high-content-default)); }
 
   &-zone-hint {
-    color: var(--global-text-muted);
+    color: var(--ui-file-upload-zone-hint-color, var(--global-text-muted)); /// Couleur de l'indication secondaire de la zone.
     font-size: $zone-hint-font-size;
   }
   &._small &-zone-hint { font-size: $zone-hint-font-size-small; }
@@ -202,8 +202,8 @@ $message-font-size: var(--ui-file-upload-message-font-size, var(--size-typograph
   &-input:focus-visible ~ &-field,
   &-input:focus-visible ~ &-zone {
     outline: none;
-    border-color: var(--form-high-stroke-focused);
-    box-shadow: 0 0 0 $focus-ring-width var(--form-high-stroke-focused);
+    border-color: var(--ui-file-upload-stroke-focus, var(--form-high-stroke-focused)); /// Couleur de bordure au focus clavier.
+    box-shadow: 0 0 0 $focus-ring-width var(--ui-file-upload-focus-ring-color, var(--form-high-stroke-focused)); /// Couleur de l'anneau de focus.
   }
 
   // =================================================================
@@ -230,7 +230,7 @@ $message-font-size: var(--ui-file-upload-message-font-size, var(--size-typograph
   &-messages { display: flex; flex-direction: column; gap: $messages-gap; }
   &-message {
     margin: 0;
-    color: var(--informative-errorhigh-content-default);
+    color: var(--ui-file-upload-message-color, var(--informative-errorhigh-content-default)); /// Couleur d'un message d'erreur.
     font-size: $message-font-size;
   }
 
@@ -240,15 +240,15 @@ $message-font-size: var(--ui-file-upload-message-font-size, var(--size-typograph
   &._disabled {
     .ui-file-upload-field,
     .ui-file-upload-zone {
-      background-color: var(--form-high-surface-disabled);
-      border-color: var(--form-high-stroke-disabled);
-      color: var(--form-high-content-disabled);
+      background-color: var(--ui-file-upload-surface-disabled, var(--form-high-surface-disabled)); /// Fond du déclencheur désactivé.
+      border-color: var(--ui-file-upload-stroke-disabled, var(--form-high-stroke-disabled));       /// Couleur de bordure du déclencheur désactivé.
+      color: var(--ui-file-upload-color-disabled, var(--form-high-content-disabled));              /// Couleur du texte du déclencheur désactivé.
       cursor: not-allowed;
       pointer-events: none;
     }
     .ui-file-upload-browse {
-      background-color: var(--actions-high-surface-disabled);
-      color: var(--actions-high-content-disabled);
+      background-color: var(--ui-file-upload-browse-surface-disabled, var(--actions-high-surface-disabled)); /// Fond du lien de parcours désactivé.
+      color: var(--ui-file-upload-browse-color-disabled, var(--actions-high-content-disabled));              /// Couleur du lien de parcours désactivé.
     }
   }
 }

@@ -11,13 +11,14 @@
 // =====================================================================
 
 // --- Config ---------------------------------------
-/// Couleur du texte par niveau sémantique.
+/// Couleur du texte par niveau sémantique. Un seul nom de hook pour les cinq : le
+/// consommateur choisit la portée avec la classe de niveau (`.ui-helper._success`).
 $levels: (
-  'default': var(--form-low-content-default),
-  'highlight': var(--informative-highlightlow-content-default),
-  'success': var(--informative-successlow-content-default),
-  'warning': var(--informative-warninglow-content-default),
-  'error': var(--informative-errorlow-content-default),
+  'default': var(--ui-helper-color, var(--form-low-content-default)),
+  'highlight': var(--ui-helper-color, var(--informative-highlightlow-content-default)),
+  'success': var(--ui-helper-color, var(--informative-successlow-content-default)),
+  'warning': var(--ui-helper-color, var(--informative-warninglow-content-default)),
+  'error': var(--ui-helper-color, var(--informative-errorlow-content-default)),
 );
 
 $gap: var(--ui-helper-gap, var(--units-xs)); /// Espacement icône ↔ message.

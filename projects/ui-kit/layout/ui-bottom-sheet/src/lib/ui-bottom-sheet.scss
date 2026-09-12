@@ -117,7 +117,7 @@ $focus-ring-width: var(--ui-bottom-sheet-focus-ring-width, #{utils.$focus-ring-w
   border-radius: $radius $radius 0 0;
   background-color: $surface;
   box-shadow: $shadow;
-  color: var(--global-text-default);
+  color: var(--ui-bottom-sheet-color, var(--global-text-default)); /// Couleur du texte de la feuille.
   font-family: var(--ui-bottom-sheet-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
   overflow: hidden;
   outline: none;
@@ -216,7 +216,7 @@ $focus-ring-width: var(--ui-bottom-sheet-focus-ring-width, #{utils.$focus-ring-w
 
       &:focus-visible {
         outline: none;
-        box-shadow: 0 0 0 $focus-ring-width var(--global-border-focus);
+        box-shadow: 0 0 0 $focus-ring-width var(--ui-bottom-sheet-handle-focus-ring-color, var(--global-border-focus)); /// Couleur de l'anneau de focus de la poignée.
       }
     }
   }
@@ -265,13 +265,13 @@ $focus-ring-width: var(--ui-bottom-sheet-focus-ring-width, #{utils.$focus-ring-w
     @include utils.control-transition(background-color, color);
 
     &:hover {
-      background-color: var(--global-background-muted-hover);
-      color: var(--global-text-muted-hover);
+      background-color: var(--ui-bottom-sheet-close-surface-hover, var(--global-background-muted-hover)); /// Fond du bouton de fermeture au survol.
+      color: var(--ui-bottom-sheet-close-color-hover, var(--global-text-muted-hover));                    /// Couleur du bouton de fermeture au survol.
     }
 
     &:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 $focus-ring-width var(--global-border-focus);
+      box-shadow: 0 0 0 $focus-ring-width var(--ui-bottom-sheet-close-focus-ring-color, var(--global-border-focus)); /// Couleur de l'anneau de focus du bouton de fermeture.
     }
 
     @include utils.motion-reduce {

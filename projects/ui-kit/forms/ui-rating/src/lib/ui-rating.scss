@@ -90,8 +90,8 @@ $icon-fill-color: var(--ui-rating-icon-fill-color, var(--form-high-content-check
     .ui-rating-icon {
       cursor: not-allowed;
 
-      &-stack { color: var(--form-low-content-disabled); }
-      &-fill { color: var(--form-high-content-disabled); }
+      &-stack { color: var(--ui-rating-icon-color-disabled, var(--form-low-content-disabled)); }    /// Couleur d'une étoile vide, composant désactivé.
+      &-fill { color: var(--ui-rating-icon-fill-color-disabled, var(--form-high-content-disabled)); } /// Couleur de la portion remplie, composant désactivé.
     }
   }
 
@@ -103,8 +103,8 @@ $icon-fill-color: var(--ui-rating-icon-fill-color, var(--form-high-content-check
 
   &._invalid {
     .ui-rating-icon {
-      &-stack { color: var(--form-error-content-default); }
-      &-fill { color: var(--form-error-content-checked); }
+      &-stack { color: var(--ui-rating-icon-color-invalid, var(--form-error-content-default)); }      /// Couleur d'une étoile vide en erreur.
+      &-fill { color: var(--ui-rating-icon-fill-color-invalid, var(--form-error-content-checked)); } /// Couleur de la portion remplie en erreur.
     }
   }
 }

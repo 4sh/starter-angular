@@ -88,8 +88,8 @@ $rail-width-default: utils.rem-calc(72);                                        
   min-height: 0;
   inline-size: var(--_width);
   overflow: hidden; // collapsed rail clips over-wide header/footer content
-  background-color: var(--global-background-default);
-  color: var(--global-text-default);
+  background-color: var(--ui-sidebar-surface, var(--global-background-default)); /// Fond du panneau.
+  color: var(--ui-sidebar-color, var(--global-text-default));                    /// Couleur du texte du panneau.
   font-family: var(--ui-sidebar-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
   outline: none;
   @include utils.motion-transition(inline-size, box-shadow);
@@ -100,10 +100,10 @@ $rail-width-default: utils.rem-calc(72);                                        
 
   // Border faces the content area (opposite the docked edge).
   &._left {
-    border-inline-end: $stroke-width solid var(--global-border-subtle);
+    border-inline-end: $stroke-width solid var(--ui-sidebar-stroke, var(--global-border-subtle)); /// Couleur du trait qui fait face au contenu, quel que soit le bord d'accroche.
   }
   &._right {
-    border-inline-start: $stroke-width solid var(--global-border-subtle);
+    border-inline-start: $stroke-width solid var(--ui-sidebar-stroke, var(--global-border-subtle));
   }
 
   // --- Static panel: fills the in-flow rail, floats when hover-expanded ---
@@ -157,13 +157,13 @@ $rail-width-default: utils.rem-calc(72);                                        
     @include utils.control-transition(background-color, color);
 
     &:hover {
-      background-color: var(--global-background-muted-hover);
-      color: var(--global-text-muted-hover);
+      background-color: var(--ui-sidebar-close-surface-hover, var(--global-background-muted-hover)); /// Fond du bouton de fermeture au survol.
+      color: var(--ui-sidebar-close-color-hover, var(--global-text-muted-hover));                    /// Couleur du bouton de fermeture au survol.
     }
 
     &:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 $focus-ring-width var(--global-border-focus);
+      box-shadow: 0 0 0 $focus-ring-width var(--ui-sidebar-close-focus-ring-color, var(--global-border-focus)); /// Couleur de l'anneau de focus du bouton de fermeture.
     }
 
     @include utils.motion-reduce {
@@ -178,7 +178,7 @@ $rail-width-default: utils.rem-calc(72);                                        
     align-items: center;
     gap: var(--units-sm);
     padding: $region-padding;
-    border-block-end: $stroke-width solid var(--global-border-subtle);
+    border-block-end: $stroke-width solid var(--ui-sidebar-header-stroke, var(--global-border-subtle)); /// Couleur du trait sous l'en-tête.
   }
 
   &-body {
@@ -195,7 +195,7 @@ $rail-width-default: utils.rem-calc(72);                                        
     align-items: center;
     gap: var(--units-sm);
     padding: $region-padding;
-    border-block-start: $stroke-width solid var(--global-border-subtle);
+    border-block-start: $stroke-width solid var(--ui-sidebar-footer-stroke, var(--global-border-subtle)); /// Couleur du trait au-dessus du pied.
   }
 
   // Collapsed rail: tighten region padding so icons stay centered in the rail.

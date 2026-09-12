@@ -30,14 +30,17 @@ $font-size-small: var(--ui-label-font-size-small, var(--size-typography-text-sm)
   }
 
   &-marker {
-    color: var(--informative-errorlow-content-default);
+    color: var(--ui-label-marker-color, var(--informative-errorlow-content-default)); /// Couleur du marqueur « requis ».
   }
 
   &._small {
     font-size: $font-size-small;
   }
 
+  // Its OWN hook, not `--ui-label-color`: that one is the channel a parent form
+  // component drives at rest, so reading it here would let a theme value posed on
+  // `:root` survive into the disabled state.
   &._disabled {
-    color: var(--ui-label-color, var(--form-high-content-disabled));
+    color: var(--ui-label-color-disabled, var(--form-high-content-disabled)); /// Couleur du texte désactivé, lue aussi par les contrôles de formulaire qui peignent leur propre libellé.
   }
 }

@@ -69,8 +69,8 @@ $focus-ring-offset: var(--ui-alert-focus-ring-offset, #{utils.rem-calc(2)});    
   padding: $padding-y $padding-x;
   border: $stroke-width solid transparent;
   border-radius: $radius;
-  background-color: var(--informative-defaulthigh-surface-default);
-  color: var(--informative-defaulthigh-content-default);
+  background-color: var(--ui-alert-surface, var(--informative-defaulthigh-surface-default));
+  color: var(--ui-alert-color, var(--informative-defaulthigh-content-default));
   font-family: var(--ui-alert-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
 
   @include alert-size($size-default);
@@ -160,9 +160,9 @@ $focus-ring-offset: var(--ui-alert-focus-ring-offset, #{utils.rem-calc(2)});    
   @each $lvl in $levels {
     @each $sub in $sublevels {
       &._#{$lvl}._#{$sub} {
-        background-color: var(--informative-#{$lvl}#{$sub}-surface-default);
-        color: var(--informative-#{$lvl}#{$sub}-content-default);
-        border-color: var(--informative-#{$lvl}#{$sub}-stroke-default);
+        background-color: var(--ui-alert-surface, var(--informative-#{$lvl}#{$sub}-surface-default)); /// Fond du composant : un seul nom pour les 10 jeux (niveau × sous-niveau), la portée se choisit avec les classes de modificateur.
+        color: var(--ui-alert-color, var(--informative-#{$lvl}#{$sub}-content-default));              /// Couleur du texte et des icônes.
+        border-color: var(--ui-alert-stroke, var(--informative-#{$lvl}#{$sub}-stroke-default));       /// Couleur de bordure.
       }
     }
   }

@@ -9,7 +9,7 @@ $marker-size: var(--ui-stepper-marker-size, #{utils.rem-calc(44)}); /// Diamètr
 
 :host {
   display: block;
-  color: var(--global-text-default);
+  color: var(--ui-stepper-panel-color, var(--global-text-default)); /// Couleur du texte du panneau d'étape.
   font-family: var(--ui-stepper-panel-font-family, var(--fontfamily-base)); /// Famille typographique du panneau.
   font-size: var(--size-typography-text-default);
   line-height: 1.5;

@@ -29,12 +29,12 @@ $font-size-small: var(--ui-separator-font-size-small, var(--size-typography-text
   // --- Sub-elements --------------------------------------------------
   &-line {
     flex: 1 1 auto;
-    border: 0 var(--_style) var(--global-border-default);
+    border: 0 var(--_style) var(--ui-separator-line-stroke, var(--global-border-default)); /// Couleur du trait.
   }
 
   &-label {
     flex: 0 0 auto;
-    color: var(--global-text-default);
+    color: var(--ui-separator-label-color, var(--global-text-default)); /// Couleur du libellé.
     font-family: var(--ui-separator-font-family, var(--fontfamily-base)); /// Famille typographique du libellé.
     font-size: $font-size;
     line-height: 1;

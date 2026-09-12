@@ -47,7 +47,7 @@ $focus-ring-width: var(--ui-bottom-tab-bar-action-focus-ring-width, #{utils.$act
     outline: none;
     box-shadow:
       $action-shadow,
-      0 0 0 $focus-ring-width var(--global-border-focus);
+      0 0 0 $focus-ring-width var(--ui-bottom-tab-bar-action-focus-ring-color, var(--global-border-focus)); /// Couleur de l'anneau de focus du bouton flottant.
   }
 
   &:disabled {
@@ -57,27 +57,27 @@ $focus-ring-width: var(--ui-bottom-tab-bar-action-focus-ring-width, #{utils.$act
 
   @each $lvl in $levels {
     &._#{$lvl} {
-      background-color: var(--actions-#{$lvl}-surface-default);
-      color: var(--actions-#{$lvl}-content-default);
+      background-color: var(--ui-bottom-tab-bar-action-surface, var(--actions-#{$lvl}-surface-default)); /// Fond du bouton flottant.
+      color: var(--ui-bottom-tab-bar-action-color, var(--actions-#{$lvl}-content-default));              /// Couleur du contenu du bouton flottant.
 
       &:hover:not(:disabled) {
-        background-color: var(--actions-#{$lvl}-surface-hover);
-        color: var(--actions-#{$lvl}-content-hover);
+        background-color: var(--ui-bottom-tab-bar-action-surface-hover, var(--actions-#{$lvl}-surface-hover)); /// Fond du bouton flottant au survol.
+        color: var(--ui-bottom-tab-bar-action-color-hover, var(--actions-#{$lvl}-content-hover));              /// Couleur du contenu au survol.
       }
 
       &:focus-visible {
-        background-color: var(--actions-#{$lvl}-surface-focused);
-        color: var(--actions-#{$lvl}-content-focused);
+        background-color: var(--ui-bottom-tab-bar-action-surface-focus, var(--actions-#{$lvl}-surface-focused)); /// Fond du bouton flottant au focus clavier.
+        color: var(--ui-bottom-tab-bar-action-color-focus, var(--actions-#{$lvl}-content-focused));              /// Couleur du contenu au focus clavier.
       }
 
       &:active:not(:disabled) {
-        background-color: var(--actions-#{$lvl}-surface-pressed);
-        color: var(--actions-#{$lvl}-content-pressed);
+        background-color: var(--ui-bottom-tab-bar-action-surface-pressed, var(--actions-#{$lvl}-surface-pressed)); /// Fond du bouton flottant enfoncé.
+        color: var(--ui-bottom-tab-bar-action-color-pressed, var(--actions-#{$lvl}-content-pressed));              /// Couleur du contenu enfoncé.
       }
 
       &:disabled {
-        background-color: var(--actions-#{$lvl}-surface-disabled);
-        color: var(--actions-#{$lvl}-content-disabled);
+        background-color: var(--ui-bottom-tab-bar-action-surface-disabled, var(--actions-#{$lvl}-surface-disabled)); /// Fond du bouton flottant désactivé.
+        color: var(--ui-bottom-tab-bar-action-color-disabled, var(--actions-#{$lvl}-content-disabled));              /// Couleur du contenu désactivé.
       }
     }
   }

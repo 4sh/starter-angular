@@ -53,10 +53,10 @@ $focus-ring-width: var(--ui-stepper-focus-ring-width, #{utils.$action-focus-ring
   width: $marker-size;
   height: $marker-size;
   flex: 0 0 auto;
-  border: $marker-stroke solid var(--navigation-high-stroke-default);
+  border: $marker-stroke solid var(--ui-stepper-marker-stroke, var(--navigation-high-stroke-default)); /// Couleur de bordure du marqueur.
   border-radius: var(--radius-full);
-  background-color: var(--navigation-high-surface-default);
-  color: var(--navigation-high-content-default);
+  background-color: var(--ui-stepper-marker-surface, var(--navigation-high-surface-default));          /// Fond du marqueur.
+  color: var(--ui-stepper-marker-color, var(--navigation-high-content-default));                       /// Couleur du contenu du marqueur.
   font-family: var(--ui-stepper-marker-font-family, var(--fontfamily-base)); /// Famille typographique du marqueur.
   font-weight: var(--ui-stepper-marker-weight, var(--weight-bold)); /// Graisse du marqueur.
   font-size: var(--size-typography-text-default);
@@ -74,7 +74,7 @@ $focus-ring-width: var(--ui-stepper-focus-ring-width, #{utils.$action-focus-ring
   display: flex;
   justify-content: center;
   white-space: nowrap;
-  color: var(--navigation-high-content-default);
+  color: var(--ui-stepper-title-color, var(--navigation-high-content-default)); /// Couleur du titre d'une étape.
   font-family: var(--ui-stepper-title-font-family, var(--fontfamily-title)); /// Famille typographique du titre.
   font-size: var(--size-typography-title-sm);
   line-height: 1.2;
@@ -83,7 +83,7 @@ $focus-ring-width: var(--ui-stepper-focus-ring-width, #{utils.$action-focus-ring
 
 // --- Focus ring (drawn around the marker) -----------------------------
 .ui-step-header:focus-visible .ui-step-marker {
-  box-shadow: 0 0 0 $focus-ring-width var(--global-border-focus);
+  box-shadow: 0 0 0 $focus-ring-width var(--ui-stepper-marker-focus-ring-color, var(--global-border-focus)); /// Couleur de l'anneau de focus du marqueur.
 }
 
 // --- Connector (horizontal strip) -------------------------------------
@@ -93,11 +93,11 @@ $focus-ring-width: var(--ui-stepper-focus-ring-width, #{utils.$action-focus-ring
   height: 0;
   // Symmetric horizontal breathing room on both sides of the line.
   margin: calc(#{$marker-size} / 2 - #{$separator-stroke} / 2) var(--units-sm) 0;
-  border-top: $separator-stroke solid var(--global-border-default);
+  border-top: $separator-stroke solid var(--ui-stepper-separator-stroke, var(--global-border-default)); /// Couleur du connecteur entre deux étapes.
   @include utils.control-transition(border-color);
 
   &._completed {
-    border-top-color: var(--navigation-high-stroke-default);
+    border-top-color: var(--ui-stepper-separator-stroke-completed, var(--navigation-high-stroke-default)); /// Couleur du connecteur d'une étape franchie.
   }
 }
 
@@ -108,12 +108,12 @@ $focus-ring-width: var(--ui-stepper-focus-ring-width, #{utils.$action-focus-ring
 // --- Active -----------------------------------------------------------
 :host._active {
   .ui-step-marker {
-    background-color: var(--navigation-high-surface-active);
-    border-color: var(--navigation-high-stroke-active);
-    color: var(--informative-defaulthigh-content-default);
+    background-color: var(--ui-stepper-marker-surface-active, var(--navigation-high-surface-active)); /// Fond du marqueur de l'étape courante.
+    border-color: var(--ui-stepper-marker-stroke-active, var(--navigation-high-stroke-active));       /// Couleur de bordure du marqueur de l'étape courante.
+    color: var(--ui-stepper-marker-color-active, var(--informative-defaulthigh-content-default));     /// Couleur du contenu du marqueur de l'étape courante.
   }
   .ui-step-title {
-    color: var(--global-text-default);
+    color: var(--ui-stepper-title-color-active, var(--global-text-default)); /// Couleur du titre de l'étape courante.
     font-weight: var(--ui-stepper-title-weight, var(--weight-bold)); /// Graisse du titre.
   }
 }
@@ -121,8 +121,8 @@ $focus-ring-width: var(--ui-stepper-focus-ring-width, #{utils.$action-focus-ring
 // --- Completed --------------------------------------------------------
 :host._completed {
   .ui-step-marker {
-    background-color: var(--informative-defaulthigh-surface-default);
-    color: var(--informative-defaulthigh-content-default);
+    background-color: var(--ui-stepper-marker-surface-completed, var(--informative-defaulthigh-surface-default)); /// Fond du marqueur d'une étape franchie.
+    color: var(--ui-stepper-marker-color-completed, var(--informative-defaulthigh-content-default));              /// Couleur du contenu du marqueur d'une étape franchie.
   }
 }
 
@@ -132,45 +132,45 @@ $focus-ring-width: var(--ui-stepper-focus-ring-width, #{utils.$action-focus-ring
 .ui-step-header:hover:not(:disabled) {
   // Upcoming (base)
   .ui-step-marker {
-    background-color: var(--navigation-high-surface-hover);
-    border-color: var(--navigation-high-stroke-hover);
-    color: var(--navigation-high-content-hover);
+    background-color: var(--ui-stepper-marker-surface-hover, var(--navigation-high-surface-hover)); /// Fond du marqueur au survol.
+    border-color: var(--ui-stepper-marker-stroke-hover, var(--navigation-high-stroke-hover));       /// Couleur de bordure du marqueur au survol.
+    color: var(--ui-stepper-marker-color-hover, var(--navigation-high-content-hover));              /// Couleur du contenu du marqueur au survol.
   }
   .ui-step-title {
-    color: var(--informative-highlightlow-content-hover);
+    color: var(--ui-stepper-title-color-hover, var(--informative-highlightlow-content-hover)); /// Couleur du titre au survol.
   }
 }
 
 :host._active .ui-step-header:hover:not(:disabled) {
   .ui-step-marker {
-    background-color: var(--navigation-high-surface-active);
-    border-color: var(--navigation-high-stroke-hover);
+    background-color: var(--ui-stepper-marker-surface-active-hover, var(--navigation-high-surface-active)); /// Fond du marqueur de l'étape courante, au survol.
+    border-color: var(--ui-stepper-marker-stroke-hover, var(--navigation-high-stroke-hover));
   }
   .ui-step-title {
-    color: var(--informative-highlightlow-content-hover);
+    color: var(--ui-stepper-title-color-hover, var(--informative-highlightlow-content-hover));
   }
 }
 
 :host._completed .ui-step-header:hover:not(:disabled) {
   .ui-step-marker {
-    background-color: var(--informative-defaulthigh-surface-hover);
-    border-color: var(--informative-defaulthigh-stroke-hover);
-    color: var(--informative-defaulthigh-content-hover);
+    background-color: var(--ui-stepper-marker-surface-completed-hover, var(--informative-defaulthigh-surface-hover)); /// Fond du marqueur d'une étape franchie, au survol.
+    border-color: var(--ui-stepper-marker-stroke-completed-hover, var(--informative-defaulthigh-stroke-hover));       /// Couleur de bordure du marqueur d'une étape franchie, au survol.
+    color: var(--ui-stepper-marker-color-completed-hover, var(--informative-defaulthigh-content-hover));              /// Couleur du contenu du marqueur d'une étape franchie, au survol.
   }
   .ui-step-title {
-    color: var(--informative-defaultlow-content-default);
+    color: var(--ui-stepper-title-color-completed-hover, var(--informative-defaultlow-content-default)); /// Couleur du titre d'une étape franchie, au survol.
   }
 }
 
 // --- Disabled ---------------------------------------------------------
 :host._disabled {
   .ui-step-marker {
-    background-color: var(--navigation-high-surface-disabled);
-    border-color: var(--navigation-high-stroke-disabled);
-    color: var(--navigation-high-content-disabled);
+    background-color: var(--ui-stepper-marker-surface-disabled, var(--navigation-high-surface-disabled)); /// Fond du marqueur d'une étape désactivée.
+    border-color: var(--ui-stepper-marker-stroke-disabled, var(--navigation-high-stroke-disabled));       /// Couleur de bordure du marqueur d'une étape désactivée.
+    color: var(--ui-stepper-marker-color-disabled, var(--navigation-high-content-disabled));              /// Couleur du contenu du marqueur d'une étape désactivée.
   }
   .ui-step-title {
-    color: var(--navigation-high-content-disabled);
+    color: var(--ui-stepper-title-color-disabled, var(--navigation-high-content-disabled)); /// Couleur du titre d'une étape désactivée.
   }
 }
 

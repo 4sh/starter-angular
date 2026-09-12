@@ -48,7 +48,7 @@ $indeterminate-duration: var(--ui-progress-bar-indeterminate-duration, 1.6s); //
     overflow: hidden;
     height: map.get($size-default, track-height);
     border-radius: map.get($size-default, radius);
-    background-color: var(--global-border-default);
+    background-color: var(--ui-progress-bar-track-surface, var(--global-border-default)); /// Fond de la piste (et d'un segment non franchi).
   }
 
   // --- Determinate fill ----------------------------------------------
@@ -64,7 +64,7 @@ $indeterminate-duration: var(--ui-progress-bar-indeterminate-duration, 1.6s); //
     flex: 1 1 0;
     height: 100%;
     border-radius: var(--radius-2xs);
-    background-color: var(--global-border-default);
+    background-color: var(--ui-progress-bar-track-surface, var(--global-border-default));
 
     &._active {
       background-color: $fill-color;
@@ -74,7 +74,7 @@ $indeterminate-duration: var(--ui-progress-bar-indeterminate-duration, 1.6s); //
   // --- Label ---------------------------------------------------------
   &-label {
     flex: 0 0 auto;
-    color: var(--global-text-default);
+    color: var(--ui-progress-bar-label-color, var(--global-text-default)); /// Couleur du libellé.
     font-family: var(--ui-progress-bar-font-family, var(--fontfamily-base)); /// Famille typographique du libellé.
     font-weight: var(--ui-progress-bar-label-weight, var(--weight-regular)); /// Graisse du libellé.
     font-size: var(--size-typography-text-default);
@@ -106,7 +106,7 @@ $indeterminate-duration: var(--ui-progress-bar-indeterminate-duration, 1.6s); //
 
   &-value-label {
     padding-inline: var(--units-sm);
-    color: var(--informative-highlighthigh-content-default);
+    color: var(--ui-progress-bar-value-label-color, var(--informative-highlighthigh-content-default)); /// Couleur du libellé de valeur posé sur la barre.
     font-family: var(--ui-progress-bar-font-family, var(--fontfamily-base)); /// Famille typographique du libellé de valeur.
     font-weight: var(--ui-progress-bar-value-label-weight, var(--weight-bold)); /// Graisse du libellé de valeur.
     font-size: var(--size-typography-text-md);

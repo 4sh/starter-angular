@@ -147,44 +147,44 @@ $focus-ring-width: var(--ui-chip-focus-ring-width, #{utils.$focus-ring-width}); 
   @each $lvl in $levels {
     @each $sub in $sublevels {
       &._#{$lvl}._#{$sub} {
-        background-color: var(--informative-#{$lvl}#{$sub}-surface-default);
-        color: var(--informative-#{$lvl}#{$sub}-content-default);
-        border-color: var(--informative-#{$lvl}#{$sub}-stroke-default);
+        background-color: var(--ui-chip-surface, var(--informative-#{$lvl}#{$sub}-surface-default)); /// Fond de la puce : un seul nom pour les 10 jeux (niveau × sous-niveau), la portée se choisit avec les classes de modificateur.
+        color: var(--ui-chip-color, var(--informative-#{$lvl}#{$sub}-content-default));              /// Couleur du texte et des icônes.
+        border-color: var(--ui-chip-stroke, var(--informative-#{$lvl}#{$sub}-stroke-default));       /// Couleur de bordure.
 
         .ui-chip-remove {
           &:hover:not(:disabled) {
-            background-color: var(--informative-#{$lvl}#{$sub}-surface-hover);
-            color: var(--informative-#{$lvl}#{$sub}-content-hover);
+            background-color: var(--ui-chip-remove-surface-hover, var(--informative-#{$lvl}#{$sub}-surface-hover)); /// Fond du bouton de retrait au survol.
+            color: var(--ui-chip-remove-color-hover, var(--informative-#{$lvl}#{$sub}-content-hover));              /// Couleur du bouton de retrait au survol.
           }
 
           &:focus-visible {
             outline: none;
-            box-shadow: 0 0 0 $focus-ring-width var(--informative-#{$lvl}#{$sub}-content-default);
+            box-shadow: 0 0 0 $focus-ring-width var(--ui-chip-remove-focus-ring-color, var(--informative-#{$lvl}#{$sub}-content-default)); /// Couleur de l'anneau de focus du bouton de retrait.
           }
         }
 
         &._selectable:not(._selected):hover:not(:disabled) {
-          background-color: var(--informative-#{$lvl}#{$sub}-surface-hover);
-          color: var(--informative-#{$lvl}#{$sub}-content-hover);
+          background-color: var(--ui-chip-surface-hover, var(--informative-#{$lvl}#{$sub}-surface-hover)); /// Fond d'une puce sélectionnable au survol.
+          color: var(--ui-chip-color-hover, var(--informative-#{$lvl}#{$sub}-content-hover));              /// Couleur du texte d'une puce sélectionnable au survol.
         }
       }
     }
 
     &._#{$lvl}._selected {
-      background-color: var(--informative-#{$lvl}high-surface-default);
-      color: var(--informative-#{$lvl}high-content-default);
-      border-color: var(--informative-#{$lvl}high-stroke-default);
+      background-color: var(--ui-chip-surface-selected, var(--informative-#{$lvl}high-surface-default)); /// Fond d'une puce sélectionnée.
+      color: var(--ui-chip-color-selected, var(--informative-#{$lvl}high-content-default));              /// Couleur du texte d'une puce sélectionnée.
+      border-color: var(--ui-chip-stroke-selected, var(--informative-#{$lvl}high-stroke-default));       /// Couleur de bordure d'une puce sélectionnée.
 
       &._selectable:hover:not(:disabled) {
-        background-color: var(--informative-#{$lvl}high-surface-hover);
-        color: var(--informative-#{$lvl}high-content-hover);
+        background-color: var(--ui-chip-surface-selected-hover, var(--informative-#{$lvl}high-surface-hover)); /// Fond d'une puce sélectionnée, au survol.
+        color: var(--ui-chip-color-selected-hover, var(--informative-#{$lvl}high-content-hover));              /// Couleur du texte d'une puce sélectionnée, au survol.
       }
     }
 
     // Focus ring for the whole selectable chip (keyboard), per level.
     &._#{$lvl}._selectable:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 $focus-ring-width var(--informative-#{$lvl}high-surface-default);
+      box-shadow: 0 0 0 $focus-ring-width var(--ui-chip-focus-ring-color, var(--informative-#{$lvl}high-surface-default)); /// Couleur de l'anneau de focus d'une puce sélectionnable.
     }
   }
 }

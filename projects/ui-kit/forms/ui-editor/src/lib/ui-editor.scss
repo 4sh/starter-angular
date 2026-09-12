@@ -147,7 +147,7 @@ $editor-color-steps: 900, 700, 500, 300, 100;
         background: transparent;
         @include utils.control-transition(background-color);
       }
-      .ui-field-box:hover { background-color: var(--form-low-surface-hover); }
+      .ui-field-box:hover { background-color: var(--ui-editor-toolbar-select-surface-hover, var(--form-low-surface-hover)); } /// Fond d'un sélecteur de la barre d'outils au survol.
     }
   }
 
@@ -314,10 +314,10 @@ $editor-color-steps: 900, 700, 500, 300, 100;
   flex-shrink: 0;
   font-family: var(--ui-editor-count-font-family, var(--fontfamily-base)); /// Famille typographique du compteur.
   font-size: $count-font-size;
-  color: var(--form-low-content-default);
+  color: var(--ui-editor-count-color, var(--form-low-content-default)); /// Couleur du compteur de caractères.
   user-select: none;
 
   &._small { font-size: $count-font-size-small; }
-  &._over { color: var(--form-error-content-default); }
-  &._disabled { color: var(--form-high-content-disabled); }
+  &._over { color: var(--ui-editor-count-color-over, var(--form-error-content-default)); }        /// Couleur du compteur une fois la limite dépassée.
+  &._disabled { color: var(--ui-editor-count-color-disabled, var(--form-high-content-disabled)); } /// Couleur du compteur, champ désactivé.
 }
