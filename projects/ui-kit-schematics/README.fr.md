@@ -48,6 +48,7 @@ accepter ou à sauter.
 | `ng add @4sh/ui-kit-schematics --skip-mcp`          | ne pas déclarer le serveur MCP (voir ci-dessous)                                      |
 | `ng add @4sh/ui-kit-schematics --gridaflex`         | poser la grille Gridaflex sans question (`--no-gridaflex` pour s'en passer)           |
 | `ng generate @4sh/ui-kit-schematics:add`            | copier d'autres composants (interactif, ou `--components`, ou `--all`)                |
+| `pnpm exec ui-kit-preview`                          | Storybook **jetable** sur tout le kit, avec le thème du projet (voir ci-dessous)      |
 | `ng generate @4sh/ui-kit-schematics:update`         | diff des composants copiés face aux sources publiées                                  |
 | `ng generate @4sh/ui-kit-schematics:update --force` | applique toutes les mises à jour sans diff ni confirmation (**écrase vos retouches**) |
 
@@ -114,6 +115,37 @@ dessus.
 Non repris : les liens `parameters.design` vers notre fichier Figma — vous ne
 pouvez pas l'ouvrir, ils sont retirés à la copie. Remettez votre `node-id` si
 vous en avez un.
+
+### Voir tout le kit avec votre thème (`ui-kit-preview`)
+
+Quand on construit un thème, le geste central est de regarder **l'ensemble** du
+kit avec ses propres valeurs. Un projet qui consomme le kit en paquet ne le
+pouvait pas : son Storybook n'a aucune page de composant, puisqu'il n'a copié
+aucune source.
+
+```bash
+pnpm exec ui-kit-preview          # monte et démarre
+pnpm exec ui-kit-preview --clean  # supprime tout
+```
+
+La commande monte un Storybook **jetable** dans `.ui-kit-preview/` (gitignoré) :
+les stories et les pages MDX du kit, **sans ses sources**. Elle ne touche pas au
+Storybook de votre projet.
+
+Ce que vous y voyez est votre thème, pas le nôtre. La commande ne surcharge que
+le dossier de configuration : les `styles`, `assets` et `stylePreprocessorOptions`
+de votre cible `storybook` sont réutilisés tels quels, donc **vos polices, vos
+jetons, votre preset et votre arborescence d'assets arrivent nativement**, comme
+dans l'application.
+
+La boucle : éditez `src/styles/preset/_preset.scss`, la page se met à jour seule
+— sans rechargement, l'état de la story est préservé. Mesuré à ~6,5 s entre
+l'enregistrement et le composant à jour.
+
+> **Prérequis** : `@4sh/ui-kit` installé, et sa version alignée sur celle de ce
+> paquet — les deux sont publiés ensemble. La commande refuse de démarrer si
+> elles divergent, plutôt que de vous laisser sur une erreur de compilation
+> désignant une story que vous n'avez pas écrite.
 
 ### Assets (polices, images, favicon)
 
@@ -206,7 +238,10 @@ Si vous préférez consommer les composants compilés, sans posséder aucune sou
 installez **[`@4sh/ui-kit`](https://www.npmjs.com/package/@4sh/ui-kit)** et suivez
 son propre README — rien n'est copié, et vous suivez les releases du kit.
 
-Les deux modes ne se combinent pas : choisissez celui qui correspond au projet.
+Les deux modes ne se combinent pas pour un même composant : il est à vous, ou il
+est au kit. En revanche la **fondation** posée ici (styles, jetons, preset,
+Storybook) sert les deux — et `pnpm exec ui-kit-preview` s'adresse justement aux
+projets en mode librairie.
 
 ---
 

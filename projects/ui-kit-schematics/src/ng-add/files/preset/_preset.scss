@@ -1,0 +1,23 @@
+// -----------------------------------------------------------------------------
+// Preset de thème du projet.
+//
+// Chargé par `main.scss` APRÈS les tokens générés : ce que vous posez ici
+// l'emporte, sans toucher à `ui-kit/generated/`, qui est réécrit à chaque
+// `tokens:build`.
+//
+// Deux niveaux de surcharge, du plus large au plus ciblé :
+//
+//   :root {
+//     // 1. Un jeton sémantique — vaut pour tous les composants qui le lisent.
+//     --actions-high-surface-default: #1a56db;
+//
+//     // 2. Un hook de composant — ne vaut que pour lui.
+//     --ui-card-padding: 20px;
+//     --ui-button-font-family: "Inter", sans-serif;
+//   }
+//
+// Les hooks disponibles sont listés dans la section « Theming » de la page
+// Storybook de chaque composant.
+//
+// Volontairement vide : sans surcharge, le kit rend vos tokens tels quels.
+// -----------------------------------------------------------------------------

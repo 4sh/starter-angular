@@ -1,0 +1,14 @@
+/* tsconfig du Storybook JETABLE du kit, écrit par `ui-kit-preview`.
+   Ne l'éditez pas : le dossier entier est réécrit à chaque exécution.
+
+   Il étend celui de votre application pour compiler les stories du kit avec
+   vos propres règles — c'est ce qui fait que ce que vous voyez ici correspond
+   à ce que votre application produira. */
+{
+  "extends": "../tsconfig.app.json",
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true
+  },
+  "include": ["./**/*.ts"]
+}

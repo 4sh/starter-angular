@@ -31,8 +31,9 @@ const HEADER_STYLE: Record<string, (line: string) => string> = {
 // `ui-core/{domaine}/`). Restent la version, et la mention de licence — le
 // fichier quitte le package pour vivre dans le dépôt du consommateur, où plus
 // rien d'autre n'y rattache les termes sous lesquels il est fourni
-// (Apache-2.0 §4b — conserver les mentions dans les copies).
-function traceabilityHeader(kitVersion: string, ext: string): string {
+// (Apache-2.0 §4b — conserver les mentions dans les copies). Même en-tête sur
+// la doc déposée par le mode preview (FSHSP-202), pour la même raison.
+export function traceabilityHeader(kitVersion: string, ext: string): string {
   const make = HEADER_STYLE[ext];
   if (!make) return '';
   return make(`@4sh/ui-kit@${kitVersion} — Apache-2.0 — Copyright 2026 4SH.`);
