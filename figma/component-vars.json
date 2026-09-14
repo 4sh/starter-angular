@@ -10,10 +10,10 @@
         "Mode 1"
       ],
       "counts": {
-        "tokens": 1395,
-        "alias": 1243,
-        "literal": 152,
-        "skipped": 62,
+        "tokens": 1417,
+        "alias": 1260,
+        "literal": 157,
+        "skipped": 66,
         "derivedDescriptions": 223
       },
       "aliasTargets": [
@@ -167,6 +167,26 @@
         {
           "cssVar": "--ui-image-object-fit",
           "component": "ui-image",
+          "reason": "sans équivalent variable Figma (durée, easing, curseur, plan d’empilement, ratio)."
+        },
+        {
+          "cssVar": "--ui-image-preview-media-max-height",
+          "component": "ui-image-preview",
+          "reason": "unité relative `%` : sa valeur dépend du contexte de rendu, une variable Figma ne peut pas la porter."
+        },
+        {
+          "cssVar": "--ui-image-preview-media-max-width",
+          "component": "ui-image-preview",
+          "reason": "unité relative `%` : sa valeur dépend du contexte de rendu, une variable Figma ne peut pas la porter."
+        },
+        {
+          "cssVar": "--ui-image-preview-media-shadow",
+          "component": "ui-image-preview",
+          "reason": "`--shadow-default-lg` n'est pas un token du pipeline : rien à aliaser."
+        },
+        {
+          "cssVar": "--ui-image-preview-z-index",
+          "component": "ui-image-preview",
           "reason": "sans équivalent variable Figma (durée, easing, curseur, plan d’empilement, ratio)."
         },
         {
@@ -15687,6 +15707,75 @@
     }
   },
   "image": {
+    "indicator": {
+      "background": {
+        "$value": "{primitives.black.50}",
+        "$type": "color",
+        "$description": "Voile posé sur l'image au survol de l'aperçu.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "COLOR",
+            "scopes": [
+              "FRAME_FILL",
+              "SHAPE_FILL"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-image-indicator-background)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-image-indicator-background",
+            "component": "ui-image",
+            "entryPoint": "@4sh/ui-kit/base/ui-image",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "color": {
+        "$value": "{primitives.white.base}",
+        "$type": "color",
+        "$description": "Couleur de l'indicateur d'aperçu.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "COLOR",
+            "scopes": [
+              "ALL_FILLS"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-image-indicator-color)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-image-indicator-color",
+            "component": "ui-image",
+            "entryPoint": "@4sh/ui-kit/base/ui-image",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "font-size": {
+        "$value": "{responsive.size.typography.text.lg}",
+        "$type": "dimension",
+        "$description": "Taille de l'indicateur d'aperçu.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "FONT_SIZE"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-image-indicator-font-size)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-image-indicator-font-size",
+            "component": "ui-image",
+            "entryPoint": "@4sh/ui-kit/base/ui-image",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
     "placeholder": {
       "color": {
         "$value": "{semantics.global.text.muted}",
@@ -15793,6 +15882,443 @@
           },
           "com.4sh.ui-kit": {
             "cssVar": "--ui-image-placeholder-surface",
+            "component": "ui-image",
+            "entryPoint": "@4sh/ui-kit/base/ui-image",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "preview-action": {
+      "color": {
+        "$value": "{primitives.white.base}",
+        "$type": "color",
+        "$description": "Couleur d'une action.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "COLOR",
+            "scopes": [
+              "ALL_FILLS"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-image-preview-action-color)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-image-preview-action-color",
+            "component": "ui-image-preview",
+            "entryPoint": "@4sh/ui-kit/base/ui-image",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "opacity-disabled": {
+        "$value": "0.4",
+        "$type": "number",
+        "$description": "Opacité d'une action indisponible.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "OPACITY"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-image-preview-action-opacity-disabled)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-image-preview-action-opacity-disabled",
+            "component": "ui-image-preview",
+            "entryPoint": "@4sh/ui-kit/base/ui-image",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "radius": {
+        "$value": "{metrics.radius.full}",
+        "$type": "dimension",
+        "$description": "Rayon d'une action.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "CORNER_RADIUS"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-image-preview-action-radius)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-image-preview-action-radius",
+            "component": "ui-image-preview",
+            "entryPoint": "@4sh/ui-kit/base/ui-image",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "size": {
+        "$value": "36px",
+        "$type": "dimension",
+        "$description": "Côté de la cible tactile d'une action.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-image-preview-action-size)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-image-preview-action-size",
+            "component": "ui-image-preview",
+            "entryPoint": "@4sh/ui-kit/base/ui-image",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "surface-hover": {
+        "$value": "{primitives.white.20}",
+        "$type": "color",
+        "$description": "Fond d'une action au survol.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "COLOR",
+            "scopes": [
+              "FRAME_FILL",
+              "SHAPE_FILL"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-image-preview-action-surface-hover)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-image-preview-action-surface-hover",
+            "component": "ui-image-preview",
+            "entryPoint": "@4sh/ui-kit/base/ui-image",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "preview-action-focus-ring": {
+      "color": {
+        "$value": "{semantics.global.border.focus}",
+        "$type": "color",
+        "$description": "Couleur de l'anneau de focus d'une action.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "COLOR",
+            "scopes": [
+              "ALL_FILLS"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-image-preview-action-focus-ring-color)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-image-preview-action-focus-ring-color",
+            "component": "ui-image-preview",
+            "entryPoint": "@4sh/ui-kit/base/ui-image",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "preview": {
+      "focus-ring-width": {
+        "$value": "{metrics.units.2xs}",
+        "$type": "dimension",
+        "$description": "Épaisseur de l'anneau de focus des actions.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "STROKE_FLOAT"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-image-preview-focus-ring-width)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-image-preview-focus-ring-width",
+            "component": "ui-image-preview",
+            "entryPoint": "@4sh/ui-kit/base/ui-image",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "gap": {
+        "$value": "{metrics.units.md}",
+        "$type": "dimension",
+        "$description": "Espace entre la barre d'actions et l'image.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-image-preview-gap)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-image-preview-gap",
+            "component": "ui-image-preview",
+            "entryPoint": "@4sh/ui-kit/base/ui-image",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "padding": {
+        "$value": "{metrics.units.lg}",
+        "$type": "dimension",
+        "$description": "Inset du masque autour de l'image.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-image-preview-padding)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-image-preview-padding",
+            "component": "ui-image-preview",
+            "entryPoint": "@4sh/ui-kit/base/ui-image",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "preview-mask": {
+      "background": {
+        "$value": "{primitives.black.80}",
+        "$type": "color",
+        "$description": "Assombrissement du masque.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "COLOR",
+            "scopes": [
+              "FRAME_FILL",
+              "SHAPE_FILL"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-image-preview-mask-background)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-image-preview-mask-background",
+            "component": "ui-image-preview",
+            "entryPoint": "@4sh/ui-kit/base/ui-image",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "preview-media": {
+      "max-height-rotated": {
+        "$value": "100cqw",
+        "$type": "string",
+        "$description": "Hauteur maximale de l'image après un quart de tour.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-image-preview-media-max-height-rotated)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-image-preview-media-max-height-rotated",
+            "component": "ui-image-preview",
+            "entryPoint": "@4sh/ui-kit/base/ui-image",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "max-width-rotated": {
+        "$value": "100cqh",
+        "$type": "string",
+        "$description": "Largeur maximale de l'image après un quart de tour.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-image-preview-media-max-width-rotated)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-image-preview-media-max-width-rotated",
+            "component": "ui-image-preview",
+            "entryPoint": "@4sh/ui-kit/base/ui-image",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "preview-toolbar": {
+      "background": {
+        "$value": "{primitives.black.50}",
+        "$type": "color",
+        "$description": "Fond de la barre d'actions.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "COLOR",
+            "scopes": [
+              "FRAME_FILL",
+              "SHAPE_FILL"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-image-preview-toolbar-background)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-image-preview-toolbar-background",
+            "component": "ui-image-preview",
+            "entryPoint": "@4sh/ui-kit/base/ui-image",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "gap": {
+        "$value": "{metrics.units.2xs}",
+        "$type": "dimension",
+        "$description": "Espacement entre les actions.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-image-preview-toolbar-gap)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-image-preview-toolbar-gap",
+            "component": "ui-image-preview",
+            "entryPoint": "@4sh/ui-kit/base/ui-image",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "padding": {
+        "$value": "{metrics.units.2xs}",
+        "$type": "dimension",
+        "$description": "Inset de la barre d'actions.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-image-preview-toolbar-padding)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-image-preview-toolbar-padding",
+            "component": "ui-image-preview",
+            "entryPoint": "@4sh/ui-kit/base/ui-image",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "radius": {
+        "$value": "{metrics.radius.full}",
+        "$type": "dimension",
+        "$description": "Rayon de la barre d'actions.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "CORNER_RADIUS"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-image-preview-toolbar-radius)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-image-preview-toolbar-radius",
+            "component": "ui-image-preview",
+            "entryPoint": "@4sh/ui-kit/base/ui-image",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "trigger-focus-ring": {
+      "color": {
+        "$value": "{semantics.global.border.focus}",
+        "$type": "color",
+        "$description": "Couleur de l'anneau de focus du déclencheur d'aperçu.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "COLOR",
+            "scopes": [
+              "ALL_FILLS"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-image-trigger-focus-ring-color)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-image-trigger-focus-ring-color",
+            "component": "ui-image",
+            "entryPoint": "@4sh/ui-kit/base/ui-image",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "trigger": {
+      "focus-ring-width": {
+        "$value": "{metrics.units.2xs}",
+        "$type": "dimension",
+        "$description": "Épaisseur de l'anneau de focus du déclencheur d'aperçu.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "STROKE_FLOAT"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-image-trigger-focus-ring-width)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-image-trigger-focus-ring-width",
+            "component": "ui-image",
+            "entryPoint": "@4sh/ui-kit/base/ui-image",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "radius": {
+        "$value": "0",
+        "$type": "number",
+        "$description": "Rayon du déclencheur d'aperçu, suivi par le voile.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "CORNER_RADIUS"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-image-trigger-radius)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-image-trigger-radius",
             "component": "ui-image",
             "entryPoint": "@4sh/ui-kit/base/ui-image",
             "descriptionSource": "scss"

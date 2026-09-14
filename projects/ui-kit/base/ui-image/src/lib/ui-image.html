@@ -1,40 +1,106 @@
-@if (showPlaceholder()) {
-  <div
-    class="ui-image-placeholder"
-    [style.width]="cssWidth()"
-    [style.height]="cssHeight()"
-    [attr.role]="alt() ? 'img' : null"
-    [attr.aria-label]="alt() || null"
-    [attr.aria-hidden]="alt() ? null : true"
+<!-- The media is written once and rendered either bare, or inside the preview
+     trigger — a `<button>` cannot wrap three `@else if` branches otherwise. -->
+<ng-template #media>
+  @if (securedLoading()) {
+    <div
+      class="ui-image-placeholder _loading"
+      [style.width]="cssWidth()"
+      [style.height]="cssHeight()"
+    >
+      <ui-spinner size="small" [label]="loadingLabel()" [ariaLabel]="loadingAriaLabel()" />
+    </div>
+  } @else if (showPlaceholder()) {
+    <div
+      class="ui-image-placeholder"
+      [style.width]="cssWidth()"
+      [style.height]="cssHeight()"
+      [attr.role]="alt() ? 'img' : null"
+      [attr.aria-label]="alt() || null"
+      [attr.aria-hidden]="alt() ? null : true"
+    >
+      <ui-icon name="image" />
+    </div>
+  } @else if (isInlineSvg() && !primaryFailed()) {
+    <!--
+      EXCEPTION JUSTIFIÉE (FSHSP-177) : le SVG local est inliné pour hériter du CSS
+      (currentColor, thème) — un <img> ne le permet pas. La valeur est assainie par
+      sanitizeInlineSvg() puis passée à bypassSecurityTrustHtml() dans ui-image.ts.
+      Registre : docs/SECURITY-PRACTICES.md.
+      Une paire disable/enable et non un disable-next-line : un commentaire HTML ne
+      peut pas se glisser à l'intérieur d'une balise ouvrante.
+    -->
+    <!-- eslint-disable no-restricted-syntax -->
+    <div
+      class="ui-image-svg"
+      [style.width]="cssWidth()"
+      [style.height]="cssHeight()"
+      [innerHTML]="svgContent()"
+    ></div>
+    <!-- eslint-enable no-restricted-syntax -->
+  } @else if (isRawSrc()) {
+    <!-- `blob:` / `data:` : NgOptimizedImage refuses both, a plain <img> shows them. -->
+    <img
+      class="ui-image"
+      [src]="displayedSrc()!"
+      [alt]="alt() || ''"
+      [style.width]="!fill() ? cssWidth() : null"
+      [style.height]="!fill() ? cssHeight() : null"
+      [attr.loading]="priority() ? null : 'lazy'"
+      [attr.fetchpriority]="priority() ? 'high' : null"
+      (error)="onImgError()"
+    />
+  } @else {
+    <img
+      class="ui-image"
+      [ngSrc]="displayedSrc()!"
+      [alt]="alt() || ''"
+      [width]="!fill() ? width() : null"
+      [height]="!fill() ? (height() ? height() : width()) : null"
+      [fill]="fill()"
+      [priority]="priority()"
+      (error)="onImgError()"
+    />
+  }
+</ng-template>
+
+@if (canPreview()) {
+  <button
+    type="button"
+    class="ui-image-trigger"
+    aria-haspopup="dialog"
+    [attr.aria-label]="previewAriaLabel() || null"
+    (click)="previewVisible.set(true)"
   >
-    <ui-icon name="image" />
-  </div>
-} @else if (isInlineSvg() && !primaryFailed()) {
-  <!--
-    EXCEPTION JUSTIFIÉE (FSHSP-177) : le SVG local est inliné pour hériter du CSS
-    (currentColor, thème) — un <img> ne le permet pas. La valeur est assainie par
-    sanitizeInlineSvg() puis passée à bypassSecurityTrustHtml() dans ui-image.ts.
-    Registre : docs/SECURITY-PRACTICES.md.
-    Une paire disable/enable et non un disable-next-line : un commentaire HTML ne
-    peut pas se glisser à l'intérieur d'une balise ouvrante.
-  -->
-  <!-- eslint-disable no-restricted-syntax -->
-  <div
-    class="ui-image-svg"
-    [style.width]="cssWidth()"
-    [style.height]="cssHeight()"
-    [innerHTML]="svgContent()"
-  ></div>
-  <!-- eslint-enable no-restricted-syntax -->
+    <ng-container [ngTemplateOutlet]="media" />
+
+    <!-- Decorative: the affordance is already carried by the button's role and
+         its accessible name. -->
+    <span class="ui-image-indicator" aria-hidden="true">
+      @if (previewIndicator(); as indicator) {
+        <ng-container [ngTemplateOutlet]="indicator" />
+      } @else {
+        <ui-icon name="magnifying-glass-plus" />
+      }
+    </span>
+  </button>
 } @else {
-  <img
-    class="ui-image"
-    [ngSrc]="displayedSrc()!"
+  <ng-container [ngTemplateOutlet]="media" />
+}
+
+@if (previewVisible()) {
+  <ui-image-preview
+    [src]="displayedSrc()!"
     [alt]="alt() || ''"
-    [width]="!fill() ? width() : null"
-    [height]="!fill() ? (height() ? height() : width()) : null"
-    [fill]="fill()"
-    [priority]="priority()"
-    (error)="onImgError()"
+    [ariaLabel]="previewDialogAriaLabel()"
+    [zoomStep]="zoomStep()"
+    [minZoom]="minZoom()"
+    [maxZoom]="maxZoom()"
+    [downloadable]="downloadable()"
+    [downloadName]="downloadName()"
+    (closed)="previewVisible.set(false)"
+    [uiMotion]="'fade'"
+    #previewMotion="uiMotion"
+    [animate.enter]="previewMotion.enter()"
+    [animate.leave]="previewMotion.leave()"
   />
 }

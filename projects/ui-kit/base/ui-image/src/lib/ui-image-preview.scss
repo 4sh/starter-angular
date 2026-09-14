@@ -1,0 +1,153 @@
+@use 'utils';
+
+// =====================================================================
+// ui-image-preview : co-located styles. All values come from design tokens.
+//
+// Structure:
+//   :host                        → viewport mask (dark, always — it is a photo
+//                                  viewer, not a themed surface)
+//   .ui-image-preview            → the dialog: toolbar + stage, focus lives here
+//   .ui-image-preview-stage      → click-outside target; the image floats in it
+//
+// The mask stays dark in both modes: the point is to take the page out of the
+// way of the image. Its colours are therefore primitives behind hooks, the
+// exception the token rules reserve for backdrops.
+// =====================================================================
+
+// --- Config -----------------------------------------------------------
+$z-index: var(--ui-image-preview-z-index, 1100);                                 /// Palier d'empilement du masque.
+$mask-background: var(--ui-image-preview-mask-background, var(--primitives-black-80)); /// Assombrissement du masque.
+$padding: var(--ui-image-preview-padding, var(--units-lg));                      /// Inset du masque autour de l'image.
+$gap: var(--ui-image-preview-gap, var(--units-md));                              /// Espace entre la barre d'actions et l'image.
+
+$toolbar-gap: var(--ui-image-preview-toolbar-gap, var(--units-2xs));             /// Espacement entre les actions.
+$toolbar-padding: var(--ui-image-preview-toolbar-padding, var(--units-2xs));     /// Inset de la barre d'actions.
+$toolbar-radius: var(--ui-image-preview-toolbar-radius, var(--radius-full));     /// Rayon de la barre d'actions.
+$toolbar-background: var(--ui-image-preview-toolbar-background, var(--primitives-black-50)); /// Fond de la barre d'actions.
+
+$action-size: var(--ui-image-preview-action-size, #{utils.rem-calc(36)});        /// Côté de la cible tactile d'une action.
+$action-radius: var(--ui-image-preview-action-radius, var(--radius-full));       /// Rayon d'une action.
+$action-opacity-disabled: var(--ui-image-preview-action-opacity-disabled, 0.4);  /// Opacité d'une action indisponible.
+$focus-ring-width: var(--ui-image-preview-focus-ring-width, #{utils.$focus-ring-width}); /// Épaisseur de l'anneau de focus des actions.
+
+$media-max-width: var(--ui-image-preview-media-max-width, 100%);                 /// Largeur maximale de l'image agrandie.
+$media-max-height: var(--ui-image-preview-media-max-height, 100%);               /// Hauteur maximale de l'image agrandie.
+$media-shadow: var(--ui-image-preview-media-shadow, var(--shadow-default-lg));   /// Ombre de l'image agrandie.
+
+// A quarter turn swaps the axes of what is DRAWN, never of the layout box — so
+// the bounds have to be swapped too, or a landscape photo turned upright is cut
+// off at top and bottom. Container units read the stage without measuring it.
+$media-max-width-rotated: var(--ui-image-preview-media-max-width-rotated, 100cqh);   /// Largeur maximale de l'image après un quart de tour.
+$media-max-height-rotated: var(--ui-image-preview-media-max-height-rotated, 100cqw); /// Hauteur maximale de l'image après un quart de tour.
+
+// --- Mask -------------------------------------------------------------
+:host {
+  position: fixed;
+  inset: 0;
+  z-index: $z-index;
+  display: block;
+  background-color: $mask-background;
+}
+
+.ui-image-preview {
+  display: flex;
+  flex-direction: column;
+  gap: $gap;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  padding: $padding;
+  outline: none;
+
+  // --- Toolbar --------------------------------------------------------
+  &-toolbar {
+    flex: 0 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-self: center;
+    justify-content: center;
+    gap: $toolbar-gap;
+    padding: $toolbar-padding;
+    border-radius: $toolbar-radius;
+    background-color: $toolbar-background;
+  }
+
+  // Native icon buttons, not ui-button: they sit on the mask, not on a surface.
+  &-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: $action-size;
+    height: $action-size;
+    padding: 0;
+    border: none;
+    border-radius: $action-radius;
+    background: transparent;
+    color: var(--ui-image-preview-action-color, var(--primitives-white-base)); /// Couleur d'une action.
+    line-height: 0;
+    text-decoration: none;
+    cursor: pointer;
+    @include utils.control-transition(background-color, color);
+
+    &:hover:not([aria-disabled]) {
+      background-color: var(--ui-image-preview-action-surface-hover, var(--primitives-white-20)); /// Fond d'une action au survol.
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 $focus-ring-width var(--ui-image-preview-action-focus-ring-color, var(--global-border-focus)); /// Couleur de l'anneau de focus d'une action.
+    }
+
+    // `aria-disabled`, not `disabled` — see the template's note on focus.
+    &[aria-disabled='true'] {
+      opacity: $action-opacity-disabled;
+      cursor: not-allowed;
+    }
+
+    @include utils.motion-reduce {
+      transition-duration: 0.01ms;
+    }
+  }
+
+  // --- Stage ----------------------------------------------------------
+  // Fills what the toolbar leaves; a click landing here (never on the image) is
+  // a click outside.
+  &-stage {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 0;
+    overflow: hidden;
+    // Reference box of the `cq` units the rotated media reads.
+    container-type: size;
+  }
+
+  &-media {
+    max-width: $media-max-width;
+    max-height: $media-max-height;
+    box-shadow: $media-shadow;
+    object-fit: contain;
+    // The transform is the only animated property, and it is written inline by
+    // the component — nothing here may fight it.
+    transform-origin: center;
+    // The wheel zooms and the drag pans: the browser must not also scroll.
+    touch-action: none;
+    user-select: none;
+    -webkit-user-drag: none;
+
+    &._rotated {
+      max-width: $media-max-width-rotated;
+      max-height: $media-max-height-rotated;
+    }
+
+    &._pannable {
+      cursor: grab;
+
+      &:active {
+        cursor: grabbing;
+      }
+    }
+  }
+}
