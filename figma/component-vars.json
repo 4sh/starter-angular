@@ -10,8 +10,8 @@
         "Mode 1"
       ],
       "counts": {
-        "tokens": 1417,
-        "alias": 1260,
+        "tokens": 1418,
+        "alias": 1261,
         "literal": 157,
         "skipped": 66,
         "derivedDescriptions": 223
@@ -16323,6 +16323,30 @@
             "entryPoint": "@4sh/ui-kit/base/ui-image",
             "descriptionSource": "scss"
           }
+        }
+      }
+    }
+  },
+  "input-date": {
+    "font-size-small": {
+      "$value": "{responsive.size.typography.text.md}",
+      "$type": "dimension",
+      "$description": "Taille de police du contrôle, variante `small`.",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "FONT_SIZE"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-input-date-font-size-small)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-input-date-font-size-small",
+          "component": "ui-input-date",
+          "entryPoint": "@4sh/ui-kit/forms/ui-input-date",
+          "descriptionSource": "scss"
         }
       }
     }
