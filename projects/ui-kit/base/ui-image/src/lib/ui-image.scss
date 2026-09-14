@@ -1,8 +1,17 @@
+@use 'utils';
+
 $object-fit: var(--ui-image-object-fit, contain);                                  /// Ajustement de l'image dans sa boîte.
 
 $placeholder-min-width: var(--ui-image-placeholder-min-width, var(--units-xl));    /// Largeur minimale du placeholder (visible même sans dimension imposée).
 $placeholder-min-height: var(--ui-image-placeholder-min-height, var(--units-xl));  /// Hauteur minimale du placeholder.
 $placeholder-radius: var(--ui-image-placeholder-radius, var(--radius-default));    /// Rayon des coins du placeholder.
+
+// Square by default, like the image it wraps: a rounded veil over square corners
+// leaves four visible slivers. A project that rounds its images sets this once.
+$trigger-radius: var(--ui-image-trigger-radius, 0);                                /// Rayon du déclencheur d'aperçu, suivi par le voile.
+$trigger-focus-ring-width: var(--ui-image-trigger-focus-ring-width, #{utils.$focus-ring-width}); /// Épaisseur de l'anneau de focus du déclencheur d'aperçu.
+
+$indicator-font-size: var(--ui-image-indicator-font-size, var(--size-typography-text-lg)); /// Taille de l'indicateur d'aperçu.
 
 :host {
   display: flex;
@@ -33,4 +42,49 @@ $placeholder-radius: var(--ui-image-placeholder-radius, var(--radius-default)); 
   border-radius: $placeholder-radius;
   background: var(--ui-image-placeholder-surface, var(--global-background-muted)); /// Fond de la vignette de repli.
   color: var(--ui-image-placeholder-color, var(--global-text-muted));              /// Couleur de l'icône de la vignette de repli.
+}
+
+// --- Preview trigger --------------------------------------------------
+// A native button so the enlarged view is reachable at the keyboard; it hugs
+// the image and adds no box of its own.
+.ui-image-trigger {
+  position: relative;
+  display: inline-flex;
+  padding: 0;
+  border: none;
+  border-radius: $trigger-radius;
+  background: none;
+  line-height: 0;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 $trigger-focus-ring-width var(--ui-image-trigger-focus-ring-color, var(--global-border-focus)); /// Couleur de l'anneau de focus du déclencheur d'aperçu.
+  }
+
+  // The veil is the affordance: hidden at rest, revealed on hover and on
+  // keyboard focus alike — a pointer-only hint would leave the keyboard out.
+  &:hover .ui-image-indicator,
+  &:focus-visible .ui-image-indicator {
+    opacity: 1;
+  }
+}
+
+.ui-image-indicator {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: inherit;
+  background: var(--ui-image-indicator-background, var(--primitives-black-50)); /// Voile posé sur l'image au survol de l'aperçu.
+  color: var(--ui-image-indicator-color, var(--primitives-white-base));         /// Couleur de l'indicateur d'aperçu.
+  font-size: $indicator-font-size;
+  line-height: 1;
+  opacity: 0;
+  @include utils.control-transition(opacity);
+
+  @include utils.motion-reduce {
+    transition-duration: 0.01ms;
+  }
 }

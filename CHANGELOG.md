@@ -16,6 +16,43 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+### Added
+
+- **`ui-image` : source sécurisée, payload en ligne et vue agrandie** (FSHSP-198). Le composant ne
+  savait afficher qu'une URL que le navigateur peut charger seul. Trois manques bloquants :
+
+  - **`secured`** — un `<img src>` est une requête **navigateur** : aucun intercepteur Angular ne la
+    voit, donc aucun `Authorization` ne l'accompagne, et un endpoint protégé par jeton répondait 401
+    sur une image vide. L'URL est désormais récupérable par `HttpClient` (`httpResource.blob()`), donc
+    à travers les intercepteurs de l'application ; la réponse est affichée depuis une **object URL
+    révoquée** au changement de source **et** à la destruction du composant — sans quoi une liste
+    d'images sécurisées fait fuir un blob par rendu, retenu jusqu'à la fermeture de l'onglet. États de
+    chargement (`loadingLabel`/`loadingAriaLabel`, `ui-spinner`) et d'erreur (placeholder tokenisé +
+    `loadFailed`, seule voie de signalement puisqu'un échec HTTP n'atteint jamais un `<img>`) couverts,
+    `withCredentials` pour une session par cookie. Le CORS s'applique là où un `<img>` y échappe : les
+    en-têtes attendus sont documentés dans la page du composant. 5 tests verrouillent la révocation.
+  - **`data:` / base64** — `NgOptimizedImage` refuse ces URL ; elles sont détectées et rendues par un
+    `<img>` nu, pour ce qu'une API renvoie déjà encodé (miniature, signature, QR code).
+  - **`preview`** — l'image devient un `<button>` qui ouvre une vue agrandie (`ui-image-preview`, même
+    point d'entrée) : zoom borné (`zoomStep`/`minZoom`/`maxZoom`, barre d'outils, molette, `+`/`-`),
+    rotation dans les deux sens, déplacement au glisser et aux flèches, réinitialisation (`0`),
+    téléchargement optionnel (`downloadable`/`downloadName`). Ouverture aussi pilotable par le
+    `model` two-way `previewVisible`. Le voile affiché au survol **et au focus clavier** porte une
+    loupe, remplaçable par le template projeté `#previewIndicator`.
+    - **A11y** : piège à focus CDK avec restitution du focus au déclencheur, `role="dialog"` +
+      `aria-modal`, `Échap`, verrou de défilement d'arrière-plan, `aria-haspopup="dialog"` sur le
+      déclencheur. Les actions indisponibles sont `aria-disabled` et non `disabled` : un vrai
+      `disabled` fait tomber le focus sur le `body` dès que le bouton qui le porte atteint une borne,
+      et `Échap` n'atteint alors plus la boîte de dialogue. Vérifié en Storybook headless (cycle de
+      tabulation, restitution du focus, verrou de défilement relâché).
+    - Un quart de tour échange les axes de ce qui est **dessiné**, jamais de la boîte de mise en page :
+      les bornes sont échangées avec (`100cqh`/`100cqw`), sans quoi une photo en paysage redressée
+      était coupée en haut et en bas.
+  - **Chargement paresseux** : déjà acquis sur les deux chemins de rendu — `NgOptimizedImage` pose
+    `loading="lazy"` hors `priority`, et le `<img>` nu (`blob:`, `data:`) reçoit le même attribut.
+  - 24 hooks `--ui-image-*` / `--ui-image-preview-*` ajoutés au fichier de thème. Le masque de
+    l'aperçu reste sombre dans les deux modes — c'est un visionneur de photo, pas une surface thémée.
+
 ## [0.9.0] - 2026-09-14
 
 ### Added

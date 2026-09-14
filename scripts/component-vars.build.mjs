@@ -89,6 +89,7 @@ const MODIFIERS = new Set([
   'inline',
   'rounded',
   'square',
+  'rotated',
   'open',
   'closed',
   'collapsed',

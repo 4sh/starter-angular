@@ -1,4 +1,10 @@
-import { Meta, StoryObj, applicationConfig, componentWrapperDecorator } from '@storybook/angular';
+import {
+  Meta,
+  StoryObj,
+  applicationConfig,
+  componentWrapperDecorator,
+  moduleMetadata,
+} from '@storybook/angular';
 import { provideHttpClient } from '@angular/common/http';
 import { Component, effect, inject, input, signal, Injectable, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -62,6 +68,17 @@ class MockBrandService {
       [alt]="alt()"
       [priority]="priority()"
       [fill]="fill()"
+      [secured]="secured()"
+      [withCredentials]="withCredentials()"
+      [loadingLabel]="loadingLabel()"
+      [preview]="preview()"
+      [previewAriaLabel]="previewAriaLabel()"
+      [previewDialogAriaLabel]="previewDialogAriaLabel()"
+      [downloadable]="downloadable()"
+      [downloadName]="downloadName()"
+      [zoomStep]="zoomStep()"
+      [minZoom]="minZoom()"
+      [maxZoom]="maxZoom()"
     ></ui-image>
   `,
 })
@@ -79,6 +96,17 @@ class StorybookWrapper {
   alt = input<string>();
   priority = input(false);
   fill = input(false);
+  secured = input(false);
+  withCredentials = input(false);
+  loadingLabel = input<string>();
+  preview = input(false);
+  previewAriaLabel = input<string>();
+  previewDialogAriaLabel = input('Aperçu de l’image');
+  downloadable = input(false);
+  downloadName = input<string>();
+  zoomStep = input(0.25);
+  minZoom = input(0.5);
+  maxZoom = input(4);
   brandName = input('common');
 
   constructor() {
@@ -153,6 +181,63 @@ const meta: Meta<StorybookWrapper> = {
       description: "L'image remplit son conteneur parent (position: relative requis)",
       table: { defaultValue: { summary: 'false' } },
     },
+    secured: {
+      control: 'boolean',
+      description:
+        'Récupère `src` via HttpClient (intercepteurs, jeton) puis affiche le Blob depuis une object URL révoquée',
+      table: { defaultValue: { summary: 'false' } },
+    },
+    withCredentials: {
+      control: 'boolean',
+      description:
+        'Envoie les cookies/identifiants TLS avec la requête `secured` (session cross-origin)',
+      table: { defaultValue: { summary: 'false' } },
+    },
+    loadingLabel: {
+      control: 'text',
+      description: "Texte visible de l'indicateur de chargement d'une source `secured`",
+      table: { defaultValue: { summary: 'undefined' } },
+    },
+    preview: {
+      control: 'boolean',
+      description: "Un clic sur l'image ouvre la vue agrandie (zoom, rotation, déplacement)",
+      table: { defaultValue: { summary: 'false' } },
+    },
+    previewAriaLabel: {
+      control: 'text',
+      description: "Nom accessible du déclencheur d'aperçu (par défaut : le `alt` de l'image)",
+      table: { defaultValue: { summary: 'undefined' } },
+    },
+    previewDialogAriaLabel: {
+      control: 'text',
+      description: 'Nom accessible de la boîte de dialogue de la vue agrandie',
+      table: { defaultValue: { summary: "'Aperçu de l’image'" } },
+    },
+    downloadable: {
+      control: 'boolean',
+      description: "Ajoute une action de téléchargement dans la barre d'outils de l'aperçu",
+      table: { defaultValue: { summary: 'false' } },
+    },
+    downloadName: {
+      control: 'text',
+      description: "Nom de fichier proposé par l'action de téléchargement",
+      table: { defaultValue: { summary: 'undefined' } },
+    },
+    zoomStep: {
+      control: { type: 'number', step: 0.05 },
+      description: "Pas de zoom d'un clic, d'un cran de molette ou d'une touche `+`/`-`",
+      table: { defaultValue: { summary: '0.25' } },
+    },
+    minZoom: {
+      control: { type: 'number', step: 0.1 },
+      description: 'Borne basse du zoom',
+      table: { defaultValue: { summary: '0.5' } },
+    },
+    maxZoom: {
+      control: { type: 'number', step: 0.5 },
+      description: 'Borne haute du zoom',
+      table: { defaultValue: { summary: '4' } },
+    },
     brandName: {
       control: 'select',
       options: ['common', 'themeone', 'themetwo', 'themethree'],
@@ -166,6 +251,14 @@ const meta: Meta<StorybookWrapper> = {
     brandName: 'common',
     priority: false,
     fill: false,
+    secured: false,
+    withCredentials: false,
+    preview: false,
+    previewDialogAriaLabel: 'Aperçu de l’image',
+    downloadable: false,
+    zoomStep: 0.25,
+    minZoom: 0.5,
+    maxZoom: 4,
     width: 200, // Valeur par défaut pour voir quelque chose
   },
 };
@@ -379,4 +472,142 @@ export const Test_Fill_Container: Story = {
     brandName: 'common',
     alt: 'Test Fill Mode',
   },
+};
+
+// =========================================================
+// SECTION 6 : SOURCE SÉCURISÉE (input `secured`)
+// =========================================================
+
+/**
+ * `secured` récupère l'URL via `HttpClient` — donc à travers les intercepteurs de
+ * l'application, seul moyen d'ajouter un `Authorization` : un `<img src>` est une
+ * requête navigateur nue. Le `Blob` reçu est affiché depuis une object URL,
+ * révoquée au changement de source et à la destruction du composant.
+ *
+ * Ici l'endpoint est public (rien à intercepter) : ce que la story montre, c'est le
+ * chemin de récupération, l'indicateur de chargement puis le rendu `blob:`.
+ */
+export const Secured_Source: Story = {
+  args: {
+    src: 'https://picsum.photos/id/1025/400/300',
+    secured: true,
+    width: 400,
+    height: 300,
+    alt: 'Image récupérée via HttpClient',
+  },
+};
+
+/** Endpoint en échec : le placeholder tokenisé prend le relais et `loadFailed` émet l'URL. */
+export const Secured_Error: Story = {
+  args: {
+    src: './api/nope-forbidden.jpg',
+    secured: true,
+    width: 200,
+    height: 200,
+    alt: 'Endpoint sécurisé en échec',
+  },
+};
+
+// =========================================================
+// SECTION 7 : PAYLOAD EN LIGNE (data URL)
+// =========================================================
+
+/** Une `data:` URL est déjà l'image : elle passe par un `<img>` nu, `NgOptimizedImage` la refusant. */
+export const Data_Url: Story = {
+  args: {
+    src: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNDAiIGhlaWdodD0iMTYwIiB2aWV3Qm94PSIwIDAgMjQwIDE2MCI+PHJlY3Qgd2lkdGg9IjI0MCIgaGVpZ2h0PSIxNjAiIHJ4PSIxMiIgZmlsbD0iIzRjMWQ5NSIvPjxjaXJjbGUgY3g9IjcwIiBjeT0iNzAiIHI9IjM0IiBmaWxsPSIjYzRiNWZkIi8+PHBhdGggZD0iTTE2IDE0OCBMOTIgNzYgTDE0NiAxMzAgTDE4MiA5OCBMMjI0IDE0OCBaIiBmaWxsPSIjYTc4YmZhIi8+PHRleHQgeD0iMTIwIiB5PSIyNiIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiNlZGU5ZmUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPmRhdGEgVVJMPC90ZXh0Pjwvc3ZnPg==',
+    width: 240,
+    height: 160,
+    alt: 'Image encodée en base64 dans son URL',
+  },
+};
+
+// =========================================================
+// SECTION 8 : APERÇU (input `preview`)
+// =========================================================
+
+/** `preview` transforme l'image en déclencheur : au clic, la vue agrandie s'ouvre. */
+export const Preview_Basic: Story = {
+  args: {
+    src: 'https://picsum.photos/id/1015/1200/800',
+    preview: true,
+    width: 300,
+    height: 200,
+    alt: 'Paysage de rivière',
+  },
+};
+
+/** Barre d'outils complétée par le téléchargement (optionnel, désactivé par défaut). */
+export const Preview_Downloadable: Story = {
+  args: {
+    src: 'https://picsum.photos/id/1043/1200/800',
+    preview: true,
+    downloadable: true,
+    width: 300,
+    height: 200,
+    alt: 'Forêt en contre-plongée',
+  },
+};
+
+/** Un asset local marche aussi : le `.svg` inliné est agrandi tel quel. */
+export const Preview_Local_Asset: Story = {
+  args: {
+    name: 'test-jpg.jpg',
+    brandName: 'common',
+    preview: true,
+    width: 200,
+    alt: 'Asset local en aperçu',
+  },
+};
+
+/** Bornes resserrées : le zoom s'arrête à ×2 et les boutons se désactivent d'eux-mêmes. */
+export const Preview_Zoom_Bounds: Story = {
+  args: {
+    src: 'https://picsum.photos/id/1024/1200/800',
+    preview: true,
+    minZoom: 1,
+    maxZoom: 2,
+    zoomStep: 0.5,
+    width: 300,
+    height: 200,
+    alt: 'Chien de traîneau',
+  },
+};
+
+// --- Indicateur personnalisé ------------------------------------------
+// Le template `#previewIndicator` est du contenu projeté : il lui faut un
+// composant hôte à lui, le wrapper commun ne projetant rien.
+@Component({
+  selector: 'demo-image-indicator',
+  imports: [UiImage],
+  template: `
+    <ui-image
+      src="https://picsum.photos/id/1069/1200/800"
+      [width]="300"
+      [height]="200"
+      preview
+      alt="Ville de nuit"
+    >
+      <ng-template #previewIndicator>
+        <span class="demo-indicator">Agrandir</span>
+      </ng-template>
+    </ui-image>
+  `,
+  styles: `
+    .demo-indicator {
+      padding: var(--units-xs) var(--units-md);
+      border-radius: var(--radius-full);
+      background: var(--primitives-white-base);
+      color: var(--global-text-default);
+      font-family: var(--fontfamily-base);
+      font-size: var(--size-typography-text-sm);
+    }
+  `,
+})
+class DemoImageIndicator {}
+
+/** L'indicateur affiché au survol est remplaçable par un template projeté. */
+export const Preview_Custom_Indicator: Story = {
+  render: () => ({ template: `<demo-image-indicator />` }),
+  decorators: [moduleMetadata({ imports: [DemoImageIndicator] })],
 };
