@@ -16,6 +16,8 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+## [0.10.0] - 2026-09-14
+
 ### Added
 
 - **`ui-image` : source sécurisée, payload en ligne et vue agrandie** (FSHSP-198). Le composant ne
