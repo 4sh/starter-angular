@@ -279,13 +279,26 @@ function main() {
     docFiles += copyTree(src, join(ASSETS, 'storybook/addons', addon));
   }
 
-  // Pages de doc transverses. `GettingStarted` et `Overview` restent ici :
-  // la première compare les deux modes de consommation — dont le mode
-  // librairie, hors périmètre du starter (FSHSP-139) —, la seconde est
-  // validée par `components.check.mjs` contre NOTRE inventaire ET importe en
-  // dur les stories de tous les composants du monorepo. Ni l'une ni l'autre
-  // ne transposent tel quel chez un consommateur qui n'a copié qu'une partie
-  // des composants.
+  // `Overview.mdx` part dans `assets/preview/`, DÉLIBÉRÉMENT hors de
+  // `assets/storybook/` : `ng add` copie ce dossier-là en entier chez le
+  // consommateur, et la page y serait fausse — elle importe en dur les stories
+  // de TOUS les composants du monorepo, alors qu'il n'en a copié qu'une part.
+  //
+  // Le Storybook jetable de `ui-kit-preview`, lui, les pose tous (FSHSP-208) :
+  // la page y transpose exactement, une fois ses imports réadressés. C'est la
+  // vue d'ensemble qui manquait au designer venant d'appliquer ses jetons —
+  // et la seule page du kit qui montre le catalogue entier d'un coup d'œil.
+  const overviewSrc = join(ROOT, 'storybook/docs/Overview.mdx');
+  if (existsSync(overviewSrc)) {
+    mkdirSync(join(ASSETS, 'preview'), { recursive: true });
+    copyFileSync(overviewSrc, join(ASSETS, 'preview/Overview.mdx'));
+    docFiles++;
+  }
+
+  // Pages de doc transverses. `GettingStarted` reste ici : elle compare les
+  // deux modes de consommation — dont le mode librairie, hors périmètre du
+  // starter (FSHSP-139) — et ne transpose pas telle quelle chez un
+  // consommateur.
   // `Introduction`, elle, est en majorité indépendante du monorepo (texte +
   // images statiques) : FSHSP-138 corrige son absence, oubliée jusqu'ici. Ses
   // sections "Application de démonstration" / "Ressources Figma" restent

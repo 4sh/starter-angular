@@ -27,16 +27,37 @@
  *   pnpm exec ui-kit-preview --clean      # supprime le dossier et sort
  */
 import { spawn } from 'node:child_process';
-import { copyFileSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import {
+  copyFileSync,
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs';
 import { dirname, join } from 'node:path';
-import { docsPipelineDir, mcpServerDir, storybookAssetsDir } from '../utils/component-registry';
+import {
+  docsPipelineDir,
+  mcpServerDir,
+  previewAssetsDir,
+  storybookAssetsDir,
+} from '../utils/component-registry';
 import { kitVersion as embeddedKitVersion } from '../utils/kit-manifest';
 import {
+  PREVIEW_ADDONS,
+  PREVIEW_BUILD_INFO,
   PREVIEW_CONFIG_TABLE,
+  PREVIEW_DOCS_SEARCH,
+  PREVIEW_OVERVIEW,
   PREVIEW_ROOT,
+  PREVIEW_SEARCH_INDEX,
   PREVIEW_UI_CONFIG,
   previewUnits,
+  renderPreviewBuildInfo,
+  renderPreviewEmptySearchIndex,
   renderPreviewFiles,
+  renderPreviewOverview,
 } from '../utils/preview';
 
 const KIT_PACKAGE = '@4sh/ui-kit';
@@ -162,6 +183,16 @@ function copyInto(absSource: string, relPath: string): void {
   copyFileSync(absSource, target);
 }
 
+/** Copie récursive d'un dossier d'assets (l'addon de recherche, ses trois fichiers). */
+function copyTreeInto(absSource: string, relPath: string): void {
+  for (const entry of readdirSync(absSource, { withFileTypes: true })) {
+    const source = join(absSource, entry.name);
+    const target = `${relPath}/${entry.name}`;
+    if (entry.isDirectory()) copyTreeInto(source, target);
+    else copyInto(source, target);
+  }
+}
+
 /** `.ui-kit-preview/` hors du suivi git : il est régénéré, jamais édité. */
 function ignoreInGit(): void {
   const path = join(ROOT, '.gitignore');
@@ -204,6 +235,17 @@ function main(): void {
     }
   }
 
+  // Vue d'ensemble du catalogue (FSHSP-208) : la page d'accueil qui manquait,
+  // et la seule qui montre tout le kit d'un coup d'œil — le repère du designer
+  // qui vient d'appliquer ses jetons. Reprise du monorepo, seuls ses imports
+  // sont réadressés ; son encart de version parle du paquet INSTALLÉ.
+  const overviewSource = join(previewAssetsDir(), 'Overview.mdx');
+  if (existsSync(overviewSource)) {
+    write(PREVIEW_OVERVIEW, renderPreviewOverview(readFileSync(overviewSource, 'utf8'), version));
+    write(PREVIEW_BUILD_INFO, renderPreviewBuildInfo(version));
+    fileCount += 2;
+  }
+
   // Bloc `<ConfigTable>` + catalogue, DANS le dossier : les tables « Theming »
   // listent les hooks CSS surchargeables, c'est-à-dire exactement ce que le
   // designer vient écrire dans son preset. Embarqués plutôt que lus dans
@@ -211,9 +253,29 @@ function main(): void {
   copyInto(join(docsPipelineDir(), 'config-table.js'), PREVIEW_CONFIG_TABLE);
   copyInto(join(mcpServerDir(), 'data', 'ui-config.json'), PREVIEW_UI_CONFIG);
 
-  for (const name of ['main.js', 'preview.ts', 'tsconfig.json']) {
+  for (const name of ['main.js', 'manager.ts', 'preview.ts', 'tsconfig.json']) {
     write(`${PREVIEW_ROOT}/${name}`, readFileSync(join(TEMPLATES, name), 'utf8'));
   }
+
+  // Recherche plein texte : l'addon du manager ET son générateur d'index, tous
+  // deux dans le dossier. Le générateur n'est pas lu depuis le `scripts/` du
+  // projet à dessein — il peut ne pas y être, et surtout il écrirait alors
+  // ailleurs qu'ici (`main.js` lui passe les racines de ce dossier).
+  copyTreeInto(
+    join(storybookAssetsDir(), 'addons', 'text-search'),
+    `${PREVIEW_ADDONS}/text-search`,
+  );
+  copyInto(join(docsPipelineDir(), 'docs.search.mjs'), PREVIEW_DOCS_SEARCH);
+
+  // Index vide, posé tout de suite. L'addon écrit le vrai au démarrage de
+  // webpack, mais Storybook valide `staticDirs` AVANT : sur un `public/`
+  // absent il s'arrête sur « Failed to load static files » — mesuré, le
+  // Storybook ne démarrait pas du tout. Le fichier sert ensuite de repli.
+  write(PREVIEW_SEARCH_INDEX, renderPreviewEmptySearchIndex());
+
+  // Variables `--sb-*` des pages de doc, en clair comme en sombre : c'est d'elles
+  // que dépend le rendu de l'Overview une fois le toggle basculé.
+  copyInto(join(storybookAssetsDir(), 'preview-head.html'), `${PREVIEW_ROOT}/preview-head.html`);
 
   // Réparation des métadonnées : le MÊME fichier que celui du Storybook du
   // monorepo du kit, pour la même raison — là-bas aussi les stories visent le
@@ -227,6 +289,7 @@ function main(): void {
 
   console.log(
     `✔ ${fileCount} fichiers de doc du kit ${version} posés dans ${PREVIEW_ROOT}/\n` +
+      `  Vue d'ensemble, bascule clair/sombre et recherche plein texte comprises.\n` +
       `  Démarrage du Storybook sur le port ${port} — styles, polices et assets du projet inclus.\n` +
       `  Pour tout retirer ensuite : \`pnpm exec ui-kit-preview --clean\`.\n`,
   );

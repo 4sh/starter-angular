@@ -47,6 +47,22 @@ export const PREVIEW_CONFIG_TABLE = `${PREVIEW_ROOT}/blocks/config-table.js`;
 /** Catalogue que lit ce bloc (`../generated/ui-config.json` depuis `blocks/`). */
 export const PREVIEW_UI_CONFIG = `${PREVIEW_ROOT}/generated/ui-config.json`;
 
+/** Vue d'ensemble du catalogue, à la racine du dossier (FSHSP-208). */
+export const PREVIEW_OVERVIEW = `${PREVIEW_ROOT}/Overview.mdx`;
+
+/** Encart de version que lit `Overview.mdx` — ici, la version du paquet installé. */
+export const PREVIEW_BUILD_INFO = `${PREVIEW_ROOT}/generated/build-info.json`;
+
+/** Index de recherche, servi par `staticDirs: ['./public']`. */
+export const PREVIEW_SEARCH_INDEX = `${PREVIEW_ROOT}/public/text-search-docs.json`;
+
+/** Copie du générateur d'index, DANS le dossier : le projet n'en a pas forcément
+ *  (`ng add --skip-storybook`), et rien ne doit dépendre de ce qu'il a. */
+export const PREVIEW_DOCS_SEARCH = `${PREVIEW_ROOT}/docs.search.mjs`;
+
+/** Addon de recherche du manager, copié tel quel depuis les assets. */
+export const PREVIEW_ADDONS = `${PREVIEW_ROOT}/addons`;
+
 /**
  * Harnais de démonstration d'une story (`ui-motion.demo.ts`,
  * `ui-ripple.demo.ts`) : le seul fichier NON publié dans le paquet que deux
@@ -72,6 +88,58 @@ export function previewUnits(): AssetUnit[] {
   return [...listComponents(), ...listSharedBases()]
     .filter((unit) => unitSourceFiles(unit).some(isStorybookFile))
     .sort((a, b) => a.name.localeCompare(b.name));
+}
+
+/**
+ * `Overview.mdx` réadressée pour le dossier jetable.
+ *
+ * La page est reprise telle quelle — descriptions, story vivante par composant, compteurs
+ * par famille : tout est déjà écrit et maintenu dans le monorepo, et la réécrire ici en
+ * donnerait une seconde à tenir à jour. Seuls ses imports changent, parce que la
+ * disposition change :
+ *
+ *   `../../projects/ui-kit/actions/ui-button/ui-button.stories` → `./actions/ui-button/…`
+ *   `../generated/build-info.json`                              → `./generated/…`
+ *
+ * L'encart de version qu'elle affiche parle, ici, du paquet installé : c'est
+ * {@link PREVIEW_BUILD_INFO} que le binaire écrit, pas celui du monorepo (qui compare à ce
+ * qui est publié sur npm — une information sans objet chez un consommateur).
+ */
+export function renderPreviewOverview(source: string, kitVersion: string): string {
+  const rewritten = source
+    .replace(/(["'])\.\.\/\.\.\/projects\/ui-kit\//g, '$1./')
+    .replace(/(["'])\.\.\/generated\//g, '$1./generated/');
+  return traceabilityHeader(kitVersion, '.mdx') + rewritten;
+}
+
+/**
+ * Encart de version de l'Overview, vu du projet consommateur : la version installée, et
+ * rien de plus. Le champ `lastPublished` du monorepo dit « en avance sur npm » — ce qui n'a
+ * pas de sens ici, où l'on rend précisément ce qui vient de npm.
+ */
+export function renderPreviewBuildInfo(kitVersion: string): string {
+  return `${JSON.stringify(
+    {
+      version: kitVersion,
+      label: `@4sh/ui-kit ${kitVersion}`,
+      isReleased: true,
+      lastPublished: null,
+    },
+    null,
+    2,
+  )}\n`;
+}
+
+/**
+ * Index de recherche vide, posé au montage.
+ *
+ * L'addon écrit le vrai au démarrage de webpack — mais Storybook valide `staticDirs` avant
+ * d'en arriver là, et s'arrête net sur un `public/` absent. Le fichier sert ensuite de
+ * repli : si le générateur échoue (dépendances de parsing absentes chez le consommateur),
+ * l'outil de recherche annonce un index vide au lieu de tomber sur un 404.
+ */
+export function renderPreviewEmptySearchIndex(): string {
+  return `${JSON.stringify({ $generatedBy: 'ui-kit-preview', $source: '', docs: [] }, null, 2)}\n`;
 }
 
 /**
