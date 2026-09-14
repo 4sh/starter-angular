@@ -2,17 +2,63 @@
  * Preview du Storybook JETABLE du kit, écrite par `ui-kit-preview`.
  *
  * Ne l'éditez pas : le dossier entier est réécrit à chaque exécution. Elle fait
- * trois choses, et rien d'autre.
+ * cinq choses, et rien d'autre.
  */
 import { applicationConfig, Preview } from '@storybook/angular';
 import type { Decorator } from '@storybook/angular';
 import { provideRouter } from '@angular/router';
+import { addons } from 'storybook/preview-api';
+import { themes } from 'storybook/theming';
 import { provideUiImageAssets, UiImageAssetsMap } from '@4sh/ui-kit/base/ui-image';
 import { withComponentMetadata } from './restore-component-metadata';
+import { DOCS_SCROLL_TO_ANCHOR } from './addons/text-search/events';
 import assetsMap from '../src/assets/assets-map.json';
 
+const channel = addons.getChannel();
+
 /**
- * 1. Rafraîchir la page quand vous modifiez vos styles.
+ * 1. Bascule clair/sombre, exactement comme `ThemeService` dans l'application :
+ * un attribut sur <html>, jamais une classe sur un conteneur de story. Les
+ * jetons sémantiques se résolvent sur l'élément qui les consomme, l'attribut
+ * doit donc se trouver au-dessus de tout le rendu — overlays compris, que
+ * Storybook accroche sur <body>.
+ *
+ * C'est le geste que le designer vient chercher ici : voir SON thème dans les
+ * deux modes, sur l'ensemble du kit, sans rien copier.
+ */
+const syncTheme = (isDark: boolean) => {
+  if (typeof document === 'undefined') return;
+  const root = document.documentElement;
+  if (isDark) root.setAttribute('data-theme', 'dark');
+  else root.removeAttribute('data-theme');
+};
+
+channel.on('DARK_MODE', (isDark: boolean) => {
+  setTimeout(() => syncTheme(isDark), 0);
+});
+
+/**
+ * 2. Défilement jusqu'à une section, demandé par la recherche plein texte. Le
+ * manager ne peut pas faire défiler cette iframe — le hash de son URL ne s'y
+ * propage pas — il envoie donc l'ancre ici.
+ *
+ * L'ancre arrive avant que la page de doc ait fini son rendu, d'où les
+ * tentatives bornées. En `setTimeout` et non en `requestAnimationFrame`, qui ne
+ * tire jamais dans un onglet en arrière-plan.
+ */
+const scrollToAnchor = (anchor: string, attempt = 0): void => {
+  const target = document.getElementById(anchor);
+  if (target) {
+    target.scrollIntoView({ block: 'start' });
+    return;
+  }
+  if (attempt < 40) setTimeout(() => scrollToAnchor(anchor, attempt + 1), 50);
+};
+
+channel.on(DOCS_SCROLL_TO_ANCHOR, ({ anchor }: { anchor: string }) => scrollToAnchor(anchor));
+
+/**
+ * 3. Rafraîchir la page quand vous modifiez vos styles.
  *
  * Le rechargement à chaud de Storybook ne couvre pas les styles GLOBAUX : le
  * builder Angular les émet dans un `main.<hash>.css`, un nom versionné par
@@ -49,16 +95,20 @@ const withStyleRefresh: Decorator = (story) => {
 
 const preview: Preview = {
   decorators: [
-    // 2. Réparer les métadonnées de décorateur. Les stories visent le paquet
+    // 4. Réparer les métadonnées de décorateur. Les stories visent le paquet
     // COMPILÉ, dont le linker n'émet `setClassMetadata()` qu'en JIT : sans
     // cette passe, `@storybook/angular` ne sait pas dériver le template d'une
     // story qui ne déclare que `component` + `args`, et s'arrête sur
     // « Cannot read properties of undefined (reading 'selector') ».
     withComponentMetadata,
     withStyleRefresh,
+    (story, context) => {
+      syncTheme(!!context.globals['darkMode']);
+      return story();
+    },
     applicationConfig({
       providers: [
-        // 3. Fournir ce que les stories du kit attendent. `provideRouter` :
+        // 5. Fournir ce que les stories du kit attendent. `provideRouter` :
         // plusieurs composants ont des liens (`ui-link`, `ui-breadcrumb`,
         // `ui-menu`…) qui exigent un Router.
         provideRouter([]),
@@ -70,7 +120,22 @@ const preview: Preview = {
   ],
   parameters: {
     layout: 'centered',
-    docs: { story: { inline: true } },
+    docs: {
+      story: { inline: true },
+      toc: { title: 'Sur cette page', headingSelector: 'h2[id], h3[id]' },
+    },
+    // Thèmes par défaut de Storybook pour le châssis : ce dossier est jetable,
+    // il n'a pas à porter une identité de marque. Le thème du PROJET, lui, est
+    // celui des composants — c'est ce qu'on vient regarder.
+    darkMode: {
+      dark: themes.dark,
+      light: themes.light,
+      stylePreview: true,
+      classTarget: 'html',
+      darkClass: 'dark-mode',
+      lightClass: 'light-mode',
+    },
+    backgrounds: { disable: true },
   },
 };
 

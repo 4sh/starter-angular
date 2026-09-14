@@ -142,6 +142,19 @@ La boucle : éditez `src/styles/preset/_preset.scss`, la page se met à jour seu
 — sans rechargement, l'état de la story est préservé. Mesuré à ~6,5 s entre
 l'enregistrement et le composant à jour.
 
+Pour s'y repérer, le Storybook jetable embarque trois choses à lui :
+
+- une page **Overview** — tout le catalogue d'un coup d'œil, un exemple vivant
+  par composant, regroupés par famille ;
+- la **bascule clair/sombre** de la barre d'outils, qui pose `data-theme` sur
+  `<html>` exactement comme `ThemeService` dans l'application : les deux modes se
+  jugent donc sur vos propres jetons ;
+- la **recherche plein texte** sur toutes les pages, jusqu'à la section (l'outil
+  de la barre du manager, ou `/`).
+
+La recherche s'appuie sur les dépendances posées par `ng add`. Si un addon
+manque, la commande dit lequel et démarre sans lui plutôt que d'échouer.
+
 > **Prérequis** : `@4sh/ui-kit` installé, et sa version alignée sur celle de ce
 > paquet — les deux sont publiés ensemble. La commande refuse de démarrer si
 > elles divergent, plutôt que de vous laisser sur une erreur de compilation

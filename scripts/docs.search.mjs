@@ -73,6 +73,26 @@ const DOC_DIRS = IS_KIT_MONOREPO
 
 const OUT_FILE = join(ROOT, 'storybook/public/text-search-docs.json');
 
+/**
+ * Ce que l'index balaie et où il l'écrit.
+ *
+ * Surchargeable depuis {@link writeSearchIndex} parce qu'il y a un TROISIÈME appelant
+ * depuis FSHSP-208 : le Storybook jetable de `ui-kit-preview`, dont les MDX vivent dans
+ * `.ui-kit-preview/` et dont l'index doit rester dans ce même dossier — la promesse de ce
+ * mode étant que rien ne s'écrit ailleurs. Avec les constantes en dur, il balayait les MDX
+ * du projet et écrivait dans son `storybook/public/`.
+ *
+ * `root` ne sert qu'aux chemins affichés (champ `source`, messages d'erreur) : il les garde
+ * lisibles relativement à la racine qui a du sens pour l'appelant.
+ */
+const DEFAULTS = {
+  root: ROOT,
+  docDirs: DOC_DIRS,
+  outFile: OUT_FILE,
+  uiConfigFile: join(ROOT, 'storybook/generated/ui-config.json'),
+};
+let config = { ...DEFAULTS };
+
 /** Extensions tentées pour résoudre l'import d'un `<Meta of={…} />`. */
 const STORY_EXTENSIONS = ['', '.ts', '.tsx', '.js', '.mjs'];
 
@@ -158,7 +178,7 @@ function titleFromStories(tree, mdxPath, identifier) {
   const storyPath = resolveStoryPath(tree, mdxPath, identifier);
   if (!storyPath) {
     throw new Error(
-      `<Meta of={${identifier}} /> non résolu depuis ${toPosix(relative(ROOT, mdxPath))}`,
+      `<Meta of={${identifier}} /> non résolu depuis ${toPosix(relative(config.root, mdxPath))}`,
     );
   }
 
@@ -168,12 +188,16 @@ function titleFromStories(tree, mdxPath, identifier) {
   const source = readFileSync(storyPath, 'utf8');
   const metaStart = source.search(/^\s*const\s+meta\b/m);
   if (metaStart === -1) {
-    throw new Error(`Pas de déclaration \`const meta\` dans ${toPosix(relative(ROOT, storyPath))}`);
+    throw new Error(
+      `Pas de déclaration \`const meta\` dans ${toPosix(relative(config.root, storyPath))}`,
+    );
   }
 
   const title = source.slice(metaStart).match(/^\s*title:\s*(['"])(.+?)\1/m)?.[2];
   if (!title) {
-    throw new Error(`Pas de \`title:\` dans le \`meta\` de ${toPosix(relative(ROOT, storyPath))}`);
+    throw new Error(
+      `Pas de \`title:\` dans le \`meta\` de ${toPosix(relative(config.root, storyPath))}`,
+    );
   }
   return title;
 }
@@ -182,7 +206,7 @@ function resolveTitle(tree, mdxPath) {
   const { title, ofIdentifier } = readMetaAttributes(tree);
   if (title) return title;
   if (ofIdentifier) return titleFromStories(tree, mdxPath, ofIdentifier);
-  throw new Error(`Aucun <Meta> exploitable dans ${toPosix(relative(ROOT, mdxPath))}`);
+  throw new Error(`Aucun <Meta> exploitable dans ${toPosix(relative(config.root, mdxPath))}`);
 }
 
 // ---------------------------------------------------------------------------
@@ -196,13 +220,11 @@ function resolveTitle(tree, mdxPath) {
 //   <ArgTypes of={XStories} />       → le bloc `argTypes` de la story
 // C'est pourtant le contenu le plus cherché : un nom de prop, un hook `--ui-*`.
 
-const UI_CONFIG_FILE = join(ROOT, 'storybook/generated/ui-config.json');
-
 let uiConfigCache = null;
 function uiConfig() {
   if (uiConfigCache) return uiConfigCache;
-  uiConfigCache = existsSync(UI_CONFIG_FILE)
-    ? JSON.parse(readFileSync(UI_CONFIG_FILE, 'utf8'))
+  uiConfigCache = existsSync(config.uiConfigFile)
+    ? JSON.parse(readFileSync(config.uiConfigFile, 'utf8'))
     : { shared: {}, components: {} };
   return uiConfigCache;
 }
@@ -403,7 +425,7 @@ function extractSections(tree, mdxPath) {
 // ---------------------------------------------------------------------------
 
 function build() {
-  const files = DOC_DIRS.flatMap(collectMdx);
+  const files = config.docDirs.flatMap(collectMdx);
   const docs = [];
 
   for (const file of files) {
@@ -411,7 +433,7 @@ function build() {
     const title = resolveTitle(tree, file);
     const docId = `${sanitize(title)}--docs`;
     const name = title.split('/').pop();
-    const source = toPosix(relative(ROOT, file));
+    const source = toPosix(relative(config.root, file));
 
     for (const { section, anchor, chunks } of extractSections(tree, file)) {
       const text = chunks.join(' ').replace(/\s+/g, ' ').trim();
@@ -431,18 +453,26 @@ function build() {
 
   return {
     $generatedBy: 'scripts/docs.search.mjs',
-    $source: DOC_DIRS.map((dir) => toPosix(relative(ROOT, dir))).join(', '),
+    $source: config.docDirs.map((dir) => toPosix(relative(config.root, dir)) || '.').join(', '),
     docs,
   };
 }
 
 const serialize = (index) => `${JSON.stringify(index, null, 2)}\n`;
 
-/** Écrit l'index sur disque. Appelée aussi par l'addon (démarrage + hot reload). */
-export function writeSearchIndex() {
+/**
+ * Écrit l'index sur disque. Appelée aussi par l'addon (démarrage + hot reload).
+ *
+ * `overrides` (`root`, `docDirs`, `outFile`, `uiConfigFile`) sert au Storybook jetable,
+ * cf. {@link DEFAULTS}. Sans argument, le comportement est celui d'avant : ce dépôt, ou le
+ * projet consommateur, selon `IS_KIT_MONOREPO`.
+ */
+export function writeSearchIndex(overrides = {}) {
+  config = { ...DEFAULTS, ...overrides };
+  uiConfigCache = null;
   const index = build();
-  mkdirSync(dirname(OUT_FILE), { recursive: true });
-  writeFileSync(OUT_FILE, serialize(index));
+  mkdirSync(dirname(config.outFile), { recursive: true });
+  writeFileSync(config.outFile, serialize(index));
   return {
     sections: index.docs.length,
     pages: new Set(index.docs.map((doc) => doc.docId)).size,
@@ -453,7 +483,7 @@ const isCli = process.argv[1] && pathToFileURL(process.argv[1]).href === import.
 
 if (isCli) {
   if (process.argv.includes('--check')) {
-    const current = existsSync(OUT_FILE) ? readFileSync(OUT_FILE, 'utf8') : null;
+    const current = existsSync(config.outFile) ? readFileSync(config.outFile, 'utf8') : null;
     if (current !== serialize(build())) {
       console.error(
         `✗ storybook/public/text-search-docs.json est périmé — lance \`${runCmd('docs:search')}\`.`,

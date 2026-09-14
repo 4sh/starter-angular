@@ -21,10 +21,29 @@ const { pathToFileURL } = require('node:url');
 
 const BUILDER = pathToFileURL(join(__dirname, '../../../scripts/docs.search.mjs')).href;
 
-async function rebuild(reason) {
+/**
+ * Où trouver le générateur, et sur quoi le faire tourner.
+ *
+ * Par défaut : le script du dépôt qui héberge cet addon, sur ses propres racines. Le
+ * Storybook jetable de `ui-kit-preview` (FSHSP-208) passe les siennes via les options du
+ * preset — il embarque sa copie du générateur et n'écrit que dans son dossier :
+ *
+ *   addons: [{ name: './addons/text-search/preset.cjs',
+ *              options: { textSearch: { builder, index: { root, docDirs, outFile, uiConfigFile } } } }]
+ */
+function resolveConfig(options = {}) {
+  const own = options.textSearch ?? {};
+  return {
+    builder: own.builder ? pathToFileURL(own.builder).href : BUILDER,
+    index: own.index ?? {},
+  };
+}
+
+async function rebuild(reason, options) {
+  const { builder, index } = resolveConfig(options);
   try {
-    const { writeSearchIndex } = await import(BUILDER);
-    const { pages, sections } = writeSearchIndex();
+    const { writeSearchIndex } = await import(builder);
+    const { pages, sections } = writeSearchIndex(index);
     console.log(`🔍 Index de recherche (${reason}) : ${pages} pages, ${sections} sections.`);
   } catch (error) {
     // Ne jamais faire tomber Storybook pour un index : l'outil affiche de
@@ -36,15 +55,15 @@ async function rebuild(reason) {
 module.exports = {
   managerEntries: (entries = []) => [...entries, require.resolve('./manager.tsx')],
 
-  webpack: async (config) => {
-    await rebuild('démarrage');
+  webpack: async (config, options) => {
+    await rebuild('démarrage', options);
 
     config.plugins.push({
       apply(compiler) {
         compiler.hooks.watchRun.tapPromise('text-search-rebuild-index', async (watching) => {
           const modified = watching.modifiedFiles;
           if (modified && [...modified].some((file) => file.endsWith('.mdx'))) {
-            await rebuild('hot reload');
+            await rebuild('hot reload', options);
           }
         });
       },

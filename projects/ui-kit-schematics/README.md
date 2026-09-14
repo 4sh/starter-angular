@@ -136,6 +136,19 @@ The loop: edit `src/styles/preset/_preset.scss` and the page updates on its own
 — no reload, the story's state is preserved. Measured at ~6.5 s from save to
 updated component.
 
+To find your way around, the throwaway Storybook carries three things of its own:
+
+- an **Overview** page — the whole catalogue at a glance, one live sample per
+  component, grouped by family;
+- the **light/dark toggle** in the toolbar, which sets `data-theme` on `<html>`
+  exactly as `ThemeService` does in the application, so both modes are judged on
+  your own tokens;
+- **full-text search** over every page, down to the section (the tool in the
+  manager bar, or `/`).
+
+Search needs the dark-mode addon's neighbours from `ng add`; when an addon is
+missing the command says which and starts without it, rather than failing.
+
 > **Prerequisite**: `@4sh/ui-kit` installed, at a version matching this package —
 > the two ship together. The command refuses to start when they diverge, rather
 > than leaving you on a compile error pointing at a story you did not write.

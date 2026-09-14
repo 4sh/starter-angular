@@ -69,6 +69,19 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
   - Le glyphe et le panneau déroulant suivent `color-scheme`, basculé avec le thème sombre :
     sans ça, glyphe noir sur champ sombre et calendrier clair.
 
+- **`ui-kit-preview` : vue d'ensemble, bascule clair/sombre et recherche** (FSHSP-208). Le
+  Storybook jetable posait les pages du kit mais rien pour s'y repérer. Trois ajouts, tous
+  dans `.ui-kit-preview/` — rien n'est écrit hors du dossier jetable, c'est la promesse de ce
+  mode.
+  - **Page `Overview`** : tout le catalogue d'un coup d'œil, un exemple vivant par composant.
+    C'est la page du monorepo, réemployée telle quelle : ses imports de stories sont
+    réadressés vers le dossier, et son encart de version parle du **paquet installé**.
+  - **Bascule clair/sombre** : pose `data-theme` sur `<html>` comme `ThemeService` dans
+    l'application — les deux modes se jugent donc sur les jetons du projet. Si l'addon n'est
+    pas installé (projet qui portait déjà sa cible `storybook`), la commande dit lequel
+    manque et démarre sans lui.
+  - **Recherche plein texte**, jusqu'à la section, avec défilement jusqu'à l'ancre.
+
 ### Changed
 
 - **`@4sh/ui-kit/forms` expose les helpers de date** (`toIsoDate`, `parseIsoDate`,
@@ -76,6 +89,11 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
   appelant ; `ui-input-date` en est un second, et deux points d'entrée ne doivent jamais
   s'importer l'un l'autre. Sérialiser un `Date` depuis ses composantes **locales** plutôt que
   par `toISOString()` est la partie subtile : elle ne doit pas être réécrite deux fois.
+
+- **`writeSearchIndex()` accepte ses racines et sa sortie** (`scripts/docs.search.mjs`,
+  FSHSP-208), et l'addon `text-search` les reçoit en options de preset. Avec les constantes
+  en dur, la recherche du Storybook jetable aurait balayé les MDX du projet et écrit dans son
+  `storybook/public/`. Sans option, le comportement est inchangé.
 
 ## [0.9.0] - 2026-09-14
 
