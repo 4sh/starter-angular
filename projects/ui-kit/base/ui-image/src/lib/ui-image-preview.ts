@@ -11,6 +11,7 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
+
 import { DOCUMENT } from '@angular/common';
 import { A11yModule } from '@angular/cdk/a11y';
 import { UiIcon } from '@4sh/ui-kit/base/ui-icon';
