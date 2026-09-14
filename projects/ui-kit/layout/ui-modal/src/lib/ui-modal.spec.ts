@@ -7,6 +7,7 @@
 import { Component, signal, Type } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
+import { UiDrawer } from '@4sh/ui-kit/layout/ui-drawer';
 import { UiModal } from './ui-modal';
 
 // CDK's `InteractivityChecker.isVisible` gates every tabbable/focusable lookup
@@ -135,5 +136,67 @@ describe('UiModal — Escape to close', () => {
     await fixture.whenStable();
 
     expect(host.open()).toBe(true);
+  });
+});
+
+// --- Cross-entry-point scroll lock ---------------------------------------
+//
+// `ui-modal` and `ui-drawer` are two separate entry points, hence two separate
+// compilation units. They must still share ONE scroll-lock counter — which is
+// only true while both import it from `@4sh/ui-kit/overlay` instead of
+// declaring their own copy. Note the import above resolves to the BUILT
+// `dist/ui-kit` bundle, so this spec exercises the real module boundary a
+// consumer gets, not a source-level shortcut.
+@Component({
+  imports: [UiModal, UiDrawer],
+  template: `
+    <ui-modal [(visible)]="modalOpen" header="Externe">
+      <button type="button">Contenu</button>
+    </ui-modal>
+    <ui-drawer [(visible)]="drawerOpen" header="Interne" position="right">
+      <button type="button">Contenu</button>
+    </ui-drawer>
+  `,
+})
+class NestedOverlaysHost {
+  readonly modalOpen = signal(false);
+  readonly drawerOpen = signal(false);
+}
+
+describe('UiModal — body scroll lock shared with the other overlays', () => {
+  it('keeps the body frozen when the modal closes under a still-open drawer', async () => {
+    await TestBed.configureTestingModule({ imports: [NestedOverlaysHost] }).compileComponents();
+    const fixture = TestBed.createComponent(NestedOverlaysHost);
+    document.body.appendChild(fixture.nativeElement);
+    attachedElements.push(fixture.nativeElement);
+
+    const settle = async () => {
+      fixture.detectChanges();
+      await fixture.whenStable();
+    };
+
+    await settle();
+    const before = document.body.style.overflow;
+
+    fixture.componentInstance.modalOpen.set(true);
+    await settle();
+    expect(document.body.style.overflow).toBe('hidden');
+
+    fixture.componentInstance.drawerOpen.set(true);
+    await settle();
+    expect(document.body.style.overflow).toBe('hidden');
+
+    // The regression, and why the close order matters: with one counter per
+    // entry point, the modal's copy drops to 0 here and hands the body back —
+    // the page scrolls behind a drawer that is still on screen. (Unwinding in
+    // strict LIFO order hides the bug: each copy then restores the value the
+    // next one is about to re-apply.)
+    fixture.componentInstance.modalOpen.set(false);
+    await settle();
+    expect(document.body.style.overflow).toBe('hidden');
+
+    fixture.componentInstance.drawerOpen.set(false);
+    await settle();
+    expect(document.body.style.overflow).toBe(before);
   });
 });
