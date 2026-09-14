@@ -16,6 +16,8 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+## [0.9.0] - 2026-09-14
+
 ### Added
 
 - **`pnpm exec ui-kit-preview` — voir tout le kit avec le thème du projet, sans copier une seule
@@ -39,25 +41,6 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
   emplacement pour surcharger les jetons générés — chaque projet inventait le sien, ou éditait
   `ui-kit/generated/`, réécrit au `tokens:build` suivant. Le preset est chargé APRÈS les tokens,
   donc il l'emporte, et c'est le fichier sur lequel on itère quand on règle un thème.
-
-### Fixed
-
-- **Le build de production d'un Storybook qui rend le kit compilé échouait sur
-  `computesTemplateFromComponent: Cannot read properties of undefined (reading 'selector')`**
-  (FSHSP-202). Les `fesm` publiés sont partiellement compilés : le linker ne réémet
-  `setClassMetadata()` qu'en JIT, si bien qu'en build optimisé les classes arrivent avec leur
-  `ɵcmp`/`ɵdir` mais sans `__annotations__` — que `@storybook/angular` lit pour dériver le
-  template implicite d'une story qui ne déclare que `component` + `args`. Le décorateur qui répare
-  ces annotations existait dans ce dépôt mais était explicitement exclu du paquet ; il est
-  désormais livré et branché par la preview.
-
-- **Les tables `## Theming` étaient vides pour un composant consommé en paquet** (FSHSP-202).
-  `scripts/docs.config.mjs` ne sait lire qu'un `.scss` local, absent en mode librairie. Il se
-  replie maintenant sur le catalogue du kit déjà posé chez le consommateur
-  (`.ui-kit-mcp/data/ui-config.json`, ou celui livré par le paquet). Un `.scss` local prime
-  toujours.
-
-### Added
 
 - **Toutes les couleurs des composants sont maintenant reformables** (FSHSP-206). FSHSP-204 puis
   FSHSP-205 avaient ouvert la géométrie et la typographie ; la couleur restait dehors, avec
@@ -98,41 +81,6 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
     (`.ui-editor-color-red-500`, `.ui-editor-highlight-*`) continuent de lire les primitives
     directement. La classe EST le choix de l'utilisateur dans le document, pas un rôle du
     composant ; un projet qui veut une autre palette retouche les primitives.
-
-### Fixed
-
-- **`ui-tooltip` : `autoHide=false` ne gardait pas l'infobulle ouverte.** L'option posait bien
-  `pointer-events: auto` sur le panneau, mais `mouseleave` sur le déclencheur démontait
-  l'overlay immédiatement, `hideDelay` valant 0 par défaut. Le pointeur n'avait donc jamais le
-  temps de franchir l'écart de la flèche : le panneau disparaissait avant d'être atteint, et son
-  `mouseenter` ne tirait jamais. Un plancher est maintenant appliqué à `hideDelay` quand le
-  panneau est interactif, et un `hideDelay` plus grand continue de primer.
-  - Le focus qui entre dans le panneau ne le ferme plus : le `focusout` du déclencheur ignore
-    une cible située à l'intérieur, ce qui rend le contenu réellement cliquable à la souris.
-  - Les écouteurs du panneau et celui d'`Échap` étaient reposés à **chaque** affichage alors
-    qu'ils n'étaient libérés qu'à la destruction : ils sont désormais attachés une seule fois.
-  - `Échap` masque maintenant sans attendre `hideDelay`.
-
-- **Le Storybook posé par `ng add @4sh/ui-kit-schematics` ne compilait pas tant que tous les
-  composants n'étaient pas copiés** (FSHSP-201). `storybook/main.js` listait
-  `src/app/shared/components/` et `src/app/shared/ui-core/` en dur, alors qu'aucun des deux
-  n'existe tant qu'une copie ne l'a créé : webpack ne cherche pas un glob, il le réduit à un
-  `require.context(<racine du motif>)` et s'arrête sur un module introuvable. Une installation
-  sans composant échouait donc sur quatre `Can't resolve`, et une installation partielle aussi
-  dès que les composants choisis ne tiraient aucune base partagée (`ui-icon` seul, par exemple).
-  Les motifs sont maintenant filtrés sur l'existence de leur racine, réévaluée à chaque
-  démarrage : un dossier créé plus tard par `ng generate …:add` remet son motif en service sans
-  rien à modifier.
-  - `storybook/tsconfig.json` n'exige plus `"types": ["node"]`. La preview est du code
-    navigateur et rien de ce qui y est compilé ne touche une API Node ; l'exigence obligeait le
-    projet à installer `@types/node`, faute de quoi le build s'arrêtait en plus sur un `TS2688`
-    sans rapport avec son code.
-  - `ng add` pose `src/app/shared/components/` et son README dès la fondation : la racine que
-    `main.js` annonce balayer existe désormais même sans un seul composant copié.
-  - Sélection vide : le message dit maintenant que la fondation reste en place et rappelle la
-    commande pour copier des composants plus tard, au lieu d'un avertissement nu.
-
-### Added
 
 - **Toute la typographie du kit est maintenant reformable** (FSHSP-205). FSHSP-204 avait ouvert
   `ui-button` ; les 46 autres composants lisaient encore leur famille et leur graisse en dur.
@@ -228,6 +176,54 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
     `--ui-toggle-block-*`.
 - **`ui-datepicker`** : nouvel input `autocomplete`, forwardé au champ `ui-input` du
   déclencheur (même contrat que `UiInput.autocomplete`).
+
+### Fixed
+
+- **Le build de production d'un Storybook qui rend le kit compilé échouait sur
+  `computesTemplateFromComponent: Cannot read properties of undefined (reading 'selector')`**
+  (FSHSP-202). Les `fesm` publiés sont partiellement compilés : le linker ne réémet
+  `setClassMetadata()` qu'en JIT, si bien qu'en build optimisé les classes arrivent avec leur
+  `ɵcmp`/`ɵdir` mais sans `__annotations__` — que `@storybook/angular` lit pour dériver le
+  template implicite d'une story qui ne déclare que `component` + `args`. Le décorateur qui répare
+  ces annotations existait dans ce dépôt mais était explicitement exclu du paquet ; il est
+  désormais livré et branché par la preview.
+
+- **Les tables `## Theming` étaient vides pour un composant consommé en paquet** (FSHSP-202).
+  `scripts/docs.config.mjs` ne sait lire qu'un `.scss` local, absent en mode librairie. Il se
+  replie maintenant sur le catalogue du kit déjà posé chez le consommateur
+  (`.ui-kit-mcp/data/ui-config.json`, ou celui livré par le paquet). Un `.scss` local prime
+  toujours.
+
+- **`ui-tooltip` : `autoHide=false` ne gardait pas l'infobulle ouverte.** L'option posait bien
+  `pointer-events: auto` sur le panneau, mais `mouseleave` sur le déclencheur démontait
+  l'overlay immédiatement, `hideDelay` valant 0 par défaut. Le pointeur n'avait donc jamais le
+  temps de franchir l'écart de la flèche : le panneau disparaissait avant d'être atteint, et son
+  `mouseenter` ne tirait jamais. Un plancher est maintenant appliqué à `hideDelay` quand le
+  panneau est interactif, et un `hideDelay` plus grand continue de primer.
+  - Le focus qui entre dans le panneau ne le ferme plus : le `focusout` du déclencheur ignore
+    une cible située à l'intérieur, ce qui rend le contenu réellement cliquable à la souris.
+  - Les écouteurs du panneau et celui d'`Échap` étaient reposés à **chaque** affichage alors
+    qu'ils n'étaient libérés qu'à la destruction : ils sont désormais attachés une seule fois.
+  - `Échap` masque maintenant sans attendre `hideDelay`.
+
+- **Le Storybook posé par `ng add @4sh/ui-kit-schematics` ne compilait pas tant que tous les
+  composants n'étaient pas copiés** (FSHSP-201). `storybook/main.js` listait
+  `src/app/shared/components/` et `src/app/shared/ui-core/` en dur, alors qu'aucun des deux
+  n'existe tant qu'une copie ne l'a créé : webpack ne cherche pas un glob, il le réduit à un
+  `require.context(<racine du motif>)` et s'arrête sur un module introuvable. Une installation
+  sans composant échouait donc sur quatre `Can't resolve`, et une installation partielle aussi
+  dès que les composants choisis ne tiraient aucune base partagée (`ui-icon` seul, par exemple).
+  Les motifs sont maintenant filtrés sur l'existence de leur racine, réévaluée à chaque
+  démarrage : un dossier créé plus tard par `ng generate …:add` remet son motif en service sans
+  rien à modifier.
+  - `storybook/tsconfig.json` n'exige plus `"types": ["node"]`. La preview est du code
+    navigateur et rien de ce qui y est compilé ne touche une API Node ; l'exigence obligeait le
+    projet à installer `@types/node`, faute de quoi le build s'arrêtait en plus sur un `TS2688`
+    sans rapport avec son code.
+  - `ng add` pose `src/app/shared/components/` et son README dès la fondation : la racine que
+    `main.js` annonce balayer existe désormais même sans un seul composant copié.
+  - Sélection vide : le message dit maintenant que la fondation reste en place et rappelle la
+    commande pour copier des composants plus tard, au lieu d'un avertissement nu.
 
 ## [0.8.0] - 2026-09-02
 
