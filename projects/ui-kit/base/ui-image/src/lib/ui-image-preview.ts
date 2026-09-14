@@ -14,36 +14,7 @@ import {
 import { DOCUMENT } from '@angular/common';
 import { A11yModule } from '@angular/cdk/a11y';
 import { UiIcon } from '@4sh/ui-kit/base/ui-icon';
-
-// --- Body scroll lock (ref-counted) -------------------------------------
-// Same recipe as the kit's other viewport masks (ui-modal, ui-drawer,
-// ui-bottom-sheet, ui-sidebar): each entry point compiles on its own, so the
-// counter is per-module rather than shared.
-let scrollLockCount = 0;
-let savedOverflow = '';
-let savedPaddingRight = '';
-
-/** Freeze background scroll, compensating the scrollbar gutter to avoid a shift. */
-function lockBodyScroll(doc: Document): void {
-  if (scrollLockCount === 0) {
-    const body = doc.body;
-    const gap = (doc.defaultView?.innerWidth ?? 0) - doc.documentElement.clientWidth;
-    savedOverflow = body.style.overflow;
-    savedPaddingRight = body.style.paddingRight;
-    body.style.overflow = 'hidden';
-    if (gap > 0) body.style.paddingRight = `${gap}px`;
-  }
-  scrollLockCount++;
-}
-
-/** Release one scroll lock; restore the body when the last mask closes. */
-function unlockBodyScroll(doc: Document): void {
-  scrollLockCount = Math.max(0, scrollLockCount - 1);
-  if (scrollLockCount === 0) {
-    doc.body.style.overflow = savedOverflow;
-    doc.body.style.paddingRight = savedPaddingRight;
-  }
-}
+import { lockBodyScroll, unlockBodyScroll } from '@4sh/ui-kit/overlay';
 
 /** Clamp `value` into `[min, max]`. */
 function clamp(value: number, min: number, max: number): number {

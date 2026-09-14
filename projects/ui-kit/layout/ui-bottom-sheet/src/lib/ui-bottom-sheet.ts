@@ -23,6 +23,7 @@ import {
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { A11yModule } from '@angular/cdk/a11y';
 import { UiIcon } from '@4sh/ui-kit/base/ui-icon';
+import { lockBodyScroll, unlockBodyScroll } from '@4sh/ui-kit/overlay';
 
 /** Named opening detents. */
 export type BottomSheetHeightPreset = 'auto' | 'half' | 'full';
@@ -54,33 +55,6 @@ const HANDLE_CLASS = 'ui-bottom-sheet-handle';
 let zIndexSeq = 0;
 /** Process-wide unique id source (aria wiring). */
 let nextUid = 0;
-
-// --- Body scroll lock (ref-counted, shared across nested sheets) --------
-let scrollLockCount = 0;
-let savedOverflow = '';
-let savedPaddingRight = '';
-
-/** Freeze background scroll, compensating the scrollbar gutter to avoid a shift. */
-function lockBodyScroll(doc: Document): void {
-  if (scrollLockCount === 0) {
-    const body = doc.body;
-    const gap = (doc.defaultView?.innerWidth ?? 0) - doc.documentElement.clientWidth;
-    savedOverflow = body.style.overflow;
-    savedPaddingRight = body.style.paddingRight;
-    body.style.overflow = 'hidden';
-    if (gap > 0) body.style.paddingRight = `${gap}px`;
-  }
-  scrollLockCount++;
-}
-
-/** Release one scroll lock; restore the body when the last sheet closes. */
-function unlockBodyScroll(doc: Document): void {
-  scrollLockCount = Math.max(0, scrollLockCount - 1);
-  if (scrollLockCount === 0) {
-    doc.body.style.overflow = savedOverflow;
-    doc.body.style.paddingRight = savedPaddingRight;
-  }
-}
 
 /**
  * Slot markers routing projected content to a region. No behaviour: the sheet

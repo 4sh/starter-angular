@@ -52,6 +52,7 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
     `loading="lazy"` hors `priority`, et le `<img>` nu (`blob:`, `data:`) reçoit le même attribut.
   - 24 hooks `--ui-image-*` / `--ui-image-preview-*` ajoutés au fichier de thème. Le masque de
     l'aperçu reste sombre dans les deux modes — c'est un visionneur de photo, pas une surface thémée.
+
 - **`ui-input-date` — le champ date/heure natif, pour le mobile** (FSHSP-209). Le sélecteur
   revient au système : la roue de l'OS, qu'aucun overlay n'égale au pouce. `mode`
   (`date`/`time`/`datetime`) choisit le contrôle natif, `min`/`max`/`step` bornent la saisie.
@@ -94,6 +95,20 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
   FSHSP-208), et l'addon `text-search` les reçoit en options de preset. Avec les constantes
   en dur, la recherche du Storybook jetable aurait balayé les MDX du projet et écrit dans son
   `storybook/public/`. Sans option, le comportement est inchangé.
+
+### Fixed
+
+- **Le scroll lock de fond est de nouveau un seul compteur pour tout le kit** (FSHSP-210).
+  `lockBodyScroll` / `unlockBodyScroll` étaient recopiés à l'identique dans les cinq points
+  d'entrée qui masquent le viewport (`ui-modal`, `ui-drawer`, `ui-bottom-sheet`, `ui-sidebar`
+  et, depuis FSHSP-198, `ui-image-preview`). Chacun compile pour son compte : cinq modules,
+  donc **cinq compteurs**, chacun persuadé d'être seul à tenir le `body`.
+  - Le symptôme apparaît quand deux overlays ne se ferment pas dans l'ordre inverse de leur
+    ouverture : le compteur de celui qui part tombe à 0 et **rend le scroll à la page alors
+    qu'un overlay est encore affiché**. Selon l'ordre, la gouttière de scrollbar peut aussi
+    rester après la dernière fermeture.
+  - Le helper vit maintenant dans `@4sh/ui-kit/overlay`, à côté de `closeOnNavigation`, et les
+    cinq composants l'importent. Aucun changement de comportement à un seul overlay.
 
 ## [0.9.0] - 2026-09-14
 
