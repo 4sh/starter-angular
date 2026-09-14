@@ -1,0 +1,42 @@
+<ui-field
+  [label]="label()"
+  [for]="resolvedId()"
+  [required]="required()"
+  [size]="size()"
+  [level]="effectiveLevel()"
+  [floatLabel]="floatLabel()"
+  [filled]="true"
+  [disabled]="isDisabled()"
+  [readonly]="readonly()"
+  [message]="displayMessage()"
+  [messageId]="messageId()"
+  [showMessageIcon]="showMessageIcon()"
+  [messageIcon]="messageIcon()"
+>
+  <!-- `filled` is hard-coded above, and it is not a shortcut: the browser draws its own
+       `jj/mm/aaaa` template in the box, so this field is never visually empty. A floating
+       label at rest would sit on top of that template. -->
+  <input
+    #inputEl
+    class="ui-input-date-native"
+    [class._small]="size() === 'small'"
+    [type]="nativeType()"
+    [id]="resolvedId()"
+    [value]="nativeValue()"
+    [disabled]="isDisabled()"
+    [readOnly]="readonly()"
+    [required]="required()"
+    [attr.name]="name() || null"
+    [attr.tabindex]="tabindex()"
+    [attr.min]="nativeMin()"
+    [attr.max]="nativeMax()"
+    [attr.step]="step() ?? null"
+    [attr.aria-label]="label() ? null : ariaLabel() || null"
+    [attr.aria-labelledby]="ariaLabelledBy() || null"
+    [attr.aria-describedby]="resolvedAriaDescribedBy()"
+    [attr.aria-invalid]="effectiveLevel() === 'error' ? 'true' : null"
+    (change)="onNativeChange()"
+    (focus)="inputFocus.emit($event)"
+    (blur)="onBlur($event)"
+  />
+</ui-field>

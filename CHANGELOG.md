@@ -52,6 +52,30 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
     `loading="lazy"` hors `priority`, et le `<img>` nu (`blob:`, `data:`) reçoit le même attribut.
   - 24 hooks `--ui-image-*` / `--ui-image-preview-*` ajoutés au fichier de thème. Le masque de
     l'aperçu reste sombre dans les deux modes — c'est un visionneur de photo, pas une surface thémée.
+- **`ui-input-date` — le champ date/heure natif, pour le mobile** (FSHSP-209). Le sélecteur
+  revient au système : la roue de l'OS, qu'aucun overlay n'égale au pouce. `mode`
+  (`date`/`time`/`datetime`) choisit le contrôle natif, `min`/`max`/`step` bornent la saisie.
+  `ui-datepicker` garde l'autre moitié du terrain : un calendrier porté par les jetons, avec
+  plages, multi-mois et inline.
+  - **`valueType` est identique à celui d'`ui-datepicker`** (`'date'` → `Date`, `'iso'` →
+    chaîne) : un composant métier bascule de l'un à l'autre selon le viewport **sans rien
+    convertir**. C'est la raison d'être d'un composant dédié plutôt que d'un `type` de plus
+    sur `ui-input`.
+  - Il **émet sur `change`, jamais pendant la frappe** : un contrôle temporel natif vide sa
+    propre valeur tant que la saisie est incomplète, et un champ branché sur `input` émettait
+    une rafale de valeurs nulles — indistinguables d'un effacement.
+  - Le libellé **reste levé**, `floatLabel` compris : le navigateur dessine son gabarit
+    (`jj/mm/aaaa`) dans la boîte. Pas de `placeholder`, que le navigateur ignore sur ces types.
+  - Le glyphe et le panneau déroulant suivent `color-scheme`, basculé avec le thème sombre :
+    sans ça, glyphe noir sur champ sombre et calendrier clair.
+
+### Changed
+
+- **`@4sh/ui-kit/forms` expose les helpers de date** (`toIsoDate`, `parseIsoDate`,
+  `toIsoTime`…) (FSHSP-209). Ils vivaient dans le point d'entrée d'`ui-datepicker`, seul
+  appelant ; `ui-input-date` en est un second, et deux points d'entrée ne doivent jamais
+  s'importer l'un l'autre. Sérialiser un `Date` depuis ses composantes **locales** plutôt que
+  par `toISOString()` est la partie subtile : elle ne doit pas être réécrite deux fois.
 
 ## [0.9.0] - 2026-09-14
 

@@ -13,6 +13,7 @@ import * as RadioStories from "../../projects/ui-kit/forms/ui-radio/ui-radio.sto
 import * as LabelStories from "../../projects/ui-kit/forms/ui-label/ui-label.stories";
 import * as InputStories from "../../projects/ui-kit/forms/ui-input/ui-input.stories";
 import * as InputNumberStories from "../../projects/ui-kit/forms/ui-input-number/ui-input-number.stories";
+import * as InputDateStories from "../../projects/ui-kit/forms/ui-input-date/ui-input-date.stories";
 import * as InputMaskStories from "../../projects/ui-kit/forms/ui-input-mask/ui-input-mask.stories";
 import * as InputOtpStories from "../../projects/ui-kit/forms/ui-input-otp/ui-input-otp.stories";
 import * as InputGroupStories from "../../projects/ui-kit/forms/ui-input-group/ui-input-group.stories";
@@ -90,6 +91,7 @@ export const CATEGORIES = [
       { name: 'ui-label', description: 'Libellé de champ (marqueur requis, tailles).', link: '?path=/docs/components-ui-forms-ui-label--docs', story: LabelStories.Required },
       { name: 'ui-input', description: "Champ texte composé (label + helper, icônes, zone d'action, niveaux).", link: '?path=/docs/components-ui-forms-ui-input--docs', story: InputStories.WithHelper },
       { name: 'ui-input-number', description: 'Champ numérique (min/max/step, spinner ±, clamp).', link: '?path=/docs/components-ui-forms-ui-input-number--docs', story: InputNumberStories.WithUnit },
+      { name: 'ui-input-date', description: "Champ date/heure natif (sélecteur du système, valeur alignée sur ui-datepicker) : pour le mobile.", link: '?path=/docs/components-ui-forms-ui-input-date--docs', story: InputDateStories.WithValue },
       { name: 'ui-input-mask', description: 'Champ masqué (téléphone, date… littéraux auto).', link: '?path=/docs/components-ui-forms-ui-input-mask--docs', story: InputMaskStories.Phone },
       { name: 'ui-input-otp', description: 'Code à usage unique / OTP (cellules maxlength=1, mask, integerOnly, tailles, avance auto + collage, roving Tab/←/→, template #input).', link: '?path=/docs/components-ui-forms-ui-input-otp--docs', story: InputOtpStories.Basic },
       { name: 'ui-input-group', description: "Groupe champ + compléments (add-ons texte/icône, bouton, case à cocher, liste déroulante) collés en un seul champ.", link: '?path=/docs/components-ui-forms-ui-input-group--docs', story: InputGroupStories.Basic },
