@@ -249,11 +249,19 @@ function main() {
   // et ses couplages, `myTheme.ts` et sa marque, les tsconfig) est écrit en
   // scaffold dans `src/ng-add/files/storybook/` : deux natures, deux endroits.
   //
-  // `restore-component-metadata.ts` n'est PAS du lot : il répare les
-  // annotations que le linker retire du package *compilé* que nos stories
-  // importent. Chez le consommateur les stories visent des sources, compilées
-  // avec le reste de son app — le décorateur n'aurait rien à réparer.
-  for (const name of ['manager.ts', 'brand-toolbar.ts', 'preview-head.html', 'typings.d.ts']) {
+  // `restore-component-metadata.ts` en fait partie depuis FSHSP-202. Il en a
+  // longtemps été exclu au motif que les stories du consommateur visent des
+  // sources, compilées avec le reste de son app — vrai du mode `add`, faux du
+  // mode `preview`, où ce sont NOS stories qui partent telles quelles et
+  // importent le package compilé depuis `node_modules`. C'est exactement la
+  // situation que ce fichier répare ici, et le même fichier la répare là-bas.
+  for (const name of [
+    'manager.ts',
+    'brand-toolbar.ts',
+    'preview-head.html',
+    'typings.d.ts',
+    'restore-component-metadata.ts',
+  ]) {
     const src = join(ROOT, 'storybook', name);
     if (!existsSync(src)) continue;
     mkdirSync(join(ASSETS, 'storybook'), { recursive: true });

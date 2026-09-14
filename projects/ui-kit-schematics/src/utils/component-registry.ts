@@ -99,6 +99,13 @@ export function docsPipelineDir(): string {
   return join(ASSETS_ROOT, 'docs-pipeline');
 }
 
+/** Part de la configuration Storybook qui vaut telle quelle chez le
+ * consommateur (`manager.ts`, `brand-toolbar.ts`, la réparation des
+ * métadonnées…) — voir `scripts/schematics-assets.build.mjs`. */
+export function storybookAssetsDir(): string {
+  return join(ASSETS_ROOT, 'storybook');
+}
+
 /** Serveur MCP compagnon, bundlé (FSHSP-115) — voir `scripts/mcp-bundle.build.mjs`. */
 export function mcpServerDir(): string {
   return join(ASSETS_ROOT, 'mcp-server');

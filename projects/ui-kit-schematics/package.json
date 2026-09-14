@@ -24,6 +24,9 @@
     "registry": "https://registry.npmjs.org/"
   },
   "schematics": "./collection.json",
+  "bin": {
+    "ui-kit-preview": "./src/bin/preview.js"
+  },
   "ng-add": {
     "save": "devDependencies"
   },

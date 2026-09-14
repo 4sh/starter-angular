@@ -47,6 +47,7 @@ against newer sources, to accept or skip.
 | `ng add @4sh/ui-kit-schematics --gridaflex`         | set up the Gridaflex grid without being asked (`--no-gridaflex` skips it) |
 | `ng generate @4sh/ui-kit-schematics:add`            | copy more components (interactive, or `--components ui-button ui-select`) |
 | `ng generate @4sh/ui-kit-schematics:add --all`      | copy every available component, no prompt                                 |
+| `pnpm exec ui-kit-preview`                          | **throwaway** Storybook over the whole kit, in your theme (see below)     |
 | `ng generate @4sh/ui-kit-schematics:update`         | diff copied components against the published sources                      |
 | `ng generate @4sh/ui-kit-schematics:update --force` | apply every update without a diff or a prompt (**overwrites your edits**) |
 
@@ -110,6 +111,34 @@ none of the preview devDependencies. The choice is recorded in `ui-kit.json`, an
 Not carried over: the `parameters.design` links to our Figma file — you cannot
 open it, so it is stripped at copy time. Put your own `node-id` back if you have
 one.
+
+### See the whole kit in your own theme (`ui-kit-preview`)
+
+When you build a theme, the central move is looking at the **whole** kit with
+your own values. A project consuming the kit as a library could not: its
+Storybook has no component page at all, since it copied no source.
+
+```bash
+pnpm exec ui-kit-preview          # set up and start
+pnpm exec ui-kit-preview --clean  # remove everything
+```
+
+The command sets up a **throwaway** Storybook in `.ui-kit-preview/` (gitignored):
+the kit's stories and MDX pages, **without its sources**. It does not touch your
+project's own Storybook.
+
+What you see is your theme, not ours. The command overrides only the config
+directory: the `styles`, `assets` and `stylePreprocessorOptions` of your
+`storybook` target are reused as-is, so **your fonts, tokens, preset and asset
+tree all arrive natively**, exactly as in the application.
+
+The loop: edit `src/styles/preset/_preset.scss` and the page updates on its own
+— no reload, the story's state is preserved. Measured at ~6.5 s from save to
+updated component.
+
+> **Prerequisite**: `@4sh/ui-kit` installed, at a version matching this package —
+> the two ship together. The command refuses to start when they diverge, rather
+> than leaving you on a compile error pointing at a story you did not write.
 
 ### Assets (fonts, images, favicon)
 
@@ -194,7 +223,10 @@ If you would rather consume compiled components and own no source, install
 **[`@4sh/ui-kit`](https://www.npmjs.com/package/@4sh/ui-kit)** instead and follow
 its own README — nothing is copied, and you track the kit's releases.
 
-The two modes do not combine: pick the one that fits the project.
+The two modes do not combine for a given component: it is either yours or the
+kit's. The **foundation** laid here (styles, tokens, preset, Storybook) serves
+both though — and `pnpm exec ui-kit-preview` is aimed precisely at library-mode
+projects.
 
 ---
 

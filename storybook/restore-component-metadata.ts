@@ -4,11 +4,14 @@ import type { Decorator } from '@storybook/angular';
 /**
  * Restores the `@Component` / `@Directive` metadata that the Angular linker drops.
  *
- * The stories import the kit from its built package (`@4sh/ui-kit/*` → `dist/ui-kit`),
- * whose fesm files are partially compiled: the linker only re-emits
- * `setClassMetadata()` in JIT mode, so in `build-storybook` the classes arrive with
- * their `ɵcmp` / `ɵdir` but no `__annotations__`. `@storybook/angular` reads those
- * annotations, and two of its features break without them:
+ * This file lives in two places, for one reason. Here, the stories import the kit from
+ * its built package (`@4sh/ui-kit/*` → `dist/ui-kit`); in a consumer project that runs
+ * `ng generate @4sh/ui-kit-schematics:preview`, the very same stories import it from
+ * `node_modules` (FSHSP-202). Either way the fesm files are partially compiled: the
+ * linker only re-emits `setClassMetadata()` in JIT mode, so in `build-storybook` the
+ * classes arrive with their `ɵcmp` / `ɵdir` but no `__annotations__`.
+ * `@storybook/angular` reads those annotations, and two of its features break without
+ * them:
  *
  * - the implicit template of a story that only declares `component` + `args`
  *   (`computesTemplateFromComponent`) → `Cannot read properties of undefined

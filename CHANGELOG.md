@@ -18,6 +18,47 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ### Added
 
+- **`pnpm exec ui-kit-preview` — voir tout le kit avec le thème du projet, sans copier une seule
+  source** (FSHSP-202). Un projet qui consomme `@4sh/ui-kit` en paquet n'avait aucune page de
+  composant dans son Storybook : impossible de juger un thème sur l'ensemble du kit, ce qui est
+  pourtant le geste central quand on en construit un. La commande monte un Storybook **jetable**
+  dans `.ui-kit-preview/` (gitignoré) avec les stories et les MDX du kit, et se supprime d'un
+  `--clean`. Le Storybook du projet n'est pas touché.
+  - Elle ne surcharge que `--config-dir` : les `styles`, `assets` et `stylePreprocessorOptions`
+    de la cible `storybook` existante sont réutilisés, donc **polices, jetons, preset et assets du
+    projet arrivent nativement**. Mesuré : démarrage 15 s, 704 stories et 63 pages indexées,
+    0 erreur.
+  - Le rechargement à chaud de Storybook ne couvre pas les styles globaux (CSS à nom haché) : la
+    preview embarque un rafraîchisseur qui échange le `<link>` sans recharger la page — l'état de
+    la story est préservé. Mesuré à ~6,5 s entre l'enregistrement et le composant à jour.
+  - Refuse de démarrer si la version de `@4sh/ui-kit` installée diverge de celle dont ce paquet
+    embarque les stories, plutôt que de laisser échouer la compilation sur une story que le
+    lecteur n'a pas écrite.
+
+- **Couche `src/styles/preset/` posée par `ng add`** (FSHSP-202). `main.scss` n'offrait aucun
+  emplacement pour surcharger les jetons générés — chaque projet inventait le sien, ou éditait
+  `ui-kit/generated/`, réécrit au `tokens:build` suivant. Le preset est chargé APRÈS les tokens,
+  donc il l'emporte, et c'est le fichier sur lequel on itère quand on règle un thème.
+
+### Fixed
+
+- **Le build de production d'un Storybook qui rend le kit compilé échouait sur
+  `computesTemplateFromComponent: Cannot read properties of undefined (reading 'selector')`**
+  (FSHSP-202). Les `fesm` publiés sont partiellement compilés : le linker ne réémet
+  `setClassMetadata()` qu'en JIT, si bien qu'en build optimisé les classes arrivent avec leur
+  `ɵcmp`/`ɵdir` mais sans `__annotations__` — que `@storybook/angular` lit pour dériver le
+  template implicite d'une story qui ne déclare que `component` + `args`. Le décorateur qui répare
+  ces annotations existait dans ce dépôt mais était explicitement exclu du paquet ; il est
+  désormais livré et branché par la preview.
+
+- **Les tables `## Theming` étaient vides pour un composant consommé en paquet** (FSHSP-202).
+  `scripts/docs.config.mjs` ne sait lire qu'un `.scss` local, absent en mode librairie. Il se
+  replie maintenant sur le catalogue du kit déjà posé chez le consommateur
+  (`.ui-kit-mcp/data/ui-config.json`, ou celui livré par le paquet). Un `.scss` local prime
+  toujours.
+
+### Added
+
 - **Toutes les couleurs des composants sont maintenant reformables** (FSHSP-206). FSHSP-204 puis
   FSHSP-205 avaient ouvert la géométrie et la typographie ; la couleur restait dehors, avec
   **9 lectures de jeton sur 531** derrière un hook (1,7 %). Les **453 hooks** ajoutés portent le
