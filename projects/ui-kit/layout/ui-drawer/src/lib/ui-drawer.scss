@@ -17,6 +17,8 @@ $drawer-z-index: var(--ui-drawer-z-index, 1100);                                
 $stroke-width: var(--ui-drawer-stroke-width, var(--stroke-sm));                   /// Épaisseur de bordure du panneau.
 $panel-padding: var(--ui-drawer-panel-padding, var(--units-lg));                  /// Inset du panneau.
 $header-gap: var(--ui-drawer-header-gap, var(--units-sm));                        /// Espacement entre les éléments de l'en-tête.
+$header-align: var(--ui-drawer-header-align, flex-start);                    /// Alignement vertical de l'en-tête (titre, fermeture).
+$action-align: var(--ui-drawer-action-align, auto);                          /// Alignement vertical de la fermeture seule ; `auto` suit l'alignement de l'en-tête.
 $action-size: var(--ui-drawer-action-size, #{utils.rem-calc(32)});                /// Taille de la cible tactile du bouton de fermeture.
 $focus-ring-width: var(--ui-drawer-focus-ring-width, #{utils.$focus-ring-width}); /// Épaisseur de l'anneau de focus du bouton de fermeture
 $mask-background: var(--ui-drawer-mask-background, var(--primitives-black-50));   /// Assombrissement du masque.
@@ -116,7 +118,7 @@ $size-edge: var(--ui-drawer-size-edge, #{utils.rem-calc(160)});                 
   &-header {
     flex: 0 0 auto;
     display: flex;
-    align-items: flex-start;
+    align-items: $header-align;
     gap: $header-gap;
     padding: $panel-padding $panel-padding var(--units-sm);
   }
@@ -136,6 +138,7 @@ $size-edge: var(--ui-drawer-size-edge, #{utils.rem-calc(160)});                 
     flex: 0 0 auto;
     display: inline-flex;
     align-items: center;
+    align-self: $action-align;
     justify-content: center;
     width: $action-size;
     height: $action-size;

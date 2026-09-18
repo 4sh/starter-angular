@@ -280,6 +280,13 @@ const PROPERTIES = {
     bindable: false,
   },
   cursor: { fr: 'Curseur', group: 'misc', type: 'STRING', scopes: ['ALL_SCOPES'], bindable: false },
+  align: {
+    fr: 'Alignement',
+    group: 'misc',
+    type: 'STRING',
+    scopes: ['ALL_SCOPES'],
+    bindable: false,
+  },
   'object-fit': {
     fr: 'Cadrage du média',
     group: 'misc',
