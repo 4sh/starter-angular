@@ -96,6 +96,44 @@ automatique ou un champ dépendant.
 Ce composant n'écoute que `change` : la valeur ne sort qu'une fois **validée par le
 navigateur**, ou vidée par l'utilisateur.
 
+## Bouton d'ouverture
+
+Le navigateur peint son propre indicateur dans la boîte : sa métrique et sa couleur lui
+appartiennent, et aucun jeton ne les atteint : côte à côte avec un
+[`ui-datepicker`](?path=/docs/components-ui-forms-ui-datepicker--docs), les deux champs ne
+s'alignaient pas. Cet indicateur est donc masqué, et remplacé par **la zone d'action de
+`ui-input`**, celle-là même que le déclencheur d'`ui-datepicker` rend. Les deux composants
+partagent dès lors le même bouton, les mêmes états et les mêmes jetons.
+
+`icon` remplace le glyphe (`calendar` par défaut, `clock` en `mode="time"`), `iconAriaLabel`
+son nom accessible, et `showIcon="false"` le retire entièrement.
+
+Chaque moteur cache le sien à sa façon : `display: none` sur
+`::-webkit-calendar-picker-indicator` pour Chrome et Safari ; Firefox n'expose aucun sélecteur
+vers le sien (ni pseudo-élément, ni `appearance`, ni `::part()`, tous mesurés), son contrôle
+est donc élargi puis rogné de la même largeur, ce qui emporte l'indicateur sans rien déplacer.
+La zone visible reste exactement celle que le flex a donnée, en LTR comme en RTL.
+
+<Canvas of={DateStories.CustomIcon} />
+<Canvas of={DateStories.NoIcon} />
+
+```html
+<ui-input-date label="Échéance" icon="calendar-day" />
+<ui-input-date label="Date" [showIcon]="false" />
+```
+
+Pour un glyphe qui ne vient pas d'une police d'icônes, `<ng-template #icon>` reçoit le même
+contexte que celui d'`ui-input` et d'`ui-datepicker` :
+
+```html
+<ui-input-date label="Échéance">
+  <ng-template #icon let-name let-size="size"><svg>…</svg></ng-template>
+</ui-input-date>
+```
+
+Sans bouton, le sélecteur reste ouvrable au clavier sur bureau (le raccourci du contrôle natif)
+et au doigt sur mobile, mais plus à la souris, le clic sur un champ date n'ouvrant rien.
+
 ## Libellé et placeholder
 
 Le libellé **reste levé en permanence**, y compris en `floatLabel` : le navigateur dessine son
@@ -122,16 +160,21 @@ même contrat que tous les champs bâtis sur `ui-field`.
 - `aria-label` requis quand il n'y a pas de `label` visible.
 - Le message d'aide ou d'erreur est relié par `aria-describedby`, et `aria-invalid` suit le
   `level`.
-- Le glyphe du calendrier et le panneau sont peints par le navigateur : ils suivent
-  `color-scheme`, que le composant bascule avec le thème sombre. Sans ça, le thème sombre
-  gardait un glyphe noir sur champ sombre et ouvrait un calendrier clair.
+- Le bouton d'ouverture **n'est pas un arrêt de tabulation** : le contrôle natif ouvre déjà
+  son propre sélecteur au clavier, et un second arrêt ne ferait que le répéter, une fois par
+  champ dans un formulaire. Il garde son `aria-label`, activable au pointeur et au lecteur
+  d'écran tactile.
+- Le panneau déroulant, lui, reste peint par le navigateur : il suit `color-scheme`, que le
+  composant bascule avec le thème sombre. Sans ça, le thème sombre ouvrait un calendrier clair.
 
 ## Theming
 
-La boîte, le libellé et le helper viennent du shell `ui-field` (mixins `utils.field-*`) : toute
-la configuration passe donc par les variables locales de `ui-field.scss`, qui pointent vers le
-groupe partagé [Forms](?path=/docs/components-configuration-forms--docs). Voir aussi le
-[fonctionnement de la configuration](?path=/docs/components-configuration--docs).
+La boîte, le libellé, le helper et **le bouton d'ouverture** viennent du shell `ui-field`
+(mixins `utils.field-*`) : toute la configuration passe donc par les variables locales de
+`ui-field.scss`, qui pointent vers le groupe partagé
+[Forms](?path=/docs/components-configuration-forms--docs). Le bouton lit les mêmes
+`--ui-form-field-action-*` que celui d'`ui-datepicker` : les recolorer déplace les deux. Voir
+aussi le [fonctionnement de la configuration](?path=/docs/components-configuration--docs).
 
 <ConfigTable of="ui-input-date" />
 <ConfigTable of="ui-field" />

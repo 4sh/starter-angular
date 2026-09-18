@@ -16,6 +16,25 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+### Changed
+
+- **`ui-input-date` : bouton d'ouverture aligné sur `ui-datepicker`** (FSHSP-214). Le champ
+  s'en remettait à l'indicateur que le navigateur peint lui-même : métrique, couleur et zone
+  cliquable lui appartenaient, hors de portée des jetons, et les deux composants ne
+  s'alignaient pas côte à côte dans un même formulaire. Cet indicateur est masqué et remplacé
+  par la zone d'action de `ui-input`, celle que le déclencheur d'`ui-datepicker` rend déjà :
+  même mixin `utils.field-action`, donc mêmes dimensions (40x40, 36x36 en `small`), mêmes
+  états (survol, désactivé) et mêmes réglages `--ui-form-field-action-*`. Le clic appelle
+  `showPicker()`, qui ouvre le sélecteur du système, la roue native comprise sur mobile.
+  L'indicateur natif est masqué sur les trois moteurs : `display: none` sur
+  `::-webkit-calendar-picker-indicator` pour Chrome et Safari, et, Firefox n'exposant aucun
+  sélecteur vers le sien, un débord rogné de la même largeur (donc à géométrie constante, RTL
+  compris) qui l'emporte hors du champ.
+  Nouvelles entrées `icon` (`calendar`, `clock` en `mode="time"`), `showIcon`, `iconAriaLabel`,
+  `iconTemplate` / `<ng-template #icon>` et méthode publique `openPicker()`. Le bouton n'est
+  volontairement pas un arrêt de tabulation : le contrôle natif ouvre déjà son sélecteur au
+  clavier.
+
 ## [0.10.0] - 2026-09-14
 
 ### Added

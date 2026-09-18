@@ -1,13 +1,17 @@
 import {
+  booleanAttribute,
   Component,
   computed,
+  contentChild,
   ElementRef,
   forwardRef,
   input,
   numberAttribute,
   output,
+  TemplateRef,
   viewChild,
 } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import {
   BaseFormField,
@@ -20,6 +24,8 @@ import {
   toIsoTime,
 } from '@4sh/ui-kit/forms';
 import { UiField } from '@4sh/ui-kit/forms/ui-field';
+import type { UiInputIconContext } from '@4sh/ui-kit/forms/ui-input';
+import { UiIcon, type UiIconSize } from '@4sh/ui-kit/base/ui-icon';
 
 /** Granularity of the field — picks which native control the browser renders. */
 export type InputDateMode = 'date' | 'time' | 'datetime';
@@ -67,7 +73,7 @@ const NATIVE_TYPE: Record<InputDateMode, string> = {
  */
 @Component({
   selector: 'ui-input-date',
-  imports: [UiField],
+  imports: [UiField, UiIcon, NgTemplateOutlet],
   templateUrl: './ui-input-date.html',
   styleUrl: './ui-input-date.scss',
   providers: [
@@ -93,6 +99,13 @@ export class UiInputDate extends BaseFormField<InputDateValue> {
    */
   step = input<number, unknown>(undefined, { transform: numberAttribute });
 
+  icon = input<string>();
+  showIcon = input(true, { transform: booleanAttribute });
+  /** Accessible name of the picker button. Defaults per {@link mode}. */
+  iconAriaLabel = input<string>();
+  /** Custom icon, as an input: same context as `ui-input`'s / `ui-datepicker`'s. */
+  iconTemplate = input<TemplateRef<UiInputIconContext>>();
+
   /** Emitted when the browser commits a value — never mid-entry. */
   valueChange = output<InputDateValue>();
   /** Emitted when the field receives focus. */
@@ -100,8 +113,34 @@ export class UiInputDate extends BaseFormField<InputDateValue> {
   /** Emitted when the field loses focus. */
   inputBlur = output<FocusEvent>();
 
+  /** Custom icon: `<ng-template #icon let-name let-size="size">`. */
+  private readonly iconTemplateContent = contentChild<TemplateRef<UiInputIconContext>>('icon');
+
   /** @ignore */
   private readonly inputEl = viewChild.required<ElementRef<HTMLInputElement>>('inputEl');
+
+  /** @ignore Icon size aligned with the field size, same pairing as `ui-input`. */
+  protected readonly iconSize = computed<UiIconSize>(() => (this.size() === 'small' ? 'sm' : 'md'));
+  /** @ignore Calendar, or clock when the field only carries a time. */
+  protected readonly resolvedIcon = computed(
+    () => this.icon() ?? (this.mode() === 'time' ? 'clock' : 'calendar'),
+  );
+  /** @ignore */
+  protected readonly resolvedIconAriaLabel = computed(
+    () =>
+      this.iconAriaLabel() ??
+      (this.mode() === 'time' ? "Ouvrir le sélecteur d'heure" : 'Ouvrir le calendrier'),
+  );
+  /** @ignore Input wins over the projected `#icon` template. */
+  protected readonly resolvedIconTemplate = computed(
+    () => this.iconTemplate() ?? this.iconTemplateContent(),
+  );
+  /** @ignore */
+  protected readonly iconContext = computed<UiInputIconContext>(() => ({
+    $implicit: this.resolvedIcon(),
+    size: this.iconSize(),
+    disabled: this.isDisabled(),
+  }));
 
   /** @ignore The native `type` the OS picker hangs off. */
   protected readonly nativeType = computed(() => NATIVE_TYPE[this.mode()]);
@@ -127,6 +166,17 @@ export class UiInputDate extends BaseFormField<InputDateValue> {
   /** Focuses the field. */
   focus(options?: FocusOptions): void {
     this.inputEl().nativeElement.focus(options);
+  }
+
+  openPicker(): void {
+    if (this.isDisabled() || this.readonly()) return;
+    const el = this.inputEl().nativeElement;
+    el.focus();
+    try {
+      el.showPicker();
+    } catch {
+      /* no picker to show */
+    }
   }
 
   /** Native `<input>` element, for a composite host that needs direct DOM access. */

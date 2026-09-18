@@ -39,4 +39,22 @@
     (focus)="inputFocus.emit($event)"
     (blur)="onBlur($event)"
   />
+
+  @if (showIcon()) {
+    <button
+      uiFieldSuffix
+      type="button"
+      tabindex="-1"
+      class="ui-input-date-action"
+      [attr.aria-label]="resolvedIconAriaLabel()"
+      [disabled]="isDisabled()"
+      (click)="openPicker()"
+    >
+      @if (resolvedIconTemplate(); as tpl) {
+        <ng-container [ngTemplateOutlet]="tpl" [ngTemplateOutletContext]="iconContext()" />
+      } @else {
+        <ui-icon [name]="resolvedIcon()" [size]="iconSize()" />
+      }
+    </button>
+  }
 </ui-field>
