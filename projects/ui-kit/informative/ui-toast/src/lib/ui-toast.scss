@@ -15,13 +15,19 @@
 $levels: default, highlight, success, warning, error; /// Niveaux sémantiques générant les modifiers `._<niveau>`.
 $sublevels: high, low;                                /// Intensités générant les modifiers `._<intensité>`.
 
+$align: var(--ui-toast-align, flex-start);        /// Alignement vertical de la rangée (icône, contenu, fermeture).
+$icon-align: var(--ui-toast-icon-align, auto);   /// Alignement vertical de l'icône seule ; `auto` suit l'alignement de la rangée.
+$close-align: var(--ui-toast-close-align, auto); /// Alignement vertical de la fermeture seule ; `auto` suit l'alignement de la rangée.
+
+$icon-padding-top: var(--ui-toast-icon-padding-top, var(--units-2xs)); /// Décalage vertical de l'icône, pour l'aligner sur la première ligne de texte ; à remettre à `0` en alignement centré.
+
 // Reused structural constant (kit-wide focus ring). Local alias, never copied.
 $focus-ring-width: var(--ui-toast-focus-ring-width, #{utils.$focus-ring-width}); /// Épaisseur de l'anneau de focus.
 
 .ui-toast {
   // --- Base ----------------------------------------------------------
   display: inline-flex;
-  align-items: flex-start;
+  align-items: $align;
   gap: var(--units-sm);
   box-sizing: border-box;
   width: auto;
@@ -45,8 +51,9 @@ $focus-ring-width: var(--ui-toast-focus-ring-width, #{utils.$focus-ring-width});
     flex: 0 0 auto;
     display: flex;
     align-items: center;
+    align-self: $icon-align;
     // Nudge the icon down so it lines up with the title cap-height.
-    padding-top: var(--units-2xs);
+    padding-top: $icon-padding-top;
     line-height: 0;
   }
 
@@ -80,6 +87,7 @@ $focus-ring-width: var(--ui-toast-focus-ring-width, #{utils.$focus-ring-width});
     flex: 0 0 auto;
     display: inline-flex;
     align-items: center;
+    align-self: $close-align;
     justify-content: center;
     padding: 0;
     border: 0;

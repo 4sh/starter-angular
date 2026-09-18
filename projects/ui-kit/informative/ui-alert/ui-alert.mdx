@@ -127,6 +127,40 @@ Les erreurs de validation d'un formulaire s'affichent en sévérité `error`.
   </tbody>
 </table>
 
+## Alignement vertical
+
+La rangée `icône | contenu | fermeture` est calée en haut, parce que c'est le seul réglage
+juste quand le texte passe sur plusieurs lignes : l'icône doit rester sur la première. Sur un
+message court, la hauteur minimale laisse alors du vide sous le texte, et c'est là qu'un
+projet veut centrer. Aucun réglage statique ne convient aux deux cas, d'où trois poignées, de
+la plus large à la plus fine :
+
+| Variable | Porte sur |
+| --- | --- |
+| `--ui-alert-align` | toute la rangée |
+| `--ui-alert-icon-align` | l'icône seule (`auto` = suit la rangée) |
+| `--ui-alert-close-align` | la fermeture seule (`auto` = suit la rangée) |
+
+```css
+/* tout centrer */
+ui-alert {
+  --ui-alert-align: center;
+  --ui-alert-icon-padding-top: 0; /* le calage optique ne sert qu'en haut */
+}
+
+/* contenu centré, icône et fermeture posées sur la première ligne */
+ui-alert {
+  --ui-alert-align: center;
+  --ui-alert-icon-align: flex-start;
+  --ui-alert-close-align: flex-start;
+}
+```
+
+Le mode titre seul reste centré par construction : une seule ligne, rien à décaler. Les mêmes
+poignées existent sur [`ui-toast`](?path=/docs/components-ui-informative-ui-toast--docs), et
+sur les en-têtes de `ui-modal`, `ui-drawer` et `ui-bottom-sheet`.
+
+
 ## Theming
 
 <ConfigTable of="ui-alert" />

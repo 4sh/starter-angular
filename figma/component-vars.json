@@ -10,10 +10,10 @@
         "Mode 1"
       ],
       "counts": {
-        "tokens": 1418,
-        "alias": 1261,
+        "tokens": 1419,
+        "alias": 1262,
         "literal": 157,
-        "skipped": 66,
+        "skipped": 78,
         "derivedDescriptions": 223
       },
       "aliasTargets": [
@@ -24,6 +24,21 @@
         "typography"
       ],
       "skipped": [
+        {
+          "cssVar": "--ui-alert-align",
+          "component": "ui-alert",
+          "reason": "sans équivalent variable Figma (durée, easing, curseur, plan d’empilement, ratio)."
+        },
+        {
+          "cssVar": "--ui-alert-close-align",
+          "component": "ui-alert",
+          "reason": "sans équivalent variable Figma (durée, easing, curseur, plan d’empilement, ratio)."
+        },
+        {
+          "cssVar": "--ui-alert-icon-align",
+          "component": "ui-alert",
+          "reason": "sans équivalent variable Figma (durée, easing, curseur, plan d’empilement, ratio)."
+        },
         {
           "cssVar": "--ui-autocomplete-panel-max-width",
           "component": "ui-autocomplete",
@@ -42,6 +57,16 @@
         {
           "cssVar": "--ui-avatar-badge-z-index",
           "component": "ui-avatar",
+          "reason": "sans équivalent variable Figma (durée, easing, curseur, plan d’empilement, ratio)."
+        },
+        {
+          "cssVar": "--ui-bottom-sheet-action-align",
+          "component": "ui-bottom-sheet",
+          "reason": "sans équivalent variable Figma (durée, easing, curseur, plan d’empilement, ratio)."
+        },
+        {
+          "cssVar": "--ui-bottom-sheet-header-align",
+          "component": "ui-bottom-sheet",
           "reason": "sans équivalent variable Figma (durée, easing, curseur, plan d’empilement, ratio)."
         },
         {
@@ -88,6 +113,16 @@
           "cssVar": "--ui-datepicker-panel-shadow",
           "component": "ui-datepicker",
           "reason": "`--shadow-default-md` n'est pas un token du pipeline : rien à aliaser."
+        },
+        {
+          "cssVar": "--ui-drawer-action-align",
+          "component": "ui-drawer",
+          "reason": "sans équivalent variable Figma (durée, easing, curseur, plan d’empilement, ratio)."
+        },
+        {
+          "cssVar": "--ui-drawer-header-align",
+          "component": "ui-drawer",
+          "reason": "sans équivalent variable Figma (durée, easing, curseur, plan d’empilement, ratio)."
         },
         {
           "cssVar": "--ui-drawer-z-index",
@@ -220,6 +255,16 @@
           "reason": "unité relative `em` : sa valeur dépend du contexte de rendu, une variable Figma ne peut pas la porter."
         },
         {
+          "cssVar": "--ui-modal-header-actions-align",
+          "component": "ui-modal",
+          "reason": "sans équivalent variable Figma (durée, easing, curseur, plan d’empilement, ratio)."
+        },
+        {
+          "cssVar": "--ui-modal-header-align",
+          "component": "ui-modal",
+          "reason": "sans équivalent variable Figma (durée, easing, curseur, plan d’empilement, ratio)."
+        },
+        {
           "cssVar": "--ui-modal-z-index",
           "component": "ui-modal",
           "reason": "sans équivalent variable Figma (durée, easing, curseur, plan d’empilement, ratio)."
@@ -348,6 +393,21 @@
           "cssVar": "--ui-textarea-padding-block-small",
           "component": "ui-textarea",
           "reason": "expression calc() : une variable Figma ne porte pas de calcul."
+        },
+        {
+          "cssVar": "--ui-toast-align",
+          "component": "ui-toast",
+          "reason": "sans équivalent variable Figma (durée, easing, curseur, plan d’empilement, ratio)."
+        },
+        {
+          "cssVar": "--ui-toast-close-align",
+          "component": "ui-toast",
+          "reason": "sans équivalent variable Figma (durée, easing, curseur, plan d’empilement, ratio)."
+        },
+        {
+          "cssVar": "--ui-toast-icon-align",
+          "component": "ui-toast",
+          "reason": "sans équivalent variable Figma (durée, easing, curseur, plan d’empilement, ratio)."
         },
         {
           "cssVar": "--ui-toast-z-index",
@@ -1002,7 +1062,7 @@
       "padding-top": {
         "$value": "{metrics.units.2xs}",
         "$type": "dimension",
-        "$description": "Décalage vertical de l'icône, pour l'aligner sur la première ligne de texte.",
+        "$description": "Décalage vertical de l'icône, pour l'aligner sur la première ligne de texte ; à remettre à `0` en alignement centré.",
         "$extensions": {
           "com.figma": {
             "resolvedType": "FLOAT",
@@ -30110,6 +30170,30 @@
           "component": "ui-toast",
           "entryPoint": "@4sh/ui-kit/informative/ui-toast",
           "descriptionSource": "scss"
+        }
+      }
+    },
+    "icon": {
+      "padding-top": {
+        "$value": "{metrics.units.2xs}",
+        "$type": "dimension",
+        "$description": "Décalage vertical de l'icône, pour l'aligner sur la première ligne de texte ; à remettre à `0` en alignement centré.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-toast-icon-padding-top)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-toast-icon-padding-top",
+            "component": "ui-toast",
+            "entryPoint": "@4sh/ui-kit/informative/ui-toast",
+            "descriptionSource": "scss"
+          }
         }
       }
     },

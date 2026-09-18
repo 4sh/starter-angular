@@ -16,6 +16,24 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+### Added
+
+- **Alignement vertical réglable sur les rangées icône/titre + action** (FSHSP-214).
+  `ui-alert`, `ui-toast` et les en-têtes de `ui-modal`, `ui-drawer` et `ui-bottom-sheet`
+  figeaient `align-items: flex-start`. C'est le bon réglage quand le texte passe sur
+  plusieurs lignes (l'icône reste sur la première) et le mauvais quand il tient sur une
+  seule, où la hauteur minimale laisse du vide sous le texte : aucune valeur statique ne
+  convient aux deux, et les projets en étaient réduits à une surcharge globale sur les
+  classes internes. Treize poignées, à chaque fois la rangée puis ses enfants, lesquels
+  valent `auto` (donc suivent la rangée) par défaut : `--ui-alert-align`,
+  `--ui-alert-icon-align`, `--ui-alert-close-align`, `--ui-toast-align`,
+  `--ui-toast-icon-align`, `--ui-toast-close-align`, `--ui-toast-icon-padding-top`,
+  `--ui-modal-header-align`, `--ui-modal-header-actions-align`, `--ui-drawer-header-align`,
+  `--ui-drawer-action-align`, `--ui-bottom-sheet-header-align` et
+  `--ui-bottom-sheet-action-align`. Aucun défaut ne change. Le calage optique de l'icône
+  (`--ui-{alert,toast}-icon-padding-top`) ne sert qu'en alignement haut : à remettre à `0`
+  quand on centre.
+
 ### Changed
 
 - **`ui-input-date` : bouton d'ouverture aligné sur `ui-datepicker`** (FSHSP-214). Le champ

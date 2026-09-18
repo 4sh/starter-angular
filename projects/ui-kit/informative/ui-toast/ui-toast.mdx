@@ -149,6 +149,26 @@ respectés automatiquement.
   </tbody>
 </table>
 
+## Alignement vertical
+
+Même contrat que sur [`ui-alert`](?path=/docs/components-ui-informative-ui-alert--docs) : la
+rangée `icône | contenu | fermeture` est calée en haut, ce qui est juste sur un texte qui
+passe à la ligne et laisse du vide sur un texte court.
+
+| Variable | Porte sur |
+| --- | --- |
+| `--ui-toast-align` | toute la rangée |
+| `--ui-toast-icon-align` | l'icône seule (`auto` = suit la rangée) |
+| `--ui-toast-close-align` | la fermeture seule (`auto` = suit la rangée) |
+
+```css
+ui-toast {
+  --ui-toast-align: center;
+  --ui-toast-icon-padding-top: 0; /* le calage optique ne sert qu'en haut */
+}
+```
+
+
 ## Theming
 
 Constantes locales à `ui-toast-container.scss` (structurelles, jamais de couleur : les couleurs

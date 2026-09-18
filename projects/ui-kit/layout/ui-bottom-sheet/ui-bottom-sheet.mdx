@@ -275,6 +275,23 @@ Trois écarts assumés, notés ici pour qu'ils ne passent pas pour des oublis :
   </tbody>
 </table>
 
+## Alignement vertical de l'en-tête
+
+L'en-tête (titre et bouton de fermeture) est calé en haut, ce qui est juste quand le titre passe sur deux lignes
+et laisse du vide quand il tient sur une. Deux poignées plutôt qu'une surcharge globale :
+
+| Variable | Porte sur |
+| --- | --- |
+| `--ui-bottom-sheet-header-align` | toute la rangée |
+| `--ui-bottom-sheet-action-align` | la fermeture seule (`auto` = suit la rangée) |
+
+```css
+ui-bottom-sheet {
+  --ui-bottom-sheet-header-align: center;
+}
+```
+
+
 ## Theming
 
 Variables locales en tête de `ui-bottom-sheet.scss`. Voir le
