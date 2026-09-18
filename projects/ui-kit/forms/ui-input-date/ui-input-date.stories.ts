@@ -37,6 +37,20 @@ const meta: Meta<UiInputDate> = {
       description: 'Granularité native : jours sur `date`, **secondes** sur `time`/`datetime`.',
       table: { type: { summary: 'number' } },
     },
+    icon: {
+      control: 'text',
+      description: 'Icône du bouton d\'ouverture : `clock` par défaut en `mode="time"`.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"calendar"' } },
+    },
+    showIcon: {
+      control: 'boolean',
+      description: "Rend le bouton d'ouverture.",
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
+    },
+    iconAriaLabel: {
+      control: 'text',
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Ouvrir le calendrier"' } },
+    },
     helperText: { control: 'text', table: { type: { summary: 'string' } } },
     errorText: { control: 'text', table: { type: { summary: 'string' } } },
     showMessageIcon: {
@@ -82,6 +96,7 @@ const meta: Meta<UiInputDate> = {
     label: 'Date de naissance',
     mode: 'date',
     valueType: 'date',
+    showIcon: true,
     size: 'default',
     level: 'default',
     showMessageIcon: false,
@@ -95,6 +110,7 @@ const TEMPLATE = `<div style="width:260px"><ui-input-date
     [(ngModel)]="model"
     [label]="label" [mode]="mode" [valueType]="valueType"
     [min]="min" [max]="max" [step]="step"
+    [icon]="icon" [showIcon]="showIcon" [iconAriaLabel]="iconAriaLabel"
     [helperText]="helperText" [errorText]="errorText" [size]="size" [level]="level"
     [floatLabel]="floatLabel" [showMessageIcon]="showMessageIcon" [messageIcon]="messageIcon"
     [required]="required" [disabled]="disabled" [readonly]="readonly" [invalid]="invalid"
@@ -135,6 +151,14 @@ export const Small: Story = { render: story(), args: { label: 'Compact', size: '
 export const Error: Story = {
   render: story(),
   args: { label: 'Date', level: 'error', helperText: 'Date obligatoire.' },
+};
+export const CustomIcon: Story = {
+  render: story(new Date(2026, 8, 14)),
+  args: { label: 'Échéance', icon: 'calendar-day', helperText: "L'icône se remplace par `icon`." },
+};
+export const NoIcon: Story = {
+  render: story(new Date(2026, 8, 14)),
+  args: { label: 'Date', showIcon: false },
 };
 export const Disabled: Story = {
   render: story(new Date(1990, 4, 17)),
