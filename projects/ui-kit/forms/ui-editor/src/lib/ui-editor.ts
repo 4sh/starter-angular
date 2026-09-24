@@ -60,6 +60,7 @@ import {
   readTextColor,
   removeLink,
   resolveFontLabel,
+  sanitizeEditorHtml,
   scrubInPlace,
   toggleCodeBlock,
 } from './ui-editor-commands';
@@ -168,8 +169,11 @@ export class UiEditor extends BaseFormField<string> {
   private savedRange: Range | null = null;
 
   /** @ignore Sanitised value — never inject `modelValue` into the DOM raw. */
-  private readonly safeValue = computed(
-    () => this.sanitizer.sanitize(SecurityContext.HTML, this.modelValue() ?? '') ?? '',
+  private readonly safeValue = computed(() =>
+    sanitizeEditorHtml(
+      this.modelValue() ?? '',
+      (html) => this.sanitizer.sanitize(SecurityContext.HTML, html) ?? '',
+    ),
   );
 
   /** @ignore Plain-text length, what `maxlength` and the counter measure. */
@@ -270,13 +274,13 @@ export class UiEditor extends BaseFormField<string> {
       const value = this.safeValue();
       const el = this.contentEl()?.nativeElement;
       if (!el) return;
-      // Already on screen, or the value we just read back from the user's own
-      // edit: rewriting would collapse the caret mid-keystroke. Comparing the
-      // live DOM too covers the case where sanitising reshapes the markup.
-      if (el.innerHTML === value || value === this.lastEmitted) return;
+      // Our own edit read back, or already on screen: rewriting would collapse the
+      // caret. Raw value on purpose: sanitising re-encodes it (`é` → `&#233;`).
+      if (this.modelValue() === this.lastEmitted || el.innerHTML === value) return;
       /* eslint-disable-next-line no-restricted-syntax -- EXCEPTION JUSTIFIÉE :
          `value` vient de `safeValue()`, donc de
-         `DomSanitizer.sanitize(SecurityContext.HTML, …)`. L'écriture directe est
+         `DomSanitizer.sanitize(SecurityContext.HTML, …)`, plus le seul `style`
+         d'alignement et de retrait de `sanitizeStyle()`. L'écriture directe est
          imposée par le `contenteditable` : une liaison `[innerHTML]` réécrirait
          la zone à chaque frappe et effondrerait le caret. Registre :
          docs/SECURITY-PRACTICES.md. */

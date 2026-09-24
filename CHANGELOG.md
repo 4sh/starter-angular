@@ -35,6 +35,21 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
   fichier choisi deux fois redéclenche `change`. Un champ caché porte désormais la sélection
   courante sous `name`. Sans `name`, rien ne change.
 
+- **`ui-editor` : la zone d'édition réécrivait la saisie de l'utilisateur** (FSHSP-224). Elle
+  était resynchronisée depuis la valeur assainie dès que l'assainissement changeait quoi que ce
+  soit, or `DomSanitizer` encode les accents (`é` devient `&#233;`) et retire tout `style`.
+  - Taper un caractère accentué renvoyait le curseur au début : `abcdé fin` donnait `nabcdé fi`.
+  - Chaque mise en forme perdait la sélection, et la suivante demandait de resélectionner.
+  - L'alignement (`style="text-align: …"`) et le retrait (`<blockquote style="margin: …">`)
+    disparaissaient au clic qui les appliquait et à chaque valeur rechargée (la story
+    `TextAlign` elle-même s'affichait sans alignement). Ce `style` est désormais conservé,
+    réduit à une liste fermée (`text-align`, `margin`, `padding`, `border: none`, aucune
+    `url()`), la même que dans le kit React.
+- **`ui-editor` : recolorer un passage laissait ses mots déjà colorés inchangés** (FSHSP-224).
+  La classe de la même famille restée à l'intérieur (couleur, surlignage, police ou taille)
+  l'emportait, étant plus proche du texte. Elle est retirée à la conversion, et la sélection est
+  reposée sur le texte mis en forme.
+
 ## [0.11.0] - 2026-09-18
 
 ### Added
