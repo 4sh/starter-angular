@@ -55,6 +55,11 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
   contenu : elle avalait les clics destinés à la page et suspendait le compte à rebours dès que
   le pointeur passait sur la même ligne. Le pointeur et la pause au survol reviennent à la carte.
 
+- **`ui-toast` : un message en attente au-delà de `stackVisibleLimit` expirait sans avoir
+  été affiché** (FSHSP-224). Son délai était armé dès l'arrivée : le message n'était jamais vu,
+  ni annoncé aux lecteurs d'écran. Le compte à rebours démarre désormais quand la carte paraît,
+  et repart de `life` si elle est repoussée hors de la pile, comme dans le kit React.
+
 ## [0.11.0] - 2026-09-18
 
 ### Added
