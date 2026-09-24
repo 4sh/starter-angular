@@ -16,7 +16,9 @@ navigateur, isolée dans `ui-editor-commands`. Le kit reste sans dépendance run
 
 La valeur est une **chaîne HTML**, assainie par `DomSanitizer` avant tout affichage, et réduite à
 une liste blanche de balises au collage (`b`, `strong`, `i`, `em`, `u`, `a`, `ul`, `ol`, `li`, `p`,
-`br`, `div`, `span`, `pre`, `code`).
+`br`, `div`, `span`, `pre`, `code`). Le seul `style` conservé est celui que l'éditeur écrit
+lui-même pour l'alignement et le retrait (`text-align`, `margin`, `padding`, `border: none`) :
+le `DomSanitizer` retire tout `style`, et ces deux mises en forme se perdaient sinon.
 
 Autonome, `[(ngModel)]` ou reactive forms (`ControlValueAccessor` via `BaseFormField`). Pour une
 saisie multiligne **sans mise en forme** →

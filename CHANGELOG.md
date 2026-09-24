@@ -16,6 +16,55 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+### Fixed
+
+- **`ui-progress-bar` : la barre disparaissait avec `valuePosition="bottom"`** (FSHSP-224).
+  En colonne, `align-items: flex-end` ramenait la piste à sa largeur de contenu, soit 0 px.
+  La piste s'étire désormais, seul le libellé reste aligné à droite.
+
+- **`ui-file-upload` : messages d'erreur invisibles en mode clair** (FSHSP-224). Le message
+  de refus et le texte d'une ligne en erreur de `ui-file-upload-list` prenaient
+  `--informative-errorhigh-content-default`, le contenu prévu pour la surface d'erreur forte :
+  blanc sur fond neutre, mesuré à 1,07:1. Ils passent à `--form-error-content-default`, comme
+  les autres champs du kit (4,51:1 en clair, 12,26:1 en sombre). Les poignées
+  `--ui-file-upload-message-color` et `--ui-file-upload-list-color-error` gardent leur nom,
+  seule leur valeur par défaut change.
+
+- **`ui-file-upload` : avec `name`, un `<form>` natif recevait un fichier vide** (FSHSP-224).
+  Le nom était posé sur le sélecteur, que le composant vide après chaque choix pour qu'un même
+  fichier choisi deux fois redéclenche `change`. Un champ caché porte désormais la sélection
+  courante sous `name`. Sans `name`, rien ne change.
+
+- **`ui-editor` : la zone d'édition réécrivait la saisie de l'utilisateur** (FSHSP-224). Elle
+  était resynchronisée depuis la valeur assainie dès que l'assainissement changeait quoi que ce
+  soit, or `DomSanitizer` encode les accents (`é` devient `&#233;`) et retire tout `style`.
+  - Taper un caractère accentué renvoyait le curseur au début : `abcdé fin` donnait `nabcdé fi`.
+  - Chaque mise en forme perdait la sélection, et la suivante demandait de resélectionner.
+  - L'alignement (`style="text-align: …"`) et le retrait (`<blockquote style="margin: …">`)
+    disparaissaient au clic qui les appliquait et à chaque valeur rechargée (la story
+    `TextAlign` elle-même s'affichait sans alignement). Ce `style` est désormais conservé,
+    réduit à une liste fermée (`text-align`, `margin`, `padding`, `border: none`, aucune
+    `url()`), la même que dans le kit React.
+- **`ui-editor` : recolorer un passage laissait ses mots déjà colorés inchangés** (FSHSP-224).
+  La classe de la même famille restée à l'intérieur (couleur, surlignage, police ou taille)
+  l'emportait, étant plus proche du texte. Elle est retirée à la conversion, et la sélection est
+  reposée sur le texte mis en forme.
+
+- **`ui-toast` : la bande de chaque toast captait le pointeur à côté de la carte**
+  (FSHSP-224). Elle fait toute la largeur de la pile (360 px) quand la carte épouse son
+  contenu : elle avalait les clics destinés à la page et suspendait le compte à rebours dès que
+  le pointeur passait sur la même ligne. Le pointeur et la pause au survol reviennent à la carte.
+
+- **`ui-toast` : un message en attente au-delà de `stackVisibleLimit` expirait sans avoir
+  été affiché** (FSHSP-224). Son délai était armé dès l'arrivée : le message n'était jamais vu,
+  ni annoncé aux lecteurs d'écran. Le compte à rebours démarre désormais quand la carte paraît,
+  et repart de `life` si elle est repoussée hors de la pile, comme dans le kit React.
+
+- **`ui-menu` : cliquer un parent de cascade refermait son sous-menu** (FSHSP-224). En
+  `submenus="flyout"` (donc aussi dans `ui-context-menu`), le survol avait déjà ouvert le
+  sous-menu et le clic le basculait. Au tactile, où le tap émet un `mouseenter` avant le clic,
+  la cascade ne s'ouvrait jamais. Le clic ouvre désormais, sans refermer.
+
 ## [0.11.0] - 2026-09-18
 
 ### Added

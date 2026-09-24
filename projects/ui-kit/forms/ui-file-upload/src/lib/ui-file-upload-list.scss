@@ -168,6 +168,6 @@ $progress-color: var(--ui-file-upload-item-progress-color, var(--global-text-def
   &._error {
     border-color: var(--ui-file-upload-list-stroke-error, var(--informative-errorhigh-stroke-default)); /// Couleur de bordure d'une ligne en erreur.
     .ui-file-upload-list-media,
-    .ui-file-upload-list-meta { color: var(--ui-file-upload-list-color-error, var(--informative-errorhigh-content-default)); } /// Couleur du texte d'une ligne en erreur.
+    .ui-file-upload-list-meta { color: var(--ui-file-upload-list-color-error, var(--form-error-content-default)); } /// Couleur du texte d'une ligne en erreur.
   }
 }

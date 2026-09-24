@@ -43,10 +43,14 @@ $toast-stack-gap: var(--ui-toast-stack-gap, var(--units-sm));                  /
   }
 
   // --- Per-item wrapper ----------------------------------------------
+  // Full-width band around a hugging card: only the card takes the pointer.
   &-item {
     display: flex;
-    // Re-enable interaction on the cards themselves.
-    pointer-events: auto;
+    pointer-events: none;
+
+    > ui-toast {
+      pointer-events: auto;
+    }
   }
 
   // --- Horizontal alignment of hugging cards -------------------------

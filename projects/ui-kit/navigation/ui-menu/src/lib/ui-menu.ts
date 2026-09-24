@@ -409,11 +409,11 @@ export class UiMenu {
 
   // --- Flyout submenus ------------------------------------------------------
 
-  /** @ignore Click on a flyout parent item: toggle its side panel. */
+  /** @ignore Click on a flyout parent item: open its side panel (never toggle, hover already opened it). */
   protected onFlyoutClick(node: UiMenuNode): void {
     if (node.item.disabled) return;
     this.focusedKey.set(node.key);
-    this.openFlyoutKey.update((key) => (key === node.key ? null : node.key));
+    this.openFlyoutKey.set(node.key);
   }
 
   /** @ignore Hovering an entry: open its flyout, or close the sibling one. */

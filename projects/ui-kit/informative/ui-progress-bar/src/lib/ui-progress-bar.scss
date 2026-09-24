@@ -85,8 +85,10 @@ $indeterminate-duration: var(--ui-progress-bar-indeterminate-duration, 1.6s); //
   // --- Value position: label below the bar ---------------------------
   &._bottom {
     flex-direction: column;
-    align-items: flex-end; // bottom-aligned on the cross axis
+    align-items: stretch; // flex-end collapses the track to 0 px
     gap: var(--units-sm);
+
+    .ui-progress-bar-label { align-self: flex-end; }
   }
 
   // --- Value position: label inside the filled portion ---------------
