@@ -16,8 +16,16 @@ import { createPropertyFormatter, usesReferences, getReferences } from 'style-di
 
 // --- Config & paths ---------------------------------------------------------
 
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const CONFIG = JSON.parse(readFileSync(join(ROOT, 'tokens.config.json'), 'utf8'));
+const configArg = process.argv.indexOf('--config');
+const CONFIG_PATH =
+  configArg !== -1 && process.argv[configArg + 1]
+    ? isAbsolute(process.argv[configArg + 1])
+      ? process.argv[configArg + 1]
+      : join(process.cwd(), process.argv[configArg + 1])
+    : join(dirname(fileURLToPath(import.meta.url)), '..', 'tokens.config.json');
+
+const ROOT = dirname(CONFIG_PATH);
+const CONFIG = JSON.parse(readFileSync(CONFIG_PATH, 'utf8'));
 const SRC = isAbsolute(CONFIG.sourceRoot) ? CONFIG.sourceRoot : join(ROOT, CONFIG.sourceRoot);
 const HEADER = `/* ${CONFIG.header ?? 'Generated — do not edit.'} */\n\n`;
 
@@ -103,22 +111,75 @@ for (const c of CONFIG.collections) for (const k of refKeys(c)) byRefKey[k] = c;
 
 // --- Token file walking -------------------------------------------------------
 
-/** Flatten a DTCG tree into [{ path, token }] leaves ($value nodes). */
-function leaves(node, path = [], out = []) {
+/** Flatten a DTCG tree into [{ file, path, token }] leaves ($value nodes).
+ * `file` travels with the leaf so a bad reference can name the file to open. */
+function leaves(node, file, path = [], out = []) {
   if (!node || typeof node !== 'object') return out;
   if ('$value' in node) {
-    out.push({ path, token: node });
+    out.push({ file, path, token: node });
     return out;
   }
-  for (const k of Object.keys(node)) if (!k.startsWith('$')) leaves(node[k], [...path, k], out);
+  for (const k of Object.keys(node))
+    if (!k.startsWith('$')) leaves(node[k], file, [...path, k], out);
   return out;
 }
 
 const leavesByCol = {};
 for (const c of CONFIG.collections) {
   leavesByCol[c.id] = (c.files ?? []).flatMap((f) =>
-    leaves(JSON.parse(readFileSync(join(SRC, f), 'utf8'))),
+    leaves(JSON.parse(readFileSync(join(SRC, f), 'utf8')), f),
   );
+}
+
+// --- Intra-collection references ----------------------------------------------
+// A reference carries the path of a VARIABLE, and the collection name is not part
+// of it: that is what Figma / Token Flow Manager export. Style Dictionary resolves
+// against the whole dictionary, where each collection sits under its ref key, so
+// an alias between two tokens of the SAME collection comes out bare
+// (`{global.text.default}`) and cannot resolve — while the prefixed form
+// (`{semantics.global.text.default}`) resolves, and keeps its `var(…)` indirection,
+// so it stays correct per mode. We add the prefix here rather than asking
+// designers to write one their tool does not produce (FSHSP-203).
+
+/** Every `{…}` reference of a value, whatever its shape (string, array, composite). */
+const REF_RE = /\{([^{}]+)\}/g;
+
+function mapRefs(value, fn) {
+  if (typeof value === 'string') return value.replace(REF_RE, (_, ref) => `{${fn(ref)}}`);
+  if (Array.isArray(value)) return value.map((v) => mapRefs(v, fn));
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, mapRefs(v, fn)]));
+  }
+  return value;
+}
+
+/** Paths a collection carries, mode segments removed — i.e. what a reference aims at. */
+function collectionPaths(col) {
+  const strip = modeSegments(col);
+  const paths = new Set();
+  for (const l of leavesByCol[col.id]) paths.add(l.path.filter((p) => !strip.has(p)).join('.'));
+  return paths;
+}
+
+for (const col of CONFIG.collections) {
+  const primary = refKeys(col)[0];
+  const own = collectionPaths(col);
+  for (const leaf of leavesByCol[col.id]) {
+    let touched = false;
+    const value = mapRefs(leaf.token.$value, (ref) => {
+      // Explicit root: a cross-collection reference, left exactly as written.
+      if (byRefKey[ref.split('.')[0]]) return ref;
+      // Otherwise, and ONLY when the target really lives here. Without that
+      // condition a composite collection's `{effects.default}` — which points at
+      // another collection and is resolved by `refToVar`, not by Style Dictionary —
+      // would get the wrong prefix, and a genuinely broken reference would lose the
+      // name its author wrote, which is the one worth showing them.
+      if (!own.has(ref)) return ref;
+      touched = true;
+      return `${primary}.${ref}`;
+    });
+    if (touched) leaf.token = { ...leaf.token, $value: value };
+  }
 }
 
 /** Detect all mode names from the JSON structure for a given axis. */
@@ -471,6 +532,53 @@ const compositeCols = new Set(
       o.collections === 'all' ? CONFIG.collections.map((c) => c.id) : o.collections,
     ),
 );
+
+// --- Reference check ---------------------------------------------------------
+// Style Dictionary reports a broken reference by its resolved path
+// (`{semantics.form.high.content.default} tries to reference …`) — which names
+// neither the file to open nor the path as written in it. We check first, so the
+// message points at the line a designer can actually fix.
+//
+// Composite collections are skipped: they never reach Style Dictionary (see
+// `refToVar`), and their references legitimately aim at another collection
+// without naming it.
+
+/** Value at a dotted path in a Style Dictionary tree, or undefined. */
+function lookup(tree, path) {
+  let node = tree;
+  for (const seg of path.split('.')) {
+    if (!node || typeof node !== 'object') return undefined;
+    node = node[seg];
+  }
+  return node;
+}
+
+function checkReferences() {
+  const broken = [];
+  for (const col of CONFIG.collections) {
+    if (compositeCols.has(col.id)) continue;
+    const { tokens } = buildTokens(col);
+    for (const leaf of leavesByCol[col.id]) {
+      mapRefs(leaf.token.$value, (ref) => {
+        if (lookup(tokens, ref) === undefined) {
+          broken.push({ file: leaf.file, path: leaf.path.join('.'), ref });
+        }
+        return ref;
+      });
+    }
+  }
+  if (!broken.length) return;
+  const lines = broken.map((b) => `  ${b.file} → ${b.path}\n      {${b.ref}} introuvable`);
+  throw new Error(
+    `Références de jetons non résolues (${broken.length}) :\n${lines.join('\n')}\n\n` +
+      `Un alias vers un jeton de la MÊME collection est préfixé automatiquement : ` +
+      `si la cible existe, c'est son orthographe ou son chemin qui est en cause. ` +
+      `Vers une AUTRE collection, la référence doit nommer sa collection ` +
+      `(ex. {primitives.grey.500}).`,
+  );
+}
+
+checkReferences();
 
 // --- Build -----------------------------------------------------------------------
 

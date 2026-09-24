@@ -188,6 +188,49 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ### Fixed
 
+- **Un alias entre deux jetons d'une même collection cassait `tokens:build`** (FSHSP-203).
+  Le build s'arrêtait sur `Reference Errors: Some token references (N) could not be found`,
+  donc plus de SCSS généré, donc ni application ni Storybook. Chaque collection est bâtie
+  seule et ses jetons sont posés sous sa clé (`semantics`, pour la collection du même nom) :
+  une référence intra-collection devait donc s'écrire `{semantics.global.text.default}`.
+  Or un export Figma / Token Flow Manager ne met jamais le nom de la collection dans le
+  chemin d'une variable — il produit la forme nue `{global.text.default}`, que Style
+  Dictionary ne peut pas résoudre. Les références sont maintenant préfixées au chargement,
+  et la forme nue devient la forme normale.
+  - **Une racine déjà explicite n'est jamais touchée** : `{primitives.grey.500}` reste une
+    référence inter-collections. Et le préfixage ne s'applique que si la cible existe
+    réellement dans la collection — sans quoi un `{effects.default}` de `styles.json`, qui
+    vise une AUTRE collection et passe par `refToVar` et non par Style Dictionary, serait
+    préfixé de travers. Corollaire assumé : un groupe qui porte le nom d'une collection
+    n'est pas atteignable par une référence nue, la collection gagne.
+  - **L'indirection est conservée** : les blocs clair et sombre émettent tous deux
+    `var(--global-text-default)`, dont la cible change par mode. Un alias intra-collection
+    est donc juste par mode sans rien de plus.
+  - **Une référence cassée nomme maintenant son fichier et son jeton**, avant même que
+    Style Dictionary ne s'en mêle : `src/design-tokens/semantics.json → form.modeLight.content`
+    plutôt qu'un chemin résolu qui ne correspond à aucune ligne du fichier.
+  - **`scripts/tokens.build.mjs` passe en 🔒 verrouillé** chez le consommateur, comme
+    `src/styles/ui-kit/` : c'est du moteur, pas du contenu de projet. Rejouer
+    `ng add @4sh/ui-kit-schematics` le remplace donc, et c'est ce qui fait arriver ce
+    correctif — et les suivants — dans un projet déjà installé. `tokens.config.json` et les
+    JSON de jetons restent, eux, éditables et jamais écrasés.
+  - **Le pipeline de tokens a enfin des tests** (`pnpm tokens:test`, ajouté à la CI). Il n'en
+    avait aucun, ce qui explique qu'un trou pareil ait tenu depuis le début : le
+    `semantics.json` du starter ne référence que `primitives` (1295 fois) et ne contient pas
+    un seul alias intra-collection. Le script accepte pour cela un `--config <chemin>` qui
+    déplace sa racine, de sorte qu'une suite le lance sur un jeu de jetons jetable.
+
+- **`ui-tooltip` : `autoHide=false` ne gardait pas l'infobulle ouverte.** L'option posait bien
+  `pointer-events: auto` sur le panneau, mais `mouseleave` sur le déclencheur démontait
+  l'overlay immédiatement, `hideDelay` valant 0 par défaut. Le pointeur n'avait donc jamais le
+  temps de franchir l'écart de la flèche : le panneau disparaissait avant d'être atteint, et son
+  `mouseenter` ne tirait jamais. Un plancher est maintenant appliqué à `hideDelay` quand le
+  panneau est interactif, et un `hideDelay` plus grand continue de primer.
+  - Le focus qui entre dans le panneau ne le ferme plus : le `focusout` du déclencheur ignore
+    une cible située à l'intérieur, ce qui rend le contenu réellement cliquable à la souris.
+  - Les écouteurs du panneau et celui d'`Échap` étaient reposés à **chaque** affichage alors
+    qu'ils n'étaient libérés qu'à la destruction : ils sont désormais attachés une seule fois.
+  - `Échap` masque maintenant sans attendre `hideDelay`.
 - **Le scroll lock de fond est de nouveau un seul compteur pour tout le kit** (FSHSP-210).
   `lockBodyScroll` / `unlockBodyScroll` étaient recopiés à l'identique dans les cinq points
   d'entrée qui masquent le viewport (`ui-modal`, `ui-drawer`, `ui-bottom-sheet`, `ui-sidebar`
