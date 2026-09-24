@@ -60,6 +60,11 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
   ni annoncé aux lecteurs d'écran. Le compte à rebours démarre désormais quand la carte paraît,
   et repart de `life` si elle est repoussée hors de la pile, comme dans le kit React.
 
+- **`ui-menu` : cliquer un parent de cascade refermait son sous-menu** (FSHSP-224). En
+  `submenus="flyout"` (donc aussi dans `ui-context-menu`), le survol avait déjà ouvert le
+  sous-menu et le clic le basculait. Au tactile, où le tap émet un `mouseenter` avant le clic,
+  la cascade ne s'ouvrait jamais. Le clic ouvre désormais, sans refermer.
+
 ## [0.11.0] - 2026-09-18
 
 ### Added
