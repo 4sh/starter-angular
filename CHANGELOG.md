@@ -16,6 +16,12 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+### Fixed
+
+- **`ui-progress-bar` : la barre disparaissait avec `valuePosition="bottom"`** (FSHSP-224).
+  En colonne, `align-items: flex-end` ramenait la piste à sa largeur de contenu, soit 0 px.
+  La piste s'étire désormais, seul le libellé reste aligné à droite.
+
 ## [0.11.0] - 2026-09-18
 
 ### Added
