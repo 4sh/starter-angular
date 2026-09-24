@@ -16,6 +16,127 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+## [0.11.0] - 2026-09-18
+
+### Added
+
+- **Alignement vertical réglable sur les rangées icône/titre + action** (FSHSP-214).
+  `ui-alert`, `ui-toast` et les en-têtes de `ui-modal`, `ui-drawer` et `ui-bottom-sheet`
+  figeaient `align-items: flex-start`. C'est le bon réglage quand le texte passe sur
+  plusieurs lignes (l'icône reste sur la première) et le mauvais quand il tient sur une
+  seule, où la hauteur minimale laisse du vide sous le texte : aucune valeur statique ne
+  convient aux deux, et les projets en étaient réduits à une surcharge globale sur les
+  classes internes. Treize poignées, à chaque fois la rangée puis ses enfants, lesquels
+  valent `auto` (donc suivent la rangée) par défaut : `--ui-alert-align`,
+  `--ui-alert-icon-align`, `--ui-alert-close-align`, `--ui-toast-align`,
+  `--ui-toast-icon-align`, `--ui-toast-close-align`, `--ui-toast-icon-padding-top`,
+  `--ui-modal-header-align`, `--ui-modal-header-actions-align`, `--ui-drawer-header-align`,
+  `--ui-drawer-action-align`, `--ui-bottom-sheet-header-align` et
+  `--ui-bottom-sheet-action-align`. Aucun défaut ne change. Le calage optique de l'icône
+  (`--ui-{alert,toast}-icon-padding-top`) ne sert qu'en alignement haut : à remettre à `0`
+  quand on centre.
+
+### Changed
+
+- **`ui-input-date` : bouton d'ouverture aligné sur `ui-datepicker`** (FSHSP-214). Le champ
+  s'en remettait à l'indicateur que le navigateur peint lui-même : métrique, couleur et zone
+  cliquable lui appartenaient, hors de portée des jetons, et les deux composants ne
+  s'alignaient pas côte à côte dans un même formulaire. Cet indicateur est masqué et remplacé
+  par la zone d'action de `ui-input`, celle que le déclencheur d'`ui-datepicker` rend déjà :
+  même mixin `utils.field-action`, donc mêmes dimensions (40x40, 36x36 en `small`), mêmes
+  états (survol, désactivé) et mêmes réglages `--ui-form-field-action-*`. Le clic appelle
+  `showPicker()`, qui ouvre le sélecteur du système, la roue native comprise sur mobile.
+  L'indicateur natif est masqué sur les trois moteurs : `display: none` sur
+  `::-webkit-calendar-picker-indicator` pour Chrome et Safari, et, Firefox n'exposant aucun
+  sélecteur vers le sien, un débord rogné de la même largeur (donc à géométrie constante, RTL
+  compris) qui l'emporte hors du champ.
+  Nouvelles entrées `icon` (`calendar`, `clock` en `mode="time"`), `showIcon`, `iconAriaLabel`,
+  `iconTemplate` / `<ng-template #icon>` et méthode publique `openPicker()`. Le bouton n'est
+  volontairement pas un arrêt de tabulation : le contrôle natif ouvre déjà son sélecteur au
+  clavier.
+
+## [0.10.0] - 2026-09-14
+
+### Added
+
+- **`ui-image` : source sécurisée, payload en ligne et vue agrandie** (FSHSP-198). Le composant ne
+  savait afficher qu'une URL que le navigateur peut charger seul. Trois manques bloquants :
+
+  - **`secured`** — un `<img src>` est une requête **navigateur** : aucun intercepteur Angular ne la
+    voit, donc aucun `Authorization` ne l'accompagne, et un endpoint protégé par jeton répondait 401
+    sur une image vide. L'URL est désormais récupérable par `HttpClient` (`httpResource.blob()`), donc
+    à travers les intercepteurs de l'application ; la réponse est affichée depuis une **object URL
+    révoquée** au changement de source **et** à la destruction du composant — sans quoi une liste
+    d'images sécurisées fait fuir un blob par rendu, retenu jusqu'à la fermeture de l'onglet. États de
+    chargement (`loadingLabel`/`loadingAriaLabel`, `ui-spinner`) et d'erreur (placeholder tokenisé +
+    `loadFailed`, seule voie de signalement puisqu'un échec HTTP n'atteint jamais un `<img>`) couverts,
+    `withCredentials` pour une session par cookie. Le CORS s'applique là où un `<img>` y échappe : les
+    en-têtes attendus sont documentés dans la page du composant. 5 tests verrouillent la révocation.
+  - **`data:` / base64** — `NgOptimizedImage` refuse ces URL ; elles sont détectées et rendues par un
+    `<img>` nu, pour ce qu'une API renvoie déjà encodé (miniature, signature, QR code).
+  - **`preview`** — l'image devient un `<button>` qui ouvre une vue agrandie (`ui-image-preview`, même
+    point d'entrée) : zoom borné (`zoomStep`/`minZoom`/`maxZoom`, barre d'outils, molette, `+`/`-`),
+    rotation dans les deux sens, déplacement au glisser et aux flèches, réinitialisation (`0`),
+    téléchargement optionnel (`downloadable`/`downloadName`). Ouverture aussi pilotable par le
+    `model` two-way `previewVisible`. Le voile affiché au survol **et au focus clavier** porte une
+    loupe, remplaçable par le template projeté `#previewIndicator`.
+    - **A11y** : piège à focus CDK avec restitution du focus au déclencheur, `role="dialog"` +
+      `aria-modal`, `Échap`, verrou de défilement d'arrière-plan, `aria-haspopup="dialog"` sur le
+      déclencheur. Les actions indisponibles sont `aria-disabled` et non `disabled` : un vrai
+      `disabled` fait tomber le focus sur le `body` dès que le bouton qui le porte atteint une borne,
+      et `Échap` n'atteint alors plus la boîte de dialogue. Vérifié en Storybook headless (cycle de
+      tabulation, restitution du focus, verrou de défilement relâché).
+    - Un quart de tour échange les axes de ce qui est **dessiné**, jamais de la boîte de mise en page :
+      les bornes sont échangées avec (`100cqh`/`100cqw`), sans quoi une photo en paysage redressée
+      était coupée en haut et en bas.
+  - **Chargement paresseux** : déjà acquis sur les deux chemins de rendu — `NgOptimizedImage` pose
+    `loading="lazy"` hors `priority`, et le `<img>` nu (`blob:`, `data:`) reçoit le même attribut.
+  - 24 hooks `--ui-image-*` / `--ui-image-preview-*` ajoutés au fichier de thème. Le masque de
+    l'aperçu reste sombre dans les deux modes — c'est un visionneur de photo, pas une surface thémée.
+
+- **`ui-input-date` — le champ date/heure natif, pour le mobile** (FSHSP-209). Le sélecteur
+  revient au système : la roue de l'OS, qu'aucun overlay n'égale au pouce. `mode`
+  (`date`/`time`/`datetime`) choisit le contrôle natif, `min`/`max`/`step` bornent la saisie.
+  `ui-datepicker` garde l'autre moitié du terrain : un calendrier porté par les jetons, avec
+  plages, multi-mois et inline.
+  - **`valueType` est identique à celui d'`ui-datepicker`** (`'date'` → `Date`, `'iso'` →
+    chaîne) : un composant métier bascule de l'un à l'autre selon le viewport **sans rien
+    convertir**. C'est la raison d'être d'un composant dédié plutôt que d'un `type` de plus
+    sur `ui-input`.
+  - Il **émet sur `change`, jamais pendant la frappe** : un contrôle temporel natif vide sa
+    propre valeur tant que la saisie est incomplète, et un champ branché sur `input` émettait
+    une rafale de valeurs nulles — indistinguables d'un effacement.
+  - Le libellé **reste levé**, `floatLabel` compris : le navigateur dessine son gabarit
+    (`jj/mm/aaaa`) dans la boîte. Pas de `placeholder`, que le navigateur ignore sur ces types.
+  - Le glyphe et le panneau déroulant suivent `color-scheme`, basculé avec le thème sombre :
+    sans ça, glyphe noir sur champ sombre et calendrier clair.
+
+- **`ui-kit-preview` : vue d'ensemble, bascule clair/sombre et recherche** (FSHSP-208). Le
+  Storybook jetable posait les pages du kit mais rien pour s'y repérer. Trois ajouts, tous
+  dans `.ui-kit-preview/` — rien n'est écrit hors du dossier jetable, c'est la promesse de ce
+  mode.
+  - **Page `Overview`** : tout le catalogue d'un coup d'œil, un exemple vivant par composant.
+    C'est la page du monorepo, réemployée telle quelle : ses imports de stories sont
+    réadressés vers le dossier, et son encart de version parle du **paquet installé**.
+  - **Bascule clair/sombre** : pose `data-theme` sur `<html>` comme `ThemeService` dans
+    l'application — les deux modes se jugent donc sur les jetons du projet. Si l'addon n'est
+    pas installé (projet qui portait déjà sa cible `storybook`), la commande dit lequel
+    manque et démarre sans lui.
+  - **Recherche plein texte**, jusqu'à la section, avec défilement jusqu'à l'ancre.
+
+### Changed
+
+- **`@4sh/ui-kit/forms` expose les helpers de date** (`toIsoDate`, `parseIsoDate`,
+  `toIsoTime`…) (FSHSP-209). Ils vivaient dans le point d'entrée d'`ui-datepicker`, seul
+  appelant ; `ui-input-date` en est un second, et deux points d'entrée ne doivent jamais
+  s'importer l'un l'autre. Sérialiser un `Date` depuis ses composantes **locales** plutôt que
+  par `toISOString()` est la partie subtile : elle ne doit pas être réécrite deux fois.
+
+- **`writeSearchIndex()` accepte ses racines et sa sortie** (`scripts/docs.search.mjs`,
+  FSHSP-208), et l'addon `text-search` les reçoit en options de preset. Avec les constantes
+  en dur, la recherche du Storybook jetable aurait balayé les MDX du projet et écrit dans son
+  `storybook/public/`. Sans option, le comportement est inchangé.
+
 ### Fixed
 
 - **Un alias entre deux jetons d'une même collection cassait `tokens:build`** (FSHSP-203).
@@ -61,27 +182,105 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
   - Les écouteurs du panneau et celui d'`Échap` étaient reposés à **chaque** affichage alors
     qu'ils n'étaient libérés qu'à la destruction : ils sont désormais attachés une seule fois.
   - `Échap` masque maintenant sans attendre `hideDelay`.
+- **Le scroll lock de fond est de nouveau un seul compteur pour tout le kit** (FSHSP-210).
+  `lockBodyScroll` / `unlockBodyScroll` étaient recopiés à l'identique dans les cinq points
+  d'entrée qui masquent le viewport (`ui-modal`, `ui-drawer`, `ui-bottom-sheet`, `ui-sidebar`
+  et, depuis FSHSP-198, `ui-image-preview`). Chacun compile pour son compte : cinq modules,
+  donc **cinq compteurs**, chacun persuadé d'être seul à tenir le `body`.
+  - Le symptôme apparaît quand deux overlays ne se ferment pas dans l'ordre inverse de leur
+    ouverture : le compteur de celui qui part tombe à 0 et **rend le scroll à la page alors
+    qu'un overlay est encore affiché**. Selon l'ordre, la gouttière de scrollbar peut aussi
+    rester après la dernière fermeture.
+  - Le helper vit maintenant dans `@4sh/ui-kit/overlay`, à côté de `closeOnNavigation`, et les
+    cinq composants l'importent. Aucun changement de comportement à un seul overlay.
 
-- **Le Storybook posé par `ng add @4sh/ui-kit-schematics` ne compilait pas tant que tous les
-  composants n'étaient pas copiés** (FSHSP-201). `storybook/main.js` listait
-  `src/app/shared/components/` et `src/app/shared/ui-core/` en dur, alors qu'aucun des deux
-  n'existe tant qu'une copie ne l'a créé : webpack ne cherche pas un glob, il le réduit à un
-  `require.context(<racine du motif>)` et s'arrête sur un module introuvable. Une installation
-  sans composant échouait donc sur quatre `Can't resolve`, et une installation partielle aussi
-  dès que les composants choisis ne tiraient aucune base partagée (`ui-icon` seul, par exemple).
-  Les motifs sont maintenant filtrés sur l'existence de leur racine, réévaluée à chaque
-  démarrage : un dossier créé plus tard par `ng generate …:add` remet son motif en service sans
-  rien à modifier.
-  - `storybook/tsconfig.json` n'exige plus `"types": ["node"]`. La preview est du code
-    navigateur et rien de ce qui y est compilé ne touche une API Node ; l'exigence obligeait le
-    projet à installer `@types/node`, faute de quoi le build s'arrêtait en plus sur un `TS2688`
-    sans rapport avec son code.
-  - `ng add` pose `src/app/shared/components/` et son README dès la fondation : la racine que
-    `main.js` annonce balayer existe désormais même sans un seul composant copié.
-  - Sélection vide : le message dit maintenant que la fondation reste en place et rappelle la
-    commande pour copier des composants plus tard, au lieu d'un avertissement nu.
+## [0.9.0] - 2026-09-14
 
 ### Added
+
+- **`pnpm exec ui-kit-preview` — voir tout le kit avec le thème du projet, sans copier une seule
+  source** (FSHSP-202). Un projet qui consomme `@4sh/ui-kit` en paquet n'avait aucune page de
+  composant dans son Storybook : impossible de juger un thème sur l'ensemble du kit, ce qui est
+  pourtant le geste central quand on en construit un. La commande monte un Storybook **jetable**
+  dans `.ui-kit-preview/` (gitignoré) avec les stories et les MDX du kit, et se supprime d'un
+  `--clean`. Le Storybook du projet n'est pas touché.
+  - Elle ne surcharge que `--config-dir` : les `styles`, `assets` et `stylePreprocessorOptions`
+    de la cible `storybook` existante sont réutilisés, donc **polices, jetons, preset et assets du
+    projet arrivent nativement**. Mesuré : démarrage 15 s, 704 stories et 63 pages indexées,
+    0 erreur.
+  - Le rechargement à chaud de Storybook ne couvre pas les styles globaux (CSS à nom haché) : la
+    preview embarque un rafraîchisseur qui échange le `<link>` sans recharger la page — l'état de
+    la story est préservé. Mesuré à ~6,5 s entre l'enregistrement et le composant à jour.
+  - Refuse de démarrer si la version de `@4sh/ui-kit` installée diverge de celle dont ce paquet
+    embarque les stories, plutôt que de laisser échouer la compilation sur une story que le
+    lecteur n'a pas écrite.
+
+- **Couche `src/styles/preset/` posée par `ng add`** (FSHSP-202). `main.scss` n'offrait aucun
+  emplacement pour surcharger les jetons générés — chaque projet inventait le sien, ou éditait
+  `ui-kit/generated/`, réécrit au `tokens:build` suivant. Le preset est chargé APRÈS les tokens,
+  donc il l'emporte, et c'est le fichier sur lequel on itère quand on règle un thème.
+
+- **Toutes les couleurs des composants sont maintenant reformables** (FSHSP-206). FSHSP-204 puis
+  FSHSP-205 avaient ouvert la géométrie et la typographie ; la couleur restait dehors, avec
+  **9 lectures de jeton sur 531** derrière un hook (1,7 %). Les **453 hooks** ajoutés portent le
+  total de 876 à **1329** dans le fichier de thème à recopier, et de 25 à 128 hooks « hors réglage
+  global » (valeur dépendante de la variante, listés dans la section _Theming_ de chaque
+  composant). Strictement additif : chaque hook retombe sur le jeton actuel, aucun rendu ne bouge
+  tant qu'un projet ne pose rien.
+  - **Le jeu de jetons n'est jamais dans le nom du hook.** Un seul nom par (partie, rôle, état),
+    et c'est le consommateur qui choisit la portée avec les classes de modificateur, qui sont
+    déjà de l'API publique : `:root { --ui-button-surface: … }` repeint tous les boutons,
+    `.ui-button._success._outlined { … }` cette seule combinaison. `ui-button` produit 29 jeux de
+    jetons (`high`, `highoutlined`, `ondark-filled-high`…) pour 377 lectures : un hook par jeu en
+    aurait demandé 377 pour ce seul composant, le design scopé en demande 13, et atteint en plus
+    les combinaisons.
+  - **Chaque état retombe sur SON jeton**, jamais sur le hook de base :
+    `var(--ui-field-surface-disabled, var(--form-high-surface-disabled))`. Un projet qui ne pose
+    que la base garde donc un champ désactivé qui a l'air désactivé. Même règle pour les états de
+    validité (`_invalid`, `_error`) : ils ont leur propre suffixe, pour qu'une couleur de thème
+    posée sur `:root` n'efface pas silencieusement le signal d'erreur. Les **niveaux**
+    (`level="success"`, `_high`/`_low`…), eux, partagent le nom du rôle : ce sont des apparences
+    choisies exemplaire par exemplaire, et un projet qui veut une bordure d'erreur différente
+    change `form.error.stroke`.
+  - **Nommage** `--ui-<composant>[-<partie>]-<propriété>[-<état>]` : `surface`, `stroke`, `color`,
+    `shadow`, une seule propriété par hook. C'est `focus`, jamais `focused`, alors que le jeton
+    s'appelle `--form-high-stroke-focused` : l'asymétrie est voulue, un nom hors convention est
+    rejeté par `docs:config` et fait en plus remonter les hooks voisins en fausse collision Figma.
+  - **Hooks partagés** dans `_ui-config.scss` pour les mixins que plusieurs composants incluent :
+    `--ui-form-control-*` (11 noms, palette des cases à cocher et radios via `form-control-palette`)
+    et `--ui-form-field-*` (15 noms : texte saisi, placeholder, affixes, boutons d'action et
+    compteur de TOUS les champs, via `field-native-input` / `field-affix` / `field-action` /
+    `field-spinner`).
+  - **`--ui-label-color-disabled` ferme une fuite** : `._disabled` lisait `--ui-label-color`, le
+    canal que le composant parent pilote au survol, si bien qu'une valeur de thème posée sur
+    `:root` survivait à l'état désactivé. `--ui-label-marker-color` (marqueur « requis »), absent,
+    est ajouté. Le canal lui-même n'est pas renommé : ce serait une rupture.
+  - **Une exception assumée** : les 72 classes de palette de `ui-editor`
+    (`.ui-editor-color-red-500`, `.ui-editor-highlight-*`) continuent de lire les primitives
+    directement. La classe EST le choix de l'utilisateur dans le document, pas un rôle du
+    composant ; un projet qui veut une autre palette retouche les primitives.
+
+- **Toute la typographie du kit est maintenant reformable** (FSHSP-205). FSHSP-204 avait ouvert
+  `ui-button` ; les 46 autres composants lisaient encore leur famille et leur graisse en dur.
+  **140 déclarations** passent derrière un hook, soit **110 nouveaux** `--ui-*`
+  (766 → 876). Aucune valeur par défaut ne change : rien ne se voit tant qu'un projet ne pose
+  rien.
+  - **Granularité choisie sur mesure, pas uniforme.** Quand toutes les déclarations d'un
+    composant lisent le même jeton, un seul hook les couvre (`--ui-card-font-family`). Quand
+    elles divergent — un titre en `fontfamily-title` et un corps en `fontfamily-base` — chaque
+    partie a le sien (`--ui-alert-title-font-family` vs `--ui-alert-font-family`), sans quoi la
+    distinction serait perdue. 65 couples (composant, propriété) étaient uniformes, 17 ne
+    l'étaient pas.
+  - **Deux réglages partagés** rejoignent `_ui-config.scss` plutôt que d'être dupliqués :
+    `--ui-form-field-font-family` (le texte saisi dans TOUS les champs, via le mixin
+    `field-native-input`) et `--ui-overlay-panel-font-family` (le contenu de tous les panneaux
+    flottants).
+  - **Une exception assumée** : les trois classes `.ui-editor-font-*` du sélecteur de police de
+    `ui-editor` ne sont pas exposées. La classe EST le choix de l'utilisateur ; la rendre
+    surchargeable rendrait le sélecteur menteur. Le code le dit en commentaire.
+  - `--ui-segment-control-weight-selected` est lu à deux endroits : l'option sélectionnée et le
+    gabarit invisible (`::after`) qui réserve sa largeur. Un hook par endroit les aurait laissés
+    diverger, et l'option aurait changé de largeur en se sélectionnant.
 
 - **`ui-button` : la typographie du libellé est maintenant reformable** (FSHSP-204). La famille
   et la graisse étaient les deux seules propriétés du composant à lire leur token en dur, sans
@@ -155,6 +354,54 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
     `--ui-toggle-block-*`.
 - **`ui-datepicker`** : nouvel input `autocomplete`, forwardé au champ `ui-input` du
   déclencheur (même contrat que `UiInput.autocomplete`).
+
+### Fixed
+
+- **Le build de production d'un Storybook qui rend le kit compilé échouait sur
+  `computesTemplateFromComponent: Cannot read properties of undefined (reading 'selector')`**
+  (FSHSP-202). Les `fesm` publiés sont partiellement compilés : le linker ne réémet
+  `setClassMetadata()` qu'en JIT, si bien qu'en build optimisé les classes arrivent avec leur
+  `ɵcmp`/`ɵdir` mais sans `__annotations__` — que `@storybook/angular` lit pour dériver le
+  template implicite d'une story qui ne déclare que `component` + `args`. Le décorateur qui répare
+  ces annotations existait dans ce dépôt mais était explicitement exclu du paquet ; il est
+  désormais livré et branché par la preview.
+
+- **Les tables `## Theming` étaient vides pour un composant consommé en paquet** (FSHSP-202).
+  `scripts/docs.config.mjs` ne sait lire qu'un `.scss` local, absent en mode librairie. Il se
+  replie maintenant sur le catalogue du kit déjà posé chez le consommateur
+  (`.ui-kit-mcp/data/ui-config.json`, ou celui livré par le paquet). Un `.scss` local prime
+  toujours.
+
+- **`ui-tooltip` : `autoHide=false` ne gardait pas l'infobulle ouverte.** L'option posait bien
+  `pointer-events: auto` sur le panneau, mais `mouseleave` sur le déclencheur démontait
+  l'overlay immédiatement, `hideDelay` valant 0 par défaut. Le pointeur n'avait donc jamais le
+  temps de franchir l'écart de la flèche : le panneau disparaissait avant d'être atteint, et son
+  `mouseenter` ne tirait jamais. Un plancher est maintenant appliqué à `hideDelay` quand le
+  panneau est interactif, et un `hideDelay` plus grand continue de primer.
+  - Le focus qui entre dans le panneau ne le ferme plus : le `focusout` du déclencheur ignore
+    une cible située à l'intérieur, ce qui rend le contenu réellement cliquable à la souris.
+  - Les écouteurs du panneau et celui d'`Échap` étaient reposés à **chaque** affichage alors
+    qu'ils n'étaient libérés qu'à la destruction : ils sont désormais attachés une seule fois.
+  - `Échap` masque maintenant sans attendre `hideDelay`.
+
+- **Le Storybook posé par `ng add @4sh/ui-kit-schematics` ne compilait pas tant que tous les
+  composants n'étaient pas copiés** (FSHSP-201). `storybook/main.js` listait
+  `src/app/shared/components/` et `src/app/shared/ui-core/` en dur, alors qu'aucun des deux
+  n'existe tant qu'une copie ne l'a créé : webpack ne cherche pas un glob, il le réduit à un
+  `require.context(<racine du motif>)` et s'arrête sur un module introuvable. Une installation
+  sans composant échouait donc sur quatre `Can't resolve`, et une installation partielle aussi
+  dès que les composants choisis ne tiraient aucune base partagée (`ui-icon` seul, par exemple).
+  Les motifs sont maintenant filtrés sur l'existence de leur racine, réévaluée à chaque
+  démarrage : un dossier créé plus tard par `ng generate …:add` remet son motif en service sans
+  rien à modifier.
+  - `storybook/tsconfig.json` n'exige plus `"types": ["node"]`. La preview est du code
+    navigateur et rien de ce qui y est compilé ne touche une API Node ; l'exigence obligeait le
+    projet à installer `@types/node`, faute de quoi le build s'arrêtait en plus sur un `TS2688`
+    sans rapport avec son code.
+  - `ng add` pose `src/app/shared/components/` et son README dès la fondation : la racine que
+    `main.js` annonce balayer existe désormais même sans un seul composant copié.
+  - Sélection vide : le message dit maintenant que la fondation reste en place et rappelle la
+    commande pour copier des composants plus tard, au lieu d'un avertissement nu.
 
 ## [0.8.0] - 2026-09-02
 

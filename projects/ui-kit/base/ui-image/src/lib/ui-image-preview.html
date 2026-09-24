@@ -1,0 +1,112 @@
+<!-- The host is the mask; this is the dialog that owns the focus, the keyboard
+     shortcuts and the aria wiring. -->
+<div
+  class="ui-image-preview"
+  role="dialog"
+  aria-modal="true"
+  [attr.aria-label]="ariaLabel() || null"
+  tabindex="-1"
+  [cdkTrapFocus]="true"
+  [cdkTrapFocusAutoCapture]="true"
+  (keydown)="onKeydown($event)"
+>
+  <!-- Unavailable actions are `aria-disabled`, not `disabled`: a real `disabled`
+       drops the focus to the body the moment the button that holds it hits a
+       bound, and `Escape` then no longer reaches the dialog. The handlers clamp,
+       so a press at the bound is a no-op. -->
+  <div class="ui-image-preview-toolbar">
+    <button
+      type="button"
+      class="ui-image-preview-action"
+      [attr.aria-label]="zoomOutAriaLabel() || null"
+      [attr.aria-disabled]="!canZoomOut() || null"
+      (click)="zoomOut()"
+    >
+      <ui-icon name="magnifying-glass-minus" size="sm" />
+    </button>
+
+    <button
+      type="button"
+      class="ui-image-preview-action"
+      [attr.aria-label]="zoomInAriaLabel() || null"
+      [attr.aria-disabled]="!canZoomIn() || null"
+      (click)="zoomIn()"
+    >
+      <ui-icon name="magnifying-glass-plus" size="sm" />
+    </button>
+
+    <button
+      type="button"
+      class="ui-image-preview-action"
+      [attr.aria-label]="rotateLeftAriaLabel() || null"
+      (click)="rotateLeft()"
+    >
+      <ui-icon name="rotate-left" size="sm" />
+    </button>
+
+    <button
+      type="button"
+      class="ui-image-preview-action"
+      [attr.aria-label]="rotateRightAriaLabel() || null"
+      (click)="rotateRight()"
+    >
+      <ui-icon name="rotate-right" size="sm" />
+    </button>
+
+    <button
+      type="button"
+      class="ui-image-preview-action"
+      [attr.aria-label]="resetAriaLabel() || null"
+      [attr.aria-disabled]="isPristine() || null"
+      (click)="reset()"
+    >
+      <ui-icon name="arrows-rotate" size="sm" />
+    </button>
+
+    @if (downloadable()) {
+      <a
+        class="ui-image-preview-action"
+        [href]="src()"
+        [attr.download]="downloadName() || ''"
+        [attr.aria-label]="downloadAriaLabel() || null"
+        target="_blank"
+        rel="noopener"
+      >
+        <ui-icon name="download" size="sm" />
+      </a>
+    }
+
+    <button
+      type="button"
+      class="ui-image-preview-action"
+      [attr.aria-label]="closeAriaLabel() || null"
+      (click)="close()"
+    >
+      <ui-icon name="xmark" size="sm" />
+    </button>
+  </div>
+
+  <!-- The stage is the dismiss-on-outside target: a press that lands on it, and
+       not on the image, closes. Escape is its keyboard equivalent, which is why
+       there is no key handler here. -->
+  <div
+    #stage
+    class="ui-image-preview-stage"
+    (pointerdown)="onStagePointerDown($event)"
+    (wheel)="onWheel($event)"
+  >
+    <img
+      class="ui-image-preview-media"
+      [class._pannable]="canPan()"
+      [class._rotated]="isQuarterTurned()"
+      [src]="src()"
+      [alt]="alt()"
+      [style.transform]="transform()"
+      (pointerdown)="onPointerDown($event)"
+      (pointermove)="onPointerMove($event)"
+      (pointerup)="onPointerUp($event)"
+      (pointercancel)="onPointerUp($event)"
+      draggable="false"
+    />
+  </div>
+</div>

@@ -185,12 +185,38 @@ export function rewriteDocImports(content: string, fileTargetPath: string): Rewr
   const rewritten = outsideFencedBlocks(content, (chunk) => {
     const kit = rewriteKitImports(chunk, fileTargetPath);
     unresolved.push(...kit.unresolved);
-    return kit.content.replace(
-      CONFIG_TABLE_IMPORT_RE,
-      (_whole, prefix: string, suffix: string) =>
-        `${prefix}'${relativeSpecifier(fileTargetPath, CONFIG_TABLE_PATH.replace(/\.js$/, ''))}'${suffix}`,
-    );
+    return configTableImport(kit.content, fileTargetPath, CONFIG_TABLE_PATH);
   });
 
   return { content: rewritten, unresolved };
+}
+
+/** Le remplacement seul, sans la garde `outsideFencedBlocks` — les deux points
+ * d'entrée ci-dessous l'appliquent chacun dans leur propre passe. */
+function configTableImport(chunk: string, fileTargetPath: string, configTable: string): string {
+  return chunk.replace(
+    CONFIG_TABLE_IMPORT_RE,
+    (_whole, prefix: string, suffix: string) =>
+      `${prefix}'${relativeSpecifier(fileTargetPath, configTable.replace(/\.js$/, ''))}'${suffix}`,
+  );
+}
+
+/**
+ * Réécrit le SEUL import du bloc `<ConfigTable>`, en laissant les imports
+ * `@4sh/ui-kit/…` intacts — c'est ce dont a besoin le Storybook jetable
+ * (FSHSP-202), où les pages de doc du kit sont posées telles quelles et
+ * continuent de viser le paquet installé, pas des copies voisines.
+ *
+ * @param configTable emplacement du bloc chez la cible. Paramètre et non
+ *   constante : le Storybook jetable embarque SA copie du bloc, pour rester
+ *   supprimable d'un seul coup sans rien laisser dans `storybook/`.
+ */
+export function rewriteConfigTableImport(
+  content: string,
+  fileTargetPath: string,
+  configTable: string = CONFIG_TABLE_PATH,
+): string {
+  return outsideFencedBlocks(content, (chunk) =>
+    configTableImport(chunk, fileTargetPath, configTable),
+  );
 }

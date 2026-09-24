@@ -249,11 +249,19 @@ function main() {
   // et ses couplages, `myTheme.ts` et sa marque, les tsconfig) est écrit en
   // scaffold dans `src/ng-add/files/storybook/` : deux natures, deux endroits.
   //
-  // `restore-component-metadata.ts` n'est PAS du lot : il répare les
-  // annotations que le linker retire du package *compilé* que nos stories
-  // importent. Chez le consommateur les stories visent des sources, compilées
-  // avec le reste de son app — le décorateur n'aurait rien à réparer.
-  for (const name of ['manager.ts', 'brand-toolbar.ts', 'preview-head.html', 'typings.d.ts']) {
+  // `restore-component-metadata.ts` en fait partie depuis FSHSP-202. Il en a
+  // longtemps été exclu au motif que les stories du consommateur visent des
+  // sources, compilées avec le reste de son app — vrai du mode `add`, faux du
+  // mode `preview`, où ce sont NOS stories qui partent telles quelles et
+  // importent le package compilé depuis `node_modules`. C'est exactement la
+  // situation que ce fichier répare ici, et le même fichier la répare là-bas.
+  for (const name of [
+    'manager.ts',
+    'brand-toolbar.ts',
+    'preview-head.html',
+    'typings.d.ts',
+    'restore-component-metadata.ts',
+  ]) {
     const src = join(ROOT, 'storybook', name);
     if (!existsSync(src)) continue;
     mkdirSync(join(ASSETS, 'storybook'), { recursive: true });
@@ -271,13 +279,26 @@ function main() {
     docFiles += copyTree(src, join(ASSETS, 'storybook/addons', addon));
   }
 
-  // Pages de doc transverses. `GettingStarted` et `Overview` restent ici :
-  // la première compare les deux modes de consommation — dont le mode
-  // librairie, hors périmètre du starter (FSHSP-139) —, la seconde est
-  // validée par `components.check.mjs` contre NOTRE inventaire ET importe en
-  // dur les stories de tous les composants du monorepo. Ni l'une ni l'autre
-  // ne transposent tel quel chez un consommateur qui n'a copié qu'une partie
-  // des composants.
+  // `Overview.mdx` part dans `assets/preview/`, DÉLIBÉRÉMENT hors de
+  // `assets/storybook/` : `ng add` copie ce dossier-là en entier chez le
+  // consommateur, et la page y serait fausse — elle importe en dur les stories
+  // de TOUS les composants du monorepo, alors qu'il n'en a copié qu'une part.
+  //
+  // Le Storybook jetable de `ui-kit-preview`, lui, les pose tous (FSHSP-208) :
+  // la page y transpose exactement, une fois ses imports réadressés. C'est la
+  // vue d'ensemble qui manquait au designer venant d'appliquer ses jetons —
+  // et la seule page du kit qui montre le catalogue entier d'un coup d'œil.
+  const overviewSrc = join(ROOT, 'storybook/docs/Overview.mdx');
+  if (existsSync(overviewSrc)) {
+    mkdirSync(join(ASSETS, 'preview'), { recursive: true });
+    copyFileSync(overviewSrc, join(ASSETS, 'preview/Overview.mdx'));
+    docFiles++;
+  }
+
+  // Pages de doc transverses. `GettingStarted` reste ici : elle compare les
+  // deux modes de consommation — dont le mode librairie, hors périmètre du
+  // starter (FSHSP-139) — et ne transpose pas telle quelle chez un
+  // consommateur.
   // `Introduction`, elle, est en majorité indépendante du monorepo (texte +
   // images statiques) : FSHSP-138 corrige son absence, oubliée jusqu'ici. Ses
   // sections "Application de démonstration" / "Ressources Figma" restent

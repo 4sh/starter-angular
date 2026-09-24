@@ -28,6 +28,8 @@ $sizes: (
 $size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default` de `$sizes`.
 $size-small: map.get($sizes, 'small');     /// Raccourci vers l'entrée `small` de `$sizes`.
 
+$panel-surface: var(--ui-autocomplete-panel-surface, var(--form-high-surface-default));   /// Fond du panneau de suggestions.
+$panel-stroke: var(--ui-autocomplete-panel-stroke, var(--form-high-stroke-default));      /// Couleur de bordure du panneau de suggestions.
 $panel-padding: var(--ui-autocomplete-panel-padding, var(--units-xs));                   /// Inset du panneau de suggestions.
 $panel-gap: var(--ui-autocomplete-panel-gap, var(--units-xs));                           /// Espacement entre les groupes du panneau.
 $panel-max-width: var(--ui-autocomplete-panel-max-width, calc(100vw - var(--units-lg))); /// Largeur maximale du panneau, gouttière laissée au viewport.
@@ -77,7 +79,7 @@ $focus-ring-width: var(--ui-autocomplete-focus-ring-width, #{utils.$form-focus-r
 
     &:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 $focus-ring-width rgb(from var(--form-high-stroke-focused) r g b / 50%);
+      box-shadow: 0 0 0 $focus-ring-width rgb(from var(--ui-autocomplete-tag-focus-ring-color, var(--form-high-stroke-focused)) r g b / 50%); /// Teinte de l'anneau de focus d'une valeur sélectionnée (mode `multiple`).
     }
   }
 
@@ -105,18 +107,18 @@ $focus-ring-width: var(--ui-autocomplete-focus-ring-width, #{utils.$form-focus-r
     border: none;
     border-radius: $clear-radius;
     background: none;
-    color: var(--form-low-content-default);
+    color: var(--ui-autocomplete-clear-color, var(--form-low-content-default)); /// Couleur du bouton d'effacement.
     cursor: pointer;
     @include utils.control-transition(color, box-shadow);
     @include utils.field-inset-edges('margin');
 
-    &:hover:not(:disabled) { color: var(--form-high-content-hover); }
+    &:hover:not(:disabled) { color: var(--ui-autocomplete-clear-color-hover, var(--form-high-content-hover)); } /// Couleur du bouton d'effacement au survol.
     &:focus-visible {
       outline: none;
-      color: var(--form-high-content-focused);
-      box-shadow: 0 0 0 $focus-ring-width rgb(from var(--form-high-stroke-focused) r g b / 50%);
+      color: var(--ui-autocomplete-clear-color-focus, var(--form-high-content-focused)); /// Couleur du bouton d'effacement au focus clavier.
+      box-shadow: 0 0 0 $focus-ring-width rgb(from var(--ui-autocomplete-clear-focus-ring-color, var(--form-high-stroke-focused)) r g b / 50%); /// Teinte de l'anneau de focus du bouton d'effacement.
     }
-    &:disabled { cursor: not-allowed; color: var(--form-high-content-disabled); }
+    &:disabled { cursor: not-allowed; color: var(--ui-autocomplete-clear-color-disabled, var(--form-high-content-disabled)); } /// Couleur du bouton d'effacement désactivé.
   }
 
   &-dropdown {
@@ -126,12 +128,12 @@ $focus-ring-width: var(--ui-autocomplete-focus-ring-width, #{utils.$form-focus-r
     padding: 0;
     border: none;
     background: none;
-    color: var(--form-low-content-default);
+    color: var(--ui-autocomplete-dropdown-color, var(--form-low-content-default)); /// Couleur du chevron d'ouverture.
     cursor: pointer;
 
-    &:hover:not(:disabled) { color: var(--form-high-content-hover); }
+    &:hover:not(:disabled) { color: var(--ui-autocomplete-dropdown-color-hover, var(--form-high-content-hover)); } /// Couleur du chevron au survol.
     &._open { rotate: 180deg; }
-    &:disabled { cursor: not-allowed; color: var(--form-high-content-disabled); }
+    &:disabled { cursor: not-allowed; color: var(--ui-autocomplete-dropdown-color-disabled, var(--form-high-content-disabled)); } /// Couleur du chevron désactivé.
   }
 
   &-loading {
@@ -142,7 +144,7 @@ $focus-ring-width: var(--ui-autocomplete-focus-ring-width, #{utils.$form-focus-r
 
 // --- Panel -------------------------------------------------------------
 .ui-autocomplete-panel {
-  @include utils.overlay-panel(var(--form-high-surface-default), var(--form-high-stroke-default));
+  @include utils.overlay-panel($panel-surface, $panel-stroke);
   display: flex;
   flex-direction: column;
   gap: $panel-gap;
@@ -154,9 +156,9 @@ $focus-ring-width: var(--ui-autocomplete-focus-ring-width, #{utils.$form-focus-r
   .ui-autocomplete-header,
   .ui-autocomplete-footer {
     padding: $header-padding-y $header-padding-x;
-    font-family: var(--fontfamily-base);
+    font-family: var(--ui-autocomplete-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
     font-size: map.get($size-default, group-font-size);
-    color: var(--form-high-content-default);
+    color: var(--ui-autocomplete-header-color, var(--form-high-content-default)); /// Couleur du texte des zones d'en-tête et de pied projetées.
   }
 
   // --- Scrollers ------------------------------------------------------
@@ -191,9 +193,9 @@ $focus-ring-width: var(--ui-autocomplete-focus-ring-width, #{utils.$form-focus-r
     flex-shrink: 0;
     padding: 0 map.get($size-default, option-padding-x);
     border-radius: $option-radius;
-    font-family: var(--fontfamily-base);
+    font-family: var(--ui-autocomplete-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
     font-size: map.get($size-default, font-size);
-    color: var(--form-high-content-default);
+    color: var(--ui-autocomplete-option-color, var(--form-high-content-default)); /// Couleur du texte d'une suggestion.
     cursor: pointer;
     user-select: none;
     @include utils.control-transition(background-color, color);
@@ -206,15 +208,15 @@ $focus-ring-width: var(--ui-autocomplete-focus-ring-width, #{utils.$form-focus-r
 
     // Visual focus (aria-activedescendant) and pointer hover share the look.
     &._focused,
-    &:hover:not(._disabled) { background-color: var(--global-background-default-hover); }
+    &:hover:not(._disabled) { background-color: var(--ui-autocomplete-option-surface-hover, var(--global-background-default-hover)); } /// Fond d'une suggestion survolée ou active au clavier.
 
     &._selected {
-      background-color: var(--form-high-surface-hover);
-      color: var(--form-high-content-checked);
+      background-color: var(--ui-autocomplete-option-surface-selected, var(--form-high-surface-hover)); /// Fond de la suggestion sélectionnée.
+      color: var(--ui-autocomplete-option-color-selected, var(--form-high-content-checked));            /// Couleur du texte de la suggestion sélectionnée.
     }
 
     &._disabled {
-      color: var(--form-high-content-disabled);
+      color: var(--ui-autocomplete-option-color-disabled, var(--form-high-content-disabled)); /// Couleur du texte d'une suggestion désactivée.
       cursor: not-allowed;
     }
   }
@@ -235,10 +237,10 @@ $focus-ring-width: var(--ui-autocomplete-focus-ring-width, #{utils.$form-focus-r
     height: map.get($size-default, group-height);
     flex-shrink: 0;
     padding: 0 map.get($size-default, option-padding-x);
-    font-family: var(--fontfamily-base);
+    font-family: var(--ui-autocomplete-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
     font-size: map.get($size-default, group-font-size);
-    font-weight: var(--weight-bold);
-    color: var(--form-low-content-default);
+    font-weight: var(--ui-autocomplete-weight, var(--weight-bold)); /// Graisse du texte.
+    color: var(--ui-autocomplete-group-color, var(--form-low-content-default)); /// Couleur d'un en-tête de groupe.
 
     &._small {
       height: map.get($size-small, group-height);
@@ -254,8 +256,8 @@ $focus-ring-width: var(--ui-autocomplete-focus-ring-width, #{utils.$form-focus-r
     box-sizing: border-box;
     min-height: map.get($size-default, option-height);
     padding: 0 map.get($size-default, option-padding-x);
-    font-family: var(--fontfamily-base);
+    font-family: var(--ui-autocomplete-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
     font-size: map.get($size-default, font-size);
-    color: var(--form-low-content-default);
+    color: var(--ui-autocomplete-empty-color, var(--form-low-content-default)); /// Couleur du message « aucun résultat ».
   }
 }

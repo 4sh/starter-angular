@@ -20,31 +20,31 @@ $numbers-gap: var(--ui-paginator-numbers-gap, var(--units-sm));                 
   min-width: $button-size;
   border: none;
   border-radius: $button-radius;
-  background-color: var(--navigation-high-surface-default);
-  color: var(--navigation-high-content-default);
-  font-family: var(--fontfamily-base);
+  background-color: var(--ui-paginator-button-surface, var(--navigation-high-surface-default)); /// Fond d'un bouton (flèche comme numéro de page).
+  color: var(--ui-paginator-button-color, var(--navigation-high-content-default));              /// Couleur du texte d'un bouton.
+  font-family: var(--ui-paginator-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
   font-size: var(--size-typography-text-md);
-  font-weight: var(--weight-bold);
+  font-weight: var(--ui-paginator-weight, var(--weight-bold)); /// Graisse du texte.
   line-height: 1;
   cursor: pointer;
   user-select: none;
   @include utils.control-transition(background-color, color, box-shadow);
 
   &:hover:not(:disabled) {
-    background-color: var(--navigation-high-surface-hover);
-    color: var(--navigation-high-content-hover);
+    background-color: var(--ui-paginator-button-surface-hover, var(--navigation-high-surface-hover)); /// Fond d'un bouton au survol.
+    color: var(--ui-paginator-button-color-hover, var(--navigation-high-content-hover));              /// Couleur du texte d'un bouton au survol.
   }
 
   &:focus-visible {
     outline: none;
-    background-color: var(--navigation-high-surface-focused);
-    color: var(--navigation-high-content-focused);
-    box-shadow: 0 0 0 $focus-ring-width var(--navigation-high-stroke-focused);
+    background-color: var(--ui-paginator-button-surface-focus, var(--navigation-high-surface-focused)); /// Fond d'un bouton au focus clavier.
+    color: var(--ui-paginator-button-color-focus, var(--navigation-high-content-focused));              /// Couleur du texte d'un bouton au focus clavier.
+    box-shadow: 0 0 0 $focus-ring-width var(--ui-paginator-button-focus-ring-color, var(--navigation-high-stroke-focused)); /// Couleur de l'anneau de focus d'un bouton.
   }
 
   &:active:not(:disabled) {
-    background-color: var(--navigation-high-surface-pressed);
-    color: var(--navigation-high-content-pressed);
+    background-color: var(--ui-paginator-button-surface-pressed, var(--navigation-high-surface-pressed)); /// Fond d'un bouton enfoncé.
+    color: var(--ui-paginator-button-color-pressed, var(--navigation-high-content-pressed));              /// Couleur du texte d'un bouton enfoncé.
   }
 
   &:disabled {
@@ -73,8 +73,8 @@ $numbers-gap: var(--ui-paginator-numbers-gap, var(--units-sm));                 
     padding: 0 var(--units-sm);
 
     &:disabled {
-      background-color: var(--navigation-high-surface-disabled);
-      color: var(--navigation-high-content-disabled);
+      background-color: var(--ui-paginator-control-surface-disabled, var(--navigation-high-surface-disabled)); /// Fond d'une flèche désactivée.
+      color: var(--ui-paginator-control-color-disabled, var(--navigation-high-content-disabled));              /// Couleur d'une flèche désactivée.
     }
   }
 
@@ -90,8 +90,8 @@ $numbers-gap: var(--ui-paginator-numbers-gap, var(--units-sm));                 
     padding: 0 var(--units-md);
 
     &:disabled {
-      background-color: var(--actions-low-surface-disabled);
-      color: var(--actions-low-content-disabled);
+      background-color: var(--ui-paginator-page-surface-disabled, var(--actions-low-surface-disabled)); /// Fond d'un numéro de page désactivé.
+      color: var(--ui-paginator-page-color-disabled, var(--actions-low-content-disabled));              /// Couleur d'un numéro de page désactivé.
     }
 
     // Current page (State=Current): filled surface, held across every interaction.
@@ -101,8 +101,8 @@ $numbers-gap: var(--ui-paginator-numbers-gap, var(--units-sm));                 
       &:focus-visible,
       &:active:not(:disabled),
       &:disabled {
-        background-color: var(--navigation-high-surface-active);
-        color: var(--navigation-high-content-active);
+        background-color: var(--ui-paginator-page-surface-current, var(--navigation-high-surface-active)); /// Fond de la page courante, tenu dans tous les états.
+        color: var(--ui-paginator-page-color-current, var(--navigation-high-content-active));              /// Couleur de la page courante : elle n'est lisible que sur le fond `surface-active` qui l'accompagne.
       }
     }
   }
@@ -111,7 +111,7 @@ $numbers-gap: var(--ui-paginator-numbers-gap, var(--units-sm));                 
   &-report {
     display: inline-flex;
     align-items: center;
-    color: var(--global-text-muted);
+    color: var(--ui-paginator-report-color, var(--global-text-muted)); /// Couleur du rapport « 1 - 10 sur 120 ».
     font-size: var(--size-typography-text-md);
     white-space: nowrap;
   }
@@ -121,7 +121,7 @@ $numbers-gap: var(--ui-paginator-numbers-gap, var(--units-sm));                 
     display: inline-flex;
     align-items: center;
     gap: var(--units-sm);
-    color: var(--global-text-muted);
+    color: var(--ui-paginator-slot-color, var(--global-text-muted)); /// Couleur du texte des zones libres de début et de fin.
     font-size: var(--size-typography-text-md);
   }
 
@@ -131,9 +131,9 @@ $numbers-gap: var(--ui-paginator-numbers-gap, var(--units-sm));                 
     justify-content: center;
     height: $button-size;
     min-width: $button-size;
-    color: var(--navigation-high-content-default);
+    color: var(--ui-paginator-ellipsis-color, var(--navigation-high-content-default)); /// Couleur des points de suspension.
     font-size: var(--size-typography-text-md);
-    font-weight: var(--weight-bold);
+    font-weight: var(--ui-paginator-weight, var(--weight-bold)); /// Graisse des points de suspension.
     user-select: none;
   }
 }

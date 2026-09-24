@@ -52,7 +52,7 @@ $icon-slot: var(--ui-sidebar-icon-slot-size, #{utils.rem-calc(20)});            
 .ui-sidebar-menu {
   display: block;
   box-sizing: border-box;
-  font-family: var(--fontfamily-base);
+  font-family: var(--ui-sidebar-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
 
   @include menu-size($size-default);
 
@@ -101,7 +101,7 @@ $icon-slot: var(--ui-sidebar-icon-slot-size, #{utils.rem-calc(20)});            
     align-items: center;
     gap: var(--units-sm);
     min-height: utils.rem-calc(28);
-    font-weight: var(--weight-bold);
+    font-weight: var(--ui-sidebar-section-header-weight, var(--weight-bold)); /// Graisse de l'en-tête de section.
     text-transform: uppercase;
     letter-spacing: 0.04em;
     user-select: none;
@@ -118,7 +118,7 @@ $icon-slot: var(--ui-sidebar-icon-slot-size, #{utils.rem-calc(20)});            
     border-radius: $item-radius;
     background: none;
     font-family: inherit;
-    font-weight: var(--weight-regular);
+    font-weight: var(--ui-sidebar-action-weight, var(--weight-regular)); /// Graisse de l'action.
     line-height: 1.2;
     text-align: left;
     text-decoration: none;
@@ -127,7 +127,7 @@ $icon-slot: var(--ui-sidebar-icon-slot-size, #{utils.rem-calc(20)});            
 
     &:focus-visible {
       outline: none;
-      box-shadow: inset 0 0 0 $focus-ring-width var(--global-border-focus);
+      box-shadow: inset 0 0 0 $focus-ring-width var(--ui-sidebar-menu-action-focus-ring-color, var(--global-border-focus)); /// Couleur de l'anneau de focus d'une action.
     }
 
     &:disabled {
@@ -251,36 +251,36 @@ $icon-slot: var(--ui-sidebar-icon-slot-size, #{utils.rem-calc(20)});            
   @each $lvl in $levels {
     &._#{$lvl} {
       .ui-sidebar-menu-section-header {
-        color: var(--navigation-#{$lvl}-content-default);
+        color: var(--ui-sidebar-menu-section-header-color, var(--navigation-#{$lvl}-content-default)); /// Couleur d'un intitulé de section.
         opacity: 0.75;
       }
 
       .ui-sidebar-menu-separator {
-        border-top: $separator-width solid var(--navigation-#{$lvl}-stroke-default);
+        border-top: $separator-width solid var(--ui-sidebar-menu-separator-stroke, var(--navigation-#{$lvl}-stroke-default)); /// Couleur d'un séparateur de menu.
       }
 
       .ui-sidebar-menu-action {
-        color: var(--navigation-#{$lvl}-content-default);
+        color: var(--ui-sidebar-menu-action-color, var(--navigation-#{$lvl}-content-default)); /// Couleur d'une action de menu.
 
         &:hover:not(:disabled) {
-          background-color: var(--navigation-#{$lvl}-surface-hover);
-          color: var(--navigation-#{$lvl}-content-hover);
+          background-color: var(--ui-sidebar-menu-action-surface-hover, var(--navigation-#{$lvl}-surface-hover)); /// Fond d'une action au survol.
+          color: var(--ui-sidebar-menu-action-color-hover, var(--navigation-#{$lvl}-content-hover));              /// Couleur d'une action au survol.
         }
 
         &:active:not(:disabled) {
-          background-color: var(--navigation-#{$lvl}-surface-active);
-          color: var(--navigation-#{$lvl}-content-active);
+          background-color: var(--ui-sidebar-menu-action-surface-pressed, var(--navigation-#{$lvl}-surface-active)); /// Fond d'une action enfoncée.
+          color: var(--ui-sidebar-menu-action-color-pressed, var(--navigation-#{$lvl}-content-active));              /// Couleur d'une action enfoncée.
         }
 
         // Active route / entry — active content is only legible on the active surface.
         &._active {
-          background-color: var(--navigation-#{$lvl}-surface-active);
-          color: var(--navigation-#{$lvl}-content-active);
-          font-weight: var(--weight-bold);
+          background-color: var(--ui-sidebar-menu-action-surface-active, var(--navigation-#{$lvl}-surface-active)); /// Fond de l'entrée correspondant à la route courante.
+          color: var(--ui-sidebar-menu-action-color-active, var(--navigation-#{$lvl}-content-active));              /// Couleur de l'entrée courante : elle n'est lisible que sur le fond `surface-active` qui l'accompagne.
+          font-weight: var(--ui-sidebar-weight, var(--weight-bold)); /// Graisse du texte.
         }
 
         &:disabled {
-          color: var(--navigation-#{$lvl}-content-disabled);
+          color: var(--ui-sidebar-menu-action-color-disabled, var(--navigation-#{$lvl}-content-disabled)); /// Couleur d'une action désactivée.
         }
       }
     }

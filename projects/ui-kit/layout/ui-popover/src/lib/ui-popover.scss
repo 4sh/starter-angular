@@ -10,8 +10,8 @@ $popover-arrow-half: calc(#{$popover-arrow-size} / 2);                       ///
 $popover-padding: var(--ui-popover-padding, var(--units-md));                /// Espacement interne du contenu projeté
 $popover-max-width: var(--ui-popover-max-width, #{utils.rem-calc(320)});     /// Largeur maximale avant retour à la ligne (le CDK garde le panneau dans le viewport)
 
-$popover-surface: var(--global-background-default); /// Fond du panneau.
-$popover-stroke: var(--global-border-default);      /// Couleur de bordure du panneau.
+$popover-surface: var(--ui-popover-surface, var(--global-background-default)); /// Fond du panneau.
+$popover-stroke: var(--ui-popover-stroke, var(--global-border-default));       /// Couleur de bordure du panneau.
 
 .ui-popover {
   position: relative;
@@ -19,7 +19,7 @@ $popover-stroke: var(--global-border-default);      /// Couleur de bordure du pa
   box-sizing: border-box;
   width: max-content;
   max-width: $popover-max-width;
-  color: var(--global-text-default);
+  color: var(--ui-popover-color, var(--global-text-default)); /// Couleur du texte du panneau.
   @include utils.overlay-panel($popover-surface, $popover-stroke);
   overflow: visible;
 

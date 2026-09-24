@@ -147,7 +147,7 @@ $editor-color-steps: 900, 700, 500, 300, 100;
         background: transparent;
         @include utils.control-transition(background-color);
       }
-      .ui-field-box:hover { background-color: var(--form-low-surface-hover); }
+      .ui-field-box:hover { background-color: var(--ui-editor-toolbar-select-surface-hover, var(--form-low-surface-hover)); } /// Fond d'un sélecteur de la barre d'outils au survol.
     }
   }
 
@@ -210,7 +210,7 @@ $editor-color-steps: 900, 700, 500, 300, 100;
     inset-block-start: $padding-y;
     inset-inline-start: $padding-x;
     line-height: $line-height;
-    font-family: var(--fontfamily-base);
+    font-family: var(--ui-editor-placeholder-font-family, var(--fontfamily-base)); /// Famille typographique du texte indicatif.
     font-size: $font-size;
     color: $placeholder-color;
     pointer-events: none;
@@ -251,21 +251,21 @@ $editor-color-steps: 900, 700, 500, 300, 100;
       border-radius: $code-radius;
       background-color: $code-surface;
       color: $code-color;
-      font-family: var(--fontfamily-monospace);
+      font-family: var(--ui-editor-code-font-family, var(--fontfamily-monospace)); /// Famille typographique des blocs de code.
       font-size: $code-font-size;
       white-space: pre-wrap;
       overflow-wrap: break-word;
     }
     pre:last-child { margin-block-end: 0; }
 
-    code { font-family: var(--fontfamily-monospace); }
+    code { font-family: var(--ui-editor-code-font-family, var(--fontfamily-monospace)); }
 
     // Headings carry document structure, so they keep the title face and scale.
     h1,
     h2,
     h3 {
       margin-block: 0 $block-gap;
-      font-family: var(--fontfamily-title);
+      font-family: var(--ui-editor-heading-font-family, var(--fontfamily-title)); /// Famille typographique des titres.
       font-weight: $heading-weight;
       line-height: $heading-line-height;
     }
@@ -278,6 +278,9 @@ $editor-color-steps: 900, 700, 500, 300, 100;
     h3 { font-size: $heading-3-font-size; }
 
     // Type families the font picker applies, bound to the typography tokens.
+    // Pas de hook sur ces trois-là : la classe EST le choix de police fait par
+    // l'utilisateur dans la barre d'outils. Les rendre surchargeables rendrait
+    // le sélecteur de police menteur.
     .ui-editor-font-base { font-family: var(--fontfamily-base); }
     .ui-editor-font-title { font-family: var(--fontfamily-title); }
     .ui-editor-font-monospace { font-family: var(--fontfamily-monospace); }
@@ -309,12 +312,12 @@ $editor-color-steps: 900, 700, 500, 300, 100;
 .ui-editor-count {
   margin-left: auto;
   flex-shrink: 0;
-  font-family: var(--fontfamily-base);
+  font-family: var(--ui-editor-count-font-family, var(--fontfamily-base)); /// Famille typographique du compteur.
   font-size: $count-font-size;
-  color: var(--form-low-content-default);
+  color: var(--ui-editor-count-color, var(--form-low-content-default)); /// Couleur du compteur de caractères.
   user-select: none;
 
   &._small { font-size: $count-font-size-small; }
-  &._over { color: var(--form-error-content-default); }
-  &._disabled { color: var(--form-high-content-disabled); }
+  &._over { color: var(--ui-editor-count-color-over, var(--form-error-content-default)); }        /// Couleur du compteur une fois la limite dépassée.
+  &._disabled { color: var(--ui-editor-count-color-disabled, var(--form-high-content-disabled)); } /// Couleur du compteur, champ désactivé.
 }

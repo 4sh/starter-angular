@@ -63,8 +63,8 @@ $option-gap: var(--ui-segment-control-option-gap, var(--units-sm));        /// E
   border-radius: $radius;
   // Border as an inset shadow → no layout box, so the thumb offset math
   // (offsetLeft/offsetTop) stays exact regardless of border width.
-  box-shadow: inset 0 0 0 $stroke-width var(--global-border-default);
-  font-family: var(--fontfamily-base);
+  box-shadow: inset 0 0 0 $stroke-width var(--ui-segment-control-stroke, var(--global-border-default)); /// Couleur de bordure de la piste.
+  font-family: var(--ui-segment-control-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
   user-select: none;
   vertical-align: middle;
 
@@ -87,7 +87,7 @@ $option-gap: var(--ui-segment-control-option-gap, var(--units-sm));        /// E
   left: 0;
   z-index: 0;
   border-radius: $thumb-radius;
-  background-color: var(--actions-high-surface-default);
+  background-color: var(--ui-segment-control-thumb-surface, var(--actions-high-surface-default)); /// Fond de l'indicateur glissant.
   pointer-events: none;
   @include utils.motion-transition(transform, width, height);
 
@@ -117,7 +117,7 @@ $option-gap: var(--ui-segment-control-option-gap, var(--units-sm));        /// E
     content: attr(data-label);
     height: 0;
     overflow: hidden;
-    font-weight: var(--weight-bold);
+    font-weight: var(--ui-segment-control-weight-selected, var(--weight-bold)); /// Graisse du texte.
     visibility: hidden;
     pointer-events: none;
     user-select: none;
@@ -136,9 +136,9 @@ $option-gap: var(--ui-segment-control-option-gap, var(--units-sm));        /// E
   border: 0;
   border-radius: $option-radius;
   background-color: transparent;
-  color: var(--actions-low-content-default);
+  color: var(--ui-segment-control-option-color, var(--actions-low-content-default)); /// Couleur du texte d'un segment non sélectionné.
   font-family: inherit;
-  font-weight: var(--weight-regular);
+  font-weight: var(--ui-segment-control-weight, var(--weight-regular)); /// Graisse du texte.
   line-height: 1.2;
   white-space: nowrap;
   cursor: pointer;
@@ -146,51 +146,51 @@ $option-gap: var(--ui-segment-control-option-gap, var(--units-sm));        /// E
 
   // Unselected interactive states (low palette).
   &:hover:not(:disabled):not(._selected) {
-    background-color: var(--actions-low-surface-hover);
-    color: var(--actions-low-content-hover);
+    background-color: var(--ui-segment-control-option-surface-hover, var(--actions-low-surface-hover)); /// Fond d'un segment au survol.
+    color: var(--ui-segment-control-option-color-hover, var(--actions-low-content-hover));              /// Couleur du texte au survol.
   }
   &:active:not(:disabled):not(._selected) {
-    background-color: var(--actions-low-surface-pressed);
-    color: var(--actions-low-content-pressed);
+    background-color: var(--ui-segment-control-option-surface-pressed, var(--actions-low-surface-pressed)); /// Fond d'un segment enfoncé.
+    color: var(--ui-segment-control-option-color-pressed, var(--actions-low-content-pressed));              /// Couleur du texte d'un segment enfoncé.
   }
   &:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 $focus-ring-width var(--actions-low-stroke-focused);
+    box-shadow: 0 0 0 $focus-ring-width var(--ui-segment-control-option-focus-ring-color, var(--actions-low-stroke-focused)); /// Couleur de l'anneau de focus d'un segment.
   }
 
   &._selected {
-    color: var(--actions-high-content-default);
-    font-weight: var(--weight-bold);
+    color: var(--ui-segment-control-option-color-selected, var(--actions-high-content-default)); /// Couleur du texte d'un segment sélectionné.
+    font-weight: var(--ui-segment-control-weight-selected, var(--weight-bold)); /// Graisse du texte.
 
     &:focus-visible {
-      box-shadow: 0 0 0 $focus-ring-width var(--actions-high-stroke-focused);
+      box-shadow: 0 0 0 $focus-ring-width var(--ui-segment-control-option-focus-ring-color, var(--actions-high-stroke-focused));
     }
   }
 
   &:disabled {
     cursor: not-allowed;
-    color: var(--actions-low-content-disabled);
+    color: var(--ui-segment-control-option-color-disabled, var(--actions-low-content-disabled)); /// Couleur du texte d'un segment désactivé.
 
     &._selected {
-      color: var(--actions-high-content-disabled);
+      color: var(--ui-segment-control-option-color-selected-disabled, var(--actions-high-content-disabled)); /// Couleur du texte d'un segment sélectionné et désactivé.
     }
   }
 }
 
 // --- Multiple mode: no thumb, each selected segment paints its surface ---
 :host._multiple .ui-segment-control-option._selected {
-  background-color: var(--actions-high-surface-default);
+  background-color: var(--ui-segment-control-option-surface-selected, var(--actions-high-surface-default)); /// Fond d'un segment sélectionné, mode `multiple` (sans indicateur glissant).
 
   &:hover:not(:disabled) {
-    background-color: var(--actions-high-surface-hover);
-    color: var(--actions-high-content-hover);
+    background-color: var(--ui-segment-control-option-surface-hover, var(--actions-high-surface-hover));
+    color: var(--ui-segment-control-option-color-hover, var(--actions-high-content-hover));
   }
   &:active:not(:disabled) {
-    background-color: var(--actions-high-surface-pressed);
-    color: var(--actions-high-content-pressed);
+    background-color: var(--ui-segment-control-option-surface-pressed, var(--actions-high-surface-pressed));
+    color: var(--ui-segment-control-option-color-pressed, var(--actions-high-content-pressed));
   }
   &:disabled {
-    background-color: var(--actions-high-surface-disabled);
+    background-color: var(--ui-segment-control-option-surface-disabled, var(--actions-high-surface-disabled)); /// Fond d'un segment sélectionné et désactivé.
   }
 }
 
@@ -216,7 +216,7 @@ $option-gap: var(--ui-segment-control-option-gap, var(--units-sm));        /// E
 
 // --- Invalid ----------------------------------------------------------
 :host._invalid {
-  box-shadow: inset 0 0 0 $stroke-width var(--form-error-stroke-default);
+  box-shadow: inset 0 0 0 $stroke-width var(--ui-segment-control-stroke-invalid, var(--form-error-stroke-default)); /// Couleur de bordure de la piste en erreur.
 }
 
 // --- Disabled ---------------------------------------------------------
@@ -224,6 +224,6 @@ $option-gap: var(--ui-segment-control-option-gap, var(--units-sm));        /// E
   cursor: not-allowed;
 
   .ui-segment-control-thumb {
-    background-color: var(--actions-high-surface-disabled);
+    background-color: var(--ui-segment-control-thumb-surface-disabled, var(--actions-high-surface-disabled)); /// Fond de l'indicateur glissant désactivé.
   }
 }

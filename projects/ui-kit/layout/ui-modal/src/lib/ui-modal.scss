@@ -13,6 +13,8 @@ $mask-padding: var(--ui-modal-mask-padding, var(--units-lg));                   
 $dialog-radius: var(--ui-modal-dialog-radius, var(--radius-md));                 /// Rayon du dialogue.
 $dialog-padding: var(--ui-modal-dialog-padding, var(--units-lg));                /// Inset du dialogue.
 $header-gap: var(--ui-modal-header-gap, var(--units-sm));                        /// Espacement entre les éléments de l'en-tête.
+$header-align: var(--ui-modal-header-align, flex-start);                         /// Alignement vertical de l'en-tête (titre, actions).
+$header-actions-align: var(--ui-modal-header-actions-align, auto);               /// Alignement vertical des actions seules ; `auto` suit l'alignement de l'en-tête.
 $stroke-width: var(--ui-modal-stroke-width, var(--stroke-sm));                   /// Épaisseur de bordure du dialogue.
 $action-size: var(--ui-modal-action-size, #{utils.rem-calc(32)});                /// Taille de la cible tactile du bouton de fermeture.
 $resize-handle-size: var(--ui-modal-resize-handle-size, 16px);                   /// Taille de la poignée de redimensionnement.
@@ -60,12 +62,12 @@ $mask-background: var(--ui-modal-mask-background, var(--primitives-black-50));  
   flex-direction: column;
   max-width: min(90vw, utils.rem-calc(560));
   max-height: 90vh;
-  border: $stroke-width solid var(--global-border-subtle);
+  border: $stroke-width solid var(--ui-modal-stroke, var(--global-border-subtle)); /// Couleur de bordure de la boîte.
   border-radius: $dialog-radius;
-  background-color: var(--global-background-default);
-  color: var(--global-text-default);
+  background-color: var(--ui-modal-surface, var(--global-background-default));     /// Fond de la boîte.
+  color: var(--ui-modal-color, var(--global-text-default));                        /// Couleur du texte de la boîte.
   box-shadow: var(--shadow-default-lg); // floats above the page → strong elevation
-  font-family: var(--fontfamily-base);
+  font-family: var(--ui-modal-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
   outline: none;
 
   &._contained {
@@ -93,7 +95,7 @@ $mask-background: var(--ui-modal-mask-background, var(--primitives-black-50));  
   &-header {
     flex: 0 0 auto;
     display: flex;
-    align-items: flex-start;
+    align-items: $header-align;
     gap: $header-gap;
     padding: $dialog-padding $dialog-padding var(--units-sm);
 
@@ -107,9 +109,9 @@ $mask-background: var(--ui-modal-mask-background, var(--primitives-black-50));  
   &-title {
     flex: 1 1 auto;
     min-width: 0;
-    font-family: var(--fontfamily-title);
+    font-family: var(--ui-modal-title-font-family, var(--fontfamily-title)); /// Famille typographique du titre.
     font-size: var(--size-typography-title-default);
-    font-weight: var(--weight-bold);
+    font-weight: var(--ui-modal-weight, var(--weight-bold)); /// Graisse du titre.
     line-height: 1.3;
     overflow-wrap: break-word;
   }
@@ -118,6 +120,7 @@ $mask-background: var(--ui-modal-mask-background, var(--primitives-black-50));  
     flex: 0 0 auto;
     display: inline-flex;
     align-items: center;
+    align-self: $header-actions-align;
     gap: var(--units-2xs);
   }
 
@@ -138,13 +141,13 @@ $mask-background: var(--ui-modal-mask-background, var(--primitives-black-50));  
     @include utils.control-transition(background-color, color);
 
     &:hover {
-      background-color: var(--global-background-muted-hover);
-      color: var(--global-text-muted-hover);
+      background-color: var(--ui-modal-close-surface-hover, var(--global-background-muted-hover)); /// Fond du bouton de fermeture au survol.
+      color: var(--ui-modal-close-color-hover, var(--global-text-muted-hover));                    /// Couleur du bouton de fermeture au survol.
     }
 
     &:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 $focus-ring-width var(--global-border-focus);
+      box-shadow: 0 0 0 $focus-ring-width var(--ui-modal-close-focus-ring-color, var(--global-border-focus)); /// Couleur de l'anneau de focus du bouton de fermeture.
     }
 
     @include utils.motion-reduce {
@@ -176,7 +179,7 @@ $mask-background: var(--ui-modal-mask-background, var(--primitives-black-50));  
     justify-content: flex-end;
     gap: var(--units-sm);
     padding: var(--units-md) $dialog-padding $dialog-padding;
-    border-top: $stroke-width solid var(--global-border-subtle);
+    border-top: $stroke-width solid var(--ui-modal-footer-stroke, var(--global-border-subtle)); /// Couleur du trait séparant le pied.
   }
 
   // --- Resize grip (bottom-right corner) -----------------------------
@@ -188,7 +191,7 @@ $mask-background: var(--ui-modal-mask-background, var(--primitives-black-50));  
     height: $resize-handle-size;
     cursor: nwse-resize;
     touch-action: none;
-    color: var(--global-text-muted);
+    color: var(--ui-modal-resize-handle-color, var(--global-text-muted)); /// Couleur de la poignée de redimensionnement.
     background-image: repeating-linear-gradient(
       -45deg,
       currentColor 0 1px,

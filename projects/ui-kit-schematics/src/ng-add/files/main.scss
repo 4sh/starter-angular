@@ -26,6 +26,23 @@
 // 🔒 Tokens générés — régénérés par `npm run tokens:build`, jamais édités à la main.
 @use "ui-kit/generated/tokens";
 
+// ✏️ Votre preset de thème : la couche où vous ajustez le rendu du kit sans
+// toucher aux tokens générés. Elle passe APRÈS eux, donc elle gagne.
+//
+// C'est ici qu'on itère quand on construit un thème — une valeur qu'on veut
+// corriger sans repasser par Figma, un hook de composant qu'on veut pousser
+// plus loin que ce que le jeton sémantique donne :
+//
+//   :root {
+//     --actions-high-surface-default: #1a56db;  // jeton sémantique
+//     --ui-card-padding: 20px;                  // hook d'un composant
+//   }
+//
+// La liste des hooks disponibles par composant est dans la section « Theming »
+// de sa page Storybook. Pour voir tout le kit avec vos valeurs pendant que vous
+// les réglez : `pnpm exec ui-kit-preview`.
+@use "preset/preset";
+
 // ✏️ Couche de base : reset html/body, typographie, presets de motion.
 // Copiée une fois, à ajuster librement.
 @use "base/base";

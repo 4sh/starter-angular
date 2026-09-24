@@ -57,12 +57,12 @@ $badge-z-index: var(--ui-avatar-badge-z-index, 1);      /// Plan d'empilement du
   justify-content: center;
   flex-shrink: 0;
   box-sizing: border-box;
-  border: $stroke-width solid var(--global-border-default);
+  border: $stroke-width solid var(--ui-avatar-stroke, var(--global-border-default)); /// Couleur du contour de l'avatar.
   border-radius: var(--_radius);
-  background-color: var(--informative-defaultlow-surface-default);
-  color: var(--informative-defaultlow-content-default);
-  font-family: var(--fontfamily-title);
-  font-weight: var(--weight-bold);
+  background-color: var(--ui-avatar-surface, var(--informative-defaultlow-surface-default)); /// Fond de l'avatar (visible sans image).
+  color: var(--ui-avatar-color, var(--informative-defaultlow-content-default));              /// Couleur des initiales.
+  font-family: var(--ui-avatar-font-family, var(--fontfamily-title)); /// Famille typographique du composant.
+  font-weight: var(--ui-avatar-weight, var(--weight-bold)); /// Graisse du texte.
   line-height: 1;
   user-select: none;
 

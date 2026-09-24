@@ -65,9 +65,9 @@ $progress-color: var(--ui-file-upload-item-progress-color, var(--global-text-def
   box-sizing: border-box;
   width: 100%;
   overflow: hidden;
-  background-color: var(--form-high-surface-default);
-  border: $stroke-width solid var(--form-high-stroke-default);
-  color: var(--form-high-content-default);
+  background-color: var(--ui-file-upload-list-surface, var(--form-high-surface-default));         /// Fond d'une ligne de fichier.
+  border: $stroke-width solid var(--ui-file-upload-list-stroke, var(--form-high-stroke-default)); /// Couleur de bordure d'une ligne de fichier.
+  color: var(--ui-file-upload-list-color, var(--form-high-content-default));                      /// Couleur du texte d'une ligne de fichier (vignette et métadonnées comprises).
 
   @include row-size($size-default);
 
@@ -92,7 +92,7 @@ $progress-color: var(--ui-file-upload-item-progress-color, var(--global-text-def
     justify-content: center;
     flex: none;
     line-height: 0;
-    color: var(--form-high-content-default);
+    color: var(--ui-file-upload-list-color, var(--form-high-content-default));
   }
 
   &-thumb {
@@ -110,8 +110,8 @@ $progress-color: var(--ui-file-upload-item-progress-color, var(--global-text-def
   }
 
   &-name {
-    font-family: var(--fontfamily-base);
-    font-weight: var(--weight-bold);
+    font-family: var(--ui-file-upload-font-family, var(--fontfamily-base)); /// Famille typographique du nom.
+    font-weight: var(--ui-file-upload-name-weight, var(--weight-bold)); /// Graisse du nom.
     line-height: 1.3;
     // Truncate long names on a single line.
     overflow: hidden;
@@ -120,10 +120,10 @@ $progress-color: var(--ui-file-upload-item-progress-color, var(--global-text-def
   }
 
   &-meta {
-    font-family: var(--fontfamily-base);
-    font-weight: var(--weight-light);
+    font-family: var(--ui-file-upload-font-family, var(--fontfamily-base)); /// Famille typographique des métadonnées.
+    font-weight: var(--ui-file-upload-meta-weight, var(--weight-light)); /// Graisse des métadonnées.
     line-height: 1.2;
-    color: var(--form-high-content-default);
+    color: var(--ui-file-upload-list-color, var(--form-high-content-default));
   }
 
   // --- Remove button --------------------------------------------------
@@ -136,15 +136,15 @@ $progress-color: var(--ui-file-upload-item-progress-color, var(--global-text-def
     background: transparent;
     border: none;
     border-radius: $remove-radius;
-    color: var(--form-high-content-default);
+    color: var(--ui-file-upload-list-remove-color, var(--form-high-content-default)); /// Couleur du bouton de retrait.
     cursor: pointer;
     line-height: 0;
     @include utils.control-transition(background-color, color);
 
-    &:hover { color: var(--global-text-default); }
+    &:hover { color: var(--ui-file-upload-list-remove-color-hover, var(--global-text-default)); } /// Couleur du bouton de retrait au survol.
     &:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 $focus-ring-width var(--form-high-stroke-focused);
+      box-shadow: 0 0 0 $focus-ring-width var(--ui-file-upload-list-remove-focus-ring-color, var(--form-high-stroke-focused)); /// Couleur de l'anneau de focus du bouton de retrait.
     }
   }
 
@@ -155,7 +155,7 @@ $progress-color: var(--ui-file-upload-item-progress-color, var(--global-text-def
     right: 0;
     bottom: 0;
     height: $progress-height;
-    background-color: var(--form-high-surface-hover);
+    background-color: var(--ui-file-upload-list-progress-surface, var(--form-high-surface-hover)); /// Fond de la piste de progression.
   }
   &-progress-bar {
     display: block;
@@ -166,8 +166,8 @@ $progress-color: var(--ui-file-upload-item-progress-color, var(--global-text-def
 
   // --- Error ----------------------------------------------------------
   &._error {
-    border-color: var(--informative-errorhigh-stroke-default);
+    border-color: var(--ui-file-upload-list-stroke-error, var(--informative-errorhigh-stroke-default)); /// Couleur de bordure d'une ligne en erreur.
     .ui-file-upload-list-media,
-    .ui-file-upload-list-meta { color: var(--informative-errorhigh-content-default); }
+    .ui-file-upload-list-meta { color: var(--ui-file-upload-list-color-error, var(--informative-errorhigh-content-default)); } /// Couleur du texte d'une ligne en erreur.
   }
 }

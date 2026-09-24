@@ -46,9 +46,9 @@ ui-table {
 
 .ui-table {
   // --- Base ----------------------------------------------------------
-  font-family: var(--fontfamily-base);
+  font-family: var(--ui-table-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
   font-size: var(--size-typography-text-default);
-  color: var(--table-body-content-odd);
+  color: var(--ui-table-body-color, var(--table-body-content-odd)); /// Couleur du texte du corps.
 
   &-container {
     min-width: 0;
@@ -83,17 +83,17 @@ ui-table {
 
   &-caption {
     padding: var(--units-md) var(--units-default);
-    font-weight: var(--weight-bold);
+    font-weight: var(--ui-table-weight, var(--weight-bold)); /// Graisse de la légende.
   }
 
   // --- Head ------------------------------------------------------------
   &-thead th {
     padding: map.get($size-default, head-padding);
-    background-color: var(--table-head-surface-default);
-    color: var(--table-head-content-default);
-    border-bottom: $stroke-width solid var(--table-head-stroke-default);
+    background-color: var(--ui-table-head-surface, var(--table-head-surface-default));          /// Fond de l'en-tête.
+    color: var(--ui-table-head-color, var(--table-head-content-default));                       /// Couleur du texte de l'en-tête.
+    border-bottom: $stroke-width solid var(--ui-table-head-stroke, var(--table-head-stroke-default)); /// Couleur du trait sous l'en-tête.
     font-size: var(--size-typography-text-md);
-    font-weight: var(--weight-bold);
+    font-weight: var(--ui-table-weight, var(--weight-bold)); /// Graisse de l'en-tête de tableau.
     text-align: left;
     white-space: nowrap;
   }
@@ -101,9 +101,9 @@ ui-table {
   // --- Body ------------------------------------------------------------
   &-tbody td {
     padding: map.get($size-default, cell-padding);
-    background-color: var(--table-body-surface-odd);
-    color: var(--table-body-content-odd);
-    border-bottom: $stroke-width solid var(--table-body-stroke-odd);
+    background-color: var(--ui-table-body-surface, var(--table-body-surface-odd));          /// Fond d'une cellule du corps.
+    color: var(--ui-table-body-color, var(--table-body-content-odd));
+    border-bottom: $stroke-width solid var(--ui-table-body-stroke, var(--table-body-stroke-odd)); /// Couleur du trait entre deux lignes.
     @include utils.control-transition(background-color, color);
   }
 
@@ -113,33 +113,33 @@ ui-table {
 
   // Striped rows
   &._striped &-tbody tr:nth-child(even) td {
-    background-color: var(--table-body-surface-even);
-    color: var(--table-body-content-even);
-    border-bottom-color: var(--table-body-stroke-even);
+    background-color: var(--ui-table-body-surface-even, var(--table-body-surface-even));  /// Fond d'une ligne paire, variante `striped`.
+    color: var(--ui-table-body-color-even, var(--table-body-content-even));               /// Couleur du texte d'une ligne paire, variante `striped`.
+    border-bottom-color: var(--ui-table-body-stroke-even, var(--table-body-stroke-even)); /// Couleur du trait sous une ligne paire, variante `striped`.
   }
 
   // Hovered row (rowHover or any selection mode).
   &._hoverable &-tbody tr:hover td {
-    background-color: var(--table-body-surface-hover);
-    color: var(--table-body-content-hover);
+    background-color: var(--ui-table-body-surface-hover, var(--table-body-surface-hover)); /// Fond d'une ligne survolée.
+    color: var(--ui-table-body-color-hover, var(--table-body-content-hover));              /// Couleur du texte d'une ligne survolée.
   }
 
   &-tbody tr._selected td,
   &._striped &-tbody tr._selected td {
-    background-color: var(--informative-highlightlow-surface-default);
-    color: var(--informative-highlightlow-content-default);
-    border-bottom-color: var(--informative-highlightlow-stroke-default);
+    background-color: var(--ui-table-body-surface-selected, var(--informative-highlightlow-surface-default));  /// Fond d'une ligne sélectionnée.
+    color: var(--ui-table-body-color-selected, var(--informative-highlightlow-content-default));               /// Couleur du texte d'une ligne sélectionnée.
+    border-bottom-color: var(--ui-table-body-stroke-selected, var(--informative-highlightlow-stroke-default)); /// Couleur du trait sous une ligne sélectionnée.
   }
   &._hoverable &-tbody tr._selected:hover td {
-    background-color: var(--informative-highlightlow-surface-hover);
-    color: var(--informative-highlightlow-content-hover);
+    background-color: var(--ui-table-body-surface-selected-hover, var(--informative-highlightlow-surface-hover)); /// Fond d'une ligne sélectionnée, au survol.
+    color: var(--ui-table-body-color-selected-hover, var(--informative-highlightlow-content-hover));              /// Couleur du texte d'une ligne sélectionnée, au survol.
   }
 
   &-selectable-row {
     cursor: pointer;
 
     &:focus-visible {
-      outline: $focus-ring-width solid var(--global-border-focus);
+      outline: $focus-ring-width solid var(--ui-table-focus-ring-color, var(--global-border-focus)); /// Couleur de l'anneau de focus (ligne sélectionnable, colonne triable).
       outline-offset: calc(-1 * #{$focus-ring-width});
     }
   }
@@ -149,10 +149,10 @@ ui-table {
     cursor: grab;
   }
   &-reorderable-row._drop-above td {
-    box-shadow: inset 0 $drop-indicator-width 0 0 var(--global-border-focus);
+    box-shadow: inset 0 $drop-indicator-width 0 0 var(--ui-table-drop-indicator-color, var(--global-border-focus)); /// Couleur du repère de dépôt lors d'un réordonnancement.
   }
   &-reorderable-row._drop-below td {
-    box-shadow: inset 0 calc(-1 * #{$drop-indicator-width}) 0 0 var(--global-border-focus);
+    box-shadow: inset 0 calc(-1 * #{$drop-indicator-width}) 0 0 var(--ui-table-drop-indicator-color, var(--global-border-focus));
   }
 
   &-empty-cell {
@@ -175,10 +175,10 @@ ui-table {
   // --- Foot ------------------------------------------------------------
   &-tfoot td {
     padding: map.get($size-default, head-padding);
-    background-color: var(--table-footer-surface-default);
-    color: var(--table-footer-content-default);
-    border-top: $stroke-width solid var(--table-footer-stroke-default);
-    font-weight: var(--weight-bold);
+    background-color: var(--ui-table-footer-surface, var(--table-footer-surface-default));          /// Fond du pied.
+    color: var(--ui-table-footer-color, var(--table-footer-content-default));                       /// Couleur du texte du pied.
+    border-top: $stroke-width solid var(--ui-table-footer-stroke, var(--table-footer-stroke-default)); /// Couleur du trait au-dessus du pied.
+    font-weight: var(--ui-table-weight, var(--weight-bold)); /// Graisse du pied de tableau.
     text-align: left;
   }
 
@@ -200,12 +200,12 @@ ui-table {
   // --- Grid lines ----------------------------------------------------------
   &._gridlines {
     .ui-table-table {
-      border: $stroke-width solid var(--table-body-stroke-odd);
+      border: $stroke-width solid var(--ui-table-gridline-stroke, var(--table-body-stroke-odd)); /// Couleur du quadrillage, variante `gridlines`.
     }
     .ui-table-thead th,
     .ui-table-tbody td,
     .ui-table-tfoot td {
-      border-right: $stroke-width solid var(--table-body-stroke-odd);
+      border-right: $stroke-width solid var(--ui-table-gridline-stroke, var(--table-body-stroke-odd));
 
       &:last-child {
         border-right: none;
@@ -220,13 +220,13 @@ ui-table {
     @include utils.control-transition(background-color, color);
 
     &:hover {
-      background-color: var(--table-head-surface-hover);
-      color: var(--table-head-content-hover);
+      background-color: var(--ui-table-head-surface-hover, var(--table-head-surface-hover)); /// Fond d'une colonne triable au survol.
+      color: var(--ui-table-head-color-hover, var(--table-head-content-hover));              /// Couleur du texte d'une colonne triable au survol.
     }
 
     &:focus-visible {
       outline: none;
-      box-shadow: inset 0 0 0 $focus-ring-width var(--global-border-focus);
+      box-shadow: inset 0 0 0 $focus-ring-width var(--ui-table-focus-ring-color, var(--global-border-focus));
     }
 
     .ui-table-sort-icon {
@@ -265,7 +265,7 @@ ui-table {
       position: sticky;
       top: var(--ui-table-frozen-top, 0);
       z-index: 1;
-      font-weight: var(--weight-bold);
+      font-weight: var(--ui-table-weight, var(--weight-bold)); /// Graisse du texte.
     }
   }
 
@@ -329,7 +329,7 @@ ui-table {
     touch-action: none;
 
     &:hover {
-      border-right: var(--stroke-default) solid var(--global-border-default-hover);
+      border-right: var(--stroke-default) solid var(--ui-table-resizer-stroke-hover, var(--global-border-default-hover)); /// Couleur de la poignée de redimensionnement de colonne, au survol.
     }
   }
 

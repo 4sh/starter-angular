@@ -76,33 +76,33 @@ $size-default: map.get($sizes, 'default');         /// Raccourci vers l'entrée 
 // `surface-default` resolves to `transparent`, a ghost `stroke-hover` too),
 // never hardcoded here.
 @mixin action-colors($set) {
-  background-color: var(--actions-#{$set}-surface-default);
-  color: var(--actions-#{$set}-content-default);
-  border-color: var(--actions-#{$set}-stroke-default);
+  background-color: var(--ui-button-surface, var(--actions-#{$set}-surface-default)); /// Fond du bouton.
+  color: var(--ui-button-color, var(--actions-#{$set}-content-default));              /// Couleur du libellé et des icônes.
+  border-color: var(--ui-button-stroke, var(--actions-#{$set}-stroke-default));       /// Couleur de bordure.
 
   &:hover:not(:disabled):not(._disabled) {
-    background-color: var(--actions-#{$set}-surface-hover);
-    color: var(--actions-#{$set}-content-hover);
-    border-color: var(--actions-#{$set}-stroke-hover);
+    background-color: var(--ui-button-surface-hover, var(--actions-#{$set}-surface-hover)); /// Fond au survol.
+    color: var(--ui-button-color-hover, var(--actions-#{$set}-content-hover));              /// Couleur du libellé au survol.
+    border-color: var(--ui-button-stroke-hover, var(--actions-#{$set}-stroke-hover));       /// Couleur de bordure au survol.
   }
 
   &:focus-visible {
     outline: none;
-    border-color: var(--actions-#{$set}-stroke-focused);
-    box-shadow: 0 0 0 $focus-ring-width var(--actions-#{$set}-stroke-focused);
+    border-color: var(--ui-button-stroke-focus, var(--actions-#{$set}-stroke-focused)); /// Couleur de bordure au focus clavier ; elle teinte aussi l'anneau.
+    box-shadow: 0 0 0 $focus-ring-width var(--ui-button-stroke-focus, var(--actions-#{$set}-stroke-focused));
   }
 
   &:active:not(:disabled):not(._disabled) {
-    background-color: var(--actions-#{$set}-surface-pressed);
-    color: var(--actions-#{$set}-content-pressed);
-    border-color: var(--actions-#{$set}-stroke-pressed);
+    background-color: var(--ui-button-surface-pressed, var(--actions-#{$set}-surface-pressed)); /// Fond du bouton enfoncé.
+    color: var(--ui-button-color-pressed, var(--actions-#{$set}-content-pressed));              /// Couleur du libellé du bouton enfoncé.
+    border-color: var(--ui-button-stroke-pressed, var(--actions-#{$set}-stroke-pressed));       /// Couleur de bordure du bouton enfoncé.
   }
 
   &:disabled,
   &._disabled {
-    background-color: var(--actions-#{$set}-surface-disabled);
-    color: var(--actions-#{$set}-content-disabled);
-    border-color: var(--actions-#{$set}-stroke-disabled);
+    background-color: var(--ui-button-surface-disabled, var(--actions-#{$set}-surface-disabled)); /// Fond du bouton désactivé.
+    color: var(--ui-button-color-disabled, var(--actions-#{$set}-content-disabled));              /// Couleur du libellé du bouton désactivé.
+    border-color: var(--ui-button-stroke-disabled, var(--actions-#{$set}-stroke-disabled));       /// Couleur de bordure du bouton désactivé.
   }
 }
 

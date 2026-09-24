@@ -99,6 +99,23 @@ export function docsPipelineDir(): string {
   return join(ASSETS_ROOT, 'docs-pipeline');
 }
 
+/** Part de la configuration Storybook qui vaut telle quelle chez le
+ * consommateur (`manager.ts`, `brand-toolbar.ts`, la réparation des
+ * métadonnées…) — voir `scripts/schematics-assets.build.mjs`. */
+export function storybookAssetsDir(): string {
+  return join(ASSETS_ROOT, 'storybook');
+}
+
+/**
+ * Ce qui ne vaut QUE pour le Storybook jetable (`ui-kit-preview`) : `Overview.mdx`, la vue
+ * d'ensemble du catalogue. Hors de `storybookAssetsDir()` à dessein — `ng add` copie ce
+ * dossier-là en entier chez le consommateur, où la page serait fausse (elle présente tout le
+ * kit, lui n'en a copié qu'une part).
+ */
+export function previewAssetsDir(): string {
+  return join(ASSETS_ROOT, 'preview');
+}
+
 /** Serveur MCP compagnon, bundlé (FSHSP-115) — voir `scripts/mcp-bundle.build.mjs`. */
 export function mcpServerDir(): string {
   return join(ASSETS_ROOT, 'mcp-server');

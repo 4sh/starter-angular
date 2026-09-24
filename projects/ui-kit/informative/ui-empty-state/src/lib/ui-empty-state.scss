@@ -53,7 +53,7 @@ $max-width: var(--ui-empty-state-max-width, 40ch);                /// Largeur ma
   flex-direction: column;
   align-items: center;
   text-align: center;
-  font-family: var(--fontfamily-base);
+  font-family: var(--ui-empty-state-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
 
   @include empty-state-size($size-default);
 
@@ -83,17 +83,17 @@ $max-width: var(--ui-empty-state-max-width, 40ch);                /// Largeur ma
 
   &-title {
     margin: 0;
-    font-family: var(--fontfamily-title);
-    font-weight: var(--weight-bold);
+    font-family: var(--ui-empty-state-title-font-family, var(--fontfamily-title)); /// Famille typographique du titre.
+    font-weight: var(--ui-empty-state-title-weight, var(--weight-bold)); /// Graisse du titre.
     line-height: 1.2;
-    color: var(--global-text-default);
+    color: var(--ui-empty-state-title-color, var(--global-text-default)); /// Couleur du titre.
   }
 
   &-description {
     margin: 0;
-    font-weight: var(--weight-regular);
+    font-weight: var(--ui-empty-state-description-weight, var(--weight-regular)); /// Graisse de la description.
     line-height: 1.5;
-    color: var(--global-text-muted);
+    color: var(--ui-empty-state-description-color, var(--global-text-muted)); /// Couleur de la description.
   }
 
   &-body._empty {

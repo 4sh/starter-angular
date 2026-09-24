@@ -21,7 +21,11 @@ $padding-x: var(--ui-alert-padding-x, var(--units-md));             /// Inset ho
 $radius: var(--ui-alert-radius, var(--radius-default));             /// Rayon des coins.
 $stroke-width: var(--ui-alert-stroke-width, var(--stroke-default)); /// Épaisseur de la bordure.
 
-$icon-padding-top: var(--ui-alert-icon-padding-top, var(--units-2xs));          /// Décalage vertical de l'icône, pour l'aligner sur la première ligne de texte.
+$align: var(--ui-alert-align, flex-start);       /// Alignement vertical de la rangée (icône, contenu, fermeture) ; le mode titre seul reste centré.
+$icon-align: var(--ui-alert-icon-align, auto);  /// Alignement vertical de l'icône seule ; `auto` suit l'alignement de la rangée.
+$close-align: var(--ui-alert-close-align, auto);/// Alignement vertical de la fermeture seule ; `auto` suit l'alignement de la rangée.
+
+$icon-padding-top: var(--ui-alert-icon-padding-top, var(--units-2xs));          /// Décalage vertical de l'icône, pour l'aligner sur la première ligne de texte ; à remettre à `0` en alignement centré.
 $content-gap: var(--ui-alert-content-gap, var(--units-2xs));                    /// Espacement titre ↔ message.
 $content-padding-right: var(--ui-alert-content-padding-right, var(--units-sm)); /// Réserve à droite du contenu, avant la fermeture.
 
@@ -62,16 +66,16 @@ $focus-ring-offset: var(--ui-alert-focus-ring-offset, #{utils.rem-calc(2)});    
 .ui-alert {
   // --- Base ----------------------------------------------------------
   display: flex;
-  align-items: flex-start;
+  align-items: $align;
   gap: $gap;
   box-sizing: border-box;
   width: 100%;
   padding: $padding-y $padding-x;
   border: $stroke-width solid transparent;
   border-radius: $radius;
-  background-color: var(--informative-defaulthigh-surface-default);
-  color: var(--informative-defaulthigh-content-default);
-  font-family: var(--fontfamily-base);
+  background-color: var(--ui-alert-surface, var(--informative-defaulthigh-surface-default));
+  color: var(--ui-alert-color, var(--informative-defaulthigh-content-default));
+  font-family: var(--ui-alert-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
 
   @include alert-size($size-default);
 
@@ -80,6 +84,7 @@ $focus-ring-offset: var(--ui-alert-focus-ring-offset, #{utils.rem-calc(2)});    
     flex: 0 0 auto;
     display: flex;
     align-items: center;
+    align-self: $icon-align;
     padding-top: $icon-padding-top;
     line-height: 0;
   }
@@ -95,14 +100,14 @@ $focus-ring-offset: var(--ui-alert-focus-ring-offset, #{utils.rem-calc(2)});    
   }
 
   &-title {
-    font-family: var(--fontfamily-title);
-    font-weight: var(--weight-bold);
+    font-family: var(--ui-alert-title-font-family, var(--fontfamily-title)); /// Famille typographique du titre.
+    font-weight: var(--ui-alert-title-weight, var(--weight-bold)); /// Graisse du titre.
     line-height: 1.3;
     overflow-wrap: break-word;
   }
 
   &-text {
-    font-weight: var(--weight-light);
+    font-weight: var(--ui-alert-text-weight, var(--weight-light)); /// Graisse du texte.
     line-height: 1.3;
     overflow-wrap: break-word;
   }
@@ -112,6 +117,7 @@ $focus-ring-offset: var(--ui-alert-focus-ring-offset, #{utils.rem-calc(2)});    
     flex: 0 0 auto;
     display: inline-flex;
     align-items: center;
+    align-self: $close-align;
     justify-content: center;
     padding: 0;
     border: 0;
@@ -160,9 +166,9 @@ $focus-ring-offset: var(--ui-alert-focus-ring-offset, #{utils.rem-calc(2)});    
   @each $lvl in $levels {
     @each $sub in $sublevels {
       &._#{$lvl}._#{$sub} {
-        background-color: var(--informative-#{$lvl}#{$sub}-surface-default);
-        color: var(--informative-#{$lvl}#{$sub}-content-default);
-        border-color: var(--informative-#{$lvl}#{$sub}-stroke-default);
+        background-color: var(--ui-alert-surface, var(--informative-#{$lvl}#{$sub}-surface-default)); /// Fond du composant : un seul nom pour les 10 jeux (niveau × sous-niveau), la portée se choisit avec les classes de modificateur.
+        color: var(--ui-alert-color, var(--informative-#{$lvl}#{$sub}-content-default));              /// Couleur du texte et des icônes.
+        border-color: var(--ui-alert-stroke, var(--informative-#{$lvl}#{$sub}-stroke-default));       /// Couleur de bordure.
       }
     }
   }

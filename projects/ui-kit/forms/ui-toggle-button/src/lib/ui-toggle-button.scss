@@ -68,34 +68,34 @@ $size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default
 // are declared ONCE on the item, so `_invalid` overrides every state at any
 // specificity by inheriting a single custom property.
 @mixin action-colors($set) {
-  --_surface: var(--actions-#{$set}-surface-default);
-  --_content: var(--actions-#{$set}-content-default);
-  --_stroke: var(--actions-#{$set}-stroke-default);
-  --_ring: var(--actions-#{$set}-stroke-focused);
+  --_surface: var(--ui-toggle-button-surface, var(--actions-#{$set}-surface-default)); /// Fond d'un bouton.
+  --_content: var(--ui-toggle-button-color, var(--actions-#{$set}-content-default));   /// Couleur du libellé et des icônes.
+  --_stroke: var(--ui-toggle-button-stroke, var(--actions-#{$set}-stroke-default));    /// Couleur de bordure.
+  --_ring: var(--ui-toggle-button-focus-ring-color, var(--actions-#{$set}-stroke-focused)); /// Couleur de l'anneau de focus.
 
   &:hover:not(:disabled) {
-    --_surface: var(--actions-#{$set}-surface-hover);
-    --_content: var(--actions-#{$set}-content-hover);
-    --_stroke: var(--actions-#{$set}-stroke-hover);
+    --_surface: var(--ui-toggle-button-surface-hover, var(--actions-#{$set}-surface-hover)); /// Fond au survol.
+    --_content: var(--ui-toggle-button-color-hover, var(--actions-#{$set}-content-hover));   /// Couleur du libellé au survol.
+    --_stroke: var(--ui-toggle-button-stroke-hover, var(--actions-#{$set}-stroke-hover));    /// Couleur de bordure au survol.
   }
 
   &:active:not(:disabled) {
-    --_surface: var(--actions-#{$set}-surface-pressed);
-    --_content: var(--actions-#{$set}-content-pressed);
-    --_stroke: var(--actions-#{$set}-stroke-pressed);
+    --_surface: var(--ui-toggle-button-surface-pressed, var(--actions-#{$set}-surface-pressed)); /// Fond du bouton enfoncé.
+    --_content: var(--ui-toggle-button-color-pressed, var(--actions-#{$set}-content-pressed));   /// Couleur du libellé du bouton enfoncé.
+    --_stroke: var(--ui-toggle-button-stroke-pressed, var(--actions-#{$set}-stroke-pressed));    /// Couleur de bordure du bouton enfoncé.
   }
 
   &:disabled {
-    --_surface: var(--actions-#{$set}-surface-disabled);
-    --_content: var(--actions-#{$set}-content-disabled);
-    --_stroke: var(--actions-#{$set}-stroke-disabled);
+    --_surface: var(--ui-toggle-button-surface-disabled, var(--actions-#{$set}-surface-disabled)); /// Fond du bouton désactivé.
+    --_content: var(--ui-toggle-button-color-disabled, var(--actions-#{$set}-content-disabled));   /// Couleur du libellé du bouton désactivé.
+    --_stroke: var(--ui-toggle-button-stroke-disabled, var(--actions-#{$set}-stroke-disabled));    /// Couleur de bordure du bouton désactivé.
   }
 }
 
 :host {
   display: inline-flex;
   gap: $group-gap;
-  font-family: var(--fontfamily-base);
+  font-family: var(--ui-toggle-button-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
   vertical-align: middle;
 
   @include toggle-size($size-default);
@@ -120,7 +120,7 @@ $size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default
   background-color: var(--_surface);
   color: var(--_content);
   font-family: inherit;
-  font-weight: var(--weight-bold);
+  font-weight: var(--ui-toggle-button-weight, var(--weight-bold)); /// Graisse du texte.
   line-height: 1.2;
   white-space: nowrap;
   cursor: pointer;
@@ -196,5 +196,5 @@ $size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default
 }
 
 :host._invalid {
-  --_invalid-stroke: var(--form-error-stroke-default);
+  --_invalid-stroke: var(--ui-toggle-button-stroke-invalid, var(--form-error-stroke-default)); /// Couleur de bordure et d'anneau de focus d'un groupe invalide, quel que soit l'état.
 }

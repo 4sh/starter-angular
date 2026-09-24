@@ -93,11 +93,11 @@ $buttonbar-padding-top: var(--ui-datepicker-buttonbar-padding-top, var(--units-s
     width: max-content;
     max-width: $panel-max-width;
     padding: $panel-padding;
-    border: $stroke-width solid var(--form-high-stroke-default);
+    border: $stroke-width solid var(--ui-datepicker-panel-stroke, var(--form-high-stroke-default)); /// Couleur de bordure du panneau.
     border-radius: $panel-radius;
-    background-color: var(--form-high-surface-default);
+    background-color: var(--ui-datepicker-panel-surface, var(--form-high-surface-default));         /// Fond du panneau.
     box-shadow: $panel-shadow;
-    font-family: var(--fontfamily-base);
+    font-family: var(--ui-datepicker-font-family, var(--fontfamily-base)); /// Famille typographique du panneau.
     // Content wider than the panel scrolls instead of painting outside the rounded box: an
     // inline picker is capped at its container's width, and a `#buttonbar` template can ask
     // for more than that.
@@ -132,17 +132,17 @@ $buttonbar-padding-top: var(--ui-datepicker-buttonbar-padding-top, var(--units-s
     border: none;
     border-radius: $day-radius;
     background: none;
-    color: var(--informative-defaultlow-content-default);
+    color: var(--ui-datepicker-nav-color, var(--informative-defaultlow-content-default)); /// Couleur des chevrons de navigation.
     cursor: pointer;
     @include utils.control-transition(background-color, color);
 
     &:hover {
-      background-color: var(--informative-highlightlow-surface-hover);
-      color: var(--informative-defaultlow-content-hover);
+      background-color: var(--ui-datepicker-nav-surface-hover, var(--informative-highlightlow-surface-hover)); /// Fond d'un chevron au survol.
+      color: var(--ui-datepicker-nav-color-hover, var(--informative-defaultlow-content-hover));                /// Couleur d'un chevron au survol.
     }
     &:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 $focus-ring-width rgb(from var(--form-high-stroke-focused) r g b / 50%);
+      box-shadow: 0 0 0 $focus-ring-width rgb(from var(--ui-datepicker-nav-focus-ring-color, var(--form-high-stroke-focused)) r g b / 50%); /// Teinte de l'anneau de focus d'un chevron.
     }
   }
 
@@ -151,8 +151,8 @@ $buttonbar-padding-top: var(--ui-datepicker-buttonbar-padding-top, var(--units-s
     min-width: 0;
     text-align: center;
     font-size: $title-font-size;
-    font-weight: var(--weight-bold);
-    color: var(--form-high-content-default);
+    font-weight: var(--ui-datepicker-weight, var(--weight-bold)); /// Graisse du titre.
+    color: var(--ui-datepicker-title-color, var(--form-high-content-default)); /// Couleur du titre (mois / année).
 
     // Clickable variant (drill-up: date → month → year).
     &._button {
@@ -160,14 +160,14 @@ $buttonbar-padding-top: var(--ui-datepicker-buttonbar-padding-top, var(--units-s
       border: none;
       border-radius: $title-radius;
       background: none;
-      font-family: var(--fontfamily-base);
+      font-family: var(--ui-datepicker-font-family, var(--fontfamily-base)); /// Famille typographique du titre.
       cursor: pointer;
       @include utils.control-transition(background-color, color);
 
-      &:hover:not(:disabled) { background-color: var(--informative-highlightlow-surface-hover); }
+      &:hover:not(:disabled) { background-color: var(--ui-datepicker-title-surface-hover, var(--informative-highlightlow-surface-hover)); } /// Fond du titre cliquable au survol.
       &:focus-visible {
         outline: none;
-        box-shadow: 0 0 0 $focus-ring-width rgb(from var(--form-high-stroke-focused) r g b / 50%);
+        box-shadow: 0 0 0 $focus-ring-width rgb(from var(--ui-datepicker-title-focus-ring-color, var(--form-high-stroke-focused)) r g b / 50%); /// Teinte de l'anneau de focus du titre cliquable.
       }
       &:disabled { cursor: default; }
     }
@@ -185,7 +185,7 @@ $buttonbar-padding-top: var(--ui-datepicker-buttonbar-padding-top, var(--units-s
     max-width: 100%;
 
     &:not(:first-child) {
-      border-left: $stroke-width solid var(--form-high-stroke-default);
+      border-left: $stroke-width solid var(--ui-datepicker-month-stroke, var(--form-high-stroke-default)); /// Couleur du trait séparant deux mois affichés côte à côte.
       padding-left: $month-divider-padding-left;
     }
   }
@@ -195,7 +195,7 @@ $buttonbar-padding-top: var(--ui-datepicker-buttonbar-padding-top, var(--units-s
     &-month:not(:first-child) {
       border-left: none;
       padding-left: 0;
-      border-top: $stroke-width solid var(--form-high-stroke-default);
+      border-top: $stroke-width solid var(--ui-datepicker-month-stroke, var(--form-high-stroke-default));
       padding-top: $month-divider-padding-left;
     }
   }
@@ -232,26 +232,26 @@ $buttonbar-padding-top: var(--ui-datepicker-buttonbar-padding-top, var(--units-s
     padding: $cell-padding-y $cell-padding-x;
     border: $stroke-width solid transparent;
     border-radius: $cell-radius;
-    background-color: var(--actions-low-surface-default);
-    font-family: var(--fontfamily-base);
+    background-color: var(--ui-datepicker-cell-surface, var(--actions-low-surface-default)); /// Fond d'une cellule mois / année.
+    font-family: var(--ui-datepicker-font-family, var(--fontfamily-base)); /// Famille typographique des cellules.
     font-size: $cell-font-size;
-    color: var(--form-high-content-default);
+    color: var(--ui-datepicker-cell-color, var(--form-high-content-default)); /// Couleur du texte d'une cellule mois / année.
     cursor: pointer;
     @include utils.control-transition(background-color, border-color, color);
 
-    &:hover:not(:disabled) { background-color: var(--actions-low-surface-hover); }
-    &:active:not(:disabled) { background-color: var(--actions-low-surface-pressed); }
+    &:hover:not(:disabled) { background-color: var(--ui-datepicker-cell-surface-hover, var(--actions-low-surface-hover)); }     /// Fond d'une cellule au survol.
+    &:active:not(:disabled) { background-color: var(--ui-datepicker-cell-surface-pressed, var(--actions-low-surface-pressed)); } /// Fond d'une cellule enfoncée.
     &:focus-visible {
       outline: none;
-      background-color: var(--actions-low-surface-focused);
-      box-shadow: 0 0 0 $focus-ring-width rgb(from var(--actions-high-stroke-focused) r g b / 50%);
+      background-color: var(--ui-datepicker-cell-surface-focus, var(--actions-low-surface-focused)); /// Fond d'une cellule au focus clavier.
+      box-shadow: 0 0 0 $focus-ring-width rgb(from var(--ui-datepicker-cell-focus-ring-color, var(--actions-high-stroke-focused)) r g b / 50%); /// Teinte de l'anneau de focus d'une cellule.
     }
     &._selected {
-      background-color: var(--actions-high-surface-default);
-      color: var(--actions-high-content-default);
-      &:hover:not(:disabled) { background-color: var(--actions-high-surface-hover); }
+      background-color: var(--ui-datepicker-cell-surface-selected, var(--actions-high-surface-default)); /// Fond de la cellule sélectionnée.
+      color: var(--ui-datepicker-cell-color-selected, var(--actions-high-content-default));              /// Couleur du texte de la cellule sélectionnée.
+      &:hover:not(:disabled) { background-color: var(--ui-datepicker-cell-surface-selected-hover, var(--actions-high-surface-hover)); } /// Fond de la cellule sélectionnée, au survol.
     }
-    &:disabled { color: var(--form-high-content-disabled); cursor: not-allowed; }
+    &:disabled { color: var(--ui-datepicker-cell-color-disabled, var(--form-high-content-disabled)); cursor: not-allowed; } /// Couleur du texte d'une cellule désactivée.
   }
 
   // --- Weekday headers + grid --------------
@@ -266,8 +266,8 @@ $buttonbar-padding-top: var(--ui-datepicker-buttonbar-padding-top, var(--units-s
   &-weekday {
     padding: $weekday-padding-y 0;
     font-size: $weekday-font-size;
-    font-weight: var(--weight-bold);
-    color: var(--form-low-content-default);
+    font-weight: var(--ui-datepicker-weight, var(--weight-bold)); /// Graisse des jours de la semaine.
+    color: var(--ui-datepicker-weekday-color, var(--form-low-content-default)); /// Couleur des initiales de jours de la semaine.
     user-select: none;
   }
 
@@ -290,9 +290,9 @@ $buttonbar-padding-top: var(--ui-datepicker-buttonbar-padding-top, var(--units-s
     padding: 0;
     border: none;
     background: transparent;
-    font-family: var(--fontfamily-base);
+    font-family: var(--ui-datepicker-font-family, var(--fontfamily-base)); /// Famille typographique des jours.
     font-size: $day-font-size;
-    color: var(--form-high-content-default);
+    color: var(--ui-datepicker-day-color, var(--form-high-content-default)); /// Couleur du chiffre d'un jour.
     cursor: pointer;
     @include utils.control-transition(color);
 
@@ -311,33 +311,33 @@ $buttonbar-padding-top: var(--ui-datepicker-buttonbar-padding-top, var(--units-s
       @include utils.control-transition(background-color, border-color, box-shadow);
     }
 
-    &:hover:not(:disabled)::before { background-color: var(--actions-low-surface-hover); }
-    &:active:not(:disabled)::before { background-color: var(--actions-low-surface-pressed); }
+    &:hover:not(:disabled)::before { background-color: var(--ui-datepicker-day-surface-hover, var(--actions-low-surface-hover)); }     /// Fond de la pastille d'un jour au survol.
+    &:active:not(:disabled)::before { background-color: var(--ui-datepicker-day-surface-pressed, var(--actions-low-surface-pressed)); } /// Fond de la pastille d'un jour enfoncé.
     &:focus-visible { outline: none; }
     &:focus-visible::before {
-      background-color: var(--actions-low-surface-focused);
-      box-shadow: 0 0 0 $focus-ring-width rgb(from var(--actions-high-stroke-focused) r g b / 50%);
+      background-color: var(--ui-datepicker-day-surface-focus, var(--actions-low-surface-focused)); /// Fond de la pastille d'un jour au focus clavier.
+      box-shadow: 0 0 0 $focus-ring-width rgb(from var(--ui-datepicker-day-focus-ring-color, var(--actions-high-stroke-focused)) r g b / 50%); /// Teinte de l'anneau de focus d'un jour.
     }
 
     // Previous/next month + disabled
     &._other-month { color: $day-color-other-month; opacity: $day-opacity-other-month; }
 
     // Today (outlined chip) — only when not selected.
-    &._today::before { border-color: var(--actions-high-stroke-default); }
-    &._today:hover:not(:disabled)::before { border-color: var(--actions-high-stroke-hover); }
-    &._today:focus-visible::before { border-color: var(--actions-high-stroke-focused); }
+    &._today::before { border-color: var(--ui-datepicker-day-stroke-today, var(--actions-high-stroke-default)); }                       /// Couleur du contour de la pastille du jour courant.
+    &._today:hover:not(:disabled)::before { border-color: var(--ui-datepicker-day-stroke-today-hover, var(--actions-high-stroke-hover)); } /// Couleur du contour du jour courant, au survol.
+    &._today:focus-visible::before { border-color: var(--ui-datepicker-day-stroke-today-focus, var(--actions-high-stroke-focused)); }      /// Couleur du contour du jour courant, au focus clavier.
 
     // Selected / range endpoints.
     &._selected {
-      color: var(--actions-high-content-default);
-      &::before { background-color: var(--actions-high-surface-default); }
+      color: var(--ui-datepicker-day-color-selected, var(--actions-high-content-default));            /// Couleur du chiffre d'un jour sélectionné.
+      &::before { background-color: var(--ui-datepicker-day-surface-selected, var(--actions-high-surface-default)); } /// Fond de la pastille d'un jour sélectionné.
       &:hover:not(:disabled) {
-        color: var(--actions-high-content-hover);
-        &::before { background-color: var(--actions-high-surface-hover); }
+        color: var(--ui-datepicker-day-color-selected-hover, var(--actions-high-content-hover));      /// Couleur du chiffre d'un jour sélectionné, au survol.
+        &::before { background-color: var(--ui-datepicker-day-surface-selected-hover, var(--actions-high-surface-hover)); } /// Fond de la pastille d'un jour sélectionné, au survol.
       }
       &:focus-visible {
-        color: var(--actions-high-content-focused);
-        &::before { background-color: var(--actions-high-surface-focused); }
+        color: var(--ui-datepicker-day-color-selected-focus, var(--actions-high-content-focused));    /// Couleur du chiffre d'un jour sélectionné, au focus clavier.
+        &::before { background-color: var(--ui-datepicker-day-surface-selected-focus, var(--actions-high-surface-focused)); } /// Fond de la pastille d'un jour sélectionné, au focus clavier.
       }
     }
 
@@ -385,13 +385,13 @@ $buttonbar-padding-top: var(--ui-datepicker-buttonbar-padding-top, var(--units-s
       &:disabled { color: $range-color; }
       &:hover:not(:disabled),
       &:focus-visible {
-        color: var(--informative-highlighthigh-content-default);
-        &::before { background-color: var(--informative-highlighthigh-surface-default); }
+        color: var(--ui-datepicker-range-color-hover, var(--informative-highlighthigh-content-default));               /// Couleur du chiffre d'un jour de la plage, au survol ou au focus.
+        &::before { background-color: var(--ui-datepicker-range-background-hover, var(--informative-highlighthigh-surface-default)); } /// Fond de la pastille d'un jour de la plage, au survol ou au focus.
       }
     }
 
     &:disabled {
-      color: var(--form-high-content-disabled);
+      color: var(--ui-datepicker-day-color-disabled, var(--form-high-content-disabled)); /// Couleur du chiffre d'un jour désactivé.
       opacity: $day-opacity-disabled;
       cursor: not-allowed;
     }
@@ -405,7 +405,7 @@ $buttonbar-padding-top: var(--ui-datepicker-buttonbar-padding-top, var(--units-s
     flex-wrap: wrap;
     gap: $time-gap;
     padding-top: $time-padding-top;
-    border-top: $stroke-width solid var(--form-high-stroke-default);
+    border-top: $stroke-width solid var(--ui-datepicker-time-stroke, var(--form-high-stroke-default)); /// Couleur du trait séparant la zone horaire.
 
     &:first-child { padding-top: 0; border-top: none; }
   }
@@ -425,26 +425,26 @@ $buttonbar-padding-top: var(--ui-datepicker-buttonbar-padding-top, var(--units-s
     border: none;
     border-radius: $time-value-radius;
     background: none;
-    font-family: var(--fontfamily-base);
+    font-family: var(--ui-datepicker-font-family, var(--fontfamily-base)); /// Famille typographique de la valeur horaire.
     font-size: $time-font-size;
-    font-weight: var(--weight-bold);
+    font-weight: var(--ui-datepicker-weight, var(--weight-bold)); /// Graisse de la valeur horaire.
     font-variant-numeric: tabular-nums;
-    color: var(--form-high-content-default);
+    color: var(--ui-datepicker-time-value-color, var(--form-high-content-default)); /// Couleur d'une valeur horaire.
     text-align: center;
     cursor: text;
     appearance: none;
     @include utils.control-transition(background-color, box-shadow);
 
     &:read-only { cursor: pointer; }
-    &:hover:not(:disabled):not([aria-disabled='true']) { background-color: var(--informative-highlightlow-surface-hover); }
+    &:hover:not(:disabled):not([aria-disabled='true']) { background-color: var(--ui-datepicker-time-value-surface-hover, var(--informative-highlightlow-surface-hover)); } /// Fond d'une valeur horaire au survol.
     &:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 $focus-ring-width rgb(from var(--form-high-stroke-focused) r g b / 50%);
+      box-shadow: 0 0 0 $focus-ring-width rgb(from var(--ui-datepicker-time-value-focus-ring-color, var(--form-high-stroke-focused)) r g b / 50%); /// Teinte de l'anneau de focus d'une valeur horaire.
     }
     // `:disabled` covers the HH/MM `<input>`; the AM/PM unit is a `<span>` (no native
     // disabled state) and mirrors it via `[aria-disabled]` — same token, same look.
     &:disabled,
-    &[aria-disabled='true'] { color: var(--form-high-content-disabled); cursor: not-allowed; }
+    &[aria-disabled='true'] { color: var(--ui-datepicker-time-value-color-disabled, var(--form-high-content-disabled)); cursor: not-allowed; } /// Couleur d'une valeur horaire désactivée.
   }
 
   &-time-btn {
@@ -457,21 +457,21 @@ $buttonbar-padding-top: var(--ui-datepicker-buttonbar-padding-top, var(--units-s
     border: none;
     border-radius: $time-btn-radius;
     background: none;
-    color: var(--form-low-content-default);
+    color: var(--ui-datepicker-time-btn-color, var(--form-low-content-default)); /// Couleur des flèches horaires.
     cursor: pointer;
     @include utils.control-transition(background-color, color);
 
     &:hover:not(:disabled) {
-      background-color: var(--informative-highlightlow-surface-hover);
-      color: var(--form-high-content-hover);
+      background-color: var(--ui-datepicker-time-btn-surface-hover, var(--informative-highlightlow-surface-hover)); /// Fond d'une flèche horaire au survol.
+      color: var(--ui-datepicker-time-btn-color-hover, var(--form-high-content-hover));                            /// Couleur d'une flèche horaire au survol.
     }
-    &:disabled { color: var(--form-high-content-disabled); cursor: not-allowed; }
+    &:disabled { color: var(--ui-datepicker-time-btn-color-disabled, var(--form-high-content-disabled)); cursor: not-allowed; } /// Couleur d'une flèche horaire désactivée.
   }
 
   &-time-colon {
     font-size: $time-font-size;
-    font-weight: var(--weight-bold);
-    color: var(--form-high-content-default);
+    font-weight: var(--ui-datepicker-weight, var(--weight-bold)); /// Graisse du séparateur horaire.
+    color: var(--ui-datepicker-time-colon-color, var(--form-high-content-default)); /// Couleur du séparateur horaire.
   }
 
   // --- Button bar ----------------------------------------------------
@@ -482,6 +482,6 @@ $buttonbar-padding-top: var(--ui-datepicker-buttonbar-padding-top, var(--units-s
     flex-wrap: wrap;
     gap: $buttonbar-gap;
     padding-top: $buttonbar-padding-top;
-    border-top: $stroke-width solid var(--form-high-stroke-default);
+    border-top: $stroke-width solid var(--ui-datepicker-buttonbar-stroke, var(--form-high-stroke-default)); /// Couleur du trait séparant la barre de boutons.
   }
 }

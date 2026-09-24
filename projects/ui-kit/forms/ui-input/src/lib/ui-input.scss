@@ -18,7 +18,7 @@ $unit-font-size: var(--ui-input-unit-font-size, var(--size-typography-text-defau
 
   &-unit {
     @include utils.field-affix;
-    font-family: var(--fontfamily-base);
+    font-family: var(--ui-input-font-family, var(--fontfamily-base)); /// Famille typographique de l'unité.
     font-size: $unit-font-size;
     white-space: nowrap;
     user-select: none;

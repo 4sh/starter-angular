@@ -82,6 +82,10 @@ function copyStylesFoundationRule(): Rule {
 
 const FONTS_MODULE = 'vendors/fonts';
 const FONTS_PATH = 'src/styles/vendors/_fonts.scss';
+/** Couche de preset du projet : surcharge des jetons et des hooks de composant,
+ * chargée APRÈS `ui-kit/generated/tokens` (FSHSP-202). */
+const PRESET_MODULE = 'preset/preset';
+const PRESET_PATH = 'src/styles/preset/_preset.scss';
 
 function createStyleScaffolds(): Rule {
   return (tree: Tree, context: SchematicContext) => {
@@ -96,8 +100,23 @@ function createStyleScaffolds(): Rule {
     }
     importInMainScss(tree, FONTS_MODULE, '// ✏️ Vos polices (`@font-face` + `--fontfamily-*`).');
 
+    // Couche de preset (FSHSP-202) : l'endroit où l'on ajuste le rendu du kit
+    // sans toucher à `ui-kit/generated/`, réécrit à chaque `tokens:build`.
+    // Posée vide mais POSÉE : le `@use` du scaffold `main.scss` la désigne, et
+    // un `@use` vers un fichier absent arrête la compilation des styles. C'est
+    // aussi ce qui fait qu'un projet installé plus tard ne réinvente pas
+    // l'emplacement dans son coin.
+    if (!tree.exists(PRESET_PATH)) {
+      tree.create(PRESET_PATH, readFileSync(join(filesDir, 'preset', '_preset.scss'), 'utf8'));
+    }
+    importInMainScss(
+      tree,
+      PRESET_MODULE,
+      '// ✏️ Votre preset de thème (surcharge les tokens générés).',
+    );
+
     context.logger.info(
-      `✔ Scaffolds ${MAIN_SCSS_PATH}, src/styles/variables.scss et ${FONTS_PATH} créés.`,
+      `✔ Scaffolds ${MAIN_SCSS_PATH}, src/styles/variables.scss, ${FONTS_PATH} et ${PRESET_PATH} créés.`,
     );
     return tree;
   };

@@ -1,0 +1,56 @@
+@use 'utils';
+
+// =====================================================================
+// ui-input-date : le contrôle natif projeté dans `ui-field`. La boîte, le
+// libellé, le helper et les états vivent dans `ui-field` ; ici on ne traite
+// que ce que le navigateur dessine lui-même.
+// =====================================================================
+
+$font-size-small: var(
+  --ui-input-date-font-size-small,
+  var(--size-typography-text-md)
+); /// Taille de police du contrôle, variante `small`.
+
+$native-overhang: 2.5rem;
+
+.ui-input-date {
+  &-native {
+    @include utils.field-native-input;
+
+    &._small {
+      font-size: $font-size-small;
+    }
+
+    // Safari/iOS donne à ces champs un fond arrondi et une largeur intrinsèque
+    // qui les empêche de remplir la boîte de `ui-field`.
+    -webkit-appearance: none;
+    appearance: none;
+
+    // Et il CENTRE la valeur, là où tous les autres champs du kit l'alignent à
+    // gauche : sans ça, un formulaire mêlant date et texte n'a plus de ligne de
+    // saisie commune.
+    &::-webkit-date-and-time-value {
+      text-align: left;
+      margin: 0;
+    }
+
+    &::-webkit-calendar-picker-indicator {
+      display: none;
+    }
+
+    margin-inline-end: -$native-overhang;
+    clip-path: inset(0 $native-overhang 0 0);
+  }
+
+  &-action {
+    @include utils.field-action;
+  }
+}
+
+:host-context([dir='rtl']) .ui-input-date-native {
+  clip-path: inset(0 0 0 $native-overhang);
+}
+
+:host-context([data-theme='dark']) .ui-input-date-native {
+  color-scheme: dark;
+}

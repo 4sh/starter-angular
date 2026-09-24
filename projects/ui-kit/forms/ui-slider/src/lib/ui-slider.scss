@@ -32,7 +32,7 @@ $mark-radius: var(--ui-slider-mark-radius, var(--radius-full));                 
     width: 100%;
     height: $track-thickness;
     border-radius: $track-radius;
-    background-color: var(--global-background-muted);
+    background-color: var(--ui-slider-track-surface, var(--global-background-muted)); /// Fond de la piste.
   }
 
   // --- Filled portion ------------------------------------------------
@@ -41,7 +41,7 @@ $mark-radius: var(--ui-slider-mark-radius, var(--radius-full));                 
     top: 0;
     height: 100%;
     border-radius: $track-radius;
-    background-color: var(--actions-high-surface-default);
+    background-color: var(--ui-slider-range-surface, var(--actions-high-surface-default)); /// Fond de la portion remplie.
     @include utils.control-transition(background-color);
   }
 
@@ -53,24 +53,24 @@ $mark-radius: var(--ui-slider-mark-radius, var(--radius-full));                 
     height: $handle-size;
     transform: translate(-50%, -50%);
     box-sizing: border-box;
-    border: $handle-stroke-width solid var(--actions-high-stroke-default);
+    border: $handle-stroke-width solid var(--ui-slider-handle-stroke, var(--actions-high-stroke-default)); /// Couleur de bordure de la poignée.
     border-radius: $handle-radius;
-    background-color: var(--actions-high-surface-default);
+    background-color: var(--ui-slider-handle-surface, var(--actions-high-surface-default)); /// Fond de la poignée.
     cursor: grab;
     @include utils.control-transition(background-color, border-color, box-shadow);
 
     &:hover {
-      background-color: var(--actions-high-surface-hover);
+      background-color: var(--ui-slider-handle-surface-hover, var(--actions-high-surface-hover)); /// Fond de la poignée au survol.
     }
 
     &:focus-visible {
       outline: none;
-      border-color: var(--actions-high-stroke-focused);
-      box-shadow: 0 0 0 $focus-ring-width var(--actions-high-stroke-focused);
+      border-color: var(--ui-slider-handle-stroke-focus, var(--actions-high-stroke-focused)); /// Couleur de bordure de la poignée au focus ; elle teinte aussi l'anneau.
+      box-shadow: 0 0 0 $focus-ring-width var(--ui-slider-handle-stroke-focus, var(--actions-high-stroke-focused));
     }
 
     &:active {
-      background-color: var(--actions-high-surface-pressed);
+      background-color: var(--ui-slider-handle-surface-pressed, var(--actions-high-surface-pressed)); /// Fond de la poignée pendant le glissement.
       cursor: grabbing;
     }
   }
@@ -89,10 +89,10 @@ $mark-radius: var(--ui-slider-mark-radius, var(--radius-full));                 
     height: $mark-size;
     transform: translate(-50%, -50%);
     border-radius: $mark-radius;
-    background-color: var(--informative-defaulthigh-surface-default);
+    background-color: var(--ui-slider-mark-surface, var(--informative-defaulthigh-surface-default)); /// Fond d'un repère de pas.
 
     &._active {
-      background-color: var(--actions-high-content-default);
+      background-color: var(--ui-slider-mark-surface-active, var(--actions-high-content-default)); /// Fond d'un repère de pas déjà franchi.
     }
   }
 
@@ -134,14 +134,14 @@ $mark-radius: var(--ui-slider-mark-radius, var(--radius-full));                 
     cursor: not-allowed;
 
     .ui-slider-range {
-      background-color: var(--actions-high-surface-disabled);
+      background-color: var(--ui-slider-range-surface-disabled, var(--actions-high-surface-disabled)); /// Fond de la portion remplie, composant désactivé.
     }
     .ui-slider-handle {
       cursor: not-allowed;
-      background-color: var(--actions-high-surface-disabled);
+      background-color: var(--ui-slider-handle-surface-disabled, var(--actions-high-surface-disabled)); /// Fond de la poignée désactivée.
 
       &:hover {
-        background-color: var(--actions-high-surface-disabled);
+        background-color: var(--ui-slider-handle-surface-disabled, var(--actions-high-surface-disabled));
       }
     }
   }
@@ -160,17 +160,17 @@ $mark-radius: var(--ui-slider-mark-radius, var(--radius-full));                 
   // token is the pale field background — see ui-rating / ui-toggle).
   &._invalid {
     .ui-slider-range {
-      background-color: var(--form-error-content-default);
+      background-color: var(--ui-slider-range-surface-invalid, var(--form-error-content-default)); /// Fond de la portion remplie en erreur.
     }
     .ui-slider-handle {
-      background-color: var(--form-error-content-default);
+      background-color: var(--ui-slider-handle-surface-invalid, var(--form-error-content-default)); /// Fond de la poignée en erreur.
 
       &:hover {
-        background-color: var(--form-error-content-hover);
+        background-color: var(--ui-slider-handle-surface-hover-invalid, var(--form-error-content-hover)); /// Fond de la poignée en erreur, au survol.
       }
       &:focus-visible {
-        border-color: var(--form-error-stroke-focused);
-        box-shadow: 0 0 0 $focus-ring-width var(--form-error-stroke-focused);
+        border-color: var(--ui-slider-handle-stroke-focus-invalid, var(--form-error-stroke-focused)); /// Couleur de bordure de la poignée en erreur, au focus ; elle teinte aussi l'anneau.
+        box-shadow: 0 0 0 $focus-ring-width var(--ui-slider-handle-stroke-focus-invalid, var(--form-error-stroke-focused));
       }
     }
   }

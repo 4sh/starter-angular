@@ -46,9 +46,9 @@ $tab-adornment-offset: var(--ui-bottom-tab-bar-adornment-offset, #{utils.rem-cal
   border: 0;
   border-radius: $tab-radius;
   gap: $tab-gap;
-  background-color: var(--navigation-high-surface-default);
-  color: var(--navigation-high-content-default);
-  font-family: var(--fontfamily-base);
+  background-color: var(--ui-bottom-tab-bar-tab-surface, var(--navigation-high-surface-default)); /// Fond d'un onglet.
+  color: var(--ui-bottom-tab-bar-tab-color, var(--navigation-high-content-default));              /// Couleur du libellé d'un onglet.
+  font-family: var(--ui-bottom-tab-bar-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
   font-weight: $tab-label-weight;
   font-size: $tab-label-size;
   line-height: 1.2;
@@ -58,26 +58,26 @@ $tab-adornment-offset: var(--ui-bottom-tab-bar-adornment-offset, #{utils.rem-cal
   @include utils.control-transition(color, background-color, box-shadow);
 
   &:hover:not(:disabled, [aria-disabled='true']) {
-    background-color: var(--navigation-high-surface-hover);
-    color: var(--navigation-high-content-hover);
+    background-color: var(--ui-bottom-tab-bar-tab-surface-hover, var(--navigation-high-surface-hover)); /// Fond d'un onglet au survol.
+    color: var(--ui-bottom-tab-bar-tab-color-hover, var(--navigation-high-content-hover));              /// Couleur du libellé au survol.
   }
 
   &:focus-visible {
     outline: none;
-    background-color: var(--navigation-high-surface-focused);
-    color: var(--navigation-high-content-focused);
-    box-shadow: inset 0 0 0 $focus-ring-width var(--global-border-focus);
+    background-color: var(--ui-bottom-tab-bar-tab-surface-focus, var(--navigation-high-surface-focused)); /// Fond d'un onglet au focus clavier.
+    color: var(--ui-bottom-tab-bar-tab-color-focus, var(--navigation-high-content-focused));              /// Couleur du libellé au focus clavier.
+    box-shadow: inset 0 0 0 $focus-ring-width var(--ui-bottom-tab-bar-tab-focus-ring-color, var(--global-border-focus)); /// Couleur de l'anneau de focus d'un onglet.
   }
 
   &:active:not(:disabled, [aria-disabled='true']) {
-    background-color: var(--navigation-high-surface-pressed);
-    color: var(--navigation-high-content-pressed);
+    background-color: var(--ui-bottom-tab-bar-tab-surface-pressed, var(--navigation-high-surface-pressed)); /// Fond d'un onglet enfoncé.
+    color: var(--ui-bottom-tab-bar-tab-color-pressed, var(--navigation-high-content-pressed));              /// Couleur du libellé d'un onglet enfoncé.
   }
 
   &:disabled,
   &._disabled {
-    background-color: var(--navigation-high-surface-disabled);
-    color: var(--navigation-high-content-disabled);
+    background-color: var(--ui-bottom-tab-bar-tab-surface-disabled, var(--navigation-high-surface-disabled)); /// Fond d'un onglet désactivé.
+    color: var(--ui-bottom-tab-bar-tab-color-disabled, var(--navigation-high-content-disabled));              /// Couleur du libellé d'un onglet désactivé.
     cursor: not-allowed;
   }
 
@@ -85,8 +85,8 @@ $tab-adornment-offset: var(--ui-bottom-tab-bar-adornment-offset, #{utils.rem-cal
   // keeps its filled surface under the pointer, which is what tells the user
   // where they are.
   &._active {
-    background-color: var(--navigation-high-surface-active);
-    color: var(--navigation-high-content-active);
+    background-color: var(--ui-bottom-tab-bar-tab-surface-active, var(--navigation-high-surface-active)); /// Fond de l'onglet de la destination courante.
+    color: var(--ui-bottom-tab-bar-tab-color-active, var(--navigation-high-content-active));              /// Couleur du libellé de l'onglet courant : elle n'est lisible que sur le fond `surface-active` qui l'accompagne.
   }
 }
 

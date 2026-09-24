@@ -74,11 +74,22 @@ const MODIFIERS = new Set([
   'checked',
   'selected',
   'indeterminate',
+  'raised',
+  'over',
+  'dragging',
+  'today',
+  'completed',
+  'current',
+  'even',
+  'fallback',
+  'invalid',
+  'error',
   'vertical',
   'horizontal',
   'inline',
   'rounded',
   'square',
+  'rotated',
   'open',
   'closed',
   'collapsed',
@@ -269,6 +280,13 @@ const PROPERTIES = {
     bindable: false,
   },
   cursor: { fr: 'Curseur', group: 'misc', type: 'STRING', scopes: ['ALL_SCOPES'], bindable: false },
+  align: {
+    fr: 'Alignement',
+    group: 'misc',
+    type: 'STRING',
+    scopes: ['ALL_SCOPES'],
+    bindable: false,
+  },
   'object-fit': {
     fr: 'Cadrage du média',
     group: 'misc',
@@ -763,7 +781,9 @@ for (const [hook, { defaults, files: seen }] of [...found].sort(([a], [b]) => a.
       bindable: spec.bindable !== false,
       type: spec.type ?? 'STRING',
       scopes:
-        spec.type === 'COLOR' && TEXT_PARTS.has(parts.part ?? '')
+        // `float-label`, `helper-text`… : the LAST segment is what says whether the
+        // part paints text, so a composed part scopes like its head noun.
+        spec.type === 'COLOR' && TEXT_PARTS.has((parts.part ?? '').split('-').at(-1))
           ? ['TEXT_FILL']
           : (spec.scopes ?? ['ALL_SCOPES']),
       name: [info.family, parts.part, [parts.property, parts.modifier].filter(Boolean).join('-')]

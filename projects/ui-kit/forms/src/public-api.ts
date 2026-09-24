@@ -12,6 +12,7 @@ export * from './lib/base-control-value-accessor';
 export * from './lib/base-form-field';
 export * from './lib/overlay-positions';
 export * from './lib/mask-engine';
+export * from './lib/date-utils';
 export * from './lib/option-resolver';
 export * from './lib/format-label';
 export * from './lib/warn-missing-accessible-name';

@@ -1,13 +1,16 @@
 import { Meta, ArgTypes, Canvas } from '@storybook/addon-docs/blocks';
+import { ConfigTable } from '../../../../storybook/blocks/config-table';
 import * as UiImageStories from './ui-image.stories';
 
 <Meta of={UiImageStories} />
 
 # ui-image
 
-Composant d'image intelligent avec deux sources : `name` (asset local résolu via l'assets-map en fonction de la marque active `BrandService` et du mode clair/sombre `ThemeService`) ou `src` (URL distante/absolue, prioritaire sur `name`). Basé sur `NgOptimizedImage` pour les performances de chargement.
+Composant d'image intelligent avec trois sources : `name` (asset local résolu via l'assets-map en fonction de la marque active `BrandService` et du mode clair/sombre `ThemeService`), `src` (URL distante/absolue, prioritaire sur `name`) et `src` + `secured` (l'URL est récupérée par `HttpClient`, donc à travers les intercepteurs de l'application). Basé sur `NgOptimizedImage` pour les performances de chargement.
 
 Les `.svg` **locaux** sont injectés inline (stylisation CSS possible, fetch via `httpResource` + cache partagé), après **assainissement** (voir « Sécurité du SVG inliné » plus bas) ; un `.svg` **distant** passe toujours par `<img>` (jamais inliné — pas de surface XSS). En cas d'échec de chargement, l'asset local `fallback` prend le relais, puis un placeholder stylé tokens (adapté light/dark) si le fallback échoue aussi ou n'est pas fourni ; l'output `loadFailed` émet l'URL en échec.
+
+`preview` transforme l'image en déclencheur d'une **vue agrandie** (`ui-image-preview`) : zoom, rotation, déplacement, retour à l'état initial, et téléchargement optionnel.
 
 <br/>
 
@@ -55,11 +58,30 @@ Les `.svg` **locaux** sont injectés inline (stylisation CSS possible, fetch via
 </ui-image>`}</code></pre>
       </td>
       <td>
-        Ne pas fournir <code>src</code> ET <code>name</code> (précédence à <code>src</code>, warning en dev) ; ne pas utiliser d'URL <code>data:</code>/<code>blob:</code> (non supportées par NgOptimizedImage) :
+        Ne pas fournir <code>src</code> ET <code>name</code> (précédence à <code>src</code>, warning en dev) :
         <pre><code>{`<!-- INCORRECT -->
 <ui-image
-  src="data:image/png;base64,…"
+  src="https://cdn.example.com/photo.jpg"
   name="logo.svg">
+</ui-image>`}</code></pre>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Ajouter <code>secured</code> quand l'endpoint exige un en-tête d'authentification : la requête passe alors par <code>HttpClient</code>, donc par vos intercepteurs :
+        <pre><code>{`<ui-image
+  [src]="'/api/documents/' + id()"
+  secured
+  [width]="240" [height]="180"
+  alt="Justificatif">
+</ui-image>`}</code></pre>
+      </td>
+      <td>
+        Ne pas poser <code>secured</code> sur une image publique : c'est une requête XHR de plus, sans le cache image du navigateur ni le décodage progressif :
+        <pre><code>{`<!-- INCORRECT -->
+<ui-image
+  src="https://cdn.example.com/logo.png"
+  secured>
 </ui-image>`}</code></pre>
       </td>
     </tr>
@@ -100,6 +122,24 @@ Les `.svg` **locaux** sont injectés inline (stylisation CSS possible, fetch via
 </ui-image>`}</code></pre>
       </td>
     </tr>
+    <tr>
+      <td>
+        Donner un <code>alt</code> (ou un <code>previewAriaLabel</code>) dès que <code>preview</code> est actif : le déclencheur est un <code>&lt;button&gt;</code>, il lui faut un nom accessible :
+        <pre><code>{`<ui-image
+  src="/api/photo.jpg"
+  preview
+  alt="Façade de l'immeuble">
+</ui-image>`}</code></pre>
+      </td>
+      <td>
+        Ne pas activer <code>preview</code> sur une image décorative : on ajoute alors une cible de tabulation qui n'annonce rien :
+        <pre><code>{`<!-- INCORRECT -->
+<ui-image
+  src="/assets/ornement.svg"
+  preview>
+</ui-image>`}</code></pre>
+      </td>
+    </tr>
   </tbody>
 </table>
 
@@ -129,6 +169,162 @@ Les `.svg` **locaux** sont injectés inline (stylisation CSS possible, fetch via
 
 <Canvas of={UiImageStories.Remote_SVG_As_Img} />
 
+## Source sécurisée (`secured`)
+
+Un `<img src>` est une requête **navigateur** : aucun intercepteur Angular ne la voit,
+donc aucun `Authorization` ne l'accompagne. Un endpoint protégé par jeton répond 401 et
+l'image reste vide.
+
+`secured` change le chemin de récupération : l'URL est demandée par `HttpClient`
+(`httpResource.blob()`), la réponse arrive en `Blob`, et c'est une **object URL** qui est
+affichée. Les intercepteurs de l'application s'appliquent, donc le jeton aussi.
+
+```html
+<ui-image [src]="'/api/documents/' + id()" secured [width]="240" [height]="180" alt="Justificatif" />
+```
+
+- **Object URL révoquée**, systématiquement : au changement de source **et** à la
+  destruction du composant. Sans cela, une liste d'images sécurisées fait fuir un blob
+  par rendu, retenu jusqu'à la fermeture de l'onglet.
+- **États couverts** : indicateur de chargement pendant la requête (`loadingLabel` /
+  `loadingAriaLabel`), puis placeholder tokenisé si elle échoue — un échec HTTP n'atteint
+  jamais un `<img>`, donc `loadFailed` est la seule voie de signalement.
+- **`withCredentials`** pour une session par cookie sur une autre origine.
+- **Coût** : la requête sort du cache image du navigateur et perd le décodage progressif.
+  À réserver aux images qui en ont besoin.
+
+### CORS
+
+Le mode `secured` est soumis au CORS, là où un `<img>` ne l'est pas. Sur une origine
+différente, l'endpoint doit répondre :
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>En-tête</th>
+      <th>Pourquoi</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Access-Control-Allow-Origin</code></td>
+      <td>Sans lui, la réponse est bloquée par le navigateur, même en 200.</td>
+    </tr>
+    <tr>
+      <td><code>Access-Control-Allow-Headers</code></td>
+      <td>
+        Un en-tête d'authentification déclenche un préflight <code>OPTIONS</code> : il doit
+        y être annoncé.
+      </td>
+    </tr>
+    <tr>
+      <td><code>Access-Control-Allow-Credentials</code></td>
+      <td>Uniquement avec <code>withCredentials</code> (session par cookie).</td>
+    </tr>
+  </tbody>
+</table>
+
+Même origine (le cas d'un back-end servi derrière le même domaine, ou d'un proxy de dev) :
+rien à faire.
+
+<Canvas of={UiImageStories.Secured_Source} />
+
+<Canvas of={UiImageStories.Secured_Error} />
+
+## Payload en ligne (`data:` / base64)
+
+Une `data:` URL est déjà l'image — il n'y a rien à récupérer. `NgOptimizedImage` la refuse
+(elle n'a ni dimension à négocier ni CDN à interroger), le composant la détecte et la rend
+par un `<img>` nu. Utile pour ce qu'une API renvoie déjà encodé (miniature, signature,
+QR code) ; pour tout le reste une URL reste préférable, une `data:` URL pesant ~33 % de
+plus que le binaire et n'étant jamais mise en cache séparément du document.
+
+<Canvas of={UiImageStories.Data_Url} />
+
+## Aperçu / vue agrandie (`preview`)
+
+`preview` transforme l'image en `<button>` : au clic (ou à `Entrée`/`Espace`), la vue
+agrandie s'ouvre sur un masque plein écran. Sans `preview`, l'image reste un élément
+d'affichage, sans cible de tabulation ni curseur cliquable.
+
+La barre d'outils propose zoom avant, zoom arrière, rotation dans les deux sens, retour à
+l'état initial, et — sur `downloadable` — le téléchargement. L'image se déplace au
+glisser dès qu'elle est zoomée.
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Interaction</th>
+      <th>Effet</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Échap</code>, clic hors de l'image, bouton de fermeture</td>
+      <td>Ferme l'aperçu et rend le focus au déclencheur.</td>
+    </tr>
+    <tr>
+      <td><code>+</code> / <code>-</code>, molette</td>
+      <td>Zoom d'un <code>zoomStep</code>, borné par <code>minZoom</code>/<code>maxZoom</code>.</td>
+    </tr>
+    <tr>
+      <td><code>r</code></td>
+      <td>Rotation de 90° vers la droite.</td>
+    </tr>
+    <tr>
+      <td>Flèches, glisser à la souris</td>
+      <td>Déplacent l'image zoomée. Le glisser n'est actif qu'au-delà de ×1.</td>
+    </tr>
+    <tr>
+      <td><code>0</code></td>
+      <td>Réinitialise zoom, rotation et déplacement d'un coup.</td>
+    </tr>
+    <tr>
+      <td><code>Tab</code></td>
+      <td>Circule dans la barre d'outils, sans jamais en sortir (piège à focus CDK).</td>
+    </tr>
+  </tbody>
+</table>
+
+L'ouverture est aussi pilotable depuis le code : `previewVisible` est un `model` two-way.
+
+```html
+<ui-image [src]="url()" preview [(previewVisible)]="agrandi" alt="Plan du site" />
+```
+
+<Canvas of={UiImageStories.Preview_Basic} />
+
+<Canvas of={UiImageStories.Preview_Downloadable} />
+
+<Canvas of={UiImageStories.Preview_Local_Asset} />
+
+<Canvas of={UiImageStories.Preview_Zoom_Bounds} />
+
+### Indicateur personnalisé
+
+Au survol (et au focus clavier) du déclencheur, un voile se pose sur l'image et porte une
+loupe. Le template `#previewIndicator` remplace **le contenu du voile**, pas le voile
+lui-même (retouchable par `--ui-image-indicator-background`). Il est décoratif : le nom
+accessible reste porté par le bouton.
+
+```html
+<ui-image src="…" preview alt="Ville de nuit">
+  <ng-template #previewIndicator>
+    <span class="mon-indicateur">Agrandir</span>
+  </ng-template>
+</ui-image>
+```
+
+<Canvas of={UiImageStories.Preview_Custom_Indicator} />
+
+## Chargement paresseux
+
+Il est déjà là, et sur les deux chemins de rendu : `NgOptimizedImage` pose
+`loading="lazy"` sur toute image non prioritaire, et le `<img>` nu (`blob:`, `data:`)
+reçoit le même attribut. `priority` bascule l'image en chargement prioritaire
+(`fetchpriority="high"`, pas de `lazy`) — à réserver au visuel qui porte le LCP de la
+page, un seul par écran.
+
 ## Erreur / fallback / placeholder
 
 <Canvas of={UiImageStories.Error_With_Fallback} />
@@ -154,13 +350,19 @@ converti en CSS/SVG statique, ou servi en `src` distant (rendu via `<img>`, donc
 non inliné).
 
 En SSR, aucun SVG n'est inliné (pas de DOM pour assainir) : l'inline se fait à
-l'hydratation.
+l'hydratation. Le mode `secured` non plus ne produit rien côté serveur — une object URL
+n'existe que dans un navigateur.
 
 > Détail du modèle de menace et registre des exceptions du dépôt :
 > [`docs/SECURITY-PRACTICES.md`](https://github.com/4sh/starter-angular/blob/main/docs/SECURITY-PRACTICES.md).
 
 ## Theming
 
-Aucune variable locale surchargeable par instance : le placeholder utilise directement les tokens
-`--global-background-muted`/`--global-text-muted`/`--units-xl`/`--radius-default`. Voir le
-[fonctionnement de la configuration](?path=/docs/components-configuration--docs).
+L'image et sa vue agrandie ont chacune leur configuration. Le masque de l'aperçu reste
+sombre dans les deux modes — c'est un visionneur de photo, pas une surface thémée : ses
+couleurs partent donc de primitives, l'exception que les règles de jetons réservent aux
+fonds de masque.
+
+<ConfigTable of="ui-image" label="ui-image" />
+
+<ConfigTable of="ui-image-preview" label="ui-image-preview" />

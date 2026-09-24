@@ -28,6 +28,8 @@ $sizes: (
 $size-default: map.get($sizes, 'default'); /// Raccourci vers l'entrée `default` de `$sizes`.
 $size-small: map.get($sizes, 'small');     /// Raccourci vers l'entrée `small` de `$sizes`.
 
+$panel-surface: var(--ui-input-tags-panel-surface, var(--form-high-surface-default));       /// Fond du panneau de suggestions.
+$panel-stroke: var(--ui-input-tags-panel-stroke, var(--form-high-stroke-default));          /// Couleur de bordure du panneau de suggestions.
 $panel-padding: var(--ui-input-tags-panel-padding, var(--units-xs));                       /// Inset du panneau de suggestions.
 $panel-gap: var(--ui-input-tags-panel-gap, var(--units-xs));                               /// Espacement entre les groupes du panneau.
 $panel-max-width: var(--ui-input-tags-panel-max-width, calc(100vw - var(--units-lg)));     /// Largeur maximale du panneau de suggestions.
@@ -82,15 +84,15 @@ $input-min-width: var(--ui-input-tags-input-min-width, #{utils.rem-calc(80)});  
 
     &:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 $focus-ring-width rgb(from var(--form-high-stroke-focused) r g b / 50%);
+      box-shadow: 0 0 0 $focus-ring-width rgb(from var(--ui-input-tags-tag-focus-ring-color, var(--form-high-stroke-focused)) r g b / 50%); /// Teinte de l'anneau de focus d'un tag.
     }
 
     // Custom-template wrapper baseline (matches the default chip height).
     &._custom {
       gap: $tag-gap-custom;
       min-height: map.get($size-default, tag-height);
-      color: var(--form-high-content-default);
-      font-family: var(--fontfamily-base);
+      color: var(--ui-input-tags-tag-color, var(--form-high-content-default)); /// Couleur du texte d'un tag rendu via un template `#item`.
+      font-family: var(--ui-input-tags-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
       font-size: map.get($size-default, tag-font-size);
     }
   }
@@ -108,7 +110,7 @@ $input-min-width: var(--ui-input-tags-input-min-width, #{utils.rem-calc(80)});  
 
 // --- Suggestions panel (typeahead) -------------------------------------
 .ui-input-tags-panel {
-  @include utils.overlay-panel(var(--form-high-surface-default), var(--form-high-stroke-default));
+  @include utils.overlay-panel($panel-surface, $panel-stroke);
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -140,9 +142,9 @@ $input-min-width: var(--ui-input-tags-input-min-width, #{utils.rem-calc(80)});  
     flex-shrink: 0;
     padding: 0 map.get($size-default, option-padding-x);
     border-radius: $option-radius;
-    font-family: var(--fontfamily-base);
+    font-family: var(--ui-input-tags-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
     font-size: map.get($size-default, font-size);
-    color: var(--form-high-content-default);
+    color: var(--ui-input-tags-option-color, var(--form-high-content-default)); /// Couleur du texte d'une suggestion.
     cursor: pointer;
     user-select: none;
     @include utils.control-transition(background-color, color);
@@ -154,12 +156,12 @@ $input-min-width: var(--ui-input-tags-input-min-width, #{utils.rem-calc(80)});  
     }
 
     &._focused,
-    &:hover:not(._disabled) { background-color: var(--global-background-default-hover); }
+    &:hover:not(._disabled) { background-color: var(--ui-input-tags-option-surface-hover, var(--global-background-default-hover)); } /// Fond d'une suggestion survolée ou active au clavier.
 
-    &._present { color: var(--form-high-content-checked); }
+    &._present { color: var(--ui-input-tags-option-color-selected, var(--form-high-content-checked)); } /// Couleur du texte d'une suggestion déjà saisie.
 
     &._disabled {
-      color: var(--form-high-content-disabled);
+      color: var(--ui-input-tags-option-color-disabled, var(--form-high-content-disabled)); /// Couleur du texte d'une suggestion désactivée.
       cursor: not-allowed;
     }
   }
@@ -175,7 +177,7 @@ $input-min-width: var(--ui-input-tags-input-min-width, #{utils.rem-calc(80)});  
   .ui-input-tags-option-check {
     flex-shrink: 0;
     margin-left: auto;
-    color: var(--form-high-content-checked);
+    color: var(--ui-input-tags-option-check-color, var(--form-high-content-checked)); /// Couleur de la coche d'une suggestion déjà saisie.
   }
 
   // --- Group header ---------------------------------------------------
@@ -186,10 +188,10 @@ $input-min-width: var(--ui-input-tags-input-min-width, #{utils.rem-calc(80)});  
     height: $group-height;
     flex-shrink: 0;
     padding: 0 map.get($size-default, option-padding-x);
-    font-family: var(--fontfamily-base);
+    font-family: var(--ui-input-tags-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
     font-size: $group-font-size;
-    font-weight: var(--weight-bold);
-    color: var(--form-low-content-default);
+    font-weight: var(--ui-input-tags-weight, var(--weight-bold)); /// Graisse du texte.
+    color: var(--ui-input-tags-group-color, var(--form-low-content-default)); /// Couleur d'un en-tête de groupe.
 
     &._small { padding: 0 map.get($size-small, option-padding-x); }
   }
@@ -201,8 +203,8 @@ $input-min-width: var(--ui-input-tags-input-min-width, #{utils.rem-calc(80)});  
     box-sizing: border-box;
     min-height: map.get($size-default, option-height);
     padding: 0 map.get($size-default, option-padding-x);
-    font-family: var(--fontfamily-base);
+    font-family: var(--ui-input-tags-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
     font-size: map.get($size-default, font-size);
-    color: var(--form-low-content-default);
+    color: var(--ui-input-tags-empty-color, var(--form-low-content-default)); /// Couleur du message « aucun résultat ».
   }
 }

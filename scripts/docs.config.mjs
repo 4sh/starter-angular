@@ -81,6 +81,26 @@ const COMPONENTS_DIRS = IS_KIT_MONOREPO
   : // Les composants copiés (`components/ui/`) et ceux du projet cohabitent ici.
     [join(ROOT, 'src/app/shared/components')];
 
+/**
+ * Catalogue du kit, déjà posé chez tout consommateur : repli quand un composant
+ * est consommé en PACKAGE et n'a donc aucun `.scss` sur le disque (FSHSP-202).
+ *
+ * Sans lui, un projet en mode package voit toutes ses tables `## Theming` vides
+ * — ce script ne sait lire qu'un `.scss` local. Le manifeste embarqué porte
+ * exactement la même chose : le nom de la variable, son rôle, et le binding vers
+ * un token. Ce qu'il ne porte PAS, c'est une valeur résolue : `<ConfigTable>` la
+ * mesure au runtime, dans le thème et la marque du LECTEUR. Le repli est donc
+ * exact, pas approché.
+ *
+ * Deux emplacements, dans cet ordre : celui que pose `ng add` (le serveur MCP
+ * compagnon), puis celui que le package apporte lui-même — un projet qui a
+ * installé avec `--skip-mcp` n'a que le second.
+ */
+const FALLBACK_CATALOGS = [
+  join(ROOT, '.ui-kit-mcp/data/ui-config.json'),
+  join(ROOT, 'node_modules/@4sh/ui-kit/mcp/data/ui-config.json'),
+];
+
 const OUT_FILE = join(ROOT, 'storybook/generated/ui-config.json');
 
 // Sections de `_ui-config.scss` → page de doc du groupe partagé.
@@ -275,6 +295,7 @@ function configRegion(text) {
 // --- Résolution des bindings ------------------------------------------
 
 const VAR_RE = /^var\(\s*(--[\w-]+)\s*(?:,([\s\S]*))?\)$/;
+const INTERP_VAR_RE = /^var\(\s*(--[\w-]*#\{[^}]+\}[\w-]*(?:[\w-]*#\{[^}]+\}[\w-]*)*)\s*\)$/;
 const UTILS_REF_RE = /^utils\.(\$[\w-]+)$/;
 const LOCAL_REF_RE = /^(\$[\w-]+)$/;
 const LITERAL_RE = /^-?(\d+\.?\d*|\.\d+)(px|rem|em|ch|%|vh|vw|s|ms|deg)?$/;
@@ -332,6 +353,18 @@ function resolveBinding(rawValue, { shared, local }) {
   let inShared = local === shared;
 
   for (let guard = 0; guard < 10; guard++) {
+    const interp = value.match(INTERP_VAR_RE);
+    if (interp) {
+      return {
+        steps,
+        cssVar: null,
+        // `#{$set}` → `<set>` : lisible, et sans syntaxe de build dans une page publiée.
+        literal: interp[1].replace(/#\{\s*\$?([\w-]+)\s*\}/g, '<$1>'),
+        kind: 'interpolated',
+        raw: rawValue,
+      };
+    }
+
     const varMatch = value.match(VAR_RE);
     if (varMatch) {
       // `var(--hook, défaut)` : la custom property est souvent non définie (point
@@ -522,6 +555,29 @@ function collectComponents(shared) {
   return components;
 }
 
+/**
+ * Composants du catalogue embarqué, ou `{}` si aucun n'est là. Jamais en
+ * monorepo : ici les `.scss` SONT la source, et se replier sur un manifeste
+ * figé masquerait précisément ce que ce script est censé détecter.
+ */
+function fallbackComponents() {
+  if (IS_KIT_MONOREPO) return {};
+  for (const path of FALLBACK_CATALOGS) {
+    if (!existsSync(path)) continue;
+    try {
+      return JSON.parse(readFileSync(path, 'utf8')).components ?? {};
+    } catch {
+      // Un catalogue illisible n'est pas une raison d'arrêter la génération :
+      // le reste de la doc est bon, et la table vide se voit.
+      console.warn(`  catalogue de repli illisible, ignoré : ${relative(ROOT, path)}`);
+    }
+  }
+  return {};
+}
+
+/** Nombre de composants venus du repli — renseigné par `build()`, lu par le log. */
+let fallbackUsed = 0;
+
 function build() {
   const shared = parseSharedConfig();
   const sharedOut = {};
@@ -533,6 +589,17 @@ function build() {
     };
   }
 
+  const local = collectComponents(shared);
+  const fallback = fallbackComponents();
+  // Le local prime, toujours : un composant copié en sources et retouché doit
+  // documenter LA copie, pas ce que le kit en disait à la publication. Pas de
+  // tri ajouté ici — le spread conserve l'ordre du repli puis des seuls locaux
+  // nouveaux, et en monorepo (repli vide) la sortie est strictement inchangée.
+  const components = { ...fallback, ...local };
+  // Compté ici plutôt qu'écrit dans le manifeste : la sortie est comparée telle
+  // quelle par `--check`, et ce chiffre n'a de sens que dans le log.
+  fallbackUsed = Object.keys(components).length - Object.keys(local).length;
+
   return {
     $generatedBy: 'scripts/docs.config.mjs',
     $source: {
@@ -541,7 +608,7 @@ function build() {
     },
     groups: GROUPS,
     shared: sharedOut,
-    components: collectComponents(shared),
+    components,
   };
 }
 
@@ -567,6 +634,12 @@ if (process.argv.includes('--check')) {
   );
   const missing = Object.entries(manifest.components).filter(([, c]) => c.undocumented.length);
   console.log(`✓ ui-config.json : ${count} composants, ${rows} lignes documentées.`);
+  if (fallbackUsed) {
+    console.log(
+      `  dont ${fallbackUsed} lu(s) dans le catalogue du kit (consommés en package, ` +
+        `aucun .scss local).`,
+    );
+  }
   if (missing.length) {
     const total = missing.reduce((n, [, c]) => n + c.undocumented.length, 0);
     console.log(

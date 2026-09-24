@@ -81,9 +81,9 @@ $sizes: (
     display: flex;
     align-items: center;
     box-sizing: border-box;
-    border: $track-stroke-width solid transparent;
+    border: $track-stroke-width solid var(--ui-toggle-track-stroke, transparent); /// Couleur de bordure de la piste (transparente au repos, colorée par `_invalid`).
     border-radius: $track-radius;
-    background-color: var(--form-low-content-default);
+    background-color: var(--ui-toggle-track-surface, var(--form-low-content-default)); /// Fond de la piste, interrupteur éteint.
     @include utils.control-transition(background-color, border-color, box-shadow);
   }
 
@@ -94,8 +94,8 @@ $sizes: (
     flex-shrink: 0;
     box-sizing: border-box;
     border-radius: $thumb-radius;
-    background-color: var(--form-high-surface-default);
-    color: var(--form-low-content-default);
+    background-color: var(--ui-toggle-thumb-surface, var(--form-high-surface-default)); /// Fond de la pastille.
+    color: var(--ui-toggle-thumb-color, var(--form-low-content-default));               /// Couleur de l'icône portée par la pastille.
     line-height: 0;
     overflow: hidden;
     @include utils.control-transition(transform, background-color);
@@ -107,28 +107,28 @@ $sizes: (
 
   // --- Hover -----------------------------------------------------------
   &:hover:not(._disabled):not(._readonly) &-track {
-    background-color: var(--form-high-content-hover);
+    background-color: var(--ui-toggle-track-surface-hover, var(--form-high-content-hover)); /// Fond de la piste au survol, dans les deux positions.
   }
   &._checked:hover:not(._disabled):not(._readonly) &-track {
-    background-color: var(--form-high-content-hover);
+    background-color: var(--ui-toggle-track-surface-hover, var(--form-high-content-hover));
   }
 
   // --- Checked  -------
   &._checked &-track {
-    background-color: var(--form-high-content-checked);
+    background-color: var(--ui-toggle-track-surface-checked, var(--form-high-content-checked)); /// Fond de la piste, interrupteur allumé.
   }
 
   // --- Focus ring (only on :focus-visible) ----------------------------
   &:has(.ui-toggle-input:focus-visible) &-track {
-    box-shadow: 0 0 0 $focus-ring-width rgb(from var(--form-high-stroke-focused) r g b / 50%);
+    box-shadow: 0 0 0 $focus-ring-width rgb(from var(--ui-toggle-focus-ring-color, var(--form-high-stroke-focused)) r g b / 50%); /// Teinte de l'anneau de focus (l'opacité reste celle du kit).
   }
 
   // --- Invalid --------------------------------------------------------
   &._invalid &-track {
-    border-color: var(--form-error-stroke-default);
+    border-color: var(--ui-toggle-track-stroke-invalid, var(--form-error-stroke-default)); /// Couleur de bordure de la piste en erreur.
   }
   &._invalid:has(.ui-toggle-input:focus-visible) &-track {
-    box-shadow: 0 0 0 $focus-ring-width rgb(from var(--form-error-stroke-focused) r g b / 50%);
+    box-shadow: 0 0 0 $focus-ring-width rgb(from var(--ui-toggle-focus-ring-color-invalid, var(--form-error-stroke-focused)) r g b / 50%); /// Teinte de l'anneau de focus en erreur.
   }
 
   // --- Inline label ---------------------------------------------------
@@ -136,7 +136,7 @@ $sizes: (
     display: inline-flex;
     align-items: center;
     gap: $label-gap;
-    font-family: var(--fontfamily-base);
+    font-family: var(--ui-toggle-font-family, var(--fontfamily-base)); /// Famille typographique du libellé.
     font-size: $font-size;
     color: var(--ui-label-color, var(--form-high-content-default));
     cursor: inherit;
@@ -146,19 +146,19 @@ $sizes: (
   &._small &-label { font-size: $font-size-small; }
 
   &-required {
-    color: var(--informative-errorlow-content-default);
+    color: var(--ui-toggle-required-color, var(--informative-errorlow-content-default)); /// Couleur du marqueur « requis ».
   }
 
   // --- States ---------------------------------------------------------
   &._disabled {
     cursor: not-allowed;
 
-    .ui-toggle-track { background-color: var(--form-low-content-disabled); }
-    .ui-toggle-thumb { background-color: var(--form-high-surface-disabled); }
-    .ui-toggle-label { color: var(--form-high-content-disabled); }
+    .ui-toggle-track { background-color: var(--ui-toggle-track-surface-disabled, var(--form-low-content-disabled)); } /// Fond de la piste désactivée, interrupteur éteint.
+    .ui-toggle-thumb { background-color: var(--ui-toggle-thumb-surface-disabled, var(--form-high-surface-disabled)); } /// Fond de la pastille désactivée.
+    .ui-toggle-label { color: var(--ui-label-color-disabled, var(--form-high-content-disabled)); }
   }
   &._disabled._checked &-track {
-    background-color: var(--form-high-content-disabled);
+    background-color: var(--ui-toggle-track-surface-checked-disabled, var(--form-high-content-disabled)); /// Fond de la piste désactivée, interrupteur allumé.
   }
 
   &._readonly {

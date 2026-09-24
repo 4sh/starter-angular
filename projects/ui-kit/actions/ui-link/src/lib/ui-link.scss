@@ -31,11 +31,11 @@ $underline-offset: var(--ui-link-underline-offset, 0.15em);          /// Décala
   display: inline-flex;
   align-items: center;
   gap: $gap;
-  font-family: var(--fontfamily-base);
-  font-weight: var(--weight-bold);
+  font-family: var(--ui-link-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
+  font-weight: var(--ui-link-weight, var(--weight-bold)); /// Graisse du texte.
   font-size: map.get($size-default, font-size);
   line-height: 1.4;
-  color: var(--actions-low-content-default);
+  color: var(--ui-link-color, var(--actions-low-content-default)); /// Couleur du lien.
   text-decoration: none;
   text-decoration-thickness: $underline-thickness;
   text-underline-offset: $underline-offset;
@@ -66,22 +66,22 @@ $underline-offset: var(--ui-link-underline-offset, 0.15em);          /// Décala
 
   // --- Interactive states ----------------------
   &:hover:not(._disabled) {
-    color: var(--actions-low-content-hover);
+    color: var(--ui-link-color-hover, var(--actions-low-content-hover)); /// Couleur du lien au survol.
     text-decoration: underline;
   }
 
   &:focus-visible {
     outline: none;
-    color: var(--actions-low-content-focused);
+    color: var(--ui-link-color-focus, var(--actions-low-content-focused)); /// Couleur du lien au focus clavier ; elle teinte aussi l'anneau.
     text-decoration: underline;
-    box-shadow: 0 0 0 $focus-ring-width var(--actions-low-content-focused);
+    box-shadow: 0 0 0 $focus-ring-width var(--ui-link-color-focus, var(--actions-low-content-focused));
   }
 
-  &:active:not(._disabled) { color: var(--actions-low-content-pressed); }
+  &:active:not(._disabled) { color: var(--ui-link-color-pressed, var(--actions-low-content-pressed)); } /// Couleur du lien enfoncé.
 
   &._disabled {
-    color: var(--actions-low-content-disabled);
-    text-decoration-color: var(--actions-low-content-disabled);
+    color: var(--ui-link-color-disabled, var(--actions-low-content-disabled)); /// Couleur du lien désactivé (soulignement compris).
+    text-decoration-color: var(--ui-link-color-disabled, var(--actions-low-content-disabled));
     cursor: not-allowed;
     pointer-events: none;
   }

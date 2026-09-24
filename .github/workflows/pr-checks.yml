@@ -8,7 +8,20 @@ name: PR checks
 # ⚠️ A green workflow blocks nothing on its own. Turn these checks into merge
 # requirements: *Settings → Branches → main → Require status checks to pass*.
 on:
+  # FSHSP-194: skip the run when a push only touches files nothing here builds,
+  # lints, type-checks or renders — docs and repo metadata. If `checks`/
+  # `storybook`/`a11y` ever become required status checks (see the note above),
+  # a PR that ONLY touches these paths will show them as "expected, never run"
+  # rather than green — GitHub's known paths-ignore + required-checks gap. Add a
+  # do-nothing job on the same paths (`if: false` won't do; needs its own
+  # `on.pull_request.paths` trigger) if that bites.
   pull_request:
+    paths-ignore:
+      - '**/*.md'
+      - 'docs/**'
+      - 'LICENSE'
+      - '.vscode/**'
+      - '.github/ISSUE_TEMPLATE/**'
   workflow_dispatch:
 
 permissions:
@@ -181,6 +194,22 @@ jobs:
           name: storybook-static
           path: storybook-static
 
+      # FSHSP-194: le téléchargement + l'installation de Chromium (pas le cache
+      # pnpm, qui ne couvre que node_modules) représentent une bonne partie du
+      # temps de ce job à chaque run. `playwright --version` est dans la clé pour
+      # invalider le cache automatiquement à chaque bump de version (dependabot
+      # groupe déjà `playwright` avec `storybook`, voir la note ci-dessous).
+      - name: Read Playwright's version
+        id: playwright-version
+        run: echo "version=$(pnpm exec playwright --version)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Playwright's browsers
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright-version.outputs.version }}
+
       # `playwright` est une devDependency DÉCLARÉE, et doit le rester (FSHSP-177).
       # Sous npm cette étape était un `npx playwright install` : npx va chercher le
       # paquet sur le registre s'il manque, et npm aplatissait de toute façon le
@@ -193,6 +222,10 @@ jobs:
       # échoueraient sur « Executable doesn't exist » — sans bruit, ce job étant
       # `continue-on-error`. Pour la même raison, `playwright` est groupé avec
       # `storybook` dans dependabot.yml : les trois doivent bouger ensemble.
+      #
+      # `--with-deps` réinstalle les libs système à chaque run (rapide, non
+      # caché) même quand le cache ci-dessus évite le téléchargement du binaire
+      # Chromium lui-même.
       - name: Install Playwright's Chromium
         run: pnpm exec playwright install --with-deps chromium
 

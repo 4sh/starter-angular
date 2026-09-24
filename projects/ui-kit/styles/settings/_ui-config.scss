@@ -3,8 +3,14 @@
 //
 // Three levers, from the broadest to the narrowest: the design token each value
 // points at, the `--ui-<name>` hook declared here (kit-wide, no recompile), and
-// the LOCAL var of a component's .scss. No colors — themable colors are runtime
-// design tokens.
+// the LOCAL var of a component's .scss.
+//
+// Colours sit here too, but only the ones a SHARED mixin paints (`_mixins.scss`):
+// the hook has to be named after the category, since the mixin does not know which
+// component included it. The token set is never in the name: one hook per role and
+// state, the palette in force supplying the fallback. The mixin emits the read
+// (`var(--ui-form-field-color, var(--form-high-content-default))`); the constants
+// below are where that contract is declared and documented.
 //
 // Components interpolate these values, so a hook added here propagates into
 // every consumer on its own: `var(--ui-checkbox-box-size, var(--ui-form-control-size,
@@ -49,6 +55,7 @@ $overlay-panel-padding: var(--ui-overlay-panel-padding, var(--units-sm));       
 $overlay-panel-shadow: var(--ui-overlay-panel-shadow, var(--shadow-default-md));   /// Ombre des panneaux flottants.
 $overlay-panel-stroke-width: $control-stroke-width;                                /// Épaisseur de bordure des panneaux flottants (suit `--ui-control-stroke-width`).
 $overlay-panel-offset: var(--ui-overlay-panel-offset, 8px);                        /// Décalage d'un panneau par rapport à son ancre.
+$overlay-panel-font-family: var(--ui-overlay-panel-font-family, var(--fontfamily-base));/// Famille typographique du contenu des panneaux flottants.
 
 // --- Category : forms -------------------------------------------------
 $form-control-size: var(--ui-form-control-size, var(--size-components-2xs));           /// Côté d'un contrôle carré (case à cocher, radio).
@@ -61,8 +68,44 @@ $form-field-height-small: var(--ui-form-field-height-small, var(--size-component
 $form-field-radius: var(--ui-form-field-radius, var(--radius-sm));                                   /// Rayon des coins de la boîte de champ.
 $form-field-padding-x: var(--ui-form-field-padding-x, var(--units-md));                              /// Inset horizontal de la boîte de champ.
 $form-field-gap: var(--ui-form-field-gap, var(--units-sm));                                          /// Espace entre le contrôle et ses affixes.
+$form-field-font-family: var(--ui-form-field-font-family, var(--fontfamily-base));                   /// Famille typographique du texte saisi dans un champ.
 $form-field-stroke-width: $control-stroke-width;                                              /// Bordure de la boîte de champ (suit `--ui-control-stroke-width`).
 $form-field-focus-ring-width: $form-focus-ring-width;                                       /// Anneau de focus de la boîte de champ (suit `--ui-focus-ring-width`).
+
+// Selection controls (checkbox, radio): palette routed by `form-control-palette`.
+// Interpolated fallback (`--form-#{$palette}-…`), so the shipped default below is the
+// `high` palette; `._invalid` swaps it for `error` under the same hook names.
+$form-control-surface: var(--ui-form-control-surface, var(--form-high-surface-default));                  /// Fond d'un contrôle de sélection.
+$form-control-surface-hover: var(--ui-form-control-surface-hover, var(--form-high-surface-hover));        /// Fond d'un contrôle de sélection au survol.
+$form-control-surface-checked: var(--ui-form-control-surface-checked, var(--form-high-surface-checked));  /// Fond d'un contrôle de sélection coché ou indéterminé.
+$form-control-surface-disabled: var(--ui-form-control-surface-disabled, var(--form-high-surface-disabled)); /// Fond d'un contrôle de sélection désactivé.
+$form-control-stroke: var(--ui-form-control-stroke, var(--form-high-stroke-default));                     /// Couleur de bordure d'un contrôle de sélection.
+$form-control-stroke-hover: var(--ui-form-control-stroke-hover, var(--form-high-stroke-hover));           /// Couleur de bordure au survol.
+$form-control-stroke-checked: var(--ui-form-control-stroke-checked, var(--form-high-stroke-checked));     /// Couleur de bordure d'un contrôle coché ou indéterminé.
+$form-control-stroke-focus: var(--ui-form-control-stroke-focus, var(--form-high-stroke-focused));         /// Couleur de bordure au focus clavier ; elle teinte aussi l'anneau.
+$form-control-stroke-disabled: var(--ui-form-control-stroke-disabled, var(--form-high-stroke-disabled));  /// Couleur de bordure d'un contrôle désactivé.
+$form-control-marker-color: var(--ui-form-control-marker-color, var(--form-high-content-checked));        /// Couleur du marqueur (coche, point radio).
+$form-control-marker-color-disabled: var(--ui-form-control-marker-color-disabled, var(--form-high-content-disabled)); /// Couleur du marqueur désactivé.
+
+// Field parts: painted by the `field-*` mixins, on every box field.
+$form-field-color: var(--ui-form-field-color, var(--form-high-content-default));                       /// Couleur du texte saisi dans un champ.
+$form-field-color-disabled: var(--ui-form-field-color-disabled, var(--form-high-content-disabled));    /// Couleur du texte saisi, champ désactivé.
+$form-field-placeholder-color: var(--ui-form-field-placeholder-color, var(--form-low-content-default)); /// Couleur du texte d'invite (placeholder).
+$form-field-affix-color: var(--ui-form-field-affix-color, var(--form-low-content-default));            /// Couleur d'un affixe (icône décorative, unité).
+$form-field-affix-color-disabled: var(--ui-form-field-affix-color-disabled, var(--form-high-content-disabled)); /// Couleur d'un affixe, champ désactivé.
+
+$form-field-action-color: var(--ui-form-field-action-color, var(--form-low-content-default));          /// Couleur d'un bouton d'action dans un champ (œil, effacer).
+$form-field-action-color-hover: var(--ui-form-field-action-color-hover, var(--form-high-content-hover)); /// Couleur d'un bouton d'action au survol.
+$form-field-action-color-focus: var(--ui-form-field-action-color-focus, var(--form-high-content-focused)); /// Couleur d'un bouton d'action au focus clavier.
+$form-field-action-color-disabled: var(--ui-form-field-action-color-disabled, var(--form-high-content-disabled)); /// Couleur d'un bouton d'action désactivé.
+$form-field-action-surface-hover: var(--ui-form-field-action-surface-hover, var(--form-high-surface-hover)); /// Fond d'un bouton d'action au survol.
+$form-field-action-surface-focus: var(--ui-form-field-action-surface-focus, var(--form-high-surface-focused)); /// Fond d'un bouton d'action au focus clavier ; c'est lui qui dit quel bouton tient le focus.
+
+$form-field-spinner-stroke: var(--ui-form-field-spinner-stroke, var(--form-high-stroke-default));      /// Couleur des séparateurs du compteur (haut/bas).
+$form-field-spinner-color: var(--ui-form-field-spinner-color, var(--form-low-content-default));        /// Couleur des flèches du compteur.
+$form-field-spinner-color-hover: var(--ui-form-field-spinner-color-hover, var(--form-high-content-hover)); /// Couleur des flèches du compteur au survol.
+$form-field-spinner-color-disabled: var(--ui-form-field-spinner-color-disabled, var(--form-high-content-disabled)); /// Couleur des flèches du compteur désactivé.
+$form-field-spinner-surface-hover: var(--ui-form-field-spinner-surface-hover, var(--form-high-surface-hover)); /// Fond d'une flèche du compteur au survol.
 
 // Textarea (multiline field box)
 $form-textarea-min-height: var(--ui-form-textarea-min-height, var(--size-components-sm));             /// Hauteur minimale d'une boîte multiligne.

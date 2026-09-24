@@ -27,11 +27,11 @@ $font-size-small: var(--ui-input-group-addon-font-size-small, var(--size-typogra
   min-width: $height;
   min-height: $height;
   padding: 0 $padding-x;
-  border: $stroke-width solid var(--form-high-stroke-default);
+  border: $stroke-width solid var(--ui-input-group-addon-stroke, var(--form-high-stroke-default)); /// Couleur de bordure de l'addon.
   border-radius: var(--ui-input-group-item-radius, #{$radius}); /// Rayon des coins, piloté par le groupe.
-  background-color: var(--global-background-muted);
-  color: var(--global-text-muted);
-  font-family: var(--fontfamily-base);
+  background-color: var(--ui-input-group-addon-surface, var(--global-background-muted)); /// Fond de l'addon.
+  color: var(--ui-input-group-addon-color, var(--global-text-muted));                    /// Couleur du texte de l'addon.
+  font-family: var(--ui-input-group-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
   font-size: $font-size;
   line-height: 1.2;
   white-space: nowrap;

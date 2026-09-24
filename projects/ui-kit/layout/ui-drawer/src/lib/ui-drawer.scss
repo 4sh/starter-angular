@@ -17,6 +17,8 @@ $drawer-z-index: var(--ui-drawer-z-index, 1100);                                
 $stroke-width: var(--ui-drawer-stroke-width, var(--stroke-sm));                   /// Épaisseur de bordure du panneau.
 $panel-padding: var(--ui-drawer-panel-padding, var(--units-lg));                  /// Inset du panneau.
 $header-gap: var(--ui-drawer-header-gap, var(--units-sm));                        /// Espacement entre les éléments de l'en-tête.
+$header-align: var(--ui-drawer-header-align, flex-start);                    /// Alignement vertical de l'en-tête (titre, fermeture).
+$action-align: var(--ui-drawer-action-align, auto);                          /// Alignement vertical de la fermeture seule ; `auto` suit l'alignement de l'en-tête.
 $action-size: var(--ui-drawer-action-size, #{utils.rem-calc(32)});                /// Taille de la cible tactile du bouton de fermeture.
 $focus-ring-width: var(--ui-drawer-focus-ring-width, #{utils.$focus-ring-width}); /// Épaisseur de l'anneau de focus du bouton de fermeture
 $mask-background: var(--ui-drawer-mask-background, var(--primitives-black-50));   /// Assombrissement du masque.
@@ -71,10 +73,10 @@ $size-edge: var(--ui-drawer-size-edge, #{utils.rem-calc(160)});                 
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  background-color: var(--global-background-default);
-  color: var(--global-text-default);
+  background-color: var(--ui-drawer-surface, var(--global-background-default)); /// Fond du panneau.
+  color: var(--ui-drawer-color, var(--global-text-default));                    /// Couleur du texte du panneau.
   box-shadow: var(--shadow-default-lg); // floats above the page → strong elevation
-  font-family: var(--fontfamily-base);
+  font-family: var(--ui-drawer-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
   outline: none;
 
   // --- Size & border side (from the parent anchor) ------------------
@@ -97,16 +99,16 @@ $size-edge: var(--ui-drawer-size-edge, #{utils.rem-calc(160)});                 
 
   // Border faces the content area (opposite the docked edge).
   .ui-drawer-positioner._left & {
-    border-inline-end: $stroke-width solid var(--global-border-subtle);
+    border-inline-end: $stroke-width solid var(--ui-drawer-stroke, var(--global-border-subtle)); /// Couleur du trait qui fait face au contenu, quel que soit le bord d'accroche.
   }
   .ui-drawer-positioner._right & {
-    border-inline-start: $stroke-width solid var(--global-border-subtle);
+    border-inline-start: $stroke-width solid var(--ui-drawer-stroke, var(--global-border-subtle));
   }
   .ui-drawer-positioner._top & {
-    border-block-end: $stroke-width solid var(--global-border-subtle);
+    border-block-end: $stroke-width solid var(--ui-drawer-stroke, var(--global-border-subtle));
   }
   .ui-drawer-positioner._bottom & {
-    border-block-start: $stroke-width solid var(--global-border-subtle);
+    border-block-start: $stroke-width solid var(--ui-drawer-stroke, var(--global-border-subtle));
   }
   .ui-drawer-positioner._full-screen & {
     border: none;
@@ -116,7 +118,7 @@ $size-edge: var(--ui-drawer-size-edge, #{utils.rem-calc(160)});                 
   &-header {
     flex: 0 0 auto;
     display: flex;
-    align-items: flex-start;
+    align-items: $header-align;
     gap: $header-gap;
     padding: $panel-padding $panel-padding var(--units-sm);
   }
@@ -124,9 +126,9 @@ $size-edge: var(--ui-drawer-size-edge, #{utils.rem-calc(160)});                 
   &-title {
     flex: 1 1 auto;
     min-width: 0;
-    font-family: var(--fontfamily-title);
+    font-family: var(--ui-drawer-title-font-family, var(--fontfamily-title)); /// Famille typographique du titre.
     font-size: var(--size-typography-title-default);
-    font-weight: var(--weight-bold);
+    font-weight: var(--ui-drawer-weight, var(--weight-bold)); /// Graisse du titre.
     line-height: 1.3;
     overflow-wrap: break-word;
   }
@@ -136,6 +138,7 @@ $size-edge: var(--ui-drawer-size-edge, #{utils.rem-calc(160)});                 
     flex: 0 0 auto;
     display: inline-flex;
     align-items: center;
+    align-self: $action-align;
     justify-content: center;
     width: $action-size;
     height: $action-size;
@@ -149,13 +152,13 @@ $size-edge: var(--ui-drawer-size-edge, #{utils.rem-calc(160)});                 
     @include utils.control-transition(background-color, color);
 
     &:hover {
-      background-color: var(--global-background-muted-hover);
-      color: var(--global-text-muted-hover);
+      background-color: var(--ui-drawer-close-surface-hover, var(--global-background-muted-hover)); /// Fond du bouton de fermeture au survol.
+      color: var(--ui-drawer-close-color-hover, var(--global-text-muted-hover));                    /// Couleur du bouton de fermeture au survol.
     }
 
     &:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 $focus-ring-width var(--global-border-focus);
+      box-shadow: 0 0 0 $focus-ring-width var(--ui-drawer-close-focus-ring-color, var(--global-border-focus)); /// Couleur de l'anneau de focus du bouton de fermeture.
     }
 
     @include utils.motion-reduce {
@@ -187,6 +190,6 @@ $size-edge: var(--ui-drawer-size-edge, #{utils.rem-calc(160)});                 
     justify-content: flex-end;
     gap: var(--units-sm);
     padding: var(--units-md) $panel-padding $panel-padding;
-    border-top: $stroke-width solid var(--global-border-subtle);
+    border-top: $stroke-width solid var(--ui-drawer-footer-stroke, var(--global-border-subtle)); /// Couleur du trait séparant le pied.
   }
 }

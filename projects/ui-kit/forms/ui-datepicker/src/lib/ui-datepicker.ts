@@ -48,7 +48,7 @@ import {
   startOfDay,
   toIsoDate,
   toIsoDateTime,
-} from './date-utils';
+} from '@4sh/ui-kit/forms';
 
 export type DatepickerHourFormat = '12' | '24';
 /** Base picking granularity — also the drill-down levels of the panel. */

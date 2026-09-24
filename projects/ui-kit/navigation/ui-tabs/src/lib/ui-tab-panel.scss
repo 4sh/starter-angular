@@ -11,8 +11,8 @@
 :host {
   display: block;
   padding: var(--units-default) 0;
-  color: var(--global-text-default);
-  font-family: var(--fontfamily-base);
+  color: var(--ui-tabs-panel-color, var(--global-text-default)); /// Couleur du texte du panneau d'onglet.
+  font-family: var(--ui-tabs-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
   font-size: var(--size-typography-text-default);
   line-height: 1.5;
   outline: none;

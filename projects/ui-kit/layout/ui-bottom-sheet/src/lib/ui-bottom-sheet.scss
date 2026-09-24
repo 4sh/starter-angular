@@ -32,6 +32,8 @@ $safe-area: var(--ui-bottom-sheet-safe-area-offset, env(safe-area-inset-bottom, 
 $panel-padding: var(--ui-bottom-sheet-padding, var(--units-default));       /// Inset horizontal du panneau et inset haut du corps.
 $panel-padding-bottom: var(--ui-bottom-sheet-padding-bottom, var(--units-lg)); /// Inset bas de la dernière zone du panneau.
 $header-gap: var(--ui-bottom-sheet-header-gap, var(--units-sm));            /// Espacement entre le titre et le bouton de fermeture.
+$header-align: var(--ui-bottom-sheet-header-align, flex-start);             /// Alignement vertical de l'en-tête (titre, fermeture).
+$action-align: var(--ui-bottom-sheet-action-align, auto);                   /// Alignement vertical de la fermeture seule ; `auto` suit l'alignement de l'en-tête.
 $footer-gap: var(--ui-bottom-sheet-footer-gap, var(--units-default));       /// Espacement entre les actions du pied.
 $footer-padding-top: var(--ui-bottom-sheet-footer-padding-top, var(--units-sm)); /// Inset haut du pied.
 $action-size: var(--ui-bottom-sheet-action-size, #{utils.rem-calc(32)});    /// Taille de la cible tactile du bouton de fermeture.
@@ -117,8 +119,8 @@ $focus-ring-width: var(--ui-bottom-sheet-focus-ring-width, #{utils.$focus-ring-w
   border-radius: $radius $radius 0 0;
   background-color: $surface;
   box-shadow: $shadow;
-  color: var(--global-text-default);
-  font-family: var(--fontfamily-base);
+  color: var(--ui-bottom-sheet-color, var(--global-text-default)); /// Couleur du texte de la feuille.
+  font-family: var(--ui-bottom-sheet-font-family, var(--fontfamily-base)); /// Famille typographique du composant.
   overflow: hidden;
   outline: none;
   // A sheet is a touch surface: no double-tap zoom delay, no tap flash.
@@ -216,7 +218,7 @@ $focus-ring-width: var(--ui-bottom-sheet-focus-ring-width, #{utils.$focus-ring-w
 
       &:focus-visible {
         outline: none;
-        box-shadow: 0 0 0 $focus-ring-width var(--global-border-focus);
+        box-shadow: 0 0 0 $focus-ring-width var(--ui-bottom-sheet-handle-focus-ring-color, var(--global-border-focus)); /// Couleur de l'anneau de focus de la poignée.
       }
     }
   }
@@ -225,7 +227,7 @@ $focus-ring-width: var(--ui-bottom-sheet-focus-ring-width, #{utils.$focus-ring-w
   &-header {
     flex: 0 0 auto;
     display: flex;
-    align-items: flex-start;
+    align-items: $header-align;
     gap: $header-gap;
     padding-top: $grab-padding-y;
   }
@@ -239,9 +241,9 @@ $focus-ring-width: var(--ui-bottom-sheet-focus-ring-width, #{utils.$focus-ring-w
     flex: 1 1 auto;
     min-width: 0;
     margin: 0;
-    font-family: var(--fontfamily-title);
+    font-family: var(--ui-bottom-sheet-title-font-family, var(--fontfamily-title)); /// Famille typographique du titre.
     font-size: var(--size-typography-title-sm);
-    font-weight: var(--weight-bold);
+    font-weight: var(--ui-bottom-sheet-weight, var(--weight-bold)); /// Graisse du titre.
     line-height: 1.3;
     overflow-wrap: break-word;
   }
@@ -251,6 +253,7 @@ $focus-ring-width: var(--ui-bottom-sheet-focus-ring-width, #{utils.$focus-ring-w
     flex: 0 0 auto;
     display: inline-flex;
     align-items: center;
+    align-self: $action-align;
     justify-content: center;
     box-sizing: border-box;
     width: $action-size;
@@ -265,13 +268,13 @@ $focus-ring-width: var(--ui-bottom-sheet-focus-ring-width, #{utils.$focus-ring-w
     @include utils.control-transition(background-color, color);
 
     &:hover {
-      background-color: var(--global-background-muted-hover);
-      color: var(--global-text-muted-hover);
+      background-color: var(--ui-bottom-sheet-close-surface-hover, var(--global-background-muted-hover)); /// Fond du bouton de fermeture au survol.
+      color: var(--ui-bottom-sheet-close-color-hover, var(--global-text-muted-hover));                    /// Couleur du bouton de fermeture au survol.
     }
 
     &:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 $focus-ring-width var(--global-border-focus);
+      box-shadow: 0 0 0 $focus-ring-width var(--ui-bottom-sheet-close-focus-ring-color, var(--global-border-focus)); /// Couleur de l'anneau de focus du bouton de fermeture.
     }
 
     @include utils.motion-reduce {

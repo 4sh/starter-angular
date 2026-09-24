@@ -118,6 +118,13 @@ const BADGES = {
   literal: { label: 'en dur', title: 'Valeur littérale : ne suit ni le thème ni les tokens.' },
   list: { label: 'liste', title: 'Liste SCSS des valeurs supportées.' },
   map: { label: 'map', title: 'Map SCSS : une entrée par variante.' },
+  interpolated: {
+    label: 'selon la variante',
+    title:
+      'Le jeu de jetons est choisi à la compilation par la variante rendue (niveau, ' +
+      'polarité…). Le hook, lui, porte un seul nom : le poser sur `:root` vaut pour ' +
+      'toutes les variantes, sur un sélecteur de modificateur pour une seule.',
+  },
 };
 
 function badge(kind) {
@@ -210,7 +217,16 @@ function defaultCell(row) {
     ? inlineItems.map((item, i) =>
         el(React.Fragment, { key: item }, i > 0 ? ', ' : null, el('code', null, item)),
       )
-    : el('code', null, resolved.cssVar ? `var(${resolved.cssVar})` : (resolved.literal ?? 'map'));
+    : el(
+        'code',
+        null,
+        resolved.cssVar
+          ? `var(${resolved.cssVar})`
+          : // Motif interpolé : c'est un nom de token, pas une valeur littérale.
+            resolved.kind === 'interpolated'
+            ? `var(${resolved.literal})`
+            : (resolved.literal ?? 'map'),
+      );
 
   return el('td', null, head, badge(kind), chain(resolved.steps));
 }
@@ -225,6 +241,11 @@ function valueCell(resolved, values) {
     if (value) return el('td', null, el('code', null, value));
     // Hook non posé : c'est le fallback qui s'applique réellement.
     const fallback = resolved.fallback;
+    // Repli interpolé : le jeton dépend de la variante rendue, il n'y a donc pas UNE
+    // valeur à mesurer. Annoncer le motif plutôt que d'en afficher une au hasard.
+    if (fallback?.kind === 'interpolated') {
+      return el('td', { style: { color: 'var(--sb-text-subtle)' } }, 'selon la variante');
+    }
     const fallbackValue = fallback?.cssVar ? values[fallback.cssVar] : fallback?.literal;
     if (fallbackValue) {
       return el(
