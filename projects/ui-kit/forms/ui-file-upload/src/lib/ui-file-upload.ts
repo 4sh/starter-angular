@@ -60,7 +60,7 @@ export class UiFileUpload {
   size = input<UiFileUploadSize>('default');
 
   // --- Selection -------------------------------------------------------
-  /** Native input `name` (submitted with a surrounding form). */
+  /** Native `name`: a surrounding `<form>` submits the current selection under it. */
   name = input<string>();
   /** Allow selecting more than one file. */
   multiple = input(false, { transform: booleanAttribute });
@@ -153,6 +153,7 @@ export class UiFileUpload {
   private readonly host = inject(ElementRef<HTMLElement>);
   private readonly destroyRef = inject(DestroyRef);
   private readonly fileInput = viewChild.required<ElementRef<HTMLInputElement>>('fileInput');
+  private readonly formValueInput = viewChild<ElementRef<HTMLInputElement>>('formValue');
 
   /** In-flight requests, keyed by file id, so we can abort. */
   private readonly requests = new Map<string, XMLHttpRequest>();
@@ -172,6 +173,16 @@ export class UiFileUpload {
     this.destroyRef.onDestroy(() => {
       for (const f of this.selection()) this.revoke(f);
       for (const xhr of this.requests.values()) xhr.abort();
+    });
+
+    // The picker is emptied after each choice: the hidden field carries the selection.
+    effect(() => {
+      const el = this.formValueInput()?.nativeElement;
+      const files = this.selection();
+      if (!el || typeof DataTransfer === 'undefined') return;
+      const data = new DataTransfer();
+      for (const f of files) data.items.add(f.file);
+      el.files = data.files;
     });
 
     // A11y safeguard: the control needs an accessible name.

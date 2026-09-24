@@ -276,17 +276,48 @@ export function applyFontFamily(): void {
 
 /** Rewrites the `<font>` elements `fontName` just produced into `<span class>`. */
 export function convertFontMarkers(root: ParentNode, className: string): void {
-  convertMarkers(root, `font[face="${FONT_MARKER}"]`, className);
+  convertMarkers(root, `font[face="${FONT_MARKER}"]`, className, FONT_CLASSES);
 }
 
 /** @internal Replaces the matched legacy `<font>` elements with a classed span. */
-function convertMarkers(root: ParentNode, selector: string, className: string): void {
+function convertMarkers(
+  root: ParentNode,
+  selector: string,
+  className: string,
+  family: ReadonlySet<string>,
+): void {
+  const spans: HTMLElement[] = [];
   for (const el of Array.from(root.querySelectorAll(selector))) {
     const span = document.createElement('span');
     span.className = className;
     span.append(...Array.from(el.childNodes));
     el.replaceWith(span);
+    spans.push(span);
   }
+
+  // A same-family class left inside would win over the new one.
+  for (const span of spans) {
+    for (const inner of Array.from(span.querySelectorAll<HTMLElement>('[class]'))) {
+      for (const cls of Array.from(inner.classList))
+        if (family.has(cls)) inner.classList.remove(cls);
+      if (inner.classList.length > 0) continue;
+      inner.removeAttribute('class');
+      if (inner.tagName === 'SPAN' && inner.attributes.length === 0) {
+        inner.replaceWith(...Array.from(inner.childNodes));
+      }
+    }
+  }
+
+  // Replacing the nodes collapsed the selection: put it back.
+  const live = spans.filter((span) => span.isConnected);
+  const selection = document.getSelection();
+  if (!live.length || !selection) return;
+  const last = live[live.length - 1];
+  const range = document.createRange();
+  range.setStart(live[0], 0);
+  range.setEnd(last, last.childNodes.length);
+  selection.removeAllRanges();
+  selection.addRange(range);
 }
 
 /**
@@ -337,7 +368,7 @@ export function applyFontSize(): void {
 
 /** Rewrites the `<font>` elements `fontSize` just produced into `<span class>`. */
 export function convertSizeMarkers(root: ParentNode, className: string): void {
-  convertMarkers(root, `font[size="${SIZE_MARKER}"]`, className);
+  convertMarkers(root, `font[size="${SIZE_MARKER}"]`, className, SIZE_CLASSES);
 }
 
 /** Text size active at the caret, or `null` when the text uses the default. */
@@ -405,7 +436,7 @@ export function applyTextColor(): void {
 
 /** Rewrites the `<font>` elements `foreColor` just produced into `<span class>`. */
 export function convertColorMarkers(root: ParentNode, className: string): void {
-  convertMarkers(root, `font[color="${COLOR_MARKER}"]`, className);
+  convertMarkers(root, `font[color="${COLOR_MARKER}"]`, className, COLOR_CLASSES);
 }
 
 /** Text color active at the caret, or `null` when the text uses the default. */
@@ -436,7 +467,12 @@ export function applyHighlightColor(): void {
 
 /** Rewrites the `<span style>` elements `hiliteColor` just produced into `<span class>`. */
 export function convertHighlightMarkers(root: ParentNode, className: string): void {
-  convertMarkers(root, `[style*="background-color: ${HILITE_MARKER_RGB}"]`, className);
+  convertMarkers(
+    root,
+    `[style*="background-color: ${HILITE_MARKER_RGB}"]`,
+    className,
+    HIGHLIGHT_CLASSES,
+  );
 }
 
 /** Highlight color active at the caret, or `null` when the text carries none. */
@@ -529,6 +565,82 @@ export function insertHtml(html: string): void {
 /** Inserts plain text at the caret, replacing the selection. */
 export function insertText(text: string): void {
   document.execCommand('insertText', false, text);
+}
+
+// --- Value sanitisation --------------------------------------------------
+
+const LENGTH = String.raw`(?:0|-?\d+(?:\.\d+)?(?:px|em|rem|%))`;
+const LENGTHS = new RegExp(`^${LENGTH}(?:\\s+${LENGTH}){0,3}$`);
+
+/** The only `style` a value keeps: alignment and indentation. Same list as the React kit. */
+const STYLE_ALLOWLIST: Record<string, RegExp> = {
+  'text-align': /^(?:left|right|center|justify|start|end)$/,
+  margin: LENGTHS,
+  'margin-left': LENGTHS,
+  'margin-right': LENGTHS,
+  'margin-inline-start': LENGTHS,
+  padding: LENGTHS,
+  border: /^none$/,
+};
+
+/** Keeps only the allowed declarations of a `style` attribute. */
+export function sanitizeStyle(style: string): string {
+  const kept: string[] = [];
+  for (const declaration of style.split(';')) {
+    const colon = declaration.indexOf(':');
+    if (colon < 0) continue;
+    const property = declaration.slice(0, colon).trim().toLowerCase();
+    const value = declaration.slice(colon + 1).trim().toLowerCase();
+    const pattern = STYLE_ALLOWLIST[property];
+    if (pattern?.test(value)) kept.push(`${property}: ${value};`);
+  }
+  return kept.join(' ');
+}
+
+const STYLE_RELAY = 'ui-editor-style-';
+
+/** Sanitises a value with `sanitize`, relaying the allowed `style` through a class it keeps. */
+export function sanitizeEditorHtml(html: string, sanitize: (html: string) => string): string {
+  if (typeof DOMParser === 'undefined' || !/\sstyle\s*=/i.test(html)) return sanitize(html);
+
+  const styles: string[] = [];
+  const source = parseInert(html);
+  for (const el of Array.from(source.querySelectorAll('*'))) {
+    const forged = Array.from(el.classList).filter((cls) => cls.startsWith(STYLE_RELAY));
+    if (forged.length) {
+      el.classList.remove(...forged);
+      if (!el.classList.length) el.removeAttribute('class');
+    }
+    const style = el.getAttribute('style');
+    if (style === null) continue;
+    el.removeAttribute('style');
+    const kept = sanitizeStyle(style);
+    if (!kept) continue;
+    el.classList.add(`${STYLE_RELAY}${styles.length}`);
+    styles.push(kept);
+  }
+
+  const safe = sanitize(source.innerHTML);
+  if (!styles.length) return safe;
+
+  const out = parseInert(safe);
+  for (const el of Array.from(out.querySelectorAll(`[class*="${STYLE_RELAY}"]`))) {
+    for (const cls of Array.from(el.classList)) {
+      if (!cls.startsWith(STYLE_RELAY)) continue;
+      el.classList.remove(cls);
+      const kept = styles[Number(cls.slice(STYLE_RELAY.length))];
+      if (kept) el.setAttribute('style', kept);
+    }
+    if (!el.classList.length) el.removeAttribute('class');
+  }
+  return out.innerHTML;
+}
+
+/** @internal Inert parse; the leading `<remove>` keeps head-only tags in the body. */
+function parseInert(html: string): HTMLElement {
+  const body = new DOMParser().parseFromString(`<body><remove></remove>${html}`, 'text/html').body;
+  body.firstChild?.remove();
+  return body;
 }
 
 // --- Content normalisation ---------------------------------------------

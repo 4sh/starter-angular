@@ -7,12 +7,12 @@
       #m="uiMotion"
       [animate.enter]="m.enter()"
       [animate.leave]="m.leave()"
-      (mouseenter)="pause(item.id)"
-      (mouseleave)="resume(item.id)"
-      (focusin)="pause(item.id)"
-      (focusout)="resume(item.id)"
     >
       <ui-toast
+        (mouseenter)="pause(item.id)"
+        (mouseleave)="resume(item.id)"
+        (focusin)="pause(item.id)"
+        (focusout)="resume(item.id)"
         [level]="item.level ?? 'default'"
         [subLevel]="item.subLevel ?? 'high'"
         [title]="template() ? undefined : item.title"

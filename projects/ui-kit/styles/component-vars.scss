@@ -465,7 +465,7 @@
   --ui-file-upload-color:                              var(--form-high-content-default);
   --ui-file-upload-color-disabled:                     var(--form-high-content-disabled);
   --ui-file-upload-focus-ring-color:                   var(--form-high-stroke-focused);
-  --ui-file-upload-message-color:                      var(--informative-errorhigh-content-default);
+  --ui-file-upload-message-color:                      var(--form-error-content-default);
   --ui-file-upload-stroke:                             var(--form-high-stroke-default);
   --ui-file-upload-stroke-disabled:                    var(--form-high-stroke-disabled);
   --ui-file-upload-stroke-dragging:                    var(--form-high-stroke-focused);
@@ -513,7 +513,7 @@
   // Couleurs
   --ui-file-upload-item-progress-color:                var(--global-text-default);
   --ui-file-upload-list-color:                         var(--form-high-content-default);
-  --ui-file-upload-list-color-error:                   var(--informative-errorhigh-content-default);
+  --ui-file-upload-list-color-error:                   var(--form-error-content-default);
   --ui-file-upload-list-progress-surface:              var(--form-high-surface-hover);
   --ui-file-upload-list-remove-color:                  var(--form-high-content-default);
   --ui-file-upload-list-remove-color-hover:            var(--global-text-default);

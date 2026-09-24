@@ -55,7 +55,7 @@ Champs d'un `UiToastMessage` : `title`, `text`, `level`, `subLevel`, `icon`, `cl
     <tr><td><code>motionDisabled</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Désactive l'animation d'entrée/sortie.</td></tr>
     <tr><td><code>contained</code></td><td><code>boolean</code></td><td><code>false</code></td><td><code>position: absolute</code> (scopé à un ancêtre positionné) au lieu de <code>fixed</code>.</td></tr>
     <tr><td><code>template</code></td><td><code>TemplateRef</code></td><td><code>undefined</code></td><td>Contenu personnalisé : contexte <code>&#123; $implicit: message, closeFn &#125;</code>.</td></tr>
-    <tr><td><code>stackVisibleLimit</code></td><td><code>number</code></td><td><code>0</code></td><td>N'affiche que les N toasts les plus récents (<code>0</code> = illimité) ; les autres attendent (leur compte à rebours court quand même).</td></tr>
+    <tr><td><code>stackVisibleLimit</code></td><td><code>number</code></td><td><code>0</code></td><td>N'affiche que les N toasts les plus récents (<code>0</code> = illimité) ; les autres attendent leur tour : leur compte à rebours ne démarre qu'à l'affichage.</td></tr>
     <tr><td><code>stackGap</code></td><td><code>number</code></td><td>token <code>--units-sm</code></td><td>Écart (px) entre cartes empilées.</td></tr>
     <tr><td><code>preventDuplicates</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Ignore un toast dont le contenu (<code>level</code>+<code>title</code>+<code>text</code>) est déjà affiché.</td></tr>
     <tr><td><code>autoZIndex</code></td><td><code>boolean</code></td><td><code>true</code></td><td>Empile automatiquement au-dessus des piles créées avant.</td></tr>
