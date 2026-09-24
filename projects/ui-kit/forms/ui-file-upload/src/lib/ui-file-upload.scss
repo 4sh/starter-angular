@@ -230,7 +230,7 @@ $message-font-size: var(--ui-file-upload-message-font-size, var(--size-typograph
   &-messages { display: flex; flex-direction: column; gap: $messages-gap; }
   &-message {
     margin: 0;
-    color: var(--ui-file-upload-message-color, var(--informative-errorhigh-content-default)); /// Couleur d'un message d'erreur.
+    color: var(--ui-file-upload-message-color, var(--form-error-content-default)); /// Couleur d'un message d'erreur.
     font-size: $message-font-size;
   }
 

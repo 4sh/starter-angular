@@ -13651,7 +13651,7 @@
         }
       },
       "color-error": {
-        "$value": "{semantics.informative.errorHigh.content.default}",
+        "$value": "{semantics.form.error.content.default}",
         "$type": "color",
         "$description": "Couleur du texte d'une ligne en erreur.",
         "$extensions": {
@@ -13837,7 +13837,7 @@
     },
     "message": {
       "color": {
-        "$value": "{semantics.informative.errorHigh.content.default}",
+        "$value": "{semantics.form.error.content.default}",
         "$type": "color",
         "$description": "Couleur d'un message d'erreur.",
         "$extensions": {

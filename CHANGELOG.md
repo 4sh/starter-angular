@@ -22,6 +22,14 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
   En colonne, `align-items: flex-end` ramenait la piste à sa largeur de contenu, soit 0 px.
   La piste s'étire désormais, seul le libellé reste aligné à droite.
 
+- **`ui-file-upload` : messages d'erreur invisibles en mode clair** (FSHSP-224). Le message
+  de refus et le texte d'une ligne en erreur de `ui-file-upload-list` prenaient
+  `--informative-errorhigh-content-default`, le contenu prévu pour la surface d'erreur forte :
+  blanc sur fond neutre, mesuré à 1,07:1. Ils passent à `--form-error-content-default`, comme
+  les autres champs du kit (4,51:1 en clair, 12,26:1 en sombre). Les poignées
+  `--ui-file-upload-message-color` et `--ui-file-upload-list-color-error` gardent leur nom,
+  seule leur valeur par défaut change.
+
 ## [0.11.0] - 2026-09-18
 
 ### Added
