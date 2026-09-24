@@ -10,13 +10,22 @@
     class="ui-file-upload-input"
     type="file"
     [id]="inputId"
-    [attr.name]="name()"
     [attr.accept]="accept() || null"
     [multiple]="multiple()"
     [disabled]="disabled()"
     [attr.aria-label]="ariaLabel() || null"
     (change)="onInputChange($event)"
   />
+  @if (name()) {
+    <input
+      #formValue
+      type="file"
+      hidden
+      [attr.name]="name()"
+      [multiple]="multiple()"
+      [disabled]="disabled()"
+    />
+  }
 
   @if (mode() === 'field') {
     <!-- Field mode: compact summary + Browse trigger (whole label opens picker) -->

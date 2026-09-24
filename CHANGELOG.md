@@ -30,6 +30,11 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
   `--ui-file-upload-message-color` et `--ui-file-upload-list-color-error` gardent leur nom,
   seule leur valeur par défaut change.
 
+- **`ui-file-upload` : avec `name`, un `<form>` natif recevait un fichier vide** (FSHSP-224).
+  Le nom était posé sur le sélecteur, que le composant vide après chaque choix pour qu'un même
+  fichier choisi deux fois redéclenche `change`. Un champ caché porte désormais la sélection
+  courante sous `name`. Sans `name`, rien ne change.
+
 ## [0.11.0] - 2026-09-18
 
 ### Added

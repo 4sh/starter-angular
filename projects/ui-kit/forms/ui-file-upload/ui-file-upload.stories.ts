@@ -54,6 +54,11 @@ const meta: Meta<UiFileUpload> = {
       description: 'Autorise la sélection de plusieurs fichiers.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
+    name: {
+      control: { type: 'text' },
+      description: 'Nom natif : un `<form>` englobant soumet la sélection courante sous ce nom.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
     accept: {
       control: { type: 'text' },
       description: 'Filtre natif de type MIME/extension (ex. "image/*,.pdf").',
