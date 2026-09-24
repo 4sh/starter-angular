@@ -50,6 +50,11 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
   l'emportait, étant plus proche du texte. Elle est retirée à la conversion, et la sélection est
   reposée sur le texte mis en forme.
 
+- **`ui-toast` : la bande de chaque toast captait le pointeur à côté de la carte**
+  (FSHSP-224). Elle fait toute la largeur de la pile (360 px) quand la carte épouse son
+  contenu : elle avalait les clics destinés à la page et suspendait le compte à rebours dès que
+  le pointeur passait sur la même ligne. Le pointeur et la pause au survol reviennent à la carte.
+
 ## [0.11.0] - 2026-09-18
 
 ### Added
