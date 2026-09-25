@@ -23,10 +23,14 @@ updates:
     schedule:
       interval: 'weekly'
     groups:
+      # FSHSP-226: `@schematics/angular` returns the `Rule` type of ITS `@angular-devkit/schematics`:
+      # left in `dev-tooling`, it lagged one patch behind the devkit and
+      # `schematics:build` failed on two incompatible `Rule` types.
       angular:
         patterns:
           - '@angular/*'
           - '@angular-devkit/*'
+          - '@schematics/angular'
           - 'angular-eslint'
       storybook:
         patterns:
@@ -46,6 +50,7 @@ updates:
         exclude-patterns:
           - '@angular/*'
           - '@angular-devkit/*'
+          - '@schematics/angular'
           - 'angular-eslint'
           - '@storybook/*'
           - '@storybook-community/*'

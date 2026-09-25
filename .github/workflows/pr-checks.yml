@@ -120,6 +120,12 @@ jobs:
       - name: Token pipeline tests
         run: pnpm tokens:test
 
+      # FSHSP-226: only the publish workflow used to build the schematics, so a PR could
+      # break the release with every check here green: `@schematics/angular`
+      # one patch behind `@angular-devkit/schematics` did, on two `Rule` types.
+      - name: Build the schematics package
+        run: pnpm schematics:build
+
       # `postinstall` has just regenerated everything `docs:config` produces, so
       # this step looks redundant. It is not — it enforces two things nothing
       # else does:

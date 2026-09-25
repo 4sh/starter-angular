@@ -62,7 +62,7 @@
     "@figma/code-connect": "1.5.3",
     "@inquirer/prompts": "7.0.0",
     "@modelcontextprotocol/sdk": "1.30.0",
-    "@schematics/angular": "22.1.7",
+    "@schematics/angular": "22.1.8",
     "@storybook-community/storybook-dark-mode": "7.1.4",
     "@storybook/addon-a11y": "10.6.0",
     "@storybook/addon-designs": "11.1.4",
