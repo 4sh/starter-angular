@@ -16,6 +16,25 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+### Fixed
+
+- **Schematics : sur un projet Angular 20, `ng add` s'arrêtait sur un ERESOLVE et laissait le
+  `package.json` à moitié migré** (FSHSP-228). Les `peerDependencies` du kit étaient recopiées
+  par-dessus les versions du projet : `@angular/core`, `common`, `forms`, `router` et
+  `platform-browser` passaient en `^22.0.0`, `compiler-cli`, `build` et `cli` restaient en 20, et
+  `@angular-devkit/build-angular@^22` faisait échouer npm.
+  - `ng add`, `add` et `update` vérifient d'abord le majeur d'Angular du projet. S'il n'est pas
+    celui du kit, ils s'arrêtent sans rien écrire et donnent les `ng update` à enchaîner.
+  - Une dépendance déjà déclarée garde sa plage. Un paquet Angular absent prend celle du
+    `@angular/core` du projet, les paquets du framework s'exigeant l'un l'autre à la version
+    exacte.
+- **Schematics : copier `ui-input-date` faisait échouer `ng add`** (FSHSP-228), depuis la
+  0.11.0, sur « import(s) du kit non réadressé(s) … (symbole type UiIconSize) ». La réécriture
+  des imports prenait le modificateur `type` en ligne (`import { UiIcon, type UiIconSize }`)
+  pour une partie du nom. Il est ignoré pour la recherche et conservé dans l'import réécrit.
+  Les schematics ont maintenant des tests (`pnpm schematics:test`, en CI), dont un qui fait
+  passer chaque composant par la réécriture.
+
 ## [0.12.0] - 2026-09-25
 
 ### Added

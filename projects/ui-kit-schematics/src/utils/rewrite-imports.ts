@@ -53,10 +53,15 @@ function relativeSpecifier(fromFileTargetPath: string, toTargetPath: string): st
   return rel.startsWith('.') ? rel : `./${rel}`;
 }
 
-/** Un symbole importé, avec son éventuel alias : `UiIcon`, `UiIcon as Icon`. */
-function symbolName(clause: string): string {
+/**
+ * Un symbole importé, avec son éventuel alias et son modificateur `type`
+ * en ligne : `UiIcon`, `UiIcon as Icon`, `type UiIconSize`. Le modificateur est
+ * retiré pour la recherche dans la table, et conservé dans l'import réécrit.
+ */
+export function symbolName(clause: string): string {
   return clause
     .trim()
+    .replace(/^type\s+/, '')
     .split(/\s+as\s+/)[0]
     .trim();
 }

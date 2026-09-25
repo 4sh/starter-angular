@@ -13,6 +13,7 @@ import { resolveDependencies } from '../utils/dependency-graph';
 import { copyUnit } from '../utils/copy';
 import { emptyManifest, readManifest, today, writeManifest } from '../utils/manifest';
 import { kitVersion as readKitVersion } from '../utils/kit-manifest';
+import { checkAngularCompatibility } from '../utils/angular-version';
 
 /**
  * Sélection interactive : checkbox `@inquirer/prompts`, qui supporte déjà
@@ -29,6 +30,8 @@ async function promptComponentNames(): Promise<string[]> {
 
 export function add(options: Schema): Rule {
   return async (tree: Tree, context: SchematicContext) => {
+    // Avant le prompt : des sources Angular 22 dans un projet Angular 20 ne compilent pas.
+    checkAngularCompatibility(tree, context);
     const available = listComponents();
 
     let selected: string[];
