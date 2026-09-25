@@ -59,6 +59,11 @@ Published on the **public npm registry**, under the **`4sh`** organization:
 These are declared as `peerDependencies`: the version already present in your
 application is the one used, never a second copy of Angular.
 
+On an older Angular, **npm refuses** the install (`ERESOLVE`), but **pnpm only warns**
+and installs anyway (`✕ unmet peer @angular/core@^22.0.0`): that line means the project
+must be upgraded first (`ng update @angular/core@22 @angular/cli@22`, one major at a
+time), not that the kit is ready to use.
+
 ### Or copy the sources instead
 
 This package gives you **compiled** components: you import them and follow the

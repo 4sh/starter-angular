@@ -20,6 +20,7 @@ import { join } from 'node:path';
 import type { Schema } from './schema';
 import {
   addDependency,
+  ensureDependency,
   addNpmScript,
   detectPackageManager,
   readPackageJson,
@@ -36,6 +37,7 @@ import {
   stylesFoundationDir,
 } from '../utils/component-registry';
 import { readKitManifestInfo } from '../utils/kit-manifest';
+import { assertAngularCompatible } from '../utils/angular-version';
 import { rewriteKitPaths } from '../utils/kit-paths';
 import { add } from '../add';
 
@@ -740,7 +742,10 @@ function applicationIndexPaths(tree: Tree): string[] {
  * Demander la même plage laisse npm les déduire ensemble.
  */
 function angularRange(tree: Tree): string {
-  return readPackageJson(tree).dependencies?.['@angular/core'] ?? '^22.0.0';
+  const json = readPackageJson(tree);
+  return (
+    json.dependencies?.['@angular/core'] ?? json.devDependencies?.['@angular/core'] ?? '^22.0.0'
+  );
 }
 
 /** Dépendances et scripts du Storybook du consommateur. Versions alignées sur ce dépôt. */
@@ -816,8 +821,13 @@ function addRuntimeDependencies(): Rule {
     // Toutes les peerDependencies déjà déclarées par @4sh/ui-kit (@angular/cdk, rxjs…)
     // deviennent des dependencies directes chez le consommateur — pas @4sh/ui-kit
     // lui-même, gardé en devDependency pour piloter la CLI (voir ticket).
+    // Seulement celles qui manquent : la plage du projet reste la sienne. Un
+    // paquet Angular absent prend celle de son `@angular/core`, pas le `^22.0.0`
+    // du kit : les paquets du framework s'exigent l'un l'autre à la version
+    // exacte (voir `angularRange`).
     for (const [name, version] of Object.entries(peerDependencies)) {
-      addDependency(tree, name, version, 'dependencies');
+      const range = name.startsWith('@angular/') ? angularRange(tree) : version;
+      ensureDependency(tree, name, range, 'dependencies');
     }
     // FontAwesome n'est pas une peerDependency du kit (elle n'est pas importée
     // par le TypeScript : `ui-icon` ne pose que des classes CSS), mais la
@@ -1138,6 +1148,9 @@ export function ngAdd(options: Schema): Rule {
   const withMcp = !(options.skipMcp ?? false);
 
   const foundation = [
+    // Avant tout le reste, prompts compris : un projet d'un autre majeur
+    // d'Angular est refusé sans que rien ne soit écrit ni demandé.
+    assertAngularCompatible(),
     copyStylesFoundationRule(),
     createStyleScaffolds(),
     // Avant `updateAngularJson`, qui déclare `src/assets` au builder : la

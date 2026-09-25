@@ -30,6 +30,24 @@ export function addDependency(
   writePackageJson(tree, json);
 }
 
+/**
+ * Comme {@link addDependency}, mais n'écrit rien si le paquet est déjà déclaré,
+ * en dependencies comme en devDependencies. Pour ce que le projet possède déjà
+ * (Angular, RxJS), sa plage est la bonne : la remplacer par celle du kit a
+ * monté la moitié d'Angular d'un majeur dans un projet Angular 20.
+ */
+export function ensureDependency(
+  tree: Tree,
+  name: string,
+  version: string,
+  target: 'dependencies' | 'devDependencies' = 'dependencies',
+): boolean {
+  const json = readPackageJson(tree);
+  if (json.dependencies?.[name] ?? json.devDependencies?.[name]) return false;
+  addDependency(tree, name, version, target);
+  return true;
+}
+
 export function addNpmScript(tree: Tree, name: string, command: string): void {
   const json = readPackageJson(tree);
   if (json.scripts?.[name]) return; // ne jamais écraser un script déjà défini par le consommateur

@@ -126,6 +126,12 @@ jobs:
       - name: Build the schematics package
         run: pnpm schematics:build
 
+      # FSHSP-228: the only place every kit import goes through the rewrite that
+      # `ng add` applies. Without it, an import the table cannot re-address fails
+      # at the consumer's install, as `type UiIconSize` did in 0.11.0 and 0.12.0.
+      - name: Schematics tests
+        run: pnpm schematics:test
+
       # `postinstall` has just regenerated everything `docs:config` produces, so
       # this step looks redundant. It is not — it enforces two things nothing
       # else does:

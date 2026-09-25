@@ -31,6 +31,7 @@
     "schematics:assets": "node scripts/schematics-assets.build.mjs",
     "schematics:build": "node scripts/schematics-package.build.mjs",
     "schematics:pack": "pnpm schematics:build && pnpm -C dist/ui-kit-schematics pack --pack-destination ../..",
+    "schematics:test": "pnpm schematics:assets && vitest run --root projects/ui-kit-schematics",
     "mcp:assets": "node scripts/mcp-assets.build.mjs",
     "mcp:bundle": "node scripts/mcp-bundle.build.mjs",
     "mcp:test": "vitest run --root projects/ui-kit-mcp"

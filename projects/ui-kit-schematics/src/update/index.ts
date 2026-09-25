@@ -15,6 +15,7 @@ import { findUnit } from '../utils/component-registry';
 import { renderUnitFiles } from '../utils/copy';
 import { readManifest, today, writeManifest } from '../utils/manifest';
 import { kitVersion as readKitVersion } from '../utils/kit-manifest';
+import { checkAngularCompatibility } from '../utils/angular-version';
 
 type Action = 'apply' | 'skip' | 'view-diff';
 
@@ -88,13 +89,15 @@ function logUncoveredConcerns(context: SchematicContext): void {
       `d'une version plus ancienne du kit, \`ng add @4sh/ui-kit-schematics ` +
       `--skip-components\` réapplique ce qui peut l'être sans risque : vos composants, ` +
       `votre \`.mcp.json\`, votre config Prettier et vos styles retouchés sont ` +
-      `préservés. Seule réserve mesurée : une dépendance que vous auriez épinglée peut ` +
-      `y être ré-élargie vers la plage du kit.`,
+      `préservés. Seule réserve mesurée : une dépendance d'outillage que vous auriez épinglée ` +
+      `(Storybook, Prettier…) peut y être ré-élargie vers la plage du kit ; Angular et ` +
+      `RxJS gardent la vôtre.`,
   );
 }
 
 export function update(options: Schema): Rule {
   return async (tree: Tree, context: SchematicContext) => {
+    checkAngularCompatibility(tree, context);
     const manifest = readManifest(tree);
     if (!manifest) {
       throw new SchematicsException(
