@@ -16,6 +16,23 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+## [0.12.0] - 2026-09-25
+
+### Added
+
+- **Échelle d'espacement responsive `--spacing-{xs,sm,md,lg,xl,2xl,3xl,4xl}`.** Huit jetons de
+  la collection `responsive`, à côté du `--spacing-default` existant, chacun pointant vers le
+  `--units-*` du même nom. Ils ont la même valeur sur les trois viewports, sauf `--spacing-sm`,
+  qui descend à `--units-xs` (4 px) en mobile.
+
+### Changed
+
+- **`--spacing-default` vaut `--units-default` (16 px) sur tous les viewports.** Il valait
+  `--units-md` (12 px) en tablette et `--units-sm` (8 px) en mobile. Dans le kit, seul
+  `ui-breadcrumb` le consomme, pour l'espace entre maillons et séparateurs
+  (`--ui-breadcrumb-item-gap`) : cet espace s'élargit donc en tablette et en mobile. Un projet
+  qui préfère l'ancien espacement le fixe par `--ui-breadcrumb-item-gap`.
+
 ### Fixed
 
 - **`ui-progress-bar` : la barre disparaissait avec `valuePosition="bottom"`** (FSHSP-224).
@@ -64,6 +81,43 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
   `submenus="flyout"` (donc aussi dans `ui-context-menu`), le survol avait déjà ouvert le
   sous-menu et le clic le basculait. Au tactile, où le tap émet un `mouseenter` avant le clic,
   la cascade ne s'ouvrait jamais. Le clic ouvre désormais, sans refermer.
+
+- **Un alias entre deux jetons d'une même collection cassait `tokens:build`** (FSHSP-203).
+  Le build s'arrêtait sur `Reference Errors: Some token references (N) could not be found`,
+  donc plus de SCSS généré, donc ni application ni Storybook. Chaque collection est bâtie
+  seule et ses jetons sont posés sous sa clé (`semantics`, pour la collection du même nom) :
+  une référence intra-collection devait donc s'écrire `{semantics.global.text.default}`.
+  Or un export Figma / Token Flow Manager ne met jamais le nom de la collection dans le
+  chemin d'une variable — il produit la forme nue `{global.text.default}`, que Style
+  Dictionary ne peut pas résoudre. Les références sont maintenant préfixées au chargement,
+  et la forme nue devient la forme normale.
+  - **Une racine déjà explicite n'est jamais touchée** : `{primitives.grey.500}` reste une
+    référence inter-collections. Et le préfixage ne s'applique que si la cible existe
+    réellement dans la collection — sans quoi un `{effects.default}` de `styles.json`, qui
+    vise une AUTRE collection et passe par `refToVar` et non par Style Dictionary, serait
+    préfixé de travers. Corollaire assumé : un groupe qui porte le nom d'une collection
+    n'est pas atteignable par une référence nue, la collection gagne.
+  - **L'indirection est conservée** : les blocs clair et sombre émettent tous deux
+    `var(--global-text-default)`, dont la cible change par mode. Un alias intra-collection
+    est donc juste par mode sans rien de plus.
+  - **Une référence cassée nomme maintenant son fichier et son jeton**, avant même que
+    Style Dictionary ne s'en mêle : `src/design-tokens/semantics.json → form.modeLight.content`
+    plutôt qu'un chemin résolu qui ne correspond à aucune ligne du fichier.
+  - **`scripts/tokens.build.mjs` passe en 🔒 verrouillé** chez le consommateur, comme
+    `src/styles/ui-kit/` : c'est du moteur, pas du contenu de projet. Rejouer
+    `ng add @4sh/ui-kit-schematics` le remplace donc, et c'est ce qui fait arriver ce
+    correctif — et les suivants — dans un projet déjà installé. `tokens.config.json` et les
+    JSON de jetons restent, eux, éditables et jamais écrasés.
+  - **Le pipeline de tokens a enfin des tests** (`pnpm tokens:test`, ajouté à la CI). Il n'en
+    avait aucun, ce qui explique qu'un trou pareil ait tenu depuis le début : le
+    `semantics.json` du starter ne référence que `primitives` (1295 fois) et ne contient pas
+    un seul alias intra-collection. Le script accepte pour cela un `--config <chemin>` qui
+    déplace sa racine, de sorte qu'une suite le lance sur un jeu de jetons jetable.
+
+- **Schematics : le `main.scss` posé par `ng add` ne chargeait pas le ripple.** Il lui manquait
+  `@use "base/ripple"`, que le mode librairie charge déjà par `index.scss` : en mode starter,
+  l'onde de `@4sh/ui-kit/ripple` n'avait aucun style. Le gabarit l'importe désormais. Un projet
+  déjà installé ajoute la ligne à la main, `main.scss` n'étant jamais réécrit.
 
 ## [0.11.0] - 2026-09-18
 
@@ -187,38 +241,6 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
   `storybook/public/`. Sans option, le comportement est inchangé.
 
 ### Fixed
-
-- **Un alias entre deux jetons d'une même collection cassait `tokens:build`** (FSHSP-203).
-  Le build s'arrêtait sur `Reference Errors: Some token references (N) could not be found`,
-  donc plus de SCSS généré, donc ni application ni Storybook. Chaque collection est bâtie
-  seule et ses jetons sont posés sous sa clé (`semantics`, pour la collection du même nom) :
-  une référence intra-collection devait donc s'écrire `{semantics.global.text.default}`.
-  Or un export Figma / Token Flow Manager ne met jamais le nom de la collection dans le
-  chemin d'une variable — il produit la forme nue `{global.text.default}`, que Style
-  Dictionary ne peut pas résoudre. Les références sont maintenant préfixées au chargement,
-  et la forme nue devient la forme normale.
-  - **Une racine déjà explicite n'est jamais touchée** : `{primitives.grey.500}` reste une
-    référence inter-collections. Et le préfixage ne s'applique que si la cible existe
-    réellement dans la collection — sans quoi un `{effects.default}` de `styles.json`, qui
-    vise une AUTRE collection et passe par `refToVar` et non par Style Dictionary, serait
-    préfixé de travers. Corollaire assumé : un groupe qui porte le nom d'une collection
-    n'est pas atteignable par une référence nue, la collection gagne.
-  - **L'indirection est conservée** : les blocs clair et sombre émettent tous deux
-    `var(--global-text-default)`, dont la cible change par mode. Un alias intra-collection
-    est donc juste par mode sans rien de plus.
-  - **Une référence cassée nomme maintenant son fichier et son jeton**, avant même que
-    Style Dictionary ne s'en mêle : `src/design-tokens/semantics.json → form.modeLight.content`
-    plutôt qu'un chemin résolu qui ne correspond à aucune ligne du fichier.
-  - **`scripts/tokens.build.mjs` passe en 🔒 verrouillé** chez le consommateur, comme
-    `src/styles/ui-kit/` : c'est du moteur, pas du contenu de projet. Rejouer
-    `ng add @4sh/ui-kit-schematics` le remplace donc, et c'est ce qui fait arriver ce
-    correctif — et les suivants — dans un projet déjà installé. `tokens.config.json` et les
-    JSON de jetons restent, eux, éditables et jamais écrasés.
-  - **Le pipeline de tokens a enfin des tests** (`pnpm tokens:test`, ajouté à la CI). Il n'en
-    avait aucun, ce qui explique qu'un trou pareil ait tenu depuis le début : le
-    `semantics.json` du starter ne référence que `primitives` (1295 fois) et ne contient pas
-    un seul alias intra-collection. Le script accepte pour cela un `--config <chemin>` qui
-    déplace sa racine, de sorte qu'une suite le lance sur un jeu de jetons jetable.
 
 - **`ui-tooltip` : `autoHide=false` ne gardait pas l'infobulle ouverte.** L'option posait bien
   `pointer-events: auto` sur le panneau, mais `mouseleave` sur le déclencheur démontait
