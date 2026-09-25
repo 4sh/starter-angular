@@ -16,6 +16,8 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+## [0.12.1] - 2026-09-25
+
 ### Fixed
 
 - **Schematics : sur un projet Angular 20, `ng add` s'arrêtait sur un ERESOLVE et laissait le
