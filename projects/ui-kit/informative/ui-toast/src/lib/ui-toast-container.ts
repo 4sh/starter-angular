@@ -164,21 +164,21 @@ export class UiToastContainer {
         }
       }
 
-      const liveIds = new Set(keyed.map((m) => m.id));
+      const shown = this.items();
+      const shownIds = new Set(shown.map((m) => m.id));
 
-      // Drop timer bookkeeping for messages that are gone.
+      // Drop timer bookkeeping for messages that are gone or no longer shown.
       for (const id of [...this.timers.keys()]) {
-        if (!liveIds.has(id)) this.forget(id);
+        if (!shownIds.has(id)) this.forget(id);
       }
       for (const id of [...this.remaining.keys()]) {
-        if (!liveIds.has(id)) this.remaining.delete(id);
+        if (!shownIds.has(id)) this.remaining.delete(id);
       }
 
       if (!this.isBrowser) return;
 
-      // Arm a countdown for each new, non-sticky message (even ones beyond the
-      // visible limit, so a queued toast still expires on schedule).
-      for (const message of keyed) {
+      // Arm a countdown for each newly shown, non-sticky message.
+      for (const message of shown) {
         const id = message.id!;
         if (message.sticky) continue;
         if (this.timers.has(id) || this.remaining.has(id)) continue;

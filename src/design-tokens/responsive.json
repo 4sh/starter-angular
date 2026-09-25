@@ -1,5 +1,418 @@
 {
   "$description": "responsive",
+  "spacing": {
+    "modeDesktop": {
+      "xs": {
+        "$value": "{metrics.units.xs}",
+        "$type": "dimension",
+        "$extensions": {
+          "com.figma": {
+            "variableId": "VariableID:3772:113",
+            "collectionId": "VariableCollectionId:5:438",
+            "modeId": "5:4",
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ]
+          }
+        }
+      },
+      "sm": {
+        "$value": "{metrics.units.sm}",
+        "$type": "dimension",
+        "$extensions": {
+          "com.figma": {
+            "variableId": "VariableID:3772:112",
+            "collectionId": "VariableCollectionId:5:438",
+            "modeId": "5:4",
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ]
+          }
+        }
+      },
+      "md": {
+        "$value": "{metrics.units.md}",
+        "$type": "dimension",
+        "$extensions": {
+          "com.figma": {
+            "variableId": "VariableID:3772:116",
+            "collectionId": "VariableCollectionId:5:438",
+            "modeId": "5:4",
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ]
+          }
+        }
+      },
+      "default": {
+        "$value": "{metrics.units.default}",
+        "$type": "dimension",
+        "$extensions": {
+          "com.figma": {
+            "variableId": "VariableID:5:443",
+            "collectionId": "VariableCollectionId:5:438",
+            "modeId": "5:4",
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ]
+          }
+        }
+      },
+      "lg": {
+        "$value": "{metrics.units.lg}",
+        "$type": "dimension",
+        "$extensions": {
+          "com.figma": {
+            "variableId": "VariableID:3772:114",
+            "collectionId": "VariableCollectionId:5:438",
+            "modeId": "5:4",
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ]
+          }
+        }
+      },
+      "xl": {
+        "$value": "{metrics.units.xl}",
+        "$type": "dimension",
+        "$extensions": {
+          "com.figma": {
+            "variableId": "VariableID:3772:115",
+            "collectionId": "VariableCollectionId:5:438",
+            "modeId": "5:4",
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ]
+          }
+        }
+      },
+      "2xl": {
+        "$value": "{metrics.units.2xl}",
+        "$type": "dimension",
+        "$extensions": {
+          "com.figma": {
+            "variableId": "VariableID:3772:117",
+            "collectionId": "VariableCollectionId:5:438",
+            "modeId": "5:4",
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ]
+          }
+        }
+      },
+      "3xl": {
+        "$value": "{metrics.units.3xl}",
+        "$type": "dimension",
+        "$extensions": {
+          "com.figma": {
+            "variableId": "VariableID:3772:118",
+            "collectionId": "VariableCollectionId:5:438",
+            "modeId": "5:4",
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ]
+          }
+        }
+      },
+      "4xl": {
+        "$value": "{metrics.units.4xl}",
+        "$type": "dimension",
+        "$extensions": {
+          "com.figma": {
+            "variableId": "VariableID:3772:119",
+            "collectionId": "VariableCollectionId:5:438",
+            "modeId": "5:4",
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ]
+          }
+        }
+      }
+    },
+    "modeTablet": {
+      "xs": {
+        "$value": "{metrics.units.xs}",
+        "$type": "dimension",
+        "$extensions": {
+          "com.figma": {
+            "variableId": "VariableID:3772:113",
+            "collectionId": "VariableCollectionId:5:438",
+            "modeId": "5:5",
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ]
+          }
+        }
+      },
+      "sm": {
+        "$value": "{metrics.units.sm}",
+        "$type": "dimension",
+        "$extensions": {
+          "com.figma": {
+            "variableId": "VariableID:3772:112",
+            "collectionId": "VariableCollectionId:5:438",
+            "modeId": "5:5",
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ]
+          }
+        }
+      },
+      "md": {
+        "$value": "{metrics.units.md}",
+        "$type": "dimension",
+        "$extensions": {
+          "com.figma": {
+            "variableId": "VariableID:3772:116",
+            "collectionId": "VariableCollectionId:5:438",
+            "modeId": "5:5",
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ]
+          }
+        }
+      },
+      "default": {
+        "$value": "{metrics.units.default}",
+        "$type": "dimension",
+        "$extensions": {
+          "com.figma": {
+            "variableId": "VariableID:5:443",
+            "collectionId": "VariableCollectionId:5:438",
+            "modeId": "5:5",
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ]
+          }
+        }
+      },
+      "lg": {
+        "$value": "{metrics.units.lg}",
+        "$type": "dimension",
+        "$extensions": {
+          "com.figma": {
+            "variableId": "VariableID:3772:114",
+            "collectionId": "VariableCollectionId:5:438",
+            "modeId": "5:5",
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ]
+          }
+        }
+      },
+      "xl": {
+        "$value": "{metrics.units.xl}",
+        "$type": "dimension",
+        "$extensions": {
+          "com.figma": {
+            "variableId": "VariableID:3772:115",
+            "collectionId": "VariableCollectionId:5:438",
+            "modeId": "5:5",
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ]
+          }
+        }
+      },
+      "2xl": {
+        "$value": "{metrics.units.2xl}",
+        "$type": "dimension",
+        "$extensions": {
+          "com.figma": {
+            "variableId": "VariableID:3772:117",
+            "collectionId": "VariableCollectionId:5:438",
+            "modeId": "5:5",
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ]
+          }
+        }
+      },
+      "3xl": {
+        "$value": "{metrics.units.3xl}",
+        "$type": "dimension",
+        "$extensions": {
+          "com.figma": {
+            "variableId": "VariableID:3772:118",
+            "collectionId": "VariableCollectionId:5:438",
+            "modeId": "5:5",
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ]
+          }
+        }
+      },
+      "4xl": {
+        "$value": "{metrics.units.4xl}",
+        "$type": "dimension",
+        "$extensions": {
+          "com.figma": {
+            "variableId": "VariableID:3772:119",
+            "collectionId": "VariableCollectionId:5:438",
+            "modeId": "5:5",
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ]
+          }
+        }
+      }
+    },
+    "modeMobile": {
+      "xs": {
+        "$value": "{metrics.units.xs}",
+        "$type": "dimension",
+        "$extensions": {
+          "com.figma": {
+            "variableId": "VariableID:3772:113",
+            "collectionId": "VariableCollectionId:5:438",
+            "modeId": "5:6",
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ]
+          }
+        }
+      },
+      "sm": {
+        "$value": "{metrics.units.xs}",
+        "$type": "dimension",
+        "$extensions": {
+          "com.figma": {
+            "variableId": "VariableID:3772:112",
+            "collectionId": "VariableCollectionId:5:438",
+            "modeId": "5:6",
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ]
+          }
+        }
+      },
+      "md": {
+        "$value": "{metrics.units.md}",
+        "$type": "dimension",
+        "$extensions": {
+          "com.figma": {
+            "variableId": "VariableID:3772:116",
+            "collectionId": "VariableCollectionId:5:438",
+            "modeId": "5:6",
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ]
+          }
+        }
+      },
+      "default": {
+        "$value": "{metrics.units.default}",
+        "$type": "dimension",
+        "$extensions": {
+          "com.figma": {
+            "variableId": "VariableID:5:443",
+            "collectionId": "VariableCollectionId:5:438",
+            "modeId": "5:6",
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ]
+          }
+        }
+      },
+      "lg": {
+        "$value": "{metrics.units.lg}",
+        "$type": "dimension",
+        "$extensions": {
+          "com.figma": {
+            "variableId": "VariableID:3772:114",
+            "collectionId": "VariableCollectionId:5:438",
+            "modeId": "5:6",
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ]
+          }
+        }
+      },
+      "xl": {
+        "$value": "{metrics.units.xl}",
+        "$type": "dimension",
+        "$extensions": {
+          "com.figma": {
+            "variableId": "VariableID:3772:115",
+            "collectionId": "VariableCollectionId:5:438",
+            "modeId": "5:6",
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ]
+          }
+        }
+      },
+      "2xl": {
+        "$value": "{metrics.units.2xl}",
+        "$type": "dimension",
+        "$extensions": {
+          "com.figma": {
+            "variableId": "VariableID:3772:117",
+            "collectionId": "VariableCollectionId:5:438",
+            "modeId": "5:6",
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ]
+          }
+        }
+      },
+      "3xl": {
+        "$value": "{metrics.units.3xl}",
+        "$type": "dimension",
+        "$extensions": {
+          "com.figma": {
+            "variableId": "VariableID:3772:118",
+            "collectionId": "VariableCollectionId:5:438",
+            "modeId": "5:6",
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ]
+          }
+        }
+      },
+      "4xl": {
+        "$value": "{metrics.units.4xl}",
+        "$type": "dimension",
+        "$extensions": {
+          "com.figma": {
+            "variableId": "VariableID:3772:119",
+            "collectionId": "VariableCollectionId:5:438",
+            "modeId": "5:6",
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "GAP"
+            ]
+          }
+        }
+      }
+    }
+  },
   "screen": {
     "modeDesktop": {
       "width": {
@@ -11,7 +424,9 @@
             "collectionId": "VariableCollectionId:5:438",
             "modeId": "5:4",
             "resolvedType": "FLOAT",
-            "scopes": ["WIDTH_HEIGHT"]
+            "scopes": [
+              "WIDTH_HEIGHT"
+            ]
           }
         }
       },
@@ -24,7 +439,9 @@
             "collectionId": "VariableCollectionId:5:438",
             "modeId": "5:4",
             "resolvedType": "FLOAT",
-            "scopes": ["WIDTH_HEIGHT"]
+            "scopes": [
+              "WIDTH_HEIGHT"
+            ]
           }
         }
       }
@@ -39,7 +456,9 @@
             "collectionId": "VariableCollectionId:5:438",
             "modeId": "5:5",
             "resolvedType": "FLOAT",
-            "scopes": ["WIDTH_HEIGHT"]
+            "scopes": [
+              "WIDTH_HEIGHT"
+            ]
           }
         }
       },
@@ -52,7 +471,9 @@
             "collectionId": "VariableCollectionId:5:438",
             "modeId": "5:5",
             "resolvedType": "FLOAT",
-            "scopes": ["WIDTH_HEIGHT"]
+            "scopes": [
+              "WIDTH_HEIGHT"
+            ]
           }
         }
       }
@@ -67,7 +488,9 @@
             "collectionId": "VariableCollectionId:5:438",
             "modeId": "5:6",
             "resolvedType": "FLOAT",
-            "scopes": ["WIDTH_HEIGHT"]
+            "scopes": [
+              "WIDTH_HEIGHT"
+            ]
           }
         }
       },
@@ -80,54 +503,9 @@
             "collectionId": "VariableCollectionId:5:438",
             "modeId": "5:6",
             "resolvedType": "FLOAT",
-            "scopes": ["WIDTH_HEIGHT"]
-          }
-        }
-      }
-    }
-  },
-  "spacing": {
-    "modeDesktop": {
-      "default": {
-        "$value": "{metrics.units.default}",
-        "$type": "dimension",
-        "$extensions": {
-          "com.figma": {
-            "variableId": "VariableID:5:443",
-            "collectionId": "VariableCollectionId:5:438",
-            "modeId": "5:4",
-            "resolvedType": "FLOAT",
-            "scopes": ["GAP"]
-          }
-        }
-      }
-    },
-    "modeTablet": {
-      "default": {
-        "$value": "{metrics.units.md}",
-        "$type": "dimension",
-        "$extensions": {
-          "com.figma": {
-            "variableId": "VariableID:5:443",
-            "collectionId": "VariableCollectionId:5:438",
-            "modeId": "5:5",
-            "resolvedType": "FLOAT",
-            "scopes": ["GAP"]
-          }
-        }
-      }
-    },
-    "modeMobile": {
-      "default": {
-        "$value": "{metrics.units.sm}",
-        "$type": "dimension",
-        "$extensions": {
-          "com.figma": {
-            "variableId": "VariableID:5:443",
-            "collectionId": "VariableCollectionId:5:438",
-            "modeId": "5:6",
-            "resolvedType": "FLOAT",
-            "scopes": ["GAP"]
+            "scopes": [
+              "WIDTH_HEIGHT"
+            ]
           }
         }
       }
@@ -137,14 +515,16 @@
     "modeDesktop": {
       "columns": {
         "$value": 12,
-        "$type": "dimension",
+        "$type": "number",
         "$extensions": {
           "com.figma": {
             "variableId": "VariableID:5:444",
             "collectionId": "VariableCollectionId:5:438",
             "modeId": "5:4",
             "resolvedType": "FLOAT",
-            "scopes": ["WIDTH_HEIGHT"]
+            "scopes": [
+              "WIDTH_HEIGHT"
+            ]
           }
         }
       }
@@ -152,14 +532,16 @@
     "modeTablet": {
       "columns": {
         "$value": 8,
-        "$type": "dimension",
+        "$type": "number",
         "$extensions": {
           "com.figma": {
             "variableId": "VariableID:5:444",
             "collectionId": "VariableCollectionId:5:438",
             "modeId": "5:5",
             "resolvedType": "FLOAT",
-            "scopes": ["WIDTH_HEIGHT"]
+            "scopes": [
+              "WIDTH_HEIGHT"
+            ]
           }
         }
       }
@@ -167,14 +549,16 @@
     "modeMobile": {
       "columns": {
         "$value": 4,
-        "$type": "dimension",
+        "$type": "number",
         "$extensions": {
           "com.figma": {
             "variableId": "VariableID:5:444",
             "collectionId": "VariableCollectionId:5:438",
             "modeId": "5:6",
             "resolvedType": "FLOAT",
-            "scopes": ["WIDTH_HEIGHT"]
+            "scopes": [
+              "WIDTH_HEIGHT"
+            ]
           }
         }
       }
@@ -192,7 +576,10 @@
               "collectionId": "VariableCollectionId:5:438",
               "modeId": "5:4",
               "resolvedType": "FLOAT",
-              "scopes": ["WIDTH_HEIGHT"]
+              "scopes": [
+                "TEXT_CONTENT",
+                "WIDTH_HEIGHT"
+              ]
             }
           }
         },
@@ -205,7 +592,10 @@
               "collectionId": "VariableCollectionId:5:438",
               "modeId": "5:4",
               "resolvedType": "FLOAT",
-              "scopes": ["WIDTH_HEIGHT"]
+              "scopes": [
+                "TEXT_CONTENT",
+                "WIDTH_HEIGHT"
+              ]
             }
           }
         },
@@ -218,7 +608,10 @@
               "collectionId": "VariableCollectionId:5:438",
               "modeId": "5:4",
               "resolvedType": "FLOAT",
-              "scopes": ["WIDTH_HEIGHT"]
+              "scopes": [
+                "TEXT_CONTENT",
+                "WIDTH_HEIGHT"
+              ]
             }
           }
         },
@@ -231,7 +624,10 @@
               "collectionId": "VariableCollectionId:5:438",
               "modeId": "5:4",
               "resolvedType": "FLOAT",
-              "scopes": ["WIDTH_HEIGHT"]
+              "scopes": [
+                "TEXT_CONTENT",
+                "WIDTH_HEIGHT"
+              ]
             }
           }
         },
@@ -244,7 +640,10 @@
               "collectionId": "VariableCollectionId:5:438",
               "modeId": "5:4",
               "resolvedType": "FLOAT",
-              "scopes": ["WIDTH_HEIGHT"]
+              "scopes": [
+                "TEXT_CONTENT",
+                "WIDTH_HEIGHT"
+              ]
             }
           }
         },
@@ -257,7 +656,10 @@
               "collectionId": "VariableCollectionId:5:438",
               "modeId": "5:4",
               "resolvedType": "FLOAT",
-              "scopes": ["WIDTH_HEIGHT"]
+              "scopes": [
+                "TEXT_CONTENT",
+                "WIDTH_HEIGHT"
+              ]
             }
           }
         }
@@ -273,7 +675,10 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:4",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "FONT_SIZE"
+                ]
               }
             }
           },
@@ -286,7 +691,10 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:4",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "FONT_SIZE"
+                ]
               }
             }
           },
@@ -299,7 +707,10 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:4",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "FONT_SIZE"
+                ]
               }
             }
           },
@@ -312,7 +723,10 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:4",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "FONT_SIZE"
+                ]
               }
             }
           },
@@ -325,7 +739,10 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:4",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "FONT_SIZE"
+                ]
               }
             }
           },
@@ -338,7 +755,10 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:4",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "FONT_SIZE"
+                ]
               }
             }
           }
@@ -353,7 +773,10 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:4",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "FONT_SIZE"
+                ]
               }
             }
           },
@@ -366,7 +789,10 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:4",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "FONT_SIZE"
+                ]
               }
             }
           },
@@ -379,7 +805,10 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:4",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "FONT_SIZE"
+                ]
               }
             }
           },
@@ -392,7 +821,10 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:4",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "FONT_SIZE"
+                ]
               }
             }
           },
@@ -405,7 +837,10 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:4",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "FONT_SIZE"
+                ]
               }
             }
           }
@@ -420,7 +855,10 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:4",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "FONT_SIZE"
+                ]
               }
             }
           },
@@ -433,7 +871,10 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:4",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "FONT_SIZE"
+                ]
               }
             }
           },
@@ -446,7 +887,10 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:4",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "FONT_SIZE"
+                ]
               }
             }
           }
@@ -461,7 +905,11 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:4",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "WIDTH_HEIGHT",
+                  "FONT_SIZE"
+                ]
               }
             }
           },
@@ -474,7 +922,11 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:4",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "WIDTH_HEIGHT",
+                  "FONT_SIZE"
+                ]
               }
             }
           },
@@ -487,7 +939,11 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:4",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "WIDTH_HEIGHT",
+                  "FONT_SIZE"
+                ]
               }
             }
           },
@@ -500,7 +956,11 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:4",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "WIDTH_HEIGHT",
+                  "FONT_SIZE"
+                ]
               }
             }
           },
@@ -513,7 +973,11 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:4",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "WIDTH_HEIGHT",
+                  "FONT_SIZE"
+                ]
               }
             }
           }
@@ -531,7 +995,10 @@
               "collectionId": "VariableCollectionId:5:438",
               "modeId": "5:5",
               "resolvedType": "FLOAT",
-              "scopes": ["WIDTH_HEIGHT"]
+              "scopes": [
+                "TEXT_CONTENT",
+                "WIDTH_HEIGHT"
+              ]
             }
           }
         },
@@ -544,7 +1011,10 @@
               "collectionId": "VariableCollectionId:5:438",
               "modeId": "5:5",
               "resolvedType": "FLOAT",
-              "scopes": ["WIDTH_HEIGHT"]
+              "scopes": [
+                "TEXT_CONTENT",
+                "WIDTH_HEIGHT"
+              ]
             }
           }
         },
@@ -557,7 +1027,10 @@
               "collectionId": "VariableCollectionId:5:438",
               "modeId": "5:5",
               "resolvedType": "FLOAT",
-              "scopes": ["WIDTH_HEIGHT"]
+              "scopes": [
+                "TEXT_CONTENT",
+                "WIDTH_HEIGHT"
+              ]
             }
           }
         },
@@ -570,7 +1043,10 @@
               "collectionId": "VariableCollectionId:5:438",
               "modeId": "5:5",
               "resolvedType": "FLOAT",
-              "scopes": ["WIDTH_HEIGHT"]
+              "scopes": [
+                "TEXT_CONTENT",
+                "WIDTH_HEIGHT"
+              ]
             }
           }
         },
@@ -583,7 +1059,10 @@
               "collectionId": "VariableCollectionId:5:438",
               "modeId": "5:5",
               "resolvedType": "FLOAT",
-              "scopes": ["WIDTH_HEIGHT"]
+              "scopes": [
+                "TEXT_CONTENT",
+                "WIDTH_HEIGHT"
+              ]
             }
           }
         },
@@ -596,7 +1075,10 @@
               "collectionId": "VariableCollectionId:5:438",
               "modeId": "5:5",
               "resolvedType": "FLOAT",
-              "scopes": ["WIDTH_HEIGHT"]
+              "scopes": [
+                "TEXT_CONTENT",
+                "WIDTH_HEIGHT"
+              ]
             }
           }
         }
@@ -612,7 +1094,10 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:5",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "FONT_SIZE"
+                ]
               }
             }
           },
@@ -625,7 +1110,10 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:5",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "FONT_SIZE"
+                ]
               }
             }
           },
@@ -638,7 +1126,10 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:5",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "FONT_SIZE"
+                ]
               }
             }
           },
@@ -651,7 +1142,10 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:5",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "FONT_SIZE"
+                ]
               }
             }
           },
@@ -664,7 +1158,10 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:5",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "FONT_SIZE"
+                ]
               }
             }
           },
@@ -677,7 +1174,10 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:5",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "FONT_SIZE"
+                ]
               }
             }
           }
@@ -692,7 +1192,10 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:5",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "FONT_SIZE"
+                ]
               }
             }
           },
@@ -705,7 +1208,10 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:5",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "FONT_SIZE"
+                ]
               }
             }
           },
@@ -718,7 +1224,10 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:5",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "FONT_SIZE"
+                ]
               }
             }
           },
@@ -731,7 +1240,10 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:5",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "FONT_SIZE"
+                ]
               }
             }
           },
@@ -744,7 +1256,10 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:5",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "FONT_SIZE"
+                ]
               }
             }
           }
@@ -759,7 +1274,10 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:5",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "FONT_SIZE"
+                ]
               }
             }
           },
@@ -772,7 +1290,10 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:5",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "FONT_SIZE"
+                ]
               }
             }
           },
@@ -785,7 +1306,10 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:5",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "FONT_SIZE"
+                ]
               }
             }
           }
@@ -800,7 +1324,11 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:5",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "WIDTH_HEIGHT",
+                  "FONT_SIZE"
+                ]
               }
             }
           },
@@ -813,7 +1341,11 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:5",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "WIDTH_HEIGHT",
+                  "FONT_SIZE"
+                ]
               }
             }
           },
@@ -826,7 +1358,11 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:5",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "WIDTH_HEIGHT",
+                  "FONT_SIZE"
+                ]
               }
             }
           },
@@ -839,7 +1375,11 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:5",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "WIDTH_HEIGHT",
+                  "FONT_SIZE"
+                ]
               }
             }
           },
@@ -852,7 +1392,11 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:5",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "WIDTH_HEIGHT",
+                  "FONT_SIZE"
+                ]
               }
             }
           }
@@ -870,7 +1414,10 @@
               "collectionId": "VariableCollectionId:5:438",
               "modeId": "5:6",
               "resolvedType": "FLOAT",
-              "scopes": ["WIDTH_HEIGHT"]
+              "scopes": [
+                "TEXT_CONTENT",
+                "WIDTH_HEIGHT"
+              ]
             }
           }
         },
@@ -883,7 +1430,10 @@
               "collectionId": "VariableCollectionId:5:438",
               "modeId": "5:6",
               "resolvedType": "FLOAT",
-              "scopes": ["WIDTH_HEIGHT"]
+              "scopes": [
+                "TEXT_CONTENT",
+                "WIDTH_HEIGHT"
+              ]
             }
           }
         },
@@ -896,7 +1446,10 @@
               "collectionId": "VariableCollectionId:5:438",
               "modeId": "5:6",
               "resolvedType": "FLOAT",
-              "scopes": ["WIDTH_HEIGHT"]
+              "scopes": [
+                "TEXT_CONTENT",
+                "WIDTH_HEIGHT"
+              ]
             }
           }
         },
@@ -909,7 +1462,10 @@
               "collectionId": "VariableCollectionId:5:438",
               "modeId": "5:6",
               "resolvedType": "FLOAT",
-              "scopes": ["WIDTH_HEIGHT"]
+              "scopes": [
+                "TEXT_CONTENT",
+                "WIDTH_HEIGHT"
+              ]
             }
           }
         },
@@ -922,7 +1478,10 @@
               "collectionId": "VariableCollectionId:5:438",
               "modeId": "5:6",
               "resolvedType": "FLOAT",
-              "scopes": ["WIDTH_HEIGHT"]
+              "scopes": [
+                "TEXT_CONTENT",
+                "WIDTH_HEIGHT"
+              ]
             }
           }
         },
@@ -935,7 +1494,10 @@
               "collectionId": "VariableCollectionId:5:438",
               "modeId": "5:6",
               "resolvedType": "FLOAT",
-              "scopes": ["WIDTH_HEIGHT"]
+              "scopes": [
+                "TEXT_CONTENT",
+                "WIDTH_HEIGHT"
+              ]
             }
           }
         }
@@ -951,7 +1513,10 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:6",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "FONT_SIZE"
+                ]
               }
             }
           },
@@ -964,7 +1529,10 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:6",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "FONT_SIZE"
+                ]
               }
             }
           },
@@ -977,7 +1545,10 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:6",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "FONT_SIZE"
+                ]
               }
             }
           },
@@ -990,7 +1561,10 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:6",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "FONT_SIZE"
+                ]
               }
             }
           },
@@ -1003,7 +1577,10 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:6",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "FONT_SIZE"
+                ]
               }
             }
           },
@@ -1016,7 +1593,10 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:6",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "FONT_SIZE"
+                ]
               }
             }
           }
@@ -1031,7 +1611,10 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:6",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "FONT_SIZE"
+                ]
               }
             }
           },
@@ -1044,7 +1627,10 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:6",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "FONT_SIZE"
+                ]
               }
             }
           },
@@ -1057,7 +1643,10 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:6",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "FONT_SIZE"
+                ]
               }
             }
           },
@@ -1070,7 +1659,10 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:6",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "FONT_SIZE"
+                ]
               }
             }
           },
@@ -1083,7 +1675,10 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:6",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "FONT_SIZE"
+                ]
               }
             }
           }
@@ -1098,7 +1693,10 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:6",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "FONT_SIZE"
+                ]
               }
             }
           },
@@ -1111,7 +1709,10 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:6",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "FONT_SIZE"
+                ]
               }
             }
           },
@@ -1124,7 +1725,10 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:6",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "FONT_SIZE"
+                ]
               }
             }
           }
@@ -1139,7 +1743,11 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:6",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "WIDTH_HEIGHT",
+                  "FONT_SIZE"
+                ]
               }
             }
           },
@@ -1152,7 +1760,11 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:6",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "WIDTH_HEIGHT",
+                  "FONT_SIZE"
+                ]
               }
             }
           },
@@ -1165,7 +1777,11 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:6",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "WIDTH_HEIGHT",
+                  "FONT_SIZE"
+                ]
               }
             }
           },
@@ -1178,7 +1794,11 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:6",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "WIDTH_HEIGHT",
+                  "FONT_SIZE"
+                ]
               }
             }
           },
@@ -1191,7 +1811,11 @@
                 "collectionId": "VariableCollectionId:5:438",
                 "modeId": "5:6",
                 "resolvedType": "FLOAT",
-                "scopes": ["ALL_SCOPES"]
+                "scopes": [
+                  "TEXT_CONTENT",
+                  "WIDTH_HEIGHT",
+                  "FONT_SIZE"
+                ]
               }
             }
           }

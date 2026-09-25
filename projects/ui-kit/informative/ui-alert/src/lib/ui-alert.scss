@@ -21,7 +21,11 @@ $padding-x: var(--ui-alert-padding-x, var(--units-md));             /// Inset ho
 $radius: var(--ui-alert-radius, var(--radius-default));             /// Rayon des coins.
 $stroke-width: var(--ui-alert-stroke-width, var(--stroke-default)); /// Épaisseur de la bordure.
 
-$icon-padding-top: var(--ui-alert-icon-padding-top, var(--units-2xs));          /// Décalage vertical de l'icône, pour l'aligner sur la première ligne de texte.
+$align: var(--ui-alert-align, flex-start);       /// Alignement vertical de la rangée (icône, contenu, fermeture) ; le mode titre seul reste centré.
+$icon-align: var(--ui-alert-icon-align, auto);  /// Alignement vertical de l'icône seule ; `auto` suit l'alignement de la rangée.
+$close-align: var(--ui-alert-close-align, auto);/// Alignement vertical de la fermeture seule ; `auto` suit l'alignement de la rangée.
+
+$icon-padding-top: var(--ui-alert-icon-padding-top, var(--units-2xs));          /// Décalage vertical de l'icône, pour l'aligner sur la première ligne de texte ; à remettre à `0` en alignement centré.
 $content-gap: var(--ui-alert-content-gap, var(--units-2xs));                    /// Espacement titre ↔ message.
 $content-padding-right: var(--ui-alert-content-padding-right, var(--units-sm)); /// Réserve à droite du contenu, avant la fermeture.
 
@@ -62,7 +66,7 @@ $focus-ring-offset: var(--ui-alert-focus-ring-offset, #{utils.rem-calc(2)});    
 .ui-alert {
   // --- Base ----------------------------------------------------------
   display: flex;
-  align-items: flex-start;
+  align-items: $align;
   gap: $gap;
   box-sizing: border-box;
   width: 100%;
@@ -80,6 +84,7 @@ $focus-ring-offset: var(--ui-alert-focus-ring-offset, #{utils.rem-calc(2)});    
     flex: 0 0 auto;
     display: flex;
     align-items: center;
+    align-self: $icon-align;
     padding-top: $icon-padding-top;
     line-height: 0;
   }
@@ -112,6 +117,7 @@ $focus-ring-offset: var(--ui-alert-focus-ring-offset, #{utils.rem-calc(2)});    
     flex: 0 0 auto;
     display: inline-flex;
     align-items: center;
+    align-self: $close-align;
     justify-content: center;
     padding: 0;
     border: 0;

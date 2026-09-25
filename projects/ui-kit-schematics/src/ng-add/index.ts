@@ -477,15 +477,16 @@ function copyTokensPipeline(): Rule {
         readFileSync(join(pipelineDir, 'tokens.config.json'), 'utf8'),
       );
     }
-    if (!tree.exists('scripts/tokens.build.mjs')) {
-      tree.create(
-        'scripts/tokens.build.mjs',
-        readFileSync(join(pipelineDir, 'tokens.build.mjs'), 'utf8'),
-      );
+
+    const buildScript = readFileSync(join(pipelineDir, 'tokens.build.mjs'), 'utf8');
+    if (tree.exists('scripts/tokens.build.mjs')) {
+      tree.overwrite('scripts/tokens.build.mjs', buildScript);
+    } else {
+      tree.create('scripts/tokens.build.mjs', buildScript);
     }
 
     context.logger.info(
-      '✔ Chaîne de génération des tokens copiée (src/design-tokens/, tokens.config.json, scripts/tokens.build.mjs).',
+      '✔ Chaîne de génération des tokens copiée (src/design-tokens/, tokens.config.json, scripts/tokens.build.mjs 🔒).',
     );
     return tree;
   };

@@ -9,7 +9,7 @@
 import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { InputDateMode, InputDateValue, InputDateValueType, UiInputDate } from './ui-input-date';
 
 @Component({
@@ -20,6 +20,9 @@ import { InputDateMode, InputDateValue, InputDateValueType, UiInputDate } from '
     [valueType]="valueType()"
     [floatLabel]="'on'"
     [min]="min()"
+    [icon]="icon()"
+    [showIcon]="showIcon()"
+    [readonly]="readonly()"
     [(ngModel)]="value"
   />`,
 })
@@ -28,6 +31,9 @@ class DateHost {
   readonly mode = signal<InputDateMode>('date');
   readonly valueType = signal<InputDateValueType>('date');
   readonly min = signal<Date | string | undefined>(undefined);
+  readonly icon = signal<string | undefined>(undefined);
+  readonly showIcon = signal(true);
+  readonly readonly = signal(false);
   value: InputDateValue = null;
 }
 
@@ -44,6 +50,8 @@ async function setup(initialValue: InputDateValue = null) {
   await fixture.whenStable();
   const input = () => fixture.nativeElement.querySelector('input') as HTMLInputElement;
   const field = () => fixture.nativeElement.querySelector('.ui-field') as HTMLElement;
+  const action = () =>
+    fixture.nativeElement.querySelector('.ui-input-date-action') as HTMLButtonElement | null;
   const settle = async () => {
     fixture.detectChanges();
     await fixture.whenStable();
@@ -55,7 +63,7 @@ async function setup(initialValue: InputDateValue = null) {
     input().dispatchEvent(new Event('change'));
     await settle();
   };
-  return { fixture, host: fixture.componentInstance, input, field, settle, commit };
+  return { fixture, host: fixture.componentInstance, input, field, action, settle, commit };
 }
 
 describe('ui-input-date', () => {
@@ -161,6 +169,55 @@ describe('ui-input-date', () => {
     const { host, commit } = await setup(new Date(2026, 8, 14));
     await commit('');
     expect(host.value).toBeNull();
+  });
+
+  // The button is what makes this field look like `ui-datepicker`'s trigger: the browser's own
+  // indicator is hidden, so this markup IS the affordance.
+  it.each([
+    ['date', 'fa-calendar'],
+    ['datetime', 'fa-calendar'],
+    ['time', 'fa-clock'],
+  ] as const)('renders the picker button with the %s icon', async (mode, iconClass) => {
+    const { host, action, settle } = await setup();
+    host.mode.set(mode);
+    await settle();
+    expect(action()?.querySelector('i')?.className).toContain(iconClass);
+  });
+
+  it('replaces the glyph through `icon`', async () => {
+    const { host, action, settle } = await setup();
+    host.icon.set('calendar-day');
+    await settle();
+    expect(action()?.querySelector('i')?.className).toContain('fa-calendar-day');
+  });
+
+  it('drops the button on `showIcon=false`', async () => {
+    const { host, action, settle } = await setup();
+    host.showIcon.set(false);
+    await settle();
+    expect(action()).toBeNull();
+  });
+
+  // Not a tab stop: the native control already opens its own picker from the keyboard, so a
+  // focusable button would only add one redundant stop per field.
+  it('keeps the button out of the tab order and names it', async () => {
+    const { action } = await setup();
+    expect(action()?.getAttribute('tabindex')).toBe('-1');
+    expect(action()?.getAttribute('aria-label')).toBe('Ouvrir le calendrier');
+  });
+
+  it('opens the system picker on click, and stays shut when readonly', async () => {
+    const { host, input, action, settle } = await setup();
+    const showPicker = vi.fn();
+    (input() as HTMLInputElement & { showPicker: () => void }).showPicker = showPicker;
+
+    action()?.click();
+    expect(showPicker).toHaveBeenCalledTimes(1);
+
+    host.readonly.set(true);
+    await settle();
+    action()?.click();
+    expect(showPicker).toHaveBeenCalledTimes(1);
   });
 
   it('serializes a Date bound to the native attribute', async () => {

@@ -16,6 +16,94 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+### Fixed
+
+- **`ui-progress-bar` : la barre disparaissait avec `valuePosition="bottom"`** (FSHSP-224).
+  En colonne, `align-items: flex-end` ramenait la piste à sa largeur de contenu, soit 0 px.
+  La piste s'étire désormais, seul le libellé reste aligné à droite.
+
+- **`ui-file-upload` : messages d'erreur invisibles en mode clair** (FSHSP-224). Le message
+  de refus et le texte d'une ligne en erreur de `ui-file-upload-list` prenaient
+  `--informative-errorhigh-content-default`, le contenu prévu pour la surface d'erreur forte :
+  blanc sur fond neutre, mesuré à 1,07:1. Ils passent à `--form-error-content-default`, comme
+  les autres champs du kit (4,51:1 en clair, 12,26:1 en sombre). Les poignées
+  `--ui-file-upload-message-color` et `--ui-file-upload-list-color-error` gardent leur nom,
+  seule leur valeur par défaut change.
+
+- **`ui-file-upload` : avec `name`, un `<form>` natif recevait un fichier vide** (FSHSP-224).
+  Le nom était posé sur le sélecteur, que le composant vide après chaque choix pour qu'un même
+  fichier choisi deux fois redéclenche `change`. Un champ caché porte désormais la sélection
+  courante sous `name`. Sans `name`, rien ne change.
+
+- **`ui-editor` : la zone d'édition réécrivait la saisie de l'utilisateur** (FSHSP-224). Elle
+  était resynchronisée depuis la valeur assainie dès que l'assainissement changeait quoi que ce
+  soit, or `DomSanitizer` encode les accents (`é` devient `&#233;`) et retire tout `style`.
+  - Taper un caractère accentué renvoyait le curseur au début : `abcdé fin` donnait `nabcdé fi`.
+  - Chaque mise en forme perdait la sélection, et la suivante demandait de resélectionner.
+  - L'alignement (`style="text-align: …"`) et le retrait (`<blockquote style="margin: …">`)
+    disparaissaient au clic qui les appliquait et à chaque valeur rechargée (la story
+    `TextAlign` elle-même s'affichait sans alignement). Ce `style` est désormais conservé,
+    réduit à une liste fermée (`text-align`, `margin`, `padding`, `border: none`, aucune
+    `url()`), la même que dans le kit React.
+- **`ui-editor` : recolorer un passage laissait ses mots déjà colorés inchangés** (FSHSP-224).
+  La classe de la même famille restée à l'intérieur (couleur, surlignage, police ou taille)
+  l'emportait, étant plus proche du texte. Elle est retirée à la conversion, et la sélection est
+  reposée sur le texte mis en forme.
+
+- **`ui-toast` : la bande de chaque toast captait le pointeur à côté de la carte**
+  (FSHSP-224). Elle fait toute la largeur de la pile (360 px) quand la carte épouse son
+  contenu : elle avalait les clics destinés à la page et suspendait le compte à rebours dès que
+  le pointeur passait sur la même ligne. Le pointeur et la pause au survol reviennent à la carte.
+
+- **`ui-toast` : un message en attente au-delà de `stackVisibleLimit` expirait sans avoir
+  été affiché** (FSHSP-224). Son délai était armé dès l'arrivée : le message n'était jamais vu,
+  ni annoncé aux lecteurs d'écran. Le compte à rebours démarre désormais quand la carte paraît,
+  et repart de `life` si elle est repoussée hors de la pile, comme dans le kit React.
+
+- **`ui-menu` : cliquer un parent de cascade refermait son sous-menu** (FSHSP-224). En
+  `submenus="flyout"` (donc aussi dans `ui-context-menu`), le survol avait déjà ouvert le
+  sous-menu et le clic le basculait. Au tactile, où le tap émet un `mouseenter` avant le clic,
+  la cascade ne s'ouvrait jamais. Le clic ouvre désormais, sans refermer.
+
+## [0.11.0] - 2026-09-18
+
+### Added
+
+- **Alignement vertical réglable sur les rangées icône/titre + action** (FSHSP-214).
+  `ui-alert`, `ui-toast` et les en-têtes de `ui-modal`, `ui-drawer` et `ui-bottom-sheet`
+  figeaient `align-items: flex-start`. C'est le bon réglage quand le texte passe sur
+  plusieurs lignes (l'icône reste sur la première) et le mauvais quand il tient sur une
+  seule, où la hauteur minimale laisse du vide sous le texte : aucune valeur statique ne
+  convient aux deux, et les projets en étaient réduits à une surcharge globale sur les
+  classes internes. Treize poignées, à chaque fois la rangée puis ses enfants, lesquels
+  valent `auto` (donc suivent la rangée) par défaut : `--ui-alert-align`,
+  `--ui-alert-icon-align`, `--ui-alert-close-align`, `--ui-toast-align`,
+  `--ui-toast-icon-align`, `--ui-toast-close-align`, `--ui-toast-icon-padding-top`,
+  `--ui-modal-header-align`, `--ui-modal-header-actions-align`, `--ui-drawer-header-align`,
+  `--ui-drawer-action-align`, `--ui-bottom-sheet-header-align` et
+  `--ui-bottom-sheet-action-align`. Aucun défaut ne change. Le calage optique de l'icône
+  (`--ui-{alert,toast}-icon-padding-top`) ne sert qu'en alignement haut : à remettre à `0`
+  quand on centre.
+
+### Changed
+
+- **`ui-input-date` : bouton d'ouverture aligné sur `ui-datepicker`** (FSHSP-214). Le champ
+  s'en remettait à l'indicateur que le navigateur peint lui-même : métrique, couleur et zone
+  cliquable lui appartenaient, hors de portée des jetons, et les deux composants ne
+  s'alignaient pas côte à côte dans un même formulaire. Cet indicateur est masqué et remplacé
+  par la zone d'action de `ui-input`, celle que le déclencheur d'`ui-datepicker` rend déjà :
+  même mixin `utils.field-action`, donc mêmes dimensions (40x40, 36x36 en `small`), mêmes
+  états (survol, désactivé) et mêmes réglages `--ui-form-field-action-*`. Le clic appelle
+  `showPicker()`, qui ouvre le sélecteur du système, la roue native comprise sur mobile.
+  L'indicateur natif est masqué sur les trois moteurs : `display: none` sur
+  `::-webkit-calendar-picker-indicator` pour Chrome et Safari, et, Firefox n'exposant aucun
+  sélecteur vers le sien, un débord rogné de la même largeur (donc à géométrie constante, RTL
+  compris) qui l'emporte hors du champ.
+  Nouvelles entrées `icon` (`calendar`, `clock` en `mode="time"`), `showIcon`, `iconAriaLabel`,
+  `iconTemplate` / `<ng-template #icon>` et méthode publique `openPicker()`. Le bouton n'est
+  volontairement pas un arrêt de tabulation : le contrôle natif ouvre déjà son sélecteur au
+  clavier.
+
 ## [0.10.0] - 2026-09-14
 
 ### Added
@@ -100,6 +188,49 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ### Fixed
 
+- **Un alias entre deux jetons d'une même collection cassait `tokens:build`** (FSHSP-203).
+  Le build s'arrêtait sur `Reference Errors: Some token references (N) could not be found`,
+  donc plus de SCSS généré, donc ni application ni Storybook. Chaque collection est bâtie
+  seule et ses jetons sont posés sous sa clé (`semantics`, pour la collection du même nom) :
+  une référence intra-collection devait donc s'écrire `{semantics.global.text.default}`.
+  Or un export Figma / Token Flow Manager ne met jamais le nom de la collection dans le
+  chemin d'une variable — il produit la forme nue `{global.text.default}`, que Style
+  Dictionary ne peut pas résoudre. Les références sont maintenant préfixées au chargement,
+  et la forme nue devient la forme normale.
+  - **Une racine déjà explicite n'est jamais touchée** : `{primitives.grey.500}` reste une
+    référence inter-collections. Et le préfixage ne s'applique que si la cible existe
+    réellement dans la collection — sans quoi un `{effects.default}` de `styles.json`, qui
+    vise une AUTRE collection et passe par `refToVar` et non par Style Dictionary, serait
+    préfixé de travers. Corollaire assumé : un groupe qui porte le nom d'une collection
+    n'est pas atteignable par une référence nue, la collection gagne.
+  - **L'indirection est conservée** : les blocs clair et sombre émettent tous deux
+    `var(--global-text-default)`, dont la cible change par mode. Un alias intra-collection
+    est donc juste par mode sans rien de plus.
+  - **Une référence cassée nomme maintenant son fichier et son jeton**, avant même que
+    Style Dictionary ne s'en mêle : `src/design-tokens/semantics.json → form.modeLight.content`
+    plutôt qu'un chemin résolu qui ne correspond à aucune ligne du fichier.
+  - **`scripts/tokens.build.mjs` passe en 🔒 verrouillé** chez le consommateur, comme
+    `src/styles/ui-kit/` : c'est du moteur, pas du contenu de projet. Rejouer
+    `ng add @4sh/ui-kit-schematics` le remplace donc, et c'est ce qui fait arriver ce
+    correctif — et les suivants — dans un projet déjà installé. `tokens.config.json` et les
+    JSON de jetons restent, eux, éditables et jamais écrasés.
+  - **Le pipeline de tokens a enfin des tests** (`pnpm tokens:test`, ajouté à la CI). Il n'en
+    avait aucun, ce qui explique qu'un trou pareil ait tenu depuis le début : le
+    `semantics.json` du starter ne référence que `primitives` (1295 fois) et ne contient pas
+    un seul alias intra-collection. Le script accepte pour cela un `--config <chemin>` qui
+    déplace sa racine, de sorte qu'une suite le lance sur un jeu de jetons jetable.
+
+- **`ui-tooltip` : `autoHide=false` ne gardait pas l'infobulle ouverte.** L'option posait bien
+  `pointer-events: auto` sur le panneau, mais `mouseleave` sur le déclencheur démontait
+  l'overlay immédiatement, `hideDelay` valant 0 par défaut. Le pointeur n'avait donc jamais le
+  temps de franchir l'écart de la flèche : le panneau disparaissait avant d'être atteint, et son
+  `mouseenter` ne tirait jamais. Un plancher est maintenant appliqué à `hideDelay` quand le
+  panneau est interactif, et un `hideDelay` plus grand continue de primer.
+  - Le focus qui entre dans le panneau ne le ferme plus : le `focusout` du déclencheur ignore
+    une cible située à l'intérieur, ce qui rend le contenu réellement cliquable à la souris.
+  - Les écouteurs du panneau et celui d'`Échap` étaient reposés à **chaque** affichage alors
+    qu'ils n'étaient libérés qu'à la destruction : ils sont désormais attachés une seule fois.
+  - `Échap` masque maintenant sans attendre `hideDelay`.
 - **Le scroll lock de fond est de nouveau un seul compteur pour tout le kit** (FSHSP-210).
   `lockBodyScroll` / `unlockBodyScroll` étaient recopiés à l'identique dans les cinq points
   d'entrée qui masquent le viewport (`ui-modal`, `ui-drawer`, `ui-bottom-sheet`, `ui-sidebar`

@@ -11,6 +11,8 @@ $font-size-small: var(
   var(--size-typography-text-md)
 ); /// Taille de police du contrôle, variante `small`.
 
+$native-overhang: 2.5rem;
+
 .ui-input-date {
   &-native {
     @include utils.field-native-input;
@@ -32,17 +34,23 @@ $font-size-small: var(
       margin: 0;
     }
 
-    // L'indicateur est un bouton : il doit se donner comme tel.
     &::-webkit-calendar-picker-indicator {
-      cursor: pointer;
+      display: none;
     }
+
+    margin-inline-end: -$native-overhang;
+    clip-path: inset(0 $native-overhang 0 0);
+  }
+
+  &-action {
+    @include utils.field-action;
   }
 }
 
-// L'indicateur et le panneau déroulant sont peints par le navigateur, qui les
-// choisit sur `color-scheme` et non sur nos jetons. Sans cette déclaration, le
-// thème sombre garde un glyphe noir sur champ sombre et ouvre un calendrier
-// clair — mesuré, puis corrigé ici.
+:host-context([dir='rtl']) .ui-input-date-native {
+  clip-path: inset(0 0 0 $native-overhang);
+}
+
 :host-context([data-theme='dark']) .ui-input-date-native {
   color-scheme: dark;
 }

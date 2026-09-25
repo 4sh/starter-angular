@@ -20,6 +20,7 @@
     "postinstall": "pnpm tokens:build && pnpm ui-kit:build && pnpm docs:config",
     "ui-kit:build": "ng build ui-kit && pnpm ui-kit:styles",
     "tokens:build": "node scripts/tokens.build.mjs",
+    "tokens:test": "vitest run --root scripts",
     "build-info": "node scripts/build-info.mjs",
     "docs:config": "node scripts/docs.config.mjs && node scripts/component-vars.build.mjs",
     "docs:search": "node scripts/docs.search.mjs",
