@@ -5,23 +5,18 @@ name: PR checks
 # branch `@4sh/ui-kit` is published from, so a regression reaching it can reach
 # consumers.
 #
-# ⚠️ A green workflow blocks nothing on its own. Turn these checks into merge
-# requirements: *Settings → Branches → main → Require status checks to pass*.
+# ⚠️ `Lint, types & docs` and `Build Storybook` are required status checks: the
+# `main` ruleset matches them by job `name:`, not by job id. Renaming either one
+# blocks every PR until the ruleset follows.
 on:
-  # FSHSP-194: skip the run when a push only touches files nothing here builds,
-  # lints, type-checks or renders — docs and repo metadata. If `checks`/
-  # `storybook`/`a11y` ever become required status checks (see the note above),
-  # a PR that ONLY touches these paths will show them as "expected, never run"
-  # rather than green — GitHub's known paths-ignore + required-checks gap. Add a
-  # do-nothing job on the same paths (`if: false` won't do; needs its own
-  # `on.pull_request.paths` trigger) if that bites.
+  # No `paths-ignore` here, on purpose. A workflow filtered out at trigger level
+  # never starts, so it reports no check, and the required ones stay "Expected"
+  # forever. A companion workflow on `paths:` would not fix it either: it fires
+  # as soon as ONE file matches, so on any PR that also touches CHANGELOG.md
+  # (nearly all of them) it posts a second, always-green check under the same
+  # name. The docs-only shortcut lives in the `changes` job instead: a job
+  # skipped by its `if:` still reports its check, as `skipped`, which passes.
   pull_request:
-    paths-ignore:
-      - '**/*.md'
-      - 'docs/**'
-      - 'LICENSE'
-      - '.vscode/**'
-      - '.github/ISSUE_TEMPLATE/**'
   workflow_dispatch:
 
 permissions:
@@ -33,8 +28,46 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # FSHSP-194: nothing below builds, lints, type-checks or renders docs and repo
+  # metadata, so a PR that only touches those skips the heavy jobs.
+  changes:
+    name: Detect docs-only changes
+    # A manual run has no PR file list: this job is skipped and everything runs.
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      docs_only: ${{ steps.filter.outputs.docs_only }}
+    steps:
+      # Reads the PR's "Files changed", the list `paths-ignore` used to match.
+      # These are shell `case` patterns, where `*` also matches `/`: `*.md` is
+      # any Markdown file at any depth (the old `**/*.md`).
+      - name: Check whether only docs changed
+        id: filter
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          files=$(gh api "repos/$REPO/pulls/$PR/files" --paginate --jq '.[].filename')
+          docs_only=true
+          while IFS= read -r file; do
+            case "$file" in
+              *.md | docs/* | LICENSE | .vscode/* | .github/ISSUE_TEMPLATE/*) ;;
+              *) docs_only=false; echo "Full checks needed, first non-doc file: $file"; break ;;
+            esac
+          done <<< "$files"
+          echo "docs_only=$docs_only" >> "$GITHUB_OUTPUT"
+
   checks:
     name: Lint, types & docs
+    needs: changes
+    # Skipped only on an explicit `true`. If `changes` failed or was skipped,
+    # the output is empty and the job runs: a broken detector must never turn
+    # into a green required check. `!cancelled()` is what lets the job run past
+    # a failed `needs`, while still stopping it when a newer push cancels.
+    if: ${{ !cancelled() && needs.changes.outputs.docs_only != 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -112,6 +145,9 @@ jobs:
 
   storybook:
     name: Build Storybook
+    needs: changes
+    # Same gate as `checks`, and for the same reasons.
+    if: ${{ !cancelled() && needs.changes.outputs.docs_only != 'true' }}
     runs-on: ubuntu-latest
     # Separate job so it runs alongside the fast checks instead of delaying
     # them: it is the slowest step by far, and it is the public deliverable.
@@ -157,6 +193,10 @@ jobs:
   a11y:
     name: Accessibility (informational)
     needs: storybook
+    # Explicit, because the implicit `success()` also looks at `changes`, two
+    # levels up: on a manual run (where `changes` is skipped) it would skip
+    # this job even though Storybook was built.
+    if: ${{ !cancelled() && needs.storybook.result == 'success' }}
     runs-on: ubuntu-latest
     # FSHSP-93: the addon (@storybook/addon-a11y) was already configured, just
     # never run outside the browser panel. Wiring it into CI surfaced 122
