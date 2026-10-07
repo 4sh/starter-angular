@@ -43,6 +43,15 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
   la valeur signale déjà la liste (drapeau et indicatif). Le déclencheur garde son rôle de
   liste déroulante et son inset de fin.
 
+### Fixed
+
+- **Champs : le spinner et les boutons d'action gardaient leurs coins arrondis dans une boîte
+  équerrée** (FSHSP-233). Un `ui-input-number` suivi d'un add-on dans un `ui-input-group`
+  montrait l'arrondi du champ seul à droite de ses flèches ; idem pour les actions pleine
+  hauteur de `ui-input` et `ui-input-date`, et pour un thème qui retouche `--ui-field-radius`.
+  La boîte de `ui-field` découpe désormais son contenu sur ses propres coins : ces parties ne
+  déclarent plus de rayon et suivent celui de la boîte, quelle que soit sa valeur.
+
 ## [0.12.1] - 2026-09-25
 
 ### Fixed

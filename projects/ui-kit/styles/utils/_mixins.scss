@@ -143,13 +143,12 @@
   padding: 0;
   border: none;
   background: none;
-  border-radius:  0 calc(#{ui-config.$form-field-radius} - #{ui-config.$form-field-stroke-width})
-  calc(#{ui-config.$form-field-radius} - #{ui-config.$form-field-stroke-width}) 0;
   color: ui-config.$form-field-action-color;
   cursor: pointer;
   @include control-transition(color, background-color);
 
-  // Flush by design: no inset, the box has no padding to cancel.
+  // Flush by design: no inset, the box has no padding to cancel. No radius
+  // either: the box clips it to its own corners (see `.ui-field-box`).
 
   &:hover:not(:disabled) {
     color: ui-config.$form-field-action-color-hover;
@@ -173,10 +172,9 @@
   align-self: stretch;
   flex-shrink: 0;
   width: $width;
-  // Flush by design: no inset, the box has no padding to cancel.
+  // Flush by design: no inset and no radius, the box clips it to its own
+  // corners (see `.ui-field-box`).
   border-left: ui-config.$form-field-stroke-width solid ui-config.$form-field-spinner-stroke;
-  border-radius: 0 ui-config.$form-field-radius ui-config.$form-field-radius 0;
-  overflow: hidden;
 
   #{$btn} {
     display: flex;
