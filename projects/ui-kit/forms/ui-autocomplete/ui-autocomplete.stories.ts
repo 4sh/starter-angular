@@ -120,7 +120,7 @@ const meta: Meta<UiAutocomplete> = {
     layout: 'centered',
     design: {
       type: 'figma',
-      url: 'https://www.figma.com/design/GZww5hdUA49LB8XWeWP6tl/-Projet----UI-Kit?node-id=125-2969&t=FXxnMXepNWu6yGqA-1',
+      url: 'https://www.figma.com/design/GZww5hdUA49LB8XWeWP6tl/-Projet----UI-Kit?node-id=125-3021&t=FXxnMXepNWu6yGqA-1',
     },
   },
   argTypes: {

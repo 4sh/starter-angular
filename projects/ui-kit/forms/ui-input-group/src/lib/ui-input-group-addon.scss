@@ -4,7 +4,8 @@
 // ui-input-group-addon : co-located styles. All values come from design tokens.
 //
 // The corner radius is driven by the parent group through
-// `--ui-input-group-item-radius` (inherits across the component boundary).
+// `--ui-input-group-item-radius` (inherits across the component boundary),
+// and the group's level through the private `--_input-group-stroke`.
 // =====================================================================
 
 $height: var(--ui-input-group-addon-height, #{utils.$form-field-height});                      /// Hauteur de la cellule, alignée sur la boîte de champ.
@@ -19,6 +20,8 @@ $font-size-small: var(--ui-input-group-addon-font-size-small, var(--size-typogra
 :host { display: flex; }
 
 .ui-input-group-addon {
+  --_stroke: var(--ui-input-group-addon-stroke, var(--form-high-stroke-default)); /// Couleur de bordure de l'addon.
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -27,7 +30,7 @@ $font-size-small: var(--ui-input-group-addon-font-size-small, var(--size-typogra
   min-width: $height;
   min-height: $height;
   padding: 0 $padding-x;
-  border: $stroke-width solid var(--ui-input-group-addon-stroke, var(--form-high-stroke-default)); /// Couleur de bordure de l'addon.
+  border: $stroke-width solid var(--_input-group-stroke, var(--_stroke));
   border-radius: var(--ui-input-group-item-radius, #{$radius}); /// Rayon des coins, piloté par le groupe.
   background-color: var(--ui-input-group-addon-surface, var(--global-background-muted)); /// Fond de l'addon.
   color: var(--ui-input-group-addon-color, var(--global-text-muted));                    /// Couleur du texte de l'addon.

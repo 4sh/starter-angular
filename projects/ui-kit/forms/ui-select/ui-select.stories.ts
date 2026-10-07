@@ -87,7 +87,7 @@ const meta: Meta<UiSelect> = {
     layout: 'centered',
     design: {
       type: 'figma',
-      url: 'https://www.figma.com/design/GZww5hdUA49LB8XWeWP6tl/-Projet----UI-Kit?node-id=125-2969&t=Ymo8402f9viL1pzq-1',
+      url: 'https://www.figma.com/design/GZww5hdUA49LB8XWeWP6tl/-Projet----UI-Kit?node-id=125-3021&t=Ymo8402f9viL1pzq-1',
     },
   },
   argTypes: {
@@ -168,6 +168,12 @@ const meta: Meta<UiSelect> = {
       control: 'boolean',
       description: 'Affiche une action d’effacement (×) quand une valeur est définie.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    showIcon: {
+      control: 'boolean',
+      description:
+        'Affiche le chevron. À couper pour un déclencheur compact dont la valeur signale déjà la liste (drapeau + indicatif).',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
     filter: {
       control: 'boolean',
@@ -306,6 +312,7 @@ const meta: Meta<UiSelect> = {
     checkmark: false,
     checkbox: false,
     showClear: false,
+    showIcon: true,
     filter: false,
     editable: false,
     loading: false,
@@ -342,7 +349,7 @@ export const Basic: Story = {
           [label]="label" [placeholder]="placeholder" [size]="size" [floatLabel]="floatLabel"
           [helperText]="helperText" [errorText]="errorText"
           [multiple]="multiple" [checkmark]="checkmark" [checkbox]="checkbox"
-          [showClear]="showClear" [filter]="filter" [editable]="editable" [loading]="loading"
+          [showClear]="showClear" [showIcon]="showIcon" [filter]="filter" [editable]="editable" [loading]="loading"
           [autoOptionFocus]="autoOptionFocus" [selectOnFocus]="selectOnFocus" [focusOnHover]="focusOnHover"
           [required]="required" [disabled]="disabled" [readonly]="readonly" [invalid]="invalid"
           (valueChange)="valueChange($event)" (opened)="opened($event)" (closed)="closed($event)" (cleared)="cleared($event)" />

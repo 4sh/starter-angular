@@ -10,9 +10,10 @@ Colle un contrôle et ses **compléments** (texte, icône, bouton, case à coche
 déroulante) sur une même rangée, pour qu'ils se lisent comme **un seul champ** : coins
 arrondis uniquement aux extrémités, trait partagé fusionné entre deux voisins.
 
-Composant purement présentationnel : chaque enfant conserve son API, ses états et ses
-tokens. Le groupe se contente de la mise en rangée et du raccord visuel (`--radius-sm`
-aux extrémités, recouvrement égal à `--stroke-default`).
+Chaque enfant conserve son API, ses états et ses tokens. Le groupe se charge de la mise en
+rangée et du raccord visuel (`--radius-sm` aux extrémités, recouvrement égal à
+`--stroke-default`) et, au besoin, de l'habillage d'un champ : libellé au-dessus, message
+en dessous.
 
 Deux briques :
 
@@ -47,6 +48,42 @@ Deux briques :
     </tr>
   </tbody>
 </table>
+
+## Libellé et message
+
+Un champ composé se présente comme un champ simple : `label` au-dessus de la rangée,
+`message` en dessous, avec le même rendu que `ui-field` (`ui-label`, puis `ui-helper`). Le
+libellé nomme le groupe, pas ses contrôles : chacun garde son `ariaLabel`.
+
+<Canvas of={InputGroupStories.Field} />
+
+Le `level` teinte le message **et** les bordures de tous les champs et add-ons projetés : la
+validité d'une valeur composée (indicatif et numéro, montant et devise) appartient au groupe,
+pas à l'une de ses cases. Il prime sur le `level` propre des contrôles. Un contrôle désactivé
+garde sa couleur, un `ui-button` aussi.
+
+<Canvas of={InputGroupStories.Levels} />
+
+## Boîte unique
+
+Par défaut, chaque item garde sa bordure et un trait sépare deux voisins. Avec `merged`, le
+groupe se lit comme un seul champ : les items perdent leur bordure et leur anneau de focus,
+et la rangée dessine une boîte autour d'eux, qui prend la couleur du survol, du focus et du
+`level`. La hauteur reste celle d'un champ simple. Entre deux contrôles, l'inset du côté
+qu'ils partagent se resserre (`--ui-input-group-item-padding-x`) : le chevron d'un indicatif
+est alors aussi près du numéro que de sa propre valeur.
+
+<Canvas of={InputGroupStories.Merged} />
+
+Un add-on garde son fond (`--ui-input-group-addon-surface`, à passer à `transparent` pour
+le fondre dans la boîte). Un `ui-button` garde sa bordure et son focus.
+
+## Largeur des items
+
+Les add-ons et les boutons gardent leur largeur naturelle, les contrôles se partagent le
+reste. Pour qu'un contrôle garde lui aussi sa largeur naturelle (indicatif, devise), posez
+`--ui-input-group-item-flex: none` sur lui. Le hook prend n'importe quelle valeur de `flex`
+(`0 0 120px`, `2 1 0`…). L'espace entre sa valeur et son chevron suit alors `--ui-field-box-gap`.
 
 ## Multiple
 
@@ -83,9 +120,21 @@ Indicatif international sélectionnable : drapeau + code : accolé au champ du n
 Les templates `#selectedItem` et `#item` de `ui-select` portent le rendu ; les drapeaux
 sont des SVG locaux (`assets/img/common/svg/flags/`), décoratifs (`alt=""`).
 
-La zone d'indicatif reste compacte alors que la liste, elle, doit afficher les noms de pays :
-c'est le rôle de `panelWidth="auto"` sur le `ui-select`, qui décorrèle la largeur du panneau
-de celle du champ (voir la doc de `ui-select`).
+L'indicatif garde sa largeur naturelle (`--ui-input-group-item-flex: none`) et le groupe est
+fusionné (`merged`) : rien ne sépare l'indicatif du numéro. La liste, elle, doit afficher les
+noms de pays : c'est le rôle de `panelWidth="auto"` sur le `ui-select`, qui décorrèle la
+largeur du panneau de celle du champ (voir la doc de `ui-select`). La liste se filtre par nom
+de pays, indicatif ou code (`filter`, `filterBy="name,dial,code"`), et taper « +39 » sur
+l'indicatif fermé ouvre la liste sur l'Italie, qu'<kbd>Entrée</kbd> sélectionne. Le
+chevron peut être retiré (`showIcon` à `false` sur le `ui-select`) quand le drapeau suffit à
+signaler la liste. Le message d'erreur
+disparaît dès que le numéro compte 9 chiffres, une règle de démonstration : la validation par
+pays reste au projet.
+
+Côté valeur, enregistrez le code pays (`fr`) avec le numéro, et pas seulement l'indicatif :
+le +1 est partagé par plusieurs pays, dont les États-Unis et le Canada de la liste ci-dessous.
+Ne retirez pas non plus le 0 initial par principe : la France le perd derrière l'indicatif
+(+33 6…), l'Italie le garde (+39 06…).
 
 <Canvas of={InputGroupStories.PhoneNumber} />
 
@@ -108,7 +157,7 @@ régler pour que les hauteurs concordent.
   <tbody>
     <tr>
       <td><strong>Rôles</strong></td>
-      <td><code>ui-input-group</code> et <code>ui-input-group-addon</code> n'exposent ni rôle ni attribut ARIA : ce sont des enveloppes de présentation. La sémantique reste portée par les contrôles projetés.</td>
+      <td>Sans <code>label</code> ni <code>message</code>, <code>ui-input-group</code> n'expose ni rôle ni attribut ARIA : c'est une enveloppe de présentation. Avec l'un ou l'autre, il devient un <code>role="group"</code> nommé par le libellé (<code>aria-labelledby</code>) et décrit par le message (<code>aria-describedby</code>). <code>ui-input-group-addon</code> reste sans rôle.</td>
     </tr>
     <tr>
       <td><strong>Clavier</strong></td>
@@ -116,11 +165,19 @@ régler pour que les hauteurs concordent.
     </tr>
     <tr>
       <td><strong>Nom accessible</strong></td>
-      <td>Sans libellé visible dans le groupe, chaque contrôle doit porter son <code>ariaLabel</code> (ou <code>ariaLabelledBy</code>). Un add-on décoratif : icône, symbole : ne nomme pas le champ.</td>
+      <td>Le libellé nomme le groupe, annoncé à l'entrée dans le groupe (« Téléphone, groupe »). Il ne nomme pas les contrôles : chacun porte son <code>ariaLabel</code> (ou <code>ariaLabelledBy</code>), avec ou sans libellé de groupe. Un add-on décoratif (icône, symbole) ne nomme pas le champ.</td>
+    </tr>
+    <tr>
+      <td><strong>Obligatoire</strong></td>
+      <td><code>required</code> sur le groupe n'affiche que l'astérisque, masqué aux lecteurs d'écran : <code>aria-required</code> n'existe pas sur un groupe. Chaque contrôle obligatoire porte son propre <code>required</code>, qui pose l'attribut natif.</td>
+    </tr>
+    <tr>
+      <td><strong>Erreur</strong></td>
+      <td>Le message est relié au groupe, mais le rôle <code>group</code> ne prend pas en charge <code>aria-invalid</code> : le contrôle fautif porte <code>invalid</code>, qui annonce lui-même son état.</td>
     </tr>
     <tr>
       <td><strong>Focus</strong></td>
-      <td>L'item qui reçoit le focus est remonté au-dessus de ses voisins : sa bordure et son anneau de focus restent entièrement visibles malgré le recouvrement des bordures.</td>
+      <td>L'item qui reçoit le focus est remonté au-dessus de ses voisins : sa bordure et son anneau de focus restent entièrement visibles malgré le recouvrement des bordures. Avec <code>merged</code>, l'anneau entoure tout le groupe, y compris quand le focus est passé au panneau d'une liste déroulante ouverte.</td>
     </tr>
   </tbody>
 </table>
@@ -139,6 +196,12 @@ régler pour que les hauteurs concordent.
   <ui-input-group-addon>.com</ui-input-group-addon>
 </ui-input-group>
 
+<!-- Champ composé : libellé et message d'erreur sur le groupe -->
+<ui-input-group label="Téléphone" required level="error" message="Numéro invalide">
+  <ui-select ariaLabel="Indicatif du pays" [options]="indicatifs" [(ngModel)]="indicatif" />
+  <ui-input type="tel" ariaLabel="Numéro de téléphone" [(ngModel)]="numero" required invalid />
+</ui-input-group>
+
 <!-- Champ + bouton d'action -->
 <ui-input-group>
   <ui-input placeholder="Mot-clé" ariaLabel="Mot-clé" />
@@ -153,6 +216,13 @@ pilote donc leurs coins via les custom properties exposées par les enfants
 (`--ui-field-radius`, `--ui-button-radius`, `--ui-input-group-item-radius`), qui
 héritent au-delà de la frontière de composant. Un composant tiers placé dans un groupe
 suit le raccord dès qu'il lit `--ui-input-group-item-radius` pour son `border-radius`.
+
+La largeur suit le même principe : le groupe écrit le `flex` de chaque item à travers
+`--ui-input-group-item-flex`, à poser sur l'item à libérer.
+
+Le `level` passe par le même chemin : en `success` ou `error`, le groupe fixe
+`--ui-field-stroke`, `--ui-field-stroke-hover` et `--ui-field-stroke-focus` sur les jetons
+`form.*` du statut, et teinte ses add-ons par-dessus `--ui-input-group-addon-stroke`.
 
 <ConfigTable of="ui-input-group" label="ui-input-group" />
 <ConfigTable of="ui-input-group-addon" label="ui-input-group-addon" />

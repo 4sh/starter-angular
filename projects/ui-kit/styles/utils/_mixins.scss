@@ -69,12 +69,13 @@
 /// native input, trigger, wrapping control) — `'margin'` keeps the box tight
 /// and only offsets it (fixed-size affixes: icons, units, round buttons).
 @mixin field-inset-edges($mode: 'padding', $inset: ui-config.$form-field-padding-x) {
+  // `--_field-inset-inline-*`: set by `ui-input-group` in merged mode.
   @if $mode == 'padding' {
-    &:first-child { padding-inline-start: $inset; }
-    &:last-child { padding-inline-end: $inset; }
+    &:first-child { padding-inline-start: var(--_field-inset-inline-start, #{$inset}); }
+    &:last-child { padding-inline-end: var(--_field-inset-inline-end, #{$inset}); }
   } @else {
-    &:first-child { margin-inline-start: $inset; }
-    &:last-child { margin-inline-end: $inset; }
+    &:first-child { margin-inline-start: var(--_field-inset-inline-start, #{$inset}); }
+    &:last-child { margin-inline-end: var(--_field-inset-inline-end, #{$inset}); }
   }
 }
 

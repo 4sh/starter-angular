@@ -16,6 +16,33 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+### Added
+
+- **`ui-input-group` : libellé, message et statut sur le groupe** (FSHSP-231). Un champ composé
+  (indicatif et numéro, préfixe d'URL, montant et devise) affiche son libellé au-dessus de la
+  rangée et son message d'aide ou d'erreur en dessous, avec le même rendu que `ui-field` :
+  nouveaux inputs `label`, `required`, `message`, `level`, `showMessageIcon` et `messageIcon`.
+  - Le `level` teinte le message et les bordures de tous les champs et add-ons projetés, et
+    prime sur le `level` propre des contrôles.
+  - Dès qu'un libellé ou un message est posé, le groupe devient un `role="group"` nommé par le
+    libellé et décrit par le message. Sans eux, il reste sans rôle, comme avant.
+  - `required` n'affiche que l'astérisque : les contrôles obligatoires portent toujours leur
+    propre `required`, et le contrôle fautif son `invalid`.
+  - Nouveaux hooks `--ui-input-group-gap` et `--ui-input-group-gap-small` (espace entre le
+    libellé, la rangée et le message).
+- **`ui-input-group` : mode `merged`, une seule boîte autour du groupe** (FSHSP-231). Les items
+  perdent leur bordure et leur anneau de focus, la rangée dessine une boîte commune (survol,
+  focus, `level`) sans changer la hauteur du champ. Entre deux contrôles, l'inset du côté
+  partagé se resserre, pour que le chevron d'un indicatif ne flotte pas loin du numéro. Hooks
+  `--ui-input-group-stroke-width`, `--ui-input-group-focus-ring-width`,
+  `--ui-input-group-focus-ring-opacity` et `--ui-input-group-item-padding-x`.
+- **`ui-input-group` : `--ui-input-group-item-flex` libère la largeur d'un item** (FSHSP-231).
+  Posé sur un contrôle, il remplace le `flex` que le groupe lui donne : `none` garde un
+  indicatif ou une devise à sa largeur naturelle au lieu de partager la place restante.
+- **`ui-select` : `showIcon` masque le chevron** (FSHSP-231). Pour un déclencheur compact dont
+  la valeur signale déjà la liste (drapeau et indicatif). Le déclencheur garde son rôle de
+  liste déroulante et son inset de fin.
+
 ## [0.12.1] - 2026-09-25
 
 ### Fixed

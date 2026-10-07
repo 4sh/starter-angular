@@ -1,3 +1,32 @@
-<div #row class="ui-input-group">
-  <ng-content />
+<div
+  [class]="classes()"
+  [attr.role]="isField() ? 'group' : null"
+  [attr.aria-labelledby]="label() ? labelId : null"
+  [attr.aria-describedby]="message() ? messageId : null"
+>
+  @if (label()) {
+    <ui-label
+      class="ui-input-group-label"
+      [attr.id]="labelId"
+      [label]="label()!"
+      [required]="required()"
+      [size]="size()"
+    />
+  }
+
+  <div #row class="ui-input-group-row">
+    <ng-content />
+  </div>
+
+  @if (message()) {
+    <ui-helper
+      class="ui-input-group-message"
+      [attr.id]="messageId"
+      [message]="message()!"
+      [level]="level()"
+      [showIcon]="showMessageIcon()"
+      [icon]="messageIcon()"
+      size="small"
+    />
+  }
 </div>
