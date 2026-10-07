@@ -8,16 +8,96 @@
 // them.
 // =====================================================================
 
+$gap: var(--ui-input-group-gap, var(--units-xs));             /// Gouttière verticale entre le libellé, la rangée et le message.
+$gap-small: var(--ui-input-group-gap-small, var(--units-xs)); /// Gouttière verticale, variante `small`.
+
 $radius: var(--ui-input-group-radius, #{utils.$form-field-radius});         /// Rayon des coins extérieurs du groupe.
 $overlap: var(--ui-input-group-overlap, #{utils.$form-field-stroke-width}); /// Recouvrement de deux items voisins (= largeur de bordure, évite le doublement du trait partagé).
+
+$stroke-width: var(--ui-input-group-stroke-width, #{utils.$form-field-stroke-width});             /// Épaisseur de la bordure commune, mode `merged`.
+$focus-ring-width: var(--ui-input-group-focus-ring-width, #{utils.$form-field-focus-ring-width}); /// Épaisseur de l'anneau de focus commun, mode `merged`.
+$focus-ring-opacity: var(--ui-input-group-focus-ring-opacity, 50%);                               /// Opacité de l'anneau de focus commun, mode `merged`.
+// 2 × inset + the shared stroke = a field's own value-to-affix gap.
+$item-padding-x: var(--ui-input-group-item-padding-x, calc((#{utils.$form-field-gap} - #{utils.$form-field-stroke-width}) / 2)); /// Inset d'un contrôle du côté où il touche un autre contrôle, mode `merged`.
 
 :host { display: block; }
 
 .ui-input-group {
   --_radius: #{$radius}; // miroir privé : le nom public reste surchargeable depuis l’extérieur
   --_overlap: calc(-1 * #{$overlap});
+  --_group-stroke: var(--form-high-stroke-default);
+  --_group-stroke-hover: var(--form-high-stroke-hover);
+  --_group-stroke-focus: var(--form-high-stroke-focused);
 
   display: flex;
-  align-items: stretch;
-  width: 100%;
+  flex-direction: column;
+  gap: $gap;
+
+  &._small { gap: $gap-small; }
+
+  &-row {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  // --- Levels ----------------------------------------------------------
+  // The add-on gets a private name: declaring its public hook here would drop
+  // it from the consumer theme.
+  &._success {
+    --ui-field-stroke: var(--form-success-stroke-default);
+    --ui-field-stroke-hover: var(--form-success-stroke-hover);
+    --ui-field-stroke-focus: var(--form-success-stroke-focused);
+    --_input-group-stroke: var(--form-success-stroke-default);
+    --_group-stroke: var(--form-success-stroke-default);
+    --_group-stroke-hover: var(--form-success-stroke-hover);
+    --_group-stroke-focus: var(--form-success-stroke-focused);
+  }
+  &._error {
+    --ui-field-stroke: var(--form-error-stroke-default);
+    --ui-field-stroke-hover: var(--form-error-stroke-hover);
+    --ui-field-stroke-focus: var(--form-error-stroke-focused);
+    --_input-group-stroke: var(--form-error-stroke-default);
+    --_group-stroke: var(--form-error-stroke-default);
+    --_group-stroke-hover: var(--form-error-stroke-hover);
+    --_group-stroke-focus: var(--form-error-stroke-focused);
+  }
+
+  // --- Merged ----------------------------------------------------------
+  // After the levels, so transparent wins. The field ring is cut by its width:
+  // `rgb(from transparent … / 50%)` would paint half-opaque black.
+  &._merged {
+    --_group-item-inset: #{$item-padding-x}; // see `shape()` in the .ts
+    --ui-field-stroke: transparent;
+    --ui-field-stroke-hover: transparent;
+    --ui-field-stroke-focus: transparent;
+    --ui-field-stroke-disabled: transparent;
+    --ui-field-focus-ring-width: 0px;
+    --_input-group-stroke: transparent;
+  }
+
+  &._merged &-row {
+    position: relative;
+    isolation: isolate; // keeps the z-indexes below local
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 2; // above the focused item, raised to 1
+      border: $stroke-width solid var(--_group-stroke);
+      border-radius: var(--_radius);
+      pointer-events: none;
+      @include utils.control-transition(border-color, box-shadow);
+    }
+
+    &:hover:not(:focus-within)::after { border-color: var(--_group-stroke-hover); }
+
+    // An open select hands the focus to its panel.
+    &:focus-within::after,
+    &:has([aria-expanded='true'])::after {
+      border-color: var(--_group-stroke-focus);
+      box-shadow: 0 0 0 $focus-ring-width rgb(from var(--_group-stroke-focus) r g b / #{$focus-ring-opacity});
+    }
+  }
 }

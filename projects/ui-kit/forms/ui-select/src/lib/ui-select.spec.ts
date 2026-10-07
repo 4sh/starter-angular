@@ -9,7 +9,7 @@
  * `document.body`, not `fixture.nativeElement`) — assertions on the panel/options
  * query `document` directly.
  */
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { describe, expect, it } from 'vitest';
@@ -110,5 +110,33 @@ describe('UiSelect — dropdown overlay', () => {
     await keydown(trigger, 'Enter', fixture);
     expect(host.control.value).toBe('Lyon');
     expect(document.querySelector('.ui-select-panel')).toBeNull();
+  });
+});
+
+@Component({
+  imports: [UiSelect],
+  template: `<ui-select ariaLabel="Indicatif" [options]="options" [showIcon]="showIcon()" />`,
+})
+class ShowIconHost {
+  readonly options = CITIES;
+  readonly showIcon = signal(true);
+}
+
+describe('UiSelect — showIcon', () => {
+  it('renders the chevron by default and drops it when showIcon is false', async () => {
+    await TestBed.configureTestingModule({ imports: [ShowIconHost] }).compileComponents();
+    const fixture = TestBed.createComponent(ShowIconHost);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const chevron = () => fixture.nativeElement.querySelector('.ui-select-chevron');
+    expect(chevron()).not.toBeNull();
+
+    fixture.componentInstance.showIcon.set(false);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(chevron()).toBeNull();
+    expect(fixture.nativeElement.querySelector('.ui-select-trigger')?.getAttribute('role')).toBe(
+      'combobox',
+    );
   });
 });

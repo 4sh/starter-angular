@@ -30,6 +30,8 @@ const PHONE_CODES: PhoneCode[] = [
   { name: 'Canada', code: 'ca', dial: '+1' },
 ];
 
+const CURRENCIES = ['EUR', 'USD', 'CHF', 'GBP'];
+
 const CITIES = [
   { label: 'Paris', value: 'par' },
   { label: 'Lyon', value: 'lyo' },
@@ -69,12 +71,58 @@ const meta: Meta<UiInputGroup> = {
       control: { type: 'inline-radio' },
       options: ['default', 'small'],
       description:
-        'Taille transmise aux `ui-input-group-addon` projetés (les contrôles gardent leur propre `size`).',
+        'Taille transmise au libellé et aux `ui-input-group-addon` projetés (les contrôles gardent leur propre `size`).',
       table: { type: { summary: 'FieldSize' }, defaultValue: { summary: '"default"' } },
+    },
+    label: {
+      control: 'text',
+      description:
+        'Libellé au-dessus du groupe (via `ui-label`). Il nomme le groupe (`role="group"`), pas les contrôles, qui gardent leur `ariaLabel`.',
+      table: { type: { summary: 'string' } },
+    },
+    required: {
+      control: 'boolean',
+      description:
+        'Astérisque sur le libellé, purement visuel : les contrôles obligatoires portent eux-mêmes `required`.',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    message: {
+      control: 'text',
+      description:
+        'Message sous le groupe (aide ou erreur, via `ui-helper`), relié au groupe par `aria-describedby`.',
+      table: { type: { summary: 'string' } },
+    },
+    level: {
+      control: 'inline-radio',
+      options: ['default', 'success', 'error'],
+      description:
+        'Statut de validation : teinte le message et les bordures des champs et add-ons projetés. Prime sur le `level` propre des contrôles.',
+      table: { type: { summary: 'FieldLevel' }, defaultValue: { summary: '"default"' } },
+    },
+    showMessageIcon: {
+      control: 'boolean',
+      description: "Préfixe le message d'une icône décorative. Éteinte par défaut.",
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    messageIcon: {
+      control: 'text',
+      description:
+        "Glyphe du message. Vide = l'icône déduite du `level`. N'allume pas l'icône à lui seul.",
+      table: { type: { summary: 'string' } },
+    },
+    merged: {
+      control: 'boolean',
+      description:
+        'Une seule boîte autour de la rangée : ni trait ni espace entre les items, un seul anneau de focus.',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
   },
   args: {
     size: 'default',
+    required: false,
+    level: 'default',
+    showMessageIcon: false,
+    merged: false,
   },
 };
 
@@ -107,6 +155,78 @@ export const Basic: Story = {
         <ui-input-group-addon>https://</ui-input-group-addon>
         <ui-input placeholder="mon-site" ariaLabel="Adresse du site" />
         <ui-input-group-addon>.com</ui-input-group-addon>
+      </ui-input-group>`),
+  }),
+};
+
+// --- Field : libellé au-dessus, message en dessous -----------------------------
+export const Field: Story = {
+  name: 'Label & Message',
+  args: {
+    label: 'Site web',
+    message: 'Le nom de domaine seul, sans « www. ».',
+  },
+  render: (args) => ({
+    props: args,
+    template: stack(`
+      <ui-input-group
+        [size]="size"
+        [label]="label"
+        [required]="required"
+        [message]="message"
+        [level]="level"
+        [showMessageIcon]="showMessageIcon"
+        [messageIcon]="messageIcon"
+        [merged]="merged">
+        <ui-input-group-addon>https://</ui-input-group-addon>
+        <ui-input placeholder="mon-site" ariaLabel="Nom de domaine" [size]="size" />
+        <ui-input-group-addon>.fr</ui-input-group-addon>
+      </ui-input-group>`),
+  }),
+};
+
+// --- Levels : le statut teinte le message et toutes les bordures du groupe ------
+export const Levels: Story = {
+  render: (args) => ({
+    props: { ...args, amount1: 1200, amount2: 1200, amount3: 120000 },
+    template: stack(`
+      <ui-input-group [size]="size" label="Montant" message="Montant hors taxes.">
+        <ui-input-number [(ngModel)]="amount1" ariaLabel="Montant" />
+        <ui-input-group-addon>€</ui-input-group-addon>
+      </ui-input-group>
+
+      <ui-input-group [size]="size" label="Montant" level="success" message="Montant dans le budget.">
+        <ui-input-number [(ngModel)]="amount2" ariaLabel="Montant" />
+        <ui-input-group-addon>€</ui-input-group-addon>
+      </ui-input-group>
+
+      <ui-input-group [size]="size" label="Montant" level="error" message="Montant supérieur au plafond de 100 000 €.">
+        <ui-input-number [(ngModel)]="amount3" ariaLabel="Montant" invalid />
+        <ui-input-group-addon>€</ui-input-group-addon>
+      </ui-input-group>`),
+  }),
+};
+
+// --- Merged : une seule boîte, sans trait entre les items ----------------------
+export const Merged: Story = {
+  render: (args) => ({
+    props: { ...args, amount: 1200, currencies: CURRENCIES, currency: 'EUR' },
+    template: stack(`
+      <ui-input-group [size]="size" label="Site web" merged>
+        <ui-input-group-addon>https://</ui-input-group-addon>
+        <ui-input placeholder="mon-site" ariaLabel="Nom de domaine" [size]="size" />
+        <ui-input-group-addon>.fr</ui-input-group-addon>
+      </ui-input-group>
+
+      <ui-input-group [size]="size" label="Montant" merged>
+        <ui-input-number [(ngModel)]="amount" ariaLabel="Montant" [showButtons]="false" [size]="size" />
+        <ui-select
+          style="--ui-input-group-item-flex: none"
+          panelWidth="auto"
+          ariaLabel="Devise"
+          [size]="size"
+          [(ngModel)]="currency"
+          [options]="currencies" />
       </ui-input-group>`),
   }),
 };
@@ -220,18 +340,49 @@ export const Select: Story = {
 
 // --- Phone Number : indicatif (drapeau local) + numéro ----------------------
 export const PhoneNumber: Story = {
+  args: {
+    merged: true,
+    dialIcon: true,
+  } as Story['args'],
+
+  argTypes: {
+    dialIcon: {
+      name: 'chevron (indicatif)',
+      control: 'boolean',
+      description: 'Chevron du `ui-select` de l’indicatif (`showIcon`). Propre à cette story.',
+    },
+  } as Story['argTypes'],
+
   name: 'Phone Number',
+
   render: (args) => ({
-    props: { ...args, phoneCodes: PHONE_CODES, dial: PHONE_CODES[0] },
+    props: {
+      ...args,
+      phoneCodes: PHONE_CODES,
+      dial: PHONE_CODES[0],
+      phone: '06 12 34',
+      // Règle de démo (9 chiffres) : la validation par pays reste au projet.
+      phoneError: (value?: string) =>
+        (value ?? '').replace(/\D/g, '').length >= 9 ? undefined : 'Numéro invalide',
+    },
     template: stack(
       `
-      <ui-input-group [size]="size">
-        <!-- Zone d'indicatif compacte : panelWidth="auto" décorrèle la largeur de
-             la liste de celle du champ, sinon les pays seraient tronqués. -->
+      <ui-input-group
+        [size]="size"
+        label="Téléphone"
+        required
+        [merged]="merged"
+        [level]="phoneError(phone) ? 'error' : 'default'"
+        [message]="phoneError(phone)">
+        <!-- panelWidth="auto" : sinon la liste prend la largeur de l'indicatif. -->
         <ui-select
-          style="max-width:120px"
+          style="--ui-input-group-item-flex: none"
           panelWidth="auto"
           ariaLabel="Indicatif du pays"
+          [showIcon]="dialIcon"
+          [filter]="true"
+          filterBy="name,dial,code"
+          filterPlaceholder="Pays ou indicatif"
           [(ngModel)]="dial"
           [options]="phoneCodes"
           optionLabel="dial">
@@ -249,7 +400,13 @@ export const PhoneNumber: Story = {
             </span>
           </ng-template>
         </ui-select>
-        <ui-input type="tel" placeholder="06 12 34 56 78" ariaLabel="Numéro de téléphone" />
+        <ui-input
+          type="tel"
+          placeholder="06 12 34 56 78"
+          ariaLabel="Numéro de téléphone"
+          [(ngModel)]="phone"
+          required
+          [invalid]="!!phoneError(phone)" />
       </ui-input-group>`,
       340,
     ),

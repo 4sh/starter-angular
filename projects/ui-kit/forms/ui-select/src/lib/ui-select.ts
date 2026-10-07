@@ -172,6 +172,8 @@ export class UiSelect<T = unknown> extends BaseFormField<SelectValue<T>> {
   clearAriaLabel = input<string>('Effacer la sélection');
   /** FontAwesome icon of the dropdown chevron. */
   icon = input<string>('angle-down');
+  /** Show the dropdown chevron (the trigger stays a combobox without it). */
+  showIcon = input(true, { transform: booleanAttribute });
 
   /** Show the built-in filter input inside the panel. */
   filter = input(false, { transform: booleanAttribute });
