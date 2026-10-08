@@ -16,6 +16,8 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+## [0.13.0] - 2026-10-08
+
 ### Added
 
 - **`ui-input-group` : libellé, message et statut sur le groupe** (FSHSP-231). Un champ composé
@@ -42,6 +44,15 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 - **`ui-select` : `showIcon` masque le chevron** (FSHSP-231). Pour un déclencheur compact dont
   la valeur signale déjà la liste (drapeau et indicatif). Le déclencheur garde son rôle de
   liste déroulante et son inset de fin.
+
+### Changed
+
+- **`ui-input-group` : la classe `.ui-input-group` désigne désormais l'enveloppe, plus la
+  rangée** (FSHSP-231). Pour accueillir le libellé et le message, la racine est devenue une
+  colonne (libellé, rangée, message) et la rangée des items porte `.ui-input-group-row`. Un
+  groupe existant garde le même rendu. Seul un style de projet qui visait `.ui-input-group`
+  de l'extérieur (alignement ou espacement des items) est à reporter sur
+  `.ui-input-group-row`, ou mieux sur les hooks `--ui-input-group-*`.
 
 ### Fixed
 
