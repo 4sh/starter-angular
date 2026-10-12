@@ -9,12 +9,18 @@ $marker-size: var(--ui-stepper-marker-size, #{utils.rem-calc(44)});             
 $marker-stroke: var(--ui-stepper-marker-stroke-width, var(--stroke-sm));                  /// Épaisseur de bordure du marqueur.
 $separator-stroke: var(--ui-stepper-separator-stroke-width, var(--stroke-default));       /// Épaisseur du séparateur entre étapes.
 $focus-ring-width: var(--ui-stepper-focus-ring-width, #{utils.$action-focus-ring-width}); /// Épaisseur de l'anneau de focus.
+$step-min-width: var(--ui-stepper-step-min-width, #{utils.rem-calc(120)});                /// Largeur minimale d'une étape (marqueur et connecteur) quand la barre défile.
 
 :host {
   display: flex;
   flex: 1 1 0;
   align-items: flex-start;
   min-width: 0;
+}
+
+:host._scrollable {
+  flex: 1 0 $step-min-width;
+  padding-block: $focus-ring-width;
 }
 
 :host._last {
