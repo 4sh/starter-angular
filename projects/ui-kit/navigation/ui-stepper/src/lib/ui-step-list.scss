@@ -4,10 +4,36 @@
 // ui-step-list : co-located styles.
 // =====================================================================
 
+// --- Config ---------------------------------------------------
+$marker-size: var(--ui-stepper-marker-size, #{utils.rem-calc(44)});        /// Diamètre du marqueur d'étape.
+$step-min-width: var(--ui-stepper-step-min-width, #{utils.rem-calc(120)}); /// Largeur minimale d'une étape (marqueur et connecteur) quand la barre défile.
+
 :host {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
   width: 100%;
   min-width: 0;
+}
+
+// --- Scrollable strip --------------------
+:host._scrollable {
+  box-sizing: border-box;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-inline: calc((#{$step-min-width} - #{$marker-size}) / 2);
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  @include utils.motion-reduce {
+    scroll-behavior: auto;
+  }
+}
+
+:host._scrollable._no-motion {
+  scroll-behavior: auto;
 }

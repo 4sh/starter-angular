@@ -57,6 +57,12 @@ const meta: Meta<UiStepper> = {
         "Défaut de groupe : ne rend le contenu d'un panneau qu'à sa première activation.",
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
+    scrollable: {
+      control: { type: 'boolean' },
+      description:
+        "Barre d'étapes défilante : les étapes gardent une largeur minimale et la barre suit l'étape active (horizontal uniquement).",
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
     motion: {
       control: { type: 'boolean' },
       description: "Anime l'apparition du panneau actif (reduced-motion respecté).",
@@ -72,6 +78,7 @@ const meta: Meta<UiStepper> = {
     orientation: 'horizontal',
     linear: false,
     lazy: false,
+    scrollable: false,
     motion: true,
   },
 };
@@ -92,7 +99,7 @@ export const Basic: Story = {
   render: (args) => ({
     props: { ...args, active: 1 },
     template: box(`
-      <ui-stepper [(value)]="active" [orientation]="orientation" [linear]="linear" [motion]="motion" [completedIcon]="completedIcon">
+      <ui-stepper [(value)]="active" [orientation]="orientation" [linear]="linear" [scrollable]="scrollable" [motion]="motion" [completedIcon]="completedIcon">
         <ui-step-list ariaLabel="Création du compte">
           <ui-step [value]="1">Compte</ui-step>
           <ui-step [value]="2">Profil</ui-step>
@@ -184,6 +191,37 @@ export const StepsOnly: Story = {
           <ui-step [value]="4">Livraison</ui-step>
         </ui-step-list>
       </ui-stepper>`),
+  }),
+};
+
+// --- Scrollable ------------------------------------------------------------
+// Parcours long dans une boîte étroite : avec `scrollable`, les étapes gardent une
+// largeur minimale et la barre défile ; chaque changement d'étape la fait défiler
+// juste assez pour montrer l'étape active.
+export const Scrollable: Story = {
+  args: { scrollable: true },
+  render: (args) => ({
+    props: { ...args, active: 1 },
+    template: box(
+      `
+      <ui-stepper #stepper [(value)]="active" [scrollable]="scrollable" [linear]="linear" [motion]="motion" completedIcon="check">
+        <ui-step-list ariaLabel="Ouverture de compte">
+          <ui-step [value]="1">Compte</ui-step>
+          <ui-step [value]="2">Identité</ui-step>
+          <ui-step [value]="3">Adresse</ui-step>
+          <ui-step [value]="4">Situation</ui-step>
+          <ui-step [value]="5">Justificatifs</ui-step>
+          <ui-step [value]="6">Paiement</ui-step>
+          <ui-step [value]="7">Signature</ui-step>
+          <ui-step [value]="8">Confirmation</ui-step>
+        </ui-step-list>
+      </ui-stepper>
+      <div style="display:flex; gap:8px; margin-top:16px">
+        <ui-button size="small" level="low" [disabled]="active === 1" (buttonClick)="stepper.prev()">Précédent</ui-button>
+        <ui-button size="small" [disabled]="active === 8" (buttonClick)="stepper.next()">Suivant</ui-button>
+      </div>`,
+      360,
+    ),
   }),
 };
 

@@ -1,10 +1,12 @@
 import {
+  afterRenderEffect,
   booleanAttribute,
   Component,
   computed,
   contentChild,
   contentChildren,
   effect,
+  ElementRef,
   forwardRef,
   inject,
   input,
@@ -13,6 +15,7 @@ import {
   output,
   signal,
   TemplateRef,
+  viewChild,
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { UiIcon } from '@4sh/ui-kit/base/ui-icon';
@@ -61,6 +64,7 @@ let nextUid = 0;
     '[class._vertical]': "stepper.orientation() === 'vertical'",
     '[class._disabled]': 'isDisabled()',
     '[class._last]': 'isLastStep()',
+    '[class._scrollable]': 'stepper.isScrollable()',
   },
 })
 export class UiStep {
@@ -75,6 +79,10 @@ export class UiStep {
 
   /** @ignore Parent container (owns the active state + progression). */
   protected readonly stepper = inject(UiStepper);
+  /** @ignore */
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+  /** @ignore Title text, measured by the scrollable strip (it overflows the marker). */
+  private readonly titleEl = viewChild.required<ElementRef<HTMLElement>>('title');
 
   /** @ignore Progression state of this step. */
   readonly state = computed<UiStepState>(() => this.stepper.stepState(this.value()));
@@ -113,6 +121,16 @@ export class UiStep {
     const value = this.value();
     if (this.isDisabled() || value === undefined) return;
     this.stepper.updateValue(value, event);
+  }
+
+  /**
+   * @ignore Horizontal extent of the step, in viewport px: its own box (marker and
+   * trailing connector) united with its title, which overflows the marker on both sides.
+   */
+  extent(): { left: number; right: number } {
+    const own = this.host.nativeElement.getBoundingClientRect();
+    const title = this.titleEl().nativeElement.getBoundingClientRect();
+    return { left: Math.min(own.left, title.left), right: Math.max(own.right, title.right) };
   }
 }
 
@@ -197,7 +215,8 @@ export class UiStepPanel {
  * Owns the WAI-ARIA `role="tablist"`. Focus moves through the headers with
  * `Tab` (each enabled header is a native tab stop); activation is `Enter` /
  * `Space` (native `<button>`). Use it on its own , without panels , for a plain
- * progress indicator ("steps only").
+ * progress indicator ("steps only"). When the container is `scrollable`, the
+ * list itself is the scroll viewport and keeps the active step in view.
  */
 @Component({
   selector: 'ui-step-list',
@@ -208,11 +227,80 @@ export class UiStepPanel {
     role: 'tablist',
     'aria-orientation': 'horizontal',
     '[attr.aria-label]': 'ariaLabel() || null',
+    '[class._scrollable]': 'stepper.isScrollable()',
+    '[class._no-motion]': '!stepper.motion()',
   },
 })
 export class UiStepList {
   /** Accessible name for the step list (recommended). */
   ariaLabel = input<string>();
+
+  /** @ignore Parent container (active value + `scrollable` option). */
+  protected readonly stepper = inject(UiStepper);
+  /** @ignore The scroll viewport, when `scrollable`. */
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+  /** @ignore Steps projected into this list, in DOM order. */
+  private readonly steps = contentChildren(UiStep);
+  /** @ignore Bumped by the ResizeObserver: a new width may clip the active step. */
+  private readonly resizeTick = signal(0);
+  /** @ignore Whether the strip has been measured once (the first reveal does not animate). */
+  private settled = false;
+  /** @ignore Value of the step the strip last brought into view. */
+  private shownValue: UiStepValue | undefined;
+
+  constructor() {
+    // Observe the strip only while it scrolls. The guard also keeps consumers' jsdom
+    // unit tests working: jsdom has no ResizeObserver.
+    afterRenderEffect((onCleanup) => {
+      if (!this.stepper.isScrollable() || typeof ResizeObserver === 'undefined') return;
+      const ro = new ResizeObserver(() => this.resizeTick.update((v) => v + 1));
+      ro.observe(this.host.nativeElement);
+      onCleanup(() => ro.disconnect());
+    });
+
+    // Keep the active step in view: on activation, on first layout and on resize.
+    afterRenderEffect(() => {
+      this.resizeTick();
+      if (!this.stepper.isScrollable()) return;
+      const value = this.stepper.value();
+      const step = this.steps().find((s) => s.value() === value);
+      if (!step) return;
+      // Only a change of step animates: the first reveal and a resize jump straight there.
+      const animate = this.settled && this.shownValue !== value;
+      if (this.reveal(step, animate)) {
+        this.settled = true;
+        this.shownValue = value;
+      }
+    });
+  }
+
+  /**
+   * @ignore Scroll the strip by the minimum that brings the step fully into view, nothing
+   * when it already is. Measured against the strip itself: unlike `scrollIntoView()`, it
+   * never scrolls the page. Returns `false` while the strip is not laid out yet.
+   */
+  private reveal(step: UiStep, animate: boolean): boolean {
+    const strip = this.host.nativeElement;
+    const width = strip.clientWidth;
+    if (width === 0) return false;
+    const origin = strip.getBoundingClientRect().left + strip.clientLeft;
+    const { left, right } = step.extent();
+    const start = left - origin;
+    const end = right - origin;
+
+    let delta = 0;
+    if (start < -1) {
+      delta = start; // clipped at the start edge: align its start.
+    } else if (end > width + 1) {
+      delta = Math.min(end - width, start); // clipped at the end: align its end, keep its start.
+    }
+    if (delta !== 0) {
+      // `auto` defers to the CSS `scroll-behavior`: smooth, or instant under reduced motion
+      // and `[motion]="false"`.
+      strip.scrollTo({ left: strip.scrollLeft + delta, behavior: animate ? 'auto' : 'instant' });
+    }
+    return true;
+  }
 }
 
 /**
@@ -334,6 +422,11 @@ export class UiStepper {
   linear = input(false, { transform: booleanAttribute });
   /** Group default: render an inactive panel's content only once it is first activated. */
   lazy = input(false, { transform: booleanAttribute });
+  /**
+   * Horizontal only: steps keep a minimum width and the step list scrolls instead of
+   * squeezing them, following the active step.
+   */
+  scrollable = input(false, { transform: booleanAttribute });
   /** Animate the active panel transition (reduced-motion always wins). */
   motion = input(true, { transform: booleanAttribute });
   /** Icon shown in the marker of completed steps (falls back to the step number). */
@@ -361,6 +454,9 @@ export class UiStepper {
     forwardRef(() => UiStepPanel),
     { descendants: true },
   );
+
+  /** @ignore `scrollable` applies to the horizontal strip only. */
+  readonly isScrollable = computed(() => this.scrollable() && this.orientation() === 'horizontal');
 
   /** @ignore Ordered step values (the progression sequence). */
   private readonly orderedValues = computed(() => this.steps().map((s) => s.value()));

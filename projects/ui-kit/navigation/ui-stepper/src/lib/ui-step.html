@@ -25,7 +25,9 @@
       {{ number() }}
     }
   </span>
-  <span class="ui-step-title"><ng-content /></span>
+  <span class="ui-step-title">
+    <span #title class="ui-step-title-text"><ng-content /></span>
+  </span>
 </button>
 
 @if (showSeparator()) {

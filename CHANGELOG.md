@@ -16,6 +16,18 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+### Added
+
+- **`ui-stepper` : option `scrollable`, barre d'étapes défilante** (FSHSP-236). Quand les
+  étapes ne tiennent pas en largeur (mobile, parcours long), la barre défile au lieu de se
+  tasser, et les titres ne se chevauchent plus. À chaque changement d'étape (clic,
+  `next()` / `prev()`, `value` piloté), elle défile juste assez pour montrer l'étape active
+  entière, sans jamais faire défiler la page ; au premier affichage, elle s'y place sans
+  animation. Désactivée par défaut, rendu inchangé ; sans effet en vertical.
+  - Nouveau hook `--ui-stepper-step-min-width` (largeur minimale d'une étape quand la barre
+    défile).
+  - Le titre d'une étape est désormais enveloppé dans un `span.ui-step-title-text`.
+
 ## [0.13.0] - 2026-10-08
 
 ### Added
