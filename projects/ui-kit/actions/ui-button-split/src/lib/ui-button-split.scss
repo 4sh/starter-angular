@@ -28,12 +28,13 @@ $stroke-width: var(--ui-button-split-stroke-width, #{utils.$control-stroke-width
 
   // Reshape the inner corners through ui-button's `--ui-button-radius` hook —
   // custom properties inherit across the component boundary, no ::ng-deep.
+  // Outer corners follow the button's themed radius.
   &-action {
-    --ui-button-radius: var(--radius-sm) 0 0 var(--radius-sm);
+    --ui-button-radius: var(--ui-button-radius-default, var(--radius-sm)) 0 0 var(--ui-button-radius-default, var(--radius-sm));
   }
 
   &-trigger {
-    --ui-button-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    --ui-button-radius: 0 var(--ui-button-radius-default, var(--radius-sm)) var(--ui-button-radius-default, var(--radius-sm)) 0;
     // Pull onto the shared border so the two strokes collapse into one.
     margin-left: calc(-1 * #{$stroke-width});
   }
