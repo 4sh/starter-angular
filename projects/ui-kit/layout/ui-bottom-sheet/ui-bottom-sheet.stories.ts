@@ -165,6 +165,46 @@ const meta: Meta<UiBottomSheet> = {
     },
     opened: { action: 'opened', description: "Émis à la fin de l'animation d'ouverture." },
     closed: { action: 'closed', description: "Émis à la fin de l'animation de fermeture." },
+    closeAriaLabel: {
+      control: false,
+      description: 'Nom accessible du bouton de fermeture.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Fermer"' } },
+    },
+    handleAriaLabel: {
+      control: false,
+      description: "Nom accessible de la poignée lorsqu'elle est manipulable (`enableSnapping`).",
+      table: {
+        type: { summary: 'string' },
+        defaultValue: { summary: '"Redimensionner le panneau"' },
+      },
+    },
+    ariaLabel: {
+      control: false,
+      description: "Nom accessible lorsqu'il n'y a pas d'en-tête visible auquel se référer.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    ariaLabelledBy: {
+      control: false,
+      description:
+        "Id d'un élément externe qui nomme la feuille (prime sur le titre de l'en-tête).",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    styleClass: {
+      control: false,
+      description: 'Classe(s) supplémentaire(s) fusionnée(s) sur la surface de la feuille.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    autoZIndex: {
+      control: false,
+      description: 'Place automatiquement cette feuille au-dessus des overlays précédents.',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
+    },
+    baseZIndex: {
+      control: false,
+      description:
+        'z-index plancher (ajouté à la valeur automatique, ou utilisé tel quel lorsque `autoZIndex=false`).',
+      table: { type: { summary: 'number' }, defaultValue: { summary: '0' } },
+    },
   },
 };
 

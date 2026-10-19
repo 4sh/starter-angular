@@ -14,11 +14,17 @@ export type BadgeSize = 'default' | 'small' | 'large';
   styleUrl: './ui-badge.scss',
 })
 export class UiBadge {
+  /** Text content (counter or short label). Absent with no icon: the badge is a dot. */
   value = input<string | number>();
+  /** Feedback level (colour family). */
   level = input<UiFeedbackLevel>('default');
+  /** Intensity: `high` (strong) or `low` (subtle). */
   subLevel = input<UiSubLevel>('high');
+  /** Badge size. */
   size = input<BadgeSize>('default');
+  /** FontAwesome icon name, shown before the text. */
   icon = input<string>();
+  /** Accessible name, recommended for an icon-only badge or an ambiguous counter. */
   ariaLabel = input<string>();
 
   constructor() {

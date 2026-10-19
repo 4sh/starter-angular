@@ -109,12 +109,19 @@ export class UiImage {
   src = input<string>();
   /** Local asset name (`assets-map.json` key) displayed when the main image fails to load. */
   fallback = input<string>();
+  /** Loads the image eagerly with a high fetch priority (above-the-fold images); lazy otherwise. */
   priority = input(false);
+  /** Fills the parent box instead of using `width`/`height` (the parent must be positioned). */
   fill = input(false);
+  /** Rendered width; a number is read in `widthUnit`. */
   width = input<string | number>();
+  /** Unit of a numeric `width` (`px` when absent). */
   widthUnit = input<string>();
+  /** Rendered height; a number is read in `heightUnit`. Absent: the image keeps its ratio. */
   height = input<string | number>();
+  /** Unit of a numeric `height` (`px` when absent). */
   heightUnit = input<string>();
+  /** Alternative text. Absent: the image is decorative (`aria-hidden`). */
   alt = input<string>();
 
   /**

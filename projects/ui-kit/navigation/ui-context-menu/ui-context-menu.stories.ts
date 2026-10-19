@@ -80,6 +80,12 @@ const meta: Meta<UiContextMenu> = {
         "Onde de pression sur les entrées du menu quand l'effet ripple est activé (`provideUiRipple()` ou `[uiRippleScope]`). `false` la coupe sur ce composant, même en activation globale.",
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
+    styleClass: {
+      control: false,
+      description:
+        'Classe(s) supplémentaire(s) appliquée(s) au panneau (style personnalisé scopé).',
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
   },
   args: {
     level: 'high',

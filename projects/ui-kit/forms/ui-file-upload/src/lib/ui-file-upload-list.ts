@@ -24,6 +24,7 @@ export type UiFileUploadListSize = 'default' | 'small';
 export class UiFileUploadList {
   /** The file to display (name/size/status/progress/preview). */
   file = input.required<UiUploadFile>();
+  /** Size of the file rows. */
   size = input<UiFileUploadListSize>('default');
   /** FontAwesome icon for non-image files. */
   icon = input<string>('file');

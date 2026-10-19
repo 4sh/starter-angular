@@ -53,6 +53,40 @@ const meta: Meta<UiFileUploadList> = {
       control: { type: 'boolean' },
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
+    file: {
+      control: false,
+      description: 'Fichier à afficher (nom, taille, statut, progression, aperçu). Requis.',
+      table: { type: { summary: 'UiUploadFile' } },
+    },
+    icon: {
+      control: false,
+      description: 'Icône FontAwesome pour les fichiers qui ne sont pas des images.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"file"' } },
+    },
+    removeAriaLabel: {
+      control: false,
+      description:
+        'Nom accessible du bouton de suppression (texte brut : le nom du fichier est ajouté dans le template).',
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Supprimer le fichier"' } },
+    },
+    failedLabel: {
+      control: false,
+      description: "Texte d'erreur de repli quand le fichier ne porte aucun message.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Échec"' } },
+    },
+    uploadingLabel: {
+      control: false,
+      description: "Nom accessible du spinner d'envoi, où `{0}` est le nom du fichier.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Téléversement de {0}"' } },
+    },
+    progressLabel: {
+      control: false,
+      description: 'Nom accessible de la barre de progression, où `{0}` est le nom du fichier.',
+      table: {
+        type: { summary: 'string' },
+        defaultValue: { summary: '"Progression du téléversement de {0}"' },
+      },
+    },
   },
   args: { size: 'default', removable: true },
 };

@@ -53,6 +53,14 @@ const meta: Meta<UiBottomTabBar> = {
         "Onde de pression sur les items quand l'effet ripple est activé (`provideUiRipple()` ou `[uiRippleScope]`). `false` la coupe sur cette barre, même en activation globale.",
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
+    value: {
+      control: false,
+      description: "Valeur de l'onglet actif (bidirectionnel). `undefined` = aucun onglet actif.",
+      table: {
+        type: { summary: 'UiBottomTabValue | undefined' },
+        defaultValue: { summary: 'undefined' },
+      },
+    },
   },
   args: {
     ariaLabel: 'Navigation principale',

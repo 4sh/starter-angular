@@ -73,6 +73,25 @@ const meta: Meta<UiStepper> = {
       description: 'Icône affichée dans le marqueur des étapes terminées (sinon le numéro).',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
+    value: {
+      control: false,
+      description: "Valeur de l'étape active (bidirectionnel). `undefined` = aucune étape active.",
+      table: {
+        type: { summary: 'UiStepValue | undefined' },
+        defaultValue: { summary: 'undefined' },
+      },
+    },
+    ariaLabel: {
+      control: false,
+      description:
+        'Nom accessible du conteneur (utilisé comme `aria-label` en disposition verticale).',
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    tabindex: {
+      control: false,
+      description: "`tabindex` appliqué à chaque en-tête d'étape actif.",
+      table: { type: { summary: 'number' }, defaultValue: { summary: '0' } },
+    },
   },
   args: {
     orientation: 'horizontal',

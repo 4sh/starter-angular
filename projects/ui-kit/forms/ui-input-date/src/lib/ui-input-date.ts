@@ -99,7 +99,9 @@ export class UiInputDate extends BaseFormField<InputDateValue> {
    */
   step = input<number, unknown>(undefined, { transform: numberAttribute });
 
+  /** Icon of the button that opens the picker: `clock` by default in `mode="time"`. */
   icon = input<string>();
+  /** Renders the button that opens the picker. */
   showIcon = input(true, { transform: booleanAttribute });
   /** Accessible name of the picker button. Defaults per {@link mode}. */
   iconAriaLabel = input<string>();

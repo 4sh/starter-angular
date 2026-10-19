@@ -126,6 +126,16 @@ const meta: Meta<UiSpeedDial> = {
     opened: { action: 'opened', table: { disable: true } },
     closed: { action: 'closed', table: { disable: true } },
     itemClick: { action: 'itemClick', table: { disable: true } },
+    ariaLabelledBy: {
+      control: false,
+      description: "`id` d'un élément externe qui nomme le déclencheur.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    tabindex: {
+      control: false,
+      description: '`tabindex` natif du déclencheur.',
+      table: { type: { summary: 'number' }, defaultValue: { summary: '0' } },
+    },
   },
   args: {
     items: ITEMS,

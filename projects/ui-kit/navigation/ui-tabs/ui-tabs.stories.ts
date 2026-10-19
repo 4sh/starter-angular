@@ -82,6 +82,19 @@ const meta: Meta<TabsArgs> = {
         "Onde de pression sur les en-têtes d'onglet quand l'effet ripple est activé (`provideUiRipple()` ou `[uiRippleScope]`). `false` la coupe sur ce composant, même en activation globale.",
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
+    value: {
+      control: false,
+      description: "Valeur de l'onglet actif (bidirectionnel). `undefined` = aucun onglet actif.",
+      table: {
+        type: { summary: 'UiTabValue | undefined' },
+        defaultValue: { summary: 'undefined' },
+      },
+    },
+    tabindex: {
+      control: false,
+      description: "`tabindex` appliqué à l'onglet actif (l'unique arrêt de tabulation du groupe).",
+      table: { type: { summary: 'number' }, defaultValue: { summary: '0' } },
+    },
   },
   args: {
     orientation: 'horizontal',

@@ -37,10 +37,21 @@ export type ButtonNativeProps = Record<string, string | number | boolean | null 
   },
 })
 export class UiButton {
+  /** Button text. Absent: icon-only button, or content projected through `<ng-content>`. */
   label = input<string>();
+  /** Accessible name. Required in icon-only mode; falls back to `label` otherwise. */
   ariaLabel = input<string>();
+  /** Native `type` of the `<button>`. */
   type = input<ButtonType>('button');
+  /**
+   * Semantic level: `high`/`low` for importance, `success`/`warning`/`error` for contextual
+   * feedback.
+   */
   level = input<UiLevel>('high');
+  /**
+   * Appearance: `filled` (solid), `outlined` (border) or `ghost` (text only). Composes with `level`
+   * and `onColor`.
+   */
   variant = input<ButtonVariant>('filled');
   /**
    * À renseigner **uniquement** quand le bouton est posé sur un fond de couleur
@@ -50,20 +61,33 @@ export class UiButton {
    * thème** : un bandeau violet reste violet en clair comme en sombre.
    */
   onColor = input<ButtonOnColor | null>(null);
+  /** Button size. */
   size = input<ButtonSize>('default');
+  /** FontAwesome icon name (e.g. `check`, `arrow-right`). */
   icon = input<string>();
+  /** Icon position relative to the content. */
   iconPos = input<ButtonIconPos>('left');
+  /** Forces the square icon-only style even when there is content. */
   iconOnly = input(false, { transform: booleanAttribute });
+  /** Loading state: shows a spinner and disables the button. */
   loading = input(false, { transform: booleanAttribute });
+  /** FontAwesome icon of the loading spinner (spun with `fa-spin`). */
   loadingIcon = input<string>('circle-notch');
+  /** Full width (100%). */
   expanded = input(false, { transform: booleanAttribute });
+  /** Pill shape (fully rounded corners). */
   rounded = input(false, { transform: booleanAttribute });
+  /** Disables the button (native attribute). */
   disabled = input(false, { transform: booleanAttribute });
   /** Ripple Effect */
   ripple = input(true, { transform: booleanAttribute });
+  /** Native `tabindex` of the button. */
   tabindex = input<number>();
+  /** Extra native attributes forwarded to the `<button>` (e.g. `{ form: 'login', value: '1' }`). */
   buttonProps = input<ButtonNativeProps>();
+  /** Custom icon template (replaces `icon`). */
   iconTemplate = input<TemplateRef<unknown>>();
+  /** Custom loading icon template (replaces `loadingIcon`). */
   loadingIconTemplate = input<TemplateRef<unknown>>();
 
   // --- Link mode (polymorphic host) ------------------------------------

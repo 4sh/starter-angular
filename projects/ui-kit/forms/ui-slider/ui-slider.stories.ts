@@ -100,6 +100,33 @@ const meta: Meta<UiSlider> = {
       description: 'Émis une fois le glissement terminé.',
       table: { category: 'Events', type: { summary: 'number | number[]' } },
     },
+    ariaLabelStart: {
+      control: false,
+      description:
+        'Nom accessible de la poignée de début (inférieure) en mode `range` ; se rabat sur `ariaLabel`.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    ariaLabelEnd: {
+      control: false,
+      description:
+        'Nom accessible de la poignée de fin (supérieure) en mode `range` ; se rabat sur `ariaLabel`.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    inputId: {
+      control: false,
+      description: "Id transmis à l'input natif (généré automatiquement si omis).",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    name: {
+      control: false,
+      description: "`name` transmis à l'input natif.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    tabindex: {
+      control: false,
+      description: "`tabindex` transmis à l'input natif.",
+      table: { type: { summary: 'number' }, defaultValue: { summary: 'undefined' } },
+    },
   },
   args: {
     min: 0,

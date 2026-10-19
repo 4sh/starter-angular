@@ -5,13 +5,13 @@
  * The story is hand-written: nothing else notices it drifting.
  *
  * Fails when:
+ *   - an input of the story's component has no `argTypes` entry, unless
+ *     UNDOCUMENTED_INPUTS lists it: the API table of the page would miss it. An
+ *     input with no useful control gets a doc row (`control: false`);
  *   - an `argTypes` key is no input or output of any class of the entry point
  *     (renamed or removed input), unless DEMO_ARGS lists it;
  *   - the default the story announces differs from the one declared in the code,
  *     when the code default is a literal.
- *
- * Inputs missing from `argTypes` are only counted: they lack a Storybook control,
- * but the MCP server lists them anyway.
  *
  * Usage: node scripts/component-api.check.mjs
  */
@@ -27,6 +27,9 @@ import { extractComponentApi, ROOT } from './lib/component-api.mjs';
 const DEMO_ARGS = {
   'UiAvatarGroup.size': 'taille appliquée aux avatars projetés par la démo',
 };
+
+/** Inputs left out of the story's API table on purpose: `Class.input` → why. */
+const UNDOCUMENTED_INPUTS = {};
 
 const prop = (node, name) =>
   node.properties.find((p) => ts.isPropertyAssignment(p) && p.name.getText() === name);
@@ -90,7 +93,6 @@ const isLiteral = (value) =>
 
 const api = extractComponentApi();
 const problems = [];
-let missing = 0;
 let checked = 0;
 
 for (const [dir, entry] of Object.entries(api)) {
@@ -112,7 +114,11 @@ for (const [dir, entry] of Object.entries(api)) {
       }
       for (const input of component.inputs) {
         if (!(input.name in meta.args)) {
-          missing++;
+          if (!UNDOCUMENTED_INPUTS[`${component.name}.${input.name}`]) {
+            problems.push(
+              `${where} : l'input \`${input.name}\` manque aux argTypes (ajouter une ligne, \`control: false\` s'il n'a pas de contrôle utile).`,
+            );
+          }
           continue;
         }
         const announced = meta.args[input.name];
@@ -133,7 +139,4 @@ if (problems.length) {
   for (const problem of problems) console.error(`  - ${problem}`);
   process.exit(1);
 }
-console.log(
-  `✓ argTypes : ${checked} stories conformes à l'API des composants ` +
-    `(${missing} input(s) sans contrôle Storybook, publiés quand même par le serveur MCP).`,
-);
+console.log(`✓ argTypes : ${checked} stories conformes à l'API des composants.`);

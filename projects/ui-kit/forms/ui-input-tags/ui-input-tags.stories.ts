@@ -161,6 +161,158 @@ const meta: Meta<UiInputTags> = {
     valueChange: { action: 'valueChange', table: { category: 'Outputs' } },
     completeMethod: { action: 'completeMethod', table: { category: 'Outputs' } },
     optionSelect: { action: 'optionSelect', table: { category: 'Outputs' } },
+    maxLength: {
+      control: false,
+      description: "Longueur maximale, en caractères, d'un tag saisi.",
+      table: { type: { summary: 'number' }, defaultValue: { summary: 'undefined' } },
+    },
+    chipRounded: {
+      control: false,
+      description:
+        'Forme en pilule (par défaut) ou rectangle arrondi pour les tags `ui-chip` par défaut.',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
+    },
+    optionLabel: {
+      control: false,
+      description: "Nom du champ (chemin à points) lu comme label d'une suggestion.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    optionValue: {
+      control: false,
+      description: 'Nom du champ (chemin à points) lu comme valeur ajoutée au modèle.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    optionDisabled: {
+      control: false,
+      description:
+        "Nom du champ (chemin à points) lu comme indicateur de désactivation d'une suggestion.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    dataKey: {
+      control: false,
+      description:
+        "Propriété comparée pour l'égalité des valeurs (détection des doublons sur des objets).",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    group: {
+      control: false,
+      description: 'Traite `suggestions` comme des groupes.',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    optionGroupLabel: {
+      control: false,
+      description: "Nom du champ portant le label d'un groupe.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"label"' } },
+    },
+    optionGroupChildren: {
+      control: false,
+      description: "Nom du champ portant le tableau d'enfants d'un groupe.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"items"' } },
+    },
+    delay: {
+      control: false,
+      description: "Délai d'anti-rebond (ms) entre la dernière frappe et `completeMethod`.",
+      table: { type: { summary: 'number' }, defaultValue: { summary: '300' } },
+    },
+    completeOnFocus: {
+      control: false,
+      description: "Émet une requête dès que l'input reçoit le focus (avant toute saisie).",
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    scrollHeight: {
+      control: false,
+      description:
+        'Hauteur maximale de la liste de suggestions (taille CSS). Valeur par défaut issue du SCSS.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    autoOptionFocus: {
+      control: false,
+      description: "Met visuellement le focus sur la première suggestion à l'ouverture du panneau.",
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    focusOnHover: {
+      control: false,
+      description: 'Met visuellement le focus sur la suggestion sous le pointeur de la souris.',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
+    },
+    autoFlip: {
+      control: false,
+      description:
+        "Retourne automatiquement le panneau au-dessus de l'input quand la place manque en dessous.",
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
+    },
+    panelStyleClass: {
+      control: false,
+      description: 'Classe(s) supplémentaire(s) appliquée(s) au panneau de suggestions.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    emptyMessage: {
+      control: false,
+      description: 'Message affiché quand une requête ne renvoie aucune suggestion.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Aucun résultat"' } },
+    },
+    removeTagLabel: {
+      control: false,
+      description:
+        "Label accessible de l'action de suppression de chaque tag, où `{0}` est le label du tag.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Supprimer {0}"' } },
+    },
+    errorText: {
+      control: false,
+      description: "Message d'erreur affiché à la place de l'aide quand le champ est en erreur.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    showMessageIcon: {
+      control: false,
+      description: "Préfixe le message sous le champ (aide ou erreur) d'une icône décorative.",
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    messageIcon: {
+      control: false,
+      description: 'Remplace le glyphe affiché par `showMessageIcon`.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    level: {
+      control: false,
+      description:
+        'Statut de validation explicite (`error` est forcé quand le contrôle est invalide et touché).',
+      table: { type: { summary: 'FieldLevel' }, defaultValue: { summary: '"default"' } },
+    },
+    ariaLabel: {
+      control: false,
+      description: "Nom accessible quand aucun label visible n'est fourni.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    ariaLabelledBy: {
+      control: false,
+      description: "Id d'un élément externe qui étiquette ce contrôle.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    inputId: {
+      control: false,
+      description: "Id transmis à l'input natif (généré automatiquement si omis).",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    name: {
+      control: false,
+      description: "Attribut `name` transmis à l'input natif.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    required: {
+      control: false,
+      description: "Marqueur d'obligation (*) et attribut `required` natif.",
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    readonly: {
+      control: false,
+      description: 'Lecture seule (attribut natif).',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    tabindex: {
+      control: false,
+      description: "Valeur de `tabindex` transmise à l'input natif.",
+      table: { type: { summary: 'number' }, defaultValue: { summary: 'undefined' } },
+    },
   },
 };
 

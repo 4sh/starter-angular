@@ -99,6 +99,41 @@ const meta: Meta<UiEditor> = {
     editorFocus: { action: 'editorFocus', table: { disable: true } },
     editorBlur: { action: 'editorBlur', table: { disable: true } },
     selectionChange: { action: 'selectionChange', table: { disable: true } },
+    showMessageIcon: {
+      control: false,
+      description: "Préfixe le message sous le champ (aide ou erreur) d'une icône décorative.",
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    messageIcon: {
+      control: false,
+      description: 'Remplace le glyphe affiché par `showMessageIcon`.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    ariaLabel: {
+      control: false,
+      description: "Nom accessible quand aucun libellé visible n'est fourni.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    ariaLabelledBy: {
+      control: false,
+      description: "`id` d'un élément externe qui nomme ce contrôle.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    inputId: {
+      control: false,
+      description: "`id` transmis à l'input natif (généré automatiquement si absent).",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    name: {
+      control: false,
+      description: "`name` transmis à l'input natif.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    tabindex: {
+      control: false,
+      description: "`tabindex` transmis à l'input natif.",
+      table: { type: { summary: 'number' }, defaultValue: { summary: 'undefined' } },
+    },
   },
   args: {
     label: 'Description',
@@ -196,9 +231,7 @@ export const FontSize: Story = {
  * classe ni conversion, contrairement à la police/taille.
  */
 export const IndentOutdent: Story = {
-  render: story(
-    '<ul><li>Premier point</li><li>Second point<ul><li>Sous-point</li></ul></li></ul>',
-  ),
+  render: story('<ul><li>Premier point</li><li>Second point<ul><li>Sous-point</li></ul></li></ul>'),
   args: {
     label: 'Plan',
     tools: ['bulletList', 'orderedList', 'separator', 'indent', 'outdent'],

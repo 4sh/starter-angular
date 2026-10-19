@@ -233,6 +233,104 @@ const meta: Meta<UiDatepicker> = {
         "Onde de pression sur les cellules du calendrier et sa navigation quand l'effet ripple est activé (`provideUiRipple()` ou `[uiRippleScope]`). `false` la coupe sur ce composant, même en activation globale.",
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
+    iconAriaLabel: {
+      control: false,
+      description: 'Nom accessible du bouton de bascule (a11y).',
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Ouvrir le calendrier"' } },
+    },
+    panelAriaLabel: {
+      control: false,
+      description:
+        "Nom accessible du panneau du calendrier (repli quand il n'y a ni `label` ni `ariaLabel`).",
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Calendrier"' } },
+    },
+    prevAriaLabel: {
+      control: false,
+      description:
+        "Libellé accessible de la flèche de navigation vers le mois ou l'année précédent(e).",
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Précédent"' } },
+    },
+    nextAriaLabel: {
+      control: false,
+      description:
+        "Libellé accessible de la flèche de navigation vers le mois ou l'année suivant(e).",
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Suivant"' } },
+    },
+    hoursAriaLabel: {
+      control: false,
+      description: 'Nom accessible du spinbutton des heures.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Heures"' } },
+    },
+    minutesAriaLabel: {
+      control: false,
+      description: 'Nom accessible du spinbutton des minutes.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Minutes"' } },
+    },
+    meridiemAriaLabel: {
+      control: false,
+      description: 'Nom accessible du spinbutton AM/PM.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"AM/PM"' } },
+    },
+    incrementHoursAriaLabel: {
+      control: false,
+      description: "Libellé accessible du bouton d'incrémentation des heures.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Augmenter les heures"' } },
+    },
+    decrementHoursAriaLabel: {
+      control: false,
+      description: 'Libellé accessible du bouton de décrémentation des heures.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Diminuer les heures"' } },
+    },
+    incrementMinutesAriaLabel: {
+      control: false,
+      description: "Libellé accessible du bouton d'incrémentation des minutes.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Augmenter les minutes"' } },
+    },
+    decrementMinutesAriaLabel: {
+      control: false,
+      description: 'Libellé accessible du bouton de décrémentation des minutes.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Diminuer les minutes"' } },
+    },
+    toggleMeridiemAriaLabel: {
+      control: false,
+      description: 'Libellé accessible des boutons de bascule AM/PM.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Changer AM/PM"' } },
+    },
+    showMessageIcon: {
+      control: false,
+      description: "Préfixe le message sous le champ (aide ou erreur) d'une icône décorative.",
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    messageIcon: {
+      control: false,
+      description: 'Remplace le glyphe affiché par `showMessageIcon`.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    ariaLabel: {
+      control: false,
+      description: "Nom accessible quand aucun libellé visible n'est fourni.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    ariaLabelledBy: {
+      control: false,
+      description: "`id` d'un élément externe qui nomme ce contrôle.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    inputId: {
+      control: false,
+      description: "`id` transmis à l'input natif (généré automatiquement si absent).",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    name: {
+      control: false,
+      description: "`name` transmis à l'input natif.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    tabindex: {
+      control: false,
+      description: "`tabindex` transmis à l'input natif.",
+      table: { type: { summary: 'number' }, defaultValue: { summary: 'undefined' } },
+    },
   },
   args: {
     label: 'Date',

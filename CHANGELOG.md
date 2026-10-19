@@ -48,6 +48,16 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
     défile).
   - Le titre d'une étape est désormais enveloppé dans un `span.ui-step-title-text`.
 
+### Changed
+
+- **Tables d'API Storybook complètes : un input = une ligne** (FSHSP-249). 286 inputs, sur
+  41 stories, n'avaient pas d'entrée dans les `argTypes` et manquaient à la table d'API de
+  leur page (`ui-input-tags` à lui seul en omettait 29). Ils y figurent, en ligne de
+  documentation (`control: false`) avec leur type et le défaut du code. 54 inputs sans
+  commentaire JSDoc (dont 18 de `ui-button`) en ont reçu un, ce qui donne aussi une
+  description à chacun dans le serveur MCP. `pnpm api:check` échoue désormais sur un input
+  absent des `argTypes`.
+
 ### Fixed
 
 - **Story de `ui-read-only` : le défaut de `fallback` est `—`, pas `-`** (FSHSP-242). La table

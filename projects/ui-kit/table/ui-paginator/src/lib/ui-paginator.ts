@@ -107,8 +107,11 @@ export class UiPaginator {
   pageAriaLabel = input<string>('Page {page}');
   /** Accessible names of the edge / step controls. */
   firstPageAriaLabel = input<string>('Première page');
+  /** Accessible name of the previous-page control. */
   prevPageAriaLabel = input<string>('Page précédente');
+  /** Accessible name of the next-page control. */
   nextPageAriaLabel = input<string>('Page suivante');
+  /** Accessible name of the last-page control. */
   lastPageAriaLabel = input<string>('Dernière page');
   /** Accessible name of the rows-per-page select. */
   rowsPerPageAriaLabel = input<string>('Lignes par page');

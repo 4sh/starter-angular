@@ -96,6 +96,17 @@ const meta: Meta<UiChip> = {
     remove: { action: 'remove', table: { category: 'Events' } },
     chipClick: { action: 'chipClick', table: { category: 'Events' } },
     imageError: { action: 'imageError', table: { category: 'Events' } },
+    ariaLabelledBy: {
+      control: false,
+      description: "Id de l'élément qui libelle la puce (prime sur `ariaLabel` et `label`).",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    removeTabindex: {
+      control: false,
+      description:
+        "`tabindex` de l'action de suppression. Laisser vide pour conserver l'ordre de tabulation naturel ; mettre `-1` lorsque la puce se trouve dans un conteneur à focus itinérant (par ex. `ui-input-tags`), afin que le bouton ne soit pas un arrêt de tabulation distinct.",
+      table: { type: { summary: 'number' }, defaultValue: { summary: 'undefined' } },
+    },
   },
   args: {
     label: 'Label',

@@ -103,6 +103,48 @@ const meta: Meta<UiDrawer> = {
     },
     shown: { action: 'shown', description: 'Émis après ouverture.' },
     hidden: { action: 'hidden', description: 'Émis après fermeture.' },
+    role: {
+      control: false,
+      description: 'Rôle ARIA de la surface du panneau.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"dialog"' } },
+    },
+    ariaLabel: {
+      control: false,
+      description: "Nom accessible lorsqu'il n'y a pas d'en-tête visible auquel se référer.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    ariaLabelledBy: {
+      control: false,
+      description:
+        "Id d'un élément externe qui nomme le panneau (prime sur le titre de l'en-tête).",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    closeAriaLabel: {
+      control: false,
+      description: 'Nom accessible du bouton de fermeture.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Fermer"' } },
+    },
+    styleClass: {
+      control: false,
+      description: 'Classe(s) supplémentaire(s) fusionnée(s) sur la surface du panneau.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    maskStyleClass: {
+      control: false,
+      description: 'Classe(s) supplémentaire(s) fusionnée(s) sur le masque.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    autoZIndex: {
+      control: false,
+      description: 'Place automatiquement ce tiroir au-dessus des overlays précédents.',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
+    },
+    baseZIndex: {
+      control: false,
+      description:
+        'z-index plancher (ajouté à la valeur automatique, ou utilisé tel quel lorsque `autoZIndex=false`).',
+      table: { type: { summary: 'number' }, defaultValue: { summary: '0' } },
+    },
   },
 };
 

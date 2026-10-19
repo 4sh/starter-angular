@@ -58,6 +58,11 @@ const meta: Meta<UiEmptyState> = {
       description: 'Nom accessible de la région (ajoute role="region").',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
+    ariaLabelledBy: {
+      control: false,
+      description: 'Id de l\'élément qui libelle le landmark de région (ajoute `role="region"`).',
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
   },
   args: {
     title: 'Aucun résultat',

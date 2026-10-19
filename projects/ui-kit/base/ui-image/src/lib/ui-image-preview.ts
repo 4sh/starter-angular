@@ -66,12 +66,19 @@ export class UiImagePreview {
   /** Close when the mask around the image is clicked. */
   dismissableMask = input(true, { transform: booleanAttribute });
 
+  /** Accessible name of the zoom-in button. */
   zoomInAriaLabel = input('Zoom avant');
+  /** Accessible name of the zoom-out button. */
   zoomOutAriaLabel = input('Zoom arrière');
+  /** Accessible name of the rotate-left button. */
   rotateLeftAriaLabel = input('Pivoter vers la gauche');
+  /** Accessible name of the rotate-right button. */
   rotateRightAriaLabel = input('Pivoter vers la droite');
+  /** Accessible name of the button that resets zoom and rotation. */
   resetAriaLabel = input('Réinitialiser l’affichage');
+  /** Accessible name of the download button. */
   downloadAriaLabel = input('Télécharger l’image');
+  /** Accessible name of the close button. */
   closeAriaLabel = input('Fermer l’aperçu');
 
   /** Emitted when the view asks to be dismissed (Escape, close button, mask click). */

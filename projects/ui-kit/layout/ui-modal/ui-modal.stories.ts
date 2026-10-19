@@ -138,6 +138,96 @@ const meta: Meta<UiModal> = {
     },
     dragEnd: { action: 'dragEnd', description: "Émis à la fin d'un déplacement." },
     resizeEnd: { action: 'resizeEnd', description: "Émis à la fin d'un redimensionnement." },
+    role: {
+      control: false,
+      description: 'Rôle ARIA de la surface de la boîte de dialogue.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"dialog"' } },
+    },
+    ariaLabel: {
+      control: false,
+      description: "Nom accessible lorsqu'il n'y a pas d'en-tête visible auquel se référer.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    ariaLabelledBy: {
+      control: false,
+      description:
+        "Id d'un élément externe qui nomme la boîte de dialogue (prime sur le titre de l'en-tête).",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    keepInViewport: {
+      control: false,
+      description:
+        'Maintient la boîte de dialogue entièrement dans le viewport pendant le glissement.',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
+    },
+    minX: {
+      control: false,
+      description: 'Décalage minimal conservé à gauche pendant le glissement (px).',
+      table: { type: { summary: 'number' }, defaultValue: { summary: '0' } },
+    },
+    minY: {
+      control: false,
+      description: 'Décalage minimal conservé en haut pendant le glissement (px).',
+      table: { type: { summary: 'number' }, defaultValue: { summary: '0' } },
+    },
+    minWidth: {
+      control: false,
+      description: 'Largeur minimale de la boîte de dialogue pendant le redimensionnement (px).',
+      table: { type: { summary: 'number' }, defaultValue: { summary: '150' } },
+    },
+    minHeight: {
+      control: false,
+      description: 'Hauteur minimale de la boîte de dialogue pendant le redimensionnement (px).',
+      table: { type: { summary: 'number' }, defaultValue: { summary: '100' } },
+    },
+    closeIcon: {
+      control: false,
+      description: "Nom FontAwesome de l'icône du bouton de fermeture.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"xmark"' } },
+    },
+    maximizeIcon: {
+      control: false,
+      description: "Nom FontAwesome de l'icône d'agrandissement.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"expand"' } },
+    },
+    minimizeIcon: {
+      control: false,
+      description: "Nom FontAwesome de l'icône de restauration (réduction).",
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"compress"' } },
+    },
+    closeAriaLabel: {
+      control: false,
+      description: 'Nom accessible du bouton de fermeture.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Fermer"' } },
+    },
+    maximizeAriaLabel: {
+      control: false,
+      description: "Nom accessible du bouton d'agrandissement / restauration.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Agrandir"' } },
+    },
+    styleClass: {
+      control: false,
+      description:
+        'Classe(s) supplémentaire(s) fusionnée(s) sur la surface de la boîte de dialogue.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    maskStyleClass: {
+      control: false,
+      description: 'Classe(s) supplémentaire(s) fusionnée(s) sur le masque.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    autoZIndex: {
+      control: false,
+      description:
+        'Place automatiquement cette boîte de dialogue au-dessus des overlays précédents.',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
+    },
+    baseZIndex: {
+      control: false,
+      description:
+        'z-index plancher (ajouté à la valeur automatique, ou utilisé tel quel lorsque `autoZIndex=false`).',
+      table: { type: { summary: 'number' }, defaultValue: { summary: '0' } },
+    },
   },
 };
 
