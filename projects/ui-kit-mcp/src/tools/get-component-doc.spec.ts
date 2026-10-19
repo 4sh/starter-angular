@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { FIXTURE_DOCS } from '../test-fixtures.js';
+import { FIXTURE_COMPONENT_API, FIXTURE_DOCS } from '../test-fixtures.js';
 
 const buttonSections = FIXTURE_DOCS.filter((d) => d.name === 'ui-button');
 
@@ -19,6 +19,11 @@ vi.mock('../data.js', () => ({
     name === 'ui-button' || name === 'ui-select' ? FIXTURE_DOCS.filter((d) => d.name === name) : [],
   ),
   getComponentHooks: vi.fn((name: string) => (name === 'ui-button' ? buttonHooks : [])),
+  getEntryApi: vi.fn((source: string) =>
+    source.startsWith('projects/ui-kit/actions/ui-button/')
+      ? FIXTURE_COMPONENT_API.entries['projects/ui-kit/actions/ui-button']
+      : undefined,
+  ),
   listComponentNames: vi.fn(() => ['ui-button', 'ui-select']),
 }));
 
@@ -43,6 +48,19 @@ describe('getComponentDoc', () => {
     const result = getComponentDoc('ui-button');
     const payload = JSON.parse(result.content[0].text);
     expect(payload.sections[0].section).toBe('Overview');
+  });
+
+  it('serves the API read from the sources, before the doc sections', () => {
+    const payload = JSON.parse(getComponentDoc('ui-button').content[0].text);
+    expect(payload.api).toEqual(FIXTURE_COMPONENT_API.entries['projects/ui-kit/actions/ui-button']);
+    expect(Object.keys(payload).indexOf('api')).toBeLessThan(
+      Object.keys(payload).indexOf('sections'),
+    );
+  });
+
+  it('omits api when no entry point holds the page', () => {
+    const payload = JSON.parse(getComponentDoc('ui-select').content[0].text);
+    expect(payload).not.toHaveProperty('api');
   });
 
   it('says which hooks may go in a global theme, with the note that reads the fields', () => {

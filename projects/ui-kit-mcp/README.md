@@ -31,6 +31,7 @@ associée — sans que l'agent ait besoin de lire les fichiers sources ou de dev
 | ------------------- | ------------------------------------------------------------------------- |
 | `list_components`   | Catalogue de tous les composants `ui-*` disponibles.                      |
 | `get_component_doc` | Doc complète d'un composant (API, theming, tailles, états, exemples).     |
+|                     | `api` : sous-chemin d'import, puis par classe ses inputs et outputs.      |
 |                     | `theming.hooks` : par hook `--ui-*`, `themable` et sinon `exclusion`.     |
 | `search_docs`       | Recherche plein texte dans toute la doc (composants, fondations, tokens). |
 | `get_shared_config` | Config structurelle transverse du kit (`_ui-config.scss`).                |
@@ -44,7 +45,9 @@ pnpm mcp:test     # Vitest — logique testée sur fixtures, sans dépendre du m
 
 Le serveur ne lit jamais le repo en live : il embarque une copie figée du manifeste doc
 (`storybook/public/text-search-docs.json`, `storybook/generated/ui-config.json`), prise au
-moment du build — voir `src/data.ts`.
+moment du build — voir `src/data.ts`. S'y ajoute `component-api.json`, l'API de chaque
+composant lue dans ses sources par le compilateur TypeScript (`scripts/lib/component-api.mjs`) :
+les `argTypes` des stories ne listent que les inputs qui ont un contrôle Storybook.
 
 Le `version` du `package.json` ci-contre **ne sert à rien** : ne le montez pas à la main.
 La version annoncée au client MCP est celle de `@4sh/ui-kit`, tamponnée à l'assemblage par

@@ -6,11 +6,16 @@
  * pour le pourquoi). Suppose que `pnpm docs:config && pnpm docs:search`
  * ont déjà tourné — c'est `mcp-package.build.mjs` qui orchestre l'ordre.
  *
+ * Y écrit aussi `component-api.json` : les inputs et outputs de chaque composant,
+ * lus dans ses sources par le compilateur TypeScript (`scripts/lib/component-api.mjs`).
+ *
  * Usage : node scripts/mcp-assets.build.mjs
  */
-import { copyFileSync, existsSync, mkdirSync } from 'node:fs';
+import { copyFileSync, existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+
+import { extractComponentApi } from './lib/component-api.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const DEST = join(ROOT, 'projects/ui-kit-mcp/data');
@@ -31,4 +36,17 @@ for (const src of SOURCES) {
   copyFileSync(src, join(DEST, src.split('/').pop()));
 }
 
+const api = extractComponentApi();
+writeFileSync(
+  join(DEST, 'component-api.json'),
+  `${JSON.stringify({ $generatedBy: 'scripts/mcp-assets.build.mjs', entries: api }, null, 2)}\n`,
+);
+const classes = Object.values(api).flatMap((e) => e.components);
+const inputs = classes.reduce((n, c) => n + c.inputs.length, 0);
+const outputs = classes.reduce((n, c) => n + c.outputs.length, 0);
+
 console.log(`[mcp-assets] manifeste copié → ${DEST}`);
+console.log(
+  `[mcp-assets] API : ${Object.keys(api).length} points d'entrée, ${classes.length} classes, ` +
+    `${inputs} inputs, ${outputs} outputs.`,
+);

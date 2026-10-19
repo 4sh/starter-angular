@@ -1,8 +1,15 @@
-import { getComponentHooks, getComponentSections, listComponentNames } from '../data.js';
+import {
+  getComponentHooks,
+  getComponentSections,
+  getEntryApi,
+  listComponentNames,
+} from '../data.js';
 
 export const GET_COMPONENT_DOC_DESCRIPTION =
-  "Retourne la doc complète d'un composant `ui-*` : API (inputs/outputs/types), " +
-  'Theming (tokens exposés), tailles, états, exemples — telle que publiée sur Storybook. ' +
+  "Retourne la doc complète d'un composant `ui-*` : `api`, lue dans ses sources (sous-chemin " +
+  "d'import, puis par classe exportée son sélecteur et ses inputs et outputs : type, valeurs " +
+  'admises, requis, défaut, description), puis les sections de sa page Storybook (theming, ' +
+  'tailles, états, exemples). ' +
   'Le champ `theming.hooks` dit, pour chaque hook `--ui-*`, s’il peut aller dans un thème ' +
   'global (`themable`) et sinon pourquoi. ' +
   "C'est la source de vérité : préférer cet outil à la lecture des fichiers sources " +
@@ -43,6 +50,7 @@ export function getComponentDoc(name: string) {
     text: s.text,
   }));
   const hooks = getComponentHooks(name);
+  const api = getEntryApi(sections[0].source);
 
   return {
     content: [
@@ -53,6 +61,7 @@ export function getComponentDoc(name: string) {
             name,
             title: sections[0].title,
             source: sections[0].source,
+            ...(api ? { api } : {}),
             sections: bySection,
             // Absent d'un manifeste antérieur à `hookStatus` : rien à affirmer.
             ...(hooks.length ? { theming: { note: THEMING_NOTE, hooks } } : {}),
