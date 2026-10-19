@@ -58,6 +58,50 @@ export interface UiConfigManifest {
   hookStatus?: Record<string, HookStatus>;
 }
 
+/** Un input (`input()`, `model()`) tel que déclaré dans le composant. */
+export interface InputDoc {
+  name: string;
+  type: string;
+  required: boolean;
+  /** Seulement quand le type est une union de littéraux. */
+  values?: (string | number)[];
+  /** Texte source du défaut, ex. `'high'`. Absent : `undefined`. */
+  default?: string;
+  description?: string;
+  deprecated?: boolean;
+  /** `model()` : liaison à double sens `[(name)]`. */
+  model?: boolean;
+}
+
+export interface OutputDoc {
+  name: string;
+  type: string;
+  description?: string;
+  deprecated?: boolean;
+}
+
+export interface ComponentApi {
+  /** Nom de la classe exportée, ex. `UiButton`. */
+  name: string;
+  kind: 'component' | 'directive';
+  selector: string | null;
+  description?: string;
+  inputs: InputDoc[];
+  outputs: OutputDoc[];
+}
+
+export interface EntryApi {
+  /** Sous-chemin d'import, ex. `@4sh/ui-kit/actions/ui-button`. */
+  import: string;
+  components: ComponentApi[];
+}
+
+/** Clé : dossier du point d'entrée, ex. `projects/ui-kit/actions/ui-button`. */
+export interface ComponentApiManifest {
+  $generatedBy: string;
+  entries: Record<string, EntryApi>;
+}
+
 function readJson<T>(fileName: string): T {
   const path = join(DATA_DIR, fileName);
   try {
@@ -77,6 +121,21 @@ let uiConfigCache: UiConfigManifest | undefined;
 /** Index plein texte de la doc Storybook — une entrée = une section de page. */
 export function loadSearchDocs(): SearchDocsManifest {
   return (searchDocsCache ??= readJson<SearchDocsManifest>('text-search-docs.json'));
+}
+
+let componentApiCache: ComponentApiManifest | undefined;
+
+/** Inputs et outputs de chaque composant, lus dans ses sources au build. */
+export function loadComponentApi(): ComponentApiManifest {
+  return (componentApiCache ??= readJson<ComponentApiManifest>('component-api.json'));
+}
+
+/**
+ * API du point d'entrée qui porte une page de doc : la page (`ui-button.mdx`) vit
+ * dans le dossier du point d'entrée, d'où la correspondance par dossier.
+ */
+export function getEntryApi(docSource: string): EntryApi | undefined {
+  return loadComponentApi().entries[docSource.slice(0, docSource.lastIndexOf('/'))];
 }
 
 /** Config structurelle des composants (rôles + bindings de tokens partagés). */

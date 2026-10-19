@@ -89,6 +89,155 @@ const meta: Meta<UiFileUpload> = {
         "Onde de pression sur la zone de dépôt et les actions quand l'effet ripple est activé (`provideUiRipple()` ou `[uiRippleScope]`). `false` la coupe sur ce composant, même en activation globale.",
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
+    maxFileSize: {
+      control: false,
+      description: 'Taille maximale par fichier, en octets.',
+      table: { type: { summary: 'number' }, defaultValue: { summary: 'undefined' } },
+    },
+    fileLimit: {
+      control: false,
+      description: 'Nombre maximal de fichiers conservés simultanément.',
+      table: { type: { summary: 'number' }, defaultValue: { summary: 'undefined' } },
+    },
+    url: {
+      control: false,
+      description: "Point d'accès de l'uploader intégré.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    method: {
+      control: false,
+      description: "Méthode HTTP de l'uploader intégré.",
+      table: { type: { summary: "'post' | 'put'" }, defaultValue: { summary: '"post"' } },
+    },
+    fieldName: {
+      control: false,
+      description: 'Nom du champ utilisé pour chaque fichier dans le corps multipart.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"files"' } },
+    },
+    withCredentials: {
+      control: false,
+      description:
+        "Envoie les identifiants (cookies) avec la requête d'envoi de l'uploader intégré.",
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    showFileList: {
+      control: false,
+      description: 'Affiche la liste des fichiers sous le contrôle.',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
+    },
+    showControls: {
+      control: false,
+      description: "Affiche les boutons Envoyer/Annuler de la barre d'outils (mode drag).",
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
+    },
+    browseLabel: {
+      control: false,
+      description: 'Libellé du bouton Parcourir.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Parcourir"' } },
+    },
+    chooseLabel: {
+      control: false,
+      description: 'Placeholder affiché en mode champ avant toute sélection.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Choisir un fichier…"' } },
+    },
+    uploadLabel: {
+      control: false,
+      description: "Libellé du bouton Envoyer de la barre d'outils (mode drag).",
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Téléverser"' } },
+    },
+    cancelLabel: {
+      control: false,
+      description: "Libellé du bouton de la barre d'outils qui vide la sélection (mode drag).",
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Effacer"' } },
+    },
+    dragLinkLabel: {
+      control: false,
+      description: 'Lien et invite de la zone de glisser-déposer.',
+      table: {
+        type: { summary: 'string' },
+        defaultValue: { summary: '"Cliquer pour téléverser"' },
+      },
+    },
+    dragPromptLabel: {
+      control: false,
+      description: 'Texte après le lien de la zone de glisser-déposer (mode drag).',
+      table: {
+        type: { summary: 'string' },
+        defaultValue: { summary: '"ou glisser-déposer les fichiers ici"' },
+      },
+    },
+    ariaLabel: {
+      control: false,
+      description: "Nom accessible de l'ensemble du contrôle.",
+      table: {
+        type: { summary: 'string' },
+        defaultValue: { summary: '"Téléversement de fichiers"' },
+      },
+    },
+    filesSummaryLabel: {
+      control: false,
+      description:
+        'Résumé multi-fichiers en mode champ, où `{0}` est remplacé par le nombre de fichiers.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"{0} fichiers"' } },
+    },
+    invalidTypeMessage: {
+      control: false,
+      description:
+        'Message de rejet : type de fichier non accepté, où `{0}` est le nom du fichier.',
+      table: {
+        type: { summary: 'string' },
+        defaultValue: { summary: '"Type de fichier non autorisé : {0}"' },
+      },
+    },
+    invalidSizeMessage: {
+      control: false,
+      description: 'Message de rejet : fichier trop volumineux, où `{0}` est le nom du fichier.',
+      table: {
+        type: { summary: 'string' },
+        defaultValue: { summary: '"Fichier trop volumineux : {0}"' },
+      },
+    },
+    limitReachedMessage: {
+      control: false,
+      description: 'Message de rejet : `fileLimit` atteint, où `{0}` est la limite.',
+      table: {
+        type: { summary: 'string' },
+        defaultValue: { summary: '"Nombre maximum de fichiers atteint ({0})."' },
+      },
+    },
+    uploadErrorMessage: {
+      control: false,
+      description: 'Erreur affichée quand un envoi échoue sans message du serveur.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Échec du téléversement"' } },
+    },
+    networkErrorMessage: {
+      control: false,
+      description: "Erreur affichée quand la requête d'envoi échoue au niveau réseau.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Erreur réseau"' } },
+    },
+    httpErrorMessage: {
+      control: false,
+      description: 'Erreur affichée sur une réponse non 2xx, où `{0}` est le statut HTTP.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Erreur {0}"' } },
+    },
+    fileTemplate: {
+      control: false,
+      description:
+        'Remplace une ligne de fichier (contexte : `{ $implicit: UiUploadFile, remove }`).',
+      table: { type: { summary: 'TemplateRef<unknown>' }, defaultValue: { summary: 'undefined' } },
+    },
+    contentTemplate: {
+      control: false,
+      description:
+        'Remplace la section de contenu (contexte : `{ $implicit: UiUploadFile[], remove, clear }`).',
+      table: { type: { summary: 'TemplateRef<unknown>' }, defaultValue: { summary: 'undefined' } },
+    },
+    toolbarTemplate: {
+      control: false,
+      description:
+        "Contenu personnalisé de la barre d'outils (contexte : `{ $implicit: UiUploadFile[], choose, upload, clear }`).",
+      table: { type: { summary: 'TemplateRef<unknown>' }, defaultValue: { summary: 'undefined' } },
+    },
   },
   args: {
     mode: 'field',

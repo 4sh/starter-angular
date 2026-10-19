@@ -5,7 +5,12 @@
  * du manifeste embarqué (généré par `pnpm mcp:assets`, absent d'un
  * checkout propre — voir `.gitignore`).
  */
-import type { DocSection, SearchDocsManifest, UiConfigManifest } from './data.js';
+import type {
+  ComponentApiManifest,
+  DocSection,
+  SearchDocsManifest,
+  UiConfigManifest,
+} from './data.js';
 
 export const FIXTURE_DOCS: DocSection[] = [
   {
@@ -106,6 +111,32 @@ export const FIXTURE_UI_CONFIG: UiConfigManifest = {
       exclusion: 'perVariant',
       reason: '29 défauts selon la variante rendue : en déclarer un seul écraserait les autres.',
       defaults: 29,
+    },
+  },
+};
+
+export const FIXTURE_COMPONENT_API: ComponentApiManifest = {
+  $generatedBy: 'scripts/mcp-assets.build.mjs',
+  entries: {
+    'projects/ui-kit/actions/ui-button': {
+      import: '@4sh/ui-kit/actions/ui-button',
+      components: [
+        {
+          name: 'UiButton',
+          kind: 'component',
+          selector: 'ui-button',
+          inputs: [
+            {
+              name: 'level',
+              type: 'UiLevel',
+              required: false,
+              values: ['high', 'low'],
+              default: "'high'",
+            },
+          ],
+          outputs: [{ name: 'buttonClick', type: 'MouseEvent' }],
+        },
+      ],
     },
   },
 };

@@ -120,6 +120,21 @@ const meta: Meta<UiToggleBlock> = {
     blockChange: { action: 'blockChange', table: { disable: true } },
     blockFocus: { action: 'blockFocus', table: { disable: true } },
     blockBlur: { action: 'blockBlur', table: { disable: true } },
+    ariaLabelledBy: {
+      control: false,
+      description: "`id` d'un élément externe qui libelle ce contrôle.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    inputId: {
+      control: false,
+      description: "`id` transmis à l'input natif (généré automatiquement si absent).",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    name: {
+      control: false,
+      description: "`name` transmis à l'input natif.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
   },
   args: {
     indicator: 'checkbox',

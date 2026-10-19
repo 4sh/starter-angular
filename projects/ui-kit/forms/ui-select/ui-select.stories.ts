@@ -303,6 +303,97 @@ const meta: Meta<UiSelect> = {
         "Onde de pression sur les options de la liste quand l'effet ripple est activé (`provideUiRipple()` ou `[uiRippleScope]`). `false` la coupe sur ce composant, même en activation globale.",
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
+    clearAriaLabel: {
+      control: false,
+      description: "Nom accessible de l'action d'effacement.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Effacer la sélection"' } },
+    },
+    icon: {
+      control: false,
+      description: 'Icône FontAwesome du chevron de la liste déroulante.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"angle-down"' } },
+    },
+    filterAriaLabel: {
+      control: false,
+      description: "Nom accessible de l'input de filtre.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Filtrer les options"' } },
+    },
+    autofocusFilter: {
+      control: false,
+      description: "Déplace le focus dans l'input de filtre à l'ouverture du panneau.",
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
+    },
+    resetFilterOnHide: {
+      control: false,
+      description: 'Réinitialise le texte du filtre à la fermeture du panneau.',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    emptyMessage: {
+      control: false,
+      description: "Message affiché quand il n'y a aucune option.",
+      table: {
+        type: { summary: 'string' },
+        defaultValue: { summary: '"Aucune option disponible"' },
+      },
+    },
+    emptyFilterMessage: {
+      control: false,
+      description: 'Message affiché quand le filtre ne correspond à rien.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Aucun résultat"' } },
+    },
+    autoFlip: {
+      control: false,
+      description:
+        'Retourne automatiquement le panneau au-dessus du déclencheur quand la place manque en dessous (par défaut). Mettre `false` pour le verrouiller sous le déclencheur, quelle que soit la place.',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
+    },
+    panelStyleClass: {
+      control: false,
+      description:
+        'Classe(s) supplémentaire(s) appliquée(s) au panneau (style personnalisé scopé).',
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    showMessageIcon: {
+      control: false,
+      description: "Préfixe le message sous le champ (aide ou erreur) d'une icône décorative.",
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    messageIcon: {
+      control: false,
+      description: 'Remplace le glyphe affiché par `showMessageIcon`.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    level: {
+      control: false,
+      description:
+        'Statut de validation explicite (`error` est forcé quand le contrôle est invalide et touché).',
+      table: { type: { summary: 'FieldLevel' }, defaultValue: { summary: '"default"' } },
+    },
+    ariaLabel: {
+      control: false,
+      description: "Nom accessible quand aucun label visible n'est fourni.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    ariaLabelledBy: {
+      control: false,
+      description: "Id d'un élément externe qui étiquette ce contrôle.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    inputId: {
+      control: false,
+      description: "Id transmis à l'input natif (généré automatiquement si omis).",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    name: {
+      control: false,
+      description: "Attribut `name` transmis à l'input natif.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    tabindex: {
+      control: false,
+      description: "Valeur de `tabindex` transmise à l'input natif.",
+      table: { type: { summary: 'number' }, defaultValue: { summary: 'undefined' } },
+    },
   },
   args: {
     label: 'Ville',

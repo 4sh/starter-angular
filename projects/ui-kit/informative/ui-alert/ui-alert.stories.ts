@@ -167,6 +167,16 @@ const meta: Meta<UiAlert> = {
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     closed: { action: 'closed', table: { category: 'Events' } },
+    ariaLabelledBy: {
+      control: false,
+      description: "Id de l'élément qui libelle la région de l'alerte.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    styleClass: {
+      control: false,
+      description: "Classe(s) supplémentaire(s) fusionnée(s) sur la racine de l'alerte.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
   },
   args: {
     title: 'Alert title',

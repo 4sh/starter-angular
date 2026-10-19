@@ -92,6 +92,41 @@ const meta: Meta<UiTextarea> = {
     valueChange: { action: 'valueChange', table: { disable: true } },
     textareaFocus: { action: 'textareaFocus', table: { disable: true } },
     textareaBlur: { action: 'textareaBlur', table: { disable: true } },
+    showMessageIcon: {
+      control: false,
+      description: 'Préfixe le message sous le champ (aide ou erreur) par une icône décorative.',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    messageIcon: {
+      control: false,
+      description: 'Remplace le glyphe affiché par `showMessageIcon`.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    ariaLabel: {
+      control: false,
+      description: "Nom accessible lorsqu'aucun libellé visible n'est fourni.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    ariaLabelledBy: {
+      control: false,
+      description: "`id` d'un élément externe qui libelle ce contrôle.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    inputId: {
+      control: false,
+      description: "`id` transmis à l'input natif (généré automatiquement si absent).",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    name: {
+      control: false,
+      description: "`name` transmis à l'input natif.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    tabindex: {
+      control: false,
+      description: "`tabindex` transmis à l'input natif.",
+      table: { type: { summary: 'number' }, defaultValue: { summary: 'undefined' } },
+    },
   },
   args: {
     label: 'Label',

@@ -104,6 +104,78 @@ const meta: Meta<UiInput> = {
     iconRightClick: { action: 'iconRightClick', table: { disable: true } },
     inputFocus: { action: 'inputFocus', table: { disable: true } },
     inputBlur: { action: 'inputBlur', table: { disable: true } },
+    value: {
+      control: false,
+      description:
+        "Valeur d'affichage uniquement (contourne le modèle CVA). Pour les hôtes composites (ex. `ui-datepicker`) qui possèdent le texte visible et le relisent via `valueChange` : à laisser non défini avec `[(ngModel)]` ou les formulaires réactifs.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    ariaHasPopup: {
+      control: false,
+      description: "`aria-haspopup` transmis à l'input natif (hôtes déclencheurs de popup).",
+      table: {
+        type: { summary: "'menu' | 'listbox' | 'tree' | 'grid' | 'dialog'" },
+        defaultValue: { summary: 'undefined' },
+      },
+    },
+    ariaExpanded: {
+      control: false,
+      description:
+        "`aria-expanded` transmis à l'input natif (hôtes déclencheurs de popup). Le définir promeut aussi l'input au rôle `role=\"combobox\"` : `aria-expanded` n'est pas autorisé sur le rôle implicite `textbox`, les lecteurs d'écran ignoreraient donc silencieusement l'état du popup sans cela.",
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'undefined' } },
+    },
+    ariaControls: {
+      control: false,
+      description: "`aria-controls` transmis à l'input natif (hôtes déclencheurs de popup).",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    ariaDescribedBy: {
+      control: false,
+      description:
+        "`id` d'un élément externe qui décrit davantage ce contrôle (ex. l'indication de format d'un hôte composite), chaîné à `aria-describedby` avec le message d'aide ou d'erreur au lieu de le remplacer : une surcharge simple de `[attr.aria-describedby]` sur l'hôte écraserait celui des deux qui arrive en dernier.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    iconRightAriaLabel: {
+      control: false,
+      description:
+        "Nom accessible de l'icône de droite. **Quand il est fourni, l'icône de droite devient une zone d'action cliquable** (bouton carré, pleine hauteur) qui émet `iconRightClick`.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    autocomplete: {
+      control: false,
+      description: '`autocomplete` natif.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    maxlength: {
+      control: false,
+      description: '`maxlength` natif.',
+      table: { type: { summary: 'number' }, defaultValue: { summary: 'undefined' } },
+    },
+    ariaLabel: {
+      control: false,
+      description: "Nom accessible quand aucun libellé visible n'est fourni.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    ariaLabelledBy: {
+      control: false,
+      description: "`id` d'un élément externe qui nomme ce contrôle.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    inputId: {
+      control: false,
+      description: "`id` transmis à l'input natif (généré automatiquement si absent).",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    name: {
+      control: false,
+      description: "`name` transmis à l'input natif.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    tabindex: {
+      control: false,
+      description: "`tabindex` transmis à l'input natif.",
+      table: { type: { summary: 'number' }, defaultValue: { summary: 'undefined' } },
+    },
   },
   args: {
     label: 'Label',

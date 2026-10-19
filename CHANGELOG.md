@@ -18,6 +18,13 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ### Added
 
+- **Serveur MCP : API structurée des composants, lue dans leurs sources** (FSHSP-242).
+  `get_component_doc` renvoie `api` : le sous-chemin d'import, puis pour chaque classe
+  exportée son sélecteur, ses inputs (type, valeurs d'une union, requis, défaut, description,
+  `model` pour une liaison `[(x)]`) et ses outputs, au format des props du starter React.
+  Avant, l'API n'existait qu'en texte aplati, tiré des `argTypes` des stories : 286 inputs
+  sur 1316 n'y figuraient pas, et le type de contrôle Storybook se mêlait aux valeurs.
+  `pnpm docs:config:check` vérifie désormais les `argTypes` contre cette API (`pnpm api:check`).
 - **Serveur MCP : statut de chaque hook `--ui-*` vis-à-vis d'un thème global** (FSHSP-243).
   `get_component_doc` renvoie `theming.hooks` : par hook, `themable` (il figure dans
   `component-vars.scss` et peut aller sur `:root`) et sinon `exclusion`, parmi `perVariant`,
@@ -40,6 +47,22 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
   - Nouveau hook `--ui-stepper-step-min-width` (largeur minimale d'une étape quand la barre
     défile).
   - Le titre d'une étape est désormais enveloppé dans un `span.ui-step-title-text`.
+
+### Changed
+
+- **Tables d'API Storybook complètes : un input = une ligne** (FSHSP-249). 286 inputs, sur
+  41 stories, n'avaient pas d'entrée dans les `argTypes` et manquaient à la table d'API de
+  leur page (`ui-input-tags` à lui seul en omettait 29). Ils y figurent, en ligne de
+  documentation (`control: false`) avec leur type et le défaut du code. 54 inputs sans
+  commentaire JSDoc (dont 18 de `ui-button`) en ont reçu un, ce qui donne aussi une
+  description à chacun dans le serveur MCP. `pnpm api:check` échoue désormais sur un input
+  absent des `argTypes`.
+
+### Fixed
+
+- **Story de `ui-read-only` : le défaut de `fallback` est `—`, pas `-`** (FSHSP-242). La table
+  d'API l'annonçait faux, et la démo passait `-` en argument : elle n'affichait jamais le
+  symbole réel. Relevé par le nouveau contrôle `api:check`.
 
 ## [0.13.0] - 2026-10-08
 

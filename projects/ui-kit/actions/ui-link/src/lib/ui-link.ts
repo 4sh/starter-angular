@@ -36,7 +36,9 @@ export type LinkSize = 'default' | 'small';
 export class UiLink {
   /** Visible link text (optional when using projected content or icon-only). */
   label = input<string>();
+  /** Accessible name. Required in icon-only mode; falls back to the label otherwise. */
   ariaLabel = input<string>();
+  /** Link size. */
   size = input<LinkSize>('default');
 
   // --- Destination -----------------------------------------------------
@@ -57,7 +59,11 @@ export class UiLink {
   /** FontAwesome icon name shown after the text. */
   iconRight = input<string>();
 
+  /**
+   * Disables the link: drops `href`/`routerLink`, sets `aria-disabled` and leaves the tab order.
+   */
   disabled = input(false, { transform: booleanAttribute });
+  /** Native `tabindex` of the link. */
   tabindex = input<number>();
   /** aria-current exposed on the anchor (e.g. "page" for the current breadcrumb item). */
   ariaCurrent = input<string>();

@@ -76,6 +76,19 @@ const meta: Meta<UiProgressBar> = {
       description: 'Nom accessible de la barre de progression.',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
+    valueTemplate: {
+      control: false,
+      description: 'Contenu personnalisé du libellé ; contexte `{ $implicit: value }`.',
+      table: {
+        type: { summary: 'TemplateRef<UiProgressBarValueContext>' },
+        defaultValue: { summary: 'undefined' },
+      },
+    },
+    ariaLabelledBy: {
+      control: false,
+      description: "Id de l'élément qui libelle la barre de progression.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
   },
   args: {
     value: 60,

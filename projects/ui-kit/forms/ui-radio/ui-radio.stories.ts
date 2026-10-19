@@ -84,6 +84,11 @@ const meta: Meta<UiRadio> = {
       description: 'Émis quand l’input natif perd le focus.',
       table: { type: { summary: 'EventEmitter<FocusEvent>' }, defaultValue: { summary: '—' } },
     },
+    readonly: {
+      control: false,
+      description: 'Lecture seule (attribut natif).',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
   },
 };
 

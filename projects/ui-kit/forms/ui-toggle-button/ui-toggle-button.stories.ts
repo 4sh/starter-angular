@@ -214,6 +214,21 @@ const meta: Meta<UiToggleButton> = {
         "Onde de pression sur la bascule quand l'effet ripple est activé (`provideUiRipple()` ou `[uiRippleScope]`). `false` la coupe sur ce composant, même en activation globale.",
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
+    inputId: {
+      control: false,
+      description: "`id` transmis à l'input natif (généré automatiquement si absent).",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    name: {
+      control: false,
+      description: "`name` transmis à l'input natif.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    tabindex: {
+      control: false,
+      description: "`tabindex` transmis à l'input natif.",
+      table: { type: { summary: 'number' }, defaultValue: { summary: 'undefined' } },
+    },
   },
   args: {
     label: 'Notifications',

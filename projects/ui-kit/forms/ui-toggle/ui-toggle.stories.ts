@@ -74,6 +74,31 @@ const meta: Meta<UiToggle> = {
     toggleChange: { action: 'toggleChange', table: { disable: true } },
     toggleFocus: { action: 'toggleFocus', table: { disable: true } },
     toggleBlur: { action: 'toggleBlur', table: { disable: true } },
+    trueValue: {
+      control: false,
+      description: 'Valeur du modèle émise lorsque le toggle est activé.',
+      table: { type: { summary: 'T' }, defaultValue: { summary: 'true' } },
+    },
+    falseValue: {
+      control: false,
+      description: 'Valeur du modèle émise lorsque le toggle est désactivé.',
+      table: { type: { summary: 'T' }, defaultValue: { summary: 'false' } },
+    },
+    ariaLabelledBy: {
+      control: false,
+      description: "`id` d'un élément externe qui libelle ce contrôle.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    inputId: {
+      control: false,
+      description: "`id` transmis à l'input natif (généré automatiquement si absent).",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    name: {
+      control: false,
+      description: "`name` transmis à l'input natif.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
   },
   args: {
     label: 'Label',

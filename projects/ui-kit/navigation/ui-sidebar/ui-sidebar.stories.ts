@@ -94,6 +94,46 @@ const meta: Meta<SidebarArgs> = {
         'En rail replié, révèle le libellé de chaque item en info-bulle au survol (via `[uiTooltip]`, entrée de `ui-sidebar-menu`).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
+    closeOnEscape: {
+      control: false,
+      description: "Ferme l'overlay lorsque `Escape` est pressé.",
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
+    },
+    showCloseButton: {
+      control: false,
+      description: 'Affiche le bouton de fermeture intégré dans la présentation en overlay.',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
+    },
+    ariaLabelledBy: {
+      control: false,
+      description: "Id d'un élément externe qui nomme la région.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    closeIcon: {
+      control: false,
+      description: "Nom FontAwesome de l'icône du bouton de fermeture.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"xmark"' } },
+    },
+    closeAriaLabel: {
+      control: false,
+      description: 'Nom accessible du bouton de fermeture.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Fermer"' } },
+    },
+    styleClass: {
+      control: false,
+      description: 'Classe(s) supplémentaire(s) fusionnée(s) sur la surface du panneau.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    baseZIndex: {
+      control: false,
+      description: 'z-index plancher pour la présentation en overlay.',
+      table: { type: { summary: 'number' }, defaultValue: { summary: '0' } },
+    },
+    motionDisabled: {
+      control: false,
+      description: "Désactive l'animation d'ouverture et de fermeture de cette sidebar.",
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
   },
 };
 export default meta;

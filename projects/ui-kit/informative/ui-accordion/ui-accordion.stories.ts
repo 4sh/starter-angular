@@ -63,6 +63,15 @@ const meta: Meta<UiAccordion> = {
       description: 'Icône (FontAwesome) affichée sur un panneau déplié.',
       table: { type: { summary: 'string' }, defaultValue: { summary: '"chevron-up"' } },
     },
+    value: {
+      control: false,
+      description:
+        'Valeur(s) du ou des panneaux actifs. Mode simple : une valeur ; avec `multiple` : un tableau.',
+      table: {
+        type: { summary: 'UiAccordionActiveValue' },
+        defaultValue: { summary: 'undefined' },
+      },
+    },
   },
   args: {
     multiple: false,

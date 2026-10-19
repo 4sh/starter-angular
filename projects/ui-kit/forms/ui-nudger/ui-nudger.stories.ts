@@ -61,6 +61,34 @@ const meta: Meta<UiNudger> = {
     decrementIcon: { control: 'text', table: { defaultValue: { summary: '"minus"' } } },
     incrementIcon: { control: 'text', table: { defaultValue: { summary: '"plus"' } } },
     valueChange: { action: 'valueChange', table: { disable: true } },
+    formatValue: {
+      control: false,
+      description: "Formateur d'affichage optionnel de la valeur (par exemple `(v) => v + ' kg'`).",
+      table: {
+        type: { summary: '(value: number) => string' },
+        defaultValue: { summary: 'undefined' },
+      },
+    },
+    ariaLabelledBy: {
+      control: false,
+      description: "Id d'un élément externe qui étiquette ce contrôle.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    inputId: {
+      control: false,
+      description: "Id transmis à l'input natif (généré automatiquement si omis).",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    name: {
+      control: false,
+      description: "Attribut `name` transmis à l'input natif.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    tabindex: {
+      control: false,
+      description: "Valeur de `tabindex` transmise à l'input natif.",
+      table: { type: { summary: 'number' }, defaultValue: { summary: 'undefined' } },
+    },
   },
   args: {
     size: 'default',

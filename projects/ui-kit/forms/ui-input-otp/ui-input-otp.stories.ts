@@ -75,6 +75,37 @@ const meta: Meta<UiInputOtp> = {
     },
     valueChange: { action: 'valueChange', table: { category: 'Outputs' } },
     completed: { action: 'completed', table: { category: 'Outputs' } },
+    charAriaLabel: {
+      control: false,
+      description:
+        'Préfixe du nom accessible de chaque cellule (« <préfixe> N »). Se rabat sur `ariaLabel`.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Caractère"' } },
+    },
+    ariaLabelledBy: {
+      control: false,
+      description: "Id d'un élément externe qui étiquette ce contrôle.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    inputId: {
+      control: false,
+      description: "Id transmis à l'input natif (généré automatiquement si omis).",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    name: {
+      control: false,
+      description: "Attribut `name` transmis à l'input natif.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    required: {
+      control: false,
+      description: "Marqueur d'obligation (*) et attribut `required` natif.",
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    tabindex: {
+      control: false,
+      description: "Valeur de `tabindex` transmise à l'input natif.",
+      table: { type: { summary: 'number' }, defaultValue: { summary: 'undefined' } },
+    },
   },
 };
 

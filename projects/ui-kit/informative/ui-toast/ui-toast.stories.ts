@@ -268,6 +268,9 @@ interface ToastArgs {
   icon: string | boolean;
   closable: boolean;
   expanded: boolean;
+  closeIcon: string;
+  closeAriaLabel: string;
+  styleClass: string;
 }
 
 const meta: Meta<ToastArgs> = {
@@ -342,6 +345,21 @@ const meta: Meta<ToastArgs> = {
       control: { type: 'boolean' },
       description: 'Étire la carte sur toute la largeur de la pile (mode bannière).',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    closeIcon: {
+      control: false,
+      description: "Nom FontAwesome de l'icône de fermeture.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"times-circle"' } },
+    },
+    closeAriaLabel: {
+      control: false,
+      description: 'Libellé accessible du bouton de fermeture.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Fermer"' } },
+    },
+    styleClass: {
+      control: false,
+      description: 'Classe(s) supplémentaire(s) fusionnée(s) sur la racine de la carte.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
   },
 };

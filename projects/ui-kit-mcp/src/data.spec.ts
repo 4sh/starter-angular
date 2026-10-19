@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { FIXTURE_SEARCH_DOCS, FIXTURE_UI_CONFIG } from './test-fixtures.js';
+import { FIXTURE_COMPONENT_API, FIXTURE_SEARCH_DOCS, FIXTURE_UI_CONFIG } from './test-fixtures.js';
 
 // `data.ts` lit le manifeste sur disque via `readFileSync` (chemin calculé
 // depuis `import.meta.url`) : on mocke le module `node:fs` plutôt que
@@ -22,6 +22,7 @@ describe('data', () => {
       const p = String(path);
       if (p.endsWith('text-search-docs.json')) return JSON.stringify(FIXTURE_SEARCH_DOCS);
       if (p.endsWith('ui-config.json')) return JSON.stringify(FIXTURE_UI_CONFIG);
+      if (p.endsWith('component-api.json')) return JSON.stringify(FIXTURE_COMPONENT_API);
       throw new Error(`unexpected path in test: ${p}`);
     });
   });
@@ -111,6 +112,20 @@ describe('data', () => {
       );
       const { getComponentHooks } = await importFreshData();
       expect(getComponentHooks('ui-button')).toEqual([]);
+    });
+  });
+
+  describe('getEntryApi', () => {
+    it('finds the API of the entry point holding the doc page', async () => {
+      const { getEntryApi } = await importFreshData();
+      const api = getEntryApi('projects/ui-kit/actions/ui-button/ui-button.mdx');
+      expect(api?.import).toBe('@4sh/ui-kit/actions/ui-button');
+      expect(api?.components[0].inputs[0]).toMatchObject({ name: 'level', default: "'high'" });
+    });
+
+    it('returns undefined for a page outside any entry point', async () => {
+      const { getEntryApi } = await importFreshData();
+      expect(getEntryApi('storybook/docs/foundations/colors.mdx')).toBeUndefined();
     });
   });
 

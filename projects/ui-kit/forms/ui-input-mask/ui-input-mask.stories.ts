@@ -70,6 +70,41 @@ const meta: Meta<UiInputMask> = {
     invalid: { control: 'boolean', table: { defaultValue: { summary: 'false' } } },
     valueChange: { action: 'valueChange', table: { disable: true } },
     inputBlur: { action: 'inputBlur', table: { disable: true } },
+    showMessageIcon: {
+      control: false,
+      description: "Préfixe le message sous le champ (aide ou erreur) d'une icône décorative.",
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    messageIcon: {
+      control: false,
+      description: 'Remplace le glyphe affiché par `showMessageIcon`.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    ariaLabel: {
+      control: false,
+      description: "Nom accessible quand aucun label visible n'est fourni.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    ariaLabelledBy: {
+      control: false,
+      description: "Id d'un élément externe qui étiquette ce contrôle.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    inputId: {
+      control: false,
+      description: "Id transmis à l'input natif (généré automatiquement si omis).",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    name: {
+      control: false,
+      description: "Attribut `name` transmis à l'input natif.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    tabindex: {
+      control: false,
+      description: "Valeur de `tabindex` transmise à l'input natif.",
+      table: { type: { summary: 'number' }, defaultValue: { summary: 'undefined' } },
+    },
   },
   args: {
     label: 'Téléphone',

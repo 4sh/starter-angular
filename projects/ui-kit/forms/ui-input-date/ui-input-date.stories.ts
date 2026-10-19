@@ -91,6 +91,45 @@ const meta: Meta<UiInputDate> = {
     valueChange: { action: 'valueChange', table: { disable: true } },
     inputFocus: { action: 'inputFocus', table: { disable: true } },
     inputBlur: { action: 'inputBlur', table: { disable: true } },
+    iconTemplate: {
+      control: false,
+      description:
+        "Icône personnalisée, en tant qu'input : même contexte que celui de `ui-input` et `ui-datepicker`.",
+      table: {
+        type: { summary: 'TemplateRef<UiInputIconContext>' },
+        defaultValue: { summary: 'undefined' },
+      },
+    },
+    messageIcon: {
+      control: false,
+      description: 'Remplace le glyphe affiché par `showMessageIcon`.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    ariaLabel: {
+      control: false,
+      description: "Nom accessible quand aucun libellé visible n'est fourni.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    ariaLabelledBy: {
+      control: false,
+      description: "Id d'un élément externe qui étiquette ce contrôle.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    inputId: {
+      control: false,
+      description: "Id transmis à l'input natif (généré automatiquement si omis).",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    name: {
+      control: false,
+      description: "Attribut `name` transmis à l'input natif.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    tabindex: {
+      control: false,
+      description: "Valeur de `tabindex` transmise à l'input natif.",
+      table: { type: { summary: 'number' }, defaultValue: { summary: 'undefined' } },
+    },
   },
   args: {
     label: 'Date de naissance',

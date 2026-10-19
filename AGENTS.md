@@ -28,16 +28,16 @@ Fonts embedded locally (DM Sans + Inter, variable fonts): `src/styles/src/vendor
 
 **Storybook is the source of truth.** Never guess a component's API, its variants or its tokens.
 
-| Question                                       | Where to look                                                                         |
-| ---------------------------------------------- | ------------------------------------------------------------------------------------- |
-| Existing components / roadmap                  | `docs/components-index.md`                                                            |
-| A component's API (`inputs`, `outputs`, types) | `projects/ui-kit/<category>/ui-<name>/ui-<name>.stories.ts` → `argTypes` (co-located) |
-| Colors, semantic tokens                        | Storybook → `Foundations / Colors` (brand + mode explorer)                            |
-| Typography                                     | Storybook → `Foundations / Typography`                                                |
-| Shadows & effects                              | Storybook → `Foundations / Shadows`                                                   |
-| Tokens pipeline, theme, responsive             | Storybook → `Spécifications / *`                                                      |
-| Source Angular component                       | `projects/ui-kit/<category>/ui-<name>/src/lib/`                                       |
-| **Reference pattern**                          | `projects/ui-kit/actions/ui-button/` (+ `base/ui-icon`)                               |
+| Question                                       | Where to look                                                                                                                                       |
+| ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Existing components / roadmap                  | `docs/components-index.md`                                                                                                                          |
+| A component's API (`inputs`, `outputs`, types) | `projects/ui-kit/<category>/ui-<name>/src/lib/` (the MCP `get_component_doc` → `api` reads it there; story `argTypes` mirror it, one row per input) |
+| Colors, semantic tokens                        | Storybook → `Foundations / Colors` (brand + mode explorer)                                                                                          |
+| Typography                                     | Storybook → `Foundations / Typography`                                                                                                              |
+| Shadows & effects                              | Storybook → `Foundations / Shadows`                                                                                                                 |
+| Tokens pipeline, theme, responsive             | Storybook → `Spécifications / *`                                                                                                                    |
+| Source Angular component                       | `projects/ui-kit/<category>/ui-<name>/src/lib/`                                                                                                     |
+| **Reference pattern**                          | `projects/ui-kit/actions/ui-button/` (+ `base/ui-icon`)                                                                                             |
 
 ---
 
@@ -523,7 +523,12 @@ expected to run it before committing**. It fails on:
   without updating its lists;
 - a `--ui-*` hook off convention, or without a `///` (public, yet invisible in the doc);
 - an alias pointing at a token that does not exist in `src/design-tokens/`;
-- the counts quoted in prose in `figma/README.md`.
+- the counts quoted in prose in `figma/README.md`;
+- an input missing from its story's `argTypes`, a story `argTypes` key that is no input or
+  output of its entry point, or a default it announces that differs from the one declared in
+  the code (`pnpm api:check`, `scripts/component-api.check.mjs`). An input with no useful
+  control still gets a row, `control: false`. A story arg that only drives the demo goes in
+  its `DEMO_ARGS`, an input left out on purpose in its `UNDOCUMENTED_INPUTS`, with the reason.
 
 Committed alongside it, `git diff --exit-code -- projects/ui-kit/styles/component-vars.scss
 figma/component-vars.json`: those two files are **generated yet committed**, and every

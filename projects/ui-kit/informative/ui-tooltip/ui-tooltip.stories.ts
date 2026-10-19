@@ -35,6 +35,10 @@ interface TooltipArgs {
   hideOnEscape: boolean;
   life: number;
   tooltipStyleClass: string;
+  showOnEllipsis: boolean;
+  positionTop: number;
+  positionLeft: number;
+  tooltipContext: unknown;
 }
 
 const meta: Meta<TooltipArgs> = {
@@ -122,6 +126,27 @@ const meta: Meta<TooltipArgs> = {
       description:
         'Classe(s) supplémentaire(s) appliquée(s) au panneau (personnalisation ponctuelle).',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    showOnEllipsis: {
+      control: false,
+      description:
+        "Affiche l'infobulle uniquement lorsque le texte du déclencheur est tronqué (ellipsis active).",
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    positionTop: {
+      control: false,
+      description: 'Décalage vertical supplémentaire (px) par rapport à la position calculée.',
+      table: { type: { summary: 'number' }, defaultValue: { summary: '0' } },
+    },
+    positionLeft: {
+      control: false,
+      description: 'Décalage horizontal supplémentaire (px) par rapport à la position calculée.',
+      table: { type: { summary: 'number' }, defaultValue: { summary: '0' } },
+    },
+    tooltipContext: {
+      control: false,
+      description: 'Objet de contexte transmis à un contenu `TemplateRef`.',
+      table: { type: { summary: 'unknown' }, defaultValue: { summary: 'undefined' } },
     },
   },
   args: {

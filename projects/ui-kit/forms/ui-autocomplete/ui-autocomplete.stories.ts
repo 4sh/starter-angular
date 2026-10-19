@@ -305,6 +305,121 @@ const meta: Meta<UiAutocomplete> = {
         "Onde de pression sur les suggestions quand l'effet ripple est activé (`provideUiRipple()` ou `[uiRippleScope]`). `false` la coupe sur ce composant, même en activation globale.",
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
+    dataKey: {
+      control: false,
+      description:
+        "Propriété utilisée pour comparer l'égalité des valeurs de type objet (mise en évidence de la valeur courante).",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    dropdownAriaLabel: {
+      control: false,
+      description: 'Nom accessible du déclencheur de la liste déroulante.',
+      table: {
+        type: { summary: 'string' },
+        defaultValue: { summary: '"Afficher les suggestions"' },
+      },
+    },
+    dropdownIcon: {
+      control: false,
+      description: 'Icône FontAwesome du déclencheur de la liste déroulante.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"angle-down"' } },
+    },
+    removeTagLabel: {
+      control: false,
+      description:
+        "Avec `multiple` : libellé accessible de l'action de suppression de chaque puce, où `{0}` est le libellé de la puce.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Supprimer {0}"' } },
+    },
+    clearAriaLabel: {
+      control: false,
+      description: "Nom accessible de l'action d'effacement.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Effacer la saisie"' } },
+    },
+    showEmptyMessage: {
+      control: false,
+      description: "Affiche la ligne d'état vide quand il n'y a aucune suggestion.",
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
+    },
+    lazy: {
+      control: false,
+      description:
+        'Avec `virtualScroll` : émet `lazyLoad` avec la plage rendue (chargement différé).',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    scrollHeight: {
+      control: false,
+      description:
+        "Hauteur maximale de la liste de suggestions (taille CSS, ex. `'320px'`). Valeur par défaut issue du SCSS.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    autoFlip: {
+      control: false,
+      description:
+        'Retourne automatiquement le panneau au-dessus du champ quand il manque de place en dessous (par défaut). Avec `false`, il reste verrouillé sous le champ quelle que soit la place disponible.',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
+    },
+    panelStyleClass: {
+      control: false,
+      description:
+        'Classe(s) supplémentaire(s) appliquée(s) au panneau (personnalisation de style ciblée).',
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    errorText: {
+      control: false,
+      description: "Message d'erreur affiché à la place de l'aide quand le champ est en erreur.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    showMessageIcon: {
+      control: false,
+      description: "Préfixe le message sous le champ (aide ou erreur) d'une icône décorative.",
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    messageIcon: {
+      control: false,
+      description: 'Remplace le glyphe affiché par `showMessageIcon`.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    level: {
+      control: false,
+      description:
+        'Statut de validation explicite (`error` est forcé quand le contrôle est invalide et touché).',
+      table: { type: { summary: 'FieldLevel' }, defaultValue: { summary: '"default"' } },
+    },
+    ariaLabel: {
+      control: false,
+      description: "Nom accessible quand aucun libellé visible n'est fourni.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    ariaLabelledBy: {
+      control: false,
+      description: "`id` d'un élément externe qui nomme ce contrôle.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    inputId: {
+      control: false,
+      description: "`id` transmis à l'input natif (généré automatiquement si absent).",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    name: {
+      control: false,
+      description: "`name` transmis à l'input natif.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    required: {
+      control: false,
+      description: 'Marqueur obligatoire (*) et attribut `required` natif.',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    readonly: {
+      control: false,
+      description: 'Lecture seule (attribut natif).',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    tabindex: {
+      control: false,
+      description: "`tabindex` transmis à l'input natif.",
+      table: { type: { summary: 'number' }, defaultValue: { summary: 'undefined' } },
+    },
   },
 };
 

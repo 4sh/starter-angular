@@ -145,6 +145,35 @@ const meta: Meta<UiSegmentControl> = {
         "Onde de pression sur les options de la piste quand l'effet ripple est activé (`provideUiRipple()` ou `[uiRippleScope]`). `false` la coupe sur ce composant, même en activation globale.",
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
+    itemTemplate: {
+      control: false,
+      description:
+        "Template personnalisé pour le contenu d'un segment (reçoit `{ $implicit, option, selected, index }`).",
+      table: {
+        type: { summary: 'TemplateRef<SegmentControlItemContext<T>>' },
+        defaultValue: { summary: 'undefined' },
+      },
+    },
+    inputId: {
+      control: false,
+      description: "Id transmis à l'input natif (généré automatiquement si omis).",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    name: {
+      control: false,
+      description: "Attribut `name` transmis à l'input natif.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    required: {
+      control: false,
+      description: "Marqueur d'obligation (*) et attribut `required` natif.",
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    tabindex: {
+      control: false,
+      description: "Valeur de `tabindex` transmise à l'input natif.",
+      table: { type: { summary: 'number' }, defaultValue: { summary: 'undefined' } },
+    },
   },
   args: {
     options: VIEW_OPTIONS,

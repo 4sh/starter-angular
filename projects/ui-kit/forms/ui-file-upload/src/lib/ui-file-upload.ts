@@ -57,6 +57,7 @@ export class UiFileUpload {
   // --- Layout ----------------------------------------------------------
   /** `field` = compact input + Browse button; `drag` = full drop zone. */
   mode = input<UiFileUploadMode>('field');
+  /** Size of the control, its buttons and its file list. */
   size = input<UiFileUploadSize>('default');
 
   // --- Selection -------------------------------------------------------
@@ -72,6 +73,7 @@ export class UiFileUpload {
   maxFileSize = input<number, unknown>(undefined, { transform: numberAttribute });
   /** Max number of files kept at once. */
   fileLimit = input<number, unknown>(undefined, { transform: numberAttribute });
+  /** Disables selection, drop and upload. */
   disabled = input(false, { transform: booleanAttribute });
 
   // --- Upload behaviour ------------------------------------------------
@@ -93,13 +95,17 @@ export class UiFileUpload {
   showFileList = input(true, { transform: booleanAttribute });
   /** Show the Upload/Cancel toolbar buttons (drag mode). */
   showControls = input(true, { transform: booleanAttribute });
+  /** Label of the Browse button. */
   browseLabel = input<string>('Parcourir');
   /** Placeholder shown in field mode before any selection. */
   chooseLabel = input<string>('Choisir un fichier…');
+  /** Label of the Upload toolbar button (drag mode). */
   uploadLabel = input<string>('Téléverser');
+  /** Label of the toolbar button that clears the selection (drag mode). */
   cancelLabel = input<string>('Effacer');
   /** Drag-zone link + prompt. */
   dragLinkLabel = input<string>('Cliquer pour téléverser');
+  /** Text after the drag-zone link (drag mode). */
   dragPromptLabel = input<string>('ou glisser-déposer les fichiers ici');
   /** Small hint under the drag prompt (e.g. "JPG, PNG (max 5 MB)"). */
   hint = input<string>();

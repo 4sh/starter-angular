@@ -98,6 +98,36 @@ const meta: Meta<UiPaginator> = {
         "Onde de pression sur les boutons de pagination quand l'effet ripple est activé (`provideUiRipple()` ou `[uiRippleScope]`). `false` la coupe sur ce composant, même en activation globale.",
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
+    pageAriaLabel: {
+      control: false,
+      description: "Modèle du nom accessible d'un bouton de page (`{page}` est remplacé).",
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Page {page}"' } },
+    },
+    firstPageAriaLabel: {
+      control: false,
+      description: "Noms accessibles des contrôles d'extrémité et de pas.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Première page"' } },
+    },
+    prevPageAriaLabel: {
+      control: false,
+      description: 'Nom accessible du contrôle de page précédente.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Page précédente"' } },
+    },
+    nextPageAriaLabel: {
+      control: false,
+      description: 'Nom accessible du contrôle de page suivante.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Page suivante"' } },
+    },
+    lastPageAriaLabel: {
+      control: false,
+      description: 'Nom accessible du contrôle de dernière page.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Dernière page"' } },
+    },
+    rowsPerPageAriaLabel: {
+      control: false,
+      description: 'Nom accessible du select de lignes par page.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Lignes par page"' } },
+    },
   },
   args: {
     totalRecords: 120,

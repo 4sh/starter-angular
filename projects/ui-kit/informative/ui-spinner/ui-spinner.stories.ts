@@ -72,6 +72,12 @@ const meta: Meta<UiSpinner> = {
         "Délai de grâce (ms) avant l'apparition — évite le flash sur les attentes très courtes.",
       table: { type: { summary: 'number' }, defaultValue: { summary: '0' } },
     },
+    spinnerTemplate: {
+      control: false,
+      description:
+        'Contenu personnalisé du repère ; prime sur toutes les autres sources de repère.',
+      table: { type: { summary: 'TemplateRef<unknown>' }, defaultValue: { summary: 'undefined' } },
+    },
   },
   args: {
     size: 'default',

@@ -44,7 +44,7 @@ const meta: Meta<UiReadOnly> = {
     fallback: {
       control: { type: 'text' },
       description: 'Texte (atténué) affiché quand la valeur est vide/nulle.',
-      table: { type: { summary: 'string' }, defaultValue: { summary: '"-"' } },
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"—"' } },
     },
     emptyLabel: {
       control: { type: 'text' },
@@ -115,7 +115,7 @@ const meta: Meta<UiReadOnly> = {
   args: {
     label: 'Adresse e-mail',
     value: 'jean.dupont@4sh.fr',
-    fallback: '-',
+    fallback: '—',
     layout: 'vertical',
     size: 'default',
     labelAlign: 'left',

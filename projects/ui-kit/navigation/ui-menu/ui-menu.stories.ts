@@ -85,6 +85,35 @@ const meta: Meta<UiMenu> = {
         "Onde de pression sur les entrées du menu quand l'effet ripple est activé (`provideUiRipple()` ou `[uiRippleScope]`). `false` la coupe sur ce composant, même en activation globale.",
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
+    ariaLabelledBy: {
+      control: false,
+      description: "`id` d'un élément externe qui libelle la liste du menu.",
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    styleClass: {
+      control: false,
+      description:
+        'Classe(s) supplémentaire(s) appliquée(s) au panneau (style personnalisé scopé).',
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    submenus: {
+      control: false,
+      description:
+        'Rendu des groupes : sections/accordéons `inline` (par défaut) ou panneaux latéraux en cascade `flyout`.',
+      table: { type: { summary: 'MenuSubmenuMode' }, defaultValue: { summary: '"inline"' } },
+    },
+    itemTemplate: {
+      control: false,
+      description:
+        "Template du contenu d'un élément de menu, fourni par programmation (composants qui embarquent le menu, comme ui-context-menu).",
+      table: { type: { summary: 'TemplateRef<unknown>' }, defaultValue: { summary: 'undefined' } },
+    },
+    submenuHeaderTemplate: {
+      control: false,
+      description:
+        "Template du contenu de l'en-tête de groupe, fourni par programmation (composants qui embarquent le menu).",
+      table: { type: { summary: 'TemplateRef<unknown>' }, defaultValue: { summary: 'undefined' } },
+    },
   },
   args: {
     level: 'high',
