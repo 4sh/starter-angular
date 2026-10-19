@@ -18,6 +18,14 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ### Added
 
+- **Serveur MCP : statut de chaque hook `--ui-*` vis-à-vis d'un thème global** (FSHSP-243).
+  `get_component_doc` renvoie `theming.hooks` : par hook, `themable` (il figure dans
+  `component-vars.scss` et peut aller sur `:root`) et sinon `exclusion`, parmi `perVariant`,
+  `selfDeclared`, `inputDriven`, `crossCutting` et `privateDefault`, avec `reason` et, pour
+  `perVariant`, le nombre de défauts. Avant, un agent ne pouvait le deviner qu'à un repli
+  `<set>` dans le texte, qui ne couvre pas les défauts littéraux. Le verdict vient du
+  générateur de `component-vars.scss` et voyage dans `ui-config.json` (clé `hookStatus`).
+  Les tables Theming de Storybook marquent ces hooks **pas sur :root**.
 - **`ui-button` : hook `--ui-button-radius-default`, rayon thémable du bouton standard**
   (FSHSP-244). Il règle le rayon hors `rounded` et figure dans `component-vars.scss`. Avant,
   le seul levier était `--ui-button-radius`, lu aussi par les pilules : posé sur `:root`, il

@@ -127,8 +127,28 @@ const BADGES = {
   },
 };
 
+// Écrit par `component-vars.build.mjs` : absent tant qu'il n'a pas tourné (projet
+// consommateur sans catalogue), et la table s'affiche alors sans ce repère.
+const HOOK_STATUS = manifest.hookStatus ?? {};
+
+/**
+ * Repère d'un hook qui ne va pas dans un thème global (absent de
+ * `component-vars.scss`). L'infobulle donne le motif calculé par le générateur.
+ */
+function statusBadge(hook) {
+  const status = HOOK_STATUS[hook];
+  if (!status || status.themable) return null;
+  return pill({
+    label: 'pas sur :root',
+    title: `${status.reason} Absent de component-vars.scss : à poser sur l’élément ou sur une zone, pas dans un thème global.`,
+  });
+}
+
 function badge(kind) {
-  const meta = BADGES[kind];
+  return pill(BADGES[kind]);
+}
+
+function pill(meta) {
   if (!meta) return null;
   return el(
     'span',
@@ -196,7 +216,7 @@ function hookOf(resolved) {
 function hookCell(resolved) {
   const hook = hookOf(resolved);
   if (!hook) return el('td', { style: { color: 'var(--sb-text-subtle)' } }, '—');
-  return el('td', null, el('code', null, hook));
+  return el('td', null, el('code', null, hook), statusBadge(hook));
 }
 
 /** Cellule « Défaut (starter) ». */
@@ -321,7 +341,8 @@ function table(caption, rows, values, withHook) {
           el(
             'tr',
             { key: row.name },
-            el('td', null, el('code', null, row.name)),
+            // Table des custom properties : le nom de la ligne EST le hook.
+            el('td', null, el('code', null, row.name), withHook ? null : statusBadge(row.name)),
             el('td', null, inlineCode(row.role)),
             ...(withHook ? [hookCell(row.default)] : []),
             defaultCell(row.default),

@@ -35,12 +35,27 @@ export interface SearchDocsManifest {
   docs: DocSection[];
 }
 
+/**
+ * Un hook `--ui-*` peut-il aller dans un thème global (`component-vars.scss`), et
+ * sinon pourquoi. Calculé par `scripts/component-vars.build.mjs`.
+ */
+export interface HookStatus {
+  entryPoint: string;
+  themable: boolean;
+  /** Absent quand `themable`. */
+  exclusion?: 'perVariant' | 'selfDeclared' | 'inputDriven' | 'crossCutting' | 'privateDefault';
+  reason?: string;
+  /** `perVariant` seulement : nombre de défauts distincts selon la variante rendue. */
+  defaults?: number;
+}
+
 export interface UiConfigManifest {
   $generatedBy: string;
   $source: { shared: string; components: string };
   groups: Record<string, { label: string; docId: string }>;
   shared: Record<string, unknown>;
   components?: Record<string, unknown>;
+  hookStatus?: Record<string, HookStatus>;
 }
 
 function readJson<T>(fileName: string): T {
@@ -82,6 +97,20 @@ export function listComponentNames(): string[] {
     }
   }
   return [...names].sort();
+}
+
+/**
+ * Les hooks `--ui-*` d'un composant et leur statut, par nom croissant. Rattachés par
+ * point d'entrée (`@4sh/ui-kit/actions/ui-button`) : un sous-composant du même
+ * paquet compte avec lui.
+ */
+export function getComponentHooks(
+  name: string,
+): (Omit<HookStatus, 'entryPoint'> & { name: string })[] {
+  const status = loadUiConfig().hookStatus ?? {};
+  return Object.entries(status)
+    .filter(([, s]) => s.entryPoint.endsWith(`/${name}`))
+    .map(([hook, { entryPoint: _entryPoint, ...rest }]) => ({ name: hook, ...rest }));
 }
 
 /** Toutes les sections de doc d'un composant donné, dans l'ordre du disque. */

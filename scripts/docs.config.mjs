@@ -575,6 +575,26 @@ function fallbackComponents() {
   return {};
 }
 
+/**
+ * `hookStatus` (un hook peut-il aller dans un thème global, et sinon pourquoi) est
+ * écrit par `component-vars.build.mjs`, qui tourne juste après ce script et a besoin
+ * du CSS compilé. On le recopie tel quel : `--check` ne juge ici que ce que ce script
+ * produit. Hors monorepo, il vient du catalogue du kit, comme les composants consommés
+ * en package.
+ */
+function carriedHookStatus() {
+  for (const path of IS_KIT_MONOREPO ? [OUT_FILE] : FALLBACK_CATALOGS) {
+    if (!existsSync(path)) continue;
+    try {
+      const status = JSON.parse(readFileSync(path, 'utf8')).hookStatus;
+      if (status) return status;
+    } catch {
+      // Illisible : la table s'affiche simplement sans le repère.
+    }
+  }
+  return null;
+}
+
 /** Nombre de composants venus du repli — renseigné par `build()`, lu par le log. */
 let fallbackUsed = 0;
 
@@ -599,6 +619,7 @@ function build() {
   // Compté ici plutôt qu'écrit dans le manifeste : la sortie est comparée telle
   // quelle par `--check`, et ce chiffre n'a de sens que dans le log.
   fallbackUsed = Object.keys(components).length - Object.keys(local).length;
+  const hookStatus = carriedHookStatus();
 
   return {
     $generatedBy: 'scripts/docs.config.mjs',
@@ -609,6 +630,7 @@ function build() {
     groups: GROUPS,
     shared: sharedOut,
     components,
+    ...(hookStatus ? { hookStatus } : {}),
   };
 }
 

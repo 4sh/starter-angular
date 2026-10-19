@@ -94,4 +94,18 @@ export const FIXTURE_UI_CONFIG: UiConfigManifest = {
       default: { cssVar: '--ui-focus-ring-width', raw: 'var(--ui-focus-ring-width)' },
     },
   },
+  hookStatus: {
+    '--ui-button-gap': { entryPoint: '@4sh/ui-kit/actions/ui-button', themable: true },
+    '--ui-button-split-stroke-width': {
+      entryPoint: '@4sh/ui-kit/actions/ui-button-split',
+      themable: true,
+    },
+    '--ui-button-surface': {
+      entryPoint: '@4sh/ui-kit/actions/ui-button',
+      themable: false,
+      exclusion: 'perVariant',
+      reason: '29 défauts selon la variante rendue : en déclarer un seul écraserait les autres.',
+      defaults: 29,
+    },
+  },
 };

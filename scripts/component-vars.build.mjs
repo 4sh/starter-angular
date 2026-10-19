@@ -6,6 +6,8 @@
  *                                                shipped value, ready to copy
  *   figma/component-vars.json                    the same list in DTCG form (same
  *                                                shape as src/design-tokens/*.json)
+ *   storybook/generated/ui-config.json           its `hookStatus` key: per hook,
+ *                                                themable or not, and why
  *
  * VALUES come from the CSS Sass actually compiles, not from reading the SCSS:
  * `rem-calc(44px - 2 * $gutter)` has to be evaluated, not guessed. DESCRIPTIONS come
@@ -759,6 +761,19 @@ for (const [hook, { defaults, files: seen }] of [...found].sort(([a], [b]) => a.
     descriptionSource: info.role && !info.isMapEntry ? 'scss' : 'derived',
     scssVar: info.scssVar,
     themable: !contextual && !plumbing && !shared && !privateDefault,
+    // Same precedence as `reason` below; published in ui-config.json (`hookStatus`).
+    exclusion:
+      declKind === 'scss'
+        ? 'selfDeclared'
+        : declKind === 'input'
+          ? 'inputDriven'
+          : shared
+            ? 'crossCutting'
+            : contextual
+              ? 'perVariant'
+              : privateDefault
+                ? 'privateDefault'
+                : null,
     plumbing,
     plumbingKind: declKind,
     sharedHandle: Boolean(shared),
@@ -1027,11 +1042,48 @@ function readmeCountMismatches(counts) {
   return errors;
 }
 
-// --- 9. Write / check -----------------------------------------------------
+// --- 9. Hook status (ui-config.json) ----------------------------------------
+// Whether each hook may go in a global theme, and why not. Written into the doc
+// manifest so <ConfigTable>, the search index and the MCP server read the same
+// verdict as component-vars.scss. docs.config.mjs carries the key over untouched.
+
+function hookStatus() {
+  const out = {};
+  for (const h of [...hooks].sort((a, b) => a.name.localeCompare(b.name))) {
+    out[h.name] = {
+      entryPoint: h.entryPoint,
+      themable: h.themable,
+      ...(h.themable ? {} : { exclusion: h.exclusion, reason: h.reason }),
+      ...(h.exclusion === 'perVariant' ? { defaults: h.defaults.length } : {}),
+    };
+  }
+  return out;
+}
+
+/** Hooks declared by the theme file, i.e. the ones a project may restate on `:root`. */
+const themeHooks = (text) =>
+  new Set([...text.matchAll(/^\s*(--ui-[\w-]+)\s*:/gm)].map((m) => m[1]));
+
+// --- 10. Write / check ----------------------------------------------------
 
 const scssText = themeScss();
 const jsonText = `${JSON.stringify(figmaJson(), null, 2)}\n`;
+const status = hookStatus();
 const check = process.argv.includes('--check');
+
+// A hook is in component-vars.scss if and only if its status says `themable`.
+const inTheme = themeHooks(scssText);
+const statusMismatches = Object.entries(status)
+  .filter(([name, s]) => s.themable !== inTheme.has(name))
+  .map(
+    ([name, s]) =>
+      `${name} : themable=${s.themable}, ${inTheme.has(name) ? 'présent' : 'absent'} du thème`,
+  );
+if (statusMismatches.length) {
+  console.error(`✗ hookStatus et component-vars.scss divergent :`);
+  for (const m of statusMismatches) console.error(`  - ${m}`);
+  process.exit(1);
+}
 
 if (problems.length) {
   console.error(`✗ ${problems.length} problème(s) de nommage :`);
@@ -1057,6 +1109,12 @@ if (check) {
     );
     process.exit(1);
   }
+  if (JSON.stringify(manifest.hookStatus) !== JSON.stringify(status)) {
+    console.error(
+      '✗ hookStatus périmé dans storybook/generated/ui-config.json, lance `pnpm docs:config`.',
+    );
+    process.exit(1);
+  }
   const readmeErrors = readmeCountMismatches(
     JSON.parse(jsonText).$extensions['com.4sh.ui-kit'].counts,
   );
@@ -1066,12 +1124,13 @@ if (check) {
     process.exit(1);
   }
 
-  console.log('✓ component-vars.scss, component-vars.json et figma/README.md à jour.');
+  console.log('✓ component-vars.scss, component-vars.json, hookStatus et figma/README.md à jour.');
 } else {
   mkdirSync(dirname(SCSS_OUT), { recursive: true });
   mkdirSync(dirname(JSON_OUT), { recursive: true });
   writeFileSync(SCSS_OUT, scssText);
   writeFileSync(JSON_OUT, jsonText);
+  writeFileSync(MANIFEST_FILE, `${JSON.stringify({ ...manifest, hookStatus: status }, null, 2)}\n`);
   // Served by Storybook for the doc page's download button.
   mkdirSync(dirname(PUBLIC_COPY), { recursive: true });
   writeFileSync(PUBLIC_COPY, scssText);
