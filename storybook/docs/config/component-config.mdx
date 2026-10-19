@@ -234,7 +234,9 @@ Le fichier est **généré** depuis les `.scss` (`pnpm docs:config`), et ses val
 dans le CSS réellement compilé — donc jamais périmées. Quelques hooks n'y figurent pas, parce
 qu'un réglage global n'a pas de sens pour eux : ceux dont le défaut dépend de la variante rendue
 (`--ui-button-radius` vaut un autre rayon en `rounded`) et ceux que le composant se pose
-lui-même. La colonne « Hook exposé » de chaque composant les donne quand même.
+lui-même. La colonne « Hook exposé » de chaque composant les donne quand même, marqués
+**pas sur :root** : l'infobulle du repère dit pourquoi. Le serveur MCP publie le même verdict
+(`theming.hooks` de `get_component_doc`).
 
 Chaque section « Theming » de composant affiche le hook de chaque valeur dans sa colonne
 **« Hook exposé »**. Une poignée de custom properties `--ui-*` n'y figure pas : celles que le

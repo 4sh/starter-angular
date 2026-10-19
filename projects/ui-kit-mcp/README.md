@@ -31,6 +31,7 @@ associée — sans que l'agent ait besoin de lire les fichiers sources ou de dev
 | ------------------- | ------------------------------------------------------------------------- |
 | `list_components`   | Catalogue de tous les composants `ui-*` disponibles.                      |
 | `get_component_doc` | Doc complète d'un composant (API, theming, tailles, états, exemples).     |
+|                     | `theming.hooks` : par hook `--ui-*`, `themable` et sinon `exclusion`.     |
 | `search_docs`       | Recherche plein texte dans toute la doc (composants, fondations, tokens). |
 | `get_shared_config` | Config structurelle transverse du kit (`_ui-config.scss`).                |
 

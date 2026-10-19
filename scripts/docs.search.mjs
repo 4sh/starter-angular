@@ -257,12 +257,24 @@ function settingText(setting) {
 
 const entryText = (name, entry) => [name, entry.role ?? '', ...settingText(entry.default)];
 
+/**
+ * Repère « pas sur :root » de `<ConfigTable>`, en mots : un agent qui lit la section
+ * Theming apprend qu'un hook ne va pas dans un thème global, et pourquoi.
+ */
+function hookStatusText(item) {
+  const status = uiConfig().hookStatus ?? {};
+  const hook = item.name.startsWith('--ui-') ? item.name : item.default?.cssVar;
+  const entry = hook && status[hook];
+  return entry && !entry.themable ? [`${hook} pas sur :root : ${entry.reason}`] : [];
+}
+
 function configTableText(component) {
   const entry = uiConfig().components?.[component];
   if (!entry) return [];
-  return [...(entry.vars ?? []), ...(entry.hooks ?? [])].flatMap((item) =>
-    entryText(item.name, item),
-  );
+  return [...(entry.vars ?? []), ...(entry.hooks ?? [])].flatMap((item) => [
+    ...entryText(item.name, item),
+    ...hookStatusText(item),
+  ]);
 }
 
 function sharedConfigTableText(node) {

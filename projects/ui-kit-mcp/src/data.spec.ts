@@ -79,6 +79,41 @@ describe('data', () => {
     });
   });
 
+  describe('getComponentHooks', () => {
+    it('returns the hooks of the entry point with their status, entryPoint dropped', async () => {
+      const { getComponentHooks } = await importFreshData();
+      expect(getComponentHooks('ui-button')).toEqual([
+        { name: '--ui-button-gap', themable: true },
+        {
+          name: '--ui-button-surface',
+          themable: false,
+          exclusion: 'perVariant',
+          reason:
+            '29 défauts selon la variante rendue : en déclarer un seul écraserait les autres.',
+          defaults: 29,
+        },
+      ]);
+    });
+
+    it('does not attach a neighbour package whose name extends the component name', async () => {
+      const { getComponentHooks } = await importFreshData();
+      expect(getComponentHooks('ui-button').map((h) => h.name)).not.toContain(
+        '--ui-button-split-stroke-width',
+      );
+    });
+
+    it('returns an empty array when the manifest predates hookStatus', async () => {
+      const { hookStatus: _hookStatus, ...legacy } = FIXTURE_UI_CONFIG;
+      vi.mocked(readFileSync).mockImplementation((path) =>
+        String(path).endsWith('ui-config.json')
+          ? JSON.stringify(legacy)
+          : JSON.stringify(FIXTURE_SEARCH_DOCS),
+      );
+      const { getComponentHooks } = await importFreshData();
+      expect(getComponentHooks('ui-button')).toEqual([]);
+    });
+  });
+
   describe('getComponentSections', () => {
     it('returns every section for a known component, in disk order', async () => {
       const { getComponentSections } = await importFreshData();

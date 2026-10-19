@@ -3,12 +3,26 @@ import { FIXTURE_DOCS } from '../test-fixtures.js';
 
 const buttonSections = FIXTURE_DOCS.filter((d) => d.name === 'ui-button');
 
+const buttonHooks = [
+  { name: '--ui-button-gap', themable: true },
+  {
+    name: '--ui-button-surface',
+    themable: false,
+    exclusion: 'perVariant',
+    reason: '…',
+    defaults: 29,
+  },
+];
+
 vi.mock('../data.js', () => ({
-  getComponentSections: vi.fn((name: string) => (name === 'ui-button' ? buttonSections : [])),
+  getComponentSections: vi.fn((name: string) =>
+    name === 'ui-button' || name === 'ui-select' ? FIXTURE_DOCS.filter((d) => d.name === name) : [],
+  ),
+  getComponentHooks: vi.fn((name: string) => (name === 'ui-button' ? buttonHooks : [])),
   listComponentNames: vi.fn(() => ['ui-button', 'ui-select']),
 }));
 
-import { getComponentDoc } from './get-component-doc.js';
+import { getComponentDoc, THEMING_NOTE } from './get-component-doc.js';
 
 describe('getComponentDoc', () => {
   it('returns every section of a known component, with title and source', () => {
@@ -29,6 +43,17 @@ describe('getComponentDoc', () => {
     const result = getComponentDoc('ui-button');
     const payload = JSON.parse(result.content[0].text);
     expect(payload.sections[0].section).toBe('Overview');
+  });
+
+  it('says which hooks may go in a global theme, with the note that reads the fields', () => {
+    const payload = JSON.parse(getComponentDoc('ui-button').content[0].text);
+    expect(payload.theming).toEqual({ note: THEMING_NOTE, hooks: buttonHooks });
+    expect(THEMING_NOTE).toMatch(/perVariant/);
+  });
+
+  it('omits theming when the manifest has no hook status for the component', () => {
+    const payload = JSON.parse(getComponentDoc('ui-select').content[0].text);
+    expect(payload).not.toHaveProperty('theming');
   });
 
   it('reports an error and suggests available names for an unknown component', () => {
