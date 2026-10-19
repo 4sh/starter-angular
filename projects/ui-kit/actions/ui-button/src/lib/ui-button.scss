@@ -25,7 +25,7 @@ $levels: high, low, success, warning, error; /// Familles de couleur générées
 $variants: outlined, ghost;                  /// Variantes composées avec `$levels` (`filled` = jeu nu, sans classe)
 $polarities: dark, light;                    /// Luminosités de fond gérées par `onColor` (jeux épinglés, insensibles au thème)
 
-$radius: var(--ui-button-radius, var(--radius-sm));                                     /// Rayon des coins, reformable par un hôte (`ui-button-split`).
+$radius: var(--ui-button-radius, var(--ui-button-radius-default, var(--radius-sm)));     /// Rayon des coins hors `rounded`. `--ui-button-radius` reste réservé à un hôte qui reforme les coins (`ui-button-split`).
 $radius-rounded: var(--ui-button-radius, var(--ui-button-radius-rounded, var(--radius-full))); /// Rayon des coins en présentation `rounded`.
 $gap: var(--ui-button-gap, var(--units-sm));                                             /// Espacement icône ↔ libellé.
 $stroke-width: var(--ui-button-stroke-width, #{utils.$control-stroke-width});            /// Épaisseur de la bordure.

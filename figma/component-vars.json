@@ -10,8 +10,8 @@
         "Mode 1"
       ],
       "counts": {
-        "tokens": 1424,
-        "alias": 1266,
+        "tokens": 1425,
+        "alias": 1267,
         "literal": 158,
         "skipped": 80,
         "derivedDescriptions": 223
@@ -6026,7 +6026,7 @@
     "radius": {
       "$value": "{metrics.radius.sm}",
       "$type": "dimension",
-      "$description": "Rayon des coins, reformable par un hôte (`ui-button-split`).",
+      "$description": "Rayon des coins hors `rounded`. `--ui-button-radius` reste réservé à un hôte qui reforme les coins (`ui-button-split`).",
       "$extensions": {
         "com.figma": {
           "resolvedType": "FLOAT",
@@ -6044,6 +6044,28 @@
           "descriptionSource": "scss",
           "perInstance": true,
           "note": "2 défauts selon la variante rendue : en déclarer un seul écraserait les autres."
+        }
+      }
+    },
+    "radius-default": {
+      "$value": "{metrics.radius.sm}",
+      "$type": "dimension",
+      "$description": "Rayon des coins hors `rounded`. `--ui-button-radius` reste réservé à un hôte qui reforme les coins (`ui-button-split`).",
+      "$extensions": {
+        "com.figma": {
+          "resolvedType": "FLOAT",
+          "scopes": [
+            "CORNER_RADIUS"
+          ],
+          "codeSyntax": {
+            "WEB": "var(--ui-button-radius-default)"
+          }
+        },
+        "com.4sh.ui-kit": {
+          "cssVar": "--ui-button-radius-default",
+          "component": "ui-button",
+          "entryPoint": "@4sh/ui-kit/actions/ui-button",
+          "descriptionSource": "scss"
         }
       }
     },
