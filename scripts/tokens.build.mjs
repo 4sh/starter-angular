@@ -131,6 +131,81 @@ for (const c of CONFIG.collections) {
   );
 }
 
+// --- Typed values -----------------------------------------------------------------
+// DTCG 2025.10 writes some values as structures: a duration or a dimension is
+// `{ value, unit }`, a curve `[x1, y1, x2, y2]`. Left as is, `setLeaf` would split
+// the object into sub-tokens and stringify the array. They take their CSS form here,
+// before anything else reads them: `80ms`, `0.5rem`, `cubic-bezier(0.42, 0, 0.58, 1)`.
+// A string (CSS text or a {…} reference) goes through untouched: it is what every
+// file exported from Figma contains so far.
+//
+// A unitless duration is refused rather than guessed: Figma's TIMING variables count
+// in seconds, and CSS has no unitless time to fall back on.
+
+/** `{ value: 80, unit: 'ms' }` → `80ms`; a string goes through. `units` restricts the unit. */
+function unitValue(value, units) {
+  if (typeof value === 'string') return value;
+  const readable =
+    value &&
+    typeof value === 'object' &&
+    Number.isFinite(value.value) &&
+    typeof value.unit === 'string' &&
+    (!units || units.includes(value.unit));
+  return readable ? `${value.value}${value.unit}` : undefined;
+}
+
+/** `[0.42, 0, 0.58, 1]` → `cubic-bezier(0.42, 0, 0.58, 1)`; a string goes through. */
+function cubicBezier(value) {
+  if (typeof value === 'string') return value;
+  if (!Array.isArray(value) || value.length !== 4 || !value.every(Number.isFinite))
+    return undefined;
+  const [x1, , x2] = value;
+  // CSS drops the whole declaration when a curve's x leaves [0, 1].
+  if (x1 < 0 || x1 > 1 || x2 < 0 || x2 > 1) return undefined;
+  return `cubic-bezier(${value.join(', ')})`;
+}
+
+const TYPED_VALUES = {
+  duration: {
+    css: (v) => unitValue(v, ['ms', 's']),
+    expected: '{ "value": 80, "unit": "ms" } (ms ou s), ou une chaîne CSS ("80ms")',
+  },
+  dimension: {
+    css: (v) => (typeof v === 'number' ? v : unitValue(v)),
+    expected: '{ "value": 0.5, "unit": "rem" }, ou une chaîne CSS ("8px")',
+  },
+  cubicBezier: {
+    css: cubicBezier,
+    expected: '[x1, y1, x2, y2] avec x1 et x2 entre 0 et 1, ou une chaîne CSS ("ease-out")',
+  },
+};
+
+function normalizeTypedValues() {
+  const unreadable = [];
+  for (const col of CONFIG.collections) {
+    for (const leaf of leavesByCol[col.id]) {
+      const typed = TYPED_VALUES[leaf.token.$type];
+      if (!typed) continue;
+      const css = typed.css(leaf.token.$value);
+      if (css === undefined) unreadable.push({ ...leaf, expected: typed.expected });
+      else if (css !== leaf.token.$value) leaf.token = { ...leaf.token, $value: css };
+    }
+  }
+  if (!unreadable.length) return;
+  const lines = unreadable.map(
+    (u) =>
+      `  ${u.file} → ${u.path.join('.')} (${u.token.$type})\n` +
+      `      reçu ${JSON.stringify(u.token.$value)}, attendu ${u.expected}`,
+  );
+  throw new Error(
+    `Valeurs de jetons illisibles (${unreadable.length}) :\n${lines.join('\n')}\n\n` +
+      `Une durée sans unité n'est jamais devinée : une variable TIMING de Figma compte en ` +
+      `secondes, et CSS n'a pas de durée sans unité.`,
+  );
+}
+
+normalizeTypedValues();
+
 // --- Intra-collection references ----------------------------------------------
 // A reference carries the path of a VARIABLE, and the collection name is not part
 // of it: that is what Figma / Token Flow Manager export. Style Dictionary resolves

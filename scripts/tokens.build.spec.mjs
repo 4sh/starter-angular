@@ -234,3 +234,62 @@ describe('tokens.build — résolution des références', () => {
     expect(result.message).toContain('{global.text.nope}');
   });
 });
+
+/** Collection `transitions` : préfixe vide, groupe `transition`, comme dans le dépôt. */
+const TRANSITIONS_COLLECTION = {
+  id: 'transitions',
+  prefix: '',
+  preserveCase: false,
+  files: ['transitions.json'],
+  modeAxes: [],
+};
+
+/** Construit `transitions.json` tel que l'exporterait Figma une fois les variables typées. */
+const typed = (transition) =>
+  run({
+    extraCollections: [TRANSITIONS_COLLECTION],
+    tokens: {
+      'primitives.json': PRIMITIVES,
+      'semantics.json': semantics(),
+      'transitions.json': { transition },
+    },
+  });
+
+describe('tokens.build — valeurs typées (durée, dimension, courbe)', () => {
+  it('écrit en CSS les valeurs structurées du format DTCG', () => {
+    const result = typed({
+      fast: { $value: { value: 80, unit: 'ms' }, $type: 'duration' },
+      slower: { $value: { value: 0.4, unit: 's' }, $type: 'duration' },
+      text: { $value: '120ms', $type: 'duration' },
+      easeinout: { $value: [0.42, 0, 0.58, 1], $type: 'cubicBezier' },
+      keyword: { $value: 'ease-out', $type: 'cubicBezier' },
+      distance: { $value: { value: 0.5, unit: 'rem' }, $type: 'dimension' },
+    });
+
+    expect(result.message ?? '').toBe('');
+    const css = readFileSync(join(result.dir, 'out', '_tokens-transitions.scss'), 'utf8');
+    expect(css).toContain('--transition-fast: 80ms;');
+    expect(css).toContain('--transition-slower: 0.4s;');
+    expect(css).toContain('--transition-text: 120ms;');
+    expect(css).toContain('--transition-easeinout: cubic-bezier(0.42, 0, 0.58, 1);');
+    expect(css).toContain('--transition-keyword: ease-out;');
+    expect(css).toContain('--transition-distance: 0.5rem;');
+  });
+
+  it('refuse une durée sans unité, en nommant le fichier et le jeton', () => {
+    // Une variable TIMING de Figma compte en secondes : deviner des ms rendrait
+    // l'animation mille fois plus courte, deviner des secondes l'inverse.
+    const result = typed({ fast: { $value: 0.08, $type: 'duration' } });
+
+    expect(result.ok).toBe(false);
+    expect(result.message).toContain('transitions.json → transition.fast');
+    expect(result.message).toContain('secondes');
+  });
+
+  it('refuse une courbe dont un x sort de [0, 1], que CSS ignorerait en bloc', () => {
+    const result = typed({ wild: { $value: [1.2, 0, 0.58, 1], $type: 'cubicBezier' } });
+
+    expect(result.ok).toBe(false);
+    expect(result.message).toContain('transitions.json → transition.wild');
+  });
+});

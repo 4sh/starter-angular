@@ -16,6 +16,19 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+### Added
+
+- **`tokens:build` lit les valeurs typées du format DTCG : durées, courbes, dimensions**
+  (FSHSP-252). Une courbe `[0.42, 0, 0.58, 1]` sort en `cubic-bezier(0.42, 0, 0.58, 1)`, une
+  durée `"80ms"` ou `{ "value": 80, "unit": "ms" }` en `80ms`, une dimension
+  `{ "value": 0.5, "unit": "rem" }` en `0.5rem`. C'est ce que Token Flow exporte pour les
+  variables Figma `TIMING` (`"80ms"`) et `EASING` (le tableau) : les `--transition-*` pourront
+  quitter le type `STRING` sous les mêmes noms et aux mêmes valeurs, rien à changer côté projet. Une durée sans unité fait échouer le build
+  au lieu d'être devinée (une variable TIMING de Figma compte en secondes), tout comme une
+  courbe dont un x sort de [0, 1], que CSS ignorerait. Les jetons actuels, écrits en texte CSS,
+  sortent à l'identique. En mode copie, le script arrive avec
+  `ng add @4sh/ui-kit-schematics --skip-components`.
+
 ## [0.14.0] - 2026-10-19
 
 ### Added

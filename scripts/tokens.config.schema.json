@@ -44,7 +44,7 @@
           "files": {
             "type": "array",
             "items": { "type": "string" },
-            "description": "Token JSON files (DTCG format: nested groups with $value/$type leaves), relative to sourceRoot."
+            "description": "Token JSON files (DTCG format: nested groups with $value/$type leaves), relative to sourceRoot. Structured values get their CSS form: a duration or a dimension { \"value\": 80, \"unit\": \"ms\" } → 80ms, a cubicBezier [0.42, 0, 0.58, 1] → cubic-bezier(0.42, 0, 0.58, 1). A unitless duration fails the build (Figma's TIMING variables count in seconds)."
           },
           "fontStacks": {
             "type": "object",
