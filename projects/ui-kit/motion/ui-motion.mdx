@@ -155,9 +155,13 @@ directive : `motionDuration`, `motionEasing`, `motionDelay`, `motionDistance`,
 
 - **Par élément** : `[motionDisabled]="true"` (directive) ou `[motion]="false"` (accordéon).
 - **Global** : `data-motion="off"` sur `<html>` neutralise toutes les animations **et**
-  transitions du kit (même réinitialisation que reduced-motion).
-- **Préférence système** : `prefers-reduced-motion: reduce` réduit tous les presets à un
-  flash instantané — l'état change toujours, sans mouvement.
+  transitions du kit. C'est aussi le réglage à poser dans les tests de bout en bout.
+- **Préférence système** : `prefers-reduced-motion: reduce` bascule la collection `motion`
+  dans son mode `Reduced`. Le glissement des presets tombe à 0 et l'échelle du `zoom` à 1,
+  les recettes raccourcissent (`fast`, 80ms) : chaque preset devient un fondu court. Le
+  changement d'état reste visible, sans mouvement. Les changements de couleur (`hover`)
+  gardent leur durée, ce ne sont pas des mouvements. Un composant qui pose sa propre garde
+  `utils.motion-reduce` reste instantané.
 
 ## Intégration aux composants
 

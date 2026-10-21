@@ -92,7 +92,7 @@
           "default": "modeStandard",
           "map": {
             "modeStandard": ":root",
-            "modeReduced": null
+            "modeReduced": "(prefers-reduced-motion: reduce)"
           }
         }
       ]

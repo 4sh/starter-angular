@@ -45,6 +45,16 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ### Changed
 
+- **Mouvement réduit : les préréglages deviennent des fondus courts au lieu de disparaître**
+  (FSHSP-252). Sous `prefers-reduced-motion: reduce`, la collection `motion` passe dans son
+  mode `Reduced` : glissement des `slide-*` à 0, échelle du `zoom` à 1, recettes de
+  déplacement à `--transition-fast` (80ms), décalage du speed-dial à 0. Avant, tous les
+  préréglages tombaient à 0,01ms, fondu compris. Les déplacements qui passent par
+  `utils.control-transition` (pouce du toggle, rotation du speed-dial), jusqu'ici non
+  couverts, raccourcissent aussi. Les changements de couleur gardent leur durée. Un composant
+  qui pose sa propre garde `utils.motion-reduce` reste instantané, et `data-motion="off"`
+  coupe toujours tout : c'est le réglage à garder dans les tests de bout en bout qui
+  s'appuyaient sur le mouvement réduit pour supprimer les animations.
 - **Les courbes `--transition-*` s'écrivent en `cubic-bezier()`** (FSHSP-252). Leurs variables
   Figma sont passées du type `STRING` aux types `TIMING` et `EASING`, sous les mêmes noms.
   Les durées ne changent pas (`80ms`, `180ms`, `280ms`). Les courbes valent désormais la

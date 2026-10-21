@@ -8,7 +8,8 @@
 // Timing/easing/offset resolve from the `--ui-motion-*` custom properties
 // (per-instance override) with the motion tokens as defaults, so a single
 // element can be re-timed without new CSS. Globally opt out with
-// `data-motion="off"` on <html> (or the user's reduced-motion preference).
+// `data-motion="off"` on <html>; the user's reduced-motion preference turns every
+// preset into a short fade (see the end of this file).
 //
 // Class contract :
 //   .ui-motion-<preset>-enter   → appear
@@ -122,17 +123,14 @@ $_presets: fade, slide-up, slide-down, slide-left, slide-right, zoom, collapse;
   to { opacity: 0; grid-template-rows: 0fr; }
 }
 
-// --- Global opt-out --------------------------------------------------
-// Honour the OS reduced-motion setting: collapse every preset to a flash so
-// state still changes without movement.
-@media (prefers-reduced-motion: reduce) {
-  [class*='ui-motion-'] {
-    animation-duration: 0.01ms !important;
-  }
-}
+// --- Reduced motion ----------------------------------------------------
+// No rule here: the OS reduced-motion setting switches the `motion` tokens to their
+// `Reduced` mode (generated/_tokens-motion.scss). The slide distance drops to 0 and
+// the zoom scale to 1, the recipes shorten: every preset becomes a short fade, so the
+// change of state is still seen, without the movement.
 
 // Explicit kit-wide kill-switch (`<html data-motion="off">`): neutralise all
-// animations AND transitions — the same reset used for reduced motion.
+// animations AND transitions.
 :root[data-motion='off'] {
   &,
   *,

@@ -40,6 +40,15 @@ version the repo pins, which is also the one `@storybook/test-runner` uses.
 - Console noise in **every** story: `NG04002: 'iframe.html'` (the app's Router does not match
   Storybook's iframe URL) — pre-existing, filter it out of captures.
 
+## Reduced motion
+
+Anything that animates is checked twice: once as is, once in a context created with
+`browser.newContext({ reducedMotion: 'reduce' })`. In reduced motion the `motion` tokens
+switch to their `Reduced` mode: slide distance 0, zoom scale 1, movement recipes at 80ms,
+colour changes unchanged. Read `getComputedStyle(el).transitionDuration` or, for a preset
+class, pause its `Animation` at `currentTime = 0` and read the start `transform`. For an
+end-to-end test that must not wait on any animation, set `data-motion="off"` on `<html>`.
+
 ## What to drive depending on the change
 
 - Form component: `--signal-forms` / `--basic` story, type/click, read the
