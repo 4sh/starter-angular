@@ -5,16 +5,39 @@
 @use 'sass:list';
 @use '../settings/ui-config';
 
+/// Properties that move something: they take the `toggle` recipe, every other one
+/// (colour, opacity, shadow) the `hover` recipe.
+$_moving-properties: (
+  transform,
+  translate,
+  rotate,
+  scale,
+  top,
+  right,
+  bottom,
+  left,
+  inset,
+  width,
+  height,
+  inline-size,
+  block-size
+);
+
 /// Transition recipe (duration/easing from ui-config) for the given properties.
+/// A property that moves something (transform, top, width…) follows the `toggle`
+/// recipe, an appearance change (colour, opacity…) the `hover` one: the thumb of a
+/// toggle and its colour can then be timed apart, from the tokens alone.
 /// e.g. @include utils.control-transition(background-color, border-color);
 @mixin control-transition($properties...) {
   $transitions: ();
   @each $property in $properties {
-    $transitions: list.append(
-      $transitions,
-      $property ui-config.$control-transition-duration ui-config.$control-transition-easing,
-      comma
-    );
+    $duration: ui-config.$control-transition-duration;
+    $easing: ui-config.$control-transition-easing;
+    @if list.index($_moving-properties, $property) {
+      $duration: ui-config.$control-motion-duration;
+      $easing: ui-config.$control-motion-easing;
+    }
+    $transitions: list.append($transitions, $property $duration $easing, comma);
   }
   transition: $transitions;
 }

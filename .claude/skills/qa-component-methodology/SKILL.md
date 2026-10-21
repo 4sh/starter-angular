@@ -66,6 +66,10 @@ pnpm exec tsc --noEmit -p tsconfig.app.json | grep <composant>
   visible), états hover/focus/pressed/disabled, et les cas limites (bornes min/max,
   doublons, dépassement de limite).
 - Vérifier light/dark mode et, si pertinent, les 3 thèmes de marque.
+- Si le composant s'anime, le revoir en mouvement réduit (`prefers-reduced-motion: reduce`,
+  émulé dans les outils du navigateur ou via Playwright `reducedMotion: 'reduce'`) : un
+  glissement ou un zoom doit devenir un fondu court, un changement de couleur garde sa
+  durée, et rien ne doit rester bloqué à mi-chemin.
 
 ## 5. Points de vigilance récurrents (calibrés sur les bugs déjà trouvés)
 

@@ -92,12 +92,12 @@
         {
           "cssVar": "--ui-control-transition-duration",
           "component": "ui-config",
-          "reason": "sans équivalent variable Figma (durée, easing, curseur, plan d’empilement, ratio)."
+          "reason": "2 défauts selon la variante rendue : en déclarer un seul écraserait les autres."
         },
         {
           "cssVar": "--ui-control-transition-easing",
           "component": "ui-config",
-          "reason": "sans équivalent variable Figma (durée, easing, curseur, plan d’empilement, ratio)."
+          "reason": "2 défauts selon la variante rendue : en déclarer un seul écraserait les autres."
         },
         {
           "cssVar": "--ui-datepicker-panel-max-height",

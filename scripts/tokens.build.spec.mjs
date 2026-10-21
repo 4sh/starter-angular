@@ -234,3 +234,116 @@ describe('tokens.build — résolution des références', () => {
     expect(result.message).toContain('{global.text.nope}');
   });
 });
+
+/** Collection `transitions` : préfixe vide, groupe `transition`, comme dans le dépôt. */
+const TRANSITIONS_COLLECTION = {
+  id: 'transitions',
+  prefix: '',
+  preserveCase: false,
+  files: ['transitions.json'],
+  modeAxes: [],
+};
+
+/** Construit `transitions.json` tel que l'exporterait Figma une fois les variables typées. */
+const typed = (transition) =>
+  run({
+    extraCollections: [TRANSITIONS_COLLECTION],
+    tokens: {
+      'primitives.json': PRIMITIVES,
+      'semantics.json': semantics(),
+      'transitions.json': { transition },
+    },
+  });
+
+describe('tokens.build — valeurs typées (durée, dimension, courbe)', () => {
+  it('écrit en CSS les valeurs structurées du format DTCG', () => {
+    const result = typed({
+      fast: { $value: { value: 80, unit: 'ms' }, $type: 'duration' },
+      slower: { $value: { value: 0.4, unit: 's' }, $type: 'duration' },
+      text: { $value: '120ms', $type: 'duration' },
+      easeinout: { $value: [0.42, 0, 0.58, 1], $type: 'cubicBezier' },
+      keyword: { $value: 'ease-out', $type: 'cubicBezier' },
+      distance: { $value: { value: 0.5, unit: 'rem' }, $type: 'dimension' },
+    });
+
+    expect(result.message ?? '').toBe('');
+    const css = readFileSync(join(result.dir, 'out', '_tokens-transitions.scss'), 'utf8');
+    expect(css).toContain('--transition-fast: 80ms;');
+    expect(css).toContain('--transition-slower: 0.4s;');
+    expect(css).toContain('--transition-text: 120ms;');
+    expect(css).toContain('--transition-easeinout: cubic-bezier(0.42, 0, 0.58, 1);');
+    expect(css).toContain('--transition-keyword: ease-out;');
+    expect(css).toContain('--transition-distance: 0.5rem;');
+  });
+
+  it('refuse une durée sans unité, en nommant le fichier et le jeton', () => {
+    // Une variable TIMING de Figma compte en secondes : deviner des ms rendrait
+    // l'animation mille fois plus courte, deviner des secondes l'inverse.
+    const result = typed({ fast: { $value: 0.08, $type: 'duration' } });
+
+    expect(result.ok).toBe(false);
+    expect(result.message).toContain('transitions.json → transition.fast');
+    expect(result.message).toContain('secondes');
+  });
+
+  it('refuse une courbe dont un x sort de [0, 1], que CSS ignorerait en bloc', () => {
+    const result = typed({ wild: { $value: [1.2, 0, 0.58, 1], $type: 'cubicBezier' } });
+
+    expect(result.ok).toBe(false);
+    expect(result.message).toContain('transitions.json → transition.wild');
+  });
+});
+
+describe('tokens.build — modes non émis et nombres', () => {
+  /** Une collection à deux modes, comme `motion` : `modeReduced` n'est pas encore émis. */
+  const MOTION_COLLECTION = {
+    id: 'motion',
+    prefix: 'motion',
+    preserveCase: false,
+    files: ['motion.json'],
+    modeAxes: [
+      {
+        name: 'motion',
+        source: 'nested',
+        strategy: 'media',
+        default: 'modeStandard',
+        map: { modeStandard: ':root', modeReduced: null },
+      },
+    ],
+  };
+  const build = (motion) =>
+    run({
+      extraCollections: [MOTION_COLLECTION],
+      tokens: {
+        'primitives.json': PRIMITIVES,
+        'semantics.json': semantics(),
+        'motion.json': motion,
+      },
+    });
+
+  it("n'émet pas un mode associé à null, et ne le laisse pas écraser le mode par défaut", () => {
+    const result = build({
+      slide: {
+        modeStandard: { distance: { $value: '8px', $type: 'dimension' } },
+        modeReduced: { distance: { $value: '0px', $type: 'dimension' } },
+      },
+    });
+
+    expect(result.message ?? '').toBe('');
+    const css = readFileSync(join(result.dir, 'out', '_tokens-motion.scss'), 'utf8');
+    expect(css).toContain('--motion-slide-distance: 8px;');
+    expect(css).not.toContain('0px');
+    expect(css).not.toContain('@media');
+  });
+
+  it('arrondit un nombre stocké sur 32 bits par Figma, sans toucher un nombre propre', () => {
+    const result = build({
+      zoom: { modeStandard: { scale: { $value: 0.9599999785423279, $type: 'number' } } },
+      grid: { modeStandard: { columns: { $value: 12, $type: 'number' } } },
+    });
+
+    const css = readFileSync(join(result.dir, 'out', '_tokens-motion.scss'), 'utf8');
+    expect(css).toContain('--motion-zoom-scale: 0.96;');
+    expect(css).toContain('--motion-grid-columns: 12;');
+  });
+});

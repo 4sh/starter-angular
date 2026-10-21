@@ -17,15 +17,15 @@
 
 /// Transition recipe timed by the motion system.
 /// Duration/easing/delay resolve from `--ui-motion-*` (per-instance override)
-/// falling back to the motion tokens. Easing defaults to the symmetric curve.
+/// falling back to the `toggle` recipe: an element that switches between two states.
 /// e.g. @include utils.motion-transition(opacity, translate);
 @mixin motion-transition($properties...) {
   $transitions: ();
   @each $property in $properties {
     $transitions: list.append(
       $transitions,
-      $property var(--ui-motion-duration, #{ui-config.$motion-duration-base})
-        var(--ui-motion-easing, #{ui-config.$motion-easing-standard})
+      $property var(--ui-motion-duration, #{ui-config.$motion-toggle-duration})
+        var(--ui-motion-easing, #{ui-config.$motion-toggle-easing})
         var(--ui-motion-delay, 0ms),
       comma
     );

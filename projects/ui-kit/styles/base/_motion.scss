@@ -8,7 +8,8 @@
 // Timing/easing/offset resolve from the `--ui-motion-*` custom properties
 // (per-instance override) with the motion tokens as defaults, so a single
 // element can be re-timed without new CSS. Globally opt out with
-// `data-motion="off"` on <html> (or the user's reduced-motion preference).
+// `data-motion="off"` on <html>; the user's reduced-motion preference turns every
+// preset into a short fade (see the end of this file).
 //
 // Class contract :
 //   .ui-motion-<preset>-enter   → appear
@@ -19,21 +20,23 @@
 @use 'sass:list';
 @use 'utils';
 
-// Resolved runtime values (override via the custom property, else token/config).
-$_duration: var(--ui-motion-duration, #{utils.$motion-duration-base});
+// Resolved runtime values (override via the custom property, else the `overlay-in`
+// / `overlay-out` recipes). `--ui-motion-duration` retimes both directions at once.
+$_duration-enter: var(--ui-motion-duration, #{utils.$motion-overlay-in-duration});
+$_duration-leave: var(--ui-motion-duration, #{utils.$motion-overlay-out-duration});
 $_delay: var(--ui-motion-delay, 0ms);
-$_ease-enter: var(--ui-motion-easing-enter, #{utils.$motion-easing-enter});
-$_ease-leave: var(--ui-motion-easing-leave, #{utils.$motion-easing-leave});
+$_ease-enter: var(--ui-motion-easing-enter, #{utils.$motion-overlay-in-easing});
+$_ease-leave: var(--ui-motion-easing-leave, #{utils.$motion-overlay-out-easing});
 $_distance: var(--ui-motion-distance, #{utils.$motion-distance});
 $_scale: var(--ui-motion-scale, #{utils.$motion-scale});
 
 $_presets: fade, slide-up, slide-down, slide-left, slide-right, zoom, collapse;
 
 @mixin _enter($name) {
-  animation: $name $_duration $_ease-enter $_delay both;
+  animation: $name $_duration-enter $_ease-enter $_delay both;
 }
 @mixin _leave($name) {
-  animation: $name $_duration $_ease-leave $_delay both;
+  animation: $name $_duration-leave $_ease-leave $_delay both;
 }
 
 // --- Enter/leave class pairs -----------------------------------------
@@ -120,17 +123,14 @@ $_presets: fade, slide-up, slide-down, slide-left, slide-right, zoom, collapse;
   to { opacity: 0; grid-template-rows: 0fr; }
 }
 
-// --- Global opt-out --------------------------------------------------
-// Honour the OS reduced-motion setting: collapse every preset to a flash so
-// state still changes without movement.
-@media (prefers-reduced-motion: reduce) {
-  [class*='ui-motion-'] {
-    animation-duration: 0.01ms !important;
-  }
-}
+// --- Reduced motion ----------------------------------------------------
+// No rule here: the OS reduced-motion setting switches the `motion` tokens to their
+// `Reduced` mode (generated/_tokens-motion.scss). The slide distance drops to 0 and
+// the zoom scale to 1, the recipes shorten: every preset becomes a short fade, so the
+// change of state is still seen, without the movement.
 
 // Explicit kit-wide kill-switch (`<html data-motion="off">`): neutralise all
-// animations AND transitions — the same reset used for reduced motion.
+// animations AND transitions.
 :root[data-motion='off'] {
   &,
   *,

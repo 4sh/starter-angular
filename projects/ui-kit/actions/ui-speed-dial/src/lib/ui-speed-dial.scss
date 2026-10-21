@@ -12,7 +12,7 @@
 // --- Config (local) -----------------------------------------------------
 $z-index: var(--ui-speed-dial-z-index, 10);                                      /// Palier d'empilement du bouton et de ses actions au-dessus du masque.
 $item-gap: var(--ui-speed-dial-item-gap, var(--units-sm));                       /// Espace entre le déclencheur et la première action, et entre deux actions (`linear`).
-$item-delay: var(--ui-speed-dial-item-delay, var(--transition-fast));            /// Décalage d'apparition entre deux actions successives.
+$item-delay: var(--ui-speed-dial-item-delay, #{utils.$motion-stagger-delay});    /// Décalage d'apparition entre deux actions successives.
 $radius-default: var(--ui-speed-dial-radius, calc(2 * var(--size-components-default))); /// Rayon de l'arc d'actions (`circle`/`semi-circle`/`quarter-circle`) quand `radius` n'est pas renseigné.
 $mask-background: var(--ui-speed-dial-mask-background, var(--primitives-black-50)); /// Assombrissement du masque, mêmes tokens que `ui-modal`.
 // Fixed geometry (plus → X), not a themeable role: not worth its own hook.
