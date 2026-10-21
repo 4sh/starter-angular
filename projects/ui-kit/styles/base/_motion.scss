@@ -19,21 +19,23 @@
 @use 'sass:list';
 @use 'utils';
 
-// Resolved runtime values (override via the custom property, else token/config).
-$_duration: var(--ui-motion-duration, #{utils.$motion-duration-base});
+// Resolved runtime values (override via the custom property, else the `overlay-in`
+// / `overlay-out` recipes). `--ui-motion-duration` retimes both directions at once.
+$_duration-enter: var(--ui-motion-duration, #{utils.$motion-overlay-in-duration});
+$_duration-leave: var(--ui-motion-duration, #{utils.$motion-overlay-out-duration});
 $_delay: var(--ui-motion-delay, 0ms);
-$_ease-enter: var(--ui-motion-easing-enter, #{utils.$motion-easing-enter});
-$_ease-leave: var(--ui-motion-easing-leave, #{utils.$motion-easing-leave});
+$_ease-enter: var(--ui-motion-easing-enter, #{utils.$motion-overlay-in-easing});
+$_ease-leave: var(--ui-motion-easing-leave, #{utils.$motion-overlay-out-easing});
 $_distance: var(--ui-motion-distance, #{utils.$motion-distance});
 $_scale: var(--ui-motion-scale, #{utils.$motion-scale});
 
 $_presets: fade, slide-up, slide-down, slide-left, slide-right, zoom, collapse;
 
 @mixin _enter($name) {
-  animation: $name $_duration $_ease-enter $_delay both;
+  animation: $name $_duration-enter $_ease-enter $_delay both;
 }
 @mixin _leave($name) {
-  animation: $name $_duration $_ease-leave $_delay both;
+  animation: $name $_duration-leave $_ease-leave $_delay both;
 }
 
 // --- Enter/leave class pairs -----------------------------------------

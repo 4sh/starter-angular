@@ -80,6 +80,24 @@
       "modeAxes": []
     },
     {
+      "id": "motion",
+      "prefix": "motion",
+      "preserveCase": false,
+      "files": ["motion.json"],
+      "modeAxes": [
+        {
+          "name": "motion",
+          "source": "nested",
+          "strategy": "media",
+          "default": "modeStandard",
+          "map": {
+            "modeStandard": ":root",
+            "modeReduced": null
+          }
+        }
+      ]
+    },
+    {
       "id": "typography",
       "prefix": "",
       "preserveCase": false,
@@ -121,6 +139,7 @@
         "responsive",
         "semantics",
         "transitions",
+        "motion",
         "typography"
       ]
     },

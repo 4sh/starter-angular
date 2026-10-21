@@ -654,7 +654,8 @@ Configuration: **`tokens.config.json`** (repo root, documented/validated by
 | metrics     | `--metrics-*`    | `--metrics-units-sm`, `--metrics-radius-sm`                       |
 | semantics   | _(none)_         | `--actions-high-surface-default`, `--global-high-content-default` |
 | typography  | _(none)_         | `--fontfamily-base`, `--weight-bold`                              |
-| transitions | _(none)_         | `--transition-fast`                                               |
+| transitions | _(none)_         | `--transition-fast` (motion primitives)                           |
+| motion      | `--motion-*`     | `--motion-hover-duration` (recipes, aliases of the primitives)    |
 
 The **semantics reference the primitives** via `var(--primitives-*)` (outputReferences) → the
 brand/mode switch happens at runtime without duplication.

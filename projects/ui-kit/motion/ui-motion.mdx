@@ -99,24 +99,55 @@ Les mêmes classes sont utilisables directement avec `animate.enter`/`animate.le
 <Canvas of={MotionStories.SlideDown} />
 <Canvas of={MotionStories.Collapse} />
 
+## Jetons : primitives et recettes
+
+Le mouvement suit le même modèle que la couleur. Les **primitives** `--transition-*`
+(collection `transitions`) sont les valeurs. Les **recettes** `--motion-*` (collection
+`motion`) les associent à un usage : une recette = une durée et une courbe, en alias d'une
+primitive. Les composants lisent les recettes, jamais les primitives.
+
+<table className="doc-table">
+  <thead>
+    <tr><th>Recette</th><th>Primitives</th><th>Usage</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>`--motion-hover-*`</td><td>`default` · `easeinout`</td><td>Changement d'apparence : couleur, opacité, ombre d'un contrôle.</td></tr>
+    <tr><td>`--motion-toggle-*`</td><td>`default` · `easeinout`</td><td>Déplacement entre deux états : pouce du toggle, indicateur d'onglet, chevron, repli (`utils.motion-transition`).</td></tr>
+    <tr><td>`--motion-overlay-in-*` / `-out-*`</td><td>`default` · `easeout` / `easein`</td><td>Entrée et sortie des préréglages `ui-motion-*`.</td></tr>
+    <tr><td>`--motion-disclosure-*`, `--motion-dialog-*`, `--motion-notify-*`</td><td>`default` · `easeout` / `easein`</td><td>Section repliable, modale, toast : prêtes pour l'atelier, pas encore lues par le kit.</td></tr>
+    <tr><td>`--motion-stagger-delay`</td><td>`fast`</td><td>Décalage entre deux éléments qui apparaissent l'un après l'autre (speed-dial).</td></tr>
+    <tr><td>`--motion-slide-distance`</td><td>`8px`</td><td>Glissement des préréglages `slide-*`.</td></tr>
+    <tr><td>`--motion-zoom-scale`</td><td>`0.96`</td><td>Échelle de départ du préréglage `zoom`.</td></tr>
+  </tbody>
+</table>
+
+Chaque recette vaut aujourd'hui le timing que le kit avait avant elles. Pour recadencer
+**tout le kit**, surchargez une recette sur `:root` (`--motion-hover-duration: 120ms`) :
+seuls les usages qu'elle couvre changent. Surcharger une primitive (`--transition-default`)
+fonctionne toujours, et touche toutes les recettes qui la référencent.
+
+Le contrôle `utils.control-transition` choisit la recette selon la propriété : `transform`,
+`top` ou `width` déplacent quelque chose et suivent `toggle`, une couleur ou une opacité suit
+`hover`. Le hook `--ui-control-transition-duration` règle toujours les deux à la fois.
+
 ## Personnalisation
 
 Chaque élément se re-cadence via les **custom properties** `--ui-motion-*` (par la
 directive : `motionDuration`, `motionEasing`, `motionDelay`, `motionDistance`,
-`motionScale`, ou en CSS directement), avec les **tokens** `$motion-*` comme défauts :
+`motionScale`, ou en CSS directement), avec les **recettes** comme défauts :
 
 <table className="doc-table">
   <thead>
-    <tr><th>Custom property</th><th>Défaut (token)</th><th>Rôle</th></tr>
+    <tr><th>Custom property</th><th>Défaut (recette)</th><th>Rôle</th></tr>
   </thead>
   <tbody>
-    <tr><td>`--ui-motion-duration`</td><td>`--transition-default` (180ms)</td><td>Durée.</td></tr>
-    <tr><td>`--ui-motion-easing`</td><td>`--transition-easeinout`</td><td>Courbe (transitions symétriques).</td></tr>
-    <tr><td>`--ui-motion-easing-enter`</td><td>`--transition-easeout`</td><td>Courbe d'entrée (décélération).</td></tr>
-    <tr><td>`--ui-motion-easing-leave`</td><td>`--transition-easein`</td><td>Courbe de sortie (accélération).</td></tr>
+    <tr><td>`--ui-motion-duration`</td><td>`--motion-overlay-in-duration` / `-out-` (180ms) ; `--motion-toggle-duration` pour `utils.motion-transition`</td><td>Durée, dans les deux sens.</td></tr>
+    <tr><td>`--ui-motion-easing`</td><td>`--motion-toggle-easing`</td><td>Courbe (transitions symétriques).</td></tr>
+    <tr><td>`--ui-motion-easing-enter`</td><td>`--motion-overlay-in-easing`</td><td>Courbe d'entrée (décélération).</td></tr>
+    <tr><td>`--ui-motion-easing-leave`</td><td>`--motion-overlay-out-easing`</td><td>Courbe de sortie (accélération).</td></tr>
     <tr><td>`--ui-motion-delay`</td><td>`0ms`</td><td>Délai avant démarrage.</td></tr>
-    <tr><td>`--ui-motion-distance`</td><td>`0.5rem`</td><td>Décalage des presets `slide-*`.</td></tr>
-    <tr><td>`--ui-motion-scale`</td><td>`0.96`</td><td>Échelle de départ du preset `zoom`.</td></tr>
+    <tr><td>`--ui-motion-distance`</td><td>`--motion-slide-distance` (8px)</td><td>Décalage des presets `slide-*`.</td></tr>
+    <tr><td>`--ui-motion-scale`</td><td>`--motion-zoom-scale` (0.96)</td><td>Échelle de départ du preset `zoom`.</td></tr>
   </tbody>
 </table>
 

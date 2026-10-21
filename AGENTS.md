@@ -252,7 +252,9 @@ color: #333;
 
 > Generated variable naming: `--primitives-*`, `--units-*` / `--radius-*` / `--stroke-*` /
 > `--shadow-*` (metrics, **without the `metrics-` prefix**), semantics without prefix
-> (`--actions-high-surface-default`), `--fontfamily-*`, `--transition-*`.
+> (`--actions-high-surface-default`), `--fontfamily-*`, `--transition-*` (motion primitives) and
+> `--motion-*` (motion recipes: a component reads a recipe, through the `utils` mixins or
+> `ui-config`, never a `--transition-*` primitive directly).
 
 ### Layout: the Gridaflex grid (optional package)
 

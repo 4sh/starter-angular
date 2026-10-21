@@ -1,9 +1,17 @@
 {
   "name": "Design Tokens",
   "collections": {
-    "breakpoint": {
+    "primitives": {
       "modes": {
-        "Mode 1": ["breakpoint.json"]
+        "Brand1": ["primitives.json"],
+        "Brand2": ["primitives.json"],
+        "Brand3": ["primitives.json"]
+      }
+    },
+    "semantics": {
+      "modes": {
+        "Light": ["semantics.json"],
+        "Dark": ["semantics.json"]
       }
     },
     "metrics": {
@@ -11,24 +19,26 @@
         "Mode 1": ["metrics.json"]
       }
     },
-    "primitives": {
+    "typography": {
       "modes": {
-        "modeBrand1": ["primitives.json"],
-        "modeBrand2": ["primitives.json"],
-        "modeBrand3": ["primitives.json"]
+        "Mode 1": ["typography.json"]
       }
     },
     "responsive": {
       "modes": {
-        "modeDesktop": ["responsive.json"],
-        "modeMobile": ["responsive.json"],
-        "modeTablet": ["responsive.json"]
+        "Desktop": ["responsive.json"],
+        "Tablet": ["responsive.json"],
+        "Mobile": ["responsive.json"]
       }
     },
-    "semantics": {
+    "utils": {
       "modes": {
-        "modeLight": ["semantics.json"],
-        "modeDark": ["semantics.json"]
+        "Mode 1": ["utils.json"]
+      }
+    },
+    "breakpoint": {
+      "modes": {
+        "Mode 1": ["breakpoint.json"]
       }
     },
     "transitions": {
@@ -36,14 +46,10 @@
         "Mode 1": ["transitions.json"]
       }
     },
-    "typography": {
+    "motion": {
       "modes": {
-        "Mode 1": ["typography.json"]
-      }
-    },
-    "styles": {
-      "modes": {
-        "Mode 1": ["styles.json"]
+        "Standard": ["motion.json"],
+        "Reduced": ["motion.json"]
       }
     }
   }

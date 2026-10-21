@@ -21,22 +21,39 @@
 $focus-ring-width: var(--ui-focus-ring-width, var(--units-2xs)); /// Épaisseur de l'anneau de focus, pour tout le kit.
 
 $control-stroke-width: var(--ui-control-stroke-width, var(--stroke-default));                 /// Épaisseur de bordure des contrôles.
-$control-transition-duration: var(--ui-control-transition-duration, var(--transition-default)); /// Durée des transitions d'état des contrôles.
-$control-transition-easing: var(--ui-control-transition-easing, var(--transition-easeinout));   /// Courbe des transitions d'état des contrôles.
+// --- Global : motion recipes ------------------------------------------
+// One recipe per usage (collection `motion`), each an alias of a `--transition-*`
+// primitive. The fallback is the primitive the kit read before the recipes: a project
+// whose tokens predate the collection keeps its timing.
+$motion-hover-duration: var(--motion-hover-duration, var(--transition-default));              /// Durée d'un changement d'apparence : couleur, opacité, ombre.
+$motion-hover-easing: var(--motion-hover-easing, var(--transition-easeinout));                /// Courbe d'un changement d'apparence.
+$motion-toggle-duration: var(--motion-toggle-duration, var(--transition-default));            /// Durée d'un déplacement entre deux états : pouce, indicateur, chevron, repli.
+$motion-toggle-easing: var(--motion-toggle-easing, var(--transition-easeinout));              /// Courbe d'un déplacement entre deux états.
+$motion-overlay-in-duration: var(--motion-overlay-in-duration, var(--transition-default));    /// Durée d'apparition des préréglages `ui-motion-*`.
+$motion-overlay-in-easing: var(--motion-overlay-in-easing, var(--transition-easeout));        /// Courbe d'apparition des préréglages (décélérée).
+$motion-overlay-out-duration: var(--motion-overlay-out-duration, var(--transition-default));  /// Durée de disparition des préréglages `ui-motion-*`.
+$motion-overlay-out-easing: var(--motion-overlay-out-easing, var(--transition-easein));       /// Courbe de disparition des préréglages (accélérée).
+
+$control-transition-duration: var(--ui-control-transition-duration, #{$motion-hover-duration});   /// Durée des changements d'apparence des contrôles.
+$control-transition-easing: var(--ui-control-transition-easing, #{$motion-hover-easing});         /// Courbe des changements d'apparence des contrôles.
+$control-motion-duration: var(--ui-control-transition-duration, #{$motion-toggle-duration});      /// Durée des déplacements des contrôles (même hook : une surcharge vaut pour les deux).
+$control-motion-easing: var(--ui-control-transition-easing, #{$motion-toggle-easing});            /// Courbe des déplacements des contrôles.
 
 // --- Global : motion --------------------------------------------------
 // Shared timing for the motion system (enter/leave presets + transitions).
 // Not hooked here: the `--ui-motion-*` custom properties already expose duration,
-// easing, delay, distance and scale per instance (see utils/_motion.scss), and the
-// kit-wide default is the `--transition-*` token these point at.
+// easing, delay, distance and scale per instance (see utils/_motion.scss). The kit
+// reads the recipes above; the primitives below stay for code that picks a duration
+// or a curve itself.
 $motion-duration-fast: var(--transition-fast);        /// Durée « micro-feedback ».
 $motion-duration-base: var(--transition-default);     /// Durée par défaut (apparition, disparition, collapse).
 $motion-duration-slow: var(--transition-slow);        /// Durée « grande surface ».
 $motion-easing-standard: var(--transition-easeinout); /// Courbe symétrique (bascules).
 $motion-easing-enter: var(--transition-easeout);      /// Courbe décélérée (apparition).
 $motion-easing-leave: var(--transition-easein);       /// Courbe accélérée (disparition).
-$motion-distance: 0.5rem;                             /// Distance du glissement des presets `slide`.
-$motion-scale: 0.96;                                  /// Échelle de départ / d’arrivée des presets `zoom`.
+$motion-distance: var(--motion-slide-distance, 0.5rem); /// Distance du glissement des presets `slide`.
+$motion-scale: var(--motion-zoom-scale, 0.96);          /// Échelle de départ / d’arrivée des presets `zoom`.
+$motion-stagger-delay: var(--motion-stagger-delay, var(--transition-fast)); /// Décalage entre deux éléments qui apparaissent l'un après l'autre.
 
 // --- Global : ripple ---------------------------------------------------
 // Appearance of the press wave (base/_ripple.scss). Not hooked here: the

@@ -94,8 +94,8 @@
                 },
                 "map": {
                   "type": "object",
-                  "additionalProperties": { "type": "string" },
-                  "description": "mode name → CSS selector (strategy \"selectors\") or media condition without \"@media\" (strategy \"media\")."
+                  "additionalProperties": { "type": ["string", "null"] },
+                  "description": "mode name → CSS selector (strategy \"selectors\") or media condition without \"@media\" (strategy \"media\"). null: the mode exists in the token files but is not emitted yet (its tokens are dropped)."
                 }
               }
             }

@@ -25,7 +25,7 @@
 
 // Fade the panel in when it becomes active.
 :host(._active:not(._no-motion)) {
-  animation: ui-motion-fade-in var(--transition-default) var(--transition-easeout) both;
+  animation: ui-motion-fade-in #{utils.$motion-overlay-in-duration} #{utils.$motion-overlay-in-easing} both;
 
   @include utils.motion-reduce {
     animation-duration: 0.01ms;

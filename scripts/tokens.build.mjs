@@ -131,6 +131,22 @@ for (const c of CONFIG.collections) {
   );
 }
 
+// --- Modes not emitted yet ------------------------------------------------------
+// A mode mapped to `null` in an axis exists in Figma but is not emitted: its tokens are
+// dropped here, before anything reads them. Left in, a mode with no selector nor media
+// would land in :root and override the default mode token by token.
+for (const c of CONFIG.collections) {
+  const skipped = new Set(
+    (c.modeAxes ?? []).flatMap((a) =>
+      Object.entries(a.map ?? {})
+        .filter(([, target]) => target === null)
+        .map(([mode]) => mode),
+    ),
+  );
+  if (skipped.size)
+    leavesByCol[c.id] = leavesByCol[c.id].filter((l) => !l.path.some((p) => skipped.has(p)));
+}
+
 // --- Typed values -----------------------------------------------------------------
 // DTCG 2025.10 writes some values as structures: a duration or a dimension is
 // `{ value, unit }`, a curve `[x1, y1, x2, y2]`. Left as is, `setLeaf` would split
@@ -177,6 +193,12 @@ const TYPED_VALUES = {
   cubicBezier: {
     css: cubicBezier,
     expected: '[x1, y1, x2, y2] avec x1 et x2 entre 0 et 1, ou une chaîne CSS ("ease-out")',
+  },
+  // Figma stores numbers on 32 bits: 0.96 comes out as 0.9599999785423279. Six
+  // significant digits give the value back without touching a clean one (12, 1.25).
+  number: {
+    css: (v) => (typeof v === 'number' ? Number(v.toPrecision(6)) : v),
+    expected: 'un nombre, ou une référence {…}',
   },
 };
 

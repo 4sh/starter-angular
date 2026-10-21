@@ -3,85 +3,163 @@
   "transition": {
     "fast": {
       "$value": "80ms",
-      "$type": "string",
+      "$description": "Primitive. Dans un composant, passer par une recette de la collection motion.",
+      "$type": "duration",
       "$extensions": {
         "com.figma": {
-          "variableId": "VariableID:966:120",
+          "variableId": "VariableID:3837:15239",
           "collectionId": "VariableCollectionId:966:119",
           "modeId": "966:1",
-          "resolvedType": "STRING"
+          "resolvedType": "TIMING",
+          "description": "Primitive. Dans un composant, passer par une recette de la collection motion.",
+          "scopes": ["ALL_SCOPES"],
+          "codeSyntax": {
+            "WEB": "var(--transition-fast)"
+          }
         }
       }
     },
     "default": {
       "$value": "180ms",
-      "$type": "string",
+      "$description": "Primitive. Dans un composant, passer par une recette de la collection motion.",
+      "$type": "duration",
       "$extensions": {
         "com.figma": {
-          "variableId": "VariableID:966:121",
+          "variableId": "VariableID:3837:15240",
           "collectionId": "VariableCollectionId:966:119",
           "modeId": "966:1",
-          "resolvedType": "STRING"
+          "resolvedType": "TIMING",
+          "description": "Primitive. Dans un composant, passer par une recette de la collection motion.",
+          "scopes": ["ALL_SCOPES"],
+          "codeSyntax": {
+            "WEB": "var(--transition-default)"
+          }
         }
       }
     },
     "slow": {
       "$value": "280ms",
-      "$type": "string",
+      "$description": "Primitive. Dans un composant, passer par une recette de la collection motion.",
+      "$type": "duration",
       "$extensions": {
         "com.figma": {
-          "variableId": "VariableID:966:122",
+          "variableId": "VariableID:3837:15241",
           "collectionId": "VariableCollectionId:966:119",
           "modeId": "966:1",
-          "resolvedType": "STRING"
+          "resolvedType": "TIMING",
+          "description": "Primitive. Dans un composant, passer par une recette de la collection motion.",
+          "scopes": ["ALL_SCOPES"],
+          "codeSyntax": {
+            "WEB": "var(--transition-slow)"
+          }
         }
       }
     },
     "easein": {
-      "$value": "ease-in",
-      "$type": "string",
+      "$value": [0.42, 0, 1, 1],
+      "$description": "Primitive accélérée (CSS ease-in). Dans un composant, passer par une recette.",
+      "$type": "cubicBezier",
       "$extensions": {
         "com.figma": {
-          "variableId": "VariableID:966:123",
+          "variableId": "VariableID:3837:15242",
           "collectionId": "VariableCollectionId:966:119",
           "modeId": "966:1",
-          "resolvedType": "STRING"
+          "resolvedType": "EASING",
+          "description": "Primitive accélérée (CSS ease-in). Dans un composant, passer par une recette.",
+          "scopes": ["ALL_SCOPES"],
+          "codeSyntax": {
+            "WEB": "var(--transition-easein)"
+          },
+          "easing": {
+            "type": "EASE_IN",
+            "easingFunctionCubicBezier": {
+              "x1": 0.42,
+              "y1": 0,
+              "x2": 1,
+              "y2": 1
+            }
+          }
         }
       }
     },
     "easeout": {
-      "$value": "ease-out",
-      "$type": "string",
+      "$value": [0, 0, 0.58, 1],
+      "$description": "Primitive décélérée (CSS ease-out). Dans un composant, passer par une recette.",
+      "$type": "cubicBezier",
       "$extensions": {
         "com.figma": {
-          "variableId": "VariableID:966:124",
+          "variableId": "VariableID:3837:15243",
           "collectionId": "VariableCollectionId:966:119",
           "modeId": "966:1",
-          "resolvedType": "STRING"
+          "resolvedType": "EASING",
+          "description": "Primitive décélérée (CSS ease-out). Dans un composant, passer par une recette.",
+          "scopes": ["ALL_SCOPES"],
+          "codeSyntax": {
+            "WEB": "var(--transition-easeout)"
+          },
+          "easing": {
+            "type": "EASE_OUT",
+            "easingFunctionCubicBezier": {
+              "x1": 0,
+              "y1": 0,
+              "x2": 0.58,
+              "y2": 1
+            }
+          }
         }
       }
     },
     "easeinout": {
-      "$value": "ease-in-out",
-      "$type": "string",
+      "$value": [0.42, 0, 0.58, 1],
+      "$description": "Primitive symétrique (CSS ease-in-out). Dans un composant, passer par une recette.",
+      "$type": "cubicBezier",
       "$extensions": {
         "com.figma": {
-          "variableId": "VariableID:966:125",
+          "variableId": "VariableID:3837:15244",
           "collectionId": "VariableCollectionId:966:119",
           "modeId": "966:1",
-          "resolvedType": "STRING"
+          "resolvedType": "EASING",
+          "description": "Primitive symétrique (CSS ease-in-out). Dans un composant, passer par une recette.",
+          "scopes": ["ALL_SCOPES"],
+          "codeSyntax": {
+            "WEB": "var(--transition-easeinout)"
+          },
+          "easing": {
+            "type": "EASE_IN_AND_OUT",
+            "easingFunctionCubicBezier": {
+              "x1": 0.42,
+              "y1": 0,
+              "x2": 0.58,
+              "y2": 1
+            }
+          }
         }
       }
     },
     "linear": {
-      "$value": "linear",
-      "$type": "string",
+      "$value": [0, 0, 1, 1],
+      "$description": "Primitive à vitesse constante (CSS linear). Dans un composant, passer par une recette.",
+      "$type": "cubicBezier",
       "$extensions": {
         "com.figma": {
-          "variableId": "VariableID:966:126",
+          "variableId": "VariableID:3837:15245",
           "collectionId": "VariableCollectionId:966:119",
           "modeId": "966:1",
-          "resolvedType": "STRING"
+          "resolvedType": "EASING",
+          "description": "Primitive à vitesse constante (CSS linear). Dans un composant, passer par une recette.",
+          "scopes": ["ALL_SCOPES"],
+          "codeSyntax": {
+            "WEB": "var(--transition-linear)"
+          },
+          "easing": {
+            "type": "LINEAR",
+            "easingFunctionCubicBezier": {
+              "x1": 0,
+              "y1": 0,
+              "x2": 1,
+              "y2": 1
+            }
+          }
         }
       }
     }

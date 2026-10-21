@@ -1,0 +1,913 @@
+{
+  "$description": "motion",
+  "hover": {
+    "modeStandard": {
+      "duration": {
+        "$value": "{transitions.transition.default}",
+        "$description": "Changement d'état au survol (couleurs). Aujourd'hui : default, le timing actuel du kit. Proposition atelier : fast.",
+        "$type": "duration",
+        "$extensions": {
+          "com.figma": {
+            "variableId": "VariableID:3838:113",
+            "collectionId": "VariableCollectionId:3838:112",
+            "modeId": "3838:0",
+            "resolvedType": "TIMING",
+            "description": "Changement d'état au survol (couleurs). Aujourd'hui : default, le timing actuel du kit. Proposition atelier : fast.",
+            "scopes": ["ALL_SCOPES"],
+            "codeSyntax": {
+              "WEB": "var(--motion-hover-duration)"
+            }
+          }
+        }
+      },
+      "easing": {
+        "$value": "{transitions.transition.easeinout}",
+        "$description": "Changement d'état au survol (couleurs). Aujourd'hui : default, le timing actuel du kit. Proposition atelier : fast.",
+        "$type": "cubicBezier",
+        "$extensions": {
+          "com.figma": {
+            "variableId": "VariableID:3838:114",
+            "collectionId": "VariableCollectionId:3838:112",
+            "modeId": "3838:0",
+            "resolvedType": "EASING",
+            "description": "Changement d'état au survol (couleurs). Aujourd'hui : default, le timing actuel du kit. Proposition atelier : fast.",
+            "scopes": ["ALL_SCOPES"],
+            "codeSyntax": {
+              "WEB": "var(--motion-hover-easing)"
+            }
+          }
+        }
+      }
+    },
+    "modeReduced": {
+      "duration": {
+        "$value": "{transitions.transition.default}",
+        "$description": "Changement d'état au survol (couleurs). Aujourd'hui : default, le timing actuel du kit. Proposition atelier : fast.",
+        "$type": "duration",
+        "$extensions": {
+          "com.figma": {
+            "variableId": "VariableID:3838:113",
+            "collectionId": "VariableCollectionId:3838:112",
+            "modeId": "3838:1",
+            "resolvedType": "TIMING",
+            "description": "Changement d'état au survol (couleurs). Aujourd'hui : default, le timing actuel du kit. Proposition atelier : fast.",
+            "scopes": ["ALL_SCOPES"],
+            "codeSyntax": {
+              "WEB": "var(--motion-hover-duration)"
+            }
+          }
+        }
+      },
+      "easing": {
+        "$value": "{transitions.transition.easeinout}",
+        "$description": "Changement d'état au survol (couleurs). Aujourd'hui : default, le timing actuel du kit. Proposition atelier : fast.",
+        "$type": "cubicBezier",
+        "$extensions": {
+          "com.figma": {
+            "variableId": "VariableID:3838:114",
+            "collectionId": "VariableCollectionId:3838:112",
+            "modeId": "3838:1",
+            "resolvedType": "EASING",
+            "description": "Changement d'état au survol (couleurs). Aujourd'hui : default, le timing actuel du kit. Proposition atelier : fast.",
+            "scopes": ["ALL_SCOPES"],
+            "codeSyntax": {
+              "WEB": "var(--motion-hover-easing)"
+            }
+          }
+        }
+      }
+    }
+  },
+  "toggle": {
+    "modeStandard": {
+      "duration": {
+        "$value": "{transitions.transition.default}",
+        "$description": "Bascule d'un élément qui se déplace : pouce du toggle, indicateur d'onglet. Aujourd'hui : default, le timing actuel du kit.",
+        "$type": "duration",
+        "$extensions": {
+          "com.figma": {
+            "variableId": "VariableID:3838:115",
+            "collectionId": "VariableCollectionId:3838:112",
+            "modeId": "3838:0",
+            "resolvedType": "TIMING",
+            "description": "Bascule d'un élément qui se déplace : pouce du toggle, indicateur d'onglet. Aujourd'hui : default, le timing actuel du kit.",
+            "scopes": ["ALL_SCOPES"],
+            "codeSyntax": {
+              "WEB": "var(--motion-toggle-duration)"
+            }
+          }
+        }
+      },
+      "easing": {
+        "$value": "{transitions.transition.easeinout}",
+        "$description": "Bascule d'un élément qui se déplace : pouce du toggle, indicateur d'onglet. Aujourd'hui : default, le timing actuel du kit.",
+        "$type": "cubicBezier",
+        "$extensions": {
+          "com.figma": {
+            "variableId": "VariableID:3838:116",
+            "collectionId": "VariableCollectionId:3838:112",
+            "modeId": "3838:0",
+            "resolvedType": "EASING",
+            "description": "Bascule d'un élément qui se déplace : pouce du toggle, indicateur d'onglet. Aujourd'hui : default, le timing actuel du kit.",
+            "scopes": ["ALL_SCOPES"],
+            "codeSyntax": {
+              "WEB": "var(--motion-toggle-easing)"
+            }
+          }
+        }
+      }
+    },
+    "modeReduced": {
+      "duration": {
+        "$value": "{transitions.transition.fast}",
+        "$description": "Bascule d'un élément qui se déplace : pouce du toggle, indicateur d'onglet. Aujourd'hui : default, le timing actuel du kit.",
+        "$type": "duration",
+        "$extensions": {
+          "com.figma": {
+            "variableId": "VariableID:3838:115",
+            "collectionId": "VariableCollectionId:3838:112",
+            "modeId": "3838:1",
+            "resolvedType": "TIMING",
+            "description": "Bascule d'un élément qui se déplace : pouce du toggle, indicateur d'onglet. Aujourd'hui : default, le timing actuel du kit.",
+            "scopes": ["ALL_SCOPES"],
+            "codeSyntax": {
+              "WEB": "var(--motion-toggle-duration)"
+            }
+          }
+        }
+      },
+      "easing": {
+        "$value": "{transitions.transition.easeinout}",
+        "$description": "Bascule d'un élément qui se déplace : pouce du toggle, indicateur d'onglet. Aujourd'hui : default, le timing actuel du kit.",
+        "$type": "cubicBezier",
+        "$extensions": {
+          "com.figma": {
+            "variableId": "VariableID:3838:116",
+            "collectionId": "VariableCollectionId:3838:112",
+            "modeId": "3838:1",
+            "resolvedType": "EASING",
+            "description": "Bascule d'un élément qui se déplace : pouce du toggle, indicateur d'onglet. Aujourd'hui : default, le timing actuel du kit.",
+            "scopes": ["ALL_SCOPES"],
+            "codeSyntax": {
+              "WEB": "var(--motion-toggle-easing)"
+            }
+          }
+        }
+      }
+    }
+  },
+  "disclosure": {
+    "modeStandard": {
+      "in": {
+        "duration": {
+          "$value": "{transitions.transition.default}",
+          "$description": "Ouverture d'une section repliable. Aujourd'hui : default, le timing actuel du kit.",
+          "$type": "duration",
+          "$extensions": {
+            "com.figma": {
+              "variableId": "VariableID:3838:117",
+              "collectionId": "VariableCollectionId:3838:112",
+              "modeId": "3838:0",
+              "resolvedType": "TIMING",
+              "description": "Ouverture d'une section repliable. Aujourd'hui : default, le timing actuel du kit.",
+              "scopes": ["ALL_SCOPES"],
+              "codeSyntax": {
+                "WEB": "var(--motion-disclosure-in-duration)"
+              }
+            }
+          }
+        },
+        "easing": {
+          "$value": "{transitions.transition.easeout}",
+          "$description": "Ouverture d'une section repliable. Aujourd'hui : default, le timing actuel du kit.",
+          "$type": "cubicBezier",
+          "$extensions": {
+            "com.figma": {
+              "variableId": "VariableID:3838:118",
+              "collectionId": "VariableCollectionId:3838:112",
+              "modeId": "3838:0",
+              "resolvedType": "EASING",
+              "description": "Ouverture d'une section repliable. Aujourd'hui : default, le timing actuel du kit.",
+              "scopes": ["ALL_SCOPES"],
+              "codeSyntax": {
+                "WEB": "var(--motion-disclosure-in-easing)"
+              }
+            }
+          }
+        }
+      },
+      "out": {
+        "duration": {
+          "$value": "{transitions.transition.default}",
+          "$description": "Repli d'une section. Aujourd'hui : default, le timing actuel du kit. Proposition atelier : fast.",
+          "$type": "duration",
+          "$extensions": {
+            "com.figma": {
+              "variableId": "VariableID:3838:119",
+              "collectionId": "VariableCollectionId:3838:112",
+              "modeId": "3838:0",
+              "resolvedType": "TIMING",
+              "description": "Repli d'une section. Aujourd'hui : default, le timing actuel du kit. Proposition atelier : fast.",
+              "scopes": ["ALL_SCOPES"],
+              "codeSyntax": {
+                "WEB": "var(--motion-disclosure-out-duration)"
+              }
+            }
+          }
+        },
+        "easing": {
+          "$value": "{transitions.transition.easein}",
+          "$description": "Repli d'une section. Aujourd'hui : default, le timing actuel du kit. Proposition atelier : fast.",
+          "$type": "cubicBezier",
+          "$extensions": {
+            "com.figma": {
+              "variableId": "VariableID:3838:120",
+              "collectionId": "VariableCollectionId:3838:112",
+              "modeId": "3838:0",
+              "resolvedType": "EASING",
+              "description": "Repli d'une section. Aujourd'hui : default, le timing actuel du kit. Proposition atelier : fast.",
+              "scopes": ["ALL_SCOPES"],
+              "codeSyntax": {
+                "WEB": "var(--motion-disclosure-out-easing)"
+              }
+            }
+          }
+        }
+      }
+    },
+    "modeReduced": {
+      "in": {
+        "duration": {
+          "$value": "{transitions.transition.fast}",
+          "$description": "Ouverture d'une section repliable. Aujourd'hui : default, le timing actuel du kit.",
+          "$type": "duration",
+          "$extensions": {
+            "com.figma": {
+              "variableId": "VariableID:3838:117",
+              "collectionId": "VariableCollectionId:3838:112",
+              "modeId": "3838:1",
+              "resolvedType": "TIMING",
+              "description": "Ouverture d'une section repliable. Aujourd'hui : default, le timing actuel du kit.",
+              "scopes": ["ALL_SCOPES"],
+              "codeSyntax": {
+                "WEB": "var(--motion-disclosure-in-duration)"
+              }
+            }
+          }
+        },
+        "easing": {
+          "$value": "{transitions.transition.easeout}",
+          "$description": "Ouverture d'une section repliable. Aujourd'hui : default, le timing actuel du kit.",
+          "$type": "cubicBezier",
+          "$extensions": {
+            "com.figma": {
+              "variableId": "VariableID:3838:118",
+              "collectionId": "VariableCollectionId:3838:112",
+              "modeId": "3838:1",
+              "resolvedType": "EASING",
+              "description": "Ouverture d'une section repliable. Aujourd'hui : default, le timing actuel du kit.",
+              "scopes": ["ALL_SCOPES"],
+              "codeSyntax": {
+                "WEB": "var(--motion-disclosure-in-easing)"
+              }
+            }
+          }
+        }
+      },
+      "out": {
+        "duration": {
+          "$value": "{transitions.transition.fast}",
+          "$description": "Repli d'une section. Aujourd'hui : default, le timing actuel du kit. Proposition atelier : fast.",
+          "$type": "duration",
+          "$extensions": {
+            "com.figma": {
+              "variableId": "VariableID:3838:119",
+              "collectionId": "VariableCollectionId:3838:112",
+              "modeId": "3838:1",
+              "resolvedType": "TIMING",
+              "description": "Repli d'une section. Aujourd'hui : default, le timing actuel du kit. Proposition atelier : fast.",
+              "scopes": ["ALL_SCOPES"],
+              "codeSyntax": {
+                "WEB": "var(--motion-disclosure-out-duration)"
+              }
+            }
+          }
+        },
+        "easing": {
+          "$value": "{transitions.transition.easein}",
+          "$description": "Repli d'une section. Aujourd'hui : default, le timing actuel du kit. Proposition atelier : fast.",
+          "$type": "cubicBezier",
+          "$extensions": {
+            "com.figma": {
+              "variableId": "VariableID:3838:120",
+              "collectionId": "VariableCollectionId:3838:112",
+              "modeId": "3838:1",
+              "resolvedType": "EASING",
+              "description": "Repli d'une section. Aujourd'hui : default, le timing actuel du kit. Proposition atelier : fast.",
+              "scopes": ["ALL_SCOPES"],
+              "codeSyntax": {
+                "WEB": "var(--motion-disclosure-out-easing)"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "overlay": {
+    "modeStandard": {
+      "in": {
+        "duration": {
+          "$value": "{transitions.transition.default}",
+          "$description": "Apparition d'un menu, popover, tooltip, liste. Aujourd'hui : default, le timing actuel du kit.",
+          "$type": "duration",
+          "$extensions": {
+            "com.figma": {
+              "variableId": "VariableID:3838:121",
+              "collectionId": "VariableCollectionId:3838:112",
+              "modeId": "3838:0",
+              "resolvedType": "TIMING",
+              "description": "Apparition d'un menu, popover, tooltip, liste. Aujourd'hui : default, le timing actuel du kit.",
+              "scopes": ["ALL_SCOPES"],
+              "codeSyntax": {
+                "WEB": "var(--motion-overlay-in-duration)"
+              }
+            }
+          }
+        },
+        "easing": {
+          "$value": "{transitions.transition.easeout}",
+          "$description": "Apparition d'un menu, popover, tooltip, liste. Aujourd'hui : default, le timing actuel du kit.",
+          "$type": "cubicBezier",
+          "$extensions": {
+            "com.figma": {
+              "variableId": "VariableID:3838:122",
+              "collectionId": "VariableCollectionId:3838:112",
+              "modeId": "3838:0",
+              "resolvedType": "EASING",
+              "description": "Apparition d'un menu, popover, tooltip, liste. Aujourd'hui : default, le timing actuel du kit.",
+              "scopes": ["ALL_SCOPES"],
+              "codeSyntax": {
+                "WEB": "var(--motion-overlay-in-easing)"
+              }
+            }
+          }
+        }
+      },
+      "out": {
+        "duration": {
+          "$value": "{transitions.transition.default}",
+          "$description": "Disparition d'un menu, popover, tooltip, liste. Aujourd'hui : default, le timing actuel du kit. Proposition atelier : fast.",
+          "$type": "duration",
+          "$extensions": {
+            "com.figma": {
+              "variableId": "VariableID:3838:123",
+              "collectionId": "VariableCollectionId:3838:112",
+              "modeId": "3838:0",
+              "resolvedType": "TIMING",
+              "description": "Disparition d'un menu, popover, tooltip, liste. Aujourd'hui : default, le timing actuel du kit. Proposition atelier : fast.",
+              "scopes": ["ALL_SCOPES"],
+              "codeSyntax": {
+                "WEB": "var(--motion-overlay-out-duration)"
+              }
+            }
+          }
+        },
+        "easing": {
+          "$value": "{transitions.transition.easein}",
+          "$description": "Disparition d'un menu, popover, tooltip, liste. Aujourd'hui : default, le timing actuel du kit. Proposition atelier : fast.",
+          "$type": "cubicBezier",
+          "$extensions": {
+            "com.figma": {
+              "variableId": "VariableID:3838:124",
+              "collectionId": "VariableCollectionId:3838:112",
+              "modeId": "3838:0",
+              "resolvedType": "EASING",
+              "description": "Disparition d'un menu, popover, tooltip, liste. Aujourd'hui : default, le timing actuel du kit. Proposition atelier : fast.",
+              "scopes": ["ALL_SCOPES"],
+              "codeSyntax": {
+                "WEB": "var(--motion-overlay-out-easing)"
+              }
+            }
+          }
+        }
+      }
+    },
+    "modeReduced": {
+      "in": {
+        "duration": {
+          "$value": "{transitions.transition.fast}",
+          "$description": "Apparition d'un menu, popover, tooltip, liste. Aujourd'hui : default, le timing actuel du kit.",
+          "$type": "duration",
+          "$extensions": {
+            "com.figma": {
+              "variableId": "VariableID:3838:121",
+              "collectionId": "VariableCollectionId:3838:112",
+              "modeId": "3838:1",
+              "resolvedType": "TIMING",
+              "description": "Apparition d'un menu, popover, tooltip, liste. Aujourd'hui : default, le timing actuel du kit.",
+              "scopes": ["ALL_SCOPES"],
+              "codeSyntax": {
+                "WEB": "var(--motion-overlay-in-duration)"
+              }
+            }
+          }
+        },
+        "easing": {
+          "$value": "{transitions.transition.easeout}",
+          "$description": "Apparition d'un menu, popover, tooltip, liste. Aujourd'hui : default, le timing actuel du kit.",
+          "$type": "cubicBezier",
+          "$extensions": {
+            "com.figma": {
+              "variableId": "VariableID:3838:122",
+              "collectionId": "VariableCollectionId:3838:112",
+              "modeId": "3838:1",
+              "resolvedType": "EASING",
+              "description": "Apparition d'un menu, popover, tooltip, liste. Aujourd'hui : default, le timing actuel du kit.",
+              "scopes": ["ALL_SCOPES"],
+              "codeSyntax": {
+                "WEB": "var(--motion-overlay-in-easing)"
+              }
+            }
+          }
+        }
+      },
+      "out": {
+        "duration": {
+          "$value": "{transitions.transition.fast}",
+          "$description": "Disparition d'un menu, popover, tooltip, liste. Aujourd'hui : default, le timing actuel du kit. Proposition atelier : fast.",
+          "$type": "duration",
+          "$extensions": {
+            "com.figma": {
+              "variableId": "VariableID:3838:123",
+              "collectionId": "VariableCollectionId:3838:112",
+              "modeId": "3838:1",
+              "resolvedType": "TIMING",
+              "description": "Disparition d'un menu, popover, tooltip, liste. Aujourd'hui : default, le timing actuel du kit. Proposition atelier : fast.",
+              "scopes": ["ALL_SCOPES"],
+              "codeSyntax": {
+                "WEB": "var(--motion-overlay-out-duration)"
+              }
+            }
+          }
+        },
+        "easing": {
+          "$value": "{transitions.transition.easein}",
+          "$description": "Disparition d'un menu, popover, tooltip, liste. Aujourd'hui : default, le timing actuel du kit. Proposition atelier : fast.",
+          "$type": "cubicBezier",
+          "$extensions": {
+            "com.figma": {
+              "variableId": "VariableID:3838:124",
+              "collectionId": "VariableCollectionId:3838:112",
+              "modeId": "3838:1",
+              "resolvedType": "EASING",
+              "description": "Disparition d'un menu, popover, tooltip, liste. Aujourd'hui : default, le timing actuel du kit. Proposition atelier : fast.",
+              "scopes": ["ALL_SCOPES"],
+              "codeSyntax": {
+                "WEB": "var(--motion-overlay-out-easing)"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "dialog": {
+    "modeStandard": {
+      "in": {
+        "duration": {
+          "$value": "{transitions.transition.default}",
+          "$description": "Apparition d'une modale, d'un drawer, d'une bottom-sheet. Aujourd'hui : default, le timing actuel du kit. Proposition atelier : slow.",
+          "$type": "duration",
+          "$extensions": {
+            "com.figma": {
+              "variableId": "VariableID:3838:125",
+              "collectionId": "VariableCollectionId:3838:112",
+              "modeId": "3838:0",
+              "resolvedType": "TIMING",
+              "description": "Apparition d'une modale, d'un drawer, d'une bottom-sheet. Aujourd'hui : default, le timing actuel du kit. Proposition atelier : slow.",
+              "scopes": ["ALL_SCOPES"],
+              "codeSyntax": {
+                "WEB": "var(--motion-dialog-in-duration)"
+              }
+            }
+          }
+        },
+        "easing": {
+          "$value": "{transitions.transition.easeout}",
+          "$description": "Apparition d'une modale, d'un drawer, d'une bottom-sheet. Aujourd'hui : default, le timing actuel du kit. Proposition atelier : slow.",
+          "$type": "cubicBezier",
+          "$extensions": {
+            "com.figma": {
+              "variableId": "VariableID:3838:126",
+              "collectionId": "VariableCollectionId:3838:112",
+              "modeId": "3838:0",
+              "resolvedType": "EASING",
+              "description": "Apparition d'une modale, d'un drawer, d'une bottom-sheet. Aujourd'hui : default, le timing actuel du kit. Proposition atelier : slow.",
+              "scopes": ["ALL_SCOPES"],
+              "codeSyntax": {
+                "WEB": "var(--motion-dialog-in-easing)"
+              }
+            }
+          }
+        }
+      },
+      "out": {
+        "duration": {
+          "$value": "{transitions.transition.default}",
+          "$description": "Disparition d'une modale, d'un drawer, d'une bottom-sheet. Aujourd'hui : default, le timing actuel du kit.",
+          "$type": "duration",
+          "$extensions": {
+            "com.figma": {
+              "variableId": "VariableID:3838:127",
+              "collectionId": "VariableCollectionId:3838:112",
+              "modeId": "3838:0",
+              "resolvedType": "TIMING",
+              "description": "Disparition d'une modale, d'un drawer, d'une bottom-sheet. Aujourd'hui : default, le timing actuel du kit.",
+              "scopes": ["ALL_SCOPES"],
+              "codeSyntax": {
+                "WEB": "var(--motion-dialog-out-duration)"
+              }
+            }
+          }
+        },
+        "easing": {
+          "$value": "{transitions.transition.easein}",
+          "$description": "Disparition d'une modale, d'un drawer, d'une bottom-sheet. Aujourd'hui : default, le timing actuel du kit.",
+          "$type": "cubicBezier",
+          "$extensions": {
+            "com.figma": {
+              "variableId": "VariableID:3838:128",
+              "collectionId": "VariableCollectionId:3838:112",
+              "modeId": "3838:0",
+              "resolvedType": "EASING",
+              "description": "Disparition d'une modale, d'un drawer, d'une bottom-sheet. Aujourd'hui : default, le timing actuel du kit.",
+              "scopes": ["ALL_SCOPES"],
+              "codeSyntax": {
+                "WEB": "var(--motion-dialog-out-easing)"
+              }
+            }
+          }
+        }
+      }
+    },
+    "modeReduced": {
+      "in": {
+        "duration": {
+          "$value": "{transitions.transition.fast}",
+          "$description": "Apparition d'une modale, d'un drawer, d'une bottom-sheet. Aujourd'hui : default, le timing actuel du kit. Proposition atelier : slow.",
+          "$type": "duration",
+          "$extensions": {
+            "com.figma": {
+              "variableId": "VariableID:3838:125",
+              "collectionId": "VariableCollectionId:3838:112",
+              "modeId": "3838:1",
+              "resolvedType": "TIMING",
+              "description": "Apparition d'une modale, d'un drawer, d'une bottom-sheet. Aujourd'hui : default, le timing actuel du kit. Proposition atelier : slow.",
+              "scopes": ["ALL_SCOPES"],
+              "codeSyntax": {
+                "WEB": "var(--motion-dialog-in-duration)"
+              }
+            }
+          }
+        },
+        "easing": {
+          "$value": "{transitions.transition.easeout}",
+          "$description": "Apparition d'une modale, d'un drawer, d'une bottom-sheet. Aujourd'hui : default, le timing actuel du kit. Proposition atelier : slow.",
+          "$type": "cubicBezier",
+          "$extensions": {
+            "com.figma": {
+              "variableId": "VariableID:3838:126",
+              "collectionId": "VariableCollectionId:3838:112",
+              "modeId": "3838:1",
+              "resolvedType": "EASING",
+              "description": "Apparition d'une modale, d'un drawer, d'une bottom-sheet. Aujourd'hui : default, le timing actuel du kit. Proposition atelier : slow.",
+              "scopes": ["ALL_SCOPES"],
+              "codeSyntax": {
+                "WEB": "var(--motion-dialog-in-easing)"
+              }
+            }
+          }
+        }
+      },
+      "out": {
+        "duration": {
+          "$value": "{transitions.transition.fast}",
+          "$description": "Disparition d'une modale, d'un drawer, d'une bottom-sheet. Aujourd'hui : default, le timing actuel du kit.",
+          "$type": "duration",
+          "$extensions": {
+            "com.figma": {
+              "variableId": "VariableID:3838:127",
+              "collectionId": "VariableCollectionId:3838:112",
+              "modeId": "3838:1",
+              "resolvedType": "TIMING",
+              "description": "Disparition d'une modale, d'un drawer, d'une bottom-sheet. Aujourd'hui : default, le timing actuel du kit.",
+              "scopes": ["ALL_SCOPES"],
+              "codeSyntax": {
+                "WEB": "var(--motion-dialog-out-duration)"
+              }
+            }
+          }
+        },
+        "easing": {
+          "$value": "{transitions.transition.easein}",
+          "$description": "Disparition d'une modale, d'un drawer, d'une bottom-sheet. Aujourd'hui : default, le timing actuel du kit.",
+          "$type": "cubicBezier",
+          "$extensions": {
+            "com.figma": {
+              "variableId": "VariableID:3838:128",
+              "collectionId": "VariableCollectionId:3838:112",
+              "modeId": "3838:1",
+              "resolvedType": "EASING",
+              "description": "Disparition d'une modale, d'un drawer, d'une bottom-sheet. Aujourd'hui : default, le timing actuel du kit.",
+              "scopes": ["ALL_SCOPES"],
+              "codeSyntax": {
+                "WEB": "var(--motion-dialog-out-easing)"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "notify": {
+    "modeStandard": {
+      "in": {
+        "duration": {
+          "$value": "{transitions.transition.default}",
+          "$description": "Apparition d'un toast. Aujourd'hui : default, le timing actuel du kit. Proposition atelier : slow.",
+          "$type": "duration",
+          "$extensions": {
+            "com.figma": {
+              "variableId": "VariableID:3838:129",
+              "collectionId": "VariableCollectionId:3838:112",
+              "modeId": "3838:0",
+              "resolvedType": "TIMING",
+              "description": "Apparition d'un toast. Aujourd'hui : default, le timing actuel du kit. Proposition atelier : slow.",
+              "scopes": ["ALL_SCOPES"],
+              "codeSyntax": {
+                "WEB": "var(--motion-notify-in-duration)"
+              }
+            }
+          }
+        },
+        "easing": {
+          "$value": "{transitions.transition.easeout}",
+          "$description": "Apparition d'un toast. Aujourd'hui : default, le timing actuel du kit. Proposition atelier : slow.",
+          "$type": "cubicBezier",
+          "$extensions": {
+            "com.figma": {
+              "variableId": "VariableID:3838:130",
+              "collectionId": "VariableCollectionId:3838:112",
+              "modeId": "3838:0",
+              "resolvedType": "EASING",
+              "description": "Apparition d'un toast. Aujourd'hui : default, le timing actuel du kit. Proposition atelier : slow.",
+              "scopes": ["ALL_SCOPES"],
+              "codeSyntax": {
+                "WEB": "var(--motion-notify-in-easing)"
+              }
+            }
+          }
+        }
+      },
+      "out": {
+        "duration": {
+          "$value": "{transitions.transition.default}",
+          "$description": "Disparition d'un toast. Aujourd'hui : default, le timing actuel du kit.",
+          "$type": "duration",
+          "$extensions": {
+            "com.figma": {
+              "variableId": "VariableID:3838:131",
+              "collectionId": "VariableCollectionId:3838:112",
+              "modeId": "3838:0",
+              "resolvedType": "TIMING",
+              "description": "Disparition d'un toast. Aujourd'hui : default, le timing actuel du kit.",
+              "scopes": ["ALL_SCOPES"],
+              "codeSyntax": {
+                "WEB": "var(--motion-notify-out-duration)"
+              }
+            }
+          }
+        },
+        "easing": {
+          "$value": "{transitions.transition.easein}",
+          "$description": "Disparition d'un toast. Aujourd'hui : default, le timing actuel du kit.",
+          "$type": "cubicBezier",
+          "$extensions": {
+            "com.figma": {
+              "variableId": "VariableID:3838:132",
+              "collectionId": "VariableCollectionId:3838:112",
+              "modeId": "3838:0",
+              "resolvedType": "EASING",
+              "description": "Disparition d'un toast. Aujourd'hui : default, le timing actuel du kit.",
+              "scopes": ["ALL_SCOPES"],
+              "codeSyntax": {
+                "WEB": "var(--motion-notify-out-easing)"
+              }
+            }
+          }
+        }
+      }
+    },
+    "modeReduced": {
+      "in": {
+        "duration": {
+          "$value": "{transitions.transition.fast}",
+          "$description": "Apparition d'un toast. Aujourd'hui : default, le timing actuel du kit. Proposition atelier : slow.",
+          "$type": "duration",
+          "$extensions": {
+            "com.figma": {
+              "variableId": "VariableID:3838:129",
+              "collectionId": "VariableCollectionId:3838:112",
+              "modeId": "3838:1",
+              "resolvedType": "TIMING",
+              "description": "Apparition d'un toast. Aujourd'hui : default, le timing actuel du kit. Proposition atelier : slow.",
+              "scopes": ["ALL_SCOPES"],
+              "codeSyntax": {
+                "WEB": "var(--motion-notify-in-duration)"
+              }
+            }
+          }
+        },
+        "easing": {
+          "$value": "{transitions.transition.easeout}",
+          "$description": "Apparition d'un toast. Aujourd'hui : default, le timing actuel du kit. Proposition atelier : slow.",
+          "$type": "cubicBezier",
+          "$extensions": {
+            "com.figma": {
+              "variableId": "VariableID:3838:130",
+              "collectionId": "VariableCollectionId:3838:112",
+              "modeId": "3838:1",
+              "resolvedType": "EASING",
+              "description": "Apparition d'un toast. Aujourd'hui : default, le timing actuel du kit. Proposition atelier : slow.",
+              "scopes": ["ALL_SCOPES"],
+              "codeSyntax": {
+                "WEB": "var(--motion-notify-in-easing)"
+              }
+            }
+          }
+        }
+      },
+      "out": {
+        "duration": {
+          "$value": "{transitions.transition.fast}",
+          "$description": "Disparition d'un toast. Aujourd'hui : default, le timing actuel du kit.",
+          "$type": "duration",
+          "$extensions": {
+            "com.figma": {
+              "variableId": "VariableID:3838:131",
+              "collectionId": "VariableCollectionId:3838:112",
+              "modeId": "3838:1",
+              "resolvedType": "TIMING",
+              "description": "Disparition d'un toast. Aujourd'hui : default, le timing actuel du kit.",
+              "scopes": ["ALL_SCOPES"],
+              "codeSyntax": {
+                "WEB": "var(--motion-notify-out-duration)"
+              }
+            }
+          }
+        },
+        "easing": {
+          "$value": "{transitions.transition.easein}",
+          "$description": "Disparition d'un toast. Aujourd'hui : default, le timing actuel du kit.",
+          "$type": "cubicBezier",
+          "$extensions": {
+            "com.figma": {
+              "variableId": "VariableID:3838:132",
+              "collectionId": "VariableCollectionId:3838:112",
+              "modeId": "3838:1",
+              "resolvedType": "EASING",
+              "description": "Disparition d'un toast. Aujourd'hui : default, le timing actuel du kit.",
+              "scopes": ["ALL_SCOPES"],
+              "codeSyntax": {
+                "WEB": "var(--motion-notify-out-easing)"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "stagger": {
+    "modeStandard": {
+      "delay": {
+        "$value": "{transitions.transition.fast}",
+        "$description": "Décalage entre deux éléments qui apparaissent l'un après l'autre (speed-dial). Mouvement réduit : aucun décalage.",
+        "$type": "duration",
+        "$extensions": {
+          "com.figma": {
+            "variableId": "VariableID:3838:133",
+            "collectionId": "VariableCollectionId:3838:112",
+            "modeId": "3838:0",
+            "resolvedType": "TIMING",
+            "description": "Décalage entre deux éléments qui apparaissent l'un après l'autre (speed-dial). Mouvement réduit : aucun décalage.",
+            "scopes": ["ALL_SCOPES"],
+            "codeSyntax": {
+              "WEB": "var(--motion-stagger-delay)"
+            }
+          }
+        }
+      }
+    },
+    "modeReduced": {
+      "delay": {
+        "$value": "0ms",
+        "$description": "Décalage entre deux éléments qui apparaissent l'un après l'autre (speed-dial). Mouvement réduit : aucun décalage.",
+        "$type": "duration",
+        "$extensions": {
+          "com.figma": {
+            "variableId": "VariableID:3838:133",
+            "collectionId": "VariableCollectionId:3838:112",
+            "modeId": "3838:1",
+            "resolvedType": "TIMING",
+            "description": "Décalage entre deux éléments qui apparaissent l'un après l'autre (speed-dial). Mouvement réduit : aucun décalage.",
+            "scopes": ["ALL_SCOPES"],
+            "codeSyntax": {
+              "WEB": "var(--motion-stagger-delay)"
+            }
+          }
+        }
+      }
+    }
+  },
+  "slide": {
+    "modeStandard": {
+      "distance": {
+        "$value": "8px",
+        "$description": "Glissement des préréglages slide-* (8 px = 0.5rem). Mouvement réduit : 0, le glissement devient un fondu.",
+        "$type": "dimension",
+        "$extensions": {
+          "com.figma": {
+            "variableId": "VariableID:3838:134",
+            "collectionId": "VariableCollectionId:3838:112",
+            "modeId": "3838:0",
+            "resolvedType": "FLOAT",
+            "description": "Glissement des préréglages slide-* (8 px = 0.5rem). Mouvement réduit : 0, le glissement devient un fondu.",
+            "codeSyntax": {
+              "WEB": "var(--motion-slide-distance)"
+            }
+          }
+        }
+      }
+    },
+    "modeReduced": {
+      "distance": {
+        "$value": "0px",
+        "$description": "Glissement des préréglages slide-* (8 px = 0.5rem). Mouvement réduit : 0, le glissement devient un fondu.",
+        "$type": "dimension",
+        "$extensions": {
+          "com.figma": {
+            "variableId": "VariableID:3838:134",
+            "collectionId": "VariableCollectionId:3838:112",
+            "modeId": "3838:1",
+            "resolvedType": "FLOAT",
+            "description": "Glissement des préréglages slide-* (8 px = 0.5rem). Mouvement réduit : 0, le glissement devient un fondu.",
+            "codeSyntax": {
+              "WEB": "var(--motion-slide-distance)"
+            }
+          }
+        }
+      }
+    }
+  },
+  "zoom": {
+    "modeStandard": {
+      "scale": {
+        "$value": 0.9599999785423279,
+        "$description": "Échelle de départ et d'arrivée du préréglage zoom. Mouvement réduit : 1, le zoom devient un fondu.",
+        "$type": "number",
+        "$extensions": {
+          "com.figma": {
+            "variableId": "VariableID:3838:135",
+            "collectionId": "VariableCollectionId:3838:112",
+            "modeId": "3838:0",
+            "resolvedType": "FLOAT",
+            "description": "Échelle de départ et d'arrivée du préréglage zoom. Mouvement réduit : 1, le zoom devient un fondu.",
+            "codeSyntax": {
+              "WEB": "var(--motion-zoom-scale)"
+            }
+          }
+        }
+      }
+    },
+    "modeReduced": {
+      "scale": {
+        "$value": 1,
+        "$description": "Échelle de départ et d'arrivée du préréglage zoom. Mouvement réduit : 1, le zoom devient un fondu.",
+        "$type": "number",
+        "$extensions": {
+          "com.figma": {
+            "variableId": "VariableID:3838:135",
+            "collectionId": "VariableCollectionId:3838:112",
+            "modeId": "3838:1",
+            "resolvedType": "FLOAT",
+            "description": "Échelle de départ et d'arrivée du préréglage zoom. Mouvement réduit : 1, le zoom devient un fondu.",
+            "codeSyntax": {
+              "WEB": "var(--motion-zoom-scale)"
+            }
+          }
+        }
+      }
+    }
+  }
+}
