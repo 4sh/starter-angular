@@ -530,7 +530,12 @@ expected to run it before committing**. It fails on:
   output of its entry point, or a default it announces that differs from the one declared in
   the code (`pnpm api:check`, `scripts/component-api.check.mjs`). An input with no useful
   control still gets a row, `control: false`. A story arg that only drives the demo goes in
-  its `DEMO_ARGS`, an input left out on purpose in its `UNDOCUMENTED_INPUTS`, with the reason.
+  its `DEMO_ARGS`, an input left out on purpose in its `UNDOCUMENTED_INPUTS`, with the reason;
+- a duration (`180ms`), a curve (`ease-out`, `cubic-bezier(…)`) or a `var(--transition-*)`
+  primitive written in a component's `.scss` (`pnpm motion:check`,
+  `scripts/motion.check.mjs`). A component reads a `--motion-*` recipe through `ui-config`
+  or the `utils` mixins, so that a retimed kit and reduced motion reach it. An exception goes
+  in the script's `ALLOWED`, with the reason; one that no longer matches fails too.
 
 Committed alongside it, `git diff --exit-code -- projects/ui-kit/styles/component-vars.scss
 figma/component-vars.json`: those two files are **generated yet committed**, and every
