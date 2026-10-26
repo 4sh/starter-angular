@@ -8,6 +8,8 @@
 $font-size-small: var(--ui-input-font-size-small, var(--size-typography-text-md));    /// Taille de police du contrôle et de l'unité, variante `small`.
 $unit-font-size: var(--ui-input-unit-font-size, var(--size-typography-text-default)); /// Taille de police de l'unité affichée dans le champ.
 
+@include utils.browser-fill;
+
 .ui-input {
   &-native {
     @include utils.field-native-input;

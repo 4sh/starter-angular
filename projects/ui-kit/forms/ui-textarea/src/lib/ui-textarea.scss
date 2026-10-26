@@ -16,6 +16,8 @@ $font-size-small: var(--ui-textarea-font-size-small, var(--size-typography-text-
 $count-font-size: var(--ui-textarea-count-font-size, var(--size-typography-text-md));             /// Taille de police du compteur de caractères.
 $count-font-size-small: var(--ui-textarea-count-font-size-small, var(--size-typography-text-sm)); /// Taille de police du compteur de caractères, variante `small`.
 
+@include utils.browser-fill;
+
 .ui-textarea {
   &-native {
     @include utils.field-native-input($pad-x);

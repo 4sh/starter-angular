@@ -12,6 +12,7 @@
     />
   } @else {
     <input
+      uiBrowserFill
       class="ui-input-otp-cell"
       [id]="cell.id"
       [type]="inputType()"
@@ -26,6 +27,7 @@
       [attr.aria-label]="(ariaLabel() || charAriaLabel()) + ' ' + (cell.index + 1)"
       [attr.aria-invalid]="isInvalid() ? 'true' : null"
       (input)="onInput($event, cell.index)"
+      (browserFill)="onBrowserFill($event, cell.index)"
       (keydown)="onKeydown($event, cell.index)"
       (focus)="onFocus($event, cell.index)"
       (paste)="onPaste($event, cell.index)"

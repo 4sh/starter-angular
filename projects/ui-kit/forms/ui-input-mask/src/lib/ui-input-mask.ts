@@ -10,7 +10,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { BaseFormField } from '@4sh/ui-kit/forms';
+import { BaseFormField, hasFocus, UiBrowserFill } from '@4sh/ui-kit/forms';
 import { UiField } from '@4sh/ui-kit/forms/ui-field';
 import { UiIcon, UiIconSize } from '@4sh/ui-kit/base/ui-icon';
 import {
@@ -35,7 +35,7 @@ import {
  */
 @Component({
   selector: 'ui-input-mask',
-  imports: [UiField, UiIcon],
+  imports: [UiField, UiIcon, UiBrowserFill],
   templateUrl: './ui-input-mask.html',
   styleUrl: './ui-input-mask.scss',
   providers: [
@@ -124,8 +124,15 @@ export class UiInputMask extends BaseFormField<string> {
     // Apply synchronously + restore the caret after the Nth typed character
     // (auto-inserted literals skipped). The [value] binding becomes a no-op.
     el.value = display;
+    // A fill without focus has no caret to restore.
+    if (!hasFocus(el)) return;
     const pos = caretForMask(built.tokenIndices, dataBeforeCaret, display.length);
     el.setSelectionRange(pos, pos);
+  }
+
+  /** @ignore Value written by the browser without an `input` event. */
+  protected onBrowserFill(): void {
+    if (this.inputEl().nativeElement.value !== this.text()) this.onInput();
   }
 
   /** @ignore */

@@ -281,11 +281,17 @@ grille gère ce cas-là pour l'instant.
 <Canvas of={DatepickerStories.RangeTypedInput} />
 <Canvas of={DatepickerStories.MultipleTypedInput} />
 
+Une date préremplie par le navigateur (`autocomplete="bday"`) dans le champ sans focus est
+**validée aussitôt**, sans attendre de blur ni d'Entrée : le modèle est mis à jour et `dateSelect`
+émis. Un texte qui n'est pas une date fait revenir le champ à la valeur précédente. Comportement
+commun aux champs : section « Saisie automatique du navigateur » de [`ui-input`](?path=/docs/components-ui-forms-ui-input--docs).
+
 ## Ouverture au focus (`showOnFocus`)
 
 `showOnFocus` ouvre le panneau **dès que le champ prend le focus**, au pointeur comme au clavier,
 jamais sur un focus programmatique (`autofocus`, un `focus()` appelé par l'application : le
-calendrier ne surgit pas sans geste de l'utilisateur). C'est l'affordance attendue là où le champ
+calendrier ne surgit pas sans geste de l'utilisateur), ni sur l'évènement `focus` que Chrome
+envoie à chaque champ rempli par sa saisie automatique sans lui donner le focus. C'est l'affordance attendue là où le champ
 sert surtout à choisir une date plutôt qu'à la taper.
 
 <Canvas of={DatepickerStories.ShowOnFocus} />

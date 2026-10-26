@@ -47,6 +47,8 @@ $clear-size: var(--ui-autocomplete-clear-size, var(--size-components-2xs));     
 $clear-radius: var(--ui-autocomplete-clear-radius, var(--radius-full));                      /// Rayon du bouton d'effacement.
 $focus-ring-width: var(--ui-autocomplete-focus-ring-width, #{utils.$form-focus-ring-width}); /// Épaisseur de l'anneau de focus (valeur sélectionnée, bouton d'effacement).
 
+@include utils.browser-fill;
+
 .ui-autocomplete {
   display: block;
   --ui-field-box-cursor: text;

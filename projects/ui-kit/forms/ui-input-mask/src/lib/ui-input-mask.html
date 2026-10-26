@@ -26,6 +26,7 @@
 
   <input
     #inputEl
+    uiBrowserFill
     class="ui-input-mask-native"
     [class._small]="size() === 'small'"
     type="text"
@@ -42,6 +43,7 @@
     [attr.aria-describedby]="displayMessage() ? messageId() : null"
     [attr.aria-invalid]="effectiveLevel() === 'error' ? 'true' : null"
     (input)="onInput()"
+    (browserFill)="onBrowserFill()"
     (blur)="onBlur($event)"
   />
 </ui-field>

@@ -114,6 +114,17 @@ $_moving-properties: (
   padding-block-start: calc(#{$extra} + var(--_field-inset-block-start, 0px));
 }
 
+/// Starts the animation `UiBrowserFill` listens to while the browser autofills
+/// a field marked `uiBrowserFill`. Include once, at the root of the stylesheet
+/// of the component whose template holds that field.
+@mixin browser-fill {
+  @keyframes ui-browser-fill {
+    from { opacity: 1; }
+  }
+
+  .ui-browser-fill:-webkit-autofill { animation: ui-browser-fill 0s; }
+}
+
 /// Bare native <input>/<textarea> filling the field box (no border/bg).
 /// `$inset` = horizontal field inset owned by the control (see
 /// `field-inset-edges`); pass `false` when the control is nested in a wrapper

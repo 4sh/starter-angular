@@ -10,7 +10,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { BaseFormField } from '@4sh/ui-kit/forms';
+import { BaseFormField, UiBrowserFill } from '@4sh/ui-kit/forms';
 import { UiField } from '@4sh/ui-kit/forms/ui-field';
 
 /** Which axes the user can manually resize (ignored when `autoResize` is on). */
@@ -28,7 +28,7 @@ export type TextareaResize = 'none' | 'vertical' | 'horizontal' | 'both';
  */
 @Component({
   selector: 'ui-textarea',
-  imports: [UiField],
+  imports: [UiField, UiBrowserFill],
   templateUrl: './ui-textarea.html',
   styleUrl: './ui-textarea.scss',
   providers: [
@@ -110,6 +110,12 @@ export class UiTextarea extends BaseFormField<string> {
     this.emitChange(value);
     this.valueChange.emit(value);
     if (this.autoResize()) this.resizeToContent();
+  }
+
+  /** @ignore Value written by the browser without an `input` event. */
+  protected onBrowserFill(): void {
+    const el = this.textareaEl()?.nativeElement;
+    if (el && el.value !== this.displayValue()) this.onInput();
   }
 
   /** @ignore */

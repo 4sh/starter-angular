@@ -211,13 +211,15 @@ async function keydown(
   return event;
 }
 
-/** Mirrors a single native keystroke: sets the raw value + caret, dispatches `input`, flushes CD. */
+/** Mirrors a single native keystroke: sets the raw value + caret, dispatches `input`, flushes CD.
+ *  A keystroke needs the focus: an `input` on a field without it is a browser fill. */
 async function typeInto(
   input: HTMLInputElement,
   value: string,
   caret: number,
   fixture: ComponentFixture<unknown>,
 ) {
+  if (document.activeElement !== input) input.focus();
   input.value = value;
   input.setSelectionRange(caret, caret);
   input.dispatchEvent(new Event('input', { bubbles: true }));
@@ -569,6 +571,18 @@ describe('UiDatepicker — keyboard entry masking (FSHSP-118)', () => {
       expect(panel()).toBeNull();
     });
 
+    it('ignores the focus event Chrome sends to a field its autofill fills', async () => {
+      const { fixture, input } = await setupHost(DatepickerShowOnFocusHost);
+      // Chrome's sequence: a keydown on the field it filled before, then a focus event on this
+      // one, which never takes the focus.
+      document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'a', bubbles: true }));
+      input.dispatchEvent(new FocusEvent('focus'));
+      fixture.detectChanges();
+      await fixture.whenStable();
+      expect(document.activeElement).not.toBe(input);
+      expect(panel()).toBeNull();
+    });
+
     it('does not re-open when closing hands the focus back to the field', async () => {
       const { fixture, input } = await setupHost(DatepickerShowOnFocusHost);
       await focusVia(input, 'keyboard', fixture);
@@ -629,5 +643,47 @@ describe('UiDatepicker — keyboard entry masking (FSHSP-118)', () => {
       await click(input, fixture);
       expect(panel()).not.toBeNull();
     });
+  });
+});
+
+describe('UiDatepicker — browser fill', () => {
+  /** Writes `value` the way the browser autofills a field the user is not in. */
+  async function fill(input: HTMLInputElement, value: string, fixture: ComponentFixture<unknown>) {
+    input.value = value;
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    fixture.detectChanges();
+    await fixture.whenStable();
+  }
+
+  it('commits a date written without focus, no blur needed', async () => {
+    const { input, fixture, host } = await setup();
+    await fill(input, '08/07/2026', fixture);
+    expect(host.control.value).toEqual(new Date(2026, 6, 8));
+    expect(input.value).toBe('08/07/2026');
+    expect(panel()).toBeNull();
+    expect(document.activeElement).not.toBe(input);
+  });
+
+  it('commits a date revealed by a change alone', async () => {
+    const { input, fixture, host } = await setup();
+    input.value = '08/07/2026';
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(host.control.value).toEqual(new Date(2026, 6, 8));
+  });
+
+  it('reverts a fill that is not a date, the text included', async () => {
+    const { input, fixture, host } = await setup(new Date(2026, 6, 8));
+    await fill(input, 'demain', fixture);
+    expect(host.control.value).toEqual(new Date(2026, 6, 8));
+    expect(input.value).toBe('08/07/2026');
+  });
+
+  it('reverts a fill over an empty field to an empty text', async () => {
+    const { input, fixture, host } = await setup();
+    await fill(input, 'demain', fixture);
+    expect(host.control.value).toBeNull();
+    expect(input.value).toBe('');
   });
 });

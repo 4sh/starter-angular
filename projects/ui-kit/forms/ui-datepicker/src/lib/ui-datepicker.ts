@@ -23,7 +23,7 @@ import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { dropdownOverlayPositions } from '@4sh/ui-kit/forms';
 import { CdkTrapFocus, FocusMonitor } from '@angular/cdk/a11y';
-import { BaseFormField } from '@4sh/ui-kit/forms';
+import { BaseFormField, hasFocus } from '@4sh/ui-kit/forms';
 import {
   autoFormatSegments,
   buildMaskSlots,
@@ -943,8 +943,9 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
       const sub = this.focusMonitor.monitor(el).subscribe((origin) => {
         // `null` = blur. `'program'` = not a user gesture. And `suppressFocusOpen` covers the
         // focus WE give back on close, which the monitor still attributes to whatever gesture
-        // triggered that close ('keyboard' for Escape, 'mouse' for a day click).
-        if (!origin || origin === 'program' || this.suppressFocusOpen) return;
+        // triggered that close ('keyboard' for Escape, 'mouse' for a day click). A focus event on
+        // a field without focus is the one Chrome sends along with its autofill.
+        if (!origin || origin === 'program' || this.suppressFocusOpen || !hasFocus(el)) return;
         if (this.showOnFocus()) this.openFrom('focus');
       });
       onCleanup(() => {
@@ -1165,6 +1166,15 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
    */
   protected onTriggerInput(value: string): void {
     if (this.triggerReadonly()) return;
+    const el = this.triggerInput()?.nativeInputElement();
+    // Written by the browser without focus: no blur/Enter will follow to commit it.
+    if (el && !hasFocus(el)) {
+      this.typedValue.set(value);
+      this.commitTyped();
+      // A reverted fill renders the same text as before it, which the binding would skip.
+      el.value = this.displayValue();
+      return;
+    }
     const slots = this.typingSlots();
     if (!slots) {
       this.typedValue.set(value);
@@ -1181,7 +1191,6 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
       if (this.panelOpen()) this.previewTyped();
       return;
     }
-    const el = this.triggerInput()?.nativeInputElement();
     const caret = el?.selectionStart ?? value.length;
     // Number of data characters located BEFORE the caret (stable anchor, same trick as ui-input-mask).
     const dataBeforeCaret = extractMaskData(value.slice(0, caret)).length;

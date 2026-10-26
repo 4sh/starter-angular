@@ -178,6 +178,87 @@ via l'interop CVA native, ainsi qu'aux formulaires template-driven (`[(ngModel)]
 <ui-input [formField]="field" label="Nom" placeholder="Votre nom" />
 ```
 
+## Saisie automatique du navigateur
+
+Quand le navigateur préremplit un formulaire (adresse, e-mail, code reçu par SMS), il écrit
+dans des champs où l'utilisateur n'est pas, et selon le navigateur il n'émet aucun `input`,
+seulement un `change`, ou un `input` sur un champ sans focus. Les champs du kit suivent ces
+trois cas : le modèle, `valueChange` et le `ControlValueAccessor` sont mis à jour **une seule
+fois**, sans attendre un clic dans le champ. La frappe et le collage ne changent pas.
+
+Une valeur écrite sans focus est traitée comme un remplissage, pas comme une frappe :
+
+<table className="doc-table">
+  <thead>
+    <tr>
+      <th>Champ</th>
+      <th>Valeur préremplie</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>ui-input</code>, <code>ui-textarea</code></td>
+      <td>Reprise telle quelle.</td>
+    </tr>
+    <tr>
+      <td><code>ui-input-number</code></td>
+      <td>Lue puis formatée aussitôt : aucune sortie du champ ne viendra le faire.</td>
+    </tr>
+    <tr>
+      <td><code>ui-input-mask</code></td>
+      <td>Passée au masque, sans placer de curseur.</td>
+    </tr>
+    <tr>
+      <td><code>ui-input-otp</code></td>
+      <td>Répartie dans les cases sans prendre le focus.</td>
+    </tr>
+    <tr>
+      <td><code>ui-datepicker</code></td>
+      <td>Validée sans attendre la sortie du champ ; si ce n'est pas une date, le champ revient à la valeur précédente.</td>
+    </tr>
+    <tr>
+      <td><code>ui-autocomplete</code></td>
+      <td>Prise comme texte libre, <code>completeMethod</code> émis aussitôt, panneau fermé. Avec <code>forceSelection</code>, la suggestion qui porte ce libellé est retenue dès qu'elle arrive.</td>
+    </tr>
+  </tbody>
+</table>
+
+Pour guider le navigateur, renseigner `autocomplete` (`name`, `email`, `tel`, `postal-code`,
+`bday`…) sur `ui-input` et `ui-datepicker`, et `name` sur les autres champs.
+
+> **À prévoir côté application.** Un champ prérempli devient `dirty` : une valeur invalide
+> affiche son erreur sans attendre le blur. `valueChange` (et `optionSelect` avec
+> `forceSelection`) peut partir sans geste de l'utilisateur : un gestionnaire qui appelle une
+> API ou remplit d'autres champs doit le tolérer. Dans les tests, un `input` envoyé à un champ
+> sans focus vaut remplissage : focaliser le champ avant de simuler une frappe (`userEvent.type`
+> ou `fill()` de Playwright le font déjà). Hors de portée : Chrome garde illisible par
+> JavaScript une valeur qu'il préremplit au chargement de la page, jusqu'à une interaction.
+
+### Dans un champ maison
+
+Un champ bâti sur `@4sh/ui-kit/forms` obtient le même comportement avec la directive
+`uiBrowserFill`, posée sur son élément natif, et le mixin `utils.browser-fill`, inclus à la
+racine de sa feuille de style. La directive émet `browserFill` sur l'animation
+`:-webkit-autofill` et sur `change` : le champ compare alors la valeur native avec celle qu'il
+affiche, ce qui évite toute double émission. `hasFocus(element)` distingue une frappe d'un
+`input` reçu sans focus, par exemple pour ne pas ouvrir de panneau.
+
+```html
+<input #native uiBrowserFill [value]="displayValue()" (input)="onInput()" (browserFill)="onBrowserFill()" />
+```
+
+```ts
+protected onBrowserFill(): void {
+  if (this.native().nativeElement.value !== this.displayValue()) this.onInput();
+}
+```
+
+```scss
+@use 'utils';
+
+@include utils.browser-fill;
+```
+
 ## Accessibilité
 
 <table className="doc-table">

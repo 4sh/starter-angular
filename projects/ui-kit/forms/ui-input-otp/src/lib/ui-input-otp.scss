@@ -57,6 +57,8 @@ $gap: var(--ui-input-otp-gap, var(--units-sm));                                 
   }
 }
 
+@include utils.browser-fill;
+
 // --- Cell -------------------------------------------------------------
 .ui-input-otp-cell {
   --_stroke: var(--ui-input-otp-cell-stroke, var(--form-high-stroke-default));            /// Couleur de bordure d'une case.

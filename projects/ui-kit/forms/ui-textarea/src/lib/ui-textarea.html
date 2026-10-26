@@ -17,6 +17,7 @@
 >
   <textarea
     #textareaEl
+    uiBrowserFill
     class="ui-textarea-native"
     [class._small]="size() === 'small'"
     [class._auto-resize]="autoResize()"
@@ -36,6 +37,7 @@
     [attr.aria-describedby]="describedByIds()"
     [attr.aria-invalid]="effectiveLevel() === 'error' ? 'true' : null"
     (input)="onInput()"
+    (browserFill)="onBrowserFill()"
     (focus)="textareaFocus.emit($event)"
     (blur)="onBlur($event)"
   ></textarea>

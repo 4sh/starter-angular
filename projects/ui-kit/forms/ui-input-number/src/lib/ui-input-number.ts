@@ -11,7 +11,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { BaseFormField } from '@4sh/ui-kit/forms';
+import { BaseFormField, hasFocus, UiBrowserFill } from '@4sh/ui-kit/forms';
 import { UiField } from '@4sh/ui-kit/forms/ui-field';
 import { UiIcon } from '@4sh/ui-kit/base/ui-icon';
 
@@ -29,7 +29,7 @@ import { UiIcon } from '@4sh/ui-kit/base/ui-icon';
  */
 @Component({
   selector: 'ui-input-number',
-  imports: [UiField, UiIcon],
+  imports: [UiField, UiIcon, UiBrowserFill],
   templateUrl: './ui-input-number.html',
   styleUrl: './ui-input-number.scss',
   providers: [
@@ -134,11 +134,21 @@ export class UiInputNumber extends BaseFormField<number | null> {
     this.inputFocus.emit(event);
   }
 
-  /** @ignore Input: parse without reformatting the text (caret preserved). */
+  /** @ignore Input: parse without reformatting the text (caret preserved). A value written by
+   *  the browser without focus is reformatted at once: no blur will follow to do it. */
   protected onInput(): void {
-    const raw = this.inputEl().nativeElement.value;
+    const el = this.inputEl().nativeElement;
+    const raw = el.value;
+    const filled = !hasFocus(el);
     this.text.set(raw);
-    this.commit(this.parse(raw), { reformat: false });
+    this.commit(this.parse(raw), { reformat: filled });
+    // The binding skips a reformatted text equal to the one rendered before the fill.
+    if (filled) el.value = this.text();
+  }
+
+  /** @ignore Value written by the browser without an `input` event. */
+  protected onBrowserFill(): void {
+    if (this.inputEl().nativeElement.value !== this.text()) this.onInput();
   }
 
   /** @ignore Blur: clamp + rich reformatting. */
@@ -171,9 +181,7 @@ export class UiInputNumber extends BaseFormField<number | null> {
 
   /** @ignore Does the input currently have focus? */
   private isFocused(): boolean {
-    return (
-      typeof document !== 'undefined' && document.activeElement === this.inputEl().nativeElement
-    );
+    return hasFocus(this.inputEl().nativeElement);
   }
 
   /** @ignore Update model + emit; reformat the text when requested. */

@@ -209,6 +209,7 @@
 
       <input
         #inputEl
+        uiBrowserFill
         type="text"
         class="ui-autocomplete-input"
         [class._small]="size() === 'small'"
@@ -233,6 +234,7 @@
         [attr.aria-required]="required() ? 'true' : null"
         [attr.aria-invalid]="effectiveLevel() === 'error' ? 'true' : null"
         (input)="onInput($event)"
+        (browserFill)="onBrowserFill($event)"
         (keydown)="onInputKeydown($event)"
         (focus)="onInputFocus($event)"
         (blur)="onInputBlur($event)"
@@ -286,9 +288,9 @@
   [cdkConnectedOverlayPositions]="overlayPositions()"
   [cdkConnectedOverlayHasBackdrop]="true"
   cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
-  (backdropClick)="close(false)"
-  (overlayOutsideClick)="close(false)"
-  (detach)="close(false)"
+  (backdropClick)="close()"
+  (overlayOutsideClick)="close()"
+  (detach)="close()"
 >
   <ng-container [ngTemplateOutlet]="panelTpl" />
 </ng-template>

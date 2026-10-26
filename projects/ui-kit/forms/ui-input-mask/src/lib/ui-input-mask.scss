@@ -7,6 +7,8 @@
 
 $font-size-small: var(--ui-input-mask-font-size-small, var(--size-typography-text-md)); /// Taille de police du contrôle, variante `small`.
 
+@include utils.browser-fill;
+
 .ui-input-mask {
   &-native {
     @include utils.field-native-input;
