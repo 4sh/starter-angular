@@ -16,6 +16,8 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+## [0.16.0] - 2026-10-26
+
 ### Added
 
 - **`ui-autocomplete` expose `nativeInputElement()` et `close()`** (FSHSP-258). `close()`
