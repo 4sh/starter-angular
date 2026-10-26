@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { BaseFormField } from '@4sh/ui-kit/forms';
+import { BaseFormField, UiBrowserFill } from '@4sh/ui-kit/forms';
 import { UiField } from '@4sh/ui-kit/forms/ui-field';
 import { UiIcon, UiIconSize } from '@4sh/ui-kit/base/ui-icon';
 
@@ -46,7 +46,7 @@ export interface UiInputIconContext {
  */
 @Component({
   selector: 'ui-input',
-  imports: [UiField, UiIcon, NgTemplateOutlet],
+  imports: [UiField, UiIcon, NgTemplateOutlet, UiBrowserFill],
   templateUrl: './ui-input.html',
   styleUrl: './ui-input.scss',
   providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => UiInput), multi: true }],
@@ -184,6 +184,11 @@ export class UiInput extends BaseFormField<string> {
     this.modelValue.set(value);
     this.emitChange(value);
     this.valueChange.emit(value);
+  }
+
+  /** @ignore Value written by the browser without an `input` event. */
+  protected onBrowserFill(): void {
+    if (this.inputEl().nativeElement.value !== this.renderedValue()) this.onInput();
   }
 
   /** @ignore */

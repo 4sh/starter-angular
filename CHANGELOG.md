@@ -16,6 +16,41 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+### Added
+
+- **`ui-autocomplete` expose `nativeInputElement()` et `close()`** (FSHSP-258). `close()`
+  ferme le panneau sans déplacer le focus, `close(true)` le rend au champ.
+- **Directive `UiBrowserFill` et mixin `utils.browser-fill`** (FSHSP-258), pour un champ
+  maison bâti sur `@4sh/ui-kit/forms`. La directive signale les événements par lesquels le
+  navigateur peut écrire une valeur sans `input` (animation `:-webkit-autofill`, `change`), à
+  comparer avec la valeur affichée ; le mixin, inclus à la racine de la feuille du composant,
+  déclare cette animation. `hasFocus(element)` distingue une frappe d'un `input` reçu par un
+  champ sans focus. Une case personnalisée de `ui-input-otp` (template `#input`) s'y branche
+  par `events.browserFill`.
+
+### Fixed
+
+- **Une valeur préremplie par le navigateur met à jour le modèle sans clic dans le champ**
+  (FSHSP-258). `ui-input`, `ui-textarea`, `ui-input-number`, `ui-input-mask`,
+  `ui-input-otp`, `ui-autocomplete` et la saisie de `ui-datepicker` n'écoutaient que
+  l'`input` de leur champ natif ; selon le navigateur, la saisie automatique n'en émet aucun
+  ou seulement un `change`. Ils suivent aussi l'animation `:-webkit-autofill` et le `change`
+  dès que la valeur native diffère de celle affichée, et `valueChange` comme le `onChange` du
+  CVA partent une seule fois. Une valeur écrite sans focus est traitée comme telle :
+  `ui-input-number` la formate aussitôt, `ui-datepicker` la valide sans attendre la sortie du
+  champ (et revient à la valeur précédente si ce n'est pas une date), `ui-input-otp` la
+  répartit sans prendre le focus, `ui-input-mask` ne place pas de curseur, `ui-autocomplete`
+  lance la recherche sans ouvrir son panneau et, avec `forceSelection`, retient la suggestion
+  qui porte ce libellé dès qu'elle arrive. Dans les tests d'une application, un `input` envoyé sans focus à ces deux
+  derniers composants vaut désormais remplissage : focaliser le champ pour simuler une
+  frappe. Hors de portée : une valeur que Chrome préremplit au chargement de la page reste
+  illisible par JavaScript jusqu'à une interaction.
+- **Les événements que Chrome envoie avec sa saisie automatique n'ouvrent plus de panneau**
+  (FSHSP-258). Chaque champ rempli reçoit un `focus` qui ne lui donne pas le focus, puis un
+  `keydown` sans touche. `ui-datepicker` en `showOnFocus` ouvrait son calendrier,
+  `ui-autocomplete` en `completeOnFocus` lançait sa recherche, `ui-input-otp` prenait le focus
+  et levait une erreur : tous trois ignorent désormais ces événements.
+
 ## [0.15.0] - 2026-10-23
 
 ### Added

@@ -15,6 +15,7 @@
 >
   <input
     #inputEl
+    uiBrowserFill
     class="ui-input-number-native"
     [class._small]="size() === 'small'"
     type="text"
@@ -36,6 +37,7 @@
     [attr.aria-valuemin]="ariaValueMin()"
     [attr.aria-valuemax]="ariaValueMax()"
     (input)="onInput()"
+    (browserFill)="onBrowserFill()"
     (keydown)="onKeydown($event)"
     (focus)="onFocus($event)"
     (blur)="onBlur($event)"

@@ -30,6 +30,7 @@
 
   <input
     #inputEl
+    uiBrowserFill
     class="ui-input-native"
     [class._small]="size() === 'small'"
     [type]="type()"
@@ -52,6 +53,7 @@
     [attr.aria-describedby]="resolvedAriaDescribedBy()"
     [attr.aria-invalid]="effectiveLevel() === 'error' ? 'true' : null"
     (input)="onInput()"
+    (browserFill)="onBrowserFill()"
     (focus)="inputFocus.emit($event)"
     (blur)="onBlur($event)"
   />

@@ -73,6 +73,11 @@ Angular 22) via l'interop CVA native, ainsi qu'aux formulaires template-driven
 <ui-input-number [formControl]="ageCtrl" label="Âge" [min]="0" [max]="120" [allowDecimals]="false" />
 ```
 
+Une valeur préremplie par le navigateur dans le champ sans focus est lue et **formatée
+aussitôt**, puisqu'aucune sortie du champ ne viendra le faire ; elle n'est pas ramenée dans
+`[min, max]`, ce que seule la sortie du champ fait. Comportement commun aux champs : section
+« Saisie automatique du navigateur » de [`ui-input`](?path=/docs/components-ui-forms-ui-input--docs).
+
 ## Accessibilité
 
 <table className="doc-table">

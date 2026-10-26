@@ -351,6 +351,7 @@ construisez **votre propre champ** en réutilisant les conventions du kit.
 | `maskEngine`                                                      | Moteur de masque de saisie partagé (`ui-input-mask`, `ui-datepicker`).                                                                                                                                                                                                                                       |
 | `date-utils`                                                      | Helpers `Date` ↔ chaîne ISO, sérialisés depuis les composantes LOCALES et jamais via `toISOString()` (`ui-datepicker`, `ui-input-date`).                                                                                                                                                                     |
 | `option-resolver`, `format-label`, `warn-missing-accessible-name` | Utilitaires de résolution d'options, de formatage de libellé et garde-fou d'accessibilité.                                                                                                                                                                                                                   |
+| `UiBrowserFill`, `hasFocus()`                                     | Suivi de la saisie automatique du navigateur dans un champ maison (voir ci-dessous).                                                                                                                                                                                                                         |
 
 ### Créer son propre champ
 
@@ -369,6 +370,13 @@ export class MyField extends BaseFormField<string> {
   // Appelez `emitChange(value)` à la saisie et `emitTouch()` au blur.
 }
 ```
+
+Pour suivre la **saisie automatique du navigateur**, qui n'émet pas toujours d'`input` :
+posez la directive `uiBrowserFill` sur l'élément natif, incluez `@include utils.browser-fill;`
+à la racine de la feuille du composant, et sur `(browserFill)` synchronisez le modèle quand la
+valeur native diffère de celle affichée. `hasFocus(element)` distingue une frappe d'une valeur
+écrite sans focus. Détail et exemple : section « Saisie automatique du navigateur » de la page
+`ui-input` dans Storybook.
 
 ---
 

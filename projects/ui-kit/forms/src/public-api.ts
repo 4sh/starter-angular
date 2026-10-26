@@ -16,3 +16,4 @@ export * from './lib/date-utils';
 export * from './lib/option-resolver';
 export * from './lib/format-label';
 export * from './lib/warn-missing-accessible-name';
+export * from './lib/browser-fill';

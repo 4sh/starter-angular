@@ -348,6 +348,7 @@ build **your own field** while reusing the kit's conventions.
 | `maskEngine`                                                      | Shared input mask engine (`ui-input-mask`, `ui-datepicker`).                                                                                                                                                                                                                                              |
 | `date-utils`                                                      | Pure `Date` ↔ ISO-string helpers, serialized from LOCAL components and never through `toISOString()` (`ui-datepicker`, `ui-input-date`).                                                                                                                                                                  |
 | `option-resolver`, `format-label`, `warn-missing-accessible-name` | Option resolution, label formatting and accessibility guardrail helpers.                                                                                                                                                                                                                                  |
+| `UiBrowserFill`, `hasFocus()`                                     | Tracks the browser's autofill in a custom field (see below).                                                                                                                                                                                                                                              |
 
 ### Building your own field
 
@@ -366,6 +367,13 @@ export class MyField extends BaseFormField<string> {
   // Call `emitChange(value)` on input and `emitTouch()` on blur.
 }
 ```
+
+To follow the **browser's autofill**, which does not always fire `input`: put the
+`uiBrowserFill` directive on the native element, add `@include utils.browser-fill;` at the
+root of the component stylesheet, and on `(browserFill)` sync the model when the native value
+differs from the one rendered. `hasFocus(element)` tells a keystroke apart from a value written
+without focus. Details and example: the "Saisie automatique du navigateur" section of the
+`ui-input` page in Storybook.
 
 ---
 

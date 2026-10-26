@@ -17,7 +17,7 @@ import {
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { BaseFieldControl } from '@4sh/ui-kit/forms';
+import { BaseFieldControl, hasFocus, UiBrowserFill } from '@4sh/ui-kit/forms';
 import { warnMissingAccessibleName } from '@4sh/ui-kit/forms';
 
 /** Size of the OTP cells. `default` is the base. */
@@ -35,6 +35,8 @@ export interface InputOtpCellEvents {
   blur: (event: FocusEvent) => void;
   /** Wire on `(paste)`. */
   paste: (event: ClipboardEvent) => void;
+  /** Wire on `(browserFill)` of a cell marked `uiBrowserFill`. */
+  browserFill: (event: Event) => void;
 }
 
 /** Context handed to the `#input` template (one per cell). */
@@ -78,7 +80,7 @@ export interface InputOtpCellContext {
  */
 @Component({
   selector: 'ui-input-otp',
-  imports: [NgTemplateOutlet],
+  imports: [NgTemplateOutlet, UiBrowserFill],
   templateUrl: './ui-input-otp.html',
   styleUrl: './ui-input-otp.scss',
   providers: [
@@ -199,6 +201,7 @@ export class UiInputOtp extends BaseFieldControl<string> {
         /* touched is emitted on group focusout */
       },
       paste: (event: ClipboardEvent) => this.onPaste(event, index),
+      browserFill: (event: Event) => this.onBrowserFill(event, index),
     };
   }
 
@@ -207,10 +210,13 @@ export class UiInputOtp extends BaseFieldControl<string> {
     if (this.readonly()) return;
     const target = event.target as HTMLInputElement;
     const raw = this.sanitize(target.value);
+    // A value written by the browser into a cell without focus must not pull the focus in.
+    const typed = hasFocus(target);
 
     // Multi-char (autofill / paste into a cell) → distribute across cells.
     if (raw.length > 1) {
-      this.setFromIndex(index, raw);
+      target.value = raw.charAt(0);
+      this.setFromIndex(index, raw, typed);
       return;
     }
 
@@ -218,14 +224,24 @@ export class UiInputOtp extends BaseFieldControl<string> {
     tokens[index] = raw;
     target.value = raw; // reflect the sanitised value
     this.commit(tokens);
+    if (!typed) return;
 
     const inputType = (event as InputEvent).inputType;
     if (raw) this.focusCell(index + 1);
     else if (inputType === 'deleteContentBackward') this.focusCell(index - 1);
   }
 
+  /** @ignore Value written by the browser into a cell without an `input` event. */
+  protected onBrowserFill(event: Event, index: number): void {
+    if ((event.target as HTMLInputElement).value !== this.cellValue(index)) {
+      this.onInput(event, index);
+    }
+  }
+
   /** @ignore Keyboard navigation + input guards. */
   protected onKeydown(event: KeyboardEvent, index: number): void {
+    // Chrome's autofill dispatches a bare `Event`, without `key`.
+    if (!(event instanceof KeyboardEvent)) return;
     if (event.altKey || event.ctrlKey || event.metaKey) return;
     const target = event.target as HTMLInputElement;
 
@@ -270,8 +286,12 @@ export class UiInputOtp extends BaseFieldControl<string> {
 
   /** @ignore Select the cell content on focus + track the roving index. */
   protected onFocus(event: FocusEvent, index: number): void {
+    const cell = event.target as HTMLInputElement;
+    // Chrome's autofill sends a focus event to a cell it fills without focusing it,
+    // and `select()` would pull the focus in.
+    if (!hasFocus(cell)) return;
     this.focusedIndex.set(index);
-    (event.target as HTMLInputElement).select?.();
+    cell.select?.();
   }
 
   /** @ignore Distribute a pasted code across the cells from `index`. */
@@ -288,8 +308,8 @@ export class UiInputOtp extends BaseFieldControl<string> {
     if (!next || !this.host.nativeElement.contains(next)) this.emitTouch();
   }
 
-  /** @ignore Write `chars` into the cells starting at `from`, then commit + focus. */
-  private setFromIndex(from: number, chars: string): void {
+  /** @ignore Write `chars` into the cells starting at `from`, then commit (+ focus). */
+  private setFromIndex(from: number, chars: string, moveFocus = true): void {
     const tokens = [...this.tokens()];
     const max = this.length();
     let i = from;
@@ -298,7 +318,7 @@ export class UiInputOtp extends BaseFieldControl<string> {
       tokens[i++] = ch;
     }
     this.commit(tokens);
-    this.focusCell(Math.min(i, max - 1));
+    if (moveFocus) this.focusCell(Math.min(i, max - 1));
   }
 
   /** @ignore Persist the tokens, emit the joined value (+ `completed` when full). */

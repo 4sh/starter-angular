@@ -9,6 +9,8 @@ $spinner-width: var(--ui-input-number-spinner-width, #{utils.rem-calc(30)});    
 $unit-font-size: var(--ui-input-number-unit-font-size, var(--size-typography-text-default)); /// Taille du texte de l'unité.
 $font-size-small: var(--ui-input-number-font-size-small, var(--size-typography-text-md));    /// Taille du texte (saisie et unité) en variante `small`.
 
+@include utils.browser-fill;
+
 .ui-input-number {
   &-native {
     @include utils.field-native-input;

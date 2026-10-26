@@ -77,6 +77,10 @@ Le template `#input` **remplace la cellule par défaut** par votre propre UI. Il
 les gestionnaires à brancher (`input`/`keydown`/`focus`/`blur`/`paste`) pour conserver toute la
 mécanique (navigation clavier, avance auto, collage réparti).
 
+Pour qu'une case personnalisée suive aussi la saisie automatique du navigateur, y poser la
+directive `uiBrowserFill` (de `@4sh/ui-kit/forms`), relier `(browserFill)="events.browserFill($event)"`
+et inclure le mixin `utils.browser-fill` dans la feuille du composant qui porte le template.
+
 <Canvas of={InputOtpStories.Template} />
 
 ```html
@@ -182,6 +186,11 @@ via l'interop CVA native, ainsi qu'en `[(ngModel)]` et avec les **Reactive Forms
 <!-- Reactive -->
 <ui-input-otp [formControl]="codeCtrl" ariaLabel="Code" />
 ```
+
+Les cases portent `autocomplete="one-time-code"` : un code proposé par le système (SMS) est
+réparti dans les cases et met à jour le modèle. Écrit dans une case sans focus, il ne déplace
+pas le focus. Comportement commun aux champs : section « Saisie automatique du navigateur » de
+[`ui-input`](?path=/docs/components-ui-forms-ui-input--docs).
 
 ## Theming
 

@@ -20,7 +20,7 @@ import { NgTemplateOutlet } from '@angular/common';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { CdkVirtualScrollViewport, ScrollingModule } from '@angular/cdk/scrolling';
-import { BaseFormField } from '@4sh/ui-kit/forms';
+import { BaseFormField, hasFocus, UiBrowserFill } from '@4sh/ui-kit/forms';
 import { createOptionResolver } from '@4sh/ui-kit/forms';
 import { dropdownOverlayPositions } from '@4sh/ui-kit/forms';
 import { formatLabel } from '@4sh/ui-kit/forms';
@@ -124,6 +124,10 @@ type AcRow =
  * (`role="combobox"` + `aria-activedescendant`: focus never leaves the input,
  * suggestions are only visually focused).
  *
+ * A value the browser writes into the input without focus (autofill) updates
+ * the model and emits `completeMethod` without opening the panel; with
+ * `forceSelection`, the suggestion carrying that exact label is then selected.
+ *
  * Customisation: the `#item`, `#selectedItem`, `#group`, `#header`, `#footer`
  * and `#empty` templates, `panelStyleClass`, and the local SCSS variables.
  *
@@ -145,6 +149,7 @@ type AcRow =
     UiSpinner,
     UiChip,
     UiMotion,
+    UiBrowserFill,
   ],
   templateUrl: './ui-autocomplete.html',
   styleUrl: './ui-autocomplete.scss',
@@ -285,7 +290,7 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
   /** @ignore Component root (overlay origin + outside-focus detection). */
   private readonly containerEl = viewChild.required<ElementRef<HTMLElement>>('container');
   /** @ignore Focusable input (combobox). */
-  private readonly inputEl = viewChild<ElementRef<HTMLInputElement>>('inputEl');
+  private readonly inputEl = viewChild.required<ElementRef<HTMLInputElement>>('inputEl');
   /** @ignore Panel root element (for scrolling the focused option into view). */
   private readonly panelEl = viewChild<ElementRef<HTMLElement>>('panel');
   /** @ignore Virtual-scroll viewport (lazy range + scrollToIndex). */
@@ -313,13 +318,15 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
   private searchTimeout: ReturnType<typeof setTimeout> | undefined;
   /** @ignore A written value whose label could not be resolved yet (see `writeValue`). */
   private readonly pendingLabelSync = signal(false);
+  /** @ignore `forceSelection`: a text written by the browser, awaiting the suggestion it names. */
+  private readonly pendingFill = signal<{ text: string; event: Event } | null>(null);
 
   constructor() {
     super();
 
     // Never carry an open panel over to the next page (the field can live in
     // an app shell that survives the navigation).
-    closeOnNavigation(() => this.close(false));
+    closeOnNavigation(() => this.close());
 
     // Late label resolution: a value written before suggestions exist (e.g. a
     // pre-filled form using `optionValue`) displays the raw value; swap in the
@@ -332,6 +339,18 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
       untracked(() => {
         this.pendingLabelSync.set(false);
         this.inputText.set(entry.label);
+      });
+    });
+
+    // `forceSelection` applies the blur rule to a browser fill as soon as a
+    // suggestion carries its label: no blur will follow to apply it.
+    effect(() => {
+      const fill = this.pendingFill();
+      const match = fill ? this.entryLabelled(fill.text) : undefined;
+      if (!fill || !match) return;
+      untracked(() => {
+        this.pendingFill.set(null);
+        this.selectEntry(match, fill.event, false);
       });
     });
 
@@ -538,6 +557,7 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
   // --- CVA -----------------------------------------------------------------
 
   override writeValue(value: AutocompleteValue<T>): void {
+    this.pendingFill.set(null);
     if (this.multiple()) {
       const values = Array.isArray(value) ? value : [];
       this.modelValue.set(values as T[]);
@@ -567,7 +587,12 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
 
   /** Moves focus to the input. */
   focus(options?: FocusOptions): void {
-    this.inputEl()?.nativeElement.focus(options);
+    this.inputEl().nativeElement.focus(options);
+  }
+
+  /** Native `<input>` element (the combobox). */
+  nativeInputElement(): HTMLInputElement {
+    return this.inputEl().nativeElement;
   }
 
   // --- Panel open/close ----------------------------------------------------
@@ -588,8 +613,8 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
     setTimeout(() => this.scrollFocusedIntoView());
   }
 
-  /** @ignore */
-  protected close(focusInput = true): void {
+  /** Closes the suggestions panel; `focusInput` moves the focus back to the input. */
+  close(focusInput = false): void {
     if (!this.panelOpen()) return;
     this.panelOpen.set(false);
     this.focusedIndex.set(-1);
@@ -606,12 +631,16 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
 
   // --- Input interactions --------------------------------------------------
 
-  /** @ignore Typing: view → form (free text unless `forceSelection`) + debounced query. */
+  /** @ignore Typing: view → form (free text unless `forceSelection`) + debounced query.
+   *  A value written by the browser without focus queries at once, panel closed. */
   protected onInput(event: Event): void {
-    const query = (event.target as HTMLInputElement).value;
+    const input = event.target as HTMLInputElement;
+    const query = input.value;
+    const typed = hasFocus(input);
     this.inputText.set(query);
     // The user took over the text: stop any pending label re-resolution.
     this.pendingLabelSync.set(false);
+    this.pendingFill.set(!typed && this.forceSelection() && query ? { text: query, event } : null);
 
     // Free-text value while typing; `forceSelection` waits for a real suggestion,
     // `multiple` never lets the query mutate the selection, and an emptied input
@@ -623,17 +652,26 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
 
     if (query.length === 0) {
       if (!this.multiple()) this.cleared.emit();
-      this.close(false);
+      this.close();
       return;
     }
 
     if (query.length < this.minLength()) {
-      this.close(false);
+      this.close();
       return;
     }
 
     this.focusedIndex.set(-1);
+    if (!typed) {
+      this.completeMethod.emit({ originalEvent: event, query });
+      return;
+    }
     this.searchTimeout = setTimeout(() => this.runSearch(event, query), this.delay());
+  }
+
+  /** @ignore Value written by the browser without an `input` event. */
+  protected onBrowserFill(event: Event): void {
+    if (this.inputEl().nativeElement.value !== this.inputText()) this.onInput(event);
   }
 
   /** @ignore Emit a query and open the panel. */
@@ -647,7 +685,7 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
   protected onDropdownClick(event: MouseEvent): void {
     if (this.isDisabled() || this.readonly()) return;
     if (this.panelOpen()) {
-      this.close();
+      this.close(true);
       return;
     }
     // Mark the query as already handled *before* focusing: `focus()` fires a
@@ -664,7 +702,10 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
   /** @ignore */
   protected onInputFocus(event: FocusEvent): void {
     if (this.isDisabled()) return;
-    if (!this.queryDirty && this.completeOnFocus()) this.runSearch(event, this.inputText());
+    // Chrome's autofill sends a focus event to a field it fills without focusing it.
+    const focused = hasFocus(event.target as HTMLInputElement);
+    if (focused && !this.queryDirty && this.completeOnFocus())
+      this.runSearch(event, this.inputText());
     this.inputFocus.emit(event);
   }
 
@@ -686,11 +727,10 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
    * on no match the field is reset so the model never holds free text.
    */
   private validateForceSelection(event: Event): void {
+    this.pendingFill.set(null);
     const text = this.inputText().trim();
     if (!text) return;
-    const match = this.flatEntries().find(
-      (e) => !e.disabled && this.normalize(e.label) === this.normalize(text),
-    );
+    const match = this.entryLabelled(text);
     if (match) {
       this.selectEntry(match, event, false);
     } else if (this.multiple()) {
@@ -711,6 +751,7 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
 
   /** Clears the value. */
   clear(): void {
+    this.pendingFill.set(null);
     if (this.multiple()) {
       this.commit([]);
       this.selectionCache.set([]);
@@ -719,7 +760,7 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
     }
     this.inputText.set('');
     this.cleared.emit();
-    this.close(false);
+    this.close();
     this.focus();
   }
 
@@ -752,7 +793,7 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
         return;
       case 'ArrowUp':
         event.preventDefault();
-        if (event.altKey) this.close();
+        if (event.altKey) this.close(true);
         else if (this.panelOpen()) this.moveFocus(-1);
         else this.reopen();
         return;
@@ -775,10 +816,10 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
         if (!this.panelOpen()) return;
         event.preventDefault();
         event.stopPropagation();
-        this.close();
+        this.close(true);
         return;
       case 'Tab':
-        if (this.panelOpen()) this.close(false);
+        if (this.panelOpen()) this.close();
         return; // let the focus move on
       default:
         return;
@@ -823,20 +864,20 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
       // The query was just consumed: an open panel would show results for a
       // text the input no longer displays.
       this.inputText.set('');
-      if (closePanel) this.close();
+      if (closePanel) this.close(true);
       return;
     }
     this.commit(entry.value as AutocompleteValue<T>);
     this.inputText.set(entry.label);
     this.optionSelect.emit(entry.original as T);
-    if (closePanel) this.close();
+    if (closePanel) this.close(true);
   }
 
   /** @ignore */
   private selectFocused(event: Event): void {
     const row = this.visibleOptions()[this.focusedIndex()];
     if (row) this.selectEntry(row.entry, event);
-    else this.close();
+    else this.close(true);
   }
 
   /** @ignore Propagate a user-driven value change (view → form). */
@@ -1044,6 +1085,12 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
   /** @ignore Value equality — by `dataKey` for objects, strict otherwise. */
   private equals(a: unknown, b: unknown): boolean {
     return this.resolver.equals(a, b);
+  }
+
+  /** @ignore Enabled suggestion whose label matches `text` (case/diacritics-insensitive). */
+  private entryLabelled(text: string): AcEntry | undefined {
+    const wanted = this.normalize(text.trim());
+    return this.flatEntries().find((e) => !e.disabled && this.normalize(e.label) === wanted);
   }
 
   /** @ignore Case- and diacritics-insensitive comparison text. */

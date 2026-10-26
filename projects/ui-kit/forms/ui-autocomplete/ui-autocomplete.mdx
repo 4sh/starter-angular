@@ -107,6 +107,11 @@ replié derrière la chip informative de repli.
 suggestion, l'input est effacé — la valeur portée dans le modèle est **toujours** l'une des
 suggestions.
 
+Une valeur que le navigateur écrit dans le champ sans que l'utilisateur y soit (saisie
+automatique) n'attend pas de blur : la suggestion qui porte ce libellé est retenue dès que
+`suggestions` la contient. Sans correspondance, le texte reste affiché et le modèle vide ; la
+sortie du champ appliquera la règle habituelle.
+
 <Canvas of={AutocompleteStories.ForceSelection} />
 
 ## Clear Icon
@@ -213,6 +218,15 @@ suggestion ou champ `optionValue`) ; le flux `completeMethod` → `suggestions` 
 
 L'exemple [Invalid](#invalid) ci-dessus illustre le branchement `[formControl]` (réactif) avec
 validation `required`.
+
+Une valeur préremplie par le navigateur met à jour le modèle et émet `completeMethod` aussitôt,
+sans ouvrir le panneau sous un champ où l'utilisateur n'est pas ; `completeOnFocus` ignore de
+même l'évènement `focus` que Chrome envoie au champ qu'il remplit. Comportement commun aux
+champs : section « Saisie automatique du navigateur » de
+[`ui-input`](?path=/docs/components-ui-forms-ui-input--docs).
+
+`nativeInputElement()` donne accès à l'`<input>` natif, `close()` ferme le panneau sans
+déplacer le focus (`close(true)` le rend au champ).
 
 ```html
 <!-- Signal Forms -->
