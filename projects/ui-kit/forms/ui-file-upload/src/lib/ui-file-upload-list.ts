@@ -10,7 +10,9 @@ export type UiFileUploadListSize = 'default' | 'small';
  * ui-file-upload-list — a single file row (the repeatable unit of an upload list).
  *
  * Presentational: shows a leading thumbnail (for images) or file icon, the file
- * name + size/status, and a remove button. While the file is uploading it swaps
+ * name + size/status, and a remove button. With `openable`, the name becomes a button emitting
+ * `open` (e.g. to preview the file); content projected into the row lands next to the remove
+ * button, for extra actions. While the file is uploading it swaps
  * the leading icon for a `ui-spinner` and reveals a slim progress bar.
  *
  * Named to mirror the Figma component; the uploader stacks one row per file.
@@ -30,6 +32,10 @@ export class UiFileUploadList {
   icon = input<string>('file');
   /** Whether the remove button is shown. */
   removable = input(true, { transform: booleanAttribute });
+  /** Makes the file name a button emitting `open`. */
+  openable = input(false, { transform: booleanAttribute });
+  /** Accessible name of the file name button (`openable`) — `{0}` is the file name. */
+  openLabel = input<string>('Ouvrir {0}');
   /** Accessible name of the remove button (raw text — the file name is appended in the template). */
   removeAriaLabel = input<string>('Supprimer le fichier');
   /** Fallback error text when the file carries no message. */
@@ -41,9 +47,16 @@ export class UiFileUploadList {
 
   /** Emitted when the remove button is activated. */
   remove = output<UiUploadFile>();
+  /** Emitted when the file name is activated (`openable`). */
+  open = output<UiUploadFile>();
 
   /** @ignore Formatted size (e.g. "2.5 MB"). */
   protected readonly sizeLabel = computed(() => formatFileSize(this.file().size));
+
+  /** @ignore Accessible name of the file name button (`{0}` filled with the file name). */
+  protected readonly openAriaLabel = computed(() =>
+    formatLabel(this.openLabel(), this.file().name),
+  );
 
   /** @ignore Accessible name of the upload spinner (`{0}` filled with the file name). */
   protected readonly uploadingAriaLabel = computed(() =>
@@ -87,5 +100,10 @@ export class UiFileUploadList {
   /** @ignore */
   protected onRemove(): void {
     this.remove.emit(this.file());
+  }
+
+  /** @ignore */
+  protected onOpen(): void {
+    this.open.emit(this.file());
   }
 }

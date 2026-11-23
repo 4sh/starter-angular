@@ -7,10 +7,10 @@ export type UiUploadStatus = 'pending' | 'uploading' | 'completed' | 'error';
 
 /** A file selected in the uploader, plus its upload/validation state. */
 export interface UiUploadFile {
-  /** Stable id for tracking (kept across re-renders). */
+  /** Stable id for tracking (kept across re-renders); the server id for a stored file. */
   readonly id: string;
-  /** The underlying browser File. */
-  readonly file: File;
+  /** The underlying browser File; absent for a file already stored server-side (`initialFiles`). */
+  readonly file?: File;
   /** File name (from the File, exposed for template convenience). */
   readonly name: string;
   /** Size in bytes. */
@@ -27,10 +27,30 @@ export interface UiUploadFile {
   error?: string;
 }
 
+/** A file picked in the browser (selector, drop or `add()`): it always carries its `File`. */
+export type UiLocalUploadFile = UiUploadFile & { readonly file: File };
+
+/** A file already stored server-side, listed with the new ones (`initialFiles`). */
+export interface UiStoredFile {
+  /** Server id, kept as the row id: `removed` and `fileOpen` hand it back. */
+  readonly id: string;
+  /** File name. */
+  readonly name: string;
+  /** Size in bytes. */
+  readonly size: number;
+  /** MIME type, when known. */
+  readonly type?: string;
+}
+
+/** Whether a file was picked in the browser, as opposed to stored server-side. */
+export function isLocalUploadFile(file: UiUploadFile): file is UiLocalUploadFile {
+  return file.file !== undefined;
+}
+
 /** Payload for the custom upload handler (customUpload = true). */
 export interface UiUploadHandlerEvent {
-  /** Files awaiting upload (status `pending`). */
-  files: UiUploadFile[];
+  /** Files awaiting upload (status `pending`), all picked in the browser. */
+  files: UiLocalUploadFile[];
   /** Marks a file as uploaded (sets status `completed`, progress 100). */
   markUploaded: (file: UiUploadFile) => void;
   /** Marks a file as failed with an optional message. */
@@ -49,8 +69,8 @@ export interface UiUploadEvent {
 /** Emitted on a validation or upload error. */
 export interface UiUploadErrorEvent {
   file: UiUploadFile;
-  /** 'type' | 'size' | 'limit' | 'upload'. */
-  reason: 'type' | 'size' | 'limit' | 'upload';
+  /** 'type' | 'size' | 'total-size' | 'limit' | 'upload'. */
+  reason: 'type' | 'size' | 'total-size' | 'limit' | 'upload';
   message: string;
 }
 

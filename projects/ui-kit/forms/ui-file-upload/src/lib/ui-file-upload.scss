@@ -54,6 +54,7 @@ $toolbar-gap: var(--ui-file-upload-toolbar-gap, var(--units-sm));               
 $content-gap: var(--ui-file-upload-content-gap, var(--units-sm));                            /// Espacement entre les lignes de fichier.
 $messages-gap: var(--ui-file-upload-messages-gap, var(--units-2xs));                         /// Espacement entre les messages.
 $message-font-size: var(--ui-file-upload-message-font-size, var(--size-typography-text-md)); /// Taille d'un message.
+$total-font-size: var(--ui-file-upload-total-font-size, var(--size-typography-text-md));     /// Taille du total sous la liste.
 
 .ui-file-upload {
   display: flex;
@@ -225,6 +226,12 @@ $message-font-size: var(--ui-file-upload-message-font-size, var(--size-typograph
     list-style: none;
 
     li { display: block; }
+  }
+
+  &-total {
+    margin: 0;
+    color: var(--ui-file-upload-total-color, var(--global-text-muted)); /// Couleur du total sous la liste.
+    font-size: $total-font-size;
   }
 
   &-messages { display: flex; flex-direction: column; gap: $messages-gap; }
