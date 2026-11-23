@@ -22,12 +22,40 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
   `"yyyy-MM-dd"`) sur laquelle le calendrier s'ouvre tant que le champ est vide, par exemple
   vers 2000 pour une date de naissance ; la valeur sélectionnée reste prioritaire. Un calendrier
   `inline` vide l'affiche dès le rendu et y revient quand on le vide.
+- **`ui-file-upload` : fichiers déjà enregistrés, actions sur une ligne, total et `add()`**
+  (FSHSP-264).
+  - `initialFiles` (`UiStoredFile[]` : `id`, `name`, `size`, `type`) liste les pièces
+    enregistrées côté serveur avec les nouvelles, au statut `completed` et sans `File`.
+    Les changer remet la sélection dans l'état du serveur, sans émettre `filesChange` ; les
+    fichiers locaux pas encore envoyés sont conservés. `clear()` et « Effacer » ne vident que
+    les fichiers locaux.
+  - `openable` rend chaque nom cliquable (sortie `fileOpen`) ; `fileActionsTemplate` ajoute
+    des actions à côté de la corbeille. Le contexte de `fileTemplate` reçoit `open`.
+  - `maxTotalSize` plafonne la taille de toute la sélection (refus `reason: 'total-size'`,
+    message `totalSizeExceededMessage`), hors fichiers en échec d'envoi ; `showTotal` affiche le
+    nombre de fichiers et le total (`totalLabel`).
+  - `add(files)` ajoute des fichiers obtenus hors du sélecteur (photo d'une app Capacitor) avec
+    la même validation et le même téléversement qu'une sélection.
+- **`ui-file-upload-list` : `openable`/`open` et emplacement d'actions** (FSHSP-264). Le nom
+  devient un bouton (`openLabel`) ; le contenu projeté s'insère à côté de la corbeille.
+- **`formatLabel` accepte plusieurs valeurs** (`{0}`, `{1}`…), substituées en une passe
+  (FSHSP-264).
 
 ### Changed
 
 - **`ui-datepicker` : le mois d'ouverture d'un champ vide respecte `minDate`/`maxDate`**
   (FSHSP-263). Il s'ouvrait sur le mois courant même hors de la plage sélectionnable ; il est
   désormais ramené à la borne la plus proche.
+- ⚠️ **`ui-file-upload` : rupture de types autour des fichiers enregistrés** (FSHSP-264).
+  `UiUploadFile.file` devient facultatif, absent pour un fichier enregistré (`initialFiles`) :
+  un code qui lit `file` sur les fichiers de `filesChange`, `removed` ou `uploadError` ne compile
+  plus sans tester sa présence (`isLocalUploadFile()`). Les fichiers de `uploadHandler` et
+  `selected` sont typés `UiLocalUploadFile` (leur `file` reste garanti), ce qui casse un mock
+  typé `UiUploadFile[]`. `UiUploadErrorEvent.reason` gagne `'total-size'` : un `switch`
+  exhaustif doit le traiter.
+- **`ui-file-upload` : en mode fichier unique, le fichier remplacé émet `removed`** (FSHSP-264).
+  Il disparaissait sans signal ; une pièce enregistrée remplacée doit pouvoir être supprimée
+  côté serveur.
 
 ## [0.16.0] - 2026-10-26
 

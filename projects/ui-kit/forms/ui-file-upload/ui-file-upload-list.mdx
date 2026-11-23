@@ -12,6 +12,9 @@ en empile une par fichier. Présentationnelle : vignette (images) ou icône de
 fichier, nom + taille/état, bouton de suppression. Pendant le téléversement, le
 marqueur bascule sur `ui-spinner` et une barre de progression apparaît.
 
+Avec `openable`, le nom devient un bouton qui émet `open` (aperçu, téléchargement).
+Le contenu projeté dans la ligne s'insère à côté de la corbeille, pour d'autres actions.
+
 <Canvas of={ListStories.Default} />
 
 ## API
@@ -24,6 +27,7 @@ marqueur bascule sur `ui-spinner` et une barre de progression apparaît.
 <Canvas of={ListStories.ErrorState} />
 <Canvas of={ListStories.ImageThumbnail} />
 <Canvas of={ListStories.Small} />
+<Canvas of={ListStories.Openable} />
 
 ## Accessibilité
 
@@ -38,6 +42,10 @@ marqueur bascule sur `ui-spinner` et une barre de progression apparaît.
     <tr>
       <td><strong>Suppression</strong></td>
       <td>Vrai <code>&lt;button&gt;</code> avec <code>aria-label</code> incluant le nom du fichier.</td>
+    </tr>
+    <tr>
+      <td><strong>Nom cliquable</strong></td>
+      <td>Avec <code>openable</code>, vrai <code>&lt;button&gt;</code> dont le nom accessible (<code>openLabel</code>, « Ouvrir {0} ») contient le nom affiché ; anneau de focus distinct du survol.</td>
     </tr>
     <tr>
       <td><strong>Progression</strong></td>

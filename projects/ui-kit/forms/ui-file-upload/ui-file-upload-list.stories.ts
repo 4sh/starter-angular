@@ -53,6 +53,16 @@ const meta: Meta<UiFileUploadList> = {
       control: { type: 'boolean' },
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
     },
+    openable: {
+      control: { type: 'boolean' },
+      description: 'Rend le nom du fichier cliquable : il émet `open`.',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    openLabel: {
+      control: false,
+      description: 'Nom accessible du nom cliquable (`openable`), où `{0}` est le nom du fichier.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Ouvrir {0}"' } },
+    },
     file: {
       control: false,
       description: 'Fichier à afficher (nom, taille, statut, progression, aperçu). Requis.',
@@ -106,6 +116,31 @@ export const Uploading: Story = {
 /** Échec : icône + message d'erreur, styles d'erreur via tokens. */
 export const ErrorState: Story = {
   args: { file: sample('archive.zip', 52_000_000, 'error', { error: 'Fichier trop volumineux' }) },
+};
+
+/**
+ * Nom cliquable (`openable` → `open`) et action projetée à côté de la corbeille.
+ * Un fichier déjà enregistré n'a pas de `File` : seul son nom, sa taille et son id comptent.
+ */
+export const Openable: Story = {
+  render: (args) => ({
+    props: {
+      ...args,
+      file: { ...sample('contrat-signe.pdf', 1_258_291, 'completed'), file: undefined },
+      lastOpened: '',
+    },
+    template: `
+      <ui-file-upload-list [file]="file" [size]="size" [removable]="removable" [openable]="true"
+        (open)="lastOpened = $event.name">
+        <button type="button" class="sb-see" (click)="lastOpened = file.name">Voir</button>
+      </ui-file-upload-list>
+      <p style="margin-top: 8px; color: var(--global-text-muted)">Ouvert : {{ lastOpened || '—' }}</p>
+      <style>
+        .sb-see { padding:2px 8px; border:none; border-radius:6px; background:transparent;
+          color:var(--actions-low-content-default); font-weight:700; cursor:pointer; }
+      </style>
+    `,
+  }),
 };
 
 /** Image avec vignette (object URL). */

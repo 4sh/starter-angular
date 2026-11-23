@@ -10,8 +10,8 @@
         "Mode 1"
       ],
       "counts": {
-        "tokens": 1425,
-        "alias": 1267,
+        "tokens": 1431,
+        "alias": 1273,
         "literal": 158,
         "skipped": 80,
         "derivedDescriptions": 223
@@ -13141,7 +13141,7 @@
       "focus-ring-width": {
         "$value": "{metrics.units.2xs}",
         "$type": "dimension",
-        "$description": "Épaisseur de l'anneau de focus du bouton de retrait.",
+        "$description": "Épaisseur de l'anneau de focus des boutons de la ligne.",
         "$extensions": {
           "com.figma": {
             "resolvedType": "FLOAT",
@@ -13541,6 +13541,28 @@
             "descriptionSource": "derived"
           }
         }
+      },
+      "radius": {
+        "$value": "{metrics.radius.xs}",
+        "$type": "dimension",
+        "$description": "Rayon de l'anneau de focus du nom cliquable.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "CORNER_RADIUS"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-file-upload-item-name-radius)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-file-upload-item-name-radius",
+            "component": "ui-file-upload-list",
+            "entryPoint": "@4sh/ui-kit/forms/ui-file-upload",
+            "descriptionSource": "scss"
+          }
+        }
       }
     },
     "item-progress": {
@@ -13765,6 +13787,76 @@
           },
           "com.4sh.ui-kit": {
             "cssVar": "--ui-file-upload-list-surface",
+            "component": "ui-file-upload-list",
+            "entryPoint": "@4sh/ui-kit/forms/ui-file-upload",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "list-name": {
+      "color": {
+        "$value": "{semantics.actions.low.content.default}",
+        "$type": "color",
+        "$description": "Couleur du nom cliquable.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "COLOR",
+            "scopes": [
+              "ALL_FILLS"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-file-upload-list-name-color)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-file-upload-list-name-color",
+            "component": "ui-file-upload-list",
+            "entryPoint": "@4sh/ui-kit/forms/ui-file-upload",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "color-hover": {
+        "$value": "{semantics.actions.low.content.hover}",
+        "$type": "color",
+        "$description": "Couleur du nom cliquable au survol.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "COLOR",
+            "scopes": [
+              "ALL_FILLS"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-file-upload-list-name-color-hover)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-file-upload-list-name-color-hover",
+            "component": "ui-file-upload-list",
+            "entryPoint": "@4sh/ui-kit/forms/ui-file-upload",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "list-name-focus-ring": {
+      "color": {
+        "$value": "{semantics.form.high.stroke.focused}",
+        "$type": "color",
+        "$description": "Couleur de l'anneau de focus du nom cliquable.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "COLOR",
+            "scopes": [
+              "ALL_FILLS"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-file-upload-list-name-focus-ring-color)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-file-upload-list-name-focus-ring-color",
             "component": "ui-file-upload-list",
             "entryPoint": "@4sh/ui-kit/forms/ui-file-upload",
             "descriptionSource": "scss"
@@ -14274,6 +14366,52 @@
           },
           "com.4sh.ui-kit": {
             "cssVar": "--ui-file-upload-toolbar-gap",
+            "component": "ui-file-upload",
+            "entryPoint": "@4sh/ui-kit/forms/ui-file-upload",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "total": {
+      "color": {
+        "$value": "{semantics.global.text.muted}",
+        "$type": "color",
+        "$description": "Couleur du total sous la liste.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "COLOR",
+            "scopes": [
+              "ALL_FILLS"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-file-upload-total-color)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-file-upload-total-color",
+            "component": "ui-file-upload",
+            "entryPoint": "@4sh/ui-kit/forms/ui-file-upload",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "font-size": {
+        "$value": "{responsive.size.typography.text.md}",
+        "$type": "dimension",
+        "$description": "Taille du total sous la liste.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "FONT_SIZE"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-file-upload-total-font-size)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-file-upload-total-font-size",
             "component": "ui-file-upload",
             "entryPoint": "@4sh/ui-kit/forms/ui-file-upload",
             "descriptionSource": "scss"

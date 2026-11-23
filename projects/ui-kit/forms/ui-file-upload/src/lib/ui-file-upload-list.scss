@@ -39,7 +39,8 @@ $thumb-radius: var(--ui-file-upload-item-thumb-radius, var(--radius-sm));       
 
 $remove-padding: var(--ui-file-upload-item-remove-padding, var(--units-2xs));                    /// Inset du bouton de retrait.
 $remove-radius: var(--ui-file-upload-item-remove-radius, var(--radius-sm));                      /// Rayon du bouton de retrait.
-$focus-ring-width: var(--ui-file-upload-item-focus-ring-width, #{utils.$form-focus-ring-width}); /// Épaisseur de l'anneau de focus du bouton de retrait.
+$focus-ring-width: var(--ui-file-upload-item-focus-ring-width, #{utils.$form-focus-ring-width}); /// Épaisseur de l'anneau de focus des boutons de la ligne.
+$name-radius: var(--ui-file-upload-item-name-radius, var(--radius-xs));                          /// Rayon de l'anneau de focus du nom cliquable.
 
 $progress-height: var(--ui-file-upload-item-progress-height, var(--stroke-default));   /// Épaisseur de la barre de progression.
 $progress-color: var(--ui-file-upload-item-progress-color, var(--global-text-default)); /// Couleur de la portion remplie de la barre de progression.
@@ -124,6 +125,27 @@ $progress-color: var(--ui-file-upload-item-progress-color, var(--global-text-def
     font-weight: var(--ui-file-upload-meta-weight, var(--weight-light)); /// Graisse des métadonnées.
     line-height: 1.2;
     color: var(--ui-file-upload-list-color, var(--form-high-content-default));
+  }
+
+  // --- Openable name (`openable`) -------------------------------------
+  &-name._button {
+    align-self: flex-start;
+    max-width: 100%;
+    padding: 0;
+    background: none;
+    border: none;
+    border-radius: $name-radius;
+    color: var(--ui-file-upload-list-name-color, var(--actions-low-content-default)); /// Couleur du nom cliquable.
+    text-align: start;
+    text-decoration: underline;
+    cursor: pointer;
+    @include utils.control-transition(color);
+
+    &:hover { color: var(--ui-file-upload-list-name-color-hover, var(--actions-low-content-hover)); } /// Couleur du nom cliquable au survol.
+    &:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 $focus-ring-width var(--ui-file-upload-list-name-focus-ring-color, var(--form-high-stroke-focused)); /// Couleur de l'anneau de focus du nom cliquable.
+    }
   }
 
   // --- Remove button --------------------------------------------------
