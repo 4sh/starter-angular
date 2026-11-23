@@ -21,7 +21,7 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 - **`ui-datepicker` : entrée `defaultViewDate`** (FSHSP-263). Date (`Date` ou ISO
   `"yyyy-MM-dd"`) sur laquelle le calendrier s'ouvre tant que le champ est vide, par exemple
   vers 2000 pour une date de naissance ; la valeur sélectionnée reste prioritaire. Un calendrier
-  `inline` vide l'affiche dès le rendu.
+  `inline` vide l'affiche dès le rendu et y revient quand on le vide.
 
 ### Changed
 

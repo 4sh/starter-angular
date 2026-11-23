@@ -13,7 +13,7 @@
  * overlay container under `document.body`, not in `fixture.nativeElement` — as in
  * `ui-select.spec.ts`, assertions on it query `document` directly.
  */
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { FocusMonitor } from '@angular/cdk/a11y';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
@@ -138,6 +138,44 @@ class DatepickerDefaultViewHost {
   defaultViewDate: Date | string | null = null;
   minDate: Date | string | null = null;
   maxDate: Date | string | null = null;
+}
+
+/** Inline calendar whose lower bound changes after the first render. */
+@Component({
+  imports: [ReactiveFormsModule, UiDatepicker],
+  template: `<ui-datepicker
+    label="Date"
+    valueType="date"
+    locale="fr-FR"
+    [inline]="true"
+    defaultViewDate="2000-01-01"
+    [minDate]="minDate()"
+    [formControl]="control"
+  />`,
+})
+class DatepickerInlineBoundsHost {
+  readonly control = new FormControl<Date | null>(null);
+  readonly minDate = signal<Date | null>(null);
+}
+
+/** Inline calendar whose lower bound is a new `Date` on every change detection. */
+@Component({
+  imports: [ReactiveFormsModule, UiDatepicker],
+  template: `<ui-datepicker
+    label="Date"
+    valueType="date"
+    locale="fr-FR"
+    [inline]="true"
+    defaultViewDate="2000-01-01"
+    [minDate]="minDate"
+    [formControl]="control"
+  />`,
+})
+class DatepickerInlineFreshBoundHost {
+  readonly control = new FormControl<Date | null>(null);
+  get minDate(): Date {
+    return new Date(1990, 0, 1);
+  }
 }
 
 async function setup(initial: Date | null = null) {
@@ -753,6 +791,63 @@ describe('UiDatepicker — month shown while empty (FSHSP-263)', () => {
       h.defaultViewDate = '2000-01-01';
     });
     expect(title(fixture.nativeElement)).toBe('janvier 2000');
+  });
+
+  async function setupInline<T>(host: new () => T) {
+    await TestBed.configureTestingModule({ imports: [host] }).compileComponents();
+    const fixture = TestBed.createComponent(host);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    return { fixture };
+  }
+
+  async function next(fixture: ComponentFixture<unknown>) {
+    const nav = (fixture.nativeElement as HTMLElement).querySelectorAll<HTMLButtonElement>(
+      '.ui-datepicker-nav',
+    );
+    await click(nav[nav.length - 1], fixture);
+  }
+
+  it('keeps the inline view where the user took it when the bounds change', async () => {
+    const { fixture } = await setupInline(DatepickerInlineBoundsHost);
+    await next(fixture);
+    expect(title(fixture.nativeElement)).toBe('février 2000');
+    fixture.componentInstance.minDate.set(new Date(1999, 0, 1));
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(title(fixture.nativeElement)).toBe('février 2000');
+  });
+
+  it('keeps navigating an inline calendar whose bound is rebuilt on every check', async () => {
+    const { fixture } = await setupInline(DatepickerInlineFreshBoundHost);
+    await next(fixture);
+    await next(fixture);
+    expect(title(fixture.nativeElement)).toBe('mars 2000');
+  });
+
+  it('comes back to defaultViewDate once an inline calendar is emptied', async () => {
+    const { fixture, host } = await setupView((h) => {
+      h.inline = true;
+      h.defaultViewDate = '2000-01-01';
+      h.control.setValue(new Date(2026, 6, 8));
+    });
+    expect(title(fixture.nativeElement)).toBe('juillet 2026');
+    host.control.setValue(null);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(title(fixture.nativeElement)).toBe('janvier 2000');
+  });
+
+  it('keeps the inline view when an empty value is written again', async () => {
+    const { fixture, host } = await setupView((h) => {
+      h.inline = true;
+      h.defaultViewDate = '2000-01-01';
+    });
+    await next(fixture);
+    host.control.setValue(null);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(title(fixture.nativeElement)).toBe('février 2000');
   });
 });
 
