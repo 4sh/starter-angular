@@ -114,6 +114,13 @@ dégrade silencieusement en « pas de contrainte » plutôt que de lever une err
 
 <Canvas of={DatepickerStories.MinMax} />
 <Canvas of={DatepickerStories.MinMaxIso} />
+
+Champ vide, le calendrier s'ouvre sur `defaultViewDate` (`Date` ou ISO `"yyyy-MM-dd"`), sinon sur
+aujourd'hui ; une valeur sélectionnée reste toujours prioritaire. Ce mois d'ouverture est ramené
+entre `minDate` et `maxDate`, pour ne jamais ouvrir sur une période non sélectionnable. Cas
+typique : une date de naissance, ouverte vers 2000 plutôt que sur le mois courant.
+
+<Canvas of={DatepickerStories.DefaultViewDate} />
 <Canvas of={DatepickerStories.DisabledWeekends} />
 <Canvas of={DatepickerStories.DisabledDates} />
 <Canvas of={DatepickerStories.ButtonBar} />

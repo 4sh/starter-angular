@@ -5,9 +5,9 @@
  *
  * Covers: `hasValue()`-gated mask on/off (`single` and `range`), the `enforceBounds`/`dataEnd`
  * deletion fixes, re-arming the mask on a manual clear, the in-place-edit suspension and the
- * custom-`dateFormat` field order, which trigger clicks open the panel
- * , and the opening keys / `showOnFocus`. Not covered: `multiple` (no
- * live mask) or the format-hint derivation.
+ * custom-`dateFormat` field order, which trigger clicks open the panel, the opening keys /
+ * `showOnFocus`, and the month an empty field opens on (`defaultViewDate`, bounds). Not covered:
+ * `multiple` (no live mask) or the format-hint derivation.
  *
  * The panel is rendered through a `cdkConnectedOverlay`, so once opened it lives in the global
  * overlay container under `document.body`, not in `fixture.nativeElement` — as in
@@ -116,6 +116,28 @@ class DatepickerNoIconHost {
 })
 class DatepickerShowOnFocusHost {
   readonly control = new FormControl<Date | null>(null);
+}
+
+/** Inputs settable before the first change detection, to pick the month an empty field opens on. */
+@Component({
+  imports: [ReactiveFormsModule, UiDatepicker],
+  template: `<ui-datepicker
+    label="Date"
+    valueType="date"
+    locale="fr-FR"
+    [inline]="inline"
+    [defaultViewDate]="defaultViewDate"
+    [minDate]="minDate"
+    [maxDate]="maxDate"
+    [formControl]="control"
+  />`,
+})
+class DatepickerDefaultViewHost {
+  readonly control = new FormControl<Date | null>(null);
+  inline = false;
+  defaultViewDate: Date | string | null = null;
+  minDate: Date | string | null = null;
+  maxDate: Date | string | null = null;
 }
 
 async function setup(initial: Date | null = null) {
@@ -643,6 +665,94 @@ describe('UiDatepicker — keyboard entry masking (FSHSP-118)', () => {
       await click(input, fixture);
       expect(panel()).not.toBeNull();
     });
+  });
+});
+
+describe('UiDatepicker — month shown while empty (FSHSP-263)', () => {
+  async function setupView(configure: (host: DatepickerDefaultViewHost) => void) {
+    await TestBed.configureTestingModule({
+      imports: [DatepickerDefaultViewHost],
+    }).compileComponents();
+    const fixture = TestBed.createComponent(DatepickerDefaultViewHost);
+    configure(fixture.componentInstance);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    return { fixture, host: fixture.componentInstance };
+  }
+
+  async function openViaIcon(fixture: ComponentFixture<DatepickerDefaultViewHost>) {
+    const icon = fixture.nativeElement.querySelector(
+      '.ui-datepicker-trigger .ui-input-action',
+    ) as HTMLButtonElement;
+    await click(icon, fixture);
+  }
+
+  function title(root: ParentNode = document): string {
+    return root.querySelector('.ui-datepicker-title')?.textContent?.trim().toLowerCase() ?? '';
+  }
+
+  function focusableDay(root: ParentNode = document): string {
+    return root.querySelector('.ui-datepicker-day._focusable')?.textContent?.trim() ?? '';
+  }
+
+  it('opens an empty field on defaultViewDate', async () => {
+    const { fixture } = await setupView((h) => (h.defaultViewDate = '2000-01-01'));
+    await openViaIcon(fixture);
+    expect(title()).toBe('janvier 2000');
+    expect(focusableDay()).toBe('1');
+  });
+
+  it('accepts a Date as well as an ISO string', async () => {
+    const { fixture } = await setupView((h) => (h.defaultViewDate = new Date(1995, 4, 12)));
+    await openViaIcon(fixture);
+    expect(title()).toBe('mai 1995');
+    expect(focusableDay()).toBe('12');
+  });
+
+  it('lets the selected value win over defaultViewDate', async () => {
+    const { fixture } = await setupView((h) => {
+      h.defaultViewDate = '2000-01-01';
+      h.control.setValue(new Date(2026, 6, 8));
+    });
+    await openViaIcon(fixture);
+    expect(title()).toBe('juillet 2026');
+  });
+
+  it('comes back to defaultViewDate once the value is cleared', async () => {
+    const { fixture, host } = await setupView((h) => {
+      h.defaultViewDate = '2000-01-01';
+      h.control.setValue(new Date(2026, 6, 8));
+    });
+    host.control.setValue(null);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    await openViaIcon(fixture);
+    expect(title()).toBe('janvier 2000');
+  });
+
+  it('keeps defaultViewDate within minDate', async () => {
+    const { fixture } = await setupView((h) => {
+      h.defaultViewDate = '2000-01-01';
+      h.minDate = '2010-03-15';
+    });
+    await openViaIcon(fixture);
+    expect(title()).toBe('mars 2010');
+    expect(focusableDay()).toBe('15');
+  });
+
+  it('keeps today within maxDate when no defaultViewDate is set', async () => {
+    const { fixture } = await setupView((h) => (h.maxDate = '2020-02-10'));
+    await openViaIcon(fixture);
+    expect(title()).toBe('février 2020');
+    expect(focusableDay()).toBe('10');
+  });
+
+  it('shows defaultViewDate in an empty inline calendar without opening anything', async () => {
+    const { fixture } = await setupView((h) => {
+      h.inline = true;
+      h.defaultViewDate = '2000-01-01';
+    });
+    expect(title(fixture.nativeElement)).toBe('janvier 2000');
   });
 });
 

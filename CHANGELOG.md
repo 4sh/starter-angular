@@ -16,6 +16,19 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+### Added
+
+- **`ui-datepicker` : entrée `defaultViewDate`** (FSHSP-263). Date (`Date` ou ISO
+  `"yyyy-MM-dd"`) sur laquelle le calendrier s'ouvre tant que le champ est vide, par exemple
+  vers 2000 pour une date de naissance ; la valeur sélectionnée reste prioritaire. Un calendrier
+  `inline` vide l'affiche dès le rendu.
+
+### Changed
+
+- **`ui-datepicker` : le mois d'ouverture d'un champ vide respecte `minDate`/`maxDate`**
+  (FSHSP-263). Il s'ouvrait sur le mois courant même hors de la plage sélectionnable ; il est
+  désormais ramené à la borne la plus proche.
+
 ## [0.16.0] - 2026-10-26
 
 ### Added
