@@ -12,6 +12,7 @@ import {
   linkedSignal,
   LOCALE_ID,
   numberAttribute,
+  OnInit,
   output,
   signal,
   TemplateRef,
@@ -190,7 +191,7 @@ function chunk<T>(items: readonly T[], size: number): T[][] {
     { provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => UiDatepicker), multi: true },
   ],
 })
-export class UiDatepicker extends BaseFormField<DatepickerValue> {
+export class UiDatepicker extends BaseFormField<DatepickerValue> implements OnInit {
   /** Placeholder shown in the trigger when nothing is selected. */
   placeholder = input<string>();
   /** FontAwesome icon of the trigger's toggle button. */
@@ -227,6 +228,11 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   minDate = input<Date | string | null>(null);
   /** Latest selectable date (inclusive). `Date` or ISO `"yyyy-MM-dd"`. */
   maxDate = input<Date | string | null>(null);
+  /**
+   * Date the calendar opens on while the field is empty (a selected value always wins), kept
+   * within `minDate`/`maxDate`. `Date` or ISO `"yyyy-MM-dd"`. Today when unset.
+   */
+  defaultViewDate = input<Date | string | null>(null);
   /** Individual dates to disable. `Date` or ISO `"yyyy-MM-dd"`, mixable. */
   disabledDates = input<(Date | string)[]>([]);
   /** Week days to disable (0 = Sunday … 6 = Saturday). */
@@ -464,6 +470,9 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   /** @ignore `minDate`/`maxDate`/`disabledDates` normalized to `Date` (accept ISO strings too). */
   private readonly resolvedMinDate = computed(() => normalizeDateInput(this.minDate()));
   private readonly resolvedMaxDate = computed(() => normalizeDateInput(this.maxDate()));
+  private readonly resolvedDefaultViewDate = computed(() =>
+    normalizeDateInput(this.defaultViewDate()),
+  );
   private readonly resolvedDisabledDates = computed(() =>
     (this.disabledDates() ?? []).map(normalizeDateInput).filter((d): d is Date => d !== null),
   );
@@ -981,10 +990,15 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
     });
   }
 
+  ngOnInit(): void {
+    if (!this.firstSelectedFrom(this.internalValue() ?? null)) this.showEmptyOpeningDate();
+  }
+
   override writeValue(value: DatepickerValue): void {
     this.typedValue.set(null);
     this.hoursDraft.set(null);
     this.minutesDraft.set(null);
+    const wasEmpty = !this.firstSelectedFrom(this.internalValue() ?? null);
     const internal = this.toInternalValue(value ?? null);
     this.internalValue.set(internal);
     this.modelValue.set(value ?? undefined);
@@ -994,6 +1008,8 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
       this.focusedDate.set(startOfDay(first));
       this.focusedMonthIndex.set(first.getMonth());
       this.focusedYear.set(first.getFullYear());
+    } else if (!wasEmpty) {
+      this.showEmptyOpeningDate();
     }
   }
 
@@ -1011,7 +1027,7 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
    *  (the public `open()` only ever expresses two of the three). */
   private openFrom(origin: DatepickerOpenOrigin): void {
     if (this.inline() || this.isDisabled() || this.readonly() || this.panelOpen()) return;
-    const base = this.firstSelectedFrom(this.internalValue() ?? null) ?? startOfDay(new Date());
+    const base = this.firstSelectedFrom(this.internalValue() ?? null) ?? this.emptyOpeningDate();
     this.viewDate.set(firstOfMonth(base));
     this.currentView.set(this.view());
     this.focusedDate.set(this.clampToRange(startOfDay(base)));
@@ -1801,6 +1817,7 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   /** @ignore */
   protected clear(): void {
     this.commit(null);
+    this.showEmptyOpeningDate();
     this.cleared.emit();
   }
 
@@ -2064,6 +2081,23 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> {
   /** @ignore */
   private queueYearFocus(): void {
     this.queueCellFocus('.ui-datepicker-picker._year .ui-datepicker-cell._focusable');
+  }
+
+  /** @ignore Where an empty field opens: `defaultViewDate`, else today, never out of bounds. */
+  private emptyOpeningDate(): Date {
+    return this.clampToRange(startOfDay(this.resolvedDefaultViewDate() ?? new Date()));
+  }
+
+  /** @ignore Shows {@link emptyOpeningDate} once the field is (again) empty: from the first
+   *  render for an inline calendar, never under the eyes of a user browsing an open panel.
+   *  Not tied to the bounds on purpose, or rebinding them would undo the user's navigation. */
+  private showEmptyOpeningDate(): void {
+    if (this.panelOpen()) return;
+    const base = this.emptyOpeningDate();
+    this.viewDate.set(firstOfMonth(base));
+    this.focusedDate.set(base);
+    this.focusedMonthIndex.set(base.getMonth());
+    this.focusedYear.set(base.getFullYear());
   }
 
   /** @ignore */

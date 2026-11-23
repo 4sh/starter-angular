@@ -99,6 +99,12 @@ const meta: Meta<UiDatepicker> = {
       description: 'Date maximale sélectionnable. `Date` ou ISO `"yyyy-MM-dd"`.',
       table: { type: { summary: 'Date | string | null' } },
     },
+    defaultViewDate: {
+      control: 'text',
+      description:
+        'Mois d\'ouverture du calendrier quand le champ est vide, ramené entre `minDate` et `maxDate`. `Date` ou ISO `"yyyy-MM-dd"`.',
+      table: { type: { summary: 'Date | string | null' } },
+    },
     disabledDates: {
       control: false,
       description: 'Dates ponctuelles désactivées. `Date` ou ISO `"yyyy-MM-dd"`, mixables.',
@@ -387,7 +393,7 @@ const TEMPLATE = `<div style="width:260px"><ui-datepicker
     [showTime]="showTime" [timeOnly]="timeOnly" [hourFormat]="hourFormat" [stepMinute]="stepMinute" [editableTime]="editableTime"
     [showButtonBar]="showButtonBar" [todayLabel]="todayLabel" [clearLabel]="clearLabel"
     [inline]="inline" [showClear]="showClear" [autoFlip]="autoFlip" [closeOnSelect]="closeOnSelect" [allowInput]="allowInput" [showOnFocus]="showOnFocus"
-    [minDate]="minDate" [maxDate]="maxDate" [disabledDays]="disabledDays" [disabledDates]="disabledDates"
+    [minDate]="minDate" [maxDate]="maxDate" [defaultViewDate]="defaultViewDate" [disabledDays]="disabledDays" [disabledDates]="disabledDates"
     [dateFormat]="dateFormat" [parseDate]="parseDate" [panelStyleClass]="panelStyleClass"
     [autocomplete]="autocomplete"
     [required]="required" [disabled]="disabled" [readonly]="readonly" [invalid]="invalid"
@@ -540,6 +546,20 @@ export const MinMaxIso: Story = {
   args: {
     label: 'Date (bornes ISO)',
     helperText: 'minDate/maxDate passées en string "yyyy-MM-dd".',
+    dateFormat: demoDateFormat,
+  },
+};
+
+// Date de naissance : le champ vide s'ouvre sur janvier 2000 plutôt que sur le mois courant.
+// Une fois une date choisie, c'est elle qui fixe le mois d'ouverture.
+export const DefaultViewDate: Story = {
+  render: (args) => ({
+    props: { ...args, model: null, defaultViewDate: '2000-01-01', maxDate: new Date() },
+    template: TEMPLATE,
+  }),
+  args: {
+    label: 'Date de naissance',
+    helperText: "S'ouvre sur janvier 2000 tant que le champ est vide.",
     dateFormat: demoDateFormat,
   },
 };
