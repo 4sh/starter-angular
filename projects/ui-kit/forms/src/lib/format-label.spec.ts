@@ -16,8 +16,20 @@ describe('formatLabel', () => {
 
   it('does not interpret $-sequences in the value (unlike String.replace)', () => {
     // A naive `template.replace('{0}', value)` would treat "$&"/"$0"/"$$" in
-    // `value` as replacement patterns. split/join never does.
+    // `value` as replacement patterns. A replacer function never does.
     expect(formatLabel('Amount: {0}', '$100')).toBe('Amount: $100');
     expect(formatLabel('{0}', '$&')).toBe('$&');
+  });
+
+  it('substitutes each indexed token with its own value', () => {
+    expect(formatLabel('{0} files, {1}', 3, '2 MB')).toBe('3 files, 2 MB');
+  });
+
+  it('never substitutes a token carried by a value', () => {
+    expect(formatLabel('{0} / {1}', '{1}', 'b')).toBe('{1} / b');
+  });
+
+  it('leaves a token without a value as is', () => {
+    expect(formatLabel('{0} and {1}', 'a')).toBe('a and {1}');
   });
 });

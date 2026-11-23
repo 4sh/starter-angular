@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/angular';
 import { moduleMetadata } from '@storybook/angular';
 import { UiFileUpload } from '@4sh/ui-kit/forms/ui-file-upload';
 import { UiFileUploadList } from '@4sh/ui-kit/forms/ui-file-upload';
-import { UiUploadHandlerEvent } from '@4sh/ui-kit/forms/ui-file-upload';
+import { UiStoredFile, UiUploadHandlerEvent } from '@4sh/ui-kit/forms/ui-file-upload';
 
 /**
  * Simulated upload: advances each file's progress on a timer, then marks it
@@ -99,6 +99,18 @@ const meta: Meta<UiFileUpload> = {
       description: 'Nombre maximal de fichiers conservés simultanément.',
       table: { type: { summary: 'number' }, defaultValue: { summary: 'undefined' } },
     },
+    maxTotalSize: {
+      control: false,
+      description:
+        'Taille maximale de toute la sélection, fichiers enregistrés compris, en octets.',
+      table: { type: { summary: 'number' }, defaultValue: { summary: 'undefined' } },
+    },
+    initialFiles: {
+      control: false,
+      description:
+        'Fichiers déjà enregistrés côté serveur, listés avec les nouveaux (statut `completed`, sans `File`). Les changer réinitialise la sélection, sans émettre `filesChange` ; les fichiers locaux pas encore envoyés sont conservés.',
+      table: { type: { summary: 'UiStoredFile[]' }, defaultValue: { summary: '[]' } },
+    },
     url: {
       control: false,
       description: "Point d'accès de l'uploader intégré.",
@@ -129,6 +141,17 @@ const meta: Meta<UiFileUpload> = {
       control: false,
       description: "Affiche les boutons Envoyer/Annuler de la barre d'outils (mode drag).",
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } },
+    },
+    showTotal: {
+      control: { type: 'boolean' },
+      description: 'Affiche le nombre de fichiers et la taille totale sous la liste.',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    openable: {
+      control: { type: 'boolean' },
+      description:
+        'Rend le nom de chaque fichier cliquable : il émet `fileOpen` (aperçu, par exemple).',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     browseLabel: {
       control: false,
@@ -197,6 +220,21 @@ const meta: Meta<UiFileUpload> = {
         defaultValue: { summary: '"Fichier trop volumineux : {0}"' },
       },
     },
+    totalLabel: {
+      control: false,
+      description:
+        'Total sous la liste (`showTotal`), où `{0}` est le nombre de fichiers et `{1}` la taille totale.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"{0} fichiers · {1}"' } },
+    },
+    totalSizeExceededMessage: {
+      control: false,
+      description:
+        'Message de rejet : `maxTotalSize` dépassée, où `{0}` est le nom du fichier et `{1}` la limite.',
+      table: {
+        type: { summary: 'string' },
+        defaultValue: { summary: '"Taille totale dépassée ({1} max) : {0}"' },
+      },
+    },
     limitReachedMessage: {
       control: false,
       description: 'Message de rejet : `fileLimit` atteint, où `{0}` est la limite.',
@@ -223,7 +261,13 @@ const meta: Meta<UiFileUpload> = {
     fileTemplate: {
       control: false,
       description:
-        'Remplace une ligne de fichier (contexte : `{ $implicit: UiUploadFile, remove }`).',
+        'Remplace une ligne de fichier (contexte : `{ $implicit: UiUploadFile, remove, open }`).',
+      table: { type: { summary: 'TemplateRef<unknown>' }, defaultValue: { summary: 'undefined' } },
+    },
+    fileActionsTemplate: {
+      control: false,
+      description:
+        'Actions supplémentaires sur une ligne par défaut, à côté de la corbeille (contexte : `{ $implicit: UiUploadFile, remove, open }`).',
       table: { type: { summary: 'TemplateRef<unknown>' }, defaultValue: { summary: 'undefined' } },
     },
     contentTemplate: {
@@ -305,6 +349,56 @@ export const Advanced: Story = {
     `,
   }),
   args: { mode: 'drag', size: 'default' },
+};
+
+const STORED_FILES: UiStoredFile[] = [
+  { id: 'srv-1', name: 'contrat-signe.pdf', size: 1_258_291, type: 'application/pdf' },
+  { id: 'srv-2', name: 'piece-identite.jpg', size: 734_003, type: 'image/jpeg' },
+];
+
+/**
+ * Edition — les pièces déjà enregistrées (`initialFiles`) sont listées avec les
+ * nouvelles. Le nom ouvre le fichier (`openable` → `fileOpen`), une action « Voir »
+ * s'ajoute à chaque ligne (`fileActionsTemplate`), et le total est plafonné
+ * (`maxTotalSize`) puis affiché (`showTotal`).
+ */
+export const StoredFiles: Story = {
+  render: (args) => ({
+    props: {
+      ...args,
+      storedFiles: STORED_FILES,
+      lastOpened: '',
+      onUploadHandler: simulateUpload,
+    },
+    template: `
+      <div style="width: 460px; max-width: 90vw">
+        <ui-file-upload
+          mode="drag" [multiple]="true" [customUpload]="true" [auto]="true"
+          accept="image/*,.pdf"
+          [maxTotalSize]="5242880"
+          [initialFiles]="storedFiles"
+          [showTotal]="true"
+          [openable]="true"
+          [fileActionsTemplate]="actions"
+          hint="JPG, PNG, PDF · 5 Mo au total"
+          ariaLabel="Pièces du dossier"
+          (uploadHandler)="onUploadHandler($event)"
+          (fileOpen)="lastOpened = $event.name"
+        />
+        <ng-template #actions let-f>
+          <button type="button" class="sb-see" (click)="lastOpened = f.name">Voir</button>
+        </ng-template>
+        <p style="margin-top: 8px; color: var(--global-text-muted)">
+          Dernier fichier ouvert : {{ lastOpened || '—' }}
+        </p>
+        <style>
+          .sb-see { padding:2px 8px; border:none; border-radius:6px; background:transparent;
+            color:var(--actions-low-content-default); font-weight:700; cursor:pointer; }
+        </style>
+      </div>
+    `,
+  }),
+  args: {},
 };
 
 /**

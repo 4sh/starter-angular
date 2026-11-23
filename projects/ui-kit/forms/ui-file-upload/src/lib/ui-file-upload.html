@@ -63,7 +63,7 @@
           }"
         />
       </div>
-    } @else if (showControls() && hasFiles()) {
+    } @else if (showControls() && hasLocalFiles()) {
       <div class="ui-file-upload-toolbar">
         @if (!auto()) {
           <ui-button
@@ -102,14 +102,31 @@
           @if (fileTemplate(); as tpl) {
             <ng-container
               [ngTemplateOutlet]="tpl"
-              [ngTemplateOutletContext]="{ $implicit: f, remove: removeFn }"
+              [ngTemplateOutletContext]="{ $implicit: f, remove: removeFn, open: openFn }"
             />
           } @else {
-            <ui-file-upload-list [file]="f" [size]="size()" (remove)="remove($event)" />
+            <ui-file-upload-list
+              [file]="f"
+              [size]="size()"
+              [openable]="openable()"
+              (remove)="remove($event)"
+              (open)="fileOpen.emit($event)"
+            >
+              @if (fileActionsTemplate(); as actions) {
+                <ng-container
+                  [ngTemplateOutlet]="actions"
+                  [ngTemplateOutletContext]="{ $implicit: f, remove: removeFn, open: openFn }"
+                />
+              }
+            </ui-file-upload-list>
           }
         </li>
       }
     </ul>
+  }
+
+  @if (showTotal()) {
+    <p class="ui-file-upload-total" aria-live="polite">{{ totalSummary() }}</p>
   }
 
   <!-- Validation messages (assertive live region) -->

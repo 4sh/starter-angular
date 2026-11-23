@@ -53,6 +53,36 @@ téléversement automatique, le suivi de progression et les validations.
 
 <Canvas of={FileUploadStories.Advanced} />
 
+## Fichiers existants
+
+En édition, les pièces déjà enregistrées côté serveur se passent dans `initialFiles`
+(`UiStoredFile` : `id`, `name`, `size`, `type` facultatif). Elles s'affichent dans la même
+liste que les nouvelles, au statut `completed` et **sans `File`** (`UiUploadFile.file` est
+alors absent ; `isLocalUploadFile()` fait la distinction). Leur `id` est celui du serveur :
+`removed` et `fileOpen` le rendent tel quel. Changer `initialFiles` remet la sélection dans
+l'état du serveur (par exemple après un enregistrement), sans émettre `filesChange` ; une
+liste reconstruite à l'identique ne touche à rien. Les fichiers locaux pas encore envoyés
+(en attente, en cours, en échec) sont conservés : un envoi lancé pendant le chargement des
+pièces n'est pas perdu.
+
+Une pièce enregistrée ne disparaît que par une action explicite, qui émet `removed` pour que
+le serveur la supprime : sa corbeille, ou son remplacement en mode fichier unique. `clear()`
+et le bouton « Effacer » de la barre d'outils ne vident que les fichiers locaux, et la barre
+n'apparaît qu'en leur présence. L'input caché `name` ne soumet que les fichiers locaux : la
+suppression d'une pièce enregistrée passe par `removed`, pas par un `<form>` natif.
+
+- `openable` rend chaque nom cliquable : il émet `fileOpen` (aperçu, téléchargement).
+- `fileActionsTemplate` ajoute des actions à côté de la corbeille d'une ligne par défaut.
+- `maxTotalSize` plafonne la taille de toute la sélection, pièces enregistrées comprises
+  (`maxFileSize` reste par fichier), hors fichiers en échec d'envoi ; `showTotal` affiche le
+  nombre de fichiers et le total.
+
+Un fichier obtenu hors du sélecteur (photo prise par l'appareil dans une app Capacitor,
+par exemple) passe par `add(files)` : même validation, mêmes messages, puis téléversement
+si `auto`, exactement comme une sélection ou un dépôt.
+
+<Canvas of={FileUploadStories.StoredFiles} />
+
 ## Custom Upload
 
 L'implémentation du téléversement peut être remplacée en activant `customUpload`
@@ -99,6 +129,10 @@ contenu personnalisé dans la barre d'actions.
     <tr>
       <td><strong>Progression</strong></td>
       <td>Chaque ligne en cours affiche un <code>ui-spinner</code> et une barre <code>role="progressbar"</code> (<code>aria-valuenow</code>). Les boutons de suppression sont de vrais <code>&lt;button&gt;</code> nommés (nom du fichier inclus).</td>
+    </tr>
+    <tr>
+      <td><strong>Nom cliquable</strong></td>
+      <td>Avec <code>openable</code>, le nom est un vrai <code>&lt;button&gt;</code> dont le nom accessible (« Ouvrir {0} ») contient le texte visible. Le total (<code>showTotal</code>) est annoncé poliment (<code>aria-live="polite"</code>).</td>
     </tr>
     <tr>
       <td><strong>Erreurs</strong></td>
