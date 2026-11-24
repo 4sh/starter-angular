@@ -28,10 +28,21 @@ class Host {
 describe('ui-image-preview', () => {
   let fixture: ComponentFixture<Host>;
 
-  /** Current `transform` of the enlarged image, as the component wrote it. */
-  const transform = () =>
-    (fixture.nativeElement as HTMLElement).querySelector<HTMLElement>('.ui-image-preview-media')!
-      .style.transform;
+  /**
+   * Current `transform` of the enlarged image, read back as numbers: the serialized value is
+   * shortened (`translate(0px, 0px)` → `translate(0px)`, as a browser does, and jsdom since 31),
+   * so comparing strings would test the serializer rather than the component.
+   */
+  const view = () => {
+    const value = (fixture.nativeElement as HTMLElement).querySelector<HTMLElement>(
+      '.ui-image-preview-media',
+    )!.style.transform;
+    const args = (fn: string) =>
+      (new RegExp(`${fn}\\(([^)]*)\\)`).exec(value)?.[1] ?? '').split(',').map(parseFloat);
+    const [x = 0, y = 0] = args('translate');
+    return { x, y, scale: args('scale')[0], rotate: args('rotate')[0] };
+  };
+  const NEUTRAL = { x: 0, y: 0, scale: 1, rotate: 0 };
 
   /** Toolbar button carrying `label` as its accessible name. */
   const action = (label: string) =>
@@ -51,42 +62,42 @@ describe('ui-image-preview', () => {
   });
 
   it('starts neutral, with reset unavailable', () => {
-    expect(transform()).toBe('translate(0px, 0px) scale(1) rotate(0deg)');
+    expect(view()).toEqual(NEUTRAL);
     expect(action('Réinitialiser l’affichage').getAttribute('aria-disabled')).toBe('true');
   });
 
   it('zooms in by one step and stops at maxZoom', () => {
     action('Zoom avant').click();
     fixture.detectChanges();
-    expect(transform()).toContain('scale(1.5)');
+    expect(view().scale).toBe(1.5);
 
     action('Zoom avant').click();
     fixture.detectChanges();
-    expect(transform()).toContain('scale(2)');
+    expect(view().scale).toBe(2);
     // Clamped: a further press is a no-op rather than an overshoot.
     expect(action('Zoom avant').getAttribute('aria-disabled')).toBe('true');
     action('Zoom avant').click();
     fixture.detectChanges();
-    expect(transform()).toContain('scale(2)');
+    expect(view().scale).toBe(2);
   });
 
   it('zooms out down to minZoom', () => {
     action('Zoom arrière').click();
     action('Zoom arrière').click();
     fixture.detectChanges();
-    expect(transform()).toContain('scale(0.5)');
+    expect(view().scale).toBe(0.5);
     expect(action('Zoom arrière').getAttribute('aria-disabled')).toBe('true');
   });
 
   it('rotates both ways by 90°', () => {
     action('Pivoter vers la droite').click();
     fixture.detectChanges();
-    expect(transform()).toContain('rotate(90deg)');
+    expect(view().rotate).toBe(90);
 
     action('Pivoter vers la gauche').click();
     action('Pivoter vers la gauche').click();
     fixture.detectChanges();
-    expect(transform()).toContain('rotate(-90deg)');
+    expect(view().rotate).toBe(-90);
   });
 
   it('resets zoom, rotation and pan at once', () => {
@@ -94,11 +105,11 @@ describe('ui-image-preview', () => {
     action('Pivoter vers la droite').click();
     press('ArrowRight');
     fixture.detectChanges();
-    expect(transform()).not.toBe('translate(0px, 0px) scale(1) rotate(0deg)');
+    expect(view()).toEqual({ x: 24, y: 0, scale: 1.5, rotate: 90 });
 
     action('Réinitialiser l’affichage').click();
     fixture.detectChanges();
-    expect(transform()).toBe('translate(0px, 0px) scale(1) rotate(0deg)');
+    expect(view()).toEqual(NEUTRAL);
   });
 
   it('drops the pan offset when the image is zoomed back to fit', () => {
@@ -106,26 +117,26 @@ describe('ui-image-preview', () => {
     press('ArrowRight');
     press('ArrowDown');
     fixture.detectChanges();
-    expect(transform()).toContain('translate(24px, 24px)');
+    expect(view()).toMatchObject({ x: 24, y: 24 });
 
     action('Zoom arrière').click();
     fixture.detectChanges();
     // Back at scale 1 the offset would strand the image off-centre.
-    expect(transform()).toBe('translate(0px, 0px) scale(1) rotate(0deg)');
+    expect(view()).toEqual(NEUTRAL);
   });
 
   it('drives zoom, rotation and reset from the keyboard', () => {
     press('+');
     fixture.detectChanges();
-    expect(transform()).toContain('scale(1.5)');
+    expect(view().scale).toBe(1.5);
 
     press('r');
     fixture.detectChanges();
-    expect(transform()).toContain('rotate(90deg)');
+    expect(view().rotate).toBe(90);
 
     press('0');
     fixture.detectChanges();
-    expect(transform()).toBe('translate(0px, 0px) scale(1) rotate(0deg)');
+    expect(view()).toEqual(NEUTRAL);
   });
 
   it('asks to close on Escape and on the close action', () => {
