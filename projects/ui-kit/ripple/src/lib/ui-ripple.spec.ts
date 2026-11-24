@@ -77,11 +77,12 @@ describe('Ripple activation', () => {
     expect(layer?.getAttribute('aria-hidden')).toBe('true');
     expect(inks(target)).toBe(1);
 
-    // farthest corner from (30, 20) in a 120x40 box: hypot(90, 20)
+    // farthest corner from (30, 20) in a 120x40 box: hypot(90, 20). Read back as numbers: the
+    // serialized length is rounded (as a browser does, and jsdom since 31).
     const ink = layer?.firstElementChild as HTMLElement;
     const radius = Math.hypot(90, 20);
-    expect(ink.style.width).toBe(`${radius * 2}px`);
-    expect(ink.style.left).toBe(`${30 - radius}px`);
+    expect(parseFloat(ink.style.width)).toBeCloseTo(radius * 2, 2);
+    expect(parseFloat(ink.style.left)).toBeCloseTo(30 - radius, 2);
   });
 
   it('[uiRippleScope] ripples the pressed descendant, never the container', () => {
