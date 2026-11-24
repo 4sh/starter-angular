@@ -46,10 +46,12 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
     — `required` fonctionne tel quel. Elle est émise **en fin de trait**, jamais pendant.
   - **Deux encres** : à l'écran elle suit les jetons, thème sombre compris ; l'export est peint
     en `exportColor` (`black`) sur fond transparent. Une signature tracée en thème sombre
-    sortait sinon en blanc, illisible sur un PDF.
-  - **Un cadre fixe** : la taille de la boîte au premier trait devient celui de la signature.
-    Une boîte qui change ensuite de taille (téléphone pivoté) met le tracé à l'échelle au lieu
-    d'en rogner une partie de la valeur émise.
+    sortait sinon en blanc, illisible sur un PDF. `exportColor` accepte un token
+    (`var(--…)`), résolu en `rgb()` avant d'être écrit dans l'image.
+  - **Ce qui est à l'écran est exporté** : la boîte au premier trait devient la zone de la
+    signature, et le cadre exporté s'étend à chaque trait. Une boîte qui change ensuite de
+    taille (téléphone pivoté) remet le tracé à l'échelle, et un trait posé dans la marge qui
+    en résulte agrandit le cadre au lieu de sortir de la valeur.
   - Une valeur reçue du formulaire doit être une **data URL d'image** (une URL distante est
     ignorée, avec un avertissement en dev : elle contaminerait l'export). Elle s'affiche en
     silhouette dans l'encre courante et reste sous les nouveaux traits jusqu'à un effacement ;

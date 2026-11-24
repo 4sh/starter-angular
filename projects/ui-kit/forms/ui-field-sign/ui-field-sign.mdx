@@ -33,7 +33,9 @@ clear or undo — never while drawing: a form bound to an autosave would otherwi
 image per pointer move.
 
 `format="png"` (default) exports an image twice as dense as the drawing frame, the same on
-every device; `format="svg"` exports a vector path, lighter and sharp at any scale.
+every device; `format="svg"` exports a vector path, lighter and sharp at any scale. Where the
+browser cannot produce the PNG — no 2D canvas, or a canvas it refuses to read back — the field
+emits the SVG instead rather than nothing: check the MIME type of the data URL, not `format`.
 
 <Canvas of={SignStories.Svg} />
 
@@ -42,20 +44,30 @@ every device; `format="svg"` exports a vector path, lighter and sharp at any sca
 On screen the ink follows the tokens (`--form-high-content-default`), dark theme included.
 The export is painted with **`exportColor`** (`black` by default) on a **transparent
 background**: a signature drawn in dark mode would otherwise come out white, unreadable on
-the PDF it is meant for. A value the browser does not take as a colour falls back to `black`
-— an invalid `stroke` would make the SVG export invisible.
+the PDF it is meant for.
+
+`exportColor` takes any CSS colour, **a design token included**: it is resolved to `rgb()`
+where the field sits before being written into the image, since a `var()` inside an exported
+SVG resolves to nothing and the stroke would not be painted at all. A value that is not a
+colour, or a token that does not resolve, falls back to `black` (with a warning in
+development).
+
+Pick a value that **does not change with the theme**: it is resolved at export time, so a
+semantic token that flips in dark mode would flip the exported ink with it — the very trap the
+two inks are there to avoid.
 
 ```html
-<ui-field-sign label="Signature" exportColor="#1d3b8f" [(ngModel)]="signature" />
+<ui-field-sign label="Signature" exportColor="var(--app-signature-ink)" [(ngModel)]="signature" />
 ```
 
-### A fixed frame
+### What is on screen is what is exported
 
-The size of the box at the **first stroke** becomes the signature's frame: the strokes are
-stored in it, the screen fits it into the box (scaled, centred) and the export is always that
-size. A box that changes size afterwards — a phone rotated halfway through — scales the
-drawing instead of cropping part of it out of the value. Clearing the field releases the
-frame; the next stroke takes the box as it is then.
+The box at the **first stroke** becomes the signature's region; the exported frame is that
+region **grown to every stroke**. When the box changes size afterwards — a phone rotated
+halfway through — the frame is refitted into it (scaled, centred), and a stroke drawn in the
+room this leaves around it grows the frame instead of falling outside the value. A pointer
+dragged past the edge draws along it: nothing drawn can be invisible, nothing visible can be
+lost. Clearing the field releases the region; the next stroke takes the box as it is then.
 
 ### Value written by the form
 
@@ -71,6 +83,10 @@ field; it is fitted to the frame, keeping its proportions. An image that cannot 
 leaves the field empty rather than announced as signed over a blank box. In PNG, a stroke
 drawn before the previous signature has loaded is held until it has: the export never drops
 it.
+
+The field does not sanitize what it receives, nor what it emits: it is not a security
+boundary. Treat the value as untrusted on the server — check its MIME type and size, and
+rasterise an SVG before embedding it in a document.
 
 <Canvas of={SignStories.WithValue} />
 
@@ -94,8 +110,8 @@ it.
 
 - Strokes are **smoothed** (quadratic curves between segment midpoints) and follow the device
   at its own rate (`getCoalescedEvents`), not the screen's.
-- `touch-action: none` on the area: **the page does not scroll** under the finger while
-  signing, and the pointer is captured until released, even when it leaves the box. A lost
+- `touch-action: none` on the area while it can be signed: **the page does not scroll**
+  under the finger while signing (a `readonly` or `disabled` signature lets it scroll), and the pointer is captured until released, even when it leaves the box. A lost
   capture ends the stroke like a release.
 - A second finger put down during a stroke is ignored, and so is any button but the main one
   (right-click, stylus eraser).

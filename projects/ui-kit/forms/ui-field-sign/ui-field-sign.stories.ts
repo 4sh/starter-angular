@@ -37,7 +37,7 @@ const meta: Meta<UiFieldSign> = {
     exportColor: {
       control: 'color',
       description:
-        'Ink colour **of the export** (any CSS colour; `black` when invalid). The screen ink follows the tokens.',
+        'Ink colour **of the export**: any CSS colour, `var(--token)` included (resolved to `rgb()`); `black` when invalid. The screen ink follows the tokens.',
       table: { type: { summary: 'string' }, defaultValue: { summary: '"black"' } },
     },
     placeholder: {

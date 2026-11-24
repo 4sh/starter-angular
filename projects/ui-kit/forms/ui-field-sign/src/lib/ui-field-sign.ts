@@ -22,10 +22,13 @@ import { UiIcon, type UiIconSize } from '@4sh/ui-kit/base/ui-icon';
 import {
   containRect,
   type SignPoint,
+  type SignRect,
   type SignStroke,
+  strokesBounds,
   strokesToSvg,
   svgToDataUrl,
   traceStroke,
+  unionRect,
 } from './ui-field-sign-strokes';
 
 /** Image format of the emitted value. */
@@ -51,10 +54,17 @@ const FALLBACK_INK_WIDTH = 2;
  */
 const ACCEPTED_VALUE = /^data:image\/(png|jpeg|webp|svg\+xml)[;,]/i;
 
-/** Size of the drawing frame, in CSS pixels. */
-interface SignFrame {
-  readonly width: number;
-  readonly height: number;
+/**
+ * Colour a probe inherits when `exportColor` does not resolve (a `var()` with no value): an
+ * unlikely `rgb()` that tells "unresolved" apart from a genuine black.
+ */
+const UNRESOLVED_COLOR = 'rgb(1, 2, 3)';
+
+/** Where drawing space sits in the box: `box = drawing × scale + (x, y)`. */
+interface SignView {
+  readonly scale: number;
+  readonly x: number;
+  readonly y: number;
 }
 
 /** A previous signature received from the form, kept underneath the new strokes. */
@@ -68,7 +78,7 @@ interface SignBackground {
 interface SignSnapshot {
   readonly strokes: readonly SignStroke[];
   readonly background: SignBackground | null;
-  readonly frame: SignFrame | null;
+  readonly region: SignRect | null;
 }
 
 /**
@@ -85,10 +95,11 @@ interface SignSnapshot {
  *    theme included; the export is painted with `exportColor` on a transparent background.
  *    A signature drawn in dark mode would otherwise come out white — invisible on the PDF it
  *    is meant for.
- * 3. **The signature has a fixed frame.** The box size at the first stroke becomes the
- *    frame: points are stored in it, the screen fits it into the box (`contain`) and the
- *    export is always that size. A box that shrinks afterwards (a phone rotated mid-way)
- *    scales the drawing down instead of cropping it out of the value.
+ * 3. **What is on screen is what is exported.** The box at the first stroke is the
+ *    signature's region; the exported frame is that region grown to every stroke. A resized
+ *    box (a phone rotated) refits the frame, scaled and centred — and a stroke drawn in the
+ *    room this leaves around it grows the frame instead of falling outside the value. Points
+ *    are clamped to the box: nothing drawn can be invisible, nothing visible can be lost.
  * 4. **The page does not scroll under the pen.** `touch-action: none` on the drawing area,
  *    pointer capture for the whole stroke.
  *
@@ -109,10 +120,14 @@ interface SignSnapshot {
   ],
 })
 export class UiFieldSign extends BaseFormField<FieldSignValue> {
+  /**
+   * Ink colour of the **export**: any CSS colour, `var(--token)` included — resolved to
+   * `rgb()` where the field sits. `black` when it is not a colour or does not resolve. The
+   * screen ink follows the tokens.
+   */
+  exportColor = input<string>('black');
   /** Image format of the emitted data URL. */
   format = input<FieldSignFormat>('png');
-  /** Ink colour of the **export** (any CSS colour). The screen ink follows the tokens. */
-  exportColor = input<string>('black');
   /** Hint shown in the empty box. */
   placeholder = input<string>('Signez ici');
   /** Renders the button that clears the signature. */
@@ -134,9 +149,11 @@ export class UiFieldSign extends BaseFormField<FieldSignValue> {
   /** @ignore */
   private readonly canvasEl = viewChild.required<ElementRef<HTMLCanvasElement>>('canvasEl');
   /** @ignore */
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+  /** @ignore */
   private readonly document = inject(DOCUMENT);
 
-  /** @ignore Finished strokes, oldest first, in frame coordinates — `undo()` pops from the end. */
+  /** @ignore Finished strokes, oldest first, in drawing space — `undo()` pops from the end. */
   protected readonly strokes = signal<readonly SignStroke[]>([]);
   /** @ignore A value received from the form, drawn underneath the strokes. */
   protected readonly background = signal<SignBackground | null>(null);
@@ -162,19 +179,14 @@ export class UiFieldSign extends BaseFormField<FieldSignValue> {
   protected readonly describedByIds = computed(() =>
     [this.statusId(), this.displayMessage() ? this.messageId() : null].filter(Boolean).join(' '),
   );
-  /** @ignore `exportColor`, or `black` when the browser does not take it as a colour: an
-   *  invalid `stroke` would make the SVG export invisible, the PNG one silently black. */
-  private readonly resolvedExportColor = computed(() => {
-    const color = this.exportColor();
-    if (typeof CSS === 'undefined' || !CSS.supports) return color;
-    if (CSS.supports('color', color)) return color;
-    if (isDevMode())
-      console.warn(`[ui-field-sign] Invalid \`exportColor\` "${color}": using black.`);
-    return 'black';
-  });
 
-  /** @ignore Frame the strokes live in; `null` until the first stroke (the box stands in). */
-  private frame: SignFrame | null = null;
+  /**
+   * @ignore The box at the first stroke: where the previous signature is fitted, and the
+   * smallest frame the export can have. `null` until a stroke (the box stands in).
+   */
+  private region: SignRect | null = null;
+  /** @ignore Drawing space → box. Changes on resize only, never under the pen. */
+  private view: SignView = { scale: 1, x: 0, y: 0 };
   /** @ignore What the last `clear()` removed, for `undo()`. */
   private cleared: SignSnapshot | null = null;
   /** @ignore The stroke under the pen — plain array, mutated per pointer move. */
@@ -188,8 +200,13 @@ export class UiFieldSign extends BaseFormField<FieldSignValue> {
   private boxHeight = 0;
   /** @ignore `undefined` = not asked yet; `null` = no 2D canvas here (tests, old engines). */
   private context: CanvasRenderingContext2D | null | undefined;
-  /** @ignore Previous signature recoloured in the screen ink, rebuilt only when its key changes. */
-  private silhouette: { key: string; canvas: HTMLCanvasElement } | null = null;
+  /** @ignore Previous signature recoloured in the screen ink, rebuilt only when its inputs change. */
+  private silhouette: {
+    image: HTMLImageElement;
+    color: string;
+    key: string;
+    canvas: HTMLCanvasElement;
+  } | null = null;
   /** @ignore Last value this field emitted — see {@link writeValue}. */
   private lastEmitted: FieldSignValue | undefined;
   /** @ignore A stroke ended while the previous signature was still loading (PNG export). */
@@ -266,7 +283,7 @@ export class UiFieldSign extends BaseFormField<FieldSignValue> {
     this.activePointerId = null;
     this.commitPending = false;
     this.cleared = null;
-    this.frame = null;
+    this.setRegion(null);
     this.drawing.set(false);
     this.strokes.set([]);
     this.background.set(next ? { src: next, image: null } : null);
@@ -275,9 +292,11 @@ export class UiFieldSign extends BaseFormField<FieldSignValue> {
 
   /** Removes the whole signature, previous one included, and emits `null`. `undo()` brings it back. */
   clear(): void {
-    if (this.isEmpty()) return;
-    this.cleared = { strokes: this.strokes(), background: this.background(), frame: this.frame };
-    this.frame = null;
+    // Not under the pen: emptying mid-stroke would emit a blank image that `required` takes
+    // for a signature.
+    if (this.isEmpty() || this.drawing()) return;
+    this.cleared = { strokes: this.strokes(), background: this.background(), region: this.region };
+    this.setRegion(null);
     this.strokes.set([]);
     this.background.set(null);
     this.commit();
@@ -289,18 +308,21 @@ export class UiFieldSign extends BaseFormField<FieldSignValue> {
    * removes it.
    */
   undo(): void {
+    if (this.drawing()) return;
     if (this.strokes().length > 0) {
       this.strokes.update((s) => s.slice(0, -1));
     } else if (this.cleared) {
-      const { strokes, background, frame } = this.cleared;
+      const { strokes, background, region } = this.cleared;
       this.cleared = null;
-      this.frame = frame;
+      this.setRegion(region);
       this.strokes.set(strokes);
       this.background.set(background);
+      // Cleared before it had loaded: its `onload` was dropped meanwhile, ask again.
+      if (background && !background.image) this.loadBackground(background.src);
     } else {
       return;
     }
-    if (this.strokes().length === 0 && !this.background()) this.frame = null;
+    if (this.strokes().length === 0 && !this.background()) this.setRegion(null);
     this.commit();
   }
 
@@ -333,7 +355,7 @@ export class UiFieldSign extends BaseFormField<FieldSignValue> {
     canvas.focus({ preventScroll: true });
     canvas.setPointerCapture?.(event.pointerId);
 
-    this.frame ??= { width: this.boxWidth, height: this.boxHeight };
+    if (!this.region) this.setRegion(this.boxRect());
     this.activePointerId = event.pointerId;
     this.padRect = canvas.getBoundingClientRect();
     this.current = [this.toPoint(event)];
@@ -413,39 +435,41 @@ export class UiFieldSign extends BaseFormField<FieldSignValue> {
   /** @ignore */
   private export(): string {
     const lineWidth = this.inkWidth();
+    const color = this.resolveExportColor();
     if (this.format() === 'png') {
-      const png = this.exportPng(lineWidth);
+      const png = this.exportPng(color, lineWidth);
       if (png) return png;
       // No 2D canvas here, or a canvas the browser refuses to read back: SVG needs neither.
     }
-    const frame = this.currentFrame();
+    const bg = this.background();
     return svgToDataUrl(
       strokesToSvg(this.strokes(), {
-        width: frame.width,
-        height: frame.height,
-        color: this.resolvedExportColor(),
+        frame: this.frame(lineWidth),
+        color,
         lineWidth,
-        background: this.background()?.src,
+        background: bg ? { href: bg.src, rect: this.backgroundSlot() } : null,
       }),
     );
   }
 
   /** @ignore Repaints on a detached canvas, in the export ink and without the tint. */
-  private exportPng(lineWidth: number): string | null {
-    const { width, height } = this.currentFrame();
-    if (width <= 0 || height <= 0) return null;
+  private exportPng(color: string, lineWidth: number): string | null {
+    const frame = this.frame(lineWidth);
+    if (frame.width <= 0 || frame.height <= 0) return null;
     const canvas = this.document.createElement('canvas');
-    canvas.width = Math.round(width * PNG_EXPORT_SCALE);
-    canvas.height = Math.round(height * PNG_EXPORT_SCALE);
+    canvas.width = Math.round(frame.width * PNG_EXPORT_SCALE);
+    canvas.height = Math.round(frame.height * PNG_EXPORT_SCALE);
     const ctx = canvas.getContext('2d');
     if (!ctx) return null;
     ctx.scale(PNG_EXPORT_SCALE, PNG_EXPORT_SCALE);
+    ctx.translate(-frame.x, -frame.y);
     const image = this.background()?.image;
     if (image) {
-      const r = containRect(image.naturalWidth, image.naturalHeight, width, height);
-      ctx.drawImage(image, r.x, r.y, r.width, r.height);
+      const slot = this.backgroundSlot();
+      const r = containRect(image.naturalWidth, image.naturalHeight, slot.width, slot.height);
+      ctx.drawImage(image, slot.x + r.x, slot.y + r.y, r.width, r.height);
     }
-    this.paintStrokes(ctx, this.strokes(), this.resolvedExportColor(), lineWidth);
+    this.paintStrokes(ctx, this.strokes(), color, lineWidth);
     try {
       return canvas.toDataURL('image/png');
     } catch {
@@ -456,12 +480,39 @@ export class UiFieldSign extends BaseFormField<FieldSignValue> {
     }
   }
 
+  /**
+   * @ignore `exportColor` resolved where the field sits — a `var(--token)` included — into
+   * an `rgb()` an image can carry: a `var()` in an SVG served as an image resolves to nothing,
+   * and the stroke would not be painted at all. `black` when the value is not a colour or
+   * does not resolve.
+   */
+  private resolveExportColor(): string {
+    const value = this.exportColor();
+    const host = this.host.nativeElement;
+    if (typeof getComputedStyle === 'undefined' || !host.isConnected) return value || 'black';
+    const outer = this.document.createElement('span');
+    const probe = this.document.createElement('span');
+    outer.style.color = UNRESOLVED_COLOR;
+    outer.hidden = true;
+    probe.style.color = value;
+    const parsed = probe.style.color !== '';
+    outer.appendChild(probe);
+    host.appendChild(outer);
+    const resolved = getComputedStyle(probe).color;
+    outer.remove();
+    if (parsed && resolved && resolved !== UNRESOLVED_COLOR) return resolved;
+    if (isDevMode())
+      console.warn(`[ui-field-sign] \`exportColor\` "${value}" is not a colour here: using black.`);
+    return 'black';
+  }
+
   /** @ignore */
   private loadBackground(src: string): void {
     if (typeof Image === 'undefined') return;
     const image = new Image();
     image.onload = () => {
-      this.background.update((bg) => (bg?.src === src ? { src, image } : bg));
+      if (this.background()?.src !== src) return;
+      this.background.set({ src, image });
       if (this.commitPending) this.commit();
     };
     image.onerror = () => {
@@ -469,40 +520,73 @@ export class UiFieldSign extends BaseFormField<FieldSignValue> {
       if (isDevMode()) console.warn('[ui-field-sign] The previous signature could not be loaded.');
       // Shown empty rather than announced as signed over a blank box.
       this.background.set(null);
-      if (this.strokes().length === 0) this.frame = null;
+      if (this.strokes().length === 0) this.setRegion(null);
       if (this.commitPending) this.commit();
     };
     image.src = src;
   }
 
-  // --- Rendering -----------------------------------------------------------
+  // --- Geometry ------------------------------------------------------------
 
-  /** @ignore The frame in force: the one set at the first stroke, or the box until then. */
-  private currentFrame(): SignFrame {
-    return this.frame ?? { width: this.boxWidth, height: this.boxHeight };
+  /** @ignore The whole box, in box coordinates. */
+  private boxRect(): SignRect {
+    return { x: 0, y: 0, width: this.boxWidth, height: this.boxHeight };
   }
 
-  /** @ignore Where the frame sits in the box: scaled to fit, centred. */
-  private frameView(): { scale: number; x: number; y: number } {
-    const frame = this.currentFrame();
-    if (frame.width <= 0 || frame.height <= 0) return { scale: 1, x: 0, y: 0 };
+  /** @ignore Sets the region and fits the view on it: identity when it is the box itself. */
+  private setRegion(region: SignRect | null): void {
+    this.region = region;
+    this.fitView();
+  }
+
+  /**
+   * @ignore The exported frame: the region grown to every stroke (half the ink width around
+   * them, so round caps are not shaved). The box until a first stroke.
+   */
+  private frame(lineWidth = this.inkWidth()): SignRect {
+    if (!this.region) return this.boxRect();
+    return unionRect(this.region, strokesBounds(this.strokes(), lineWidth / 2));
+  }
+
+  /** @ignore Where the previous signature is fitted: the region, or the box until a stroke. */
+  private backgroundSlot(): SignRect {
+    return this.region ?? this.boxRect();
+  }
+
+  /** @ignore Fits the frame into the box, scaled and centred. Called on resize, never mid-stroke. */
+  private fitView(): void {
+    if (!this.region) {
+      this.view = { scale: 1, x: 0, y: 0 };
+      return;
+    }
+    const frame = this.frame();
+    if (frame.width <= 0 || frame.height <= 0 || this.boxWidth <= 0 || this.boxHeight <= 0) {
+      this.view = { scale: 1, x: -frame.x, y: -frame.y };
+      return;
+    }
     const r = containRect(frame.width, frame.height, this.boxWidth, this.boxHeight);
-    return { scale: r.width / frame.width, x: r.x, y: r.y };
+    const scale = r.width / frame.width;
+    this.view = { scale, x: r.x - frame.x * scale, y: r.y - frame.y * scale };
   }
 
-  /** @ignore Pointer position → frame coordinates. */
+  /**
+   * @ignore Pointer position → drawing space, clamped to the box: a captured pointer dragged
+   * past the edge draws along it, never somewhere the screen does not show.
+   */
   private toPoint(event: PointerEvent): SignPoint {
     const rect = this.padRect;
     const canvas = this.canvasEl().nativeElement;
     // Screen pixels → CSS pixels of the box, should an ancestor scale it.
     const css = rect && rect.width > 0 ? canvas.clientWidth / rect.width || 1 : 1;
-    const x = rect ? (event.clientX - rect.left) * css : event.offsetX;
-    const y = rect ? (event.clientY - rect.top) * css : event.offsetY;
-    const view = this.frameView();
-    return { x: (x - view.x) / view.scale, y: (y - view.y) / view.scale };
+    const rawX = rect ? (event.clientX - rect.left) * css : event.offsetX;
+    const rawY = rect ? (event.clientY - rect.top) * css : event.offsetY;
+    const x = this.boxWidth > 0 ? Math.min(Math.max(rawX, 0), this.boxWidth) : rawX;
+    const y = this.boxHeight > 0 ? Math.min(Math.max(rawY, 0), this.boxHeight) : rawY;
+    const { scale, x: dx, y: dy } = this.view;
+    return { x: (x - dx) / scale, y: (y - dy) / scale };
   }
 
-  /** @ignore Size the bitmap on the CSS box × device pixel ratio: sharp on every screen. */
+  /** @ignore Size the bitmap on the CSS box × device pixel ratio, and refit the view. */
   private measure(): void {
     const canvas = this.canvasEl().nativeElement;
     this.boxWidth = canvas.clientWidth;
@@ -510,7 +594,11 @@ export class UiFieldSign extends BaseFormField<FieldSignValue> {
     const ratio = window.devicePixelRatio || 1;
     canvas.width = Math.max(1, Math.round(this.boxWidth * ratio));
     canvas.height = Math.max(1, Math.round(this.boxHeight * ratio));
+    // Not mid-stroke: the points already drawn would no longer line up with the pen.
+    if (!this.drawing()) this.fitView();
   }
+
+  // --- Rendering -----------------------------------------------------------
 
   /** @ignore One repaint per frame, however many pointer moves arrive in it. */
   private scheduleRedraw(): void {
@@ -530,10 +618,9 @@ export class UiFieldSign extends BaseFormField<FieldSignValue> {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Everything below is drawn in frame coordinates.
-    const view = this.frameView();
-    const k = ratio * view.scale;
-    ctx.setTransform(k, 0, 0, k, ratio * view.x, ratio * view.y);
+    // Everything below is drawn in drawing space.
+    const k = ratio * this.view.scale;
+    ctx.setTransform(k, 0, 0, k, ratio * this.view.x, ratio * this.view.y);
 
     const color = this.inkColor();
     const image = this.background()?.image;
@@ -563,8 +650,9 @@ export class UiFieldSign extends BaseFormField<FieldSignValue> {
   /**
    * @ignore The previous signature, recoloured in the screen ink: drawn on a scratch canvas,
    * then `source-in` keeps its shape and replaces its colour. A black export stays legible on
-   * a dark field this way. The scratch canvas is cached — rebuilt only when the image, the
-   * ink or the pixel size changes, never per frame while a stroke is drawn over it.
+   * a dark field this way. The scratch canvas is cached — rebuilt only when the image (by
+   * identity: each value gets its own element), the ink or the pixel size changes, never per
+   * frame while a stroke is drawn over it.
    */
   private paintSilhouette(
     ctx: CanvasRenderingContext2D,
@@ -572,23 +660,24 @@ export class UiFieldSign extends BaseFormField<FieldSignValue> {
     color: string,
     pixelScale: number,
   ): void {
-    const { width, height } = this.currentFrame();
-    const key = `${image.src.length}:${image.src.slice(-32)}|${color}|${width}x${height}@${pixelScale}`;
-    if (this.silhouette?.key !== key) {
+    const slot = this.backgroundSlot();
+    const key = `${slot.width}x${slot.height}@${pixelScale}`;
+    const cached = this.silhouette;
+    if (cached?.image !== image || cached.color !== color || cached.key !== key) {
       const scratch = this.document.createElement('canvas');
-      scratch.width = Math.max(1, Math.round(width * pixelScale));
-      scratch.height = Math.max(1, Math.round(height * pixelScale));
+      scratch.width = Math.max(1, Math.round(slot.width * pixelScale));
+      scratch.height = Math.max(1, Math.round(slot.height * pixelScale));
       const s = scratch.getContext('2d');
       if (!s) return;
-      const r = containRect(image.naturalWidth, image.naturalHeight, width, height);
+      const r = containRect(image.naturalWidth, image.naturalHeight, slot.width, slot.height);
       s.setTransform(pixelScale, 0, 0, pixelScale, 0, 0);
       s.drawImage(image, r.x, r.y, r.width, r.height);
       s.globalCompositeOperation = 'source-in';
       s.fillStyle = color;
-      s.fillRect(0, 0, width, height);
-      this.silhouette = { key, canvas: scratch };
+      s.fillRect(0, 0, slot.width, slot.height);
+      this.silhouette = { image, color, key, canvas: scratch };
     }
-    ctx.drawImage(this.silhouette.canvas, 0, 0, width, height);
+    ctx.drawImage(this.silhouette!.canvas, slot.x, slot.y, slot.width, slot.height);
   }
 
   /** @ignore */

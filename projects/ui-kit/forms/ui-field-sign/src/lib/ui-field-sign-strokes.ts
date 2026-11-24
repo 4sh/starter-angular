@@ -85,18 +85,69 @@ export function strokeToPath(stroke: SignStroke): string {
   return builder.toString();
 }
 
+/** An axis-aligned rectangle, in CSS pixels of the drawing space. */
+export interface SignRect {
+  readonly x: number;
+  readonly y: number;
+  readonly width: number;
+  readonly height: number;
+}
+
+/**
+ * Bounding box of every point of `strokes`, grown by `pad` on each side (half the ink width,
+ * so a round cap is not shaved off). `null` when there is no point at all.
+ */
+export function strokesBounds(strokes: readonly SignStroke[], pad = 0): SignRect | null {
+  let minX = Infinity;
+  let minY = Infinity;
+  let maxX = -Infinity;
+  let maxY = -Infinity;
+  for (const stroke of strokes) {
+    for (const { x, y } of stroke) {
+      if (x < minX) minX = x;
+      if (y < minY) minY = y;
+      if (x > maxX) maxX = x;
+      if (y > maxY) maxY = y;
+    }
+  }
+  if (minX === Infinity) return null;
+  return {
+    x: minX - pad,
+    y: minY - pad,
+    width: maxX - minX + 2 * pad,
+    height: maxY - minY + 2 * pad,
+  };
+}
+
+/** Smallest rectangle holding both — `b` may be `null`. */
+export function unionRect(a: SignRect, b: SignRect | null): SignRect {
+  if (!b) return a;
+  const x = Math.min(a.x, b.x);
+  const y = Math.min(a.y, b.y);
+  return {
+    x,
+    y,
+    width: Math.max(a.x + a.width, b.x + b.width) - x,
+    height: Math.max(a.y + a.height, b.y + b.height) - y,
+  };
+}
+
+/** A previous signature laid under the strokes: fitted (`contain`, centred) into `rect`. */
+export interface SignSvgBackground {
+  readonly href: string;
+  readonly rect: SignRect;
+}
+
 /** Everything an export needs besides the strokes. */
 export interface SignSvgOptions {
-  /** Width of the drawing area, in CSS pixels — the SVG's `viewBox`. */
-  readonly width: number;
-  /** Height of the drawing area, in CSS pixels. */
-  readonly height: number;
+  /** Area exported, in drawing-space CSS pixels — the SVG's `viewBox`. */
+  readonly frame: SignRect;
   /** Ink colour of the export (any CSS colour). */
   readonly color: string;
   /** Ink width, in CSS pixels. */
   readonly lineWidth: number;
-  /** Previous signature to keep underneath, as an image URL (usually a data URL). */
-  readonly background?: string | null;
+  /** Previous signature to keep underneath (usually a data URL). */
+  readonly background?: SignSvgBackground | null;
 }
 
 /** Escapes a value for a double-quoted XML attribute. */
@@ -106,21 +157,24 @@ const attr = (value: string): string =>
 /**
  * Serializes strokes as a standalone SVG document, on a transparent background. One
  * `<path>` per stroke, round caps and joins — the same pen the canvas uses on screen.
- * A `background` image is laid underneath, fitted the way the component draws it
- * (`contain`, centred).
+ * A `background` image is laid underneath, fitted into its rectangle the way the component
+ * draws it (`contain`, centred).
  */
 export function strokesToSvg(strokes: readonly SignStroke[], options: SignSvgOptions): string {
-  const { width, height, color, lineWidth, background } = options;
+  const { frame, color, lineWidth, background } = options;
+  const box = (r: SignRect) =>
+    `x="${round(r.x)}" y="${round(r.y)}" width="${round(r.width)}" height="${round(r.height)}"`;
   const image = background
-    ? `<image href="${attr(background)}" x="0" y="0" width="${round(width)}" height="${round(height)}" preserveAspectRatio="xMidYMid meet"/>`
+    ? `<image href="${attr(background.href)}" ${box(background.rect)} preserveAspectRatio="xMidYMid meet"/>`
     : '';
   const paths = strokes
     .filter((s) => s.length > 0)
     .map((s) => `<path d="${strokeToPath(s)}"/>`)
     .join('');
   return (
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${round(width)} ${round(height)}" ` +
-    `width="${round(width)}" height="${round(height)}">` +
+    `<svg xmlns="http://www.w3.org/2000/svg" ` +
+    `viewBox="${round(frame.x)} ${round(frame.y)} ${round(frame.width)} ${round(frame.height)}" ` +
+    `width="${round(frame.width)}" height="${round(frame.height)}">` +
     image +
     `<g fill="none" stroke="${attr(color)}" stroke-width="${round(lineWidth)}" ` +
     `stroke-linecap="round" stroke-linejoin="round">${paths}</g></svg>`

@@ -180,18 +180,36 @@ describe('ui-field-sign', () => {
     expect(host.value).toBe(host.changes[0]);
   });
 
-  it('exports in `exportColor`, not in the screen ink', async () => {
+  it('exports in `exportColor` resolved to rgb(), not in the screen ink', async () => {
     const { host, draw } = await setup();
     await draw([0, 0], [5, 5]);
-    expect(svg(host.value)).toContain('stroke="black"');
+    expect(svg(host.value)).toContain('stroke="rgb(0, 0, 0)"');
   });
 
-  it('falls back to black when `exportColor` is not a colour — an invalid stroke is invisible', async () => {
-    vi.stubGlobal('CSS', { supports: (_: string, v: string) => v !== 'var(--nope)' });
-    vi.spyOn(console, 'warn').mockImplementation(() => undefined);
-    const { host, draw } = await setup(null, (h) => h.exportColor.set('var(--nope)'));
-    await draw([0, 0], [5, 5]);
-    expect(svg(host.value)).toContain('stroke="black"');
+  describe('exportColor', () => {
+    afterEach(() => document.body.style.removeProperty('--test-ink'));
+
+    it('resolves a design token where the field sits — an image cannot carry var()', async () => {
+      document.body.style.setProperty('--test-ink', '#1d3b8f');
+      const { host, draw } = await setup(null, (h) => h.exportColor.set('var(--test-ink)'));
+      await draw([0, 0], [5, 5]);
+      expect(svg(host.value)).toContain('stroke="rgb(29, 59, 143)"');
+    });
+
+    it('falls back to black on a var() that does not resolve — the SVG stroke would be invisible', async () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+      const { host, draw } = await setup(null, (h) => h.exportColor.set('var(--nope)'));
+      await draw([0, 0], [5, 5]);
+      expect(svg(host.value)).toContain('stroke="black"');
+      expect(warn).toHaveBeenCalled();
+    });
+
+    it('falls back to black on a value that is not a colour', async () => {
+      vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+      const { host, draw } = await setup(null, (h) => h.exportColor.set('not-a-colour'));
+      await draw([0, 0], [5, 5]);
+      expect(svg(host.value)).toContain('stroke="black"');
+    });
   });
 
   it('hides the placeholder and enables clearing once signed', async () => {
@@ -233,7 +251,7 @@ describe('ui-field-sign', () => {
     expect(paths(host.value)).toBe(2);
   });
 
-  it('keeps its frame when the box is resized: nothing is cropped out of the value', async () => {
+  it('keeps its frame when the box shrinks: nothing is cropped out of the value', async () => {
     vi.stubGlobal('ResizeObserver', FakeResizeObserver);
     setBox(400, 200);
     const { host, draw } = await setup();
@@ -250,6 +268,33 @@ describe('ui-field-sign', () => {
     // A point at half the box is half the frame, in frame coordinates.
     expect(out).toContain('<path d="M300 150L320 160"/>');
     expect(paths(host.value)).toBe(2);
+  });
+
+  it('grows the frame to a stroke drawn beside it after the box widened — screen = value', async () => {
+    vi.stubGlobal('ResizeObserver', FakeResizeObserver);
+    setBox(400, 200);
+    const { host, draw } = await setup();
+    await draw([10, 10], [20, 20]);
+
+    // Wider box, same height: the region is centred, with 100px of room on each side.
+    setBox(600, 200);
+    FakeResizeObserver.callbacks.forEach((cb) => cb());
+    await draw([50, 100], [60, 110]);
+
+    const out = svg(host.value);
+    // The stroke in the left margin is in the value, the frame grown to hold it (+1px cap).
+    expect(out).toContain('<path d="M-50 100L-40 110"/>');
+    expect(out).toContain('viewBox="-51 0 451 200"');
+  });
+
+  it('clamps a captured pointer dragged past the box to its edge', async () => {
+    setBox(400, 200);
+    const { host, pointer, settle } = await setup();
+    pointer('pointerdown', 390, 190);
+    pointer('pointermove', 900, 700);
+    pointer('pointerup', 900, 700);
+    await settle();
+    expect(svg(host.value)).toContain('<path d="M390 190L400 200"/>');
   });
 
   describe('clear / undo', () => {
@@ -290,6 +335,18 @@ describe('ui-field-sign', () => {
       host.sign().clear();
       await settle();
       host.sign().undo();
+      await settle();
+      expect(paths(host.value)).toBe(2);
+    });
+
+    it('clear() does nothing under the pen — a blank image would pass `required`', async () => {
+      const { host, pointer, draw, settle } = await setup();
+      await draw([0, 0], [5, 5]);
+      pointer('pointerdown', 10, 10);
+      host.sign().clear();
+      await settle();
+      expect(paths(host.value)).toBe(1);
+      pointer('pointerup', 20, 20);
       await settle();
       expect(paths(host.value)).toBe(2);
     });
@@ -338,6 +395,29 @@ describe('ui-field-sign', () => {
       expect(svg(host.value)).not.toContain('<image');
     });
 
+    it('undo() after Delete brings it back', async () => {
+      const { host, key } = await setup(SAMPLE);
+      await key('Delete');
+      expect(host.value).toBeNull();
+      await key('Backspace');
+      expect(svg(host.value)).toContain(`<image href="${SAMPLE}"`);
+    });
+
+    it('cleared while loading then undone, it is loaded again — the PNG export does not stall', async () => {
+      vi.stubGlobal('Image', FakeImage);
+      const { host, key, settle } = await setup(PNG_SAMPLE, (h) => h.format.set('png'));
+      const first = FakeImage.last!;
+      await key('Delete');
+      first.onload!(); // lands while cleared: dropped
+      await key('Backspace');
+      expect(FakeImage.last).not.toBe(first);
+      expect(host.changes).toEqual([null]);
+
+      FakeImage.last!.onload!();
+      await settle();
+      expect(svg(host.changes.at(-1))).toContain(`<image href="${PNG_SAMPLE}"`);
+    });
+
     it('shows the field empty when the image cannot be loaded', async () => {
       vi.stubGlobal('Image', FakeImage);
       vi.spyOn(console, 'warn').mockImplementation(() => undefined);
@@ -361,6 +441,28 @@ describe('ui-field-sign', () => {
       expect(host.changes).toHaveLength(1);
       expect(svg(host.value)).toContain(`<image href="${PNG_SAMPLE}"`);
     });
+  });
+
+  it('falls back to SVG when the browser refuses to read the PNG back (tainted canvas)', async () => {
+    const ctx = new Proxy({} as Record<string | symbol, unknown>, {
+      get: (target, prop) =>
+        prop in target
+          ? target[prop]
+          : prop === 'canvas'
+            ? { width: 1, height: 1 }
+            : () => undefined,
+    });
+    vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(
+      ctx as unknown as CanvasRenderingContext2D,
+    );
+    vi.spyOn(HTMLCanvasElement.prototype, 'toDataURL').mockImplementation(() => {
+      throw new DOMException('Tainted canvases may not be exported.', 'SecurityError');
+    });
+    vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    setBox(100, 50);
+    const { host, draw } = await setup(null, (h) => h.format.set('png'));
+    await draw([0, 0], [5, 5]);
+    expect(host.value!.startsWith('data:image/svg+xml')).toBe(true);
   });
 
   it('does not draw when read-only, and hides the clear button', async () => {

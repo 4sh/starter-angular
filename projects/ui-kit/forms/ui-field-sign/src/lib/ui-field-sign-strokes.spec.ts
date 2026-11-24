@@ -5,9 +5,11 @@
 import { describe, expect, it } from 'vitest';
 import {
   containRect,
+  strokesBounds,
   strokesToSvg,
   strokeToPath,
   svgToDataUrl,
+  unionRect,
   type SignStroke,
 } from './ui-field-sign-strokes';
 
@@ -38,7 +40,7 @@ describe('strokeToPath', () => {
 });
 
 describe('strokesToSvg', () => {
-  const base = { width: 300, height: 150, color: 'black', lineWidth: 2 };
+  const base = { frame: { x: 0, y: 0, width: 300, height: 150 }, color: 'black', lineWidth: 2 };
 
   it('is a standalone document sized on the drawing area', () => {
     const svg = strokesToSvg([], base);
@@ -60,10 +62,26 @@ describe('strokesToSvg', () => {
     expect(strokesToSvg([[]], base)).not.toContain('<path');
   });
 
-  it('keeps a previous signature underneath, fitted like the canvas draws it', () => {
-    const svg = strokesToSvg([stroke([0, 0])], { ...base, background: 'data:image/png;base64,AA' });
+  it('keeps a previous signature underneath, fitted into its own rectangle', () => {
+    const svg = strokesToSvg([stroke([0, 0])], {
+      ...base,
+      background: {
+        href: 'data:image/png;base64,AA',
+        rect: { x: 10, y: 5, width: 200, height: 100 },
+      },
+    });
     expect(svg.indexOf('<image')).toBeLessThan(svg.indexOf('<path'));
-    expect(svg).toContain('preserveAspectRatio="xMidYMid meet"');
+    expect(svg).toContain(
+      'x="10" y="5" width="200" height="100" preserveAspectRatio="xMidYMid meet"',
+    );
+  });
+
+  it('exports a frame that does not start at the origin — strokes drawn left of the region', () => {
+    const svg = strokesToSvg([stroke([-50, 10], [20, 30])], {
+      ...base,
+      frame: { x: -51, y: 0, width: 351, height: 150 },
+    });
+    expect(svg).toContain('viewBox="-51 0 351 150" width="351" height="150"');
   });
 
   it('escapes what it puts in attributes', () => {
@@ -92,5 +110,38 @@ describe('containRect', () => {
 
   it('fills the area when the image has no intrinsic size', () => {
     expect(containRect(0, 0, 200, 100)).toEqual({ x: 0, y: 0, width: 200, height: 100 });
+  });
+});
+
+describe('strokesBounds', () => {
+  it('is null without any point', () => {
+    expect(strokesBounds([])).toBeNull();
+    expect(strokesBounds([[]])).toBeNull();
+  });
+
+  it('spans every point of every stroke, grown by the pad', () => {
+    expect(strokesBounds([stroke([10, 20], [30, 5]), stroke([-4, 8])], 1)).toEqual({
+      x: -5,
+      y: 4,
+      width: 36,
+      height: 17,
+    });
+  });
+});
+
+describe('unionRect', () => {
+  it('returns the first rectangle when there is nothing to add', () => {
+    expect(unionRect({ x: 0, y: 0, width: 10, height: 10 }, null)).toEqual({
+      x: 0,
+      y: 0,
+      width: 10,
+      height: 10,
+    });
+  });
+
+  it('holds both rectangles', () => {
+    expect(
+      unionRect({ x: 0, y: 0, width: 400, height: 200 }, { x: -51, y: 99, width: 12, height: 12 }),
+    ).toEqual({ x: -51, y: 0, width: 451, height: 200 });
   });
 });

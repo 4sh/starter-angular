@@ -30,6 +30,10 @@ $action-height-small: var(--ui-field-sign-action-height-small, #{utils.$form-fie
   // Canvas and placeholder share one grid cell: stacked without leaving the flow.
   &-pad {
     display: grid;
+    // Definite tracks: in an `auto` track the canvas' `height: 100%` does not resolve, and
+    // it takes the proportions of its bitmap instead — widening the box made it taller than
+    // the box, its lower part clipped off the screen while still in the value.
+    grid-template: minmax(0, 1fr) / minmax(0, 1fr);
     flex: 1 1 auto;
     min-width: 0;
     height: $height;
@@ -45,14 +49,19 @@ $action-height-small: var(--ui-field-sign-action-height-small, #{utils.$form-fie
     display: block;
     width: 100%;
     height: 100%;
+    min-width: 0;
+    min-height: 0;
     color: var(--ui-field-sign-ink-color, var(--form-high-content-default)); /// Screen ink colour (the export uses `exportColor`).
     outline: none; // the box draws the focus ring on `:focus-within`
-    // The page must not scroll or zoom under the pen.
-    touch-action: none;
     user-select: none;
     -webkit-user-select: none;
 
-    &._interactive { cursor: crosshair; }
+    // The page must not scroll or zoom under the pen — only while there is a pen: a
+    // read-only or disabled signature on a review screen must let the page scroll.
+    &._interactive {
+      cursor: crosshair;
+      touch-action: none;
+    }
     &._disabled {
       color: var(--ui-field-sign-ink-color-disabled, var(--form-high-content-disabled)); /// Ink colour, disabled field.
       cursor: not-allowed;
