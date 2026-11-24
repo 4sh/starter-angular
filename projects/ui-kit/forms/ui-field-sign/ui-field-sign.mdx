@@ -79,10 +79,27 @@ to a data URL before handing it to the field.
 
 The value is shown in the box and stays **under** new strokes until cleared. On screen it is
 redrawn as a silhouette in the current ink, so that a black signature stays legible on a dark
-field; it is fitted to the frame, keeping its proportions. An image that cannot be loaded
-leaves the field empty rather than announced as signed over a blank box. In PNG, a stroke
-drawn before the previous signature has loaded is held until it has: the export never drops
-it.
+field; it is fitted to the frame, keeping its proportions. In PNG, a stroke drawn before the
+previous signature has loaded is held until it has: the export never drops it.
+
+An SVG value **this field exported** is read back when it is signed over: its strokes are
+copied next to the new ones, so the value grows by the new strokes only, edit after edit.
+Any other image — a PNG, someone else's SVG, one of ours edited by hand — is kept as an
+`<image>` underneath, as it is.
+
+An image that cannot be loaded leaves the box **empty** — rather than announced as signed over
+a blank area — and emits **`imageError`**. The form's value is left alone: an image this
+browser cannot decode may be a valid signature elsewhere, and the field never overwrites what
+it could not read. Decide in the host, for instance by flagging the control until it is
+signed again:
+
+```html
+<ui-field-sign
+  label="Signature"
+  [formControl]="signature"
+  (imageError)="signature.setErrors({ unreadable: true })"
+/>
+```
 
 The field does not sanitize what it receives, nor what it emits: it is not a security
 boundary. Treat the value as untrusted on the server — check its MIME type and size, and

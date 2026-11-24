@@ -21,6 +21,7 @@ import { UiField } from '@4sh/ui-kit/forms/ui-field';
 import { UiIcon, type UiIconSize } from '@4sh/ui-kit/base/ui-icon';
 import {
   containRect,
+  IMAGE_DATA_URL,
   type SignPoint,
   type SignRect,
   type SignStroke,
@@ -30,6 +31,7 @@ import {
   traceStroke,
   unionRect,
 } from './ui-field-sign-strokes';
+import { readSignSvg } from './ui-field-sign-svg';
 
 /** Image format of the emitted value. */
 export type FieldSignFormat = 'png' | 'svg';
@@ -46,13 +48,6 @@ const PNG_EXPORT_SCALE = 2;
 
 /** Ink width used when the custom property cannot be read (no layout: SSR, tests). */
 const FALLBACK_INK_WIDTH = 2;
-
-/**
- * Values the field accepts from the form: an image **data URL**, what it emits itself. A
- * remote URL is refused on purpose — drawn on a canvas it taints it (the export then throws),
- * and carried into an SVG export it would be fetched by whatever renders that SVG later.
- */
-const ACCEPTED_VALUE = /^data:image\/(png|jpeg|webp|svg\+xml)[;,]/i;
 
 /**
  * Colour a probe inherits when `exportColor` does not resolve (a `var()` with no value): an
@@ -145,6 +140,11 @@ export class UiFieldSign extends BaseFormField<FieldSignValue> {
   padFocus = output<FocusEvent>();
   /** Emitted when the drawing area loses focus. */
   padBlur = output<FocusEvent>();
+  /**
+   * Emitted when the signature written by the form cannot be loaded. The box shows empty;
+   * the form keeps its value — the field does not overwrite what it could not read.
+   */
+  imageError = output<Event>();
 
   /** @ignore */
   private readonly canvasEl = viewChild.required<ElementRef<HTMLCanvasElement>>('canvasEl');
@@ -264,7 +264,7 @@ export class UiFieldSign extends BaseFormField<FieldSignValue> {
 
   override writeValue(value: FieldSignValue): void {
     let next = value || null;
-    if (next && !ACCEPTED_VALUE.test(next)) {
+    if (next && !IMAGE_DATA_URL.test(next)) {
       if (isDevMode()) {
         console.warn(
           '[ui-field-sign] Ignored a value that is not an image data URL: convert a remote ' +
@@ -447,7 +447,9 @@ export class UiFieldSign extends BaseFormField<FieldSignValue> {
         frame: this.frame(lineWidth),
         color,
         lineWidth,
-        background: bg ? { href: bg.src, rect: this.backgroundSlot() } : null,
+        background: bg
+          ? { href: bg.src, rect: this.backgroundSlot(), drawing: readSignSvg(bg.src) }
+          : null,
       }),
     );
   }
@@ -515,13 +517,17 @@ export class UiFieldSign extends BaseFormField<FieldSignValue> {
       this.background.set({ src, image });
       if (this.commitPending) this.commit();
     };
-    image.onerror = () => {
+    image.onerror = (event) => {
       if (this.background()?.src !== src) return;
       if (isDevMode()) console.warn('[ui-field-sign] The previous signature could not be loaded.');
-      // Shown empty rather than announced as signed over a blank box.
+      // Shown empty rather than announced as signed over a blank box. The form's value is
+      // left alone: an image this browser cannot decode may be a valid signature elsewhere,
+      // and overwriting it with `null` would lose it silently — `imageError` lets the host
+      // decide (flag the control, ask to sign again).
       this.background.set(null);
       if (this.strokes().length === 0) this.setRegion(null);
       if (this.commitPending) this.commit();
+      this.imageError.emit(event instanceof Event ? event : new Event('error'));
     };
     image.src = src;
   }

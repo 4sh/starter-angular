@@ -101,6 +101,7 @@ const meta: Meta<UiFieldSign> = {
     valueChange: { action: 'valueChange', table: { disable: true } },
     padFocus: { action: 'padFocus', table: { disable: true } },
     padBlur: { action: 'padBlur', table: { disable: true } },
+    imageError: { action: 'imageError', table: { disable: true } },
     messageIcon: {
       control: false,
       description: 'Overrides the glyph shown by `showMessageIcon`.',

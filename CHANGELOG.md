@@ -55,11 +55,15 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
   - Une valeur reçue du formulaire doit être une **data URL d'image** (une URL distante est
     ignorée, avec un avertissement en dev : elle contaminerait l'export). Elle s'affiche en
     silhouette dans l'encre courante et reste sous les nouveaux traits jusqu'à un effacement ;
-    en PNG, l'export l'attend plutôt que de la perdre.
+    en PNG, l'export l'attend plutôt que de la perdre. Une valeur SVG émise par le champ puis
+    complétée est réexportée **à plat** (ses traits recopiés) : elle ne grossit plus à chaque
+    édition. Une image illisible laisse la boîte vide, émet `imageError` et ne touche pas à la
+    valeur du formulaire.
   - Bouton d'effacement, `clear()` / `undo()` publics — `undo()` annule aussi un effacement.
     Au clavier : `Retour arrière` ou `Ctrl`+`Z` annulent le dernier trait, `Suppr` efface.
   - `touch-action: none` et capture du pointeur : la page ne défile pas pendant la signature ;
-    un second doigt est ignoré. Tracé lissé, redessiné au redimensionnement.
+    un second doigt est ignoré. Tracé lissé, redessiné au redimensionnement ; un simple
+    toucher exporte un point visible.
   - L'état est annoncé aux lecteurs d'écran (« Signez ici » / `signedLabel`, puis
     `requiredLabel` quand le champ est obligatoire).
   - Hooks `--ui-field-sign-*` : hauteur de la zone, couleur et épaisseur de l'encre, invite,

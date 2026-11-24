@@ -21,7 +21,14 @@ describe('strokeToPath', () => {
   });
 
   it('draws a tap as a dot — a zero-length segment is not painted everywhere', () => {
-    expect(strokeToPath(stroke([10, 20]))).toBe('M10 20L10 20');
+    expect(strokeToPath(stroke([10, 20]))).toBe('M10 20L10.2 20');
+  });
+
+  it('keeps the dot a segment after rounding, wherever the tap lands', () => {
+    for (const x of [0.05, 0.15, 3.25, 7.349, 12.95]) {
+      const [, x1, x2] = /^M(\S+) \S+L(\S+) /.exec(strokeToPath(stroke([x, 1])))!;
+      expect(Number(x2)).toBeGreaterThan(Number(x1));
+    }
   });
 
   it('keeps both ends of a two-point stroke', () => {

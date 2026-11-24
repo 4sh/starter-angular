@@ -26,10 +26,11 @@ export interface SignPathSink {
 
 /**
  * Length given to a single-point stroke (a tap: the dot of an "i"). A zero-length segment
- * is not painted by every canvas implementation even with round caps; this one is, and
- * still reads as a dot.
+ * is not painted by every renderer even with round caps — some canvas engines, PDF
+ * converters. Two tenths of a pixel survive the SVG export's rounding (a tenth could round
+ * back onto the start point) and still read as a dot.
  */
-const DOT_LENGTH = 0.01;
+const DOT_LENGTH = 0.2;
 
 /**
  * Traces `stroke` into `sink`, smoothed: each point becomes the control point of a
@@ -132,10 +133,53 @@ export function unionRect(a: SignRect, b: SignRect | null): SignRect {
   };
 }
 
+/**
+ * Images the field accepts as a previous signature: an image **data URL**, what it emits
+ * itself. A remote URL is refused on purpose — drawn on a canvas it taints it (the PNG export
+ * then throws), and carried into an SVG export it would be fetched by whatever renders it.
+ */
+export const IMAGE_DATA_URL = /^data:image\/(png|jpeg|webp|svg\+xml)[;,]/i;
+
+/** Uniform scale then translation: `p × scale + (x, y)`. */
+export interface SignTransform {
+  readonly scale: number;
+  readonly x: number;
+  readonly y: number;
+}
+
+/** What a layer of a previous export paints: an image, or a group of strokes in one ink. */
+export type SignSvgLayer =
+  | {
+      readonly kind: 'image';
+      readonly href: string;
+      readonly rect: SignRect;
+      readonly transform: SignTransform;
+    }
+  | {
+      readonly kind: 'ink';
+      readonly paths: readonly string[];
+      readonly color: string;
+      readonly width: number;
+      readonly transform: SignTransform;
+    };
+
+/** One of this field's own SVG exports, read back: its frame and its layers, bottom first. */
+export interface SignSvgDrawing {
+  readonly viewBox: SignRect;
+  readonly layers: readonly SignSvgLayer[];
+}
+
 /** A previous signature laid under the strokes: fitted (`contain`, centred) into `rect`. */
 export interface SignSvgBackground {
   readonly href: string;
   readonly rect: SignRect;
+  /**
+   * The same signature read back as one of this field's own exports. Its layers are then
+   * copied next to the new strokes instead of nesting the whole previous value in an
+   * `<image>`: a data URL nested in a data URL is encoded once more (`%3C` → `%253C`), and the
+   * value would grow on every edit.
+   */
+  readonly drawing?: SignSvgDrawing | null;
 }
 
 /** Everything an export needs besides the strokes. */
@@ -154,30 +198,74 @@ export interface SignSvgOptions {
 const attr = (value: string): string =>
   value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
+/** `then` applied after `first`. */
+const compose = (then: SignTransform, first: SignTransform): SignTransform => ({
+  scale: first.scale * then.scale,
+  x: first.x * then.scale + then.x,
+  y: first.y * then.scale + then.y,
+});
+
+/** Transform that fits `source` into `target`, keeping its proportions, centred. */
+const fitTransform = (source: SignRect, target: SignRect): SignTransform => {
+  const r = containRect(source.width, source.height, target.width, target.height);
+  const scale = source.width > 0 ? r.width / source.width : 1;
+  return { scale, x: target.x + r.x - source.x * scale, y: target.y + r.y - source.y * scale };
+};
+
+/** A scale keeps more digits than a coordinate: a tenth would drift over a few edits. */
+const roundScale = (n: number): string => String(Math.round(n * 1e5) / 1e5);
+
+/** `transform` attribute, omitted for the identity. */
+const transformAttr = ({ scale, x, y }: SignTransform): string =>
+  scale === 1 && x === 0 && y === 0
+    ? ''
+    : ` transform="matrix(${roundScale(scale)} 0 0 ${roundScale(scale)} ${round(x)} ${round(y)})"`;
+
+const rectAttrs = (r: SignRect): string =>
+  `x="${round(r.x)}" y="${round(r.y)}" width="${round(r.width)}" height="${round(r.height)}"`;
+
+const imageElement = (href: string, rect: SignRect, transform = ''): string =>
+  `<image href="${attr(href)}" ${rectAttrs(rect)} preserveAspectRatio="xMidYMid meet"${transform}/>`;
+
+const inkGroup = (paths: readonly string[], color: string, width: number, transform = ''): string =>
+  `<g fill="none" stroke="${attr(color)}" stroke-width="${round(width)}" ` +
+  `stroke-linecap="round" stroke-linejoin="round"${transform}>` +
+  paths.map((d) => `<path d="${attr(d)}"/>`).join('') +
+  `</g>`;
+
+/** The previous signature: its own layers when it is one of this field's exports, else an image. */
+function backgroundMarkup(background: SignSvgBackground | null | undefined): string {
+  if (!background) return '';
+  const { drawing, href, rect } = background;
+  if (!drawing) return imageElement(href, rect);
+  const fit = fitTransform(drawing.viewBox, rect);
+  return drawing.layers
+    .filter((layer) => layer.kind === 'image' || layer.paths.length > 0)
+    .map((layer) => {
+      const transform = transformAttr(compose(fit, layer.transform));
+      return layer.kind === 'image'
+        ? imageElement(layer.href, layer.rect, transform)
+        : inkGroup(layer.paths, layer.color, layer.width, transform);
+    })
+    .join('');
+}
+
 /**
  * Serializes strokes as a standalone SVG document, on a transparent background. One
  * `<path>` per stroke, round caps and joins — the same pen the canvas uses on screen.
- * A `background` image is laid underneath, fitted into its rectangle the way the component
+ * A `background` is laid underneath, fitted into its rectangle the way the component
  * draws it (`contain`, centred).
  */
 export function strokesToSvg(strokes: readonly SignStroke[], options: SignSvgOptions): string {
   const { frame, color, lineWidth, background } = options;
-  const box = (r: SignRect) =>
-    `x="${round(r.x)}" y="${round(r.y)}" width="${round(r.width)}" height="${round(r.height)}"`;
-  const image = background
-    ? `<image href="${attr(background.href)}" ${box(background.rect)} preserveAspectRatio="xMidYMid meet"/>`
-    : '';
-  const paths = strokes
-    .filter((s) => s.length > 0)
-    .map((s) => `<path d="${strokeToPath(s)}"/>`)
-    .join('');
+  const paths = strokes.filter((s) => s.length > 0).map(strokeToPath);
   return (
     `<svg xmlns="http://www.w3.org/2000/svg" ` +
     `viewBox="${round(frame.x)} ${round(frame.y)} ${round(frame.width)} ${round(frame.height)}" ` +
     `width="${round(frame.width)}" height="${round(frame.height)}">` +
-    image +
-    `<g fill="none" stroke="${attr(color)}" stroke-width="${round(lineWidth)}" ` +
-    `stroke-linecap="round" stroke-linejoin="round">${paths}</g></svg>`
+    backgroundMarkup(background) +
+    inkGroup(paths, color, lineWidth) +
+    `</svg>`
   );
 }
 

@@ -13,6 +13,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { type FieldSignFormat, type FieldSignValue, UiFieldSign } from './ui-field-sign';
+import { strokesToSvg, svgToDataUrl } from './ui-field-sign-strokes';
 
 @Component({
   imports: [FormsModule, UiFieldSign],
@@ -25,6 +26,7 @@ import { type FieldSignFormat, type FieldSignValue, UiFieldSign } from './ui-fie
     [disabled]="disabled()"
     [(ngModel)]="value"
     (valueChange)="changes.push($event)"
+    (imageError)="imageErrors.push($event)"
   />`,
 })
 class SignHost {
@@ -36,6 +38,7 @@ class SignHost {
   readonly disabled = signal(false);
   value: FieldSignValue = null;
   changes: FieldSignValue[] = [];
+  imageErrors: Event[] = [];
 }
 
 @Component({
@@ -49,6 +52,22 @@ class ReactiveHost {
 
 const SAMPLE = 'data:image/svg+xml;charset=utf-8,%3Csvg%2F%3E';
 const PNG_SAMPLE = 'data:image/png;base64,AAAA';
+/** A value this field exported itself: one stroke, in SVG. */
+const OWN_EXPORT = svgToDataUrl(
+  strokesToSvg(
+    [
+      [
+        { x: 0, y: 0 },
+        { x: 10, y: 10 },
+      ],
+    ],
+    {
+      frame: { x: 0, y: 0, width: 300, height: 150 },
+      color: 'black',
+      lineWidth: 2,
+    },
+  ),
+);
 
 /** An `Image` whose load / error the test decides. */
 class FakeImage {
@@ -418,15 +437,26 @@ describe('ui-field-sign', () => {
       expect(svg(host.changes.at(-1))).toContain(`<image href="${PNG_SAMPLE}"`);
     });
 
-    it('shows the field empty when the image cannot be loaded', async () => {
+    it('shows the field empty when the image cannot be loaded, and says so', async () => {
       vi.stubGlobal('Image', FakeImage);
       vi.spyOn(console, 'warn').mockImplementation(() => undefined);
-      const { placeholder, status, settle } = await setup(SAMPLE);
+      const { host, placeholder, status, settle } = await setup(SAMPLE);
       expect(placeholder()).toBeNull();
       FakeImage.last!.onerror!();
       await settle();
       expect(placeholder()).not.toBeNull();
       expect(status().textContent?.trim()).toBe('Signez ici');
+      expect(host.imageErrors).toHaveLength(1);
+      // Not overwritten: a value this browser cannot decode may be valid elsewhere.
+      expect(host.changes).toEqual([]);
+      expect(host.value).toBe(SAMPLE);
+    });
+
+    it('re-exported, one of its own SVG values is extended, not nested — it does not grow', async () => {
+      const { host, draw } = await setup(OWN_EXPORT);
+      await draw([20, 20], [30, 30]);
+      expect(svg(host.value)).not.toContain('<image');
+      expect(paths(host.value)).toBe(2);
     });
 
     it('in PNG, holds the export until the previous signature is loaded — never drops it', async () => {
