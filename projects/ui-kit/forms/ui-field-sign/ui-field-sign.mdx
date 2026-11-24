@@ -1,0 +1,123 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as SignStories from './ui-field-sign.stories';
+import { ConfigTable } from '../../../../storybook/blocks/config-table';
+
+<Meta of={SignStories} />
+
+# ui-field-sign
+
+Champ de **signature manuscrite** bâti sur le shell
+[`ui-field`](?path=/docs/components-ui-forms-ui-field--docs) (libellé + boîte + helper).
+**La boîte du champ est la zone de tracé** : au doigt, au stylet ou à la souris.
+
+Valeur modèle = une data URL (`image/png` ou `image/svg+xml`, selon `format`), ou `null`
+tant que rien n'est signé — `required` fonctionne donc tel quel.
+
+Autonome, `[(ngModel)]` ou reactive forms (`ControlValueAccessor` via `BaseFormField`).
+
+<Canvas of={SignStories.WithHelper} />
+
+## API
+
+<ArgTypes of={SignStories} />
+
+```html
+<ui-field-sign label="Signature du client" required [(ngModel)]="signature" />
+```
+
+## Valeur
+
+La valeur est émise **à la fin de chaque trait** (au relâchement du pointeur), puis à chaque
+effacement ou annulation — jamais pendant le tracé : un formulaire branché sur une sauvegarde
+automatique recevrait sinon une image par mouvement de pointeur.
+
+`format="png"` (par défaut) exporte une image deux fois plus dense que la zone de tracé, la
+même sur tous les appareils ; `format="svg"` exporte un tracé vectoriel, plus léger et net à
+toute échelle.
+
+<Canvas of={SignStories.Svg} />
+
+### Deux encres : l'écran et l'export
+
+À l'écran, l'encre suit les jetons (`--form-high-content-default`), thème sombre compris.
+L'export, lui, est peint avec **`exportColor`** (`black` par défaut) sur **fond transparent** :
+une signature tracée en thème sombre sortirait sinon en blanc, illisible sur le PDF auquel
+elle est destinée.
+
+```html
+<ui-field-sign label="Signature" exportColor="#1d3b8f" [(ngModel)]="signature" />
+```
+
+### Valeur reçue du formulaire
+
+Une valeur écrite par le formulaire s'affiche dans la boîte, et reste **sous** les nouveaux
+traits jusqu'à un effacement. Elle est attendue telle que ce champ l'émet — une signature sur
+fond transparent : à l'écran, elle est redessinée en silhouette dans l'encre courante, pour
+qu'une signature noire reste lisible sur un champ sombre. Elle est ajustée à la boîte en
+gardant ses proportions.
+
+<Canvas of={SignStories.WithValue} />
+
+## Effacer, annuler
+
+- Le bouton d'effacement (`clearable`, actif dès que la zone est signée) vide le champ et rend
+  le focus à la zone de tracé.
+- `clear()` et `undo()` sont publics, pour un bouton « Recommencer » ou « Annuler » posé par
+  l'hôte. `undo()` retire le dernier trait tracé dans le champ ; une signature reçue du
+  formulaire n'est pas un trait, seul `clear()` la retire.
+- Au clavier, sur la zone de tracé : `Suppr` / `Retour arrière` effacent, `Ctrl`+`Z`
+  (`⌘`+`Z`) annule le dernier trait.
+
+```html
+<ui-field-sign #sign label="Signature" [clearable]="false" [(ngModel)]="signature" />
+<ui-button label="Annuler le dernier trait" level="low" (buttonClick)="sign.undo()" />
+```
+
+## Tracé
+
+- Le tracé est **lissé** (courbes quadratiques entre les milieux des segments) et suit
+  l'appareil à sa fréquence propre (`getCoalescedEvents`), pas à celle de l'écran.
+- `touch-action: none` sur la zone : **la page ne défile pas** sous le doigt pendant la
+  signature, et le pointeur est capturé jusqu'au relâchement, même s'il sort de la boîte.
+- Un second doigt posé pendant un trait est ignoré.
+- La zone est redessinée à chaque redimensionnement, à la densité de l'écran ; les traits
+  gardent leur position en pixels CSS.
+
+## Niveaux & états
+
+`level` (`default`/`success`/`error`) pilote la bordure, `errorText` remplace l'aide en erreur —
+même contrat que tous les champs bâtis sur `ui-field`. En `readonly` la signature reste
+visible mais ne se modifie plus, et le bouton d'effacement disparaît.
+
+<Canvas of={SignStories.Required} />
+<Canvas of={SignStories.Error} />
+<Canvas of={SignStories.ReadOnly} />
+<Canvas of={SignStories.Disabled} />
+<Canvas of={SignStories.Small} />
+
+Pas de `floatLabel` : la boîte est le tracé lui-même, aucune valeur textuelle qu'un libellé au
+repos viendrait remplacer.
+
+## Accessibilité
+
+- Une signature manuscrite est un geste **à tracé libre** : WCAG l'exempte des alternatives
+  clavier (2.1.1, exception « dépend du chemin ») et des gestes simplifiés (2.5.1, geste
+  essentiel). La zone reste pourtant un **arrêt de tabulation**, pour que l'effacement et
+  l'annulation soient atteignables au clavier.
+- La zone est exposée comme une image (`role="img"`), nommée par le `label` (ou `ariaLabel`),
+  décrite par son état — l'invite tant qu'elle est vide, `signedLabel` une fois signée — puis
+  par le message d'aide ou d'erreur.
+- Le bouton d'effacement porte `clearAriaLabel`.
+- Le focus est visible sur la boîte (anneau `:focus-within` du shell), au pointeur comme au
+  clavier.
+
+## Theming
+
+La boîte, le libellé, le helper et le bouton d'effacement viennent du shell `ui-field` (mixins
+`utils.field-*`), configurés par le groupe partagé
+[Forms](?path=/docs/components-configuration-forms--docs). L'encre se règle ici : sa couleur à
+l'écran et son épaisseur, lue par le canvas à chaque rendu. Voir aussi le
+[fonctionnement de la configuration](?path=/docs/components-configuration--docs).
+
+<ConfigTable of="ui-field-sign" />
+<ConfigTable of="ui-field" />

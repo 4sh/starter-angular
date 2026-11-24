@@ -1,0 +1,77 @@
+@use 'utils';
+
+// =====================================================================
+// ui-field-sign : co-located styles. All values come from design tokens.
+//
+// The drawing area is projected into `ui-field` (multiline box): the box,
+// label, helper and states live there. The canvas reads its ink from CSS
+// (`color` + `--_ink-width`), so a token or a hook retunes the pen too.
+// =====================================================================
+
+$height: var(--ui-field-sign-height, calc(4 * var(--size-components-default)));    /// Hauteur de la zone de tracé.
+$height-small: var(--ui-field-sign-height-small, calc(3 * var(--size-components-sm))); /// Hauteur de la zone de tracé, variante `small`.
+
+$placeholder-font-size: var(--ui-field-sign-placeholder-font-size, var(--size-typography-text-default));    /// Taille de police de l'invite affichée dans la zone vide.
+$placeholder-font-size-small: var(--ui-field-sign-placeholder-font-size-small, var(--size-typography-text-md)); /// Taille de police de l'invite, variante `small`.
+
+$action-height: var(--ui-field-sign-action-height, #{utils.$form-field-height});                   /// Hauteur du bouton d'effacement, calé sur une ligne de champ.
+$action-height-small: var(--ui-field-sign-action-height-small, #{utils.$form-field-height-small}); /// Hauteur du bouton d'effacement, variante `small`.
+
+.ui-field-sign {
+  // --- Drawing area ---------------------------------------------------
+  // Canvas and placeholder share one grid cell: stacked without leaving the flow.
+  &-pad {
+    display: grid;
+    flex: 1 1 auto;
+    min-width: 0;
+    height: $height;
+
+    > * { grid-area: 1 / 1; }
+
+    &._small { height: $height-small; }
+  }
+
+  &-canvas {
+    --_ink-width: var(--ui-field-sign-ink-stroke-width, var(--stroke-default)); /// Épaisseur du trait de signature à l'écran et à l'export.
+
+    display: block;
+    width: 100%;
+    height: 100%;
+    color: var(--ui-field-sign-ink-color, var(--form-high-content-default)); /// Couleur de l'encre à l'écran (l'export utilise `exportColor`).
+    outline: none; // the box draws the focus ring on `:focus-within`
+    // The page must not scroll or zoom under the pen.
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+
+    &._interactive { cursor: crosshair; }
+    &._disabled {
+      color: var(--ui-field-sign-ink-color-disabled, var(--form-high-content-disabled)); /// Couleur de l'encre, champ désactivé.
+      cursor: not-allowed;
+    }
+  }
+
+  &-placeholder {
+    place-self: center;
+    font-family: utils.$form-field-font-family;
+    font-size: $placeholder-font-size;
+    color: utils.$form-field-placeholder-color;
+    pointer-events: none;
+    user-select: none;
+
+    &._disabled { color: utils.$form-field-color-disabled; }
+  }
+
+  &-pad._small &-placeholder { font-size: $placeholder-font-size-small; }
+
+  // --- Clear action ---------------------------------------------------
+  // Same button as every field action, but pinned to the top row: stretched to the
+  // full height of a signature box, it would be a tall bar.
+  &-clear {
+    @include utils.field-action;
+    align-self: flex-start;
+    height: $action-height;
+
+    &._small { height: $action-height-small; }
+  }
+}

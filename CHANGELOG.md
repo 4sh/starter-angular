@@ -40,6 +40,20 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
   devient un bouton (`openLabel`) ; le contenu projeté s'insère à côté de la corbeille.
 - **`formatLabel` accepte plusieurs valeurs** (`{0}`, `{1}`…), substituées en une passe
   (FSHSP-264).
+- **`ui-field-sign` — champ de signature manuscrite** (FSHSP-266). Bâti sur le shell
+  `ui-field` : **la boîte du champ est la zone de tracé**, au doigt, au stylet ou à la souris.
+  - La valeur est une data URL (`format` : `png` ou `svg`), `null` tant que rien n'est signé
+    — `required` fonctionne tel quel. Elle est émise **en fin de trait**, jamais pendant.
+  - **Deux encres** : à l'écran elle suit les jetons, thème sombre compris ; l'export est peint
+    en `exportColor` (`black`) sur fond transparent. Une signature tracée en thème sombre
+    sortait sinon en blanc, illisible sur un PDF.
+  - Une valeur reçue du formulaire s'affiche (en silhouette dans l'encre courante) et reste
+    sous les nouveaux traits jusqu'à un effacement.
+  - Bouton d'effacement, `clear()` / `undo()` publics, `Suppr` et `Ctrl`+`Z` au clavier.
+  - `touch-action: none` et capture du pointeur : la page ne défile pas pendant la signature ;
+    un second doigt est ignoré. Tracé lissé, redessiné au redimensionnement.
+  - Hooks `--ui-field-sign-*` : hauteur de la zone, couleur et épaisseur de l'encre, invite,
+    bouton d'effacement.
 
 ### Changed
 

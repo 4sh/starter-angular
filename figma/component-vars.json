@@ -10,10 +10,10 @@
         "Mode 1"
       ],
       "counts": {
-        "tokens": 1431,
-        "alias": 1273,
+        "tokens": 1438,
+        "alias": 1280,
         "literal": 158,
-        "skipped": 80,
+        "skipped": 82,
         "derivedDescriptions": 223
       },
       "aliasTargets": [
@@ -183,6 +183,16 @@
           "cssVar": "--ui-field-focus-ring-opacity",
           "component": "ui-field",
           "reason": "unité relative `%` : sa valeur dépend du contexte de rendu, une variable Figma ne peut pas la porter."
+        },
+        {
+          "cssVar": "--ui-field-sign-height",
+          "component": "ui-field-sign",
+          "reason": "expression calc() : une variable Figma ne porte pas de calcul."
+        },
+        {
+          "cssVar": "--ui-field-sign-height-small",
+          "component": "ui-field-sign",
+          "reason": "expression calc() : une variable Figma ne porte pas de calcul."
         },
         {
           "cssVar": "--ui-icon-aspect-ratio",
@@ -12589,6 +12599,168 @@
           "component": "ui-field",
           "entryPoint": "@4sh/ui-kit/forms/ui-field",
           "descriptionSource": "scss"
+        }
+      }
+    }
+  },
+  "field-sign": {
+    "action": {
+      "height": {
+        "$value": "{responsive.size.components.default}",
+        "$type": "dimension",
+        "$description": "Hauteur du bouton d'effacement, calé sur une ligne de champ.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-field-sign-action-height)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-field-sign-action-height",
+            "component": "ui-field-sign",
+            "entryPoint": "@4sh/ui-kit/forms/ui-field-sign",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "height-small": {
+        "$value": "{responsive.size.components.sm}",
+        "$type": "dimension",
+        "$description": "Hauteur du bouton d'effacement, variante `small`.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-field-sign-action-height-small)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-field-sign-action-height-small",
+            "component": "ui-field-sign",
+            "entryPoint": "@4sh/ui-kit/forms/ui-field-sign",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "ink": {
+      "color": {
+        "$value": "{semantics.form.high.content.default}",
+        "$type": "color",
+        "$description": "Couleur de l'encre à l'écran (l'export utilise `exportColor`).",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "COLOR",
+            "scopes": [
+              "ALL_FILLS"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-field-sign-ink-color)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-field-sign-ink-color",
+            "component": "ui-field-sign",
+            "entryPoint": "@4sh/ui-kit/forms/ui-field-sign",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "color-disabled": {
+        "$value": "{semantics.form.high.content.disabled}",
+        "$type": "color",
+        "$description": "Couleur de l'encre, champ désactivé.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "COLOR",
+            "scopes": [
+              "ALL_FILLS"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-field-sign-ink-color-disabled)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-field-sign-ink-color-disabled",
+            "component": "ui-field-sign",
+            "entryPoint": "@4sh/ui-kit/forms/ui-field-sign",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "stroke-width": {
+        "$value": "{metrics.stroke.default}",
+        "$type": "dimension",
+        "$description": "Épaisseur du trait de signature à l'écran et à l'export.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "STROKE_FLOAT"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-field-sign-ink-stroke-width)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-field-sign-ink-stroke-width",
+            "component": "ui-field-sign",
+            "entryPoint": "@4sh/ui-kit/forms/ui-field-sign",
+            "descriptionSource": "scss"
+          }
+        }
+      }
+    },
+    "placeholder": {
+      "font-size": {
+        "$value": "{responsive.size.typography.text.default}",
+        "$type": "dimension",
+        "$description": "Taille de police de l'invite affichée dans la zone vide.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "FONT_SIZE"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-field-sign-placeholder-font-size)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-field-sign-placeholder-font-size",
+            "component": "ui-field-sign",
+            "entryPoint": "@4sh/ui-kit/forms/ui-field-sign",
+            "descriptionSource": "scss"
+          }
+        }
+      },
+      "font-size-small": {
+        "$value": "{responsive.size.typography.text.md}",
+        "$type": "dimension",
+        "$description": "Taille de police de l'invite, variante `small`.",
+        "$extensions": {
+          "com.figma": {
+            "resolvedType": "FLOAT",
+            "scopes": [
+              "FONT_SIZE"
+            ],
+            "codeSyntax": {
+              "WEB": "var(--ui-field-sign-placeholder-font-size-small)"
+            }
+          },
+          "com.4sh.ui-kit": {
+            "cssVar": "--ui-field-sign-placeholder-font-size-small",
+            "component": "ui-field-sign",
+            "entryPoint": "@4sh/ui-kit/forms/ui-field-sign",
+            "descriptionSource": "scss"
+          }
         }
       }
     }

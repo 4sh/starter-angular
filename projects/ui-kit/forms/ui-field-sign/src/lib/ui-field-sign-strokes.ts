@@ -1,0 +1,151 @@
+/**
+ * Pure geometry of `ui-field-sign`: how a stroke is smoothed, and how a set of strokes
+ * becomes an SVG. No DOM, no canvas — the component and the tests share this one path
+ * builder, so what is drawn on screen and what is exported cannot drift apart.
+ */
+
+/** A point of a stroke, in CSS pixels from the top-left corner of the drawing area. */
+export interface SignPoint {
+  readonly x: number;
+  readonly y: number;
+}
+
+/** One continuous stroke: everything between a pointer going down and coming back up. */
+export type SignStroke = readonly SignPoint[];
+
+/**
+ * The subset of `CanvasRenderingContext2D` / `Path2D` a stroke is traced with — also
+ * implemented by {@link SvgPathBuilder}, which is how the SVG export reuses the exact
+ * curve drawn on screen.
+ */
+export interface SignPathSink {
+  moveTo(x: number, y: number): void;
+  lineTo(x: number, y: number): void;
+  quadraticCurveTo(cpx: number, cpy: number, x: number, y: number): void;
+}
+
+/**
+ * Length given to a single-point stroke (a tap: the dot of an "i"). A zero-length segment
+ * is not painted by every canvas implementation even with round caps; this one is, and
+ * still reads as a dot.
+ */
+const DOT_LENGTH = 0.01;
+
+/**
+ * Traces `stroke` into `sink`, smoothed: each point becomes the control point of a
+ * quadratic curve running between the midpoints of its two segments. The curve still
+ * starts on the first point and ends on the last, so a stroke never loses its ends.
+ */
+export function traceStroke(sink: SignPathSink, stroke: SignStroke): void {
+  if (stroke.length === 0) return;
+  const [first] = stroke;
+  sink.moveTo(first.x, first.y);
+  if (stroke.length === 1) {
+    sink.lineTo(first.x + DOT_LENGTH, first.y);
+    return;
+  }
+  for (let i = 1; i < stroke.length - 1; i++) {
+    const p = stroke[i];
+    const next = stroke[i + 1];
+    sink.quadraticCurveTo(p.x, p.y, (p.x + next.x) / 2, (p.y + next.y) / 2);
+  }
+  const last = stroke[stroke.length - 1];
+  sink.lineTo(last.x, last.y);
+}
+
+/** Rounds to a tenth of a pixel: below what a screen or a printer resolves, and it keeps
+ *  the exported path short. */
+const round = (n: number): string => String(Math.round(n * 10) / 10);
+
+/** Records traced commands as an SVG path `d` attribute. */
+export class SvgPathBuilder implements SignPathSink {
+  private readonly parts: string[] = [];
+
+  moveTo(x: number, y: number): void {
+    this.parts.push(`M${round(x)} ${round(y)}`);
+  }
+
+  lineTo(x: number, y: number): void {
+    this.parts.push(`L${round(x)} ${round(y)}`);
+  }
+
+  quadraticCurveTo(cpx: number, cpy: number, x: number, y: number): void {
+    this.parts.push(`Q${round(cpx)} ${round(cpy)} ${round(x)} ${round(y)}`);
+  }
+
+  toString(): string {
+    return this.parts.join('');
+  }
+}
+
+/** Smoothed SVG path of one stroke (`''` for an empty one). */
+export function strokeToPath(stroke: SignStroke): string {
+  const builder = new SvgPathBuilder();
+  traceStroke(builder, stroke);
+  return builder.toString();
+}
+
+/** Everything an export needs besides the strokes. */
+export interface SignSvgOptions {
+  /** Width of the drawing area, in CSS pixels — the SVG's `viewBox`. */
+  readonly width: number;
+  /** Height of the drawing area, in CSS pixels. */
+  readonly height: number;
+  /** Ink colour of the export (any CSS colour). */
+  readonly color: string;
+  /** Ink width, in CSS pixels. */
+  readonly lineWidth: number;
+  /** Previous signature to keep underneath, as an image URL (usually a data URL). */
+  readonly background?: string | null;
+}
+
+/** Escapes a value for a double-quoted XML attribute. */
+const attr = (value: string): string =>
+  value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+/**
+ * Serializes strokes as a standalone SVG document, on a transparent background. One
+ * `<path>` per stroke, round caps and joins — the same pen the canvas uses on screen.
+ * A `background` image is laid underneath, fitted the way the component draws it
+ * (`contain`, centred).
+ */
+export function strokesToSvg(strokes: readonly SignStroke[], options: SignSvgOptions): string {
+  const { width, height, color, lineWidth, background } = options;
+  const image = background
+    ? `<image href="${attr(background)}" x="0" y="0" width="${round(width)}" height="${round(height)}" preserveAspectRatio="xMidYMid meet"/>`
+    : '';
+  const paths = strokes
+    .filter((s) => s.length > 0)
+    .map((s) => `<path d="${strokeToPath(s)}"/>`)
+    .join('');
+  return (
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${round(width)} ${round(height)}" ` +
+    `width="${round(width)}" height="${round(height)}">` +
+    image +
+    `<g fill="none" stroke="${attr(color)}" stroke-width="${round(lineWidth)}" ` +
+    `stroke-linecap="round" stroke-linejoin="round">${paths}</g></svg>`
+  );
+}
+
+/** Data URL of an SVG document — the shape the field emits in `format="svg"`. */
+export function svgToDataUrl(svg: string): string {
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+}
+
+/**
+ * Rectangle that fits a `sourceWidth × sourceHeight` image inside the drawing area while
+ * keeping its proportions, centred — the canvas counterpart of the SVG export's
+ * `preserveAspectRatio="xMidYMid meet"`.
+ */
+export function containRect(
+  sourceWidth: number,
+  sourceHeight: number,
+  width: number,
+  height: number,
+): { x: number; y: number; width: number; height: number } {
+  if (sourceWidth <= 0 || sourceHeight <= 0) return { x: 0, y: 0, width, height };
+  const scale = Math.min(width / sourceWidth, height / sourceHeight);
+  const w = sourceWidth * scale;
+  const h = sourceHeight * scale;
+  return { x: (width - w) / 2, y: (height - h) / 2, width: w, height: h };
+}

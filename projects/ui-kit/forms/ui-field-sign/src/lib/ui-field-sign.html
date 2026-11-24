@@ -1,0 +1,62 @@
+<ui-field
+  multiline
+  [label]="label()"
+  [required]="required()"
+  [size]="size()"
+  [level]="effectiveLevel()"
+  [disabled]="isDisabled()"
+  [readonly]="readonly()"
+  [message]="displayMessage()"
+  [messageId]="messageId()"
+  [showMessageIcon]="showMessageIcon()"
+  [messageIcon]="messageIcon()"
+>
+  <!-- No `for` on the label: a <canvas> is not labelable. The name reaches it through
+       `aria-label` below, and `floatLabel` is not forwarded — there is no value for a
+       resting label to stand in for, the box being the drawing itself. -->
+  <div class="ui-field-sign-pad" [class._small]="size() === 'small'">
+    <canvas
+      #canvasEl
+      class="ui-field-sign-canvas"
+      role="img"
+      [class._disabled]="isDisabled()"
+      [class._interactive]="isInteractive()"
+      [id]="resolvedId()"
+      [attr.tabindex]="isDisabled() ? null : (tabindex() ?? 0)"
+      [attr.aria-label]="label() || ariaLabel() || null"
+      [attr.aria-labelledby]="ariaLabelledBy() || null"
+      [attr.aria-describedby]="describedByIds()"
+      [attr.aria-disabled]="isDisabled() ? 'true' : null"
+      (pointerdown)="onPointerDown($event)"
+      (pointermove)="onPointerMove($event)"
+      (pointerup)="onPointerEnd($event)"
+      (pointercancel)="onPointerEnd($event)"
+      (keydown)="onKeydown($event)"
+      (focus)="padFocus.emit($event)"
+      (blur)="onBlur($event)"
+    ></canvas>
+
+    @if (isEmpty() && placeholder()) {
+      <span class="ui-field-sign-placeholder" [class._disabled]="isDisabled()" aria-hidden="true">
+        {{ placeholder() }}
+      </span>
+    }
+
+    <!-- The state, for assistive tech: `aria-describedby` reads hidden nodes. -->
+    <span hidden [id]="statusId()">{{ isEmpty() ? placeholder() : signedLabel() }}</span>
+  </div>
+
+  @if (clearable() && !readonly()) {
+    <button
+      uiFieldSuffix
+      type="button"
+      class="ui-field-sign-clear"
+      [class._small]="size() === 'small'"
+      [attr.aria-label]="clearAriaLabel()"
+      [disabled]="isDisabled() || isEmpty()"
+      (click)="onClearClick()"
+    >
+      <ui-icon name="eraser" [size]="iconSize()" />
+    </button>
+  }
+</ui-field>

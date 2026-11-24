@@ -29,7 +29,10 @@ const DEMO_ARGS = {
 };
 
 /** Inputs left out of the story's API table on purpose: `Class.input` → why. */
-const UNDOCUMENTED_INPUTS = {};
+const UNDOCUMENTED_INPUTS = {
+  'UiFieldSign.floatLabel':
+    "sans effet : la boîte est le tracé lui-même, aucune valeur qu'un libellé au repos remplacerait",
+};
 
 const prop = (node, name) =>
   node.properties.find((p) => ts.isPropertyAssignment(p) && p.name.getText() === name);
