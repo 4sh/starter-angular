@@ -93,6 +93,24 @@ emitted. It stays the field's value: an image this browser cannot decode may be 
 signature elsewhere, so the field never drops it on its own. The person decides — clearing it
 (undoable), or signing over it, which replaces it (undoing those strokes brings it back).
 
+The field shows the error, but it **does not invalidate the control**: a value is there, so
+`required` passes and the form can be submitted. To block the submission, flag the control
+from `imageError` — the error goes away with the next value, when the person clears or signs
+again:
+
+```html
+<ui-field-sign
+  label="Signature"
+  [formControl]="signature"
+  (imageError)="signature.setErrors({ unreadable: true })"
+/>
+```
+
+`setErrors` lasts until the control is validated again (`updateValueAndValidity()`,
+`enable()`, `setValidators()`): call it again after those, or keep the state in a validator of
+your own. With `[(ngModel)]` or Signal Forms, hold it in the host (a signal set by
+`imageError`) and check it before submitting.
+
 The field does not sanitize what it receives, nor what it emits: it is not a security
 boundary. Treat the value as untrusted on the server — check its MIME type and size, and
 rasterise an SVG before embedding it in a document.
@@ -106,7 +124,8 @@ rasterise an SVG before embedding it in a document.
 - `clear()` and `undo()` are public, for a "Start again" or "Undo" button owned by the host.
   `undo()` removes the last stroke drawn in the field, and with none left brings back what the
   last `clear()` removed. A signature received from the form is not a stroke: only `clear()`
-  removes it.
+  removes it. With no stroke left over it, it is emitted again **word for word** — not
+  re-exported, which would change the value under a dirty check.
 - On the keyboard, on the drawing area: `Backspace` or `Ctrl`+`Z` (`⌘`+`Z`) undo the last
   stroke, `Delete` clears — undoable too.
 

@@ -48,7 +48,10 @@ const NOT_AN_INK = new Set([
 ]);
 /** The `transform` the field writes: a uniform scale and a translation. */
 const MATRIX = /^matrix\(\s*(\S+)\s+0\s+0\s+(\S+)\s+(\S+)\s+(\S+)\s*\)$/;
-/** Rounding slack of the export (a tenth of a pixel), and then some. */
+/**
+ * Rounding the export may have introduced: coordinates to a tenth of a pixel, each edge of the
+ * frame too, and composed transforms on top. Far below anything a stroke could hide in.
+ */
 const SLACK = 0.5;
 
 /** Text of an SVG data URL, percent-encoded or base64. `null` for anything else. */
@@ -205,22 +208,22 @@ function readInk(el: Element): ReadLayer | null {
 }
 
 /**
- * Whether everything a layer paints stays inside `viewBox`: the field never exports ink
- * outside its frame, nor a stroke wider than it. Points once transformed, grown by half the
- * ink width, plus the export's rounding slack.
+ * Whether everything a layer paints stays inside `viewBox` — the field never exports ink
+ * outside its frame: the frame is grown to every stroke, cap included. Each point once
+ * transformed, **with the ink around it** (half the width, a round cap), must fit; only the
+ * export's rounding is forgiven.
  */
 function insideViewBox({ layer, points, pad }: ReadLayer, viewBox: SignRect): boolean {
   const { scale, x: dx, y: dy } = layer.transform;
-  const margin = pad * scale + SLACK;
-  if (pad * 2 * scale > Math.min(viewBox.width, viewBox.height)) return false;
+  const reach = pad * scale;
   return points.every(([px, py]) => {
     const x = px * scale + dx;
     const y = py * scale + dy;
     return (
-      x >= viewBox.x - margin &&
-      y >= viewBox.y - margin &&
-      x <= viewBox.x + viewBox.width + margin &&
-      y <= viewBox.y + viewBox.height + margin
+      x - reach >= viewBox.x - SLACK &&
+      y - reach >= viewBox.y - SLACK &&
+      x + reach <= viewBox.x + viewBox.width + SLACK &&
+      y + reach <= viewBox.y + viewBox.height + SLACK
     );
   });
 }

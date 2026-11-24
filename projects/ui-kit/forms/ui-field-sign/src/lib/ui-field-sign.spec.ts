@@ -57,8 +57,8 @@ const OWN_EXPORT = svgToDataUrl(
   strokesToSvg(
     [
       [
-        { x: 0, y: 0 },
         { x: 10, y: 10 },
+        { x: 20, y: 20 },
       ],
     ],
     {
@@ -335,6 +335,59 @@ describe('ui-field-sign', () => {
     expect(svg(host.value)).toContain('<path d="M200 100L220 110"/>');
   });
 
+  it('clamps half the ink inside the edge in box pixels, when the view is scaled too', async () => {
+    vi.stubGlobal('ResizeObserver', FakeResizeObserver);
+    setBox(400, 200);
+    const { host, pointer, draw, settle } = await setup();
+    await draw([300, 150], [390, 190]);
+    setBox(200, 100);
+    FakeResizeObserver.callbacks.forEach((cb) => cb());
+
+    pointer('pointerdown', 190, 90);
+    pointer('pointermove', 900, 700);
+    pointer('pointerup', 900, 700);
+    await settle();
+    // Half a 2px ink at scale 0.5 is 0.5 box pixel: 199.5 → 399 in frame coordinates.
+    expect(svg(host.value)).toContain('L399 199"/>');
+  });
+
+  it('maps the pointer onto the box as it is after a resize under the pen', async () => {
+    vi.stubGlobal('ResizeObserver', FakeResizeObserver);
+    let box = { width: 400, height: 200 };
+    vi.spyOn(Element.prototype, 'clientWidth', 'get').mockImplementation(() => box.width);
+    vi.spyOn(Element.prototype, 'clientHeight', 'get').mockImplementation(() => box.height);
+    vi.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(
+      () =>
+        ({ left: 0, top: 0, x: 0, y: 0, ...box, right: box.width, bottom: box.height }) as DOMRect,
+    );
+    const { host, pointer, settle } = await setup();
+    pointer('pointerdown', 10, 10);
+    box = { width: 200, height: 100 };
+    FakeResizeObserver.callbacks.forEach((cb) => cb());
+    pointer('pointermove', 100, 50);
+    pointer('pointerup', 100, 50);
+    await settle();
+    // With the stale rectangle, the box would look scaled by half: 100 → 50.
+    expect(svg(host.value)).toContain('<path d="M10 10L100 50"/>');
+  });
+
+  it('forgets a first stroke dropped by a disable: the next one takes the box as it is', async () => {
+    vi.stubGlobal('ResizeObserver', FakeResizeObserver);
+    setBox(400, 200);
+    const { host, pointer, draw, settle } = await setup();
+    pointer('pointerdown', 10, 10);
+    pointer('pointermove', 20, 20);
+    host.disabled.set(true);
+    await settle();
+    host.disabled.set(false);
+    await settle();
+
+    setBox(200, 100);
+    FakeResizeObserver.callbacks.forEach((cb) => cb());
+    await draw([10, 10], [20, 20]);
+    expect(svg(host.value)).toContain('viewBox="0 0 200 100"');
+  });
+
   it('drops the stroke under the pen when the field is disabled mid-stroke', async () => {
     const { host, pointer, draw, settle } = await setup();
     pointer('pointerdown', 0, 0);
@@ -454,22 +507,66 @@ describe('ui-field-sign', () => {
       await key('Delete');
       expect(host.value).toBeNull();
       await key('Backspace');
-      expect(svg(host.value)).toContain(`<image href="${SAMPLE}"`);
+      // Word for word: re-exported, the value would change under a dirty check.
+      expect(host.value).toBe(SAMPLE);
     });
 
     it('cleared while loading then undone, it is loaded again — the PNG export does not stall', async () => {
       vi.stubGlobal('Image', FakeImage);
-      const { host, key, settle } = await setup(PNG_SAMPLE, (h) => h.format.set('png'));
+      const { host, key, draw, settle } = await setup(PNG_SAMPLE, (h) => h.format.set('png'));
       const first = FakeImage.last!;
       await key('Delete');
       first.onload!(); // lands while cleared: dropped
       await key('Backspace');
       expect(FakeImage.last).not.toBe(first);
-      expect(host.changes).toEqual([null]);
+      expect(host.changes).toEqual([null, PNG_SAMPLE]);
 
+      await draw([0, 0], [5, 5]);
       FakeImage.last!.onload!();
       await settle();
       expect(svg(host.changes.at(-1))).toContain(`<image href="${PNG_SAMPLE}"`);
+    });
+
+    it('in SVG, signed over while loading then unreadable: the strokes replace it, alone', async () => {
+      vi.stubGlobal('Image', FakeImage);
+      vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+      const { host, draw, settle } = await setup(SAMPLE);
+      await draw([0, 0], [5, 5]);
+      expect(svg(host.value)).toContain('<image');
+      FakeImage.last!.onerror!();
+      await settle();
+      expect(svg(host.value)).not.toContain('<image');
+      expect(paths(host.value)).toBe(1);
+    });
+
+    it('cleared and undone while loading then unreadable, it stays the value word for word', async () => {
+      vi.stubGlobal('Image', FakeImage);
+      vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+      const { host, key, settle } = await setup(SAMPLE);
+      await key('Delete');
+      await key('Backspace');
+      FakeImage.last!.onerror!();
+      await settle();
+      expect(host.value).toBe(SAMPLE);
+    });
+
+    it("unreadable during the first stroke, keeps that stroke's region", async () => {
+      vi.stubGlobal('Image', FakeImage);
+      vi.stubGlobal('ResizeObserver', FakeResizeObserver);
+      vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+      setBox(400, 200);
+      const { host, pointer, draw, settle } = await setup(SAMPLE);
+      pointer('pointerdown', 300, 150);
+      pointer('pointermove', 390, 190);
+      FakeImage.last!.onerror!();
+      pointer('pointerup', 390, 190);
+      await settle();
+
+      setBox(200, 100);
+      FakeResizeObserver.callbacks.forEach((cb) => cb());
+      await draw([100, 50], [110, 55]);
+      // The region holds: the halved box shows it at half scale.
+      expect(svg(host.value)).toContain('<path d="M200 100L220 110"/>');
     });
 
     describe('when it cannot be loaded', () => {
@@ -640,6 +737,16 @@ describe('ui-field-sign', () => {
       host.control.reset();
       await settle();
       expect(fixture.nativeElement.querySelector('.ui-field-sign-placeholder')).not.toBeNull();
+    });
+
+    it('a disable() landing right before the pointer is released drops the stroke', async () => {
+      const { host, pointer } = await reactive();
+      pointer('pointerdown', 0, 0);
+      pointer('pointermove', 5, 5);
+      // No change detection in between: the effect has not run yet.
+      host.control.disable();
+      pointer('pointerup', 5, 5);
+      expect(host.control.value).toBeNull();
     });
 
     it('disable() from the form stops the pen', async () => {

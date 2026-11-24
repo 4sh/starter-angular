@@ -236,6 +236,11 @@ export class UiFieldSign extends BaseFormField<FieldSignValue> {
   private lastEmitted: FieldSignValue | undefined;
   /** @ignore A stroke ended while the previous signature was still loading (PNG export). */
   private commitPending = false;
+  /**
+   * @ignore The last value emitted embeds a previous signature not loaded yet (SVG export):
+   * should it turn out unreadable, the value is emitted again without it.
+   */
+  private embedsUnloaded = false;
   /** @ignore The box was resized under the pen: the view is refitted once the stroke ends. */
   private viewStale = false;
   /** @ignore Half the ink width, in box pixels, at stroke start — how far points stay from the edge. */
@@ -319,6 +324,7 @@ export class UiFieldSign extends BaseFormField<FieldSignValue> {
     this.current = null;
     this.activePointerId = null;
     this.commitPending = false;
+    this.embedsUnloaded = false;
     this.cleared = null;
     this.viewStale = false;
     this.setRegion(null);
@@ -384,6 +390,8 @@ export class UiFieldSign extends BaseFormField<FieldSignValue> {
     if (pointerId !== null && canvas.hasPointerCapture?.(pointerId)) {
       canvas.releasePointerCapture(pointerId);
     }
+    // A first stroke abandoned leaves nothing: the region it set goes with it, as on undo.
+    if (this.strokes().length === 0 && !this.background()) this.setRegion(null);
     this.refitIfStale();
     this.scheduleRedraw();
   }
@@ -432,6 +440,7 @@ export class UiFieldSign extends BaseFormField<FieldSignValue> {
   /** @ignore */
   protected onPointerMove(event: PointerEvent): void {
     if (event.pointerId !== this.activePointerId || !this.current) return;
+    if (this.dropIfLocked()) return;
     // Coalesced events: a fast stroke is sampled at the device rate, not the frame rate.
     const samples = event.getCoalescedEvents?.() ?? [];
     for (const sample of samples.length ? samples : [event]) {
@@ -443,6 +452,7 @@ export class UiFieldSign extends BaseFormField<FieldSignValue> {
   /** @ignore `pointerup`, `pointercancel` and a lost capture alike: what was drawn is kept. */
   protected onPointerEnd(event: PointerEvent): void {
     if (event.pointerId !== this.activePointerId || !this.current) return;
+    if (this.dropIfLocked()) return;
     const stroke = this.current;
     this.current = null;
     this.activePointerId = null;
@@ -451,6 +461,17 @@ export class UiFieldSign extends BaseFormField<FieldSignValue> {
     this.strokes.update((s) => [...s, stroke]);
     this.refitIfStale();
     this.commit();
+  }
+
+  /**
+   * @ignore Disabled or made read-only under the pen: the stroke is dropped. Checked on the
+   * pointer events themselves — the effect that does the same only runs at the next change
+   * detection, and a `pointerup` may land before it.
+   */
+  private dropIfLocked(): boolean {
+    if (this.isInteractive()) return false;
+    this.abandonStroke();
+    return true;
   }
 
   /** @ignore Refits the view the box changed size for while a stroke was drawn. */
@@ -492,16 +513,27 @@ export class UiFieldSign extends BaseFormField<FieldSignValue> {
 
   /** @ignore Current picture → value, pushed to the form and to `valueChange`. */
   private commit(): void {
-    // A PNG export paints the previous signature: wait for it rather than drop it.
     const bg = this.background();
-    if (this.format() === 'png' && bg && !bg.image) {
+    let value: FieldSignValue;
+    if (this.showUnreadable()) {
+      // An unreadable value stands until something is drawn over it: undoing that stroke
+      // brings the form's value back, not `null`.
+      value = this.unreadable();
+    } else if (this.strokes().length === 0) {
+      // Nothing drawn over the previous signature (a clear undone, the last stroke undone):
+      // the value received, word for word — not re-exported, which would change it.
+      value = bg?.src ?? null;
+    } else if (this.format() === 'png' && bg && !bg.image) {
+      // A PNG export paints the previous signature: wait for it rather than drop it.
       this.commitPending = true;
       return;
+    } else {
+      value = this.export();
     }
     this.commitPending = false;
-    // An unreadable value stands until something is drawn over it: undoing that stroke brings
-    // the form's value back, not `null`.
-    const value = this.showUnreadable() ? this.unreadable() : this.isEmpty() ? null : this.export();
+    // An SVG export carries the previous signature by reference, loaded or not: should it
+    // turn out unreadable, the value is emitted again without it.
+    this.embedsUnloaded = this.strokes().length > 0 && !!bg && !bg.image;
     this.lastEmitted = value;
     this.modelValue.set(value);
     this.emitChange(value);
@@ -621,8 +653,11 @@ export class UiFieldSign extends BaseFormField<FieldSignValue> {
       // signing over it, is the person's call; `imageError` tells the host.
       this.background.set(null);
       this.unreadable.set(src);
-      if (this.strokes().length === 0) this.setRegion(null);
-      if (this.commitPending) this.commit();
+      // Not under the pen: the first stroke's region stays until that stroke ends.
+      if (this.strokes().length === 0 && !this.current) this.setRegion(null);
+      // A value already out with this image in it (SVG), or held for it (PNG): the strokes
+      // replace it, alone — what the screen shows.
+      if (this.commitPending || this.embedsUnloaded) this.commit();
       this.imageError.emit(event instanceof Event ? event : new Event('error'));
     };
     image.src = src;
@@ -709,8 +744,13 @@ export class UiFieldSign extends BaseFormField<FieldSignValue> {
     canvas.height = Math.max(1, Math.round(this.boxHeight * ratio));
     // Not mid-stroke: the points already drawn would no longer line up with the pen. Refitted
     // once the stroke ends instead.
-    if (this.drawing()) this.viewStale = true;
-    else this.fitView();
+    if (this.drawing()) {
+      this.viewStale = true;
+      // The pointer keeps mapping onto the box as it is now.
+      this.padRect = canvas.getBoundingClientRect();
+    } else {
+      this.fitView();
+    }
   }
 
   // --- Rendering -----------------------------------------------------------

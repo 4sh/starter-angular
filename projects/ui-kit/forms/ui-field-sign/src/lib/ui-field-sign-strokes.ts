@@ -32,11 +32,21 @@ export interface SignPathSink {
  */
 const DOT_LENGTH = 0.2;
 
+/** A coordinate as the SVG export writes it: in tenths of a pixel. */
+const tenths = (n: number): number => Math.round(n * 10);
+
 /**
- * Below this distance from its first point, a stroke is a tap: a finger or a stylus that does
- * not move still sends `pointermove` events, at the same spot or a hair away.
+ * Whether `stroke` is a tap: every point lands on the first once rounded as the export
+ * rounds them. A finger or a stylus that does not move still sends `pointermove` events, at
+ * the same spot or a hair away — exported as is, that would be a zero-length segment.
  */
-const DOT_RADIUS = 0.05;
+export function isTap(stroke: SignStroke): boolean {
+  if (stroke.length === 0) return false;
+  const [first] = stroke;
+  const x = tenths(first.x);
+  const y = tenths(first.y);
+  return stroke.every((p) => tenths(p.x) === x && tenths(p.y) === y);
+}
 
 /**
  * Traces `stroke` into `sink`, smoothed: each point becomes the control point of a
@@ -47,10 +57,7 @@ export function traceStroke(sink: SignPathSink, stroke: SignStroke): void {
   if (stroke.length === 0) return;
   const [first] = stroke;
   sink.moveTo(first.x, first.y);
-  const isTap = stroke.every(
-    (p) => Math.abs(p.x - first.x) < DOT_RADIUS && Math.abs(p.y - first.y) < DOT_RADIUS,
-  );
-  if (isTap) {
+  if (isTap(stroke)) {
     sink.lineTo(first.x + DOT_LENGTH, first.y);
     return;
   }
@@ -104,21 +111,24 @@ export interface SignRect {
 }
 
 /**
- * Bounding box of every point of `strokes`, grown by `pad` on each side (half the ink width,
- * so a round cap is not shaved off). `null` when there is no point at all.
+ * Bounding box of every point of `strokes` — the segment a tap is drawn as included — grown by
+ * `pad` on each side (half the ink width, so a round cap is not shaved off). `null` when there
+ * is no point at all.
  */
 export function strokesBounds(strokes: readonly SignStroke[], pad = 0): SignRect | null {
   let minX = Infinity;
   let minY = Infinity;
   let maxX = -Infinity;
   let maxY = -Infinity;
+  const add = (x: number, y: number) => {
+    if (x < minX) minX = x;
+    if (y < minY) minY = y;
+    if (x > maxX) maxX = x;
+    if (y > maxY) maxY = y;
+  };
   for (const stroke of strokes) {
-    for (const { x, y } of stroke) {
-      if (x < minX) minX = x;
-      if (y < minY) minY = y;
-      if (x > maxX) maxX = x;
-      if (y > maxY) maxY = y;
-    }
+    for (const { x, y } of stroke) add(x, y);
+    if (isTap(stroke)) add(stroke[0].x + DOT_LENGTH, stroke[0].y);
   }
   if (minX === Infinity) return null;
   return {
@@ -231,8 +241,11 @@ const fitTransform = (source: SignRect, target: SignRect): SignTransform => {
   return { scale, x: target.x + r.x - source.x * scale, y: target.y + r.y - source.y * scale };
 };
 
-/** A scale keeps more digits than a coordinate: a tenth would drift over a few edits. */
-const roundScale = (n: number): string => String(Math.round(n * 1e5) / 1e5);
+/**
+ * A scale keeps six significant digits — relative, not absolute: scaled down edit after edit,
+ * a fixed number of decimals would end at `0` and the layer would vanish.
+ */
+const roundScale = (n: number): string => String(Number(n.toPrecision(6)));
 
 /** `transform` attribute, omitted for the identity. */
 const transformAttr = ({ scale, x, y }: SignTransform): string =>

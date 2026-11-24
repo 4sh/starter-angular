@@ -7,17 +7,20 @@ import { describe, expect, it } from 'vitest';
 import {
   type SignRect,
   type SignStroke,
+  strokesBounds,
   strokesToSvg,
   svgToDataUrl,
+  unionRect,
 } from './ui-field-sign-strokes';
 import { decodeSvgDataUrl, readSignSvg } from './ui-field-sign-svg';
 
 const stroke = (...coords: [number, number][]): SignStroke => coords.map(([x, y]) => ({ x, y }));
 const frame: SignRect = { x: 0, y: 0, width: 300, height: 150 };
+/** What the field exports: the frame grown to every stroke, cap included. */
 const exportOf = (strokes: SignStroke[], background: string | null = null, color = 'black') =>
   svgToDataUrl(
     strokesToSvg(strokes, {
-      frame,
+      frame: unionRect(frame, strokesBounds(strokes, 1)),
       color,
       lineWidth: 2,
       background: background
@@ -45,12 +48,12 @@ describe('decodeSvgDataUrl', () => {
 
 describe('readSignSvg', () => {
   it('reads back its own export: frame and strokes, in one ink layer', () => {
-    const drawing = readSignSvg(exportOf([stroke([0, 0], [10, 10]), stroke([5, 5])]));
+    const drawing = readSignSvg(exportOf([stroke([10, 10], [20, 20]), stroke([15, 15])]));
     expect(drawing?.viewBox).toEqual(frame);
     expect(drawing?.layers).toEqual([
       {
         kind: 'ink',
-        paths: ['M0 0L10 10', 'M5 5L5.2 5'],
+        paths: ['M10 10L20 20', 'M15 15L15.2 15'],
         color: 'black',
         width: 2,
         transform: { scale: 1, x: 0, y: 0 },
@@ -120,8 +123,26 @@ describe('readSignSvg', () => {
     expect(readSignSvg(wrap(body))).toBeNull();
   });
 
-  it('accepts ink up to the frame edge, round cap and rounding included', () => {
-    expect(readSignSvg(wrap(`${INK}<path d="M0 0L300 150"/></g>`))).not.toBeNull();
+  it('accepts ink up to the frame edge, round cap included — as the field draws it', () => {
+    expect(readSignSvg(wrap(`${INK}<path d="M1 1L299 149"/></g>`))).not.toBeNull();
+  });
+
+  it('refuses a round cap past the frame edge — the field never writes one', () => {
+    expect(readSignSvg(wrap(`${INK}<path d="M0 0L300 150"/></g>`))).toBeNull();
+  });
+
+  // Bands of ink just outside each edge — and within the other three: hidden on screen (the
+  // image is clipped), revealed flat.
+  it.each([
+    ['above', 'M80 -70L220 -70'],
+    ['below', 'M80 220L220 220'],
+    ['left of', 'M-70 75L-70 76'],
+    ['right of', 'M370 75L370 76'],
+  ])('refuses a wide stroke drawn just %s the frame', (_, d) => {
+    const band =
+      '<g fill="none" stroke="red" stroke-width="140" stroke-linecap="round" ' +
+      `stroke-linejoin="round"><path d="${d}"/></g>`;
+    expect(readSignSvg(wrap(band))).toBeNull();
   });
 
   it('treats a DOCTYPE or an entity as foreign — never expanded', () => {
@@ -157,7 +178,7 @@ describe('re-exporting a signature it exported', () => {
   });
 
   it('fits the previous frame into its slot, the way the screen draws it', () => {
-    const first = exportOf([stroke([0, 0], [10, 10])]);
+    const first = exportOf([stroke([10, 10], [20, 20])]);
     const svg = strokesToSvg([], {
       frame,
       color: 'black',
@@ -184,10 +205,42 @@ describe('re-exporting a signature it exported', () => {
   });
 
   it('drops an empty ink layer an earlier export may hold', () => {
-    const empty = wrap(`${INK}<path d="M0 0L1 1"/></g>${INK}</g>`);
+    const empty = wrap(`${INK}<path d="M10 10L11 11"/></g>${INK}</g>`);
     const next = svgOf(exportOf([stroke([2, 2], [3, 3])], empty));
     // The copied stroke's group, and the new one: no empty group carried along.
     expect(next.match(/<g /g)).toHaveLength(2);
+  });
+
+  it('reads back every edit as its own, whatever the box proportions in between', () => {
+    // Frames of the box at each edit: a phone turned, a desktop, a narrow column…
+    const boxes: SignRect[] = [
+      { x: 0, y: 0, width: 300, height: 150 },
+      { x: 0, y: 0, width: 150, height: 300 },
+      { x: 0, y: 0, width: 640, height: 120 },
+      { x: 0, y: 0, width: 333.3, height: 177.7 },
+      { x: 0, y: 0, width: 90, height: 260 },
+    ];
+    let value: string | null = null;
+    for (let edit = 0; edit < 15; edit++) {
+      const box = boxes[edit % boxes.length];
+      // Points stay half the ink width inside the box, as the field clamps them; a tap too.
+      const strokes = [
+        stroke([1, 1], [box.width - 1, box.height - 1]),
+        stroke([box.width - 1.2, box.height / 2]),
+      ];
+      const drawing = value ? readSignSvg(value) : null;
+      if (value) expect(drawing, `edit ${edit}`).not.toBeNull();
+      value = svgToDataUrl(
+        strokesToSvg(strokes, {
+          frame: unionRect(box, strokesBounds(strokes, 1)),
+          color: 'black',
+          lineWidth: 2,
+          background: value ? { href: value, rect: box, drawing } : null,
+        }),
+      );
+    }
+    expect(svgOf(value!)).not.toContain('<image');
+    expect(svgOf(value!)).not.toMatch(/matrix\(0 /);
   });
 
   it('grows by the new strokes only, edit after edit', () => {
