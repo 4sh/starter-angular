@@ -439,7 +439,7 @@ $focus-ring-width: utils.$form-focus-ring-width; // ← replace the value here t
 - **Language**: the published documentation is in **English** — MDX pages, `argTypes`
   descriptions, story demo values and the config `///` comments. New components and pages
   are written in English from the start. Many existing ones predate this rule and are still
-  in French (migration: FSHSP-267): a component or page is translated **as a whole**, never
+  in French (migration: FSHSP-268): a component or page is translated **as a whole**, never
   half-way — a small fix on a page still in French follows that page's language rather than
   leaving a mixed page or a mixed "Theming" table.
 - **Tables**: always in HTML tags (`<table>`, `<tr>`, `<td>`) rather than native Markdown in `.mdx` files, to guarantee rendering and CSS control.
