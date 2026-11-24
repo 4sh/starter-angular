@@ -98,7 +98,7 @@ Rules:
 - `classes = computed()`: `['ui-{name}']` + `_{modifier}` (`_` prefix), derived state via computed. Size `default` = no class (base); only emit non-default ones.
 - Figma boolean props `text`/`icon`/… → **presence** of an input (`hasIcon = computed(() => !!this.icon())`), not a dedicated boolean — see `ui-button`.
 - Internal comments: `/** @ignore */` on protected members.
-- **Code comments always in English** (JSDoc, inline comments in `.ts`/`.html`/`.scss`). User-facing documentation (stories/MDX) stays in French.
+- **Code comments always in English** (JSDoc, inline comments in `.ts`/`.html`/`.scss`). User-facing documentation (stories/MDX, `///`) is in English too.
 - Icons: `ui-icon` component (`[name]`, `[size]`), decorative by default.
 
 ## SCSS conventions
@@ -119,7 +119,7 @@ what write the doc: nothing to copy elsewhere.
 
 | Marker | Meaning                                                                          |
 | ------ | -------------------------------------------------------------------------------- |
-| `///`  | **public contract**, in **French** → appears in the doc                          |
+| `///`  | **public contract**, in **English** → appears in the doc                         |
 | `//`   | internal note (implementation), in English like the rest of the file → invisible |
 
 - The `///` goes **at the end of the declaration**, vertically aligned with its **visual group**
@@ -127,8 +127,8 @@ what write the doc: nothing to copy elsewhere.
 
   ```scss
   // --- Config ---------------------------------------------------
-  $card-padding: var(--units-lg); /// Inset du corps.
-  $card-radius: var(--radius-md); /// Rayon des coins.
+  $card-padding: var(--units-lg); /// Body inset.
+  $card-radius: var(--radius-md); /// Corner radius.
   ```
 
 - Only exception: a **multi-line map** carries its `///` on the line above.
@@ -190,11 +190,11 @@ If the component holds a value (checked, selection, input):
 
 - `title: 'Components/ui/{cat}/ui-{name}'`, `component`, `decorators: [moduleMetadata({ imports: [...] })]` (+ `FormsModule` if `ngModel`).
 - `parameters.design.url` Figma (UI Kit file `GZww5hdUA49LB8XWeWP6tl`) — point to the ComponentSet's `node-id` if known.
-- `argTypes` documented (control, description in French, `table.type`/`defaultValue`).
+- `argTypes` documented (control, description in English, `table.type`/`defaultValue`).
 - One story per distinct visual state from the YAML (levels, sizes, states…). Form controls: drive with `[(ngModel)]` via a `render` factory for real interactivity.
-- Form controls: add a **`SignalForms`** story (`form()` + `required()` + `[formField]` from `@angular/forms/signals`, demo in a co-located `@Component` class) modeled on `ui-slider.stories.ts`, in addition to the Template-driven/Reactive demos; the "Formulaires" section of the mdx shows all three APIs.
+- Form controls: add a **`SignalForms`** story (`form()` + `required()` + `[formField]` from `@angular/forms/signals`, demo in a co-located `@Component` class) modeled on `ui-slider.stories.ts`, in addition to the Template-driven/Reactive demos; the "Forms" section of the mdx shows all three APIs.
 
-**mdx** (co-located, imports its sibling story via relative `./ui-{name}.stories`): `import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks'`; sections `# ui-{name}` (French intro + tokens), `## API` (`<ArgTypes>`), `## États`, `## Accessibilité` (table `className="doc-table"`), `html` examples.
+**mdx** (co-located, imports its sibling story via relative `./ui-{name}.stories`): `import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks'`; sections `# ui-{name}` (English intro + tokens), `## API` (`<ArgTypes>`), `## States`, `## Accessibility` (table `className="doc-table"`), `html` examples.
 
 **`## Theming`** — as soon as the component has an SCSS config, **always the last section of the page**:
 

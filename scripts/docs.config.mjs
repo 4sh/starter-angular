@@ -9,12 +9,12 @@
  * runtime par le bloc de doc (donc suit le thème / la marque / le viewport).
  *
  * Conventions attendues dans un `.scss` de composant. `///` = contrat public
- * documenté (en français), `//` = note interne. Le rôle se met en FIN de
+ * documenté (en anglais), `//` = note interne. Le rôle se met en FIN de
  * déclaration, aligné verticalement dans son bloc :
  *
  *   // --- Config ------------------------------------------------------
- *   $card-padding: var(--units-lg);       /// Inset du corps.
- *   $card-radius: var(--radius-md);       /// Rayon des coins.
+ *   $card-padding: var(--units-lg);       /// Body inset.
+ *   $card-radius: var(--radius-md);       /// Corner radius.
  *
  * Seule exception : une déclaration multi-lignes (map SCSS) porte son `///` sur
  * la ligne au-dessus. Ne jamais écrire de valeur résolue dans un rôle : la doc
@@ -27,8 +27,8 @@
  * hook vive — déclaration, ou simple lecture avec fallback (point d'override
  * pur, jamais déclaré par le composant) :
  *
- *   --ui-card-padding: #{$card-padding};                     /// Gouttière exposée.
- *   color: var(--ui-spinner-color, var(--informative-…));    /// Couleur du marqueur.
+ *   --ui-card-padding: #{$card-padding};                     /// Exposed gutter.
+ *   color: var(--ui-spinner-color, var(--informative-…));    /// Marker color.
  *
  * Usage :
  *   node scripts/docs.config.mjs            # génère le manifeste

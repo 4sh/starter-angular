@@ -158,12 +158,13 @@ by `pnpm docs:config` (`scripts/docs.config.mjs` → `storybook/generated/ui-con
 rendered by `<ConfigTable of="ui-{name}" />` (`storybook/blocks/config-table.js`).
 
 **The `.scss` comments are what write the doc**: `///` = documented public contract (in
+English, like all published docs — see `AGENTS.md` → "Documentation (MDX)" for pages still in
 French), `//` = internal note (English, invisible in the doc). The `///` goes **at the end of
 the declaration**, vertically aligned with its visual group:
 
 ```scss
-$card-padding: var(--units-lg); /// Inset du corps.
-$card-radius: var(--radius-md); /// Rayon des coins.
+$card-padding: var(--units-lg); /// Body inset.
+$card-radius: var(--radius-md); /// Corner radius.
 ```
 
 Rules:

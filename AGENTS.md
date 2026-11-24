@@ -291,7 +291,7 @@ pitfall, extension point). No paraphrasing of what the next line does.
 - **Inline** — to flag a non-obvious choice, at end of line (`// …`); never to describe the obvious.
 - **Sections** — short separators `// --- <Title> ---` to break up a long file.
 - **Mixins/functions** (partials in `projects/ui-kit/styles/utils/`) — 1 to 2 `///` lines: role + call example. No walls of text.
-- **Language**: comments in **English**… **except** a component's config `///` comments (below), which are published in the docs and therefore in French.
+- **Language**: comments in **English**, including a component's config `///` comments (below), which are published in the docs — see "Documentation (MDX)" → **Language** for pages still in French.
 - **Never reference Figma**: keep the intent ("enlarged for readability"), not the origin ("Figma 3px"). The `.scss` must read without the mockup.
 
 #### A `///` on a config variable = the published doc
@@ -305,8 +305,8 @@ The `///` goes **at the end of the declaration**, vertically aligned with its vi
 lines separate groups):
 
 ```scss
-$card-padding: var(--units-lg); /// Inset du corps.
-$card-radius: var(--radius-md); /// Rayon des coins.
+$card-padding: var(--units-lg); /// Body inset.
+$card-radius: var(--radius-md); /// Corner radius.
 ```
 
 - **Never a resolved value in a role** (`(12px)`): the doc measures it at runtime, in the active
@@ -328,11 +328,8 @@ on the usage sites:
 
 ```scss
 // --- Config ---
-$radius: var(--ui-button-radius, var(--radius-sm)); /// Rayon des coins.
-$stroke-width: var(
-  --ui-button-stroke-width,
-  #{utils.$control-stroke-width}
-); /// Épaisseur de la bordure.
+$radius: var(--ui-button-radius, var(--radius-sm)); /// Corner radius.
+$stroke-width: var(--ui-button-stroke-width, #{utils.$control-stroke-width}); /// Border thickness.
 
 .ui-button {
   border-radius: $radius;
@@ -439,6 +436,12 @@ $focus-ring-width: utils.$form-focus-ring-width; // ← replace the value here t
 
 ### Documentation (MDX)
 
+- **Language**: the published documentation is in **English** — MDX pages, `argTypes`
+  descriptions, story demo values and the config `///` comments. New components and pages
+  are written in English from the start. Many existing ones predate this rule and are still
+  in French (migration: FSHSP-267): a component or page is translated **as a whole**, never
+  half-way — a small fix on a page still in French follows that page's language rather than
+  leaving a mixed page or a mixed "Theming" table.
 - **Tables**: always in HTML tags (`<table>`, `<tr>`, `<td>`) rather than native Markdown in `.mdx` files, to guarantee rendering and CSS control.
 - **"Theming" section**: never written by hand. `<ConfigTable of="ui-<name>" />`
   (`storybook/blocks/config-table.js`), fed by `pnpm docs:config` from the `.scss`'s `///`
