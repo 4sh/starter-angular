@@ -78,8 +78,62 @@ describe('readSignSvg', () => {
       `<image href="https://example.test/a.png" x="0" y="0" width="1" height="1"/>`,
     ],
     ['a rotation', `${INK.replace('<g ', '<g transform="rotate(45)" ')}</g>`],
+    ['no ink', `${INK.replace('stroke="black"', 'stroke="none"')}<path d="M0 0L1 1"/></g>`],
+    [
+      'an ink that is not a colour of its own',
+      `${INK.replace('stroke="black"', 'stroke="currentColor"')}<path d="M0 0L1 1"/></g>`,
+    ],
+    ['path commands it does not chain that way', `${INK}<path d="M1 2LLL"/></g>`],
+    ['a path not starting with a move', `${INK}<path d="L1 2"/></g>`],
   ])('treats an SVG holding %s as foreign', (_, body) => {
     expect(readSignSvg(wrap(body))).toBeNull();
+  });
+
+  // Copied flat, nothing clips a layer any more: what the screen hid must not reach the export.
+  it.each([
+    [
+      'a hexadecimal scale',
+      `${INK.replace('<g ', '<g transform="matrix(0x2 0 0 0x2 0 0)" ')}<path d="M0 0L1 1"/></g>`,
+    ],
+    [
+      'an infinite scale',
+      `${INK.replace('<g ', '<g transform="matrix(Infinity 0 0 Infinity 0 0)" ')}<path d="M0 0L1 1"/></g>`,
+    ],
+    [
+      'a scale that overflows to infinity',
+      `${INK.replace('<g ', '<g transform="matrix(1e400 0 0 1e400 0 0)" ')}<path d="M0 0L1 1"/></g>`,
+    ],
+    ['ink outside the viewBox', `${INK}<path d="M-500 -500L900 900"/></g>`],
+    [
+      'ink moved outside by its transform',
+      `${INK.replace('<g ', '<g transform="matrix(1 0 0 1 400 0)" ')}<path d="M0 0L1 1"/></g>`,
+    ],
+    [
+      'a stroke wider than the frame',
+      `${INK.replace('stroke-width="2"', 'stroke-width="1e6"')}<path d="M10 10L20 20"/></g>`,
+    ],
+    [
+      'an image larger than the frame',
+      `<image href="data:image/png;base64,AA" x="0" y="0" width="900" height="900"/>`,
+    ],
+  ])('treats an SVG with %s as foreign', (_, body) => {
+    expect(readSignSvg(wrap(body))).toBeNull();
+  });
+
+  it('accepts ink up to the frame edge, round cap and rounding included', () => {
+    expect(readSignSvg(wrap(`${INK}<path d="M0 0L300 150"/></g>`))).not.toBeNull();
+  });
+
+  it('treats a DOCTYPE or an entity as foreign — never expanded', () => {
+    const doctype =
+      '<!DOCTYPE svg [<!ENTITY c "red">]><svg xmlns="http://www.w3.org/2000/svg" ' +
+      'viewBox="0 0 300 150" width="300" height="150"></svg>';
+    expect(readSignSvg(svgToDataUrl(doctype))).toBeNull();
+  });
+
+  it('treats as foreign a viewBox that overflows to infinity — anything would fit in it', () => {
+    const root = 'viewBox="0 0 1e400 1e400" width="1e400" height="1e400"';
+    expect(readSignSvg(wrap(`${INK}<path d="M0 0L9 9"/></g>`, root))).toBeNull();
   });
 
   it('treats as foreign an SVG without a viewBox, or sized out of its proportions', () => {
@@ -129,8 +183,8 @@ describe('re-exporting a signature it exported', () => {
     expect(svgOf(value)).toContain(`href="${png}"`);
   });
 
-  it('drops an empty ink layer (everything undone over a previous signature)', () => {
-    const empty = exportOf([], exportOf([stroke([0, 0], [1, 1])]));
+  it('drops an empty ink layer an earlier export may hold', () => {
+    const empty = wrap(`${INK}<path d="M0 0L1 1"/></g>${INK}</g>`);
     const next = svgOf(exportOf([stroke([2, 2], [3, 3])], empty));
     // The copied stroke's group, and the new one: no empty group carried along.
     expect(next.match(/<g /g)).toHaveLength(2);

@@ -57,13 +57,15 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
     silhouette dans l'encre courante et reste sous les nouveaux traits jusqu'à un effacement ;
     en PNG, l'export l'attend plutôt que de la perdre. Une valeur SVG émise par le champ puis
     complétée est réexportée **à plat** (ses traits recopiés) : elle ne grossit plus à chaque
-    édition. Une image illisible laisse la boîte vide, émet `imageError` et ne touche pas à la
-    valeur du formulaire.
+    édition — sauf si son tracé sort de son propre cadre : elle reste alors une image. Une
+    image illisible est affichée et annoncée comme telle (`unreadableLabel`, niveau erreur),
+    émet `imageError` et reste la valeur jusqu'à ce qu'on l'efface ou qu'on signe par-dessus.
   - Bouton d'effacement, `clear()` / `undo()` publics — `undo()` annule aussi un effacement.
     Au clavier : `Retour arrière` ou `Ctrl`+`Z` annulent le dernier trait, `Suppr` efface.
   - `touch-action: none` et capture du pointeur : la page ne défile pas pendant la signature ;
-    un second doigt est ignoré. Tracé lissé, redessiné au redimensionnement ; un simple
-    toucher exporte un point visible.
+    un second doigt est ignoré. Tracé lissé, redessiné au redimensionnement (appliqué en fin
+    de trait s'il survient pendant) ; un simple toucher exporte un point visible. Un champ
+    désactivé en plein trait abandonne ce trait.
   - L'état est annoncé aux lecteurs d'écran (« Signez ici » / `signedLabel`, puis
     `requiredLabel` quand le champ est obligatoire).
   - Hooks `--ui-field-sign-*` : hauteur de la zone, couleur et épaisseur de l'encre, invite,

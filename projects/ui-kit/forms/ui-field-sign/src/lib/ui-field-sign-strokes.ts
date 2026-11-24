@@ -25,12 +25,18 @@ export interface SignPathSink {
 }
 
 /**
- * Length given to a single-point stroke (a tap: the dot of an "i"). A zero-length segment
- * is not painted by every renderer even with round caps — some canvas engines, PDF
- * converters. Two tenths of a pixel survive the SVG export's rounding (a tenth could round
- * back onto the start point) and still read as a dot.
+ * Length given to a tap (the dot of an "i"). A zero-length segment is not painted by every
+ * renderer even with round caps — the canvas spec prunes it, so do some PDF converters. Two
+ * tenths of a pixel survive the SVG export's rounding (a tenth could round back onto the
+ * start point) and still read as a dot.
  */
 const DOT_LENGTH = 0.2;
+
+/**
+ * Below this distance from its first point, a stroke is a tap: a finger or a stylus that does
+ * not move still sends `pointermove` events, at the same spot or a hair away.
+ */
+const DOT_RADIUS = 0.05;
 
 /**
  * Traces `stroke` into `sink`, smoothed: each point becomes the control point of a
@@ -41,7 +47,10 @@ export function traceStroke(sink: SignPathSink, stroke: SignStroke): void {
   if (stroke.length === 0) return;
   const [first] = stroke;
   sink.moveTo(first.x, first.y);
-  if (stroke.length === 1) {
+  const isTap = stroke.every(
+    (p) => Math.abs(p.x - first.x) < DOT_RADIUS && Math.abs(p.y - first.y) < DOT_RADIUS,
+  );
+  if (isTap) {
     sink.lineTo(first.x + DOT_LENGTH, first.y);
     return;
   }
@@ -194,9 +203,19 @@ export interface SignSvgOptions {
   readonly background?: SignSvgBackground | null;
 }
 
-/** Escapes a value for a double-quoted XML attribute. */
+/**
+ * Escapes a value for a double-quoted XML attribute — line breaks and tabs too, which an XML
+ * parser would otherwise normalise to spaces: what is read back is what was written.
+ */
 const attr = (value: string): string =>
-  value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  value
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/\n/g, '&#10;')
+    .replace(/\r/g, '&#13;')
+    .replace(/\t/g, '&#9;');
 
 /** `then` applied after `first`. */
 const compose = (then: SignTransform, first: SignTransform): SignTransform => ({
@@ -264,7 +283,7 @@ export function strokesToSvg(strokes: readonly SignStroke[], options: SignSvgOpt
     `viewBox="${round(frame.x)} ${round(frame.y)} ${round(frame.width)} ${round(frame.height)}" ` +
     `width="${round(frame.width)}" height="${round(frame.height)}">` +
     backgroundMarkup(background) +
-    inkGroup(paths, color, lineWidth) +
+    (paths.length > 0 ? inkGroup(paths, color, lineWidth) : '') +
     `</svg>`
   );
 }

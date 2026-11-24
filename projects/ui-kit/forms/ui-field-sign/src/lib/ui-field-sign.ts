@@ -12,11 +12,12 @@ import {
   isDevMode,
   output,
   signal,
+  untracked,
   viewChild,
 } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { BaseFormField, warnMissingAccessibleName } from '@4sh/ui-kit/forms';
+import { BaseFormField, type FieldLevel, warnMissingAccessibleName } from '@4sh/ui-kit/forms';
 import { UiField } from '@4sh/ui-kit/forms/ui-field';
 import { UiIcon, type UiIconSize } from '@4sh/ui-kit/base/ui-icon';
 import {
@@ -25,6 +26,7 @@ import {
   type SignPoint,
   type SignRect,
   type SignStroke,
+  type SignSvgDrawing,
   strokesBounds,
   strokesToSvg,
   svgToDataUrl,
@@ -74,6 +76,7 @@ interface SignSnapshot {
   readonly strokes: readonly SignStroke[];
   readonly background: SignBackground | null;
   readonly region: SignRect | null;
+  readonly unreadable: string | null;
 }
 
 /**
@@ -133,6 +136,8 @@ export class UiFieldSign extends BaseFormField<FieldSignValue> {
   signedLabel = input<string>('Signature saisie');
   /** Announced after the state when the field is `required` (the visual `*` is hidden from assistive tech). */
   requiredLabel = input<string>('obligatoire');
+  /** Shown and announced in place of a signature from the form that cannot be loaded. */
+  unreadableLabel = input<string>('Signature illisible');
 
   /** Emitted when a stroke ends, and when the signature is cleared or undone — never mid-stroke. */
   valueChange = output<FieldSignValue>();
@@ -141,8 +146,9 @@ export class UiFieldSign extends BaseFormField<FieldSignValue> {
   /** Emitted when the drawing area loses focus. */
   padBlur = output<FocusEvent>();
   /**
-   * Emitted when the signature written by the form cannot be loaded. The box shows empty;
-   * the form keeps its value — the field does not overwrite what it could not read.
+   * Emitted when the signature written by the form cannot be loaded. The field shows it as
+   * unreadable (`unreadableLabel`, error level) and keeps it as its value until it is
+   * cleared or signed over — it never drops what it could not read on its own.
    */
   imageError = output<Event>();
 
@@ -159,10 +165,25 @@ export class UiFieldSign extends BaseFormField<FieldSignValue> {
   protected readonly background = signal<SignBackground | null>(null);
   /** @ignore A stroke is in progress. */
   protected readonly drawing = signal(false);
+  /**
+   * @ignore The value received from the form, when it could not be loaded: still the field's
+   * value until cleared or signed over, shown as unreadable meanwhile.
+   */
+  protected readonly unreadable = signal<string | null>(null);
 
   /** @ignore Nothing signed: no stroke, no previous signature, no stroke under way. */
   protected readonly isEmpty = computed(
     () => this.strokes().length === 0 && !this.background() && !this.drawing(),
+  );
+  /** @ignore An unreadable value is all the field holds: no stroke drawn over it yet. */
+  protected readonly showUnreadable = computed(
+    () => this.unreadable() !== null && this.strokes().length === 0 && !this.drawing(),
+  );
+  /** @ignore Something to clear: a signature, or an unreadable value. */
+  protected readonly canClear = computed(() => !this.isEmpty() || this.showUnreadable());
+  /** @ignore The shell's level: `error` while an unreadable value stands. */
+  protected readonly fieldLevel = computed<FieldLevel>(() =>
+    this.showUnreadable() ? 'error' : this.effectiveLevel(),
   );
   /** @ignore */
   protected readonly isInteractive = computed(() => !this.isDisabled() && !this.readonly());
@@ -172,7 +193,11 @@ export class UiFieldSign extends BaseFormField<FieldSignValue> {
   protected readonly statusId = computed(() => `${this.resolvedId()}-status`);
   /** @ignore The state, then "required" — `role="img"` takes no `aria-required`. */
   protected readonly statusText = computed(() => {
-    const state = this.isEmpty() ? this.placeholder() : this.signedLabel();
+    const state = this.showUnreadable()
+      ? this.unreadableLabel()
+      : this.isEmpty()
+        ? this.placeholder()
+        : this.signedLabel();
     return this.required() && this.requiredLabel() ? `${state}, ${this.requiredLabel()}` : state;
   });
   /** @ignore The state first, then the helper/error message when one is rendered. */
@@ -211,6 +236,12 @@ export class UiFieldSign extends BaseFormField<FieldSignValue> {
   private lastEmitted: FieldSignValue | undefined;
   /** @ignore A stroke ended while the previous signature was still loading (PNG export). */
   private commitPending = false;
+  /** @ignore The box was resized under the pen: the view is refitted once the stroke ends. */
+  private viewStale = false;
+  /** @ignore Half the ink width, in box pixels, at stroke start — how far points stay from the edge. */
+  private edgeMargin = 0;
+  /** @ignore The previous signature read back as one of this field's exports, per source. */
+  private readBack: { src: string; drawing: SignSvgDrawing | null } | null = null;
   /** @ignore */
   private animationFrame: number | null = null;
 
@@ -224,6 +255,12 @@ export class UiFieldSign extends BaseFormField<FieldSignValue> {
       this.background();
       this.isDisabled();
       this.scheduleRedraw();
+    });
+
+    // Disabled or made read-only under the pen (a form disabled by an autosave): the stroke
+    // is dropped, not committed — the field no longer accepts input.
+    effect(() => {
+      if (!this.isInteractive()) untracked(() => this.abandonStroke());
     });
 
     afterNextRender(() => {
@@ -283,8 +320,10 @@ export class UiFieldSign extends BaseFormField<FieldSignValue> {
     this.activePointerId = null;
     this.commitPending = false;
     this.cleared = null;
+    this.viewStale = false;
     this.setRegion(null);
     this.drawing.set(false);
+    this.unreadable.set(null);
     this.strokes.set([]);
     this.background.set(next ? { src: next, image: null } : null);
     if (next) this.loadBackground(next);
@@ -294,11 +333,17 @@ export class UiFieldSign extends BaseFormField<FieldSignValue> {
   clear(): void {
     // Not under the pen: emptying mid-stroke would emit a blank image that `required` takes
     // for a signature.
-    if (this.isEmpty() || this.drawing()) return;
-    this.cleared = { strokes: this.strokes(), background: this.background(), region: this.region };
+    if (!this.canClear() || this.drawing()) return;
+    this.cleared = {
+      strokes: this.strokes(),
+      background: this.background(),
+      region: this.region,
+      unreadable: this.unreadable(),
+    };
     this.setRegion(null);
     this.strokes.set([]);
     this.background.set(null);
+    this.unreadable.set(null);
     this.commit();
   }
 
@@ -312,11 +357,12 @@ export class UiFieldSign extends BaseFormField<FieldSignValue> {
     if (this.strokes().length > 0) {
       this.strokes.update((s) => s.slice(0, -1));
     } else if (this.cleared) {
-      const { strokes, background, region } = this.cleared;
+      const { strokes, background, region, unreadable } = this.cleared;
       this.cleared = null;
       this.setRegion(region);
       this.strokes.set(strokes);
       this.background.set(background);
+      this.unreadable.set(unreadable);
       // Cleared before it had loaded: its `onload` was dropped meanwhile, ask again.
       if (background && !background.image) this.loadBackground(background.src);
     } else {
@@ -326,14 +372,33 @@ export class UiFieldSign extends BaseFormField<FieldSignValue> {
     this.commit();
   }
 
+  /** @ignore Drops the stroke under the pen, if any, without committing it. */
+  private abandonStroke(): void {
+    if (!this.current) return;
+    const canvas = this.canvasEl().nativeElement;
+    const pointerId = this.activePointerId;
+    this.current = null;
+    this.activePointerId = null;
+    this.padRect = null;
+    this.drawing.set(false);
+    if (pointerId !== null && canvas.hasPointerCapture?.(pointerId)) {
+      canvas.releasePointerCapture(pointerId);
+    }
+    this.refitIfStale();
+    this.scheduleRedraw();
+  }
+
   /** Focuses the drawing area. */
   focus(options?: FocusOptions): void {
     this.canvasEl().nativeElement.focus(options);
   }
 
-  /** Whether the field holds a signature — a stroke under way does not count until it ends. */
+  /**
+   * Whether the field holds a signature — an unreadable one included, it is still the value.
+   * A stroke under way does not count until it ends.
+   */
   hasSignature(): boolean {
-    return this.strokes().length > 0 || !!this.background();
+    return this.strokes().length > 0 || !!this.background() || this.unreadable() !== null;
   }
 
   /** @ignore */
@@ -356,6 +421,7 @@ export class UiFieldSign extends BaseFormField<FieldSignValue> {
     canvas.setPointerCapture?.(event.pointerId);
 
     if (!this.region) this.setRegion(this.boxRect());
+    this.edgeMargin = (this.inkWidth() / 2) * this.view.scale;
     this.activePointerId = event.pointerId;
     this.padRect = canvas.getBoundingClientRect();
     this.current = [this.toPoint(event)];
@@ -383,7 +449,15 @@ export class UiFieldSign extends BaseFormField<FieldSignValue> {
     this.padRect = null;
     this.drawing.set(false);
     this.strokes.update((s) => [...s, stroke]);
+    this.refitIfStale();
     this.commit();
+  }
+
+  /** @ignore Refits the view the box changed size for while a stroke was drawn. */
+  private refitIfStale(): void {
+    if (!this.viewStale) return;
+    this.viewStale = false;
+    this.fitView();
   }
 
   // --- Keyboard / focus ------------------------------------------------
@@ -425,7 +499,9 @@ export class UiFieldSign extends BaseFormField<FieldSignValue> {
       return;
     }
     this.commitPending = false;
-    const value = this.isEmpty() ? null : this.export();
+    // An unreadable value stands until something is drawn over it: undoing that stroke brings
+    // the form's value back, not `null`.
+    const value = this.showUnreadable() ? this.unreadable() : this.isEmpty() ? null : this.export();
     this.lastEmitted = value;
     this.modelValue.set(value);
     this.emitChange(value);
@@ -448,10 +524,27 @@ export class UiFieldSign extends BaseFormField<FieldSignValue> {
         color,
         lineWidth,
         background: bg
-          ? { href: bg.src, rect: this.backgroundSlot(), drawing: readSignSvg(bg.src) }
+          ? { href: bg.src, rect: this.backgroundSlot(), drawing: this.readBackground(bg.src) }
           : null,
       }),
     );
+  }
+
+  /**
+   * @ignore The previous signature as one of this field's own SVG exports, read once per
+   * value. Never throws: on the commit path, a value it cannot read is kept as an image.
+   */
+  private readBackground(src: string): SignSvgDrawing | null {
+    if (this.readBack?.src !== src) {
+      let drawing: SignSvgDrawing | null;
+      try {
+        drawing = readSignSvg(src);
+      } catch {
+        drawing = null;
+      }
+      this.readBack = { src, drawing };
+    }
+    return this.readBack.drawing;
   }
 
   /** @ignore Repaints on a detached canvas, in the export ink and without the tint. */
@@ -473,7 +566,9 @@ export class UiFieldSign extends BaseFormField<FieldSignValue> {
     }
     this.paintStrokes(ctx, this.strokes(), color, lineWidth);
     try {
-      return canvas.toDataURL('image/png');
+      const png = canvas.toDataURL('image/png');
+      // A canvas past the engine's size limit gives `data:,` (iOS) instead of throwing.
+      return png.startsWith('data:image/png') ? png : null;
     } catch {
       // A tainted canvas (an SVG previous signature on older WebKit): fall back to SVG
       // rather than leave the form on the old value while the screen shows the new stroke.
@@ -520,11 +615,12 @@ export class UiFieldSign extends BaseFormField<FieldSignValue> {
     image.onerror = (event) => {
       if (this.background()?.src !== src) return;
       if (isDevMode()) console.warn('[ui-field-sign] The previous signature could not be loaded.');
-      // Shown empty rather than announced as signed over a blank box. The form's value is
-      // left alone: an image this browser cannot decode may be a valid signature elsewhere,
-      // and overwriting it with `null` would lose it silently — `imageError` lets the host
-      // decide (flag the control, ask to sign again).
+      // Shown as unreadable — neither as a signature over a blank box, nor as empty while the
+      // form holds a value. The value is left alone: an image this browser cannot decode may
+      // be a valid signature elsewhere, and dropping it would lose it silently. Clearing it, or
+      // signing over it, is the person's call; `imageError` tells the host.
       this.background.set(null);
+      this.unreadable.set(src);
       if (this.strokes().length === 0) this.setRegion(null);
       if (this.commitPending) this.commit();
       this.imageError.emit(event instanceof Event ? event : new Event('error'));
@@ -586,10 +682,21 @@ export class UiFieldSign extends BaseFormField<FieldSignValue> {
     const css = rect && rect.width > 0 ? canvas.clientWidth / rect.width || 1 : 1;
     const rawX = rect ? (event.clientX - rect.left) * css : event.offsetX;
     const rawY = rect ? (event.clientY - rect.top) * css : event.offsetY;
-    const x = this.boxWidth > 0 ? Math.min(Math.max(rawX, 0), this.boxWidth) : rawX;
-    const y = this.boxHeight > 0 ? Math.min(Math.max(rawY, 0), this.boxHeight) : rawY;
+    const x = this.clamp(rawX, this.boxWidth);
+    const y = this.clamp(rawY, this.boxHeight);
     const { scale, x: dx, y: dy } = this.view;
     return { x: (x - dx) / scale, y: (y - dy) / scale };
+  }
+
+  /**
+   * @ignore Keeps a coordinate half the ink width inside the box: a stroke along the edge then
+   * fits the frame cap included, and the frame does not grow — nor the previous signature
+   * shrink — edit after edit.
+   */
+  private clamp(value: number, size: number): number {
+    if (size <= 0) return value;
+    const margin = Math.min(this.edgeMargin, size / 2);
+    return Math.min(Math.max(value, margin), size - margin);
   }
 
   /** @ignore Size the bitmap on the CSS box × device pixel ratio, and refit the view. */
@@ -600,8 +707,10 @@ export class UiFieldSign extends BaseFormField<FieldSignValue> {
     const ratio = window.devicePixelRatio || 1;
     canvas.width = Math.max(1, Math.round(this.boxWidth * ratio));
     canvas.height = Math.max(1, Math.round(this.boxHeight * ratio));
-    // Not mid-stroke: the points already drawn would no longer line up with the pen.
-    if (!this.drawing()) this.fitView();
+    // Not mid-stroke: the points already drawn would no longer line up with the pen. Refitted
+    // once the stroke ends instead.
+    if (this.drawing()) this.viewStale = true;
+    else this.fitView();
   }
 
   // --- Rendering -----------------------------------------------------------

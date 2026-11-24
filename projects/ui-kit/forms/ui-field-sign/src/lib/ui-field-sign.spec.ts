@@ -306,14 +306,49 @@ describe('ui-field-sign', () => {
     expect(out).toContain('viewBox="-51 0 451 200"');
   });
 
-  it('clamps a captured pointer dragged past the box to its edge', async () => {
+  it('clamps a captured pointer dragged past the box, half the ink inside its edge', async () => {
     setBox(400, 200);
     const { host, pointer, settle } = await setup();
     pointer('pointerdown', 390, 190);
     pointer('pointermove', 900, 700);
     pointer('pointerup', 900, 700);
     await settle();
-    expect(svg(host.value)).toContain('<path d="M390 190L400 200"/>');
+    expect(svg(host.value)).toContain('<path d="M390 190L399 199"/>');
+    // Cap included, the stroke fits the box: the frame does not grow past it.
+    expect(svg(host.value)).toContain('viewBox="0 0 400 200"');
+  });
+
+  it('refits the view once a stroke ends when the box was resized under the pen', async () => {
+    vi.stubGlobal('ResizeObserver', FakeResizeObserver);
+    setBox(400, 200);
+    const { host, pointer, draw, settle } = await setup();
+    pointer('pointerdown', 300, 150);
+    pointer('pointermove', 390, 190);
+    // The phone rotates mid-stroke: the box halves.
+    setBox(200, 100);
+    FakeResizeObserver.callbacks.forEach((cb) => cb());
+    pointer('pointerup', 390, 190);
+    await settle();
+
+    // Refitted: a point at half the box is half the frame, in frame coordinates.
+    await draw([100, 50], [110, 55]);
+    expect(svg(host.value)).toContain('<path d="M200 100L220 110"/>');
+  });
+
+  it('drops the stroke under the pen when the field is disabled mid-stroke', async () => {
+    const { host, pointer, draw, settle } = await setup();
+    pointer('pointerdown', 0, 0);
+    pointer('pointermove', 5, 5);
+    host.disabled.set(true);
+    await settle();
+    pointer('pointerup', 5, 5);
+    await settle();
+    expect(host.changes).toEqual([]);
+
+    host.disabled.set(false);
+    await settle();
+    await draw([10, 10], [20, 20]);
+    expect(paths(host.value)).toBe(1);
   });
 
   describe('clear / undo', () => {
@@ -437,19 +472,47 @@ describe('ui-field-sign', () => {
       expect(svg(host.changes.at(-1))).toContain(`<image href="${PNG_SAMPLE}"`);
     });
 
-    it('shows the field empty when the image cannot be loaded, and says so', async () => {
-      vi.stubGlobal('Image', FakeImage);
-      vi.spyOn(console, 'warn').mockImplementation(() => undefined);
-      const { host, placeholder, status, settle } = await setup(SAMPLE);
-      expect(placeholder()).toBeNull();
-      FakeImage.last!.onerror!();
-      await settle();
-      expect(placeholder()).not.toBeNull();
-      expect(status().textContent?.trim()).toBe('Signez ici');
-      expect(host.imageErrors).toHaveLength(1);
-      // Not overwritten: a value this browser cannot decode may be valid elsewhere.
-      expect(host.changes).toEqual([]);
-      expect(host.value).toBe(SAMPLE);
+    describe('when it cannot be loaded', () => {
+      async function unreadable() {
+        vi.stubGlobal('Image', FakeImage);
+        vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+        const ctx = await setup(SAMPLE);
+        FakeImage.last!.onerror!();
+        await ctx.settle();
+        return ctx;
+      }
+
+      it('shows it as unreadable, in error, and keeps it as the value', async () => {
+        const { fixture, host, placeholder, status, clearButton } = await unreadable();
+        expect(placeholder()?.textContent?.trim()).toBe('Signature illisible');
+        expect(status().textContent?.trim()).toBe('Signature illisible');
+        expect(fixture.nativeElement.querySelector('.ui-field._error')).not.toBeNull();
+        expect(clearButton()!.disabled).toBe(false);
+        expect(host.sign().hasSignature()).toBe(true);
+        expect(host.imageErrors).toHaveLength(1);
+        // Not dropped: a value this browser cannot decode may be valid elsewhere.
+        expect(host.changes).toEqual([]);
+        expect(host.value).toBe(SAMPLE);
+      });
+
+      it('can be cleared, and the clear undone', async () => {
+        const { host, clearButton, key, settle } = await unreadable();
+        clearButton()!.click();
+        await settle();
+        expect(host.value).toBeNull();
+        await key('Backspace');
+        expect(host.value).toBe(SAMPLE);
+      });
+
+      it('signed over, gives way to the strokes — undoing them brings it back', async () => {
+        const { host, draw, key, status } = await unreadable();
+        await draw([0, 0], [5, 5]);
+        expect(svg(host.value)).not.toContain('<image');
+        expect(paths(host.value)).toBe(1);
+        expect(status().textContent?.trim()).toBe('Signature saisie');
+        await key('Backspace');
+        expect(host.value).toBe(SAMPLE);
+      });
     });
 
     it('re-exported, one of its own SVG values is extended, not nested — it does not grow', async () => {
@@ -489,6 +552,20 @@ describe('ui-field-sign', () => {
       throw new DOMException('Tainted canvases may not be exported.', 'SecurityError');
     });
     vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    setBox(100, 50);
+    const { host, draw } = await setup(null, (h) => h.format.set('png'));
+    await draw([0, 0], [5, 5]);
+    expect(host.value!.startsWith('data:image/svg+xml')).toBe(true);
+  });
+
+  it('falls back to SVG when the PNG comes back empty (a canvas past the size limit, iOS)', async () => {
+    const ctx = new Proxy({} as Record<string | symbol, unknown>, {
+      get: (target, prop) => (prop === 'canvas' ? { width: 1, height: 1 } : () => undefined),
+    });
+    vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(
+      ctx as unknown as CanvasRenderingContext2D,
+    );
+    vi.spyOn(HTMLCanvasElement.prototype, 'toDataURL').mockReturnValue('data:,');
     setBox(100, 50);
     const { host, draw } = await setup(null, (h) => h.format.set('png'));
     await draw([0, 0], [5, 5]);

@@ -3,4 +3,4 @@
  */
 
 export * from './lib/ui-field-sign';
-export * from './lib/ui-field-sign-strokes';
+// The stroke geometry and the SVG read-back stay internal: implementation, not contract.

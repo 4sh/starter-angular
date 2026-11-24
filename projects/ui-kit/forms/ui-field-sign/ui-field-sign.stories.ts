@@ -66,6 +66,12 @@ const meta: Meta<UiFieldSign> = {
         'Announced after the state when the field is `required` — the visual `*` is hidden from assistive tech.',
       table: { type: { summary: 'string' }, defaultValue: { summary: '"obligatoire"' } },
     },
+    unreadableLabel: {
+      control: 'text',
+      description:
+        'Shown and announced in place of a signature from the form that cannot be loaded.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: '"Signature illisible"' } },
+    },
     helperText: { control: 'text', table: { type: { summary: 'string' } } },
     errorText: { control: 'text', table: { type: { summary: 'string' } } },
     showMessageIcon: {
@@ -142,6 +148,7 @@ const meta: Meta<UiFieldSign> = {
     clearAriaLabel: 'Effacer la signature',
     signedLabel: 'Signature saisie',
     requiredLabel: 'obligatoire',
+    unreadableLabel: 'Signature illisible',
     size: 'default',
     level: 'default',
     showMessageIcon: false,
@@ -155,7 +162,7 @@ const TEMPLATE = `<div style="width:360px"><ui-field-sign
     [(ngModel)]="model"
     [label]="label" [format]="format" [exportColor]="exportColor" [placeholder]="placeholder"
     [clearable]="clearable" [clearAriaLabel]="clearAriaLabel" [signedLabel]="signedLabel"
-    [requiredLabel]="requiredLabel"
+    [requiredLabel]="requiredLabel" [unreadableLabel]="unreadableLabel"
     [helperText]="helperText" [errorText]="errorText" [size]="size" [level]="level"
     [showMessageIcon]="showMessageIcon" [messageIcon]="messageIcon"
     [required]="required" [disabled]="disabled" [readonly]="readonly" [invalid]="invalid"

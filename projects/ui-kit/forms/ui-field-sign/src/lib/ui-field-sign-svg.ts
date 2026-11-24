@@ -4,9 +4,15 @@
  * an `<image>` whose data URL is encoded once more on every edit.
  *
  * Only this field's own shape is recognised, attribute by attribute: anything else (another
- * element, an unknown attribute, a script, a remote reference) is "foreign" and the caller
- * keeps it as an image. What is recognised is rebuilt from the values read, never copied as
- * markup. Needs `DOMParser` (browser, jsdom); `null` without it.
+ * element, an unknown attribute, a script, a remote reference, a DOCTYPE) is "foreign" and the
+ * caller keeps it as an image. What is recognised is rebuilt from the values read, never copied
+ * as markup.
+ *
+ * The geometry is checked too, not only the shape. As an `<image>`, the value is clipped to its
+ * viewBox; copied flat, nothing would clip it — so a layer reaching outside the viewBox (ink
+ * hidden off-frame on screen, that would show in the export only) is foreign as well.
+ *
+ * Needs `DOMParser` (browser, jsdom); `null` without it.
  */
 import {
   IMAGE_DATA_URL,
@@ -19,13 +25,31 @@ import {
 const SVG_NS = 'http://www.w3.org/2000/svg';
 const IDENTITY: SignTransform = { scale: 1, x: 0, y: 0 };
 
-/** Commands the field writes in a path: move, line, quadratic curve. */
-const PATH_DATA = /^[MLQ\d\s.,eE+-]+$/;
-/** A colour as `getComputedStyle` hands it back, or a keyword — never `url()` nor `var()`. */
+/** A plain decimal number — no hexadecimal, no `Infinity`, which `Number()` would accept. */
+const NUMBER = /^[+-]?(\d+(\.\d*)?|\.\d+)(e[+-]?\d+)?$/i;
+/** One command of a path the field writes: `M x y`, `L x y`, `Q cx cy x y`. */
+const PATH_COMMAND = /([MLQ])([^MLQ]*)/g;
+/** A colour as `getComputedStyle` hands it back, or a colour keyword. */
 const COLOR = /^(#[\da-f]{3,8}|[a-z]+|[a-z-]+\([\w\s.,%/+-]*\))$/i;
-const FOREIGN_COLOR = /^(url|var|env|attr)\(/i;
+/** Functions that are references rather than colours. */
+const REFERENCE_FUNCTIONS = ['url(', 'var(', 'attr(', 'env('];
+/** Keywords that carry no colour of their own. */
+const NOT_AN_INK = new Set([
+  'none',
+  'transparent',
+  'currentcolor',
+  'inherit',
+  'initial',
+  'unset',
+  'revert',
+  'revert-layer',
+  'context-fill',
+  'context-stroke',
+]);
 /** The `transform` the field writes: a uniform scale and a translation. */
 const MATRIX = /^matrix\(\s*(\S+)\s+0\s+0\s+(\S+)\s+(\S+)\s+(\S+)\s*\)$/;
+/** Rounding slack of the export (a tenth of a pixel), and then some. */
+const SLACK = 0.5;
 
 /** Text of an SVG data URL, percent-encoded or base64. `null` for anything else. */
 export function decodeSvgDataUrl(src: string): string | null {
@@ -43,9 +67,22 @@ export function decodeSvgDataUrl(src: string): string | null {
   }
 }
 
-/** `value` as a finite number, else `NaN`. */
-const num = (value: string | null): number =>
-  value !== null && value.trim() !== '' ? Number(value) : NaN;
+/** `value` as a finite plain number, else `NaN`. */
+const num = (value: string | null | undefined): number => {
+  const v = value?.trim() ?? '';
+  const n = NUMBER.test(v) ? Number(v) : NaN;
+  return Number.isFinite(n) ? n : NaN;
+};
+
+/** A colour the field could have written. */
+const isInk = (color: string): boolean => {
+  const lower = color.toLowerCase();
+  return (
+    COLOR.test(color) &&
+    !NOT_AN_INK.has(lower) &&
+    !REFERENCE_FUNCTIONS.some((f) => lower.startsWith(f))
+  );
+};
 
 /** Every attribute of `el` is in `allowed`. */
 const onlyAttributes = (el: Element, allowed: readonly string[]): boolean =>
@@ -64,12 +101,33 @@ function elementChildren(el: Element): Element[] | null {
   return out;
 }
 
+/**
+ * Points of a path the field wrote — every command explicit, `M`/`L` with 2 numbers, `Q` with
+ * 4, starting with `M`. Control points included: a quadratic curve stays inside the hull of
+ * its points, so they bound it. `null` for any other path.
+ */
+function readPath(d: string): [number, number][] | null {
+  const body = d.trim();
+  if (!body.startsWith('M')) return null;
+  const points: [number, number][] = [];
+  // Starting with `M`, every character belongs to a command: the pattern leaves none out.
+  for (const [, command, args] of body.matchAll(PATH_COMMAND)) {
+    const values = args
+      .trim()
+      .split(/[\s,]+/)
+      .map(num);
+    if (values.length !== (command === 'Q' ? 4 : 2) || values.some(Number.isNaN)) return null;
+    for (let i = 0; i < values.length; i += 2) points.push([values[i], values[i + 1]]);
+  }
+  return points.length > 0 ? points : null;
+}
+
 function readTransform(el: Element): SignTransform | null {
   const value = el.getAttribute('transform');
   if (value === null) return IDENTITY;
   const m = MATRIX.exec(value);
   if (!m) return null;
-  const [a, d, x, y] = [m[1], m[2], m[3], m[4]].map(Number);
+  const [a, d, x, y] = [m[1], m[2], m[3], m[4]].map(num);
   return a === d && a > 0 && Number.isFinite(x) && Number.isFinite(y) ? { scale: a, x, y } : null;
 }
 
@@ -80,7 +138,15 @@ function readRect(el: Element): SignRect | null {
     : null;
 }
 
-function readImage(el: Element): SignSvgLayer | null {
+/** A layer as read, with every point its ink reaches — for {@link insideViewBox}. */
+interface ReadLayer {
+  readonly layer: SignSvgLayer;
+  readonly points: readonly [number, number][];
+  /** Half the painted width around each point (a round cap), before the transform. */
+  readonly pad: number;
+}
+
+function readImage(el: Element): ReadLayer | null {
   if (
     !onlyAttributes(el, ['href', 'x', 'y', 'width', 'height', 'preserveAspectRatio', 'transform'])
   )
@@ -91,10 +157,17 @@ function readImage(el: Element): SignSvgLayer | null {
   const transform = readTransform(el);
   if (!IMAGE_DATA_URL.test(href) || (aspect !== null && aspect !== 'xMidYMid meet')) return null;
   if (!rect || !transform || elementChildren(el)?.length !== 0) return null;
-  return { kind: 'image', href, rect, transform };
+  return {
+    layer: { kind: 'image', href, rect, transform },
+    points: [
+      [rect.x, rect.y],
+      [rect.x + rect.width, rect.y + rect.height],
+    ],
+    pad: 0,
+  };
 }
 
-function readInk(el: Element): SignSvgLayer | null {
+function readInk(el: Element): ReadLayer | null {
   const allowed = [
     'fill',
     'stroke',
@@ -111,8 +184,7 @@ function readInk(el: Element): SignSvgLayer | null {
     el.getAttribute('fill') !== 'none' ||
     el.getAttribute('stroke-linecap') !== 'round' ||
     el.getAttribute('stroke-linejoin') !== 'round' ||
-    !COLOR.test(color) ||
-    FOREIGN_COLOR.test(color) ||
+    !isInk(color) ||
     !(width > 0) ||
     !transform
   ) {
@@ -121,14 +193,36 @@ function readInk(el: Element): SignSvgLayer | null {
   const children = elementChildren(el);
   if (!children) return null;
   const paths: string[] = [];
+  const points: [number, number][] = [];
   for (const path of children) {
     const d = path.getAttribute('d') ?? '';
-    if (path.localName !== 'path' || !onlyAttributes(path, ['d']) || !PATH_DATA.test(d))
-      return null;
-    if (elementChildren(path)?.length !== 0) return null;
+    const read = path.localName === 'path' && onlyAttributes(path, ['d']) ? readPath(d) : null;
+    if (!read || elementChildren(path)?.length !== 0) return null;
     paths.push(d);
+    points.push(...read);
   }
-  return { kind: 'ink', paths, color, width, transform };
+  return { layer: { kind: 'ink', paths, color, width, transform }, points, pad: width / 2 };
+}
+
+/**
+ * Whether everything a layer paints stays inside `viewBox`: the field never exports ink
+ * outside its frame, nor a stroke wider than it. Points once transformed, grown by half the
+ * ink width, plus the export's rounding slack.
+ */
+function insideViewBox({ layer, points, pad }: ReadLayer, viewBox: SignRect): boolean {
+  const { scale, x: dx, y: dy } = layer.transform;
+  const margin = pad * scale + SLACK;
+  if (pad * 2 * scale > Math.min(viewBox.width, viewBox.height)) return false;
+  return points.every(([px, py]) => {
+    const x = px * scale + dx;
+    const y = py * scale + dy;
+    return (
+      x >= viewBox.x - margin &&
+      y >= viewBox.y - margin &&
+      x <= viewBox.x + viewBox.width + margin &&
+      y <= viewBox.y + viewBox.height + margin
+    );
+  });
 }
 
 /**
@@ -138,38 +232,41 @@ function readInk(el: Element): SignSvgLayer | null {
 export function readSignSvg(src: string): SignSvgDrawing | null {
   const text = decodeSvgDataUrl(src);
   if (text === null || typeof DOMParser === 'undefined') return null;
+  // Never written by the field — and entities are best not expanded at all (billion laughs).
+  if (/<!(DOCTYPE|ENTITY)/i.test(text)) return null;
   const doc = new DOMParser().parseFromString(text, 'image/svg+xml');
   const root = doc.documentElement;
-  if (root.localName !== 'svg' || root.namespaceURI !== SVG_NS) return null;
+  if (root.localName !== 'svg' || root.namespaceURI !== SVG_NS || doc.doctype) return null;
   if (doc.getElementsByTagName('parsererror').length > 0) return null;
   if (!onlyAttributes(root, ['xmlns', 'viewBox', 'width', 'height'])) return null;
 
   const box = (root.getAttribute('viewBox') ?? '')
     .trim()
     .split(/[\s,]+/)
-    .map(Number);
+    .map(num);
   const width = num(root.getAttribute('width'));
   const height = num(root.getAttribute('height'));
-  if (box.length !== 4 || !box.every(Number.isFinite) || !(box[2] > 0) || !(box[3] > 0)) {
+  if (box.length !== 4 || box.some(Number.isNaN) || !(box[2] > 0) || !(box[3] > 0)) {
     return null;
   }
   // On screen the value is fitted by its width / height, here by its viewBox: they must agree.
   if (!(width > 0) || !(height > 0) || Math.abs(width / height - box[2] / box[3]) > 0.01) {
     return null;
   }
+  const viewBox: SignRect = { x: box[0], y: box[1], width: box[2], height: box[3] };
 
   const children = elementChildren(root);
   if (!children) return null;
   const layers: SignSvgLayer[] = [];
   for (const child of children) {
-    const layer =
+    const read =
       child.localName === 'image'
         ? readImage(child)
         : child.localName === 'g'
           ? readInk(child)
           : null;
-    if (!layer) return null;
-    layers.push(layer);
+    if (!read || !insideViewBox(read, viewBox)) return null;
+    layers.push(read.layer);
   }
-  return { viewBox: { x: box[0], y: box[1], width: box[2], height: box[3] }, layers };
+  return { viewBox, layers };
 }

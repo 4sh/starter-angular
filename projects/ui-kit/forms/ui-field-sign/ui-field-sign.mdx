@@ -84,22 +84,14 @@ previous signature has loaded is held until it has: the export never drops it.
 
 An SVG value **this field exported** is read back when it is signed over: its strokes are
 copied next to the new ones, so the value grows by the new strokes only, edit after edit.
-Any other image — a PNG, someone else's SVG, one of ours edited by hand — is kept as an
-`<image>` underneath, as it is.
+Any other image — a PNG, someone else's SVG, one of ours edited by hand, or one whose ink
+reaches outside its own frame — is kept as an `<image>` underneath, as it is.
 
-An image that cannot be loaded leaves the box **empty** — rather than announced as signed over
-a blank area — and emits **`imageError`**. The form's value is left alone: an image this
-browser cannot decode may be a valid signature elsewhere, and the field never overwrites what
-it could not read. Decide in the host, for instance by flagging the control until it is
-signed again:
-
-```html
-<ui-field-sign
-  label="Signature"
-  [formControl]="signature"
-  (imageError)="signature.setErrors({ unreadable: true })"
-/>
-```
+An image that cannot be loaded is shown as **unreadable**: `unreadableLabel` in the box and
+announced as its state, the field in error, the clear button enabled — and **`imageError`** is
+emitted. It stays the field's value: an image this browser cannot decode may be a valid
+signature elsewhere, so the field never drops it on its own. The person decides — clearing it
+(undoable), or signing over it, which replaces it (undoing those strokes brings it back).
 
 The field does not sanitize what it receives, nor what it emits: it is not a security
 boundary. Treat the value as untrusted on the server — check its MIME type and size, and
@@ -126,13 +118,19 @@ rasterise an SVG before embedding it in a document.
 ## Drawing
 
 - Strokes are **smoothed** (quadratic curves between segment midpoints) and follow the device
-  at its own rate (`getCoalescedEvents`), not the screen's.
+  at its own rate (`getCoalescedEvents`), not the screen's. A tap — even with a few moves on
+  the spot — is exported as a dot every renderer paints.
 - `touch-action: none` on the area while it can be signed: **the page does not scroll**
   under the finger while signing (a `readonly` or `disabled` signature lets it scroll), and the pointer is captured until released, even when it leaves the box. A lost
   capture ends the stroke like a release.
 - A second finger put down during a stroke is ignored, and so is any button but the main one
   (right-click, stylus eraser).
-- The area is redrawn on every resize, at the screen's density.
+- The area is redrawn on every resize, at the screen's density; a resize during a stroke is
+  applied once it ends.
+- A stroke stays half the ink width inside the edge: drawn along it, its cap still fits the
+  frame, which does not grow — nor a previous signature shrink — edit after edit.
+- Disabled or made read-only during a stroke, the field drops that stroke rather than commit
+  it.
 
 ## Levels & states
 
@@ -167,7 +165,8 @@ keeps the strokes — and their undo history — as they are.
   essential gesture). The area is still a **tab stop**, so that clearing and undoing can be
   reached from the keyboard.
 - The area is exposed as an image (`role="img"`), named by the `label` (or `ariaLabel`),
-  described by its state — the hint while empty, `signedLabel` once signed, followed by
+  described by its state — the hint while empty, `signedLabel` once signed, `unreadableLabel`
+  for a value that cannot be loaded, followed by
   `requiredLabel` when the field is `required` — then by the helper or error message.
 - The clear button carries `clearAriaLabel`.
 - Focus is visible on the box (the shell's `:focus-within` ring), from the pointer as from the

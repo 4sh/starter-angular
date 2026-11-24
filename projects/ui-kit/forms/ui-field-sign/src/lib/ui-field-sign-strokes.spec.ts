@@ -24,6 +24,11 @@ describe('strokeToPath', () => {
     expect(strokeToPath(stroke([10, 20]))).toBe('M10 20L10.2 20');
   });
 
+  it('draws a tap as a dot even when the pointer reported a few moves on the spot', () => {
+    expect(strokeToPath(stroke([5, 5], [5, 5]))).toBe('M5 5L5.2 5');
+    expect(strokeToPath(stroke([5, 5], [5.02, 5.01], [5.03, 5]))).toBe('M5 5L5.2 5');
+  });
+
   it('keeps the dot a segment after rounding, wherever the tap lands', () => {
     for (const x of [0.05, 0.15, 3.25, 7.349, 12.95]) {
       const [, x1, x2] = /^M(\S+) \S+L(\S+) /.exec(strokeToPath(stroke([x, 1])))!;
@@ -92,9 +97,21 @@ describe('strokesToSvg', () => {
   });
 
   it('escapes what it puts in attributes', () => {
-    const svg = strokesToSvg([], { ...base, color: 'x" onload="alert(1)' });
+    const svg = strokesToSvg([stroke([0, 0], [1, 1])], { ...base, color: 'x" onload="alert(1)' });
     expect(svg).not.toContain('" onload="');
     expect(svg).toContain('&quot;');
+  });
+
+  it('escapes line breaks and tabs too — an XML parser would turn them into spaces', () => {
+    const svg = strokesToSvg([], {
+      ...base,
+      background: { href: 'data:image/png;base64,A\nB\tC', rect: base.frame },
+    });
+    expect(svg).toContain('href="data:image/png;base64,A&#10;B&#9;C"');
+  });
+
+  it('writes no empty ink group when there is no stroke', () => {
+    expect(strokesToSvg([], base)).not.toContain('<g');
   });
 });
 

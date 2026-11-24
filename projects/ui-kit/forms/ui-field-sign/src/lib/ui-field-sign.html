@@ -3,7 +3,7 @@
   [label]="label()"
   [required]="required()"
   [size]="size()"
-  [level]="effectiveLevel()"
+  [level]="fieldLevel()"
   [disabled]="isDisabled()"
   [readonly]="readonly()"
   [message]="displayMessage()"
@@ -37,7 +37,11 @@
       (blur)="onBlur($event)"
     ></canvas>
 
-    @if (isEmpty() && placeholder()) {
+    @if (showUnreadable()) {
+      <span class="ui-field-sign-placeholder" [class._disabled]="isDisabled()" aria-hidden="true">
+        {{ unreadableLabel() }}
+      </span>
+    } @else if (isEmpty() && placeholder()) {
       <span class="ui-field-sign-placeholder" [class._disabled]="isDisabled()" aria-hidden="true">
         {{ placeholder() }}
       </span>
@@ -54,7 +58,7 @@
       class="ui-field-sign-clear"
       [class._small]="size() === 'small'"
       [attr.aria-label]="clearAriaLabel()"
-      [disabled]="isDisabled() || isEmpty()"
+      [disabled]="isDisabled() || !canClear()"
       (click)="onClearClick()"
     >
       <ui-icon name="eraser" [size]="iconSize()" />
