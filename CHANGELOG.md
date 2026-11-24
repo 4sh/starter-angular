@@ -47,11 +47,19 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
   - **Deux encres** : à l'écran elle suit les jetons, thème sombre compris ; l'export est peint
     en `exportColor` (`black`) sur fond transparent. Une signature tracée en thème sombre
     sortait sinon en blanc, illisible sur un PDF.
-  - Une valeur reçue du formulaire s'affiche (en silhouette dans l'encre courante) et reste
-    sous les nouveaux traits jusqu'à un effacement.
-  - Bouton d'effacement, `clear()` / `undo()` publics, `Suppr` et `Ctrl`+`Z` au clavier.
+  - **Un cadre fixe** : la taille de la boîte au premier trait devient celui de la signature.
+    Une boîte qui change ensuite de taille (téléphone pivoté) met le tracé à l'échelle au lieu
+    d'en rogner une partie de la valeur émise.
+  - Une valeur reçue du formulaire doit être une **data URL d'image** (une URL distante est
+    ignorée, avec un avertissement en dev : elle contaminerait l'export). Elle s'affiche en
+    silhouette dans l'encre courante et reste sous les nouveaux traits jusqu'à un effacement ;
+    en PNG, l'export l'attend plutôt que de la perdre.
+  - Bouton d'effacement, `clear()` / `undo()` publics — `undo()` annule aussi un effacement.
+    Au clavier : `Retour arrière` ou `Ctrl`+`Z` annulent le dernier trait, `Suppr` efface.
   - `touch-action: none` et capture du pointeur : la page ne défile pas pendant la signature ;
     un second doigt est ignoré. Tracé lissé, redessiné au redimensionnement.
+  - L'état est annoncé aux lecteurs d'écran (« Signez ici » / `signedLabel`, puis
+    `requiredLabel` quand le champ est obligatoire).
   - Hooks `--ui-field-sign-*` : hauteur de la zone, couleur et épaisseur de l'encre, invite,
     bouton d'effacement.
 

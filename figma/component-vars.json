@@ -12608,7 +12608,7 @@
       "height": {
         "$value": "{responsive.size.components.default}",
         "$type": "dimension",
-        "$description": "Hauteur du bouton d'effacement, calé sur une ligne de champ.",
+        "$description": "Height of the clear button, matched to a single-line field.",
         "$extensions": {
           "com.figma": {
             "resolvedType": "FLOAT",
@@ -12630,7 +12630,7 @@
       "height-small": {
         "$value": "{responsive.size.components.sm}",
         "$type": "dimension",
-        "$description": "Hauteur du bouton d'effacement, variante `small`.",
+        "$description": "Height of the clear button, `small` variant.",
         "$extensions": {
           "com.figma": {
             "resolvedType": "FLOAT",
@@ -12654,7 +12654,7 @@
       "color": {
         "$value": "{semantics.form.high.content.default}",
         "$type": "color",
-        "$description": "Couleur de l'encre à l'écran (l'export utilise `exportColor`).",
+        "$description": "Screen ink colour (the export uses `exportColor`).",
         "$extensions": {
           "com.figma": {
             "resolvedType": "COLOR",
@@ -12676,7 +12676,7 @@
       "color-disabled": {
         "$value": "{semantics.form.high.content.disabled}",
         "$type": "color",
-        "$description": "Couleur de l'encre, champ désactivé.",
+        "$description": "Ink colour, disabled field.",
         "$extensions": {
           "com.figma": {
             "resolvedType": "COLOR",
@@ -12698,7 +12698,7 @@
       "stroke-width": {
         "$value": "{metrics.stroke.default}",
         "$type": "dimension",
-        "$description": "Épaisseur du trait de signature à l'écran et à l'export.",
+        "$description": "Ink width, on screen and in the export.",
         "$extensions": {
           "com.figma": {
             "resolvedType": "FLOAT",
@@ -12722,7 +12722,7 @@
       "font-size": {
         "$value": "{responsive.size.typography.text.default}",
         "$type": "dimension",
-        "$description": "Taille de police de l'invite affichée dans la zone vide.",
+        "$description": "Font size of the hint shown in the empty area.",
         "$extensions": {
           "com.figma": {
             "resolvedType": "FLOAT",
@@ -12744,7 +12744,7 @@
       "font-size-small": {
         "$value": "{responsive.size.typography.text.md}",
         "$type": "dimension",
-        "$description": "Taille de police de l'invite, variante `small`.",
+        "$description": "Font size of the hint, `small` variant.",
         "$extensions": {
           "com.figma": {
             "resolvedType": "FLOAT",

@@ -31,6 +31,7 @@
       (pointermove)="onPointerMove($event)"
       (pointerup)="onPointerEnd($event)"
       (pointercancel)="onPointerEnd($event)"
+      (lostpointercapture)="onPointerEnd($event)"
       (keydown)="onKeydown($event)"
       (focus)="padFocus.emit($event)"
       (blur)="onBlur($event)"
@@ -43,7 +44,7 @@
     }
 
     <!-- The state, for assistive tech: `aria-describedby` reads hidden nodes. -->
-    <span hidden [id]="statusId()">{{ isEmpty() ? placeholder() : signedLabel() }}</span>
+    <span hidden [id]="statusId()">{{ statusText() }}</span>
   </div>
 
   @if (clearable() && !readonly()) {

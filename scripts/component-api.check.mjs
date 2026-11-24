@@ -31,7 +31,7 @@ const DEMO_ARGS = {
 /** Inputs left out of the story's API table on purpose: `Class.input` → why. */
 const UNDOCUMENTED_INPUTS = {
   'UiFieldSign.floatLabel':
-    "sans effet : la boîte est le tracé lui-même, aucune valeur qu'un libellé au repos remplacerait",
+    'no effect: the box is the drawing itself, there is no value for a resting label to stand in for',
 };
 
 const prop = (node, name) =>
