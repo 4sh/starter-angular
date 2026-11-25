@@ -16,6 +16,8 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+## [0.17.0] - 2026-11-25
+
 ### Added
 
 - **`ui-datepicker` : entrée `defaultViewDate`** (FSHSP-263). Date (`Date` ou ISO
