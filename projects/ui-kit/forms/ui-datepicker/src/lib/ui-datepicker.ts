@@ -708,8 +708,9 @@ export class UiDatepicker extends BaseFormField<DatepickerValue> implements OnIn
   // --- Value conversion (the ONLY boundary between the public `Date`/ISO contract
   // and the internal Date-based calendar logic) --------------------------------
 
-  /** @ignore Whether the value carries a time component (date+time ISO / non-midnight `Date`). */
-  private readonly hasTimeComponent = computed(() => this.showTime() || this.timeOnly());
+  /** @ignore Whether the value carries a time component (date+time ISO / non-midnight `Date`)
+   *  — also what shows the time row, which `timeOnly` needs without `showTime` (FSHSP-271). */
+  protected readonly hasTimeComponent = computed(() => this.showTime() || this.timeOnly());
   /** @ignore Date → ISO string, date-only unless `showTime`/`timeOnly`. */
   private toIsoValue(d: Date): string {
     return this.hasTimeComponent() ? toIsoDateTime(d) : toIsoDate(d);

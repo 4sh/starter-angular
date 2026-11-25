@@ -178,6 +178,21 @@ class DatepickerInlineFreshBoundHost {
   }
 }
 
+/** `timeOnly` alone, without `showTime` — the shape that opened an empty panel (FSHSP-271). */
+@Component({
+  imports: [ReactiveFormsModule, UiDatepicker],
+  template: `<ui-datepicker
+    label="Heure"
+    valueType="date"
+    locale="fr-FR"
+    timeOnly
+    [formControl]="control"
+  />`,
+})
+class DatepickerTimeOnlyHost {
+  readonly control = new FormControl<Date | null>(new Date(2026, 6, 8, 9, 15));
+}
+
 async function setup(initial: Date | null = null) {
   await TestBed.configureTestingModule({ imports: [DatepickerHost] }).compileComponents();
   const fixture: ComponentFixture<DatepickerHost> = TestBed.createComponent(DatepickerHost);
@@ -890,5 +905,24 @@ describe('UiDatepicker — browser fill', () => {
     await fill(input, 'demain', fixture);
     expect(host.control.value).toBeNull();
     expect(input.value).toBe('');
+  });
+});
+
+describe('UiDatepicker — timeOnly without showTime (FSHSP-271)', () => {
+  it('opens on the time row instead of an empty panel', async () => {
+    const { fixture, icon } = await setupHost(DatepickerTimeOnlyHost);
+    await click(icon!, fixture);
+    expect(panel()).not.toBeNull();
+    expect(panel()!.querySelector('.ui-datepicker-time')).not.toBeNull();
+    expect(panel()!.querySelector('.ui-datepicker-day')).toBeNull();
+  });
+
+  it('commits the time stepped in that row', async () => {
+    const { fixture, icon } = await setupHost(DatepickerTimeOnlyHost);
+    await click(icon!, fixture);
+    const hoursUp = panel()!.querySelector('.ui-datepicker-time-btn') as HTMLButtonElement;
+    await click(hoursUp, fixture);
+    const value = fixture.componentInstance.control.value!;
+    expect([value.getHours(), value.getMinutes()]).toEqual([10, 15]);
   });
 });

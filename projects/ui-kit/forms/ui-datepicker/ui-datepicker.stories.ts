@@ -504,7 +504,7 @@ export const Time12h: Story = {
 
 export const TimeOnly: Story = {
   render: story(new Date(2026, 6, 8, 9, 15)),
-  args: { timeOnly: true, showTime: true, label: 'Heure', placeholder: 'hh:mm' },
+  args: { timeOnly: true, label: 'Heure', placeholder: 'hh:mm' },
 };
 
 export const ButtonBar: Story = {
