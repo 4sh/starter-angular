@@ -716,7 +716,9 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
     const insidePanel = !!next && this.panelEl()?.nativeElement.contains(next);
     if (!insideComponent && !insidePanel) {
       this.emitTouch();
-      if (this.forceSelection()) this.validateForceSelection(event);
+      // Chrome's autofill blurs each field it fills without focusing it, before
+      // the suggestions answer: a pending fill is resolved by its own effect.
+      if (this.forceSelection() && !this.pendingFill()) this.validateForceSelection(event);
     }
     this.inputBlur.emit(event);
   }
@@ -731,7 +733,10 @@ export class UiAutocomplete<T = unknown> extends BaseFormField<AutocompleteValue
     const text = this.inputText().trim();
     if (!text) return;
     const match = this.entryLabelled(text);
-    if (match) {
+    if (match && !this.multiple() && this.equals(match.value, this.modelValue())) {
+      // Already the model: restore its label, publish nothing twice.
+      this.inputText.set(match.label);
+    } else if (match) {
       this.selectEntry(match, event, false);
     } else if (this.multiple()) {
       // Never commit over the selection: just drop the invalid query.

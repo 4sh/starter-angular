@@ -109,8 +109,12 @@ suggestions.
 
 Une valeur que le navigateur écrit dans le champ sans que l'utilisateur y soit (saisie
 automatique) n'attend pas de blur : la suggestion qui porte ce libellé est retenue dès que
-`suggestions` la contient. Sans correspondance, le texte reste affiché et le modèle vide ; la
-sortie du champ appliquera la règle habituelle.
+`suggestions` la contient, même si elles arrivent en asynchrone (recherche par API) après le
+blur que le navigateur envoie au champ qu'il remplit. Sans correspondance, le texte reste
+affiché et le modèle vide ; la sortie du champ appliquera la règle habituelle.
+
+Au blur, une suggestion qui est déjà la valeur du modèle n'est pas resélectionnée :
+`valueChange` et `optionSelect` ne sont émis qu'une fois par sélection.
 
 <Canvas of={AutocompleteStories.ForceSelection} />
 

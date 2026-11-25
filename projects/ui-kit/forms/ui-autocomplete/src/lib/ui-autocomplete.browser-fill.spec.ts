@@ -159,6 +159,58 @@ describe('UiAutocomplete — browser fill', () => {
       expect(host.control.value).toBeNull();
       expect(host.selected).toEqual([]);
     });
+
+    // Chrome blurs each field it fills without focusing it, before an API
+    // answers the query: that blur must not reject the filled text.
+    it('keeps the filled text through the autofill blur until the suggestions arrive', async () => {
+      const { host, input, settle, fire } = await setup(true);
+      host.answerAtOnce = false;
+      input.value = 'Lyon';
+      await fire('input');
+      input.dispatchEvent(new FocusEvent('blur'));
+      await settle();
+      expect(input.value).toBe('Lyon');
+      expect(host.emitted).toEqual([]);
+      await new Promise((resolve) => setTimeout(resolve, 10));
+      host.answer('Lyon');
+      await settle();
+      expect(host.control.value).toBe('Lyon');
+      expect(host.emitted).toEqual(['Lyon']);
+      expect(host.selected).toEqual(['Lyon']);
+    });
+
+    it('publishes the filled suggestion once when the autofill blur follows it', async () => {
+      const { host, input, settle, fire } = await setup(true);
+      input.value = 'Paris';
+      await fire('input');
+      input.dispatchEvent(new FocusEvent('blur'));
+      await settle();
+      expect(host.control.value).toBe('Paris');
+      expect(host.emitted).toEqual(['Paris']);
+      expect(host.selected).toEqual(['Paris']);
+    });
+
+    it('still validates a real blur, without republishing the selected suggestion', async () => {
+      const { host, input, settle, fire } = await setup(true);
+      input.value = 'Paris';
+      await fire('input');
+      input.focus();
+      input.value = 'paris';
+      await fire('input');
+      input.blur();
+      await settle();
+      expect(input.value).toBe('Paris');
+      expect(host.emitted).toEqual(['Paris']);
+      expect(host.selected).toEqual(['Paris']);
+
+      input.focus();
+      input.value = 'Pa';
+      await fire('input');
+      input.blur();
+      await settle();
+      expect(host.control.value).toBeNull();
+      expect(input.value).toBe('');
+    });
   });
 
   it('ignores the focus event Chrome sends to a field its autofill fills', async () => {
