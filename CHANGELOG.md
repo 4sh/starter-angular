@@ -40,6 +40,38 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
   devient un bouton (`openLabel`) ; le contenu projeté s'insère à côté de la corbeille.
 - **`formatLabel` accepte plusieurs valeurs** (`{0}`, `{1}`…), substituées en une passe
   (FSHSP-264).
+- **`ui-field-sign` — champ de signature manuscrite** (FSHSP-266). Bâti sur le shell
+  `ui-field` : **la boîte du champ est la zone de tracé**, au doigt, au stylet ou à la souris.
+  - La valeur est une data URL (`format` : `png` ou `svg`), `null` tant que rien n'est signé
+    — `required` fonctionne tel quel. Elle est émise **en fin de trait**, jamais pendant.
+  - **Deux encres** : à l'écran elle suit les jetons, thème sombre compris ; l'export est peint
+    en `exportColor` (`black`) sur fond transparent. Une signature tracée en thème sombre
+    sortait sinon en blanc, illisible sur un PDF. `exportColor` accepte un token
+    (`var(--…)`), résolu en `rgb()` avant d'être écrit dans l'image.
+  - **Ce qui est à l'écran est exporté** : la boîte au premier trait devient la zone de la
+    signature, et le cadre exporté s'étend à chaque trait. Une boîte qui change ensuite de
+    taille (téléphone pivoté) remet le tracé à l'échelle, et un trait posé dans la marge qui
+    en résulte agrandit le cadre au lieu de sortir de la valeur.
+  - Une valeur reçue du formulaire doit être une **data URL d'image** (une URL distante est
+    ignorée, avec un avertissement en dev : elle contaminerait l'export). Elle s'affiche en
+    silhouette dans l'encre courante et reste sous les nouveaux traits jusqu'à un effacement ;
+    en PNG, l'export l'attend plutôt que de la perdre. Une valeur SVG émise par le champ puis
+    complétée est réexportée **à plat** (ses traits recopiés) : elle ne grossit plus à chaque
+    édition — sauf si son encre sort de son propre cadre : elle reste alors une image. Une
+    image illisible est affichée et annoncée comme telle (`unreadableLabel`, niveau erreur),
+    émet `imageError` et reste la valeur jusqu'à ce qu'on l'efface ou qu'on signe par-dessus ;
+    le contrôle reste valide (la doc montre comment le bloquer). Sans trait par-dessus, une
+    annulation réémet la valeur reçue telle quelle.
+  - Bouton d'effacement, `clear()` / `undo()` publics — `undo()` annule aussi un effacement.
+    Au clavier : `Retour arrière` ou `Ctrl`+`Z` annulent le dernier trait, `Suppr` efface.
+  - `touch-action: none` et capture du pointeur : la page ne défile pas pendant la signature ;
+    un second doigt est ignoré. Tracé lissé, redessiné au redimensionnement (appliqué en fin
+    de trait s'il survient pendant) ; un simple toucher exporte un point visible. Un champ
+    désactivé en plein trait abandonne ce trait.
+  - L'état est annoncé aux lecteurs d'écran (« Signez ici » / `signedLabel`, puis
+    `requiredLabel` quand le champ est obligatoire).
+  - Hooks `--ui-field-sign-*` : hauteur de la zone, couleur et épaisseur de l'encre, invite,
+    bouton d'effacement.
 
 ### Changed
 

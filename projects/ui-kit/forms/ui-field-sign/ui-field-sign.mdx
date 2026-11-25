@@ -1,0 +1,203 @@
+import { Meta, Canvas, ArgTypes } from '@storybook/addon-docs/blocks';
+import * as SignStories from './ui-field-sign.stories';
+import { ConfigTable } from '../../../../storybook/blocks/config-table';
+
+<Meta of={SignStories} />
+
+# ui-field-sign
+
+**Handwritten signature** field built on the
+[`ui-field`](?path=/docs/components-ui-forms-ui-field--docs) shell (label + box + helper).
+**The field box is the drawing area**: finger, stylus or mouse.
+
+Model value = a data URL (`image/png` or `image/svg+xml`, per `format`), or `null` while
+nothing is signed — so `required` works as is.
+
+Standalone, `[(ngModel)]`, reactive forms or Signal Forms (`ControlValueAccessor` via
+`BaseFormField`).
+
+<Canvas of={SignStories.WithHelper} />
+
+## API
+
+<ArgTypes of={SignStories} />
+
+```html
+<ui-field-sign label="Customer signature" required [(ngModel)]="signature" />
+```
+
+## Value
+
+The value is emitted **when each stroke ends** (the pointer is released), then on every
+clear or undo — never while drawing: a form bound to an autosave would otherwise receive one
+image per pointer move.
+
+`format="png"` (default) exports an image twice as dense as the drawing frame, the same on
+every device; `format="svg"` exports a vector path, lighter and sharp at any scale. Where the
+browser cannot produce the PNG — no 2D canvas, or a canvas it refuses to read back — the field
+emits the SVG instead rather than nothing: check the MIME type of the data URL, not `format`.
+
+<Canvas of={SignStories.Svg} />
+
+### Two inks: screen and export
+
+On screen the ink follows the tokens (`--form-high-content-default`), dark theme included.
+The export is painted with **`exportColor`** (`black` by default) on a **transparent
+background**: a signature drawn in dark mode would otherwise come out white, unreadable on
+the PDF it is meant for.
+
+`exportColor` takes any CSS colour, **a design token included**: it is resolved to `rgb()`
+where the field sits before being written into the image, since a `var()` inside an exported
+SVG resolves to nothing and the stroke would not be painted at all. A value that is not a
+colour, or a token that does not resolve, falls back to `black` (with a warning in
+development).
+
+Pick a value that **does not change with the theme**: it is resolved at export time, so a
+semantic token that flips in dark mode would flip the exported ink with it — the very trap the
+two inks are there to avoid.
+
+```html
+<ui-field-sign label="Signature" exportColor="var(--app-signature-ink)" [(ngModel)]="signature" />
+```
+
+### What is on screen is what is exported
+
+The box at the **first stroke** becomes the signature's region; the exported frame is that
+region **grown to every stroke**. When the box changes size afterwards — a phone rotated
+halfway through — the frame is refitted into it (scaled, centred), and a stroke drawn in the
+room this leaves around it grows the frame instead of falling outside the value. A pointer
+dragged past the edge draws along it: nothing drawn can be invisible, nothing visible can be
+lost. Clearing the field releases the region; the next stroke takes the box as it is then.
+
+### Value written by the form
+
+The field accepts an **image data URL** — what it emits itself (`png`, `jpeg`, `webp` or
+`svg+xml`). Anything else, a remote URL in particular, is ignored with a warning in
+development: drawn on a canvas it would make the PNG export throw, and carried into an SVG
+export it would be fetched by whatever renders that file later. Convert a stored signature
+to a data URL before handing it to the field.
+
+The value is shown in the box and stays **under** new strokes until cleared. On screen it is
+redrawn as a silhouette in the current ink, so that a black signature stays legible on a dark
+field; it is fitted to the frame, keeping its proportions. In PNG, a stroke drawn before the
+previous signature has loaded is held until it has: the export never drops it.
+
+An SVG value **this field exported** is read back when it is signed over: its strokes are
+copied next to the new ones, so the value grows by the new strokes only, edit after edit.
+Any other image — a PNG, someone else's SVG, one of ours edited by hand, or one whose ink
+reaches outside its own frame — is kept as an `<image>` underneath, as it is.
+
+An image that cannot be loaded is shown as **unreadable**: `unreadableLabel` in the box and
+announced as its state, the field in error, the clear button enabled — and **`imageError`** is
+emitted. It stays the field's value: an image this browser cannot decode may be a valid
+signature elsewhere, so the field never drops it on its own. The person decides — clearing it
+(undoable), or signing over it, which replaces it (undoing those strokes brings it back).
+
+The field shows the error, but it **does not invalidate the control**: a value is there, so
+`required` passes and the form can be submitted. To block the submission, flag the control
+from `imageError` — the error goes away with the next value, when the person clears or signs
+again:
+
+```html
+<ui-field-sign
+  label="Signature"
+  [formControl]="signature"
+  (imageError)="signature.setErrors({ unreadable: true })"
+/>
+```
+
+`setErrors` lasts until the control is validated again (`updateValueAndValidity()`,
+`enable()`, `setValidators()`): call it again after those, or keep the state in a validator of
+your own. With `[(ngModel)]` or Signal Forms, hold it in the host (a signal set by
+`imageError`) and check it before submitting.
+
+The field does not sanitize what it receives, nor what it emits: it is not a security
+boundary. Treat the value as untrusted on the server — check its MIME type and size, and
+rasterise an SVG before embedding it in a document.
+
+<Canvas of={SignStories.WithValue} />
+
+## Clear, undo
+
+- The clear button (`clearable`, enabled once the area is signed) empties the field and hands
+  focus back to the drawing area.
+- `clear()` and `undo()` are public, for a "Start again" or "Undo" button owned by the host.
+  `undo()` removes the last stroke drawn in the field, and with none left brings back what the
+  last `clear()` removed. A signature received from the form is not a stroke: only `clear()`
+  removes it. With no stroke left over it, it is emitted again **word for word** — not
+  re-exported, which would change the value under a dirty check.
+- On the keyboard, on the drawing area: `Backspace` or `Ctrl`+`Z` (`⌘`+`Z`) undo the last
+  stroke, `Delete` clears — undoable too.
+
+```html
+<ui-field-sign #sign label="Signature" [clearable]="false" [(ngModel)]="signature" />
+<ui-button label="Undo last stroke" level="low" (buttonClick)="sign.undo()" />
+```
+
+## Drawing
+
+- Strokes are **smoothed** (quadratic curves between segment midpoints) and follow the device
+  at its own rate (`getCoalescedEvents`), not the screen's. A tap — even with a few moves on
+  the spot — is exported as a dot every renderer paints.
+- `touch-action: none` on the area while it can be signed: **the page does not scroll**
+  under the finger while signing (a `readonly` or `disabled` signature lets it scroll), and the pointer is captured until released, even when it leaves the box. A lost
+  capture ends the stroke like a release.
+- A second finger put down during a stroke is ignored, and so is any button but the main one
+  (right-click, stylus eraser).
+- The area is redrawn on every resize, at the screen's density; a resize during a stroke is
+  applied once it ends.
+- A stroke stays half the ink width inside the edge: drawn along it, its cap still fits the
+  frame, which does not grow — nor a previous signature shrink — edit after edit.
+- Disabled or made read-only during a stroke, the field drops that stroke rather than commit
+  it.
+
+## Levels & states
+
+`level` (`default`/`success`/`error`) drives the border, `errorText` replaces the helper in
+error — the same contract as every field built on `ui-field`. In `readonly` the signature
+stays visible but can no longer change, and the clear button goes away.
+
+<Canvas of={SignStories.Required} />
+<Canvas of={SignStories.Error} />
+<Canvas of={SignStories.ReadOnly} />
+<Canvas of={SignStories.Disabled} />
+<Canvas of={SignStories.Small} />
+
+No `floatLabel`: the box is the drawing itself, there is no text value for a resting label to
+stand in for.
+
+## Forms
+
+The field is a `ControlValueAccessor`: `required` / `Validators.required` reject `null`,
+`disable()` from the form stops the pen, `reset()` empties the box. A form writing back the
+value it just received (`control.setValue(control.value)`, a `patchValue` of the whole form)
+keeps the strokes — and their undo history — as they are.
+
+<Canvas of={SignStories.TemplateDriven} />
+<Canvas of={SignStories.ReactiveForms} />
+<Canvas of={SignStories.SignalForms} />
+
+## Accessibility
+
+- A handwritten signature is a **path-based** gesture: WCAG exempts it from keyboard
+  alternatives (2.1.1, path-dependent exception) and from simplified gestures (2.5.1,
+  essential gesture). The area is still a **tab stop**, so that clearing and undoing can be
+  reached from the keyboard.
+- The area is exposed as an image (`role="img"`), named by the `label` (or `ariaLabel`),
+  described by its state — the hint while empty, `signedLabel` once signed, `unreadableLabel`
+  for a value that cannot be loaded, followed by
+  `requiredLabel` when the field is `required` — then by the helper or error message.
+- The clear button carries `clearAriaLabel`.
+- Focus is visible on the box (the shell's `:focus-within` ring), from the pointer as from the
+  keyboard.
+
+## Theming
+
+The box, label, helper and clear button come from the `ui-field` shell (`utils.field-*`
+mixins), configured by the shared
+[Forms](?path=/docs/components-configuration-forms--docs) group. The ink is set here: its
+screen colour and its width, read by the canvas on every paint. See also
+[how configuration works](?path=/docs/components-configuration--docs).
+
+<ConfigTable of="ui-field-sign" />
+<ConfigTable of="ui-field" />
