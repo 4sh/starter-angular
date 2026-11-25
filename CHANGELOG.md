@@ -57,6 +57,12 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
   Il disparaissait sans signal ; une pièce enregistrée remplacée doit pouvoir être supprimée
   côté serveur.
 
+### Fixed
+
+- **`ui-datepicker` : `timeOnly` sans `showTime` n'ouvre plus un panneau vide** (FSHSP-271).
+  La ligne horaire n'était affichée qu'avec `showTime`, alors que `timeOnly` masque déjà le
+  calendrier. Il n'est plus nécessaire d'ajouter `showTime` pour obtenir les steppers.
+
 ## [0.16.0] - 2026-10-26
 
 ### Added
