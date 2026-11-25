@@ -25,7 +25,13 @@ const meta: Meta<UiFieldSign> = {
   title: 'Components/ui/forms/ui-field-sign',
   component: UiFieldSign,
   decorators: [moduleMetadata({ imports: [UiFieldSign, FormsModule, ReactiveFormsModule] })],
-  parameters: { layout: 'centered' },
+  parameters: {
+    layout: 'centered',
+    design: {
+      type: 'figma',
+      url: 'https://www.figma.com/design/GZww5hdUA49LB8XWeWP6tl/-Projet----UI-Kit?node-id=4219-1970',
+    },
+  },
   argTypes: {
     label: { control: 'text', table: { type: { summary: 'string' } } },
     format: {
