@@ -62,6 +62,11 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 - **`ui-datepicker` : `timeOnly` sans `showTime` n'ouvre plus un panneau vide** (FSHSP-271).
   La ligne horaire n'était affichée qu'avec `showTime`, alors que `timeOnly` masque déjà le
   calendrier. Il n'est plus nécessaire d'ajouter `showTime` pour obtenir les steppers.
+- **`ui-autocomplete` : avec `forceSelection`, une valeur préremplie par Chrome n'est plus
+  effacée quand les suggestions arrivent en asynchrone** (FSHSP-262). Le faux blur que Chrome
+  envoie au champ qu'il remplit ne valide plus la saisie tant que la suggestion attendue n'est
+  pas arrivée. Au blur, une suggestion qui est déjà la valeur du modèle n'est plus resélectionnée :
+  `valueChange` et `optionSelect` ne sont émis qu'une fois.
 
 ## [0.16.0] - 2026-10-26
 
