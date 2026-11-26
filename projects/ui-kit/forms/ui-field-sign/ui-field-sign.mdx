@@ -120,7 +120,9 @@ rasterise an SVG before embedding it in a document.
 ## Clear, undo
 
 - The clear button (`clearable`, enabled once the area is signed) empties the field and hands
-  focus back to the drawing area.
+  focus back to the drawing area. It is laid over the top-right corner of the area rather than
+  in a column beside it: the area keeps the full width of the box, and the hint and the
+  signature centre on it.
 - `clear()` and `undo()` are public, for a "Start again" or "Undo" button owned by the host.
   `undo()` removes the last stroke drawn in the field, and with none left brings back what the
   last `clear()` removed. A signature received from the form is not a stroke: only `clear()`

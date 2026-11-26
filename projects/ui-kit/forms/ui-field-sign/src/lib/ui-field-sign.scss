@@ -82,11 +82,13 @@ $action-height-small: var(--ui-field-sign-action-height-small, #{utils.$form-fie
   &-pad._small &-placeholder { font-size: $placeholder-font-size-small; }
 
   // --- Clear action ---------------------------------------------------
-  // Same button as every field action, but pinned to the top row: stretched to the
-  // full height of a signature box, it would be a tall bar.
+  // Same button as every field action, laid over the top-right corner of the drawing area
+  // (it shares the pad's grid cell) rather than in a column of its own: the area keeps the
+  // full width of the box, and the hint and the signature centre on it. Pinned to the top
+  // row: stretched to the full height of a signature box, it would be a tall bar.
   &-clear {
     @include utils.field-action;
-    align-self: flex-start;
+    place-self: start end;
     height: $action-height;
 
     &._small { height: $action-height-small; }
