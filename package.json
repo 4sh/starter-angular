@@ -63,7 +63,7 @@
     "@compodoc/compodoc": "2.0.0",
     "@eslint/js": "10.0.1",
     "@figma/code-connect": "2.1.0",
-    "@inquirer/prompts": "8.8.0",
+    "@inquirer/prompts": "8.8.1",
     "@modelcontextprotocol/sdk": "1.32.2",
     "@schematics/angular": "22.3.0",
     "@storybook-community/storybook-dark-mode": "7.1.4",
