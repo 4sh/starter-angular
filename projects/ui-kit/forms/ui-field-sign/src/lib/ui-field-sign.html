@@ -47,21 +47,22 @@
       </span>
     }
 
+    <!-- Laid over the drawing area, not beside it: the area keeps the full width of the
+         box, so the hint and the signature centre on the box itself. -->
+    @if (clearable() && !readonly()) {
+      <button
+        type="button"
+        class="ui-field-sign-clear"
+        [class._small]="size() === 'small'"
+        [attr.aria-label]="clearAriaLabel()"
+        [disabled]="isDisabled() || !canClear()"
+        (click)="onClearClick()"
+      >
+        <ui-icon name="eraser" [size]="iconSize()" />
+      </button>
+    }
+
     <!-- The state, for assistive tech: `aria-describedby` reads hidden nodes. -->
     <span hidden [id]="statusId()">{{ statusText() }}</span>
   </div>
-
-  @if (clearable() && !readonly()) {
-    <button
-      uiFieldSuffix
-      type="button"
-      class="ui-field-sign-clear"
-      [class._small]="size() === 'small'"
-      [attr.aria-label]="clearAriaLabel()"
-      [disabled]="isDisabled() || !canClear()"
-      (click)="onClearClick()"
-    >
-      <ui-icon name="eraser" [size]="iconSize()" />
-    </button>
-  }
 </ui-field>

@@ -16,6 +16,16 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+### Fixed
+
+- **`ui-field-sign` : l'invite et la signature sont centrées dans la boîte** (FSHSP-275).
+  Le bouton d'effacement occupait une colonne à droite de la zone de dessin, sur toute sa
+  hauteur : la zone perdait cette largeur, et l'invite comme la signature se centraient à
+  gauche du centre de la boîte. Le bouton est désormais posé par-dessus le coin haut-droit de
+  la zone, qui garde toute la largeur de la boîte. Une surcharge CSS qui ciblait le bouton
+  comme suffixe de `ui-field` (`.ui-field-box > .ui-field-sign-clear`) ne le trouve plus : il
+  est dans `.ui-field-sign-pad`.
+
 ## [0.17.0] - 2026-11-25
 
 ### Added

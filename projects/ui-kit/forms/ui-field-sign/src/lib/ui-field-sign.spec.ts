@@ -231,6 +231,15 @@ describe('ui-field-sign', () => {
     });
   });
 
+  it('lays the clear button over the drawing area, not in a column beside it', async () => {
+    const { fixture, clearButton } = await setup();
+    const pad = fixture.nativeElement.querySelector('.ui-field-sign-pad') as HTMLElement;
+    // Inside the pad's grid cell: the area keeps the full width of the box, and the hint
+    // and the signature centre on it.
+    expect(pad.contains(clearButton())).toBe(true);
+    expect(clearButton()!.hasAttribute('uifieldsuffix')).toBe(false);
+  });
+
   it('hides the placeholder and enables clearing once signed', async () => {
     const { draw, placeholder, clearButton } = await setup();
     await draw([0, 0], [5, 5]);
