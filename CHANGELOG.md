@@ -16,6 +16,8 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 
 ## [Unreleased]
 
+## [0.17.1] - 2026-11-26
+
 ### Fixed
 
 - **`ui-field-sign` : l'invite et la signature sont centrées dans la boîte** (FSHSP-275).
